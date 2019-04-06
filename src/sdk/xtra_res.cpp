@@ -54,38 +54,28 @@ void wxToolBarAddOnXmlHandler::SetToolbarImageSize(int size)
 /// We need to do this because we want to replace 22x22 in the path with a string matching our
 /// resolution.
 /// @note This version doesn't support loading stock art images only files!
-wxBitmap wxToolBarAddOnXmlHandler::LoadBitmap(const wxString& param, wxSize size)
+wxBitmap wxToolBarAddOnXmlHandler::LoadBitmap(const wxString& name)
 {
-
-    wxString name = GetParamValue(param);
-    if (name.empty())
-        return wxNullBitmap;
-
-    wxString finalName = name;
-    finalName.Replace(wxT("22x22"), m_PathReplaceString);
-
 #if wxUSE_FILESYSTEM
-    wxFSFile *fsfile = GetCurFileSystem().OpenFile(finalName, wxFS_READ | wxFS_SEEKABLE);
+    wxFSFile *fsfile = GetCurFileSystem().OpenFile(name, wxFS_READ | wxFS_SEEKABLE);
     if (fsfile == NULL)
     {
         LogManager *logger = Manager::Get()->GetLogManager();
-        logger->LogError(wxString::Format(wxT("Cannot open bitmap resource \"%s\""), finalName));
+        logger->LogError(wxString::Format(wxT("Cannot open bitmap resource \"%s\""), name));
         return wxNullBitmap;
     }
     wxImage img(*(fsfile->GetStream()));
     delete fsfile;
 #else
-    wxImage img(finalName);
+    wxImage img(name);
 #endif
 
     if (!img.IsOk())
     {
         LogManager *logger = Manager::Get()->GetLogManager();
-        logger->LogError(wxString::Format(wxT("Cannot create bitmap from \"%s\""), finalName));
+        logger->LogError(wxString::Format(wxT("Cannot create bitmap from \"%s\""), name));
         return wxNullBitmap;
     }
-    if (!(size == wxDefaultSize))
-        img.Rescale(size.x, size.y);
 
     return wxBitmap(img);
 }
@@ -93,7 +83,14 @@ wxBitmap wxToolBarAddOnXmlHandler::LoadBitmap(const wxString& param, wxSize size
 
 wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param, wxSize size)
 {
-    wxBitmap bitmap = LoadBitmap(param, wxDefaultSize);
+    wxString name = GetParamValue(param);
+    if (name.empty())
+        return wxNullBitmap;
+
+    wxString finalName = name;
+    finalName.Replace(wxT("22x22"), m_PathReplaceString);
+
+    wxBitmap bitmap = LoadBitmap(finalName);
     if (!bitmap.Ok()) // == wxNullBitmap
         return bitmap;
 
@@ -101,6 +98,11 @@ wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param, wxSi
     int bh = bitmap.GetHeight();
     if (size == wxSize(bw, bh))
         return bitmap;
+
+    LogManager *logger = Manager::Get()->GetLogManager();
+    logger->LogWarning(wxString::Format(wxT("Image \"%s\" with size [%dx%d] doesn't match ")
+                                        wxT("requested size [%dx%d] resizing!"),
+                                        finalName.wx_str(), bw, bh, size.x, size.y));
 
     wxImage image = bitmap.ConvertToImage();
 
