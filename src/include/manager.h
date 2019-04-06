@@ -47,13 +47,6 @@ class cbSearchResultsLog;
 
 class DLLIMPORT Manager
 {
-    wxFrame*               m_pAppWindow;
-    static bool            m_AppShuttingDown;
-    static bool            m_AppStartedUp;
-    static bool            m_BlockYields;
-    static bool            m_IsBatch;
-    static wxCmdLineParser m_CmdLineParser;
-
      Manager();
     ~Manager();
 
@@ -147,6 +140,11 @@ public:
     wxToolBar* CreateEmptyToolbar();
     static void AddonToolBar(wxToolBar* toolBar,wxString resid);
     static bool isToolBar16x16(wxToolBar* toolBar);
+    /// Sets the global variable which stores the size of images in toolbars.
+    /// @note If you're not in app.cpp do not call this!
+    void SetToolbarImageSize(int size);
+    /// @return The size in pixels of images in toolbars.
+    int GetToolbarImageSize() const;
 
     static wxCmdLineParser* GetCmdLineParser();
 
@@ -163,6 +161,15 @@ public:
     void SetSearchResultLogger(cbSearchResultsLog *log) { m_SearchResultLog = log; }
 
 private:
+    wxFrame*               m_pAppWindow;
+    static bool            m_AppShuttingDown;
+    static bool            m_AppStartedUp;
+    static bool            m_BlockYields;
+    static bool            m_IsBatch;
+    static wxCmdLineParser m_CmdLineParser;
+
+    int m_ToolbarImageSize;
+
     // event sinks
     typedef std::vector< IEventFunctorBase<CodeBlocksEvent>* >       EventSinksArray;
     typedef std::map< wxEventType, EventSinksArray >                 EventSinksMap;

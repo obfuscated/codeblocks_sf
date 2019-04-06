@@ -584,12 +584,6 @@ bool ThreadSearch::BuildToolBar(wxToolBar* toolBar)
 
     const wxString &prefix = m_pThreadSearchView->GetImagePrefix();
 
-    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
-    if (cfg->ReadBool(_T("/environment/toolbar_size"),true))
-        m_pToolbar->SetToolBitmapSize(wxSize(16,16));
-    else
-        m_pToolbar->SetToolBitmapSize(wxSize(22,22));
-
     m_pCboSearchExpr = new wxComboBox(toolBar, controlIDs.Get(ControlIDs::idCboSearchExpr),
                                       wxEmptyString, wxDefaultPosition, wxSize(130, -1), 0, NULL, wxCB_DROPDOWN);
     m_pCboSearchExpr->SetToolTip(_("Text to search"));

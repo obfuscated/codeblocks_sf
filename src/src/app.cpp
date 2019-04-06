@@ -709,7 +709,9 @@ bool CodeBlocksApp::OnInit()
         {
             ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
             const bool smallSize = cfg->ReadBool(_T("/environment/toolbar_size"), true);
-            toolbarAddonHandler->SetToolbarImageSize(smallSize ? 16 : 22);
+            const int size = (smallSize ? 16 : 22);
+            toolbarAddonHandler->SetToolbarImageSize(size);
+            Manager::Get()->SetToolbarImageSize(size);
         }
 
         // Splash screen moved to this place, otherwise it would be short visible, even if we only pass filenames via DDE/IPC

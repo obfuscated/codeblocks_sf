@@ -951,11 +951,9 @@ void ThreadSearchView::UpdateSearchButtons(bool enable, eSearchButtonLabel label
 
 wxString ThreadSearchView::GetImagePrefix() const
 {
-    ConfigManager *cfg = Manager::Get()->GetConfigManager(wxT("app"));
-    if (cfg->ReadBool(wxT("/environment/toolbar_size"), true))
-        return ConfigManager::GetDataFolder() + wxT("/images/ThreadSearch/16x16/");
-    else
-        return ConfigManager::GetDataFolder() + wxT("/images/ThreadSearch/22x22/");
+    const int size = Manager::Get()->GetToolbarImageSize();
+    return ConfigManager::GetDataFolder()
+        + wxString::Format(wxT("/images/ThreadSearch/%dx%d/"), size, size);
 }
 
 void ThreadSearchView::ShowSearchControls(bool show)

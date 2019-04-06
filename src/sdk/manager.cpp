@@ -118,7 +118,7 @@ static wxString GetCodeblocksEventName(wxEventType type)
 }
 #endif // PPRCESS_EVENT_PERFORMANCE_MEASURE
 
-Manager::Manager() : m_pAppWindow(nullptr), m_SearchResultLog(nullptr)
+Manager::Manager() : m_pAppWindow(nullptr), m_ToolbarImageSize(0), m_SearchResultLog(nullptr)
 {
 }
 
@@ -414,6 +414,17 @@ bool Manager::isToolBar16x16(wxToolBar* toolBar)
     if (!toolBar) return true; // Small by default
     wxSize mysize=toolBar->GetToolBitmapSize();
     return (mysize.GetWidth()<=16 && mysize.GetHeight()<=16);
+}
+
+void Manager::SetToolbarImageSize(int size)
+{
+    m_ToolbarImageSize = size;
+}
+
+int Manager::GetToolbarImageSize() const
+{
+    cbAssert(m_ToolbarImageSize > 0);
+    return m_ToolbarImageSize;
 }
 
 wxFrame* Manager::GetAppFrame() const
