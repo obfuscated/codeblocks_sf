@@ -484,6 +484,11 @@ ConfigManager* CfgMgrBldr::Build(const wxString& name_space)
     return c;
 }
 
+wxString CfgMgrBldr::GetConfigFile() const
+{
+    return cfg;
+}
+
 /*
 *  Hack to enable Turkish language. wxString::Upper will convert lowercase 'i' to \u0130 instead of \u0069 in Turkish locale,
 *  which will break the config file when used in a tag

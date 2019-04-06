@@ -749,8 +749,16 @@ void MainFrame::CreateIDE()
         m_pPrjManUI = new BatchProjectManagerUI;
     m_pPrjMan->SetUI(m_pPrjManUI);
 
-    // logs manager
+    // All message posted before this call are either lost or sent to stdout/stderr.
+    // On windows stdout and stderr aren't accessible.
     SetupGUILogging();
+
+    {
+        wxString msg = wxString::Format(wxT("Loaded config file '%s'"),
+                                        CfgMgrBldr::Get()->GetConfigFile());
+        Manager::Get()->GetLogManager()->Log(msg);
+    }
+
     SetupDebuggerUI();
 
     CreateMenubar();
