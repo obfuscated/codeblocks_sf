@@ -618,19 +618,45 @@ bool DoxyBlocks::BuildToolBar(wxToolBar *toolBar)
 
     m_pToolbar = toolBar;
     const int toolbarSize = Manager::Get()->GetToolbarImageSize();
-    wxString prefix = ConfigManager::GetDataFolder()
-        + wxString::Format(wxT("/images/DoxyBlocks/%dx%d/"), toolbarSize, toolbarSize);
+    const wxString prefix = ConfigManager::GetDataFolder()
+                          + wxString::Format(wxT("/images/DoxyBlocks/%dx%d/"),
+                                             toolbarSize,toolbarSize);
+    const double scalingFactor = cbGetContentScaleFactor(*m_pToolbar);
 
-    m_pToolbar->AddTool(ID_TB_WIZARD, _("Doxywizard"), wxBitmap(prefix + wxT("doxywizard.png"), wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, _("Run doxywizard"));
-    m_pToolbar->AddTool(ID_TB_EXTRACTPROJECT, _("Document project"), wxBitmap(prefix + wxT("extract.png"), wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, _("Extract documentation for the current project"));
+    m_pToolbar->AddTool(ID_TB_WIZARD, _("Doxywizard"),
+                        cbLoadBitmapScaled(prefix + wxT("doxywizard.png"), wxBITMAP_TYPE_PNG,
+                                           scalingFactor),
+                        wxNullBitmap, wxITEM_NORMAL, _("Run doxywizard"));
+    m_pToolbar->AddTool(ID_TB_EXTRACTPROJECT, _("Document project"),
+                        cbLoadBitmapScaled(prefix + wxT("extract.png"), wxBITMAP_TYPE_PNG,
+                                           scalingFactor),
+                        wxNullBitmap, wxITEM_NORMAL,
+                        _("Extract documentation for the current project"));
     m_pToolbar->AddSeparator();
-    m_pToolbar->AddTool(ID_TB_BLOCKCOMMENT, _("Block Comment"), wxBitmap(prefix + wxT("comment_block.png"), wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, _("Insert a comment block at the current line"));
-    m_pToolbar->AddTool(ID_TB_LINECOMMENT, _("Line Comment"), wxBitmap(prefix + wxT("comment_line.png"), wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, _("Insert a line comment at the current cursor position"));
+    m_pToolbar->AddTool(ID_TB_BLOCKCOMMENT, _("Block Comment"),
+                        cbLoadBitmapScaled(prefix + wxT("comment_block.png"), wxBITMAP_TYPE_PNG,
+                                           scalingFactor),
+                        wxNullBitmap, wxITEM_NORMAL,
+                        _("Insert a comment block at the current line"));
+    m_pToolbar->AddTool(ID_TB_LINECOMMENT, _("Line Comment"),
+                        cbLoadBitmapScaled(prefix + wxT("comment_line.png"), wxBITMAP_TYPE_PNG,
+                                           scalingFactor),
+                        wxNullBitmap, wxITEM_NORMAL,
+                        _("Insert a line comment at the current cursor position"));
     m_pToolbar->AddSeparator();
-    m_pToolbar->AddTool(ID_TB_RUNHTML, _("Run HTML"), wxBitmap(prefix + wxT("html.png"), wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, _("Run HTML documentation"));
-    m_pToolbar->AddTool(ID_TB_RUNCHM, _("Run CHM"), wxBitmap(prefix + wxT("chm.png"), wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, _("Run HTML Help documentation"));
+    m_pToolbar->AddTool(ID_TB_RUNHTML, _("Run HTML"),
+                        cbLoadBitmapScaled(prefix + wxT("html.png"), wxBITMAP_TYPE_PNG,
+                                           scalingFactor),
+                        wxNullBitmap, wxITEM_NORMAL, _("Run HTML documentation"));
+    m_pToolbar->AddTool(ID_TB_RUNCHM, _("Run CHM"),
+                        cbLoadBitmapScaled(prefix + wxT("chm.png"), wxBITMAP_TYPE_PNG,
+                                           scalingFactor),
+                        wxNullBitmap, wxITEM_NORMAL, _("Run HTML Help documentation"));
     m_pToolbar->AddSeparator();
-    m_pToolbar->AddTool(ID_TB_CONFIG, _("Open Preferences"), wxBitmap(prefix + wxT("configure.png"), wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, _("Open DoxyBlocks' preferences"));
+    m_pToolbar->AddTool(ID_TB_CONFIG, _("Open Preferences"),
+                        cbLoadBitmapScaled(prefix + wxT("configure.png"), wxBITMAP_TYPE_PNG,
+                                           scalingFactor),
+                        wxNullBitmap, wxITEM_NORMAL, _("Open DoxyBlocks' preferences"));
     m_pToolbar->Realize();
     m_pToolbar->SetInitialSize();
 
