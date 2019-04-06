@@ -62,9 +62,13 @@ fi
 # clean up files which cause confusion when switch versions of auto*
 rm -rf autom4te.cache
 
+# Make the build more robust if a Makefile.am is removed from the file system, but it is not removed
+# from the configure.ac file.
+find | grep -v wxSmithSTC/stc| grep Makefile.in$ | xargs -i rm -v {}
+
 # Fire up autotools
 $LIBTOOLIZE --force --copy && \
 	$ACLOCAL $ACLOCAL_FLAGS && \
 	$AUTOHEADER && \
 	$AUTOMAKE --include-deps --add-missing --foreign --copy && \
-	$AUTOCONF 
+	$AUTOCONF
