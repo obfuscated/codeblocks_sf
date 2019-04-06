@@ -34,8 +34,8 @@ EXTRA_DIST = $(srcdir)/*.cbp \
 		ChangeLog.txt \
 		DoxyBlocks.rc \
 		$(srcdir)/update* \
-		$(srcdir)/images/*.png \
 		$(srcdir)/images/16x16/*.png
+		$(srcdir)/images/22x22/*.png
 
 pkgdata_DATA = DoxyBlocks.zip
 

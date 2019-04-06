@@ -1,4 +1,4 @@
-SUBDIRS = 16x16 settings
+SUBDIRS = 16x16 22x22 settings
 
 pkgdatadir = $(datadir)/@PACKAGE@/images
 

@@ -16,7 +16,7 @@ libIncrementalSearch_la_SOURCES = IncrementalSearch.cpp \
 noinst_HEADERS = IncrementalSearch.h \
 		IncrementalSearchConfDlg.h
 
-EXTRA_DIST = 	$(srcdir)/*.cbp \
+EXTRA_DIST = $(srcdir)/*.cbp \
 		IncrementalSearchToolbar.xrc \
 		IncrementalSearchConfDlg.xrc \
 		manifest.xml \
@@ -29,7 +29,7 @@ pkgdata_DATA = IncrementalSearch.zip
 CLEANFILES = $(pkgdata_DATA)
 
 IncrementalSearch.zip: manifest.xml IncrementalSearchToolbar.xrc IncrementalSearchConfDlg.xrc
-	PWD=`pwd` cd $(srcdir) && zip -R $(PWD)/IncrementalSearch.zip manifest.xml *.xrc images/*.png images/16x16/*.png > /dev/null
+	PWD=`pwd` cd $(srcdir) && zip -R $(PWD)/IncrementalSearch.zip manifest.xml *.xrc images/22x22/*.png images/16x16/*.png > /dev/null
 
 confimagesdir = $(datadir)/@PACKAGE@/images/settings
 

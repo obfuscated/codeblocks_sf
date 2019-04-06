@@ -11,6 +11,7 @@
 
 #ifndef CB_PRECOMP
     #include "xtra_res.h"
+    #include "logmanager.h"
     #include "scrollingdialog.h"
     #include <wx/wx.h>
 #endif

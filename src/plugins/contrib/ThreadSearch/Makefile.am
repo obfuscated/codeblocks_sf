@@ -48,6 +48,7 @@ noinst_HEADERS =  	DirectoryParamsPanel.h \
 			TextFileSearcherRegEx.h \
 			TextFileSearcherText.h \
 			ThreadSearch.h \
+			ThreadSearchCommon.h \
 			ThreadSearchConfPanel.h \
 			ThreadSearchControlIds.h \
 			ThreadSearchEvent.h \

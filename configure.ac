@@ -439,6 +439,7 @@ AC_CONFIG_FILES([Makefile
 	src/src/resources/icons/Makefile
 	src/src/resources/images/Makefile
 	src/src/resources/images/16x16/Makefile
+	src/src/resources/images/22x22/Makefile
 	src/src/resources/images/settings/Makefile
 	src/src/Makefile
 	src/plugins/Makefile
@@ -532,6 +533,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/DoxyBlocks/Makefile
 	src/plugins/contrib/DoxyBlocks/images/Makefile
 	src/plugins/contrib/DoxyBlocks/images/16x16/Makefile
+	src/plugins/contrib/DoxyBlocks/images/22x22/Makefile
 	src/plugins/contrib/dragscroll/Makefile
 	src/plugins/contrib/EditorConfig/Makefile
 	src/plugins/contrib/EditorTweaks/Makefile
