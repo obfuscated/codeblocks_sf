@@ -497,7 +497,6 @@ void BrowseTracker::BuildModuleMenu(const ModuleType type, wxMenu* popup, const 
 bool BrowseTracker::BuildToolBar(wxToolBar* toolBar)
 // ----------------------------------------------------------------------------
 {
-
     if (m_pJumpTracker) {
         m_pJumpTracker->BuildToolBar(toolBar);
     }
@@ -508,8 +507,7 @@ bool BrowseTracker::BuildToolBar(wxToolBar* toolBar)
     {
         return false;
     }
-    wxString is16x16 = Manager::isToolBar16x16(toolBar) ? _T("_16x16") : _T("");
-    Manager::Get()->AddonToolBar(toolBar, _T("browse_tracker_toolbar") + is16x16);
+    Manager::Get()->AddonToolBar(toolBar, _T("browse_tracker_toolbar"));
     m_pToolBar->Realize();
 
     return true;

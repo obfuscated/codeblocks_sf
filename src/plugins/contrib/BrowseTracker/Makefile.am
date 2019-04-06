@@ -40,11 +40,11 @@ noinst_HEADERS =  	BrowseTracker.h \
 EXTRA_DIST = 	$(srcdir)/*.cbp \
 			BrowseTrackerToolbar.xrc \
 			manifest.xml \
-			$(srcdir)/images/*.png \
+			$(srcdir)/images/22x22/*.png \
 			$(srcdir)/images/16x16/*.png
 
 pkgdata_DATA = BrowseTracker.zip
 CLEANFILES = $(pkgdata_DATA)
 
 BrowseTracker.zip: manifest.xml
-	PWD=`pwd` cd $(srcdir) && zip -R $(PWD)/BrowseTracker.zip manifest.xml *.xrc images/*.png images/16x16/*.png > /dev/null
+	PWD=`pwd` cd $(srcdir) && zip -R $(PWD)/BrowseTracker.zip manifest.xml *.xrc images/22x22/*.png images/16x16/*.png > /dev/null
