@@ -154,7 +154,11 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
         wxCHECK_MSG(m_toolbar, NULL, _("Incorrect syntax of XRC resource: tool not within a toolbar!"));
 
         const wxSize bitmapSize = m_toolbar->GetToolBitmapSize();
+#ifdef __WXMSW__
+        const double scaleFactor = 1.0;
+#else
         const double scaleFactor = cbGetContentScaleFactor(*m_toolbar);
+#endif // __WXMSW__
 
         if (GetPosition() != wxDefaultPosition)
         {
