@@ -1101,17 +1101,13 @@ void MainFrame::CreateToolbars()
         m_pToolbar = nullptr;
     }
 
-    wxString xrcToolbarName(_T("main_toolbar"));
-    if (m_SmallToolBar) // Insert logic here
-        xrcToolbarName += _T("_16x16");
-
     wxXmlResource* xml_res = wxXmlResource::Get();
     wxString resPath = ConfigManager::GetDataFolder();
-    xml_res->Load(resPath + _T("/resources.zip#zip:") + xrcToolbarName + _T("*.xrc"));
+    xml_res->Load(resPath + _T("/resources.zip#zip:main_toolbar.xrc"));
     Manager::Get()->GetLogManager()->DebugLog(_T("Loading toolbar..."));
 
     m_pToolbar = Manager::Get()->CreateEmptyToolbar();
-    Manager::Get()->AddonToolBar(m_pToolbar, xrcToolbarName);
+    Manager::Get()->AddonToolBar(m_pToolbar, _T("main_toolbar"));
 
     m_pToolbar->Realize();
 

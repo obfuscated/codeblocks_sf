@@ -605,7 +605,8 @@ bool CodeBlocksApp::OnInit()
     // we'll do this once and for all at startup
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxFileSystem::AddHandler(new wxMemoryFSHandler);
-    wxXmlResource::Get()->InsertHandler(new wxToolBarAddOnXmlHandler);
+    wxToolBarAddOnXmlHandler *toolbarAddonHandler = new wxToolBarAddOnXmlHandler;
+    wxXmlResource::Get()->InsertHandler(toolbarAddonHandler);
     wxXmlResource::Get()->InsertHandler(new wxScrollingDialogXmlHandler);
     wxInitAllImageHandlers();
     wxXmlResource::Get()->InitAllHandlers();
@@ -704,6 +705,13 @@ bool CodeBlocksApp::OnInit()
                 return false;
             }
         }
+
+        {
+            ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
+            const bool smallSize = cfg->ReadBool(_T("/environment/toolbar_size"), true);
+            toolbarAddonHandler->SetToolbarImageSize(smallSize ? 16 : 22);
+        }
+
         // Splash screen moved to this place, otherwise it would be short visible, even if we only pass filenames via DDE/IPC
         // we also don't need it, if only a single instance is allowed
         Splash splash(!m_Batch && m_Script.IsEmpty() && m_Splash &&

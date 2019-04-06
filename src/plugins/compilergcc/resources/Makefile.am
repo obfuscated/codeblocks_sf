@@ -5,7 +5,6 @@ EXTRA_DIST = advanced_compiler_options.xrc \
 	compiler_flag.xrc \
 	compiler_menu.xrc \
 	compiler_options.xrc \
-	compiler_toolbar_16x16.xrc \
 	compiler_toolbar.xrc \
 	manifest.xml \
 	images/22x22/compile.png \

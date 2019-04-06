@@ -620,8 +620,7 @@ bool CompilerGCC::BuildToolBar(wxToolBar* toolBar)
         return false;
 
     m_pTbar = toolBar;
-    wxString my_16x16 = Manager::isToolBar16x16(toolBar) ? _T("_16x16") : _T("");
-    Manager::Get()->AddonToolBar(toolBar,_T("compiler_toolbar")+my_16x16);
+    Manager::Get()->AddonToolBar(toolBar, _T("compiler_toolbar"));
     m_pToolTarget = XRCCTRL(*toolBar, "idToolTarget", wxChoice);
     toolBar->Realize();
     toolBar->SetInitialSize();

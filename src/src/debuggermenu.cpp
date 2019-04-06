@@ -799,8 +799,7 @@ wxToolBar* DebuggerToolbarHandler::GetToolbar(bool create)
             return nullptr;
 
         m_Toolbar = Manager::Get()->CreateEmptyToolbar();
-        wxString my_16x16 = Manager::isToolBar16x16(m_Toolbar) ? _T("_16x16") : _T("");
-        Manager::AddonToolBar(m_Toolbar, wxString(_T("debugger_toolbar")) + my_16x16);
+        Manager::AddonToolBar(m_Toolbar, wxT("debugger_toolbar"));
 
         m_Toolbar->Realize();
         m_Toolbar->SetInitialSize();

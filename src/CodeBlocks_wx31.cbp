@@ -1855,9 +1855,6 @@
 		<Unit filename="plugins/compilergcc/resources/compiler_toolbar.xrc">
 			<Option target="Compiler" />
 		</Unit>
-		<Unit filename="plugins/compilergcc/resources/compiler_toolbar_16x16.xrc">
-			<Option target="Compiler" />
-		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/compiler_avr-gcc.xml">
 			<Option target="Compiler" />
 		</Unit>
@@ -4189,9 +4186,6 @@
 		<Unit filename="src/resources/debugger_toolbar.xrc">
 			<Option target="src" />
 		</Unit>
-		<Unit filename="src/resources/debugger_toolbar_16x16.xrc">
-			<Option target="src" />
-		</Unit>
 		<Unit filename="src/resources/disassembly.xrc">
 			<Option target="src" />
 		</Unit>
@@ -4214,9 +4208,6 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/main_toolbar.xrc">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/main_toolbar_16x16.xrc">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/manage_assocs.xrc">

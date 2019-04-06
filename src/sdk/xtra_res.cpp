@@ -31,8 +31,8 @@
 //          protected instead of private! >:(
 /////////////////////////////////////////////////////////////////////////////
 
-wxToolBarAddOnXmlHandler::wxToolBarAddOnXmlHandler()
-: wxXmlResourceHandler(), m_isInside(FALSE), m_isAddon(false), m_toolbar(NULL)
+wxToolBarAddOnXmlHandler::wxToolBarAddOnXmlHandler() :
+    m_isInside(FALSE), m_isAddon(false), m_toolbar(NULL), m_ImageSize(0)
 {
     XRC_ADD_STYLE(wxTB_FLAT);
     XRC_ADD_STYLE(wxTB_DOCKABLE);
@@ -44,10 +44,56 @@ wxToolBarAddOnXmlHandler::wxToolBarAddOnXmlHandler()
     XRC_ADD_STYLE(wxTB_NOALIGN);
 }
 
-wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param,
-    const wxArtClient& defaultArtClient, wxSize size)
+void wxToolBarAddOnXmlHandler::SetToolbarImageSize(int size)
 {
-    wxBitmap bitmap = GetBitmap(param, defaultArtClient, wxDefaultSize);
+    m_ImageSize = size;
+    m_PathReplaceString = wxString::Format(wxT("%dx%d"), size, size);
+}
+
+/// Copied this from wx's GetBitmap implementation.
+/// We need to do this because we want to replace 22x22 in the path with a string matching our
+/// resolution.
+/// @note This version doesn't support loading stock art images only files!
+wxBitmap wxToolBarAddOnXmlHandler::LoadBitmap(const wxString& param, wxSize size)
+{
+
+    wxString name = GetParamValue(param);
+    if (name.empty())
+        return wxNullBitmap;
+
+    wxString finalName = name;
+    finalName.Replace(wxT("22x22"), m_PathReplaceString);
+
+#if wxUSE_FILESYSTEM
+    wxFSFile *fsfile = GetCurFileSystem().OpenFile(finalName, wxFS_READ | wxFS_SEEKABLE);
+    if (fsfile == NULL)
+    {
+        LogManager *logger = Manager::Get()->GetLogManager();
+        logger->LogError(wxString::Format(wxT("Cannot open bitmap resource \"%s\""), finalName));
+        return wxNullBitmap;
+    }
+    wxImage img(*(fsfile->GetStream()));
+    delete fsfile;
+#else
+    wxImage img(finalName);
+#endif
+
+    if (!img.IsOk())
+    {
+        LogManager *logger = Manager::Get()->GetLogManager();
+        logger->LogError(wxString::Format(wxT("Cannot create bitmap from \"%s\""), finalName));
+        return wxNullBitmap;
+    }
+    if (!(size == wxDefaultSize))
+        img.Rescale(size.x, size.y);
+
+    return wxBitmap(img);
+}
+
+
+wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param, wxSize size)
+{
+    wxBitmap bitmap = LoadBitmap(param, wxDefaultSize);
     if (!bitmap.Ok()) // == wxNullBitmap
         return bitmap;
 
@@ -63,7 +109,11 @@ wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param,
     int x = (w - bw) / 2;
     int y = (h - bh) / 2;
 
-    if (image.HasAlpha()) // Resize doesn't handle Alpha... :-(
+    // If the image is bigger than the current size our code for resizing would do overflow the
+    // buffers. Until the code is made to handle such cases just rescale the image.
+    if (size.x < bw || size.y < bh)
+        image.Rescale(size.x, size.y, wxIMAGE_QUALITY_HIGH);
+    else if (image.HasAlpha()) // Resize doesn't handle Alpha... :-(
     {
         const unsigned char *data = image.GetData();
         const unsigned char *alpha = image.GetAlpha();
@@ -100,8 +150,8 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
             #if wxCHECK_VERSION(3, 0, 0)
                                wxEmptyString,
             #endif
-                               GetCenteredBitmap(_T("bitmap"), wxART_TOOLBAR, bitmapSize),
-                               GetCenteredBitmap(_T("bitmap2"), wxART_TOOLBAR, bitmapSize),
+                               GetCenteredBitmap(_T("bitmap"), bitmapSize),
+                               GetCenteredBitmap(_T("bitmap2"), bitmapSize),
             #if !wxCHECK_VERSION(3, 0, 0)
                                GetBool(_T("toggle")),
                                GetPosition().x,
@@ -131,8 +181,8 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
             }
             m_toolbar->AddTool(GetID(),
                                GetText(_T("label")),
-                               GetCenteredBitmap(_T("bitmap"), wxART_TOOLBAR, bitmapSize),
-                               GetCenteredBitmap(_T("bitmap2"), wxART_TOOLBAR, bitmapSize),
+                               GetCenteredBitmap(_T("bitmap"), bitmapSize),
+                               GetCenteredBitmap(_T("bitmap2"), bitmapSize),
                                kind,
                                GetText(_T("tooltip")),
                                GetText(_T("longhelp")));
@@ -151,7 +201,6 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
         m_toolbar->AddSeparator();
         return m_toolbar; // must return non-NULL
     }
-
     else /*<object class="wxToolBar">*/
     {
         m_isAddon=(m_class == _T("wxToolBarAddOn"));
@@ -179,9 +228,6 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
                              GetSize(),
                              style,
                              GetName());
-            wxSize bmpsize = GetSize(_T("bitmapsize"));
-            if (!(bmpsize == wxDefaultSize))
-                toolbar->SetToolBitmapSize(bmpsize);
             wxSize margins = GetSize(_T("margins"));
             if (!(margins == wxDefaultSize))
                 toolbar->SetMargins(margins.x, margins.y);
