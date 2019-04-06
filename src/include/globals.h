@@ -278,7 +278,16 @@ extern DLLIMPORT bool UsesCommonControls6();
   * Always use this to load bitmaps because it takes care of various
   * issues with pre-XP windows (actually common controls < 6.00).
   */
-extern DLLIMPORT wxBitmap cbLoadBitmap(const wxString& filename, wxBitmapType bitmapType = wxBITMAP_TYPE_PNG);
+extern DLLIMPORT wxBitmap cbLoadBitmap(const wxString& filename,
+                                       wxBitmapType bitmapType = wxBITMAP_TYPE_PNG);
+
+/// Loads bitmap from this. Use it when you need a bitmap which takes into account the scaling
+/// factor of the wx toolkit used. Toolkits which need this are GTK+3 and Cocoa.
+/// @param scaleFactor You can take this by calling GetContentScaleFactor on the window where
+/// the image would be drawn.
+/// @sa cbLoadBitmap
+extern DLLIMPORT wxBitmap cbLoadBitmapScaled(const wxString& filename, wxBitmapType bitmapType,
+                                             double scaleFactor);
 
 // compatibility function
 inline wxBitmap LoadPNGWindows2000Hack(const wxString& filename){ return cbLoadBitmap(filename); }

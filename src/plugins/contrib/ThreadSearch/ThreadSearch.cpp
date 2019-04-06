@@ -574,7 +574,6 @@ void ThreadSearch::SaveConfig(bool showPanel, int sashPosition,
     pCfg->Write(wxT("/SearchMasks"),           searchMasks);
 }
 
-
 bool ThreadSearch::BuildToolBar(wxToolBar* toolBar)
 {
     if ( !IsAttached() || !toolBar )
@@ -589,14 +588,23 @@ bool ThreadSearch::BuildToolBar(wxToolBar* toolBar)
                                       wxEmptyString, wxDefaultPosition, wxSize(130, -1), 0, NULL, wxCB_DROPDOWN);
     m_pCboSearchExpr->SetToolTip(_("Text to search"));
 
+    const double scaleFactor = toolBar->GetContentScaleFactor();
+
+    wxBitmap bmpFind = cbLoadBitmapScaled(prefix + wxT("findf.png"), wxBITMAP_TYPE_PNG,
+                                          scaleFactor);
+    wxBitmap bmpFindDisabled = cbLoadBitmapScaled(prefix + wxT("findfdisabled.png"),
+                                                  wxBITMAP_TYPE_PNG, scaleFactor);
+    wxBitmap bmpOptions = cbLoadBitmapScaled(prefix + wxT("options.png"), wxBITMAP_TYPE_PNG,
+                                             scaleFactor);
+    wxBitmap bmpOptionsDisabled = cbLoadBitmapScaled(prefix + wxT("optionsdisabled.png"),
+                                                     wxBITMAP_TYPE_PNG, scaleFactor);
+
     toolBar->AddControl(m_pCboSearchExpr);
     toolBar->AddTool(controlIDs.Get(ControlIDs::idBtnSearch), _(""),
-                     wxBitmap(prefix + wxT("findf.png"), wxBITMAP_TYPE_PNG),
-                     wxBitmap(prefix + wxT("findfdisabled.png"), wxBITMAP_TYPE_PNG),
+                     bmpFind, bmpFindDisabled,
                      wxITEM_NORMAL, _("Run search"));
     toolBar->AddTool(controlIDs.Get(ControlIDs::idBtnOptions), _(""),
-                     wxBitmap(prefix + wxT("options.png"), wxBITMAP_TYPE_PNG),
-                     wxBitmap(prefix + wxT("optionsdisabled.png"), wxBITMAP_TYPE_PNG),
+                     bmpOptions, bmpOptionsDisabled,
                      wxITEM_NORMAL, _("Show options window"));
     m_pThreadSearchView->UpdateOptionsButtonImage(m_FindData);
 

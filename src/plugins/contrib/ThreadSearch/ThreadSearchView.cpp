@@ -293,11 +293,21 @@ void ThreadSearchView::OnQuickOptions(wxCommandEvent &event)
 
 void ThreadSearchView::UpdateOptionsButtonImage(const ThreadSearchFindData &findData)
 {
-    wxString name = (findData.IsOptionEnabled() ? wxT("optionsactive.png") : wxT("options.png"));
-    wxBitmap bitmap(GetToolbarImagePrefix() + name, wxBITMAP_TYPE_PNG);
-    m_pBtnOptions->SetBitmapLabel(bitmap);
+    const wxString name = GetToolbarImagePrefix()
+                        + (findData.IsOptionEnabled() ? wxT("optionsactive.png") : wxT("options.png"));
+
+    {
+        const double scaleFactor = m_pBtnOptions->GetContentScaleFactor();
+        wxBitmap bitmap=cbLoadBitmapScaled(name, wxBITMAP_TYPE_PNG, scaleFactor);
+        m_pBtnOptions->SetBitmapLabel(bitmap);
+    }
+
     if (m_pToolBar)
+    {
+        const double scaleFactor = m_pToolBar->GetContentScaleFactor();
+        wxBitmap bitmap=cbLoadBitmapScaled(name, wxBITMAP_TYPE_PNG, scaleFactor);
         m_pToolBar->SetToolNormalBitmap(controlIDs.Get(ControlIDs::idBtnOptions), bitmap);
+    }
 }
 
 void ThreadSearchView::OnQuickOptionsUpdateUI(wxUpdateUIEvent &event)
@@ -930,17 +940,31 @@ void ThreadSearchView::UpdateSearchButtons(bool enable, eSearchButtonLabel label
 
     // Gets toolbar search button pointer
     // Changes label/bitmap only if requested
-    if ( label != skip )
+    if (label != skip)
     {
-        m_pBtnSearch->SetToolTip(searchButtonLabels[label]);
-        m_pBtnSearch->SetBitmapLabel   (wxBitmap(searchButtonPathsEnabled [label], wxBITMAP_TYPE_PNG));
-        m_pBtnSearch->SetBitmapDisabled(wxBitmap(searchButtonPathsDisabled[label], wxBITMAP_TYPE_PNG));
-        //{ Toolbar buttons
-        m_pToolBar->SetToolNormalBitmap(controlIDs.Get(ControlIDs::idBtnSearch),
-                                        wxBitmap(searchButtonPathsEnabled [label], wxBITMAP_TYPE_PNG));
-        m_pToolBar->SetToolDisabledBitmap(controlIDs.Get(ControlIDs::idBtnSearch),
-                                          wxBitmap(searchButtonPathsDisabled[label], wxBITMAP_TYPE_PNG));
-        //}
+        {
+            const double scaleFactor = m_pBtnSearch->GetContentScaleFactor();
+            wxBitmap bmpSearch=cbLoadBitmapScaled(searchButtonPathsEnabled[label],
+                                                  wxBITMAP_TYPE_PNG, scaleFactor);
+            wxBitmap bmpSearchDisabled=cbLoadBitmapScaled(searchButtonPathsDisabled[label],
+                                                          wxBITMAP_TYPE_PNG, scaleFactor);
+
+            m_pBtnSearch->SetToolTip(searchButtonLabels[label]);
+            m_pBtnSearch->SetBitmapLabel(bmpSearch);
+            m_pBtnSearch->SetBitmapDisabled(bmpSearchDisabled);
+        }
+
+        {
+            //Toolbar buttons
+            const double scaleFactor = m_pToolBar->GetContentScaleFactor();
+            wxBitmap bmpSearch=cbLoadBitmapScaled(searchButtonPathsEnabled[label],
+                                                  wxBITMAP_TYPE_PNG, scaleFactor);
+            wxBitmap bmpSearchDisabled=cbLoadBitmapScaled(searchButtonPathsDisabled[label],
+                                                          wxBITMAP_TYPE_PNG, scaleFactor);
+            m_pToolBar->SetToolNormalBitmap(controlIDs.Get(ControlIDs::idBtnSearch), bmpSearch);
+            m_pToolBar->SetToolDisabledBitmap(controlIDs.Get(ControlIDs::idBtnSearch),
+                                              bmpSearchDisabled);
+        }
     }
 
     // Sets enable state

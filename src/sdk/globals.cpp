@@ -1121,6 +1121,27 @@ wxBitmap cbLoadBitmap(const wxString& filename, wxBitmapType bitmapType)
     return wxBitmap(im);
 }
 
+wxBitmap cbLoadBitmapScaled(const wxString& filename, wxBitmapType bitmapType, double scaleFactor)
+{
+    // cache this, can't change while we 're running :)
+    static bool oldCommonControls = !UsesCommonControls6();
+
+    wxImage im;
+    wxFileSystem* fs = new wxFileSystem;
+    wxFSFile* f = fs->OpenFile(filename);
+    if (f)
+    {
+        wxInputStream* is = f->GetStream();
+        im.LoadFile(*is, bitmapType);
+        delete f;
+    }
+    delete fs;
+    if (oldCommonControls && im.HasAlpha())
+        im.ConvertAlphaToMask();
+
+    return wxBitmap(im, -1, scaleFactor);
+}
+
 // this doesn't work under wxGTK, and is only needed on wxMSW, we work around it on wxGTK
 #ifdef __WXMSW__
 void SetSettingsIconsStyle(wxListCtrl* lc, SettingsIconsStyle style)
