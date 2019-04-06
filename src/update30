@@ -106,8 +106,8 @@ then
 fi
 if [ -d "devel30/share/codeblocks/images/DoxyBlocks" ]
 then
-  mkdir -p output30/share/codeblocks/images/DoxyBlocks
-  cp -f devel30/share/codeblocks/images/DoxyBlocks/*.png       output30/share/codeblocks/images/DoxyBlocks > /dev/null
+  mkdir -p output30/share/codeblocks/images/DoxyBlocks/22x22
+  cp -f devel30/share/codeblocks/images/DoxyBlocks/22x22/*.png       output30/share/codeblocks/images/DoxyBlocks/22x22 > /dev/null
   mkdir -p output30/share/codeblocks/images/DoxyBlocks/16x16
   cp -f devel30/share/codeblocks/images/DoxyBlocks/16x16/*.png output30/share/codeblocks/images/DoxyBlocks/16x16 > /dev/null
 fi

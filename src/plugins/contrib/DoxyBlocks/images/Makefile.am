@@ -1,4 +1,4 @@
-SUBDIRS = 16x16
+SUBDIRS = 16x16 22x22
 
 pkgdatadir = $(datadir)/@PACKAGE@/images/DoxyBlocks
 

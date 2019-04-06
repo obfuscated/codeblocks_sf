@@ -617,16 +617,9 @@ bool DoxyBlocks::BuildToolBar(wxToolBar *toolBar)
         return false;
 
     m_pToolbar = toolBar;
-    wxString prefix;
-    ConfigManager *cfg = Manager::Get()->GetConfigManager(wxT("app"));
-    if(cfg->ReadBool(wxT("/environment/toolbar_size"), true)){
-        prefix = ConfigManager::GetDataFolder() + wxT("/images/DoxyBlocks/16x16/");
-        m_pToolbar->SetToolBitmapSize(wxSize(16, 16));
-    }
-    else{
-        prefix = ConfigManager::GetDataFolder() + wxT("/images/DoxyBlocks/");
-        m_pToolbar->SetToolBitmapSize(wxSize(22, 22));
-    }
+    const int toolbarSize = Manager::Get()->GetToolbarImageSize();
+    wxString prefix = ConfigManager::GetDataFolder()
+        + wxString::Format(wxT("/images/DoxyBlocks/%dx%d/"), toolbarSize, toolbarSize);
 
     m_pToolbar->AddTool(ID_TB_WIZARD, _("Doxywizard"), wxBitmap(prefix + wxT("doxywizard.png"), wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, _("Run doxywizard"));
     m_pToolbar->AddTool(ID_TB_EXTRACTPROJECT, _("Document project"), wxBitmap(prefix + wxT("extract.png"), wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, _("Extract documentation for the current project"));
