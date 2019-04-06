@@ -3331,7 +3331,7 @@ void CompilerGCC::OnSelectTarget(wxCommandEvent& event)
     {
         Manager::Get()->GetProjectManager()->GetWorkspace()->SetPreferredTarget( GetTargetString(selection) );
         DoUpdateTargetMenu(selection);
-        if (updateTools)
+        if (updateTools && m_pToolTarget)
             m_pToolTarget->SetSelection(selection);
     }
 }
