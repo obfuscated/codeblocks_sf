@@ -1264,6 +1264,128 @@ void MainFrame::AddPluginInHelpPluginsMenu(cbPlugin* plugin)
                     (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&MainFrame::OnHelpPluginMenu);
 }
 
+
+namespace
+{
+struct ToolbarFitInfo
+{
+    int row;
+    wxRect rect;
+    wxWindow *window;
+
+    bool operator<(const ToolbarFitInfo &r) const
+    {
+        if (row < r.row)
+            return true;
+        else if (row == r.row)
+            return rect.x < r.rect.x;
+        else
+            return false;
+    }
+};
+
+static void CollectToolbars(std::set<ToolbarFitInfo> &result, wxAuiManager &layoutManager)
+{
+    const wxAuiPaneInfoArray &panes = layoutManager.GetAllPanes();
+    for (size_t ii = 0; ii < panes.GetCount(); ++ii)
+    {
+        const wxAuiPaneInfo &info = panes[ii];
+        if (info.IsToolbar() && info.IsShown())
+        {
+            ToolbarFitInfo f;
+            f.row = info.dock_row;
+            f.rect = info.rect;
+            f.window = info.window;
+            result.insert(f);
+        }
+    }
+}
+
+struct ToolbarRowInfo
+{
+    ToolbarRowInfo() {}
+    ToolbarRowInfo(int width_, int position_) : width(width_), position(position_) {}
+
+    int width, position;
+};
+
+// Function which tries to make all toolbars visible.
+static void FitToolbars(wxAuiManager &layoutManager, wxWindow *mainFrame)
+{
+    std::set<ToolbarFitInfo> sorted;
+    CollectToolbars(sorted, layoutManager);
+    if (sorted.empty())
+        return;
+
+    int maxWidth = mainFrame->GetSize().x;
+    int gripperSize =  layoutManager.GetArtProvider()->GetMetric(wxAUI_DOCKART_GRIPPER_SIZE);
+
+    // move all toolbars to the left as possible and add the non-fitting to a list
+    std::vector<ToolbarRowInfo> rows;
+    std::vector<wxWindow*> nonFitingToolbars;
+    for (std::set<ToolbarFitInfo>::const_iterator it = sorted.begin(); it != sorted.end(); ++it)
+    {
+        wxAuiPaneInfo &pane = layoutManager.GetPane(it->window);
+        int row = pane.dock_row;
+        while (static_cast<int>(rows.size()) <= row)
+            rows.push_back(ToolbarRowInfo(0, 0));
+
+        int maxX = rows[row].width + it->window->GetBestSize().x + gripperSize;
+        if (maxX > maxWidth)
+            nonFitingToolbars.push_back(it->window);
+        else
+        {
+            rows[row].width = maxX;
+            pane.Position(rows[row].position++);
+        }
+    }
+
+    // move the non-fitting toolbars at the bottom
+    int lastRow = rows.empty() ? 0 : (rows.size() - 1);
+    int position = rows.back().position, maxX = rows.back().width;
+    for (std::vector<wxWindow*>::iterator it = nonFitingToolbars.begin(); it != nonFitingToolbars.end(); ++it)
+    {
+        maxX += (*it)->GetBestSize().x;
+        maxX += gripperSize;
+        if (maxX > maxWidth)
+        {
+            position = 0;
+            lastRow++;
+            maxX = (*it)->GetBestSize().x + gripperSize;
+        }
+        layoutManager.GetPane(*it).Position(position++).Row(lastRow);
+    }
+}
+
+// Function which tries to minimize the space used by the toolbars.
+// Also it can be used to show toolbars which have gone outside the window.
+static void OptimizeToolbars(wxAuiManager &layoutManager, wxWindow *mainFrame)
+{
+    std::set<ToolbarFitInfo> sorted;
+    CollectToolbars(sorted, layoutManager);
+    if (sorted.empty())
+        return;
+
+    int maxWidth = mainFrame->GetSize().x;
+    int lastRow = 0, position = 0, maxX = 0;
+    int gripperSize =  layoutManager.GetArtProvider()->GetMetric(wxAUI_DOCKART_GRIPPER_SIZE);
+
+    for (std::set<ToolbarFitInfo>::const_iterator it = sorted.begin(); it != sorted.end(); ++it)
+    {
+        maxX += it->window->GetBestSize().x;
+        maxX += gripperSize;
+        if (maxX > maxWidth)
+        {
+            position = 0;
+            lastRow++;
+            maxX = it->window->GetBestSize().x + gripperSize;
+        }
+        layoutManager.GetPane(it->window).Position(position++).Row(lastRow);
+    }
+}
+
+} // anomymous namespace
+
 void MainFrame::LoadWindowState()
 {
     wxArrayString subs = Manager::Get()->GetConfigManager(_T("app"))->EnumerateSubPaths(_T("/main_frame/layout"));
@@ -1279,6 +1401,10 @@ void MainFrame::LoadWindowState()
 
     DoFixToolbarsLayout();
 
+    // Fit toolbars on load to prevent gaps if toolbar sizes have changed. The most common reason
+    // for toolbar change would be change of the size of the icons in the toolbar.
+    FitToolbars(m_LayoutManager, this);
+
     // load manager and messages selected page
     if (m_pPrjManUI->GetNotebook())
         m_pPrjManUI->GetNotebook()->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left_block_selection"), 0));
@@ -1288,7 +1414,6 @@ void MainFrame::LoadWindowState()
     // Moved here as this seems like a resonable place to do UI setup. Feel free to move it elsewhere.
     if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/infopane_tabs_bottom"), false))
         m_pInfoPane->SetWindowStyleFlag(m_pInfoPane->GetWindowStyleFlag() | wxAUI_NB_BOTTOM);
-
 }
 
 void MainFrame::LoadWindowSize()
@@ -4369,127 +4494,6 @@ void MainFrame::OnEditorUpdateUI(CodeBlocksEvent& event)
 
     event.Skip();
 }
-
-namespace
-{
-struct ToolbarFitInfo
-{
-    int row;
-    wxRect rect;
-    wxWindow *window;
-
-    bool operator<(const ToolbarFitInfo &r) const
-    {
-        if (row < r.row)
-            return true;
-        else if (row == r.row)
-            return rect.x < r.rect.x;
-        else
-            return false;
-    }
-};
-
-static void CollectToolbars(std::set<ToolbarFitInfo> &result, wxAuiManager &layoutManager)
-{
-    const wxAuiPaneInfoArray &panes = layoutManager.GetAllPanes();
-    for (size_t ii = 0; ii < panes.GetCount(); ++ii)
-    {
-        const wxAuiPaneInfo &info = panes[ii];
-        if (info.IsToolbar() && info.IsShown())
-        {
-            ToolbarFitInfo f;
-            f.row = info.dock_row;
-            f.rect = info.rect;
-            f.window = info.window;
-            result.insert(f);
-        }
-    }
-}
-
-struct ToolbarRowInfo
-{
-    ToolbarRowInfo() {}
-    ToolbarRowInfo(int width_, int position_) : width(width_), position(position_) {}
-
-    int width, position;
-};
-
-// Function which tries to make all toolbars visible.
-static void FitToolbars(wxAuiManager &layoutManager, wxWindow *mainFrame)
-{
-    std::set<ToolbarFitInfo> sorted;
-    CollectToolbars(sorted, layoutManager);
-    if (sorted.empty())
-        return;
-
-    int maxWidth = mainFrame->GetSize().x;
-    int gripperSize =  layoutManager.GetArtProvider()->GetMetric(wxAUI_DOCKART_GRIPPER_SIZE);
-
-    // move all toolbars to the left as possible and add the non-fitting to a list
-    std::vector<ToolbarRowInfo> rows;
-    std::vector<wxWindow*> nonFitingToolbars;
-    for (std::set<ToolbarFitInfo>::const_iterator it = sorted.begin(); it != sorted.end(); ++it)
-    {
-        wxAuiPaneInfo &pane = layoutManager.GetPane(it->window);
-        int row = pane.dock_row;
-        while (static_cast<int>(rows.size()) <= row)
-            rows.push_back(ToolbarRowInfo(0, 0));
-
-        int maxX = rows[row].width + it->window->GetBestSize().x + gripperSize;
-        if (maxX > maxWidth)
-            nonFitingToolbars.push_back(it->window);
-        else
-        {
-            rows[row].width = maxX;
-            pane.Position(rows[row].position++);
-        }
-    }
-
-    // move the non-fitting toolbars at the bottom
-    int lastRow = rows.empty() ? 0 : (rows.size() - 1);
-    int position = rows.back().position, maxX = rows.back().width;
-    for (std::vector<wxWindow*>::iterator it = nonFitingToolbars.begin(); it != nonFitingToolbars.end(); ++it)
-    {
-        maxX += (*it)->GetBestSize().x;
-        maxX += gripperSize;
-        if (maxX > maxWidth)
-        {
-            position = 0;
-            lastRow++;
-            maxX = (*it)->GetBestSize().x + gripperSize;
-        }
-        layoutManager.GetPane(*it).Position(position++).Row(lastRow);
-    }
-}
-
-// Function which tries to minimize the space used by the toolbars.
-// Also it can be used to show toolbars which have gone outside the window.
-static void OptimizeToolbars(wxAuiManager &layoutManager, wxWindow *mainFrame)
-{
-    std::set<ToolbarFitInfo> sorted;
-    CollectToolbars(sorted, layoutManager);
-    if (sorted.empty())
-        return;
-
-    int maxWidth = mainFrame->GetSize().x;
-    int lastRow = 0, position = 0, maxX = 0;
-    int gripperSize =  layoutManager.GetArtProvider()->GetMetric(wxAUI_DOCKART_GRIPPER_SIZE);
-
-    for (std::set<ToolbarFitInfo>::const_iterator it = sorted.begin(); it != sorted.end(); ++it)
-    {
-        maxX += it->window->GetBestSize().x;
-        maxX += gripperSize;
-        if (maxX > maxWidth)
-        {
-            position = 0;
-            lastRow++;
-            maxX = it->window->GetBestSize().x + gripperSize;
-        }
-        layoutManager.GetPane(it->window).Position(position++).Row(lastRow);
-    }
-}
-
-} // anomymous namespace
 
 void MainFrame::OnViewToolbarsFit(cb_unused wxCommandEvent& event)
 {
