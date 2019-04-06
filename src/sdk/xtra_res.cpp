@@ -87,7 +87,8 @@ wxBitmap wxToolBarAddOnXmlHandler::LoadBitmap(const wxString& name, double scale
 }
 
 
-wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param, wxSize size, double scaleFactor)
+wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param, wxSize size,
+                                                     double scaleFactor)
 {
     wxString name = GetParamValue(param);
     if (name.empty())
