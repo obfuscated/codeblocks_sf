@@ -561,11 +561,6 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/ReopenEditor/Makefile
 	src/plugins/contrib/rndgen/Makefile
 	src/plugins/contrib/ThreadSearch/Makefile
-	src/plugins/contrib/ThreadSearch/resources/Makefile
-	src/plugins/contrib/ThreadSearch/resources/images/Makefile
-	src/plugins/contrib/ThreadSearch/resources/images/16x16/Makefile
-	src/plugins/contrib/ThreadSearch/resources/images/22x22/Makefile
-	src/plugins/contrib/ThreadSearch/resources/images/32x32/Makefile
 	src/plugins/contrib/ToolsPlus/Makefile
 	src/plugins/contrib/ToolsPlus/Resources/Makefile
 	src/plugins/contrib/Valgrind/Makefile
