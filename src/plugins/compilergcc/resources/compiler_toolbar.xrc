@@ -4,27 +4,27 @@
     <object class="tool" name="idCompilerMenuCompile">
       <tooltip>Build</tooltip>
       <longhelp>Build the active project</longhelp>
-      <bitmap>images/compile.png</bitmap>
+      <bitmap>images/22x22/compile.png</bitmap>
     </object>
     <object class="tool" name="idCompilerMenuRun">
       <tooltip>Run</tooltip>
       <longhelp>Run the active project</longhelp>
-      <bitmap>images/run.png</bitmap>
+      <bitmap>images/22x22/run.png</bitmap>
     </object>
     <object class="tool" name="idCompilerMenuCompileAndRun">
       <tooltip>Build and run</tooltip>
       <longhelp>Build and run the active project</longhelp>
-      <bitmap>images/compilerun.png</bitmap>
+      <bitmap>images/22x22/compilerun.png</bitmap>
     </object>
     <object class="tool" name="idCompilerMenuRebuild">
       <tooltip>Rebuild</tooltip>
       <longhelp>Rebuild all modules in the active project</longhelp>
-      <bitmap>images/rebuild.png</bitmap>
+      <bitmap>images/22x22/rebuild.png</bitmap>
     </object>
     <object class="tool" name="idCompilerMenuKillProcess">
       <tooltip>Abort</tooltip>
       <longhelp>Abort the running build process</longhelp>
-      <bitmap>images/stop.png</bitmap>
+      <bitmap>images/22x22/stop.png</bitmap>
       <disabled>1</disabled>
     </object>
     <object class="wxChoice" name="idToolTarget">
@@ -36,7 +36,7 @@
     <object class="tool" name="idMenuSelectTargetDialog">
       <tooltip>Show the Select target dialog</tooltip>
       <longhelp>Show the Select target dialog</longhelp>
-      <bitmap>images/select_target.png</bitmap>
+      <bitmap>images/22x22/select_target.png</bitmap>
       <disabled>1</disabled>
     </object>
   </object>

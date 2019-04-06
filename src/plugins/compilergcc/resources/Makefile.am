@@ -8,12 +8,12 @@ EXTRA_DIST = advanced_compiler_options.xrc \
 	compiler_toolbar_16x16.xrc \
 	compiler_toolbar.xrc \
 	manifest.xml \
-	images/compile.png \
-	images/compilerun.png \
-	images/rebuild.png \
-	images/run.png \
-	images/select_target.png \
-	images/stop.png \
+	images/22x22/compile.png \
+	images/22x22/compilerun.png \
+	images/22x22/rebuild.png \
+	images/22x22/run.png \
+	images/22x22/select_target.png \
+	images/22x22/stop.png \
 	images/16x16/compile.png \
 	images/16x16/compilerun.png \
 	images/16x16/rebuild.png \
