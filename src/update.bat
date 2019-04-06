@@ -62,7 +62,7 @@ echo Compressing plugins UI resources
 %ZIPCMD% -jqu9 %CB_DEVEL_RESDIR%\abbreviations.zip plugins\abbreviations\resources\manifest.xml plugins\abbreviations\resources\*.xrc > nul
 echo Packing core UI bitmaps
 cd src\resources
-%ZIPCMD% -0 -qu ..\..\%CB_DEVEL_RESDIR%\resources.zip images\*.png images\12x12\*.png images\16x16\*.png images\22x22\*.png > nul
+%ZIPCMD% -0 -qu ..\..\%CB_DEVEL_RESDIR%\resources.zip images\*.png images\12x12\*.png images\16x16\*.png images\22x22\*.png  images\32x32\*.png> nul
 cd ..\..\sdk\resources
 %ZIPCMD% -0 -qu ..\..\%CB_DEVEL_RESDIR%\manager_resources.zip images\*.png images\12x12\*.png images\16x16\*.png images\22x22\*.png > nul
 echo Packing plugins UI bitmaps
