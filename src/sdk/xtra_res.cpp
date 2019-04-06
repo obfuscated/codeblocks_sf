@@ -78,7 +78,7 @@ wxBitmap wxToolBarAddOnXmlHandler::LoadBitmap(const wxString& name, double scale
         return wxNullBitmap;
     }
 
-#ifdef __WXOSX__
+#if defined(__WXOSX__) || defined(__WXGTK3__)
     return wxBitmap(img, -1, scaleFactor);
 #else
     (void)scaleFactor;
