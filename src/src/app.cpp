@@ -733,6 +733,13 @@ bool CodeBlocksApp::OnInit()
         frame = InitFrame();
         m_Frame = frame;
 
+#if wxCHECK_VERSION(3, 0, 0)
+        {
+            const double scalingFactor = frame->GetContentScaleFactor();
+            Manager::Get()->GetLogManager()->Log(wxString::Format(wxT("Initial scaling factor is %.3f"), scalingFactor));
+        }
+#endif // wxCHECK_VERSION(3, 0, 0)
+
         // plugins loaded -> check command line arguments again
         delete wxMessageOutput::Set(new wxMessageOutputBest); // warn about unknown options
         if ( ParseCmdLine(m_Frame) == 0 )
