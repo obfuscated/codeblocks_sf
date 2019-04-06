@@ -21,7 +21,7 @@ EXTRA_DIST = 	$(srcdir)/*.cbp \
 		IncrementalSearchConfDlg.xrc \
 		manifest.xml \
 		$(srcdir)/update* \
-		$(srcdir)/images/*.png \
+		$(srcdir)/images/22x22/*.png \
 		$(srcdir)/images/16x16/*.png
 
 pkgdata_DATA = IncrementalSearch.zip

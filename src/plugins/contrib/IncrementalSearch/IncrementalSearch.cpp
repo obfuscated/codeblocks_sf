@@ -331,8 +331,7 @@ bool IncrementalSearch::BuildToolBar(wxToolBar* toolBar)
     {
         return false;
     }
-    wxString is16x16 = Manager::isToolBar16x16(toolBar) ? _T("_16x16") : _T("");
-    Manager::Get()->AddonToolBar(toolBar,_T("incremental_search_toolbar") + is16x16);
+    Manager::Get()->AddonToolBar(toolBar, _T("incremental_search_toolbar"));
     m_pToolbar = toolBar;
     m_pToolbar->EnableTool(XRCID("idIncSearchClear"), false);
     m_pToolbar->EnableTool(XRCID("idIncSearchPrev"), false);
