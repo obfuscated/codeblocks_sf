@@ -345,9 +345,7 @@ bool NassiPlugin::BuildToolBar(wxToolBar* toolBar)
     m_pTbar = toolBar;
     if (!IsAttached() || !toolBar)
         return false;
-    //wxString my_16x16 = Manager::isToolBar16x16(toolBar) ? _T("_16x16") : _T("");
-    //Manager::AddonToolBar(toolBar,wxString(_T("nassi_plugin"))+my_16x16);
-    if ( Manager::isToolBar16x16(toolBar) )
+    if (Manager::Get()->GetToolbarImageSize() <= 16)
         PopulateToolbar16(toolBar);
     else
         PopulateToolbar22(toolBar);

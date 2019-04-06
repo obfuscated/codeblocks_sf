@@ -372,30 +372,9 @@ wxMenu *Manager::LoadMenu(wxString menu_id,bool createonfailure)
     return m;
 }
 
-wxToolBar *Manager::LoadToolBar(wxFrame *parent,wxString resid,bool defaultsmall)
-{
-    if (!parent)
-        return nullptr;
-    wxToolBar *tb = wxXmlResource::Get()->LoadToolBar(parent,resid);
-    if (!tb)
-    {
-        int flags = wxTB_HORIZONTAL;
-
-        if (platform::WindowsVersion() < platform::winver_WindowsXP)
-            flags |= wxTB_FLAT;
-
-        tb = parent->CreateToolBar(flags, wxID_ANY);
-        tb->SetToolBitmapSize(defaultsmall ? wxSize(16, 16) : wxSize(22, 22));
-    }
-
-    return tb;
-}
-
 wxToolBar* Manager::CreateEmptyToolbar()
 {
-    bool smallToolBar = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/toolbar_size"), true);
-
-    wxSize size = smallToolBar ? wxSize(16, 16) : (platform::macosx ? wxSize(32, 32) : wxSize(22, 22));
+    wxSize size(m_ToolbarImageSize, m_ToolbarImageSize);
     wxToolBar* toolbar = new wxToolBar(GetAppFrame(), -1, wxDefaultPosition, size, wxTB_FLAT | wxTB_NODIVIDER);
     toolbar->SetToolBitmapSize(size);
 
@@ -407,13 +386,6 @@ void Manager::AddonToolBar(wxToolBar* toolBar,wxString resid)
     if (!toolBar)
         return;
     wxXmlResource::Get()->LoadObject(toolBar,nullptr,resid,_T("wxToolBarAddOn"));
-}
-
-bool Manager::isToolBar16x16(wxToolBar* toolBar)
-{
-    if (!toolBar) return true; // Small by default
-    wxSize mysize=toolBar->GetToolBitmapSize();
-    return (mysize.GetWidth()<=16 && mysize.GetHeight()<=16);
 }
 
 void Manager::SetToolbarImageSize(int size)

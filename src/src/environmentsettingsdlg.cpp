@@ -171,7 +171,34 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->Enable(do_place);
 
     XRCCTRL(*this, "rbProjectOpen",           wxRadioBox)->SetSelection(pcfg->ReadInt(_T("/open_files"), 1));
-    XRCCTRL(*this, "rbToolbarSize",           wxRadioBox)->SetSelection(cfg->ReadBool(_T("/environment/toolbar_size"), true) ? 1 : 0);
+
+    {
+        int size = 16;
+        if (!cfg->Read(_T("/environment/toolbar_size"), &size))
+        {
+            bool smallSize = true;
+            if (cfg->Read(_T("/environment/toolbar_size"), &smallSize))
+                size = (smallSize ? 16 : 22);
+        }
+
+        int selection;
+        switch (size)
+        {
+        case 32:
+            selection = 0;
+            break;
+        case 22:
+            selection = 1;
+            break;
+        case 16:
+        default:
+            selection = 2;
+            break;
+        }
+
+        XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->SetSelection(selection);
+    }
+
     XRCCTRL(*this, "rbSettingsIconsSize",     wxRadioBox)->SetSelection(cfg->ReadInt(_T("/environment/settings_size"), 0));
     XRCCTRL(*this, "chkShowStartPage",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/start_here_page"), true));
     XRCCTRL(*this, "spnLogFontSize",          wxSpinCtrl)->SetValue(mcfg->ReadInt(_T("/log_font_size"), 8));
@@ -554,7 +581,28 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         cfg->Write(_T("/environment/enable_project_layout"), (bool) XRCCTRL(*this, "chkProjectLayout", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/enable_editor_layout"),  (bool) XRCCTRL(*this, "chkEditorLayout", wxCheckBox)->GetValue());
         pcfg->Write(_T("/open_files"),                       (int)  XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->GetSelection());
-        cfg->Write(_T("/environment/toolbar_size"),          (bool) XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->GetSelection() == 1);
+
+        {
+            int size;
+            switch (XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->GetSelection())
+            {
+            case 0:
+                size = 32;
+                break;
+            case 1:
+                size = 22;
+                break;
+            default:
+            case 2:
+                size = 16;
+                break;
+            }
+
+            // We call unset to remove the old bool value if it is present.
+            cfg->UnSet(_T("/environment/toolbar_size"));
+            cfg->Write(_T("/environment/toolbar_size"), size);
+        }
+
         cfg->Write(_T("/environment/settings_size"),         (int)  XRCCTRL(*this, "rbSettingsIconsSize", wxRadioBox)->GetSelection());
         mcfg->Write(_T("/auto_hide"),                        (bool) XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->GetValue());
         mcfg->Write(_T("/auto_show_search"),                 (bool) XRCCTRL(*this, "chkAutoShowMessagesOnSearch", wxCheckBox)->GetValue());

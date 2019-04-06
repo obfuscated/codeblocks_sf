@@ -451,9 +451,11 @@
 											<object class="wxRadioBox" name="rbToolbarSize">
 												<label>Toolbar icons size</label>
 												<content>
+													<item>32 x 32 - Large</item>
 													<item>22 x 22 - Normal</item>
 													<item>16 x 16 - Small</item>
 												</content>
+												<default>1</default>
 												<style>wxRA_SPECIFY_COLS</style>
 											</object>
 											<flag>wxEXPAND</flag>

@@ -131,15 +131,12 @@ public:
     static wxMenuBar* LoadMenuBar(wxString resid, bool createonfailure = false);
     /// Loads Menu from XRC
     static wxMenu*    LoadMenu(wxString menu_id, bool createonfailure = false);
-    /// Loads ToolBar from XRC
-    static wxToolBar* LoadToolBar(wxFrame *parent, wxString resid, bool defaultsmall = true);
 
     // Do not use this, use Get()
     static Manager* Get(wxFrame* appWindow);
 
     wxToolBar* CreateEmptyToolbar();
     static void AddonToolBar(wxToolBar* toolBar,wxString resid);
-    static bool isToolBar16x16(wxToolBar* toolBar);
     /// Sets the global variable which stores the size of images in toolbars.
     /// @note If you're not in app.cpp do not call this!
     void SetToolbarImageSize(int size);
