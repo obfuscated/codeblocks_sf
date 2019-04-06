@@ -588,7 +588,7 @@ bool ThreadSearch::BuildToolBar(wxToolBar* toolBar)
                                       wxEmptyString, wxDefaultPosition, wxSize(130, -1), 0, NULL, wxCB_DROPDOWN);
     m_pCboSearchExpr->SetToolTip(_("Text to search"));
 
-    const double scaleFactor = toolBar->GetContentScaleFactor();
+    const double scaleFactor = cbGetContentScaleFactor(*toolBar);
 
     wxBitmap bmpFind = cbLoadBitmapScaled(prefix + wxT("findf.png"), wxBITMAP_TYPE_PNG,
                                           scaleFactor);

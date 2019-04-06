@@ -376,12 +376,9 @@ wxToolBar* Manager::CreateEmptyToolbar()
 {
     const wxSize size(m_ToolbarImageSize, m_ToolbarImageSize);
     wxWindow *appFrame = GetAppFrame();
-#if wxCHECK_VERSION(3, 0, 0)
-    const double scaleFactor = appFrame->GetContentScaleFactor();
+
+    const double scaleFactor = cbGetContentScaleFactor(*appFrame);
     const wxSize scaledSize(size.x/scaleFactor, size.y/scaleFactor);
-#else
-    const wxSize scaledSize = size;
-#endif // wxCHECK_VERSION(3, 0, 0)
 
     wxToolBar* toolbar = new wxToolBar(appFrame, -1, wxDefaultPosition, scaledSize, wxTB_FLAT | wxTB_NODIVIDER);
     toolbar->SetToolBitmapSize(scaledSize);

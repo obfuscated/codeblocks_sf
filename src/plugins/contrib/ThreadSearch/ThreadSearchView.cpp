@@ -297,14 +297,14 @@ void ThreadSearchView::UpdateOptionsButtonImage(const ThreadSearchFindData &find
                         + (findData.IsOptionEnabled() ? wxT("optionsactive.png") : wxT("options.png"));
 
     {
-        const double scaleFactor = m_pBtnOptions->GetContentScaleFactor();
+        const double scaleFactor = cbGetContentScaleFactor(*m_pBtnOptions);
         wxBitmap bitmap=cbLoadBitmapScaled(name, wxBITMAP_TYPE_PNG, scaleFactor);
         m_pBtnOptions->SetBitmapLabel(bitmap);
     }
 
     if (m_pToolBar)
     {
-        const double scaleFactor = m_pToolBar->GetContentScaleFactor();
+        const double scaleFactor = cbGetContentScaleFactor(*m_pToolBar);
         wxBitmap bitmap=cbLoadBitmapScaled(name, wxBITMAP_TYPE_PNG, scaleFactor);
         m_pToolBar->SetToolNormalBitmap(controlIDs.Get(ControlIDs::idBtnOptions), bitmap);
     }
@@ -943,7 +943,7 @@ void ThreadSearchView::UpdateSearchButtons(bool enable, eSearchButtonLabel label
     if (label != skip)
     {
         {
-            const double scaleFactor = m_pBtnSearch->GetContentScaleFactor();
+            const double scaleFactor = cbGetContentScaleFactor(*m_pBtnSearch);
             wxBitmap bmpSearch=cbLoadBitmapScaled(searchButtonPathsEnabled[label],
                                                   wxBITMAP_TYPE_PNG, scaleFactor);
             wxBitmap bmpSearchDisabled=cbLoadBitmapScaled(searchButtonPathsDisabled[label],
@@ -956,7 +956,7 @@ void ThreadSearchView::UpdateSearchButtons(bool enable, eSearchButtonLabel label
 
         {
             //Toolbar buttons
-            const double scaleFactor = m_pToolBar->GetContentScaleFactor();
+            const double scaleFactor = cbGetContentScaleFactor(*m_pToolBar);
             wxBitmap bmpSearch=cbLoadBitmapScaled(searchButtonPathsEnabled[label],
                                                   wxBITMAP_TYPE_PNG, scaleFactor);
             wxBitmap bmpSearchDisabled=cbLoadBitmapScaled(searchButtonPathsDisabled[label],

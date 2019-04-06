@@ -1142,6 +1142,15 @@ wxBitmap cbLoadBitmapScaled(const wxString& filename, wxBitmapType bitmapType, d
     return wxBitmap(im, -1, scaleFactor);
 }
 
+double cbGetContentScaleFactor(wxWindow &window)
+{
+#if wxCHECK_VERSION(3, 0, 0)
+    return window.GetContentScaleFactor();
+#else
+    return 1.0;
+#endif // wxCHECK_VERSION(3, 0, 0)
+}
+
 // this doesn't work under wxGTK, and is only needed on wxMSW, we work around it on wxGTK
 #ifdef __WXMSW__
 void SetSettingsIconsStyle(wxListCtrl* lc, SettingsIconsStyle style)

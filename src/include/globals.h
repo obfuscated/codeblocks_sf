@@ -289,6 +289,10 @@ extern DLLIMPORT wxBitmap cbLoadBitmap(const wxString& filename,
 extern DLLIMPORT wxBitmap cbLoadBitmapScaled(const wxString& filename, wxBitmapType bitmapType,
                                              double scaleFactor);
 
+/// Wrapper function for wxWidnow::GetContentScaleFactor.
+/// It is defined only to hide its absence from wx2.8.
+extern DLLIMPORT double cbGetContentScaleFactor(wxWindow &window);
+
 // compatibility function
 inline wxBitmap LoadPNGWindows2000Hack(const wxString& filename){ return cbLoadBitmap(filename); }
 
