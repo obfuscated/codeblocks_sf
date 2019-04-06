@@ -2,17 +2,21 @@
 mkdir -p ../../../devel/share/codeblocks/images/ThreadSearch > /dev/null 2> /dev/null
 mkdir -p ../../../devel/share/codeblocks/images/ThreadSearch/16x16 > /dev/null 2> /dev/null
 mkdir -p ../../../devel/share/codeblocks/images/ThreadSearch/22x22 > /dev/null 2> /dev/null
+mkdir -p ../../../devel/share/codeblocks/images/ThreadSearch/32x32 > /dev/null 2> /dev/null
 mkdir -p ../../../output/share/codeblocks/images/ThreadSearch > /dev/null 2> /dev/null
 mkdir -p ../../../output/share/codeblocks/images/ThreadSearch/16x16 > /dev/null 2> /dev/null
 mkdir -p ../../../output/share/codeblocks/images/ThreadSearch/22x22 > /dev/null 2> /dev/null
+mkdir -p ../../../output/share/codeblocks/images/ThreadSearch/32x32 > /dev/null 2> /dev/null
 mkdir -p ../../../devel/share/codeblocks/images/settings > /dev/null 2> /dev/null
 mkdir -p ../../../output/share/codeblocks/images/settings > /dev/null 2> /dev/null
 cp ./resources/images/*.png ../../../devel/share/codeblocks/images/ThreadSearch/ > /dev/null 2> /dev/null
 cp ./resources/images/16x16/*.png ../../../devel/share/codeblocks/images/ThreadSearch/16x16/ > /dev/null 2> /dev/null
 cp ./resources/images/22x22/*.png ../../../devel/share/codeblocks/images/ThreadSearch/22x22/ > /dev/null 2> /dev/null
+cp ./resources/images/32x32/*.png ../../../devel/share/codeblocks/images/ThreadSearch/32x32/ > /dev/null 2> /dev/null
 cp ./resources/images/*.png ../../../output/share/codeblocks/images/ThreadSearch/ > /dev/null 2> /dev/null
 cp ./resources/images/16x16/*.png ../../../output/share/codeblocks/images/ThreadSearch/16x16/ > /dev/null 2> /dev/null
 cp ./resources/images/22x22/*.png ../../../output/share/codeblocks/images/ThreadSearch/22x22/ > /dev/null 2> /dev/null
+cp ./resources/images/32x32/*.png ../../../output/share/codeblocks/images/ThreadSearch/32x32/ > /dev/null 2> /dev/null
 cp ./resources/*.png ../../../devel/share/codeblocks/images/settings/ > /dev/null 2> /dev/null
 cp ./resources/*.png ../../../output/share/codeblocks/images/settings/ > /dev/null 2> /dev/null
 exit 0

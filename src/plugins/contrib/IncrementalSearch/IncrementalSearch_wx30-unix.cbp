@@ -35,7 +35,7 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -jq9 ../../../devel30/share/codeblocks/IncrementalSearch.zip manifest.xml *.xrc" />
-					<Add after="zip -Rq9 ../../../devel30/share/codeblocks/IncrementalSearch.zip images/*.png images/16x16/*.png" />
+					<Add after="zip -Rq9 ../../../devel30/share/codeblocks/IncrementalSearch.zip images/32x32/*.png images/22x22/*.png images/16x16/*.png" />
 					<Add after="./update30" />
 					<Mode after="always" />
 				</ExtraCommands>

@@ -37,14 +37,34 @@ noinst_HEADERS =  	BrowseTracker.h \
 			JumpTracker.h \
 			JumpData.h
 
-EXTRA_DIST = 	$(srcdir)/*.cbp \
-			BrowseTrackerToolbar.xrc \
-			manifest.xml \
-			$(srcdir)/images/22x22/*.png \
-			$(srcdir)/images/16x16/*.png
+resources_forZIP = \
+	BrowseTrackerToolbar.xrc \
+	manifest.xml \
+	images/16x16/mark_clear.png \
+	images/16x16/mark_next.png \
+	images/16x16/mark.png \
+	images/16x16/mark_prev.png \
+	images/16x16/next.png \
+	images/16x16/prev.png \
+	images/22x22/mark_clear.png \
+	images/22x22/mark_next.png \
+	images/22x22/mark.png \
+	images/22x22/mark_prev.png \
+	images/22x22/next.png \
+	images/22x22/prev.png \
+	images/32x32/mark_clear.png \
+	images/32x32/mark_next.png \
+	images/32x32/mark.png \
+	images/32x32/mark_prev.png \
+	images/32x32/next.png \
+	images/32x32/prev.png
+
+EXTRA_DIST = \
+	$(srcdir)/*.cbp \
+	$(resources_forZIP)
 
 pkgdata_DATA = BrowseTracker.zip
 CLEANFILES = $(pkgdata_DATA)
 
-BrowseTracker.zip: manifest.xml
-	PWD=`pwd` cd $(srcdir) && zip -R $(PWD)/BrowseTracker.zip manifest.xml *.xrc images/22x22/*.png images/16x16/*.png > /dev/null
+BrowseTracker.zip: $(resources_forZIP)
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/BrowseTracker.zip $(resources_forZIP) > /dev/null

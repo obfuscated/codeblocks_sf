@@ -1,4 +1,4 @@
-SUBDIRS = 16x16 22x22
+SUBDIRS = 16x16 22x22 32x32
 
 pkgdatadir = $(datadir)/@PACKAGE@/images/ThreadSearch
 

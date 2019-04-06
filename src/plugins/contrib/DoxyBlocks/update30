@@ -3,18 +3,22 @@
 
 CB_DIR="../../../devel30/share/codeblocks/"
 
+mkdir -p ${CB_DIR}/images/DoxyBlocks/32x32 > /dev/null 2> /dev/null
 mkdir -p ${CB_DIR}/images/DoxyBlocks/22x22 > /dev/null 2> /dev/null
 mkdir -p ${CB_DIR}/images/DoxyBlocks/16x16 > /dev/null 2> /dev/null
 mkdir -p ${CB_DIR}/images/settings > /dev/null 2> /dev/null
+cp ./images/32x32/*.png ${CB_DIR}/images/DoxyBlocks/32x32 > /dev/null 2> /dev/null
 cp ./images/22x22/*.png ${CB_DIR}/images/DoxyBlocks/22x22 > /dev/null 2> /dev/null
 cp ./images/16x16/*.png ${CB_DIR}/images/DoxyBlocks/16x16/ > /dev/null 2> /dev/null
 cp ./*.png ${CB_DIR}/images/settings/ > /dev/null 2> /dev/null
 
 CB_DIR="../../../output30/share/codeblocks/"
 
+mkdir -p ${CB_DIR}/images/DoxyBlocks/32x32 > /dev/null 2> /dev/null
 mkdir -p ${CB_DIR}/images/DoxyBlocks/22x22 > /dev/null 2> /dev/null
 mkdir -p ${CB_DIR}/images/DoxyBlocks/16x16 > /dev/null 2> /dev/null
 mkdir -p ${CB_DIR}/images/settings > /dev/null 2> /dev/null
+cp ./images/32x32/*.png ${CB_DIR}/images/DoxyBlocks/32x32 > /dev/null 2> /dev/null
 cp ./images/22x22/*.png ${CB_DIR}/images/DoxyBlocks/22x22 > /dev/null 2> /dev/null
 cp ./images/16x16/*.png ${CB_DIR}/images/DoxyBlocks/16x16/ > /dev/null 2> /dev/null
 cp ./*.png ${CB_DIR}/images/settings/ > /dev/null 2> /dev/null

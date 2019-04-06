@@ -1,25 +1,27 @@
 @echo off
-md   ..\..\..\devel30_64                                           > nul 2>&1
-md   ..\..\..\output30_64                                          > nul 2>&1
-md   ..\..\..\devel30_64\share                                     > nul 2>&1
-md   ..\..\..\output30_64\share                                    > nul 2>&1
-md   ..\..\..\devel30_64\share\CodeBlocks                          > nul 2>&1
-md   ..\..\..\output30_64\share\CodeBlocks                         > nul 2>&1
-md   ..\..\..\devel30_64\share\CodeBlocks\images                   > nul 2>&1
-md   ..\..\..\output30_64\share\CodeBlocks\images                  > nul 2>&1
-md   ..\..\..\devel30_64\share\CodeBlocks\images\settings          > nul 2>&1
-md   ..\..\..\output30_64\share\CodeBlocks\images\settings         > nul 2>&1
-md   ..\..\..\devel30_64\share\CodeBlocks\images\DoxyBlocks        > nul 2>&1
-md   ..\..\..\output30_64\share\CodeBlocks\images\DoxyBlocks       > nul 2>&1
-md   ..\..\..\devel30_64\share\CodeBlocks\images\DoxyBlocks\16x16  > nul 2>&1
-md   ..\..\..\output30_64\share\CodeBlocks\images\DoxyBlocks\16x16 > nul 2>&1
 
-copy images\*.png       ..\..\..\devel30_64\share\CodeBlocks\images\DoxyBlocks\        > nul 2>&1
-copy images\16x16\*.png ..\..\..\devel30_64\share\CodeBlocks\images\DoxyBlocks\16x16\  > nul 2>&1
-copy *.png              ..\..\..\devel30_64\share\CodeBlocks\images\settings\          > nul 2>&1
+set CB_DIR=..\..\..\devel30_64\share\CodeBlocks
 
-copy images\*.png       ..\..\..\output30_64\share\CodeBlocks\images\DoxyBlocks\       > nul 2>&1
-copy images\16x16\*.png ..\..\..\output30_64\share\CodeBlocks\images\DoxyBlocks\16x16\ > nul 2>&1
-copy *.png              ..\..\..\output30_64\share\CodeBlocks\images\settings\         > nul 2>&1
+md %CB_DIR%\images\DoxyBlocks\16x16 > nul 2>&1
+md %CB_DIR%\images\DoxyBlocks\22x22 > nul 2>&1
+md %CB_DIR%\images\DoxyBlocks\32x32 > nul 2>&1
+md %CB_DIR%\images\settings > nul 2>&1
+
+copy images\32x32\*.png %CB_DIR%\images\DoxyBlocks\32x32\ > nul 2>&1
+copy images\22x22\*.png %CB_DIR%\images\DoxyBlocks\22x22\ > nul 2>&1
+copy images\16x16\*.png %CB_DIR%\images\DoxyBlocks\16x16\ > nul 2>&1
+copy *.png              %CB_DIR%\images\settings\         > nul 2>&1
+
+set CB_DIR=..\..\..\output30_64\share\CodeBlocks
+
+md %CB_DIR%\images\DoxyBlocks\16x16 > nul 2>&1
+md %CB_DIR%\images\DoxyBlocks\22x22 > nul 2>&1
+md %CB_DIR%\images\DoxyBlocks\32x32 > nul 2>&1
+md %CB_DIR%\images\settings > nul 2>&1
+
+copy images\32x32\*.png %CB_DIR%\images\DoxyBlocks\32x32\ > nul 2>&1
+copy images\22x22\*.png %CB_DIR%\images\DoxyBlocks\22x22\ > nul 2>&1
+copy images\16x16\*.png %CB_DIR%\images\DoxyBlocks\16x16\ > nul 2>&1
+copy *.png              %CB_DIR%\images\settings\         > nul 2>&1
 
 exit 0

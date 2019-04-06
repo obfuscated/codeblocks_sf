@@ -16,20 +16,46 @@ libIncrementalSearch_la_SOURCES = IncrementalSearch.cpp \
 noinst_HEADERS = IncrementalSearch.h \
 		IncrementalSearchConfDlg.h
 
-EXTRA_DIST = $(srcdir)/*.cbp \
-		IncrementalSearchToolbar.xrc \
-		IncrementalSearchConfDlg.xrc \
-		manifest.xml \
-		$(srcdir)/update* \
-		$(srcdir)/images/22x22/*.png \
-		$(srcdir)/images/16x16/*.png
+resources_forZIP = \
+	IncrementalSearchToolbar.xrc \
+	IncrementalSearchConfDlg.xrc \
+	manifest.xml \
+	images/16x16/incsearchcase.png \
+	images/16x16/incsearchclear.png \
+	images/16x16/incsearchfocus.png \
+	images/16x16/incsearchhighlight.png \
+	images/16x16/incsearchnext.png \
+	images/16x16/incsearchprev.png \
+	images/16x16/incsearchregex.png \
+	images/16x16/incsearchselectedonly.png \
+	images/22x22/incsearchcase.png \
+	images/22x22/incsearchclear.png \
+	images/22x22/incsearchfocus.png \
+	images/22x22/incsearchhighlight.png \
+	images/22x22/incsearchnext.png \
+	images/22x22/incsearchprev.png \
+	images/22x22/incsearchregex.png \
+	images/22x22/incsearchselectedonly.png \
+	images/32x32/incsearchcase.png \
+	images/32x32/incsearchclear.png \
+	images/32x32/incsearchfocus.png \
+	images/32x32/incsearchhighlight.png \
+	images/32x32/incsearchnext.png \
+	images/32x32/incsearchprev.png \
+	images/32x32/incsearchregex.png \
+	images/32x32/incsearchselectedonly.png
+
+EXTRA_DIST = \
+	$(srcdir)/*.cbp \
+	$(srcdir)/update* \
+	$(resources_forZIP)
 
 pkgdata_DATA = IncrementalSearch.zip
 
 CLEANFILES = $(pkgdata_DATA)
 
-IncrementalSearch.zip: manifest.xml IncrementalSearchToolbar.xrc IncrementalSearchConfDlg.xrc
-	PWD=`pwd` cd $(srcdir) && zip -R $(PWD)/IncrementalSearch.zip manifest.xml *.xrc images/22x22/*.png images/16x16/*.png > /dev/null
+IncrementalSearch.zip: $(resources_forZIP)
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/IncrementalSearch.zip $(resources_forZIP) > /dev/null
 
 confimagesdir = $(datadir)/@PACKAGE@/images/settings
 
