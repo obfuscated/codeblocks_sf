@@ -26,6 +26,7 @@ mkdir -p devel30/share/codeblocks/images/settings
 mkdir -p devel30/share/codeblocks/images/codecompletion
 mkdir -p devel30/share/codeblocks/images/12x12
 mkdir -p devel30/share/codeblocks/images/16x16
+mkdir -p devel30/share/codeblocks/images/22x22
 mkdir -p devel30/share/codeblocks/plugins
 mkdir -p devel30/share/codeblocks/templates
 mkdir -p devel30/share/codeblocks/templates/wizard
@@ -36,6 +37,7 @@ mkdir -p output30/share/codeblocks/images/settings
 mkdir -p output30/share/codeblocks/images/codecompletion
 mkdir -p output30/share/codeblocks/images/12x12
 mkdir -p output30/share/codeblocks/images/16x16
+mkdir -p output30/share/codeblocks/images/22x22
 mkdir -p output30/share/codeblocks/plugins
 mkdir -p output30/share/codeblocks/templates
 mkdir -p output30/share/codeblocks/templates/wizard
@@ -63,7 +65,7 @@ ${ZIPCMD} -jqu9 ${RESDIR}/todo.zip plugins/todo/resources/manifest.xml plugins/t
 ${ZIPCMD} -jqu9 ${RESDIR}/abbreviations.zip plugins/abbreviations/resources/manifest.xml plugins/abbreviations/resources/*.xrc > /dev/null
 echo Packing core UI bitmaps
 cd src/resources
-${ZIPCMD} -0 -qu ../../${RESDIR}/resources.zip images/*.png images/16x16/*.png images/12x12/*.png > /dev/null
+${ZIPCMD} -0 -qu ../../${RESDIR}/resources.zip images/*.png images/22x22/*.png images/16x16/*.png images/12x12/*.png > /dev/null
 cd ../../sdk/resources
 ${ZIPCMD} -0 -qu ../../${RESDIR}/manager_resources.zip images/*.png images/16x16/*.png images/12x12/*.png > /dev/null
 echo Packing plugins UI bitmaps
@@ -83,6 +85,7 @@ cp -f sdk/resources/lexers/lexer_* ${RESDIR}/lexers > /dev/null
 cp -f src/resources/images/*.png ${RESDIR}/images > /dev/null
 cp -f src/resources/images/settings/*.png ${RESDIR}/images/settings > /dev/null
 cp -f src/resources/images/16x16/*.png ${RESDIR}/images/16x16 > /dev/null
+cp -f src/resources/images/22x22/*.png ${RESDIR}/images/22x22 > /dev/null
 cp -f plugins/codecompletion/resources/images/*.png ${RESDIR}/images/codecompletion > /dev/null
 cp -f plugins/compilergcc/resources/compilers/*.xml ${RESDIR}/compilers > /dev/null
 
@@ -91,6 +94,7 @@ cp -f sdk/resources/lexers/lexer_* output30/share/codeblocks/lexers > /dev/null
 cp -f src/resources/images/*.png output30/share/codeblocks/images > /dev/null
 cp -f src/resources/images/settings/*.png output30/share/codeblocks/images/settings > /dev/null
 cp -f src/resources/images/16x16/*.png output30/share/codeblocks/images/16x16 > /dev/null
+cp -f src/resources/images/22x22/*.png output30/share/codeblocks/images/22x22 > /dev/null
 cp -f plugins/codecompletion/resources/images/*.png output30/share/codeblocks/images/codecompletion > /dev/null
 cp -f plugins/compilergcc/resources/compilers/*.xml output30/share/codeblocks/compilers > /dev/null
 

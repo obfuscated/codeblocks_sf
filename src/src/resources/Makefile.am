@@ -8,8 +8,11 @@ dist_noinst_DATA = $(srcdir)/*.xrc \
 dist_pkgdata_DATA = resources.zip start_here.zip
 CLEANFILES = $(dist_pkgdata_DATA)
 
-resources.zip: $(srcdir)/*.xrc $(srcdir)/images/*.png $(srcdir)/images/16x16/*.png
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/resources.zip *.xrc images/*.png images/16x16/*.png > /dev/null
+resources.zip: $(srcdir)/*.xrc $(srcdir)/images/*.png \
+		$(srcdir)/images/16x16/*.png $(srcdir)/images/22x22/*.png
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/resources.zip *.xrc images/*.png \
+		images/16x16/*.png images/22x22/*.png \
+		/dev/null
 
 start_here.zip: $(srcdir)/start_here/*.htm* $(srcdir)/start_here/*.png
 	PWD=`pwd` cd $(srcdir)/start_here && zip $(PWD)/start_here.zip *.htm* *.png > /dev/null
