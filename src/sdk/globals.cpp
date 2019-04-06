@@ -1139,12 +1139,12 @@ wxBitmap cbLoadBitmapScaled(const wxString& filename, wxBitmapType bitmapType, d
     if (oldCommonControls && im.HasAlpha())
         im.ConvertAlphaToMask();
 
-#if defined(__WXOSX__) || defined(__WXGTK3__)
+#if defined(__WXOSX__) || (defined(__WXGTK3__) && wxCHECK_VERSION(3, 1, 2))
     return wxBitmap(im, -1, scaleFactor);
 #else
     (void)scaleFactor;
     return wxBitmap(im);
-#endif // defined(__WXOSX__) || defined(__WXGTK3__)
+#endif // defined(__WXOSX__) || (defined(__WXGTK3__) && wxCHECK_VERSION(3, 1, 2))
 }
 
 double cbGetContentScaleFactor(wxWindow &window)

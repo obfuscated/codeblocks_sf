@@ -78,12 +78,12 @@ wxBitmap wxToolBarAddOnXmlHandler::LoadBitmap(const wxString& name, double scale
         return wxNullBitmap;
     }
 
-#if defined(__WXOSX__) || defined(__WXGTK3__)
+#if defined(__WXOSX__) || (defined(__WXGTK3__) && wxCHECK_VERSION(3, 1, 2))
     return wxBitmap(img, -1, scaleFactor);
 #else
     (void)scaleFactor;
     return wxBitmap(img);
-#endif // defined(__WXOSX__) || defined(__WXGTK3__)
+#endif // defined(__WXOSX__) || (defined(__WXGTK3__) && wxCHECK_VERSION(3, 1, 2))
 }
 
 
