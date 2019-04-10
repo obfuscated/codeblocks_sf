@@ -254,16 +254,19 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
             {
                 const wxLanguageInfo* info = wxLocale::FindLanguageInfo(locFName);
                 if (info)
-                    XRCCTRL(*this, "cbxLanguage", wxComboBox)->Append(info->Description);
+                    XRCCTRL(*this, "choLanguage", wxChoice)->Append(info->Description);
             } while ( locDir.GetNext(&locFName) );
         }
     }
 
-    XRCCTRL(*this, "cbxLanguage", wxComboBox)->Enable(i18n);
+    XRCCTRL(*this, "choLanguage", wxChoice)->Enable(i18n);
 
     const wxLanguageInfo* info = wxLocale::FindLanguageInfo(cfg->Read(_T("/locale/language")));
     if (info)
-        XRCCTRL(*this, "cbxLanguage", wxComboBox)->SetStringSelection(info->Description);
+    {
+        const int position = XRCCTRL(*this, "choLanguage", wxChoice)->FindString(info->Description);
+        XRCCTRL(*this, "choLanguage", wxChoice)->SetSelection(position);
+    }
 
 
     // tab "Notebook"
@@ -545,7 +548,7 @@ void EnvironmentSettingsDlg::OnHeadCheck(wxCommandEvent& event)
 
 void EnvironmentSettingsDlg::OnI18NCheck(wxCommandEvent& event)
 {
-    XRCCTRL(*this, "cbxLanguage", wxComboBox)->Enable(event.IsChecked());
+    XRCCTRL(*this, "choLanguage", wxChoice)->Enable(event.IsChecked());
 }
 
 void EnvironmentSettingsDlg::OnSettingsIconsSize(cb_unused wxCommandEvent& event)
@@ -617,7 +620,8 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         cfg->Write(_T("/environment/view/layout_to_toggle"),    XRCCTRL(*this, "choLayoutToToggle", wxChoice)->GetStringSelection());
 
         cfg->Write(_T("/locale/enable"),                     (bool) XRCCTRL(*this, "chkI18N", wxCheckBox)->GetValue());
-        const wxLanguageInfo *info = wxLocale::FindLanguageInfo(XRCCTRL(*this, "cbxLanguage", wxComboBox)->GetStringSelection());
+        const int langSelection = XRCCTRL(*this, "choLanguage", wxChoice)->GetSelection();
+        const wxLanguageInfo *info = wxLocale::FindLanguageInfo(XRCCTRL(*this, "choLanguage", wxChoice)->GetString(langSelection));
         if (info)
             cfg->Write(_T("/locale/language"), info->CanonicalName);
         else
