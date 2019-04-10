@@ -71,7 +71,7 @@ public:
     {
         wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
         wxBoxSizer* infoSizer = new wxBoxSizer(wxHORIZONTAL);
-        wxString findImgFile = ConfigManager::GetDataFolder() + _T("/images/filefind.png");
+        wxString findImgFile = ConfigManager::GetDataFolder() + _T("/images/32x32/filefind.png");
         wxStaticBitmap* findIco = new wxStaticBitmap(this, wxID_ANY, wxBitmap(wxImage(findImgFile)));
         infoSizer->Add(findIco, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
         wxStaticText* scopeText = new wxStaticText(this, wxID_ANY, _("Please choose the find scope for search tokens"));
