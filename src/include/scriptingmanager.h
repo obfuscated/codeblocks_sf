@@ -245,7 +245,22 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
         MenuIDToScript m_MenuIDToScript;
 
         bool m_AttachedToMainWindow;
-        wxString m_CurrentlyRunningScriptFile;
+
+        /** \brief This variable stores a stack of currently running script files. The back points to the current running file
+         *
+         * This variable is used to track the current running script for determine the working directory so it is possible to use relative paths with the
+         * "include" script function. This has to be a stack, because includes can go over several levels and every level can use relative paths.
+         * ~~~~~~
+         * main.script  --> include("scripts/include1.script")
+         * scripts
+         *   |----- include1.script     --> include("library/library.script")
+         *   |-----library
+         *            |----- library.script
+         * ~~~~~~
+         * The back of the stack will always point to the current running script and can be used to get the relative path of the include statements.
+         * The stack is pushed and popped in the LoadScript() function
+         */
+        std::vector<wxString> m_RunningScriptFileStack;
 
         typedef std::set<wxString> IncludeSet;
         IncludeSet m_IncludeSet;

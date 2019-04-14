@@ -144,11 +144,15 @@ bool ScriptingManager::LoadScript(const wxString& filename)
         bool found = false;
 
         // check in same dir as currently running script (if any)
-        if (!m_CurrentlyRunningScriptFile.IsEmpty())
+        if (!m_RunningScriptFileStack.empty())
         {
-            fname = wxFileName(m_CurrentlyRunningScriptFile).GetPath() + _T('/') + filename;
-            f.Open(fname);
-            found = f.IsOpened();
+            const wxString& currentlyRunningScriptFile = m_RunningScriptFileStack.back();
+            if (!currentlyRunningScriptFile.IsEmpty())
+            {
+                fname = wxFileName(currentlyRunningScriptFile).GetPath() + _T('/') + filename;
+                f.Open(fname);
+                found = f.IsOpened();
+            }
         }
 
         if (!found)
@@ -165,9 +169,9 @@ bool ScriptingManager::LoadScript(const wxString& filename)
     }
     // read file
     wxString contents = cbReadFileContents(f);
-    m_CurrentlyRunningScriptFile = fname;
+    m_RunningScriptFileStack.push_back(fname);
     bool ret = LoadBuffer(contents, fname);
-    m_CurrentlyRunningScriptFile.Clear();
+    m_RunningScriptFileStack.pop_back();
     return ret;
 }
 
@@ -357,7 +361,10 @@ bool ScriptingManager::IsScriptTrusted(const wxString& script)
 
 bool ScriptingManager::IsCurrentlyRunningScriptTrusted()
 {
-    return IsScriptTrusted(m_CurrentlyRunningScriptFile);
+    if (m_RunningScriptFileStack.empty())
+        return false;
+
+    return IsScriptTrusted(m_RunningScriptFileStack.back());
 }
 
 void ScriptingManager::TrustScript(const wxString& script, bool permanently)
@@ -380,7 +387,11 @@ void ScriptingManager::TrustScript(const wxString& script, bool permanently)
 
 void ScriptingManager::TrustCurrentlyRunningScript(bool permanently)
 {
-    TrustScript(m_CurrentlyRunningScriptFile, permanently);
+    if (!m_RunningScriptFileStack.empty())
+    {
+        const wxString currentlyRunningScriptFile = m_RunningScriptFileStack.back();
+        TrustScript(currentlyRunningScriptFile, permanently);
+    }
 }
 
 bool ScriptingManager::RemoveTrust(const wxString& script)
