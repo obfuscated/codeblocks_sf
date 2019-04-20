@@ -63,6 +63,7 @@
 		<Unit filename="debuggergdb_test_backtrace.cpp" />
 		<Unit filename="debuggergdb_test_common.h" />
 		<Unit filename="debuggergdb_test_defs.cpp" />
+		<Unit filename="debuggergdb_test_examine_memory.cpp" />
 		<Unit filename="debuggergdb_test_main.cpp" />
 		<Unit filename="debuggergdb_test_parse_locals.cpp" />
 		<Unit filename="debuggergdb_test_parser.cpp" />

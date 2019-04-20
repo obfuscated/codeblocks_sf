@@ -1155,6 +1155,9 @@ void DebuggerGDB::RequestUpdate(DebugWindows window)
         case ExamineMemory:
             RunCommand(CMD_MEMORYDUMP);
             break;
+        case MemoryRange:
+            m_State.GetDriver()->UpdateMemoryRangeWatches(m_memoryRanges);
+            break;
         case Threads:
             RunCommand(CMD_RUNNINGTHREADS);
             break;
@@ -2132,6 +2135,18 @@ cb::shared_ptr<cbWatch> DebuggerGDB::AddWatch(const wxString& symbol)
     return watch;
 }
 
+cb::shared_ptr<cbWatch> DebuggerGDB::AddMemoryRange(uint64_t address, uint64_t size,
+                                                    const wxString &symbol)
+{
+    cb::shared_ptr<GDBMemoryRangeWatch> watch(new GDBMemoryRangeWatch(address, size, symbol));
+    m_memoryRanges.push_back(watch);
+
+    if (m_pProcess)
+        m_State.GetDriver()->UpdateMemoryRangeWatch(m_memoryRanges.back());
+
+    return watch;
+}
+
 void DebuggerGDB::AddWatchNoUpdate(const cb::shared_ptr<GDBWatch> &watch)
 {
     m_watches.push_back(watch);
@@ -2141,7 +2156,19 @@ void DebuggerGDB::DeleteWatch(cb::shared_ptr<cbWatch> watch)
 {
     WatchesContainer::iterator it = std::find(m_watches.begin(), m_watches.end(), watch);
     if (it != m_watches.end())
+    {
         m_watches.erase(it);
+        return;
+    }
+
+    MemoryRangeWatchesContainer::iterator mItr = std::find(m_memoryRanges.begin(),
+                                                           m_memoryRanges.end(), watch);
+    if (mItr != m_memoryRanges.end())
+    {
+        m_memoryRanges.erase(mItr);
+        return;
+    }
+
 }
 
 bool DebuggerGDB::HasWatch(cb::shared_ptr<cbWatch> watch)
@@ -2149,14 +2176,30 @@ bool DebuggerGDB::HasWatch(cb::shared_ptr<cbWatch> watch)
     WatchesContainer::iterator it = std::find(m_watches.begin(), m_watches.end(), watch);
     if (it != m_watches.end())
         return true;
-    else
-        return watch == m_localsWatch || watch == m_funcArgsWatch;
+    else if(watch == m_localsWatch || watch == m_funcArgsWatch)
+        return true;
+
+    MemoryRangeWatchesContainer::iterator mItr = std::find(m_memoryRanges.begin(),
+                                                           m_memoryRanges.end(), watch);
+    if (mItr != m_memoryRanges.end())
+        return true;
+
+    return false;
+}
+
+bool DebuggerGDB::IsMemoryRangeWatch(const cb::shared_ptr<cbWatch> &watch)
+{
+    MemoryRangeWatchesContainer::iterator mItr = std::find(m_memoryRanges.begin(),
+                                                           m_memoryRanges.end(), watch);
+    if (mItr != m_memoryRanges.end())
+        return true;
+    return false;
 }
 
 void DebuggerGDB::ShowWatchProperties(cb::shared_ptr<cbWatch> watch)
 {
-    // not supported for child nodes!
-    if (watch->GetParent())
+    // not supported for child nodes or memory ranges!
+    if (watch->GetParent() || IsMemoryRangeWatch(watch))
         return;
 
     cb::shared_ptr<GDBWatch> real_watch = cb::static_pointer_cast<GDBWatch>(watch);
@@ -2167,62 +2210,75 @@ void DebuggerGDB::ShowWatchProperties(cb::shared_ptr<cbWatch> watch)
 
 bool DebuggerGDB::SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString &value)
 {
+    if (!m_State.HasDriver())
+        return false;
     if (!HasWatch(cbGetRootWatch(watch)))
         return false;
 
-    if (!m_State.HasDriver())
-        return false;
-
-    wxString full_symbol;
-    cb::shared_ptr<cbWatch> temp_watch = watch;
-    if (g_DebugLanguage == dl_Cpp)
+    if (IsMemoryRangeWatch(watch))
     {
-        while (temp_watch)
-        {
-            wxString symbol;
-            temp_watch->GetSymbol(symbol);
-            temp_watch = temp_watch->GetParent();
+        cb::shared_ptr<GDBMemoryRangeWatch> temp_watch = std::static_pointer_cast<GDBMemoryRangeWatch>(watch);
+        uint64_t addr = temp_watch->GetAddress();
 
-            if (symbol.find(wxT('*')) != wxString::npos || symbol.find(wxT('&')) != wxString::npos)
-                symbol = wxT('(') + symbol + wxT(')');
-
-            if (full_symbol.empty())
-                full_symbol = symbol;
-            else
-                full_symbol = symbol + wxT('.') + full_symbol;
-        }
+        DebuggerDriver* driver = m_State.GetDriver();
+        driver->SetMemoryRangeValue(addr, value);
+        // TODO (bluehazzard#1#): I am not quite sure if this is the right place to update all memory ranges
+        driver->UpdateMemoryRangeWatches(m_memoryRanges);
     }
-    else // Fortran language
+    else
     {
-        while (temp_watch)
+        wxString full_symbol;
+        cb::shared_ptr<cbWatch> temp_watch = watch;
+        if (g_DebugLanguage == dl_Cpp)
         {
-            wxString symbol;
-            temp_watch->GetSymbol(symbol);
-            temp_watch = temp_watch->GetParent();
-
-            if (full_symbol.empty())
-                full_symbol = symbol;
-            else
+            while (temp_watch)
             {
-                if (full_symbol.at(0) == '(' && symbol.at(0) == '(')
-                {
-                    size_t sec = full_symbol.find(')');
-                    if (sec != wxString::npos && symbol.at(symbol.size()-1) == ')')
-                    {
-                        full_symbol = full_symbol.substr(0,sec) + wxT(',') + symbol.substr(1,symbol.size()-2) +
-                                      full_symbol.substr(sec);
-                    }
-                }
-                else if (full_symbol.at(0) == '(')
-                    full_symbol = symbol + full_symbol;
+                wxString symbol;
+                temp_watch->GetSymbol(symbol);
+                temp_watch = temp_watch->GetParent();
+
+                if (symbol.find(wxT('*')) != wxString::npos || symbol.find(wxT('&')) != wxString::npos)
+                    symbol = wxT('(') + symbol + wxT(')');
+
+                if (full_symbol.empty())
+                    full_symbol = symbol;
                 else
-                    full_symbol = symbol + wxT('%') + full_symbol;
+                    full_symbol = symbol + wxT('.') + full_symbol;
             }
         }
+        else // Fortran language
+        {
+            while (temp_watch)
+            {
+                wxString symbol;
+                temp_watch->GetSymbol(symbol);
+                temp_watch = temp_watch->GetParent();
+
+                if (full_symbol.empty())
+                    full_symbol = symbol;
+                else
+                {
+                    if (full_symbol.at(0) == '(' && symbol.at(0) == '(')
+                    {
+                        size_t sec = full_symbol.find(')');
+                        if (sec != wxString::npos && symbol.at(symbol.size()-1) == ')')
+                        {
+                            full_symbol = full_symbol.substr(0,sec) + wxT(',') + symbol.substr(1,symbol.size()-2) +
+                                          full_symbol.substr(sec);
+                        }
+                    }
+                    else if (full_symbol.at(0) == '(')
+                        full_symbol = symbol + full_symbol;
+                    else
+                        full_symbol = symbol + wxT('%') + full_symbol;
+                }
+            }
+        }
+
+        DebuggerDriver* driver = m_State.GetDriver();
+        driver->SetVarValue(full_symbol, value);
     }
 
-    DebuggerDriver* driver = m_State.GetDriver();
-    driver->SetVarValue(full_symbol, value);
     DoWatches();
     return true;
 }

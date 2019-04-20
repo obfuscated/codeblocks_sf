@@ -259,9 +259,40 @@ class GDBWatch : public cbWatch
         int m_array_count;
         bool m_is_array;
         bool m_forTooltip;
-    };
+};
 
-typedef std::vector<cb::shared_ptr<GDBWatch> > WatchesContainer;
+class GDBMemoryRangeWatch  : public cbWatch
+{
+    public:
+        GDBMemoryRangeWatch(uint64_t address, uint64_t size, const wxString& symbol);
+
+    public:
+        void GetSymbol(wxString &symbol) const override { symbol = m_symbol; }
+        void GetValue(wxString &value) const override { value = m_value; }
+        bool SetValue(const wxString &value) override;
+        void GetFullWatchString(wxString &full_watch) const override { full_watch = wxEmptyString; }
+        void GetType(wxString &type) const override { type = wxT("Memory range"); }
+        void SetType(cb_unused const wxString &type) override {}
+
+        wxString const & GetDebugString() const override { return emptyString; }
+
+        wxString MakeSymbolToAddress() const override;
+        bool IsPointerType() const override { return false; }
+
+        uint64_t GetAddress() const { return m_address; }
+        uint64_t GetSize() const { return m_size; }
+
+    private:
+        uint64_t m_address;
+        uint64_t m_size;
+        wxString m_symbol;
+        wxString m_value;
+
+        static const wxString emptyString;
+};
+
+typedef std::vector<cb::shared_ptr<GDBWatch>> WatchesContainer;
+typedef std::vector<cb::shared_ptr<GDBMemoryRangeWatch>> MemoryRangeWatchesContainer;
 
 bool IsPointerType(wxString type);
 wxString CleanStringValue(wxString value);

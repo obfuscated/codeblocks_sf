@@ -513,6 +513,12 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
 
         // watches
         virtual cb::shared_ptr<cbWatch> AddWatch(const wxString& symbol) = 0;
+        /// Request to add a watch which would allow read/write access to a given memory range.
+        /// @param address The start address of the range.
+        /// @param size The size in bytes of the range.
+        /// @param symbol The name of the watch shown in the UI.
+        virtual cb::shared_ptr<cbWatch> AddMemoryRange(uint64_t address, uint64_t size,
+                                                       const wxString &symbol) = 0;
         virtual void DeleteWatch(cb::shared_ptr<cbWatch> watch) = 0;
         virtual bool HasWatch(cb::shared_ptr<cbWatch> watch) = 0;
         virtual void ShowWatchProperties(cb::shared_ptr<cbWatch> watch) = 0;
@@ -584,6 +590,7 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
             CPURegisters,
             Disassembly,
             ExamineMemory,
+            MemoryRange,
             Threads,
             Watches
         };

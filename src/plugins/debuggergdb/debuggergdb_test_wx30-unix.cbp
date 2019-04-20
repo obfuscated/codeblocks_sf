@@ -35,7 +35,7 @@
 			<Add directory="../../include" />
 		</Compiler>
 		<Linker>
-			<Add option="`$(WX_CONFIG) --libs std`" />
+			<Add option="`$(WX_CONFIG) --libs std,aui,propgrid`" />
 			<Add option="-z defs" />
 			<Add library="codeblocks" />
 			<Add library="UnitTest++" />
@@ -43,7 +43,7 @@
 			<Add directory="../../devel30" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="LD_LIBRARY_PATH=$(TARGET_OUTPUT_DIR) $(TARGET_OUTPUT_FILE)" />
+			<Add after="LD_LIBRARY_PATH=$(TARGET_OUTPUT_DIR):`$(WX_CONFIG) --prefix`/lib $(TARGET_OUTPUT_FILE)" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="debugger_defs.cpp" />
@@ -51,6 +51,7 @@
 		<Unit filename="debuggergdb_test_backtrace.cpp" />
 		<Unit filename="debuggergdb_test_common.h" />
 		<Unit filename="debuggergdb_test_defs.cpp" />
+		<Unit filename="debuggergdb_test_examine_memory.cpp" />
 		<Unit filename="debuggergdb_test_main.cpp" />
 		<Unit filename="debuggergdb_test_parse_locals.cpp" />
 		<Unit filename="debuggergdb_test_parser.cpp" />

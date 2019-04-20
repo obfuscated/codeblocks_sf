@@ -22,11 +22,14 @@
 #include "debuggergdb.h"
 
 #include <wx/arrimpl.cpp>
+#include <cinttypes>
 
 #if !defined(CB_TEST_PROJECT)
 
 const int DEBUGGER_CURSOR_CHANGED = wxNewId();
 const int DEBUGGER_SHOW_FILE_LINE = wxNewId();
+
+const wxString GDBMemoryRangeWatch::emptyString = wxEmptyString;
 
 DebuggerCmd::DebuggerCmd(DebuggerDriver* driver, const wxString& cmd, bool logToNormalLog)
     : m_Cmd(cmd),
@@ -311,6 +314,34 @@ bool GDBWatch::GetForTooltip() const
 {
     return m_forTooltip;
 }
+
+GDBMemoryRangeWatch::GDBMemoryRangeWatch(uint64_t address, uint64_t size, const wxString& symbol) :
+    m_address(address),
+    m_size(size),
+    m_symbol(symbol)
+{
+}
+
+bool GDBMemoryRangeWatch::SetValue(const wxString &value)
+{
+    if (m_value != value)
+    {
+        m_value = value;
+        MarkAsChanged(true);
+    }
+    return true;
+}
+
+wxString GDBMemoryRangeWatch::MakeSymbolToAddress() const
+{
+    const int tmpBuffSize = 20;
+    char tmpAddress[tmpBuffSize];
+
+    memset(tmpAddress, 0, tmpBuffSize);
+    snprintf(tmpAddress, tmpBuffSize, "0x%" PRIx64 " ", GetAddress());
+
+    return wxString::FromUTF8(tmpAddress);
+};
 
 bool IsPointerType(wxString type)
 {

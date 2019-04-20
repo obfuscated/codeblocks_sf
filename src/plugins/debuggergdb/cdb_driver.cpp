@@ -214,6 +214,11 @@ void CDB_driver::SetVarValue(cb_unused const wxString& var, cb_unused const wxSt
     NOT_IMPLEMENTED();
 }
 
+void CDB_driver::SetMemoryRangeValue(cb_unused uint64_t addr, cb_unused const wxString& value)
+{
+    NOT_IMPLEMENTED();
+}
+
 void CDB_driver::MemoryDump()
 {
     NOT_IMPLEMENTED();
@@ -321,6 +326,18 @@ void CDB_driver::UpdateWatchLocalsArgs(cb_unused cb::shared_ptr<GDBWatch> const 
 void CDB_driver::Attach(cb_unused int pid)
 {
     // FIXME (obfuscated#): implement this
+}
+
+void CDB_driver::UpdateMemoryRangeWatches(cb_unused MemoryRangeWatchesContainer &watches)
+{
+    // FIXME (bluehazzard#): implement this
+    NOT_IMPLEMENTED();
+}
+
+void CDB_driver::UpdateMemoryRangeWatch(cb_unused const cb::shared_ptr<GDBMemoryRangeWatch> &watch)
+{
+    // FIXME (bluehazzard#): implement this
+    NOT_IMPLEMENTED();
 }
 
 void CDB_driver::Detach()

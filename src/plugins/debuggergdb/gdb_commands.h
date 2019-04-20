@@ -28,6 +28,8 @@
 #include <logmanager.h>
 #include <macrosmanager.h>
 
+#include <cinttypes>
+
 #include "debugger_defs.h"
 #include "debuggergdb.h"
 #include "gdb_driver.h"
@@ -180,8 +182,6 @@ static wxRegEx reInfoProgramProcess(_T("child process ([0-9]+)"));
 //* 1 Thread 46912568064384 (LWP 7926)  0x00002aaaac76e612 in poll () from /lib/libc.so.6
 static wxRegEx reInfoThreads(_T("(\\**)[ \t]*([0-9]+)[ \t](.*)"));
 static wxRegEx reGenericHexAddress(_T("(0x[A-Fa-f0-9]+)"));
-
-static wxRegEx reExamineMemoryLine(wxT("[ \t]*(0x[0-9a-f]+)[ \t]<.+>:[ \t]+(.+)"));
 
 //mi output from 'nexti' is:
 //"^Z^Zc:\dev\cb_exp\cb_debugviz\panels.cpp:409:12533:middle:0x4044f5"
@@ -845,6 +845,52 @@ class GdbCmd_Watch : public DebuggerCmd
                 m_watch->SetValue(msg);
                 Manager::Get()->GetLogManager()->LogError(msg);
             }
+        }
+};
+
+
+/**
+  * Command to read a X bytes from a specific address.
+  */
+class GdbCmd_MemoryRangeWatch : public DebuggerCmd
+{
+        cb::shared_ptr<GDBMemoryRangeWatch> m_watch;
+        wxString m_ParseFunc;
+    public:
+        GdbCmd_MemoryRangeWatch(DebuggerDriver* driver, cb::shared_ptr<GDBMemoryRangeWatch> watch) :
+            DebuggerCmd(driver),
+            m_watch(watch)
+        {
+            // wx2.8 does not support uint64_z for wxstring::printf
+            const size_t tmpBuffSize = 20;
+            char tmpAddr[tmpBuffSize];
+            char tmpSize[tmpBuffSize];
+            memset(tmpAddr, 0, tmpBuffSize);
+            memset(tmpSize, 0, tmpBuffSize);
+            snprintf(tmpAddr, tmpBuffSize, "0x%" PRIx64, m_watch->GetAddress());
+            snprintf(tmpSize, tmpBuffSize, "%" PRIu64, m_watch->GetSize());
+
+            m_Cmd  = wxString(wxT("x /")) << wxString::FromUTF8(tmpSize) << wxT("xb ") << wxString::FromUTF8(tmpAddr);
+        }
+
+        void ParseOutput(const wxString& output)
+        {
+            wxArrayString lines = GetArrayFromString(output, _T('\n'));
+            wxString addr;
+            std::vector<uint8_t> memory, lineMemory;
+            for (unsigned int i = 0; i < lines.GetCount(); ++i)
+            {
+                lineMemory.clear();
+                // TODO: handle errors here!
+                ParseGDBExamineMemoryLine(addr, lineMemory, lines[i]);
+
+                memory.insert(memory.end(), lineMemory.begin(), lineMemory.end());
+            }
+
+            wxString watchString;
+            watchString = wxString::From8BitData(reinterpret_cast<const char*>(memory.data()),
+                                                 memory.size());
+            m_watch->SetValue(watchString);
         }
 };
 
@@ -1608,47 +1654,32 @@ class GdbCmd_ExamineMemory : public DebuggerCmd
         }
         void ParseOutput(const wxString& output)
         {
-            // output is a series of:
-            //
-            // 0x22ffc0:       0xf0    0xff    0x22    0x00    0x4f    0x6d    0x81    0x7c
-            // or
-            // 0x85267a0 <RS485TxTask::taskProc()::rcptBuf>:   0x00   0x00   0x00   0x00   0x00   0x00   0x00   0x00
-
             cbExamineMemoryDlg *dialog = Manager::Get()->GetDebuggerManager()->GetExamineMemoryDialog();
 
             dialog->Begin();
             dialog->Clear();
 
+            wxString addr;
+            std::vector<uint8_t> values;
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
-            wxString addr, memory;
             for (unsigned int i = 0; i < lines.GetCount(); ++i)
             {
-                if (reExamineMemoryLine.Matches(lines[i]))
+                if (ParseGDBExamineMemoryLine(addr, values, lines[i]))
                 {
-                    addr = reExamineMemoryLine.GetMatch(lines[i], 1);
-                    memory = reExamineMemoryLine.GetMatch(lines[i], 2);
+                    wxString hexByte;
+                    for (uint8_t v : values)
+                    {
+                        hexByte = wxString::Format(wxT("%02x"), v);
+                        dialog->AddHexByte(addr, hexByte);
+                    }
                 }
                 else
                 {
-                    if (lines[i].First(_T(':')) == -1)
-                    {
-                        dialog->AddError(lines[i]);
-                        continue;
-                    }
-                    addr = lines[i].BeforeFirst(_T(':'));
-                    memory = lines[i].AfterFirst(_T(':'));
-                }
-
-                size_t pos = memory.find(_T('x'));
-                while (pos != wxString::npos)
-                {
-                    wxString hexbyte;
-                    hexbyte << memory[pos + 1];
-                    hexbyte << memory[pos + 2];
-                    dialog->AddHexByte(addr, hexbyte);
-                    pos = memory.find(_T('x'), pos + 1); // skip current 'x'
+                    dialog->AddError(lines[i]);
+                    continue;
                 }
             }
+
             dialog->End();
         }
 };

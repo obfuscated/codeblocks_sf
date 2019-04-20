@@ -37,6 +37,7 @@ class GDB_driver : public DebuggerDriver
         virtual void CPURegisters();
         virtual void SwitchToFrame(size_t number);
         virtual void SetVarValue(const wxString& var, const wxString& value);
+        virtual void SetMemoryRangeValue(uint64_t addr, const wxString& value);
         virtual void MemoryDump();
         virtual void Attach(int pid);
         virtual void Detach();
@@ -57,7 +58,9 @@ class GDB_driver : public DebuggerDriver
         virtual void EvaluateSymbol(const wxString& symbol, const wxRect& tipRect);
         virtual void UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch, cb::shared_ptr<GDBWatch> funcArgsWatch,
                                    WatchesContainer &watches);
+        virtual void UpdateMemoryRangeWatches(MemoryRangeWatchesContainer &watches);
         virtual void UpdateWatch(const cb::shared_ptr<GDBWatch> &watch);
+        virtual void UpdateMemoryRangeWatch(const cb::shared_ptr<GDBMemoryRangeWatch> &watch);
         virtual void UpdateWatchLocalsArgs(cb::shared_ptr<GDBWatch> const &watch, bool locals);
         virtual void ParseOutput(const wxString& output);
         virtual bool IsDebuggingStarted() const { return m_IsStarted; }

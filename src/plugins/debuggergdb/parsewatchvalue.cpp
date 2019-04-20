@@ -1022,3 +1022,57 @@ void TokenizeGDBLocals(std::vector<GDBLocalVariable> &results, wxString const &v
     }
     results.push_back(GDBLocalVariable(value, start, value.length() - start));
 }
+
+const wxRegEx reExamineMemoryLine(wxT("[ \t]*(0x[0-9a-f]+)[ \t]<.+>:[ \t]+(.+)"));
+
+bool ParseGDBExamineMemoryLine(wxString &resultAddr, std::vector<uint8_t> &resultValues,
+                               const wxString &outputLine)
+{
+    // output is a series of:
+    //
+    // 0x22ffc0:       0xf0    0xff    0x22    0x00    0x4f    0x6d    0x81    0x7c
+    // or
+    // 0x85267a0 <RS485TxTask::taskProc()::rcptBuf>:   0x00   0x00   0x00   0x00   0x00   0x00   0x00   0x00
+    // or
+    // > x /108xb 0xa0000000
+    // Cannot access memory at address 0xa0000000
+    // 0xa0000000:
+
+    /// TODO: Detect errors like cannot access memory at address XXX!!!!
+    resultValues.clear();
+    resultAddr.clear();
+
+    if (outputLine.StartsWith(wxT("Cannot access memory at address ")))
+        return false;
+
+    wxString memory;
+    if (reExamineMemoryLine.Matches(outputLine))
+    {
+        resultAddr = reExamineMemoryLine.GetMatch(outputLine, 1);
+        memory = reExamineMemoryLine.GetMatch(outputLine, 2);
+    }
+    else
+    {
+        if (outputLine.First(wxT(':')) == -1)
+        {
+            return false;
+        }
+        resultAddr = outputLine.BeforeFirst(wxT(':'));
+        memory = outputLine.AfterFirst(wxT(':'));
+    }
+
+    size_t pos = memory.find(wxT('x'));
+    wxString hexbyte;
+    while (pos != wxString::npos)
+    {
+        hexbyte.clear();
+        hexbyte << memory[pos + 1];
+        hexbyte << memory[pos + 2];
+        unsigned long value;
+        hexbyte.ToULong(&value,16);
+        resultValues.push_back(static_cast<uint8_t>(value));
+        pos = memory.find(wxT('x'), pos + 1); // skip current 'x'
+    }
+
+    return true;
+}
