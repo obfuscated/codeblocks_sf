@@ -26,7 +26,6 @@ class WatchesDlg : public wxPanel, public cbWatchesDlg
 
         wxWindow* GetWindow() { return this; }
 
-        void UpdateWatches() override;
         void AddWatch(cb::shared_ptr<cbWatch> watch) override;
         void AddSpecialWatch(cb::shared_ptr<cbWatch> watch, bool readonly) override;
         void RemoveWatch(cb::shared_ptr<cbWatch> watch) override;
@@ -57,6 +56,7 @@ class WatchesDlg : public wxPanel, public cbWatchesDlg
 
         DECLARE_EVENT_TABLE()
 
+        void UpdateWatches();
         void DeleteProperty(WatchesProperty &prop);
 
         struct WatchItem
