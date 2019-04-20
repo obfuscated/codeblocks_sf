@@ -56,7 +56,6 @@ class WatchesDlg : public wxPanel, public cbWatchesDlg
 
         DECLARE_EVENT_TABLE()
 
-        void UpdateWatches();
         void DeleteProperty(WatchesProperty &prop);
 
         struct WatchItem

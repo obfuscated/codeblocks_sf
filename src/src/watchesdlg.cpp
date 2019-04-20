@@ -532,19 +532,14 @@ inline void SetValue(WatchesProperty *prop)
     }
 }
 
-void WatchesDlg::UpdateWatches()
-{
-    for (WatchItems::iterator it = m_watches.begin(); it != m_watches.end(); ++it)
-        UpdateWatch(m_grid, it->property, it->watch, it->readonly);
-    m_grid->Refresh();
-}
-
 void WatchesDlg::OnDebuggerUpdated(CodeBlocksEvent &event)
 {
     if (cbDebuggerPlugin::DebugWindows(event.GetInt()) != cbDebuggerPlugin::DebugWindows::Watches)
         return;
 
-    UpdateWatches();
+    for (WatchItems::iterator it = m_watches.begin(); it != m_watches.end(); ++it)
+        UpdateWatch(m_grid, it->property, it->watch, it->readonly);
+    m_grid->Refresh();
 }
 
 void WatchesDlg::AddWatch(cb::shared_ptr<cbWatch> watch)
