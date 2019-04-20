@@ -139,12 +139,14 @@ class DebuggerDriver
             @param doArgs Display values of function arguments.
             @param tree The watches tree control.
         */
-        virtual void UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch, cb::shared_ptr<GDBWatch> funcArgsWatch,
-                                   WatchesContainer &watches) = 0;
+        virtual void UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch,
+                                   cb::shared_ptr<GDBWatch> funcArgsWatch,
+                                   WatchesContainer &watches, bool ignoreAutoUpdate) = 0;
         virtual void UpdateWatch(cb::shared_ptr<GDBWatch> const &watch) = 0;
         virtual void UpdateWatchLocalsArgs(cb::shared_ptr<GDBWatch> const &watch, bool locals) = 0;
 
-        virtual void UpdateMemoryRangeWatches(MemoryRangeWatchesContainer &watches) = 0;
+        virtual void UpdateMemoryRangeWatches(MemoryRangeWatchesContainer &watches,
+                                              bool ignoreAutoUpdate) = 0;
         virtual void UpdateMemoryRangeWatch(const cb::shared_ptr<GDBMemoryRangeWatch> &watch) = 0;
 
         /** Attach to process */

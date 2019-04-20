@@ -10,6 +10,7 @@
 #include <wx/dynarray.h>
 #include <deque>
 #include <vector>
+#include <unordered_map>
 
 #include "debuggermanager.h"
 #include "cbplugin.h"
@@ -291,6 +292,15 @@ class GDBMemoryRangeWatch  : public cbWatch
 
 typedef std::vector<cb::shared_ptr<GDBWatch>> WatchesContainer;
 typedef std::vector<cb::shared_ptr<GDBMemoryRangeWatch>> MemoryRangeWatchesContainer;
+
+
+enum class WatchType
+{
+    Normal,
+    MemoryRange
+};
+
+typedef std::unordered_map<cb::shared_ptr<cbWatch>, WatchType> MapWatchesToType;
 
 bool IsPointerType(wxString type);
 wxString CleanStringValue(wxString value);

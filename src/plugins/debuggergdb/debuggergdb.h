@@ -90,7 +90,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 
         cb::shared_ptr<cbWatch> AddWatch(const wxString& symbol);
         cb::shared_ptr<cbWatch> AddMemoryRange(uint64_t address, uint64_t size,
-                                               const wxString &symbol);
+                                               const wxString &symbol, bool update);
         void DeleteWatch(cb::shared_ptr<cbWatch> watch);
         bool HasWatch(cb::shared_ptr<cbWatch> watch);
         bool IsMemoryRangeWatch(const cb::shared_ptr<cbWatch> &watch);
@@ -99,6 +99,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         void ExpandWatch(cb::shared_ptr<cbWatch> watch);
         void CollapseWatch(cb::shared_ptr<cbWatch> watch);
         void UpdateWatch(cb::shared_ptr<cbWatch> watch);
+        void UpdateWatches(const std::vector<cb::shared_ptr<cbWatch>> &watches);
 
         void AddWatchNoUpdate(const cb::shared_ptr<GDBWatch> &watch);
 
@@ -216,6 +217,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 
         WatchesContainer m_watches;
         MemoryRangeWatchesContainer m_memoryRanges;
+        MapWatchesToType m_mapWatchesToType;
 
         cb::shared_ptr<GDBWatch> m_localsWatch, m_funcArgsWatch;
         wxString m_watchToDereferenceSymbol;

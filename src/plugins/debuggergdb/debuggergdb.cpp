@@ -521,7 +521,7 @@ void DebuggerGDB::DoWatches()
         }
     }
 
-    m_State.GetDriver()->UpdateWatches(m_localsWatch, m_funcArgsWatch, m_watches);
+    m_State.GetDriver()->UpdateWatches(m_localsWatch, m_funcArgsWatch, m_watches, false);
 }
 
 static wxString GetShellString()
@@ -1156,7 +1156,7 @@ void DebuggerGDB::RequestUpdate(DebugWindows window)
             RunCommand(CMD_MEMORYDUMP);
             break;
         case MemoryRange:
-            m_State.GetDriver()->UpdateMemoryRangeWatches(m_memoryRanges);
+            m_State.GetDriver()->UpdateMemoryRangeWatches(m_memoryRanges, false);
             break;
         case Threads:
             RunCommand(CMD_RUNNINGTHREADS);
@@ -2128,6 +2128,7 @@ cb::shared_ptr<cbWatch> DebuggerGDB::AddWatch(const wxString& symbol)
 {
     cb::shared_ptr<GDBWatch> watch(new GDBWatch(CleanStringValue(symbol)));
     m_watches.push_back(watch);
+    m_mapWatchesToType[watch] = WatchType::Normal;
 
     if (m_pProcess)
         m_State.GetDriver()->UpdateWatch(m_watches.back());
@@ -2136,12 +2137,13 @@ cb::shared_ptr<cbWatch> DebuggerGDB::AddWatch(const wxString& symbol)
 }
 
 cb::shared_ptr<cbWatch> DebuggerGDB::AddMemoryRange(uint64_t address, uint64_t size,
-                                                    const wxString &symbol)
+                                                    const wxString &symbol, bool update)
 {
     cb::shared_ptr<GDBMemoryRangeWatch> watch(new GDBMemoryRangeWatch(address, size, symbol));
     m_memoryRanges.push_back(watch);
+    m_mapWatchesToType[watch] = WatchType::MemoryRange;
 
-    if (m_pProcess)
+    if (m_pProcess && update)
         m_State.GetDriver()->UpdateMemoryRangeWatch(m_memoryRanges.back());
 
     return watch;
@@ -2150,50 +2152,57 @@ cb::shared_ptr<cbWatch> DebuggerGDB::AddMemoryRange(uint64_t address, uint64_t s
 void DebuggerGDB::AddWatchNoUpdate(const cb::shared_ptr<GDBWatch> &watch)
 {
     m_watches.push_back(watch);
+    m_mapWatchesToType[watch] = WatchType::Normal;
 }
 
 void DebuggerGDB::DeleteWatch(cb::shared_ptr<cbWatch> watch)
 {
-    WatchesContainer::iterator it = std::find(m_watches.begin(), m_watches.end(), watch);
-    if (it != m_watches.end())
-    {
-        m_watches.erase(it);
+    MapWatchesToType::iterator itType = m_mapWatchesToType.find(watch);
+    if (itType == m_mapWatchesToType.end())
         return;
-    }
 
-    MemoryRangeWatchesContainer::iterator mItr = std::find(m_memoryRanges.begin(),
-                                                           m_memoryRanges.end(), watch);
-    if (mItr != m_memoryRanges.end())
+    switch (itType->second)
     {
-        m_memoryRanges.erase(mItr);
-        return;
+    case WatchType::Normal:
+        {
+            WatchesContainer::iterator it = std::find(m_watches.begin(), m_watches.end(), watch);
+            if (it != m_watches.end())
+            {
+                m_watches.erase(it);
+                return;
+            }
+        }
+        break;
+    case WatchType::MemoryRange:
+        {
+            MemoryRangeWatchesContainer::iterator it = std::find(m_memoryRanges.begin(),
+                                                                 m_memoryRanges.end(), watch);
+            if (it != m_memoryRanges.end())
+            {
+                m_memoryRanges.erase(it);
+                return;
+            }
+            break;
+        }
     }
 
 }
 
 bool DebuggerGDB::HasWatch(cb::shared_ptr<cbWatch> watch)
 {
-    WatchesContainer::iterator it = std::find(m_watches.begin(), m_watches.end(), watch);
-    if (it != m_watches.end())
-        return true;
-    else if(watch == m_localsWatch || watch == m_funcArgsWatch)
+    if (watch == m_localsWatch || watch == m_funcArgsWatch)
         return true;
 
-    MemoryRangeWatchesContainer::iterator mItr = std::find(m_memoryRanges.begin(),
-                                                           m_memoryRanges.end(), watch);
-    if (mItr != m_memoryRanges.end())
-        return true;
-
-    return false;
+    return m_mapWatchesToType.find(watch) != m_mapWatchesToType.end();
 }
 
 bool DebuggerGDB::IsMemoryRangeWatch(const cb::shared_ptr<cbWatch> &watch)
 {
-    MemoryRangeWatchesContainer::iterator mItr = std::find(m_memoryRanges.begin(),
-                                                           m_memoryRanges.end(), watch);
-    if (mItr != m_memoryRanges.end())
-        return true;
-    return false;
+    MapWatchesToType::const_iterator it = m_mapWatchesToType.find(watch);
+    if (it == m_mapWatchesToType.end())
+        return false;
+    else
+        return it->second == WatchType::MemoryRange;
 }
 
 void DebuggerGDB::ShowWatchProperties(cb::shared_ptr<cbWatch> watch)
@@ -2212,18 +2221,20 @@ bool DebuggerGDB::SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString &v
 {
     if (!m_State.HasDriver())
         return false;
-    if (!HasWatch(cbGetRootWatch(watch)))
+
+    cb::shared_ptr<cbWatch> rootWatch = cbGetRootWatch(watch);
+    MapWatchesToType::const_iterator itType = m_mapWatchesToType.find(rootWatch);
+    if (itType == m_mapWatchesToType.end())
         return false;
 
-    if (IsMemoryRangeWatch(watch))
+    const WatchType type = itType->second;
+    if (type == WatchType::MemoryRange)
     {
         cb::shared_ptr<GDBMemoryRangeWatch> temp_watch = std::static_pointer_cast<GDBMemoryRangeWatch>(watch);
         uint64_t addr = temp_watch->GetAddress();
 
         DebuggerDriver* driver = m_State.GetDriver();
         driver->SetMemoryRangeValue(addr, value);
-        // TODO (bluehazzard#1#): I am not quite sure if this is the right place to update all memory ranges
-        driver->UpdateMemoryRangeWatches(m_memoryRanges);
     }
     else
     {
@@ -2293,18 +2304,75 @@ void DebuggerGDB::CollapseWatch(cb_unused cb::shared_ptr<cbWatch> watch)
 
 void DebuggerGDB::UpdateWatch(cb::shared_ptr<cbWatch> watch)
 {
-    if (!HasWatch(watch))
+    DebuggerDriver *driver = m_State.GetDriver();
+    if (driver == nullptr)
         return;
 
+    if (watch == m_localsWatch)
+        driver->UpdateWatchLocalsArgs(cb::static_pointer_cast<GDBWatch>(watch), true);
+    else if (watch == m_funcArgsWatch)
+        driver->UpdateWatchLocalsArgs(cb::static_pointer_cast<GDBWatch>(watch), false);
+    else
+    {
+        MapWatchesToType::const_iterator itType = m_mapWatchesToType.find(watch);
+        if (itType == m_mapWatchesToType.end())
+            return;
+        const WatchType type = itType->second;
+        switch (type)
+        {
+        case WatchType::Normal:
+            driver->UpdateWatch(cb::static_pointer_cast<GDBWatch>(watch));
+            break;
+        case WatchType::MemoryRange:
+            driver->UpdateMemoryRangeWatch(cb::static_pointer_cast<GDBMemoryRangeWatch>(watch));
+            break;
+        }
+    }
+}
+
+void DebuggerGDB::UpdateWatches(const std::vector<cb::shared_ptr<cbWatch>> &watches)
+{
     if (!m_State.HasDriver())
         return;
-    cb::shared_ptr<GDBWatch> real_watch = cb::static_pointer_cast<GDBWatch>(watch);
-    if (real_watch == m_localsWatch)
-        m_State.GetDriver()->UpdateWatchLocalsArgs(real_watch, true);
-    else if (real_watch == m_funcArgsWatch)
-        m_State.GetDriver()->UpdateWatchLocalsArgs(real_watch, false);
-    else
-        m_State.GetDriver()->UpdateWatch(real_watch);
+
+    WatchesContainer normalWatches;
+    MemoryRangeWatchesContainer memoryRanges;
+
+    cb::shared_ptr<GDBWatch> localsToUpdate, funcArgsToUpdate;
+
+    for (const cb::shared_ptr<cbWatch> &watch : watches)
+    {
+        if (watch == m_localsWatch)
+        {
+            localsToUpdate = m_localsWatch;
+            continue;
+        }
+        if (watch == m_funcArgsWatch)
+        {
+            funcArgsToUpdate = m_funcArgsWatch;
+            continue;
+        }
+
+        MapWatchesToType::const_iterator itType = m_mapWatchesToType.find(watch);
+        if (itType == m_mapWatchesToType.end())
+            continue;
+
+        const WatchType type = itType->second;
+        switch (type)
+        {
+        case WatchType::Normal:
+            normalWatches.push_back(cb::static_pointer_cast<GDBWatch>(watch));
+            break;
+        case WatchType::MemoryRange:
+            memoryRanges.push_back(cb::static_pointer_cast<GDBMemoryRangeWatch>(watch));
+            break;
+        }
+    }
+
+    if (!normalWatches.empty())
+        m_State.GetDriver()->UpdateWatches(localsToUpdate, funcArgsToUpdate, normalWatches, true);
+    if (!memoryRanges.empty())
+        m_State.GetDriver()->UpdateMemoryRangeWatches(memoryRanges, true);
 }
 
 void DebuggerGDB::MarkAllWatchesAsUnchanged()

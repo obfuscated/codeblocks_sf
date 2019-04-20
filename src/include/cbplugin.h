@@ -517,8 +517,12 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
         /// @param address The start address of the range.
         /// @param size The size in bytes of the range.
         /// @param symbol The name of the watch shown in the UI.
+        /// @param update Pass true if you want to make the debugger to immediately read the value
+        ///        of the watch, else it would be delayed until UpdateWatch/UpdateWatches is called
+        ///        or some stepping command finishes. Passing false is useful if you want to add
+        ///        multiple watches in one batch.
         virtual cb::shared_ptr<cbWatch> AddMemoryRange(uint64_t address, uint64_t size,
-                                                       const wxString &symbol) = 0;
+                                                       const wxString &symbol, bool update) = 0;
         virtual void DeleteWatch(cb::shared_ptr<cbWatch> watch) = 0;
         virtual bool HasWatch(cb::shared_ptr<cbWatch> watch) = 0;
         virtual void ShowWatchProperties(cb::shared_ptr<cbWatch> watch) = 0;
@@ -526,6 +530,14 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
         virtual void ExpandWatch(cb::shared_ptr<cbWatch> watch) = 0;
         virtual void CollapseWatch(cb::shared_ptr<cbWatch> watch) = 0;
         virtual void UpdateWatch(cb::shared_ptr<cbWatch> watch) = 0;
+
+        /// Manually ask the debugger to read/update the values of the given list of watches.
+        /// Depending on the debugger it might be more efficient than calling UpdateWatch multiple
+        /// times. The default implementation does just that.
+        /// @note The caller must make sure that all watches in the array are for this plugin.
+        /// Passing watches for other plugins would have unexpected results. The plugins aren't
+        /// required to check for this.
+        virtual void UpdateWatches(const std::vector<cb::shared_ptr<cbWatch>> &watches);
 
         struct WatchesDisabledMenuItems
         {

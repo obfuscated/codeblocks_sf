@@ -917,6 +917,12 @@ void cbDebuggerPlugin::BringCBToFront()
         app->Raise();
 }
 
+void cbDebuggerPlugin::UpdateWatches(const std::vector<cb::shared_ptr<cbWatch>> &watches)
+{
+    for (const cb::shared_ptr<cbWatch>& watch : watches)
+        UpdateWatch(watch);
+}
+
 void cbDebuggerPlugin::RegisterValueTooltip()
 {
     typedef cbEventFunctor<cbDebuggerPlugin, CodeBlocksEvent> Event;

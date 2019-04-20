@@ -276,13 +276,13 @@ void CDB_driver::EvaluateSymbol(const wxString& symbol, const wxRect& tipRect)
 
 void CDB_driver::UpdateWatches(cb_unused cb::shared_ptr<GDBWatch> localsWatch,
                                cb_unused cb::shared_ptr<GDBWatch> funcArgsWatch,
-                               WatchesContainer &watches)
+                               WatchesContainer &watches, bool ignoreAutoUpdate)
 {
     bool updateWatches = false;
     for (WatchesContainer::iterator it = watches.begin(); it != watches.end(); ++it)
     {
         WatchesContainer::reference watch = *it;
-        if (watch->IsAutoUpdateEnabled())
+        if (watch->IsAutoUpdateEnabled() || ignoreAutoUpdate)
         {
             QueueCommand(new CdbCmd_Watch(this, *it));
             updateWatches = true;
@@ -328,7 +328,8 @@ void CDB_driver::Attach(cb_unused int pid)
     // FIXME (obfuscated#): implement this
 }
 
-void CDB_driver::UpdateMemoryRangeWatches(cb_unused MemoryRangeWatchesContainer &watches)
+void CDB_driver::UpdateMemoryRangeWatches(cb_unused MemoryRangeWatchesContainer &watches,
+                                          cb_unused bool ignoreAutoUpdate)
 {
     // FIXME (bluehazzard#): implement this
     NOT_IMPLEMENTED();

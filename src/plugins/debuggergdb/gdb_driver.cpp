@@ -652,8 +652,9 @@ void GDB_driver::EvaluateSymbol(const wxString& symbol, const wxRect& tipRect)
     QueueCommand(new GdbCmd_FindTooltipType(this, symbol, tipRect));
 }
 
-void GDB_driver::UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch, cb::shared_ptr<GDBWatch> funcArgsWatch,
-                               WatchesContainer &watches)
+void GDB_driver::UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch,
+                               cb::shared_ptr<GDBWatch> funcArgsWatch,
+                               WatchesContainer &watches, bool ignoreAutoUpdate)
 {
     if (!m_FileName.IsSameAs(m_Cursor.file))
     {
@@ -662,12 +663,12 @@ void GDB_driver::UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch, cb::shared_
     }
 
     bool updateWatches = false;
-    if (localsWatch && localsWatch->IsAutoUpdateEnabled())
+    if (localsWatch && (localsWatch->IsAutoUpdateEnabled() || ignoreAutoUpdate))
     {
         QueueCommand(new GdbCmd_LocalsFuncArgs(this, localsWatch, true));
         updateWatches = true;
     }
-    if (funcArgsWatch && funcArgsWatch->IsAutoUpdateEnabled())
+    if (funcArgsWatch && (funcArgsWatch->IsAutoUpdateEnabled() || ignoreAutoUpdate))
     {
         QueueCommand(new GdbCmd_LocalsFuncArgs(this, funcArgsWatch, false));
         updateWatches = true;
@@ -676,7 +677,7 @@ void GDB_driver::UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch, cb::shared_
     for (WatchesContainer::iterator it = watches.begin(); it != watches.end(); ++it)
     {
         WatchesContainer::reference watch = *it;
-        if (watch->IsAutoUpdateEnabled())
+        if (watch->IsAutoUpdateEnabled() || ignoreAutoUpdate)
         {
             QueueCommand(new GdbCmd_FindWatchType(this, watch));
             updateWatches = true;
@@ -690,12 +691,13 @@ void GDB_driver::UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch, cb::shared_
     }
 }
 
-void GDB_driver::UpdateMemoryRangeWatches(MemoryRangeWatchesContainer &watches)
+void GDB_driver::UpdateMemoryRangeWatches(MemoryRangeWatchesContainer &watches,
+                                          bool ignoreAutoUpdate)
 {
     bool updateWatches = false;
     for (cb::shared_ptr<GDBMemoryRangeWatch> &watch : watches)
     {
-        if (watch->IsAutoUpdateEnabled())
+        if (watch->IsAutoUpdateEnabled() || ignoreAutoUpdate)
         {
             QueueCommand(new GdbCmd_MemoryRangeWatch(this, watch));
             updateWatches = true;
