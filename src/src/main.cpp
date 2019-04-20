@@ -755,7 +755,7 @@ void MainFrame::CreateIDE()
 
     {
         wxString msg = wxString::Format(wxT("Loaded config file '%s'"),
-                                        CfgMgrBldr::Get()->GetConfigFile());
+                                        CfgMgrBldr::Get()->GetConfigFile().wx_str());
         Manager::Get()->GetLogManager()->Log(msg);
     }
 
