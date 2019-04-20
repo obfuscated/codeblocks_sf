@@ -181,6 +181,9 @@
 					<Add directory="include/mozilla_chardet/xpcom/glue" />
 					<Add directory="exchndl/win32/include" />
 				</Compiler>
+				<ResourceCompiler>
+					<Add option="-DcbDPI_AWARE_ON" />
+				</ResourceCompiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
@@ -3917,6 +3920,9 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/PerLine.h">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/Position.h">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/PositionCache.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -3947,6 +3953,9 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/Selection.h">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/SparseVector.h">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/SplitVector.h">
 			<Option target="scintilla" />
 		</Unit>
@@ -3963,6 +3972,9 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/UnicodeFromUTF8.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/UniqueString.h">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/ViewStyle.cxx">
@@ -4174,6 +4186,12 @@
 		<Unit filename="src/recentitemslist.h">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/resources/amd64.manifest">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/resources/amd64_dpi_aware_on.manifest">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/resources/app_compiler_settings.xrc">
 			<Option target="src" />
 		</Unit>
@@ -4202,6 +4220,9 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/env_settings.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/resources/ia64.manifest">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/main_menu.xrc">
@@ -4236,6 +4257,9 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/virtualbuildtargetsdlg.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/resources/x86.manifest">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/scriptconsole.cpp">
