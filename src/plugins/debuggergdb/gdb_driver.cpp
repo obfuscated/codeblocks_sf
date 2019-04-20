@@ -692,14 +692,18 @@ void GDB_driver::UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch, cb::shared_
 
 void GDB_driver::UpdateMemoryRangeWatches(MemoryRangeWatchesContainer &watches)
 {
+    bool updateWatches = false;
     for (cb::shared_ptr<GDBMemoryRangeWatch> &watch : watches)
     {
         if (watch->IsAutoUpdateEnabled())
         {
             QueueCommand(new GdbCmd_MemoryRangeWatch(this, watch));
-            QueueCommand(new DbgCmd_UpdateWindow(this, cbDebuggerPlugin::DebugWindows::MemoryRange));
+            updateWatches = true;
         }
     }
+
+    if (updateWatches)
+        QueueCommand(new DbgCmd_UpdateWindow(this, cbDebuggerPlugin::DebugWindows::MemoryRange));
 }
 
 void GDB_driver::UpdateWatch(const cb::shared_ptr<GDBWatch> &watch)
