@@ -707,16 +707,7 @@ bool CodeBlocksApp::OnInit()
         }
 
         {
-            ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
-
-            int size = 16;
-            if (!cfg->Read(_T("/environment/toolbar_size"), &size))
-            {
-                bool smallSize = true;
-                if (cfg->Read(_T("/environment/toolbar_size"), &smallSize))
-                    size = (smallSize ? 16 : 22);
-            }
-
+            const int size = cbHelpers::ReadToolbarSizeFromConfig();
             toolbarAddonHandler->SetToolbarImageSize(size);
             Manager::Get()->SetToolbarImageSize(size);
         }

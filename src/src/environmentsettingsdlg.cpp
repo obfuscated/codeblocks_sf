@@ -43,6 +43,7 @@
 #include <wx/listbook.h>
 
 #include "annoyingdialog.h"
+#include "appglobals.h"
 #include "configurationpanel.h"
 #include "environmentsettingsdlg.h"
 #include "cbcolourmanager.h"
@@ -173,13 +174,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     XRCCTRL(*this, "rbProjectOpen",           wxRadioBox)->SetSelection(pcfg->ReadInt(_T("/open_files"), 1));
 
     {
-        int size = 16;
-        if (!cfg->Read(_T("/environment/toolbar_size"), &size))
-        {
-            bool smallSize = true;
-            if (cfg->Read(_T("/environment/toolbar_size"), &smallSize))
-                size = (smallSize ? 16 : 22);
-        }
+        const int size = cbHelpers::ReadToolbarSizeFromConfig();
 
         int selection;
         switch (size)

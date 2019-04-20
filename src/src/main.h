@@ -378,7 +378,6 @@ class MainFrame : public wxFrame
         wxMenu* m_HelpPluginsMenu;
         bool    m_ScanningForPlugins; // this variable is used to delay the UI construction
 
-        bool m_SmallToolBar;
         bool m_StartupDone;
         bool m_InitiatedShutdown;
 

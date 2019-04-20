@@ -35,4 +35,14 @@ namespace appglobals
     extern const wxString DefaultBatchBuildArgs;
 }
 
+namespace cbHelpers
+{
+
+const int defaultToolbarSize = 16;
+
+/// Helper to allow migration from the old way of storing the toolbar size to the new way.
+int ReadToolbarSizeFromConfig();
+
+}
+
 #endif // APPGLOBALS_H

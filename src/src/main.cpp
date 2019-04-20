@@ -604,7 +604,6 @@ MainFrame::MainFrame(wxWindow* parent)
     FileFilters::AddDefaultFileFilters();
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
-    m_SmallToolBar = cfg->ReadBool(_T("/environment/toolbar_size"), true);
     CreateIDE();
 
 #ifdef __WXMSW__
@@ -4754,7 +4753,6 @@ void MainFrame::OnPluginUnloaded(CodeBlocksEvent& event)
 
 void MainFrame::OnSettingsEnvironment(cb_unused wxCommandEvent& event)
 {
-    bool tbarsmall = m_SmallToolBar;
     bool needRestart = false;
 
     EnvironmentSettingsDlg dlg(this, m_LayoutManager.GetArtProvider());
@@ -4764,8 +4762,13 @@ void MainFrame::OnSettingsEnvironment(cb_unused wxCommandEvent& event)
         DoUpdateEditorStyle();
         DoUpdateLayoutColours();
 
-        m_SmallToolBar = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/toolbar_size"), true);
-        needRestart = m_SmallToolBar != tbarsmall;
+        {
+            ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
+            const int newToolbarSize = cfg->ReadInt(_T("/environment/toolbar_size"),
+                                                    cbHelpers::defaultToolbarSize);
+            needRestart = (newToolbarSize != Manager::Get()->GetToolbarImageSize());
+        }
+
         Manager::Get()->GetLogManager()->NotifyUpdate();
         Manager::Get()->GetEditorManager()->RecreateOpenEditorStyles();
         Manager::Get()->GetCCManager()->UpdateEnvSettings();

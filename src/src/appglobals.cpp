@@ -71,3 +71,21 @@ namespace appglobals
 
     const wxString DefaultBatchBuildArgs = _T("-na -nd -ns --batch-build-notify");
 }
+namespace cbHelpers
+{
+
+int ReadToolbarSizeFromConfig()
+{
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
+
+    int size = defaultToolbarSize;
+    if (!cfg->Read(_T("/environment/toolbar_size"), &size))
+    {
+        bool smallSize = true;
+        if (cfg->Read(_T("/environment/toolbar_size"), &smallSize))
+            size = (smallSize ? 16 : 22);
+    }
+    return size;
+}
+
+} // namespace cbHelpers
