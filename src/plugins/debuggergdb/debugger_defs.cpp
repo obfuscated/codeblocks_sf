@@ -29,8 +29,6 @@
 const int DEBUGGER_CURSOR_CHANGED = wxNewId();
 const int DEBUGGER_SHOW_FILE_LINE = wxNewId();
 
-const wxString GDBMemoryRangeWatch::emptyString = wxEmptyString;
-
 DebuggerCmd::DebuggerCmd(DebuggerDriver* driver, const wxString& cmd, bool logToNormalLog)
     : m_Cmd(cmd),
     m_pDriver(driver),
@@ -239,7 +237,7 @@ void GDBWatch::SetType(const wxString &type)
     m_type = type;
 }
 
-wxString const & GDBWatch::GetDebugString() const
+wxString GDBWatch::GetDebugString() const
 {
     return m_debug_value;
 }

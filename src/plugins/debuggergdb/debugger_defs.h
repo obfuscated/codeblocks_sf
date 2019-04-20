@@ -226,7 +226,7 @@ class GDBWatch : public cbWatch
         virtual void GetType(wxString &type) const;
         virtual void SetType(const wxString &type);
 
-        virtual wxString const & GetDebugString() const;
+        virtual wxString GetDebugString() const;
 
         wxString MakeSymbolToAddress() const override;
         bool IsPointerType() const override;
@@ -274,7 +274,7 @@ class GDBMemoryRangeWatch  : public cbWatch
         void GetType(wxString &type) const override { type = wxT("Memory range"); }
         void SetType(cb_unused const wxString &type) override {}
 
-        wxString const & GetDebugString() const override { return emptyString; }
+        wxString GetDebugString() const override { return wxString(); }
 
         wxString MakeSymbolToAddress() const override;
         bool IsPointerType() const override { return false; }
@@ -287,8 +287,6 @@ class GDBMemoryRangeWatch  : public cbWatch
         uint64_t m_size;
         wxString m_symbol;
         wxString m_value;
-
-        static const wxString emptyString;
 };
 
 typedef std::vector<cb::shared_ptr<GDBWatch>> WatchesContainer;
