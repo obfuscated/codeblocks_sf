@@ -47,6 +47,19 @@
     </security>
   </trustInfo>
 
+  <!-- High-DPI
+       Windows Vista introduced another feature, High-DPI which scaled the UI by a factor of
+       125% or 150% but is off by default. With Windows 7 this was enabled by default depending
+       on the EDID native DPI information so the recommendation is for all Direct3D full-screen
+       applications to declare themselves "High-DPI Aware". This is done via another manifest
+       element. Options are: {False , True , Per-monitor , True/PM} (PM=per monitor).
+  -->
+  <asmv3:application xmlns="urn:schemas-microsoft-com:asm.v1">
+    <asmv3:windowsSettings xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">
+      <dpiAware>True</dpiAware>
+    </asmv3:windowsSettings>
+  </asmv3:application>
+
   <!-- Program Compatibility Assistant (PCA)
        With Windows Vista, just having the UAC elements was enough to know that the application
        had been updated for Windows Vista. If no UAC manifest element was found, Windows Vista
