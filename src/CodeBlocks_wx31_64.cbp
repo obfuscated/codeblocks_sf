@@ -4185,6 +4185,12 @@
 		<Unit filename="src/recentitemslist.h">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/resources/amd64.manifest">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/resources/amd64_dpi_aware_on.manifest">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/resources/app_compiler_settings.xrc">
 			<Option target="src" />
 		</Unit>
@@ -4213,6 +4219,9 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/env_settings.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/resources/ia64.manifest">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/main_menu.xrc">
@@ -4247,6 +4256,9 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/virtualbuildtargetsdlg.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/resources/x86.manifest">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/scriptconsole.cpp">
