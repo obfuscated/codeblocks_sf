@@ -2124,13 +2124,13 @@ void DebuggerGDB::OnCursorChanged(wxCommandEvent& WXUNUSED(event))
     }
 }
 
-cb::shared_ptr<cbWatch> DebuggerGDB::AddWatch(const wxString& symbol)
+cb::shared_ptr<cbWatch> DebuggerGDB::AddWatch(const wxString& symbol, bool update)
 {
     cb::shared_ptr<GDBWatch> watch(new GDBWatch(CleanStringValue(symbol)));
     m_watches.push_back(watch);
     m_mapWatchesToType[watch] = WatchType::Normal;
 
-    if (m_pProcess)
+    if (m_pProcess && update)
         m_State.GetDriver()->UpdateWatch(m_watches.back());
 
     return watch;

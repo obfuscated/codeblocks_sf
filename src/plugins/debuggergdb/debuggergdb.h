@@ -88,7 +88,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         bool IsTemporaryBreak() const {return m_TemporaryBreak;}
         int GetExitCode() const { return m_LastExitCode; }
 
-        cb::shared_ptr<cbWatch> AddWatch(const wxString& symbol);
+        cb::shared_ptr<cbWatch> AddWatch(const wxString& symbol, bool update);
         cb::shared_ptr<cbWatch> AddMemoryRange(uint64_t address, uint64_t size,
                                                const wxString &symbol, bool update);
         void DeleteWatch(cb::shared_ptr<cbWatch> watch);

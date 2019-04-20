@@ -512,7 +512,14 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
         virtual bool SwitchToThread(int thread_number) = 0;
 
         // watches
-        virtual cb::shared_ptr<cbWatch> AddWatch(const wxString& symbol) = 0;
+
+        /// Request to add a watch for a given symbol in your language.
+        /// @param symbol Symbol or expression the debugger could understand and return a value for.
+        /// @param update Pass true if you want the debugger to immediately read the value of the
+        ///        symbol/expression, else it would be delayed until a call to UpdateWatch or
+        ///        UpdateWatches is made or some stepping command finishes. Passing false might be
+        ///        useful if you want to add multiple watches in one batch.
+        virtual cb::shared_ptr<cbWatch> AddWatch(const wxString& symbol, bool update) = 0;
         /// Request to add a watch which would allow read/write access to a given memory range.
         /// @param address The start address of the range.
         /// @param size The size in bytes of the range.

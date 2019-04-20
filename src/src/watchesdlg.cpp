@@ -356,7 +356,7 @@ public:
         cbDebuggerPlugin *activeDebugger = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
         if (!activeDebugger->SupportsFeature(cbDebuggerFeature::Watches))
             return false;
-        cb::shared_ptr<cbWatch> watch = activeDebugger->AddWatch(text);
+        cb::shared_ptr<cbWatch> watch = activeDebugger->AddWatch(text, true);
         if (watch.get())
             Manager::Get()->GetDebuggerManager()->GetWatchesDialog()->AddWatch(watch);
         // we return false here to veto the operation, otherwise the dragged text might get cut,
@@ -1012,7 +1012,7 @@ void WatchesDlg::RenameWatch(wxObject *prop, const wxString &newSymbol)
         cbDebuggerPlugin *old_plugin = Manager::Get()->GetDebuggerManager()->GetDebuggerHavingWatch(old_watch);
         watchesProp->SetWatch(cb::shared_ptr<cbWatch>());
         old_plugin->DeleteWatch(old_watch);
-        cb::shared_ptr<cbWatch> new_watch = active_plugin->AddWatch(newSymbol);
+        cb::shared_ptr<cbWatch> new_watch = active_plugin->AddWatch(newSymbol, true);
         watchesProp->SetWatch(new_watch);
 
         for (WatchItems::iterator it = m_watches.begin(); it != m_watches.end(); ++it)
@@ -1028,7 +1028,7 @@ void WatchesDlg::RenameWatch(wxObject *prop, const wxString &newSymbol)
     {
         WatchItem item;
         item.property = watchesProp;
-        item.watch = active_plugin->AddWatch(newSymbol);
+        item.watch = active_plugin->AddWatch(newSymbol, true);
         watchesProp->SetWatch(item.watch);
         m_watches.push_back(item);
         watchesProp->SetExpanded(item.watch->IsExpanded());

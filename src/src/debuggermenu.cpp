@@ -728,7 +728,7 @@ void DebuggerMenuHandler::OnAddWatch(cb_unused wxCommandEvent& event)
     wxString const &src = m_activeDebugger->GetEditorWordAtCaret();
     if (!src.empty())
     {
-        cb::shared_ptr<cbWatch> watch = m_activeDebugger->AddWatch(src);
+        cb::shared_ptr<cbWatch> watch = m_activeDebugger->AddWatch(src, true);
         if (watch.get())
         {
             cbWatchesDlg *dialog = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
