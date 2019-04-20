@@ -19,6 +19,7 @@
 #include <cbdebugger_interfaces.h>
 #include "debugger_defs.h"
 #include "debuggerdriver.h"
+#include "debuggergdb.h"
 
 #include <wx/arrimpl.cpp>
 
@@ -51,6 +52,7 @@ void DbgCmd_UpdateWindow::Action()
 {
     CodeBlocksEvent event(cbEVT_DEBUGGER_UPDATED);
     event.SetInt(int(m_windowToUpdate));
+    event.SetPlugin(m_pDriver->GetDebugger());
     Manager::Get()->ProcessEvent(event);
 }
 
