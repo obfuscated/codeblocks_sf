@@ -419,8 +419,14 @@ WatchesDlg::WatchesDlg() :
 
     m_grid->Connect(idGrid, wxEVT_KEY_DOWN, wxKeyEventHandler(WatchesDlg::OnKeyDown), nullptr, this);
 
-    ColourManager *colours = Manager::Get()->GetColourManager();
+    Manager *manager = Manager::Get();
+
+    ColourManager *colours = manager->GetColourManager();
     colours->RegisterColour(_("Debugger"), _("Watches changed value"), wxT("dbg_watches_changed"), *wxRED);
+
+    typedef cbEventFunctor<WatchesDlg, CodeBlocksEvent> Functor;
+    manager->RegisterEventSink(cbEVT_DEBUGGER_UPDATED,
+                               new Functor(this, &WatchesDlg::OnDebuggerUpdated));
 }
 
 inline void AppendChildren(wxPropertyGrid &grid, wxPGProperty &property, cbWatch &watch,
@@ -531,6 +537,14 @@ void WatchesDlg::UpdateWatches()
     for (WatchItems::iterator it = m_watches.begin(); it != m_watches.end(); ++it)
         UpdateWatch(m_grid, it->property, it->watch, it->readonly);
     m_grid->Refresh();
+}
+
+void WatchesDlg::OnDebuggerUpdated(CodeBlocksEvent &event)
+{
+    if (cbDebuggerPlugin::DebugWindows(event.GetInt()) != cbDebuggerPlugin::DebugWindows::Watches)
+        return;
+
+    UpdateWatches();
 }
 
 void WatchesDlg::AddWatch(cb::shared_ptr<cbWatch> watch)

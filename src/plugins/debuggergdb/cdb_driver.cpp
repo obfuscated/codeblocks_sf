@@ -285,7 +285,7 @@ void CDB_driver::UpdateWatches(cb_unused cb::shared_ptr<GDBWatch> localsWatch,
     }
 
     if (updateWatches)
-        QueueCommand(new DbgCmd_UpdateWatchesTree(this));
+        QueueCommand(new DbgCmd_UpdateWindow(this, cbDebuggerPlugin::DebugWindows::Watches));
 
     // FIXME (obfuscated#): reimplement this code
 //    // start updating watches tree
@@ -309,7 +309,7 @@ void CDB_driver::UpdateWatches(cb_unused cb::shared_ptr<GDBWatch> localsWatch,
 void CDB_driver::UpdateWatch(const cb::shared_ptr<GDBWatch> &watch)
 {
     QueueCommand(new CdbCmd_Watch(this, watch));
-    QueueCommand(new DbgCmd_UpdateWatchesTree(this));
+    QueueCommand(new DbgCmd_UpdateWindow(this, cbDebuggerPlugin::DebugWindows::Watches));
 }
 
 void CDB_driver::UpdateWatchLocalsArgs(cb_unused cb::shared_ptr<GDBWatch> const &watch,

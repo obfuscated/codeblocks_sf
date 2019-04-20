@@ -436,6 +436,11 @@ extern EVTIMPORT const wxEventType cbEVT_DEBUGGER_CONTINUED;
 #define cbEVT_DEBUGGER_CONTINUED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_CONTINUED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_DEBUGGER_FINISHED;
 #define EVT_DEBUGGER_FINISHED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_FINISHED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+/// Event sent when the data for a particular debug window is acquired by the debugger plugin and
+/// can be presented to the user. Calling GetInt on the event object can be used to find out the
+/// type of window which has been updated. The value has type cbDebuggerPlugin::DebugWindows.
+extern EVTIMPORT const wxEventType cbEVT_DEBUGGER_UPDATED;
+#define EVT_DEBUGGER_UPDATED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_UPDATED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 
 // logger-related events
 

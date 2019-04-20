@@ -40,14 +40,18 @@ void DebuggerCmd::ParseOutput(const wxString& output)
         m_pDriver->Log(output);
 }
 
-DbgCmd_UpdateWatchesTree::DbgCmd_UpdateWatchesTree(DebuggerDriver* driver)
-    : DebuggerCmd(driver)
+DbgCmd_UpdateWindow::DbgCmd_UpdateWindow(DebuggerDriver* driver,
+                                         cbDebuggerPlugin::DebugWindows windowToUpdate) :
+    DebuggerCmd(driver),
+    m_windowToUpdate(windowToUpdate)
 {
 }
 
-void DbgCmd_UpdateWatchesTree::Action()
+void DbgCmd_UpdateWindow::Action()
 {
-    Manager::Get()->GetDebuggerManager()->GetWatchesDialog()->UpdateWatches();
+    CodeBlocksEvent event(cbEVT_DEBUGGER_UPDATED);
+    event.SetInt(int(m_windowToUpdate));
+    Manager::Get()->ProcessEvent(event);
 }
 
 // Custom window to display output of DebuggerInfoCmd

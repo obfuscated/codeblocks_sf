@@ -659,20 +659,20 @@ void GDB_driver::UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch, cb::shared_
     if (updateWatches)
     {
         // run this action-only command to update the tree
-        QueueCommand(new DbgCmd_UpdateWatchesTree(this));
+        QueueCommand(new DbgCmd_UpdateWindow(this, cbDebuggerPlugin::DebugWindows::Watches));
     }
 }
 
 void GDB_driver::UpdateWatch(const cb::shared_ptr<GDBWatch> &watch)
 {
     QueueCommand(new GdbCmd_FindWatchType(this, watch));
-    QueueCommand(new DbgCmd_UpdateWatchesTree(this));
+    QueueCommand(new DbgCmd_UpdateWindow(this, cbDebuggerPlugin::DebugWindows::Watches));
 }
 
 void GDB_driver::UpdateWatchLocalsArgs(cb::shared_ptr<GDBWatch> const &watch, bool locals)
 {
     QueueCommand(new GdbCmd_LocalsFuncArgs(this, watch, locals));
-    QueueCommand(new DbgCmd_UpdateWatchesTree(this));
+    QueueCommand(new DbgCmd_UpdateWindow(this, cbDebuggerPlugin::DebugWindows::Watches));
 }
 
 void GDB_driver::Attach(int pid)

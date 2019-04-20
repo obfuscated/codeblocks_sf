@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "debuggermanager.h"
+#include "cbplugin.h"
 
 class DebuggerDriver;
 
@@ -112,12 +113,14 @@ class DebuggerContinueBaseCmd : public DebuggerCmd
 };
 
 /** Action-only debugger command to signal the watches tree to update. */
-class DbgCmd_UpdateWatchesTree : public DebuggerCmd
+class DbgCmd_UpdateWindow : public DebuggerCmd
 {
     public:
-        DbgCmd_UpdateWatchesTree(DebuggerDriver* driver);
-        virtual ~DbgCmd_UpdateWatchesTree(){}
-        virtual void Action();
+        DbgCmd_UpdateWindow(DebuggerDriver* driver, cbDebuggerPlugin::DebugWindows windowToUpdate);
+        void Action() override;
+
+    private:
+        cbDebuggerPlugin::DebugWindows m_windowToUpdate;
 };
 
 /** Debugger breakpoint interface.
