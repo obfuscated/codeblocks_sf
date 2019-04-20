@@ -2110,6 +2110,13 @@ void DebuggerGDB::OnCursorChanged(wxCommandEvent& WXUNUSED(event))
             // update running threads
             if (dbg_manager->UpdateThreads())
                 RunCommand(CMD_RUNNINGTHREADS);
+
+            // Notify everybody that the debugger cursor has changed.
+            // This might be used by some view windows to request the debugger plugin to update some
+            // data.
+            CodeBlocksEvent cursorChangeEvent(cbEVT_DEBUGGER_CURSOR_CHANGED);
+            cursorChangeEvent.SetPlugin(this);
+            Manager::Get()->ProcessEvent(cursorChangeEvent);
         }
     }
 }

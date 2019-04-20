@@ -158,6 +158,7 @@ const wxEventType cbEVT_DEBUGGER_STARTED = wxNewEventType();
 const wxEventType cbEVT_DEBUGGER_PAUSED = wxNewEventType();
 const wxEventType cbEVT_DEBUGGER_CONTINUED = wxNewEventType();
 const wxEventType cbEVT_DEBUGGER_FINISHED = wxNewEventType();
+const wxEventType cbEVT_DEBUGGER_CURSOR_CHANGED = wxNewEventType();
 const wxEventType cbEVT_DEBUGGER_UPDATED = wxNewEventType();
 
 // logger-related events
