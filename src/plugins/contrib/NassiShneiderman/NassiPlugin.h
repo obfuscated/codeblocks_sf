@@ -168,12 +168,7 @@ class NassiPlugin : public cbMimePlugin
 
         void OnSettingsChanged(CodeBlocksEvent &event);
 
-        static void PopulateToolbar16(wxToolBar* toolBar);
-        static void PopulateToolbar22(wxToolBar* toolBar);
         bool IsNassiEditorPanelActive();
-
-
-        wxToolBar *m_pTbar;
 
     private:
         DECLARE_EVENT_TABLE();

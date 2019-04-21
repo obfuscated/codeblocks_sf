@@ -44,7 +44,9 @@
 					<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 ..\..\..\devel31\share\CodeBlocks\NassiShneiderman.zip manifest.xml" />
+					<Add after="zip -jq9 ..\..\..\devel31\share\CodeBlocks\NassiShneiderman.zip manifest.xml *.xrc" />
+					<Add after="zip -Rq9 ..\..\..\devel31\share\codeblocks\NassiShneiderman.zip images\32x32\*.png images\22x22\*.png images\16x16\*.png" />
+					<Mode after="always" />
 				</ExtraCommands>
 				<Environment>
 					<Variable name="WX_CFG" value="" />
@@ -106,6 +108,7 @@
 		<Unit filename="commands.cpp" />
 		<Unit filename="commands.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="nassi_shneiderman_toolbar.xrc" />
 		<Unit filename="parseactions.cpp" />
 		<Unit filename="parseactions.h" />
 		<Extensions>

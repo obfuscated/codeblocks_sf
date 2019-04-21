@@ -7,6 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
+				<Option platforms="Unix;" />
 				<Option output="../../../devel30/share/codeblocks/plugins/NassiShneiderman" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../../../devel30" />
 				<Option object_output="../../../.objs30/plugins/contrib/NassiShneiderman" />
@@ -39,7 +40,8 @@
 					<Add directory="../../../devel30" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 ../../../devel30/share/codeblocks/NassiShneiderman.zip manifest.xml" />
+					<Add after="zip -jq9 ../../../devel30/share/codeblocks/NassiShneiderman.zip manifest.xml *.xrc" />
+					<Add after="zip -Rq9 ../../../devel30/share/codeblocks/NassiShneiderman.zip images/32x32/*.png images/22x22/*.png images/16x16/*.png" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -105,6 +107,7 @@
 		<Unit filename="commands.cpp" />
 		<Unit filename="commands.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="nassi_shneiderman_toolbar.xrc" />
 		<Unit filename="parseactions.cpp" />
 		<Unit filename="parseactions.h" />
 		<Extensions>

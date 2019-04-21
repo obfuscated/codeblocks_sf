@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+  <object class="wxToolBarAddOn" name="nassi_shneiderman_toolbar">
+    <object class="tool" name="NASSI_ID_ESC">
+      <tooltip>Select</tooltip>
+      <longhelp>Change the tool for selections</longhelp>
+      <bitmap>images/22x22/selecttool.png</bitmap>
+    </object>
+    <object class="separator"/>
+
+    <object class="tool" name="NASSI_ID_INSTRUCTION">
+      <tooltip>Instruction</tooltip>
+      <longhelp>Insert an instruction</longhelp>
+      <bitmap>images/22x22/instrtool.png</bitmap>
+    </object>
+    <object class="separator"/>
+
+    <object class="tool" name="NASSI_ID_IF">
+      <tooltip>Decision</tooltip>
+      <longhelp>Insert a decision</longhelp>
+      <bitmap>images/22x22/iftool.png</bitmap>
+    </object>
+    <object class="tool" name="NASSI_ID_SWITCH">
+      <tooltip>Selection</tooltip>
+      <longhelp>Insert a selection</longhelp>
+      <bitmap>images/22x22/switchtool.png</bitmap>
+    </object>
+    <object class="separator"/>
+
+    <object class="tool" name="NASSI_ID_WHILE">
+      <tooltip>Entry-Condition Loop</tooltip>
+      <longhelp>Insert an entry-condition loop</longhelp>
+      <bitmap>images/22x22/whiletool.png</bitmap>
+    </object>
+    <object class="tool" name="NASSI_ID_DOWHILE">
+      <tooltip>Exit-Condition Loop</tooltip>
+      <longhelp>Insert an exit-condition loop</longhelp>
+      <bitmap>images/22x22/dowhiletool.png</bitmap>
+    </object>
+    <object class="tool" name="NASSI_ID_FOR">
+      <tooltip>Counting Loop</tooltip>
+      <longhelp>Insert a counting loop</longhelp>
+      <bitmap>images/22x22/fortool.png</bitmap>
+    </object>
+    <object class="tool" name="NASSI_ID_BLOCK">
+      <tooltip>Block Instruction</tooltip>
+      <longhelp>Insert a block Instruction {}</longhelp>
+      <bitmap>images/22x22/blocktool.png</bitmap>
+    </object>
+    <object class="separator"/>
+
+    <object class="tool" name="NASSI_ID_BREAK">
+      <tooltip>Break-Instruction</tooltip>
+      <longhelp>Insert a break-instruction</longhelp>
+      <bitmap>images/22x22/breaktool.png</bitmap>
+    </object>
+    <object class="tool" name="NASSI_ID_CONTINUE">
+      <tooltip>Continue-Instruction</tooltip>
+      <longhelp>Insert a continue-instruction</longhelp>
+      <bitmap>images/22x22/continuetool.png</bitmap>
+    </object>
+    <object class="tool" name="NASSI_ID_RETURN">
+      <tooltip>Return-Instruction</tooltip>
+      <longhelp>Insert a return-instruction</longhelp>
+      <bitmap>images/22x22/returntool.png</bitmap>
+    </object>
+    <object class="separator"/>
+
+    <object class="tool" name="NASSI_ID_GLASS_P">
+      <tooltip>Zoom in</tooltip>
+      <longhelp>Zoom in the diagram</longhelp>
+      <bitmap>images/22x22/glassptool.png</bitmap>
+    </object>
+    <object class="tool" name="NASSI_ID_GLASS_N">
+      <tooltip>Zoom out</tooltip>
+      <longhelp>Zoom out the diagram</longhelp>
+      <bitmap>images/22x22/glassntool.png</bitmap>
+    </object>
+    <object class="separator"/>
+
+    <object class="tool" name="NASSI_ID_TOGGLE_SOURCE">
+      <tooltip>Toggle Source</tooltip>
+      <longhelp>Show source-code in the diagram</longhelp>
+      <bitmap>images/22x22/sourceToggletool.png</bitmap>
+    </object>
+    <object class="tool" name="NASSI_ID_TOGGLE_COMMENT">
+      <tooltip>Toggle Comments</tooltip>
+      <longhelp>Show comments in the diagram</longhelp>
+      <bitmap>images/22x22/commentToggletool.png</bitmap>
+    </object>
+  </object>
+</resource>

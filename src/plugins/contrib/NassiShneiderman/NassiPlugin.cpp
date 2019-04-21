@@ -4,6 +4,7 @@
 
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
+    #include <wx/xrc/xmlres.h>
     #include <cbeditor.h>
 #endif
 #include <configurationpanel.h>
@@ -14,41 +15,6 @@
 
 #include "NassiEditorPanel.h"
 #include "NassiView.h"
-
-#include "rc/selecttool16.xpm"
-#include "rc/selecttool22.xpm"
-#include "rc/instrtool16.xpm"
-#include "rc/instrtool22.xpm"
-#include "rc/iftool16.xpm"
-#include "rc/iftool22.xpm"
-#include "rc/switchtool16.xpm"
-#include "rc/switchtool22.xpm"
-#include "rc/whiletool16.xpm"
-#include "rc/whiletool22.xpm"
-#include "rc/dowhiletool16.xpm"
-#include "rc/dowhiletool22.xpm"
-#include "rc/breaktool16.xpm"
-#include "rc/breaktool22.xpm"
-#include "rc/continuetool16.xpm"
-#include "rc/continuetool22.xpm"
-#include "rc/returntool16.xpm"
-#include "rc/returntool22.xpm"
-#include "rc/fortool16.xpm"
-#include "rc/fortool22.xpm"
-#include "rc/blocktool16.xpm"
-#include "rc/blocktool22.xpm"
-
-#include "rc/glassptool16.xpm"
-#include "rc/glassptool22.xpm"
-#include "rc/glassntool16.xpm"
-#include "rc/glassntool22.xpm"
-
-
-#include "rc/commentToggletool16.xpm"
-#include "rc/commentToggletool22.xpm"
-#include "rc/sourceToggletool16.xpm"
-#include "rc/sourceToggletool22.xpm"
-
 
 // Register the plugin with Code::Blocks.
 // We are using an anonymous namespace so we don't litter the global one.
@@ -65,20 +31,20 @@ namespace
 }
 
 namespace {
-    const int NASSI_ID_TOGGLE_SOURCE = wxNewId();
-    const int NASSI_ID_TOGGLE_COMMENT = wxNewId();
+    const int NASSI_ID_TOGGLE_SOURCE =  XRCID("NASSI_ID_TOGGLE_SOURCE");
+    const int NASSI_ID_TOGGLE_COMMENT =  XRCID("NASSI_ID_TOGGLE_COMMENT");
 
-    const int NASSI_ID_ESC = wxNewId();
-    const int NASSI_ID_INSTRUCTION = wxNewId();
-    const int NASSI_ID_IF = wxNewId();
-    const int NASSI_ID_SWITCH = wxNewId();
-    const int NASSI_ID_WHILE = wxNewId();
-    const int NASSI_ID_DOWHILE = wxNewId();
-    const int NASSI_ID_FOR = wxNewId();
-    const int NASSI_ID_BLOCK = wxNewId();
-    const int NASSI_ID_BREAK = wxNewId();
-    const int NASSI_ID_CONTINUE = wxNewId();
-    const int NASSI_ID_RETURN = wxNewId();
+    const int NASSI_ID_ESC = XRCID("NASSI_ID_ESC");
+    const int NASSI_ID_INSTRUCTION = XRCID("NASSI_ID_INSTRUCTION");
+    const int NASSI_ID_IF = XRCID("NASSI_ID_IF");
+    const int NASSI_ID_SWITCH = XRCID("NASSI_ID_SWITCH");
+    const int NASSI_ID_WHILE = XRCID("NASSI_ID_WHILE");
+    const int NASSI_ID_DOWHILE = XRCID("NASSI_ID_DOWHILE");
+    const int NASSI_ID_FOR = XRCID("NASSI_ID_FOR");
+    const int NASSI_ID_BLOCK = XRCID("NASSI_ID_BLOCK");
+    const int NASSI_ID_BREAK = XRCID("NASSI_ID_BREAK");
+    const int NASSI_ID_CONTINUE = XRCID("NASSI_ID_CONTINUE");
+    const int NASSI_ID_RETURN = XRCID("NASSI_ID_RETURN");
 
     const int NASSI_ID_EXPORT_SVG = wxNewId();
     const int NASSI_ID_EXPORT_SOURCE = wxNewId();
@@ -87,8 +53,8 @@ namespace {
     const int NASSI_ID_EXPORT_STRUKTEX = wxNewId();
     const int NASSI_ID_EXPORT_BITMAP = wxNewId();
 
-    const int NASSI_ID_GLASS_P = wxNewId();
-    const int NASSI_ID_GLASS_N = wxNewId();
+    const int NASSI_ID_GLASS_P = XRCID("NASSI_ID_GLASS_P");
+    const int NASSI_ID_GLASS_N = XRCID("NASSI_ID_GLASS_N");
 }
 // TODO (danselmi#1#): Check if export of svg generates not conformant SVG data???
 
@@ -99,15 +65,41 @@ BEGIN_EVENT_TABLE(NassiPlugin, cbPlugin)
 
     //EVT_MENU(idParseC, NassiPlugin::ParseC)
 
-    EVT_UPDATE_UI_RANGE(NASSI_ID_TOGGLE_SOURCE, NASSI_ID_TOGGLE_COMMENT, NassiPlugin::OnUpdateToggleText)
-    EVT_MENU_RANGE(NASSI_ID_TOGGLE_SOURCE, NASSI_ID_TOGGLE_COMMENT , NassiPlugin::OnToggleText)
+    EVT_UPDATE_UI(NASSI_ID_TOGGLE_SOURCE, NassiPlugin::OnUpdateToggleText)
+    EVT_UPDATE_UI(NASSI_ID_TOGGLE_COMMENT, NassiPlugin::OnUpdateToggleText)
 
-    EVT_UPDATE_UI_RANGE(NASSI_ID_ESC, NASSI_ID_RETURN, NassiPlugin::OnUpdateTools)
-    EVT_MENU_RANGE(NASSI_ID_INSTRUCTION, NASSI_ID_RETURN, NassiPlugin::OnChangeTool)
+    EVT_MENU(NASSI_ID_TOGGLE_SOURCE, NassiPlugin::OnToggleText)
+    EVT_MENU(NASSI_ID_TOGGLE_COMMENT , NassiPlugin::OnToggleText)
+
+    EVT_UPDATE_UI(NASSI_ID_ESC, NassiPlugin::OnUpdateTools)
+    EVT_UPDATE_UI(NASSI_ID_INSTRUCTION, NassiPlugin::OnUpdateTools)
+    EVT_UPDATE_UI(NASSI_ID_IF, NassiPlugin::OnUpdateTools)
+    EVT_UPDATE_UI(NASSI_ID_SWITCH, NassiPlugin::OnUpdateTools)
+    EVT_UPDATE_UI(NASSI_ID_WHILE, NassiPlugin::OnUpdateTools)
+    EVT_UPDATE_UI(NASSI_ID_DOWHILE, NassiPlugin::OnUpdateTools)
+    EVT_UPDATE_UI(NASSI_ID_FOR, NassiPlugin::OnUpdateTools)
+    EVT_UPDATE_UI(NASSI_ID_BLOCK, NassiPlugin::OnUpdateTools)
+    EVT_UPDATE_UI(NASSI_ID_BREAK, NassiPlugin::OnUpdateTools)
+    EVT_UPDATE_UI(NASSI_ID_CONTINUE, NassiPlugin::OnUpdateTools)
+    EVT_UPDATE_UI(NASSI_ID_RETURN, NassiPlugin::OnUpdateTools)
+
+    EVT_MENU(NASSI_ID_INSTRUCTION, NassiPlugin::OnChangeTool)
+    EVT_MENU(NASSI_ID_IF, NassiPlugin::OnChangeTool)
+    EVT_MENU(NASSI_ID_SWITCH, NassiPlugin::OnChangeTool)
+    EVT_MENU(NASSI_ID_WHILE, NassiPlugin::OnChangeTool)
+    EVT_MENU(NASSI_ID_DOWHILE, NassiPlugin::OnChangeTool)
+    EVT_MENU(NASSI_ID_FOR, NassiPlugin::OnChangeTool)
+    EVT_MENU(NASSI_ID_BLOCK, NassiPlugin::OnChangeTool)
+    EVT_MENU(NASSI_ID_BREAK, NassiPlugin::OnChangeTool)
+    EVT_MENU(NASSI_ID_CONTINUE, NassiPlugin::OnChangeTool)
+    EVT_MENU(NASSI_ID_RETURN, NassiPlugin::OnChangeTool)
+
     EVT_MENU(NASSI_ID_ESC, NassiPlugin::OnToolSelect)
 
-    EVT_UPDATE_UI_RANGE(NASSI_ID_GLASS_P,NASSI_ID_GLASS_N, NassiPlugin::OnUpdateZoom)
-    EVT_MENU_RANGE(NASSI_ID_GLASS_P,NASSI_ID_GLASS_N, NassiPlugin::OnZoom)
+    EVT_UPDATE_UI(NASSI_ID_GLASS_P, NassiPlugin::OnUpdateZoom)
+    EVT_UPDATE_UI(NASSI_ID_GLASS_N, NassiPlugin::OnUpdateZoom)
+    EVT_MENU(NASSI_ID_GLASS_P, NassiPlugin::OnZoom)
+    EVT_MENU(NASSI_ID_GLASS_N, NassiPlugin::OnZoom)
 
     //EVT_MENU(wxID_SELECTALL, NassiPlugin::OnSelectAll)
     //EVT_MENU(wxID_DELETE, NassiPlugin::OnDelete)
@@ -122,16 +114,13 @@ BEGIN_EVENT_TABLE(NassiPlugin, cbPlugin)
 END_EVENT_TABLE()
 
 // constructor
-NassiPlugin::NassiPlugin():
-    m_pTbar(0)
+NassiPlugin::NassiPlugin()
 {
-    /*// Make sure our resources are available.
-    // In the generated boilerplate code we have no resources but when
-    // we add some, it will be nice that this code is in place already ;)
-    if(!Manager::LoadResource(_T("NassiPlugin.zip")))
+    // Make sure our resources are available.
+    if (!Manager::LoadResource(_T("NassiShneiderman.zip")))
     {
-        NotifyMissingFile(_T("NassiPlugin.zip"));
-    }*/
+        NotifyMissingFile(_T("NassiShneiderman.zip"));
+    }
 }
 
 // destructor
@@ -342,13 +331,11 @@ bool NassiPlugin::BuildToolBar(wxToolBar* toolBar)
     //The application is offering its toolbar for your plugin,
     //to add any toolbar items you want...
     //Append any items you need on the toolbar...
-    m_pTbar = toolBar;
-    if (!IsAttached() || !toolBar)
+    if (!m_IsAttached || !toolBar)
+    {
         return false;
-    if (Manager::Get()->GetToolbarImageSize() <= 16)
-        PopulateToolbar16(toolBar);
-    else
-        PopulateToolbar22(toolBar);
+    }
+    Manager::Get()->AddonToolBar(toolBar, _T("nassi_shneiderman_toolbar"));
     toolBar->Realize();
     toolBar->SetInitialSize();
     return true;
@@ -482,56 +469,6 @@ void NassiPlugin::OnUpdateTools(wxUpdateUIEvent &event)
     event.Enable( IsNassiEditorPanelActive() );
 }
 
-void NassiPlugin::PopulateToolbar16(wxToolBar* toolBar)
-{
-    toolBar->AddTool(NASSI_ID_ESC, _("Select"),  wxBitmap(selecttool16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Select"), _("Change the tool for selections"));
-    toolBar->AddSeparator();
-    toolBar->AddTool(NASSI_ID_INSTRUCTION, _("Instruction"), wxBitmap(instrtool16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Instruction"), _("Insert an instruction"));
-    toolBar->AddSeparator();
-    toolBar->AddTool(NASSI_ID_IF, _("Decision"), wxBitmap(iftool16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Decision"), _("Insert a decision"));
-    toolBar->AddTool(NASSI_ID_SWITCH, _("Selection"), wxBitmap(switchtool16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Selection"), _("Insert a selection"));
-    toolBar->AddSeparator();
-    toolBar->AddTool(NASSI_ID_WHILE, _("Entry-Condition Loop"), wxBitmap(whiletool16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Entry-Condition Loop"), _("Insert an entry-condition loop"));
-    toolBar->AddTool(NASSI_ID_DOWHILE, _("Exit-Condition Loop"), wxBitmap(dowhiletool16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Exit-Condition Loop"), _("Insert an exit-condition loop"));
-    //toolBar->AddTool(NASSI_ID_WHILE1, _("Endless Loop"),  wxBitmap(while1tool_xpm), wxNullBitmap, wxITEM_NORMAL, _("Endless Loop"), _("Insert an endless loop"));
-    toolBar->AddTool(NASSI_ID_FOR, _("Counting Loop"), wxBitmap(fortool16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Counting Loop"), _("Insert a counting loop"));
-    toolBar->AddTool(NASSI_ID_BLOCK, _("Block Instruction"), wxBitmap(blocktool16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Block Instruction"), _("Insert a block Instruction {}"));
-    toolBar->AddSeparator();
-    toolBar->AddTool(NASSI_ID_BREAK, _("Break-Instruction"), wxBitmap(breaktool16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Break-Instruction"), _("Insert a break-instruction"));
-    toolBar->AddTool(NASSI_ID_CONTINUE, _("Continue-Instruction"), wxBitmap(continuetool16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Continue-Instruction"), _("Insert a continue-instruction"));
-    toolBar->AddTool(NASSI_ID_RETURN, _("Return-Instruction"), wxBitmap(returntool16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Return-Instruction"), _("Insert a return-instruction"));
-    toolBar->AddSeparator();
-    toolBar->AddTool(NASSI_ID_GLASS_P, _("Zoom in"), wxBitmap(glassptool16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Zoom in"), _("zoom in the diagram"));
-    toolBar->AddTool(NASSI_ID_GLASS_N, _("Zoom out"), wxBitmap(glassntool16_xpm), wxNullBitmap, wxITEM_NORMAL, _("Zoom out"), _("zoom out the diagram"));
-    toolBar->AddSeparator();
-    toolBar->AddTool(NASSI_ID_TOGGLE_SOURCE, _("Toggle Source"), wxBitmap( sourceToggletool16_xpm ), wxNullBitmap, wxITEM_CHECK, _("Toggle Source"), _("Show source-code in the diagram") );
-    toolBar->AddTool(NASSI_ID_TOGGLE_COMMENT, _("Toggle Comments"), wxBitmap( commentToggletool16_xpm ), wxNullBitmap, wxITEM_CHECK, _("Toggle Comments"), _("Show comments in the diagram") );
-}
-void NassiPlugin::PopulateToolbar22(wxToolBar* toolBar)
-{
-    toolBar->AddTool(NASSI_ID_ESC, _("Select"),  wxBitmap(selecttool22_xpm), wxNullBitmap, wxITEM_NORMAL, _("Select"), _("Change the tool for selections"));
-    toolBar->AddSeparator();
-    toolBar->AddTool(NASSI_ID_INSTRUCTION, _("Instruction"), wxBitmap(instrtool22_xpm), wxNullBitmap, wxITEM_NORMAL, _("Instruction"), _("Insert an instruction"));
-    toolBar->AddSeparator();
-    toolBar->AddTool(NASSI_ID_IF, _("Decision"), wxBitmap(iftool22_xpm), wxNullBitmap, wxITEM_NORMAL, _("Decision"), _("Insert a decision"));
-    toolBar->AddTool(NASSI_ID_SWITCH, _("Selection"), wxBitmap(switchtool22_xpm), wxNullBitmap, wxITEM_NORMAL, _("Selection"), _("Insert a selection"));
-    toolBar->AddSeparator();
-    toolBar->AddTool(NASSI_ID_WHILE, _("Entry-Condition Loop"), wxBitmap(whiletool22_xpm), wxNullBitmap, wxITEM_NORMAL, _("Entry-Condition Loop"), _("Insert an entry-condition loop"));
-    toolBar->AddTool(NASSI_ID_DOWHILE, _("Exit-Condition Loop"), wxBitmap(dowhiletool22_xpm), wxNullBitmap, wxITEM_NORMAL, _("Exit-Condition Loop"), _("Insert an exit-condition loop"));
-    //toolBar->AddTool(NASSI_ID_WHILE1, _("Endless Loop"),  wxBitmap(while1tool_xpm), wxNullBitmap, wxITEM_NORMAL, _("Endless Loop"), _("Insert an endless loop"));
-    toolBar->AddTool(NASSI_ID_FOR, _("Counting Loop"), wxBitmap(fortool22_xpm), wxNullBitmap, wxITEM_NORMAL, _("Counting Loop"), _("Insert a counting loop"));
-    toolBar->AddTool(NASSI_ID_BLOCK, _("Block Instruction"), wxBitmap(blocktool22_xpm), wxNullBitmap, wxITEM_NORMAL, _("Block Instruction"), _("Insert a block Instruction {}"));
-    toolBar->AddSeparator();
-    toolBar->AddTool(NASSI_ID_BREAK, _("Break-Instruction"), wxBitmap(breaktool22_xpm), wxNullBitmap, wxITEM_NORMAL, _("Break-Instruction"), _("Insert a break-instruction"));
-    toolBar->AddTool(NASSI_ID_CONTINUE, _("Continue-Instruction"), wxBitmap(continuetool22_xpm), wxNullBitmap, wxITEM_NORMAL, _("Continue-Instruction"), _("Insert a continue-instruction"));
-    toolBar->AddTool(NASSI_ID_RETURN, _("Return-Instruction"), wxBitmap(returntool22_xpm), wxNullBitmap, wxITEM_NORMAL, _("Return-Instruction"), _("Insert a return-instruction"));
-    toolBar->AddSeparator();
-    toolBar->AddTool(NASSI_ID_GLASS_P, _("Zoom in"), wxBitmap(glassptool22_xpm), wxNullBitmap, wxITEM_NORMAL, _("Zoom in"), _("zoom in the diagram"));
-    toolBar->AddTool(NASSI_ID_GLASS_N, _("Zoom out"), wxBitmap(glassntool22_xpm), wxNullBitmap, wxITEM_NORMAL, _("Zoom out"), _("zoom out the diagram"));
-    toolBar->AddSeparator();
-    toolBar->AddTool(NASSI_ID_TOGGLE_SOURCE, _("Toggle Source"), wxBitmap( sourceToggletool22_xpm ), wxNullBitmap, wxITEM_CHECK, _("Toggle Source"), _("Show source-code in the diagram") );
-    toolBar->AddTool(NASSI_ID_TOGGLE_COMMENT, _("Toggle Comments"), wxBitmap( commentToggletool22_xpm ), wxNullBitmap, wxITEM_CHECK, _("Toggle Comments"), _("Show comments in the diagram") );
-}
 void NassiPlugin::OnToggleText(wxCommandEvent &event)
 {
     if ( IsNassiEditorPanelActive() )
