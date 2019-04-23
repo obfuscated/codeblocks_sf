@@ -419,63 +419,66 @@
 									<size>0,8</size>
 								</object>
 								<object class="sizeritem">
-									<object class="wxBoxSizer">
+									<object class="wxStaticBoxSizer">
+										<label>Feature size</label>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT22">
-												<label>Message logs&apos; font size:</label>
+											<object class="wxFlexGridSizer">
+												<cols>2</cols>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT22">
+														<label>Message logs&apos; font size:</label>
+													</object>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
+												</object>
+												<object class="sizeritem">
+													<object class="wxSpinCtrl" name="spnLogFontSize">
+														<value>8</value>
+														<min>6</min>
+														<max>32</max>
+													</object>
+													<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+													<border>5</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT23">
+														<label>Toolbar icon size</label>
+													</object>
+													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxChoice" name="chToolbarIconSize" />
+													<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+													<border>5</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT24">
+														<label>Settings icon size</label>
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
+												<object class="sizeritem">
+													<object class="wxChoice" name="chSettingsIconsSize">
+														<content>
+															<item>80 x 80 - Large</item>
+															<item>No icons, just text</item>
+														</content>
+														<selection>0</selection>
+													</object>
+													<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
 											</object>
-											<flag>wxALIGN_CENTER_VERTICAL</flag>
-										</object>
-										<object class="sizeritem">
-											<object class="wxSpinCtrl" name="spnLogFontSize">
-												<value>8</value>
-												<min>6</min>
-												<max>32</max>
-											</object>
-											<flag>wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL</flag>
 											<border>5</border>
 										</object>
 									</object>
-									<flag>wxTOP|wxLEFT|wxEXPAND</flag>
-									<border>4</border>
-								</object>
-								<object class="sizeritem">
-									<object class="wxFlexGridSizer">
-										<cols>2</cols>
-										<rows>1</rows>
-										<vgap>4</vgap>
-										<hgap>4</hgap>
-										<object class="sizeritem">
-											<object class="wxRadioBox" name="rbToolbarSize">
-												<label>Toolbar icons size</label>
-												<content>
-													<item>32 x 32 - Large</item>
-													<item>22 x 22 - Normal</item>
-													<item>16 x 16 - Small</item>
-												</content>
-												<default>1</default>
-												<style>wxRA_SPECIFY_COLS</style>
-											</object>
-											<flag>wxEXPAND</flag>
-											<border>4</border>
-											<option>1</option>
-										</object>
-										<object class="sizeritem">
-											<object class="wxRadioBox" name="rbSettingsIconsSize">
-												<label>Settings icons size</label>
-												<content>
-													<item>80 x 80 - Large</item>
-													<item>No icons, just text</item>
-												</content>
-												<style>wxRA_SPECIFY_COLS</style>
-											</object>
-											<flag>wxEXPAND</flag>
-											<border>4</border>
-											<option>1</option>
-										</object>
-									</object>
-									<flag>wxTOP|wxLEFT|wxEXPAND</flag>
-									<border>4</border>
+									<flag>wxALIGN_LEFT</flag>
+									<border>5</border>
+									<option>1</option>
 								</object>
 							</object>
 						</object>

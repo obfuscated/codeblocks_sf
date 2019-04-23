@@ -87,11 +87,11 @@ BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxScrollingDialog)
     EVT_CHECKBOX(XRCID("chkPlaceHead"), EnvironmentSettingsDlg::OnHeadCheck)
     EVT_CHECKBOX(XRCID("chkAutoHideMessages"), EnvironmentSettingsDlg::OnAutoHide)
     EVT_CHECKBOX(XRCID("chkI18N"), EnvironmentSettingsDlg::OnI18NCheck)
-    EVT_RADIOBOX(XRCID("rbSettingsIconsSize"), EnvironmentSettingsDlg::OnSettingsIconsSize)
     EVT_CHECKBOX(XRCID("chkDblClkMaximizes"), EnvironmentSettingsDlg::OnDblClickMaximizes)
     EVT_CHECKBOX(XRCID("chkNBUseMousewheel"), EnvironmentSettingsDlg::OnUseTabMousewheel)
 
     EVT_CHOICE(XRCID("chCategory"), EnvironmentSettingsDlg::OnChooseAppColourCategory)
+    EVT_CHOICE(XRCID("chSettingsIconsSize"), EnvironmentSettingsDlg::OnSettingsIconsSize)
     EVT_LISTBOX(XRCID("lstColours"), EnvironmentSettingsDlg::OnChooseAppColourItem)
     EVT_BUTTON(XRCID("btnColour"), EnvironmentSettingsDlg::OnClickAppColour)
     EVT_BUTTON(XRCID("btnDefaultColour"), EnvironmentSettingsDlg::OnClickAppColour)
@@ -191,10 +191,14 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
             break;
         }
 
-        XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->SetSelection(selection);
+        wxChoice *iconSizes = XRCCTRL(*this, "chToolbarIconSize", wxChoice);
+        iconSizes->Append(_("32 x 32 - Large"));
+        iconSizes->Append(_("22 x 22 - Normal"));
+        iconSizes->Append(_("16 x 16 - small"));
+        iconSizes->SetSelection(selection);
     }
 
-    XRCCTRL(*this, "rbSettingsIconsSize",     wxRadioBox)->SetSelection(cfg->ReadInt(_T("/environment/settings_size"), 0));
+    XRCCTRL(*this, "chSettingsIconsSize",     wxChoice)->SetSelection(cfg->ReadInt(_T("/environment/settings_size"), 0));
     XRCCTRL(*this, "chkShowStartPage",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/start_here_page"), true));
     XRCCTRL(*this, "spnLogFontSize",          wxSpinCtrl)->SetValue(mcfg->ReadInt(_T("/log_font_size"), 8));
 
@@ -398,7 +402,7 @@ void EnvironmentSettingsDlg::UpdateListbookImages()
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     int sel = lb->GetSelection();
 
-    if (SettingsIconsStyle(XRCCTRL(*this, "rbSettingsIconsSize", wxRadioBox)->GetSelection()) == sisNoIcons)
+    if (SettingsIconsStyle(XRCCTRL(*this, "chSettingsIconsSize", wxChoice)->GetSelection()) == sisNoIcons)
     {
         SetSettingsIconsStyle(lb->GetListView(), sisNoIcons);
         lb->SetImageList(nullptr);
@@ -582,7 +586,7 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
 
         {
             int size;
-            switch (XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->GetSelection())
+            switch (XRCCTRL(*this, "chToolbarIconSize", wxChoice)->GetSelection())
             {
             case 0:
                 size = 32;
@@ -601,7 +605,7 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
             cfg->Write(_T("/environment/toolbar_size"), size);
         }
 
-        cfg->Write(_T("/environment/settings_size"),         (int)  XRCCTRL(*this, "rbSettingsIconsSize", wxRadioBox)->GetSelection());
+        cfg->Write(_T("/environment/settings_size"),         (int)  XRCCTRL(*this, "chSettingsIconsSize", wxChoice)->GetSelection());
         mcfg->Write(_T("/auto_hide"),                        (bool) XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->GetValue());
         mcfg->Write(_T("/auto_show_search"),                 (bool) XRCCTRL(*this, "chkAutoShowMessagesOnSearch", wxCheckBox)->GetValue());
         mcfg->Write(_T("/auto_show_build_warnings"),         (bool) XRCCTRL(*this, "chkAutoShowMessagesOnWarn", wxCheckBox)->GetValue());
