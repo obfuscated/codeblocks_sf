@@ -64,7 +64,11 @@ wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param, wxSi
     wxBitmap bitmap = cbLoadBitmapScaled(finalName, wxBITMAP_TYPE_PNG, scaleFactor,
                                          &GetCurFileSystem());
     if (!bitmap.Ok())
+    {
+        LogManager *logger = Manager::Get()->GetLogManager();
+        logger->LogError(wxString::Format(wxT("Failed to load image: '%s'"), finalName.wx_str()));
         return bitmap;
+    }
 
     int bw = bitmap.GetWidth();
     int bh = bitmap.GetHeight();
