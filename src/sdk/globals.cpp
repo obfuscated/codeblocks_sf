@@ -1128,6 +1128,9 @@ wxBitmap cbLoadBitmap(const wxString& filename, wxBitmapType bitmapType, wxFileS
         cbLoadImageFromFS(im, filename, bitmapType, defaultFS);
     }
 
+    if (!im.IsOk())
+        return wxNullBitmap;
+
     return wxBitmap(im);
 }
 
@@ -1143,6 +1146,9 @@ wxBitmap cbLoadBitmapScaled(const wxString& filename, wxBitmapType bitmapType, d
         wxFileSystem defaultFS;
         cbLoadImageFromFS(im, filename, bitmapType, defaultFS);
     }
+
+    if (!im.IsOk())
+        return wxNullBitmap;
 
 #if defined(__WXOSX__) || (defined(__WXGTK3__) && wxCHECK_VERSION(3, 1, 2))
     return wxBitmap(im, -1, scaleFactor);
