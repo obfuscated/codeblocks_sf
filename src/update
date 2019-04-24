@@ -20,10 +20,10 @@ fi
 
 echo Creating output directory tree
 
-CB_DEVEL=devel
-CB_OUTPUT=output
-CB_DEVEL_RESDIR=devel/share/codeblocks
-CB_OUTPUT_RESDIR=output/share/codeblocks
+CB_DEVEL=devel$1
+CB_OUTPUT=output$1
+CB_DEVEL_RESDIR=$CB_DEVEL/share/codeblocks
+CB_OUTPUT_RESDIR=$CB_OUTPUT/share/codeblocks
 
 mkdir -p ${CB_DEVEL_RESDIR}/compilers
 mkdir -p ${CB_DEVEL_RESDIR}/lexers
