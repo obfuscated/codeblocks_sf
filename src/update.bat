@@ -12,7 +12,9 @@ set CB_OUTPUT_DIR=output%1%
 set CB_DEVEL_RESDIR=%CB_DEVEL_DIR%\share\CodeBlocks
 set CB_OUTPUT_RESDIR=%CB_OUTPUT_DIR%\share\CodeBlocks
 set CB_HANDLER_DIR=exchndl\win32\bin
-set %i% | find "_64" > nul && set CB_HANDLER_DIR=exchndl\win64\bin
+set TARGET=%1%
+set TARGET_CUT=%TARGET:_64=%
+if NOT "%TARGET%" == "" if NOT "%TARGET%" == "%TARGET_CUT%" set CB_HANDLER_DIR=exchndl\win64\bin
 
 call:mkdirSilent %CB_DEVEL_RESDIR%\compilers
 call:mkdirSilent %CB_DEVEL_RESDIR%\lexers
