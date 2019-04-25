@@ -1,2 +1,2 @@
 #!/bin/sh
-source update 30
+source ./update 30
