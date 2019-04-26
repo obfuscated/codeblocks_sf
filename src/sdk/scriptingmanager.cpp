@@ -226,10 +226,26 @@ wxString ScriptingManager::LoadBufferRedirectOutput(const wxString& buffer)
     s_ScriptErrors.Clear();
     ::capture.Clear();
 
-    sq_setprintfunc(SquirrelVM::GetVMPtr(), CaptureScriptOutput);
-    bool res = LoadBuffer(buffer);
-    sq_setprintfunc(SquirrelVM::GetVMPtr(), ScriptsPrintFunc);
+    // Save the old used print function so we can restore it after the
+    // redirected print is finished. This is needed for example if the
+    // scripting console redirects the script print output to itself and
+    // not the default print function of the ScriptingManager.
+    // In this case we have to restore the print function after the call to
+    // the scripting console.
+    const HSQUIRRELVM vm = SquirrelVM::GetVMPtr();
+    const SQPRINTFUNCTION oldPrintFunc = sq_getprintfunc(vm);
 
+    // redirect the print output to an internal buffer, so we can collect
+    // the print output
+    sq_setprintfunc(vm, CaptureScriptOutput);
+
+    // Run the script
+    bool res = LoadBuffer(buffer);
+
+    // restore the old print function
+    sq_setprintfunc(vm, oldPrintFunc);
+
+    // return the internal print buffer if the script executed successfully
     return res ? ::capture : (wxString) wxEmptyString;
 }
 
