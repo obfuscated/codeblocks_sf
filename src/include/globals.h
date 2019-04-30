@@ -429,8 +429,10 @@ namespace platform
         winver_WindowsXP,
         winver_WindowsServer2003,
         winver_WindowsVista,
-        winver_Windows7
-    }windows_version_t;
+        winver_Windows7,
+        winver_Windows8,
+        winver_Windows10
+    } windows_version_t;
 
     extern DLLIMPORT windows_version_t WindowsVersion();
 }
