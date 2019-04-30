@@ -2094,7 +2094,8 @@ wxString CompilerGCC::GetMakeCommandFor(MakeCommand cmd, cbProject* project, Pro
 void CompilerGCC::DoClean(const wxArrayString& commands)
 {
     for (unsigned int i = 0; i < commands.GetCount(); ++i)
-        wxRemoveFile(commands[i]);
+        if (wxFileExists(commands[i]))
+            wxRemoveFile(commands[i]);
 }
 
 int CompilerGCC::Clean(ProjectBuildTarget* target)
@@ -3137,8 +3138,7 @@ void CompilerGCC::OnCleanFile(wxCommandEvent& event)
         wxString obj_file = wxFileName(bt->GetObjectOutput() + wxFILE_SEP_PATH + obj_name).GetFullPath();
         Manager::Get()->GetMacrosManager()->ReplaceEnvVars(obj_file);
 
-        wxFileName obj_fn(obj_file);
-        if ( obj_fn.FileExists() )
+        if ( wxFileExists(obj_file) )
         {
             if ( wxRemoveFile(obj_file) )
                 Manager::Get()->GetLogManager()->DebugLog(F(_T("File has been removed: %s"), obj_file.wx_str()));

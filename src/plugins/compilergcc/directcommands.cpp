@@ -329,7 +329,7 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
                             ? pfd.object_file_flat_absolute_native
                             : pfd.object_file_absolute_native;
 
-        if ( !wxRemoveFile(object_abs) )
+        if ( wxFileExists(object_abs) && !wxRemoveFile(object_abs) )
             Manager::Get()->GetLogManager()->DebugLog(_("Cannot remove old PCH file:\n") + object_abs);
     }
 
