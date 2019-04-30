@@ -84,13 +84,15 @@ void VirtualBuildTargetsDlg::SetVirtualTarget(const wxString& targetName)
     {
         cbMessageBox(_("This virtual build target is invalid.\n"
                        "A virtual target must have at least one active target.\n"
-                       "Did you want to remove the virtual build target?"), _("Error"), wxICON_ERROR, this);
+                       "Did you want to remove the virtual build target?"),
+                     _("Error"), wxICON_ERROR, this);
     }
     else if (checked.GetCount() > 0)
     {
         if ( !m_pProject->DefineVirtualBuildTarget(targetName, checked) )
             cbMessageBox(_("Failed to setup this virtual build target.\n"
-                           "Check the debug log for more info..."), _("Error"), wxICON_ERROR, this);
+                           "Check the debug log for more info..."),
+                         _("Error"), wxICON_ERROR, this);
     }
 }
 
@@ -123,16 +125,14 @@ void VirtualBuildTargetsDlg::OnAddClick(cb_unused wxCommandEvent& event)
     if (lstAliases->FindString(targetName, true) != wxNOT_FOUND)
     {
         cbMessageBox(_("A virtual build target with this name already exists in this project!"),
-                        _("Error"),
-                        wxOK | wxCENTRE | wxICON_ERROR, this);
+                     _("Error"), wxOK | wxCENTRE | wxICON_ERROR, this);
         return;
     }
 
     if (m_pProject->GetBuildTarget(targetName))
     {
         cbMessageBox(_("A real build target with this name already exists in this project!"),
-                        _("Error"),
-                        wxOK | wxCENTRE | wxICON_ERROR, this);
+                     _("Error"), wxOK | wxCENTRE | wxICON_ERROR, this);
         return;
     }
 
@@ -155,16 +155,14 @@ void VirtualBuildTargetsDlg::OnEditClick(cb_unused wxCommandEvent& event)
     if (lstAliases->FindString(targetName, true) != wxNOT_FOUND)
     {
         cbMessageBox(_("A virtual build target with this name already exists in this project!"),
-                        _("Error"),
-                        wxOK | wxCENTRE | wxICON_ERROR, this);
+                     _("Error"), wxOK | wxCENTRE | wxICON_ERROR, this);
         return;
     }
 
     if (m_pProject->GetBuildTarget(targetName))
     {
         cbMessageBox(_("A real build target with this name already exists in this project!"),
-                        _("Error"),
-                        wxOK | wxCENTRE | wxICON_ERROR, this);
+                     _("Error"), wxOK | wxCENTRE | wxICON_ERROR, this);
         return;
     }
 
@@ -175,8 +173,11 @@ void VirtualBuildTargetsDlg::OnEditClick(cb_unused wxCommandEvent& event)
 
 void VirtualBuildTargetsDlg::OnRemoveClick(cb_unused wxCommandEvent& event)
 {
-    if (cbMessageBox(_("Are you sure you want to remove this virtual build target?"), _("Confirmation"), wxYES_NO | wxICON_QUESTION, this) == wxID_NO)
+    if ( cbMessageBox(_("Are you sure you want to remove this virtual build target?"),
+                      _("Confirmation"), wxYES_NO | wxICON_QUESTION, this) == wxID_NO )
+    {
         return;
+    }
     m_pProject->RemoveVirtualBuildTarget(lstAliases->GetStringSelection());
     lstAliases->Delete(lstAliases->GetSelection());
     lstAliases->SetSelection(0);

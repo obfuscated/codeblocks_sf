@@ -989,7 +989,7 @@ void MainFrame::CreateMenubar()
     tmpidx = mbar->FindMenu(_("&Edit"));
     if (tmpidx!=wxNOT_FOUND)
     {
-        wxMenu *hl=nullptr;
+        wxMenu *hl = nullptr;
         mbar->FindItem(idEditHighlightModeText, &hl);
         if (hl)
         {
@@ -2052,14 +2052,14 @@ void MainFrame::DoCreateStatusBar()
     wxCoord widths[16]; // 16 max
     widths[num++] = -1; // main field
 
-    dc.GetTextExtent(_(" Highlight Button "), &widths[num++], &h);
-    dc.GetTextExtent(_(" Windows (CR+LF) "), &widths[num++], &h);
-    dc.GetTextExtent(_(" WINDOWS-1252 "), &widths[num++], &h);
+    dc.GetTextExtent(_(" Highlight Button "),                &widths[num++], &h);
+    dc.GetTextExtent(_(" Windows (CR+LF) "),                 &widths[num++], &h);
+    dc.GetTextExtent(_(" WINDOWS-1252 "),                    &widths[num++], &h);
     dc.GetTextExtent(_(" Line 12345, Col 123, Pos 123456 "), &widths[num++], &h);
-    dc.GetTextExtent(_(" Overwrite "), &widths[num++], &h);
-    dc.GetTextExtent(_(" Modified "), &widths[num++], &h);
-    dc.GetTextExtent(_(" Read/Write "), &widths[num++], &h);
-    dc.GetTextExtent(_(" name_of_profile "), &widths[num++], &h);
+    dc.GetTextExtent(_(" Overwrite "),                       &widths[num++], &h);
+    dc.GetTextExtent(_(" Modified "),                        &widths[num++], &h);
+    dc.GetTextExtent(_(" Read/Write "),                      &widths[num++], &h);
+    dc.GetTextExtent(_(" name_of_profile "),                 &widths[num++], &h);
 
     wxStatusBar* sb = CreateStatusBar(num);
     if (!sb)

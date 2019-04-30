@@ -363,11 +363,11 @@ class MainFrame : public wxFrame
         /// "Close FullScreen" button. Only shown when in FullScreen view
         wxButton* m_pCloseFullScreenBtn;
 
-        EditorManager*    m_pEdMan;
-        ProjectManager*   m_pPrjMan;
+        EditorManager*      m_pEdMan;
+        ProjectManager*     m_pPrjMan;
         cbProjectManagerUI* m_pPrjManUI;
-        LogManager*       m_pLogMan;
-        InfoPane*         m_pInfoPane;
+        LogManager*         m_pLogMan;
+        InfoPane*           m_pInfoPane;
 
         wxToolBar* m_pToolbar; // main toolbar
         PluginToolbarsMap m_PluginsTools; // plugin -> toolbar map
