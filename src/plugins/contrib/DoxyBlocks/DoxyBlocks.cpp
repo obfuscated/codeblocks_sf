@@ -543,33 +543,45 @@ void DoxyBlocks::BuildMenu(wxMenuBar *menuBar)
         wxMenuItem *MenuItemDoxywizard = new wxMenuItem(submenu, ID_MENU_DOXYWIZARD, _("&Doxywizard...\tCtrl-Shift-D"), _("Run doxywizard."));
         MenuItemDoxywizard->SetBitmap(wxBitmap(prefix + wxT("doxywizard.png"), wxBITMAP_TYPE_PNG));
         submenu->Append(MenuItemDoxywizard);
+
         wxMenuItem *MenuItemExtract = new wxMenuItem(submenu, ID_MENU_EXTRACTPROJECT, _("&Extract documentation"), _("Extract documentation for the current project."));
         MenuItemExtract->SetBitmap(wxBitmap(prefix + wxT("extract.png"), wxBITMAP_TYPE_PNG));
         submenu->Append(MenuItemExtract);
         submenu->AppendSeparator();
+
         wxMenuItem *MenuItemBlockComment = new wxMenuItem(submenu, ID_MENU_BLOCKCOMMENT, _("&Block comment"), _("Insert a comment block at the current line."));
         MenuItemBlockComment->SetBitmap(wxBitmap(prefix + wxT("comment_block.png"), wxBITMAP_TYPE_PNG));
         submenu->Append(MenuItemBlockComment);
+
         wxMenuItem *MenuItemLineComment = new wxMenuItem(submenu, ID_MENU_LINECOMMENT, _("&Line comment"), _("Insert a line comment at the current cursor position."));
         MenuItemLineComment->SetBitmap(wxBitmap(prefix + wxT("comment_line.png"), wxBITMAP_TYPE_PNG));
         submenu->Append(MenuItemLineComment);
         submenu->AppendSeparator();
+
         wxMenuItem *MenuItemRunHTML = new wxMenuItem(submenu, ID_MENU_RUNHTML, _("Run &HTML\tCtrl-Shift-H"), _("Run HTML documentation."));
         MenuItemRunHTML->SetBitmap(wxBitmap(prefix + wxT("html.png"), wxBITMAP_TYPE_PNG));
         submenu->Append(MenuItemRunHTML);
+
         wxMenuItem *MenuItemRunCHM = new wxMenuItem(submenu, ID_MENU_RUNCHM, _("Run &CHM"), _("Run CHM documentation."));
         MenuItemRunCHM->SetBitmap(wxBitmap(prefix + wxT("chm.png"), wxBITMAP_TYPE_PNG));
         submenu->Append(MenuItemRunCHM);
         submenu->AppendSeparator();
+
         wxMenuItem *MenuItemConfig = new wxMenuItem(submenu, ID_MENU_CONFIG, _("Open &preferences..."), _("Open DoxyBlocks' preferences."));
         MenuItemConfig->SetBitmap(wxBitmap(prefix + wxT("configure.png"), wxBITMAP_TYPE_PNG));
         submenu->Append(MenuItemConfig);
         submenu->AppendSeparator();
+
+        const wxString bmpResourcePrefix = sDataFolder + wxT("/resources.zip#zip:images/16x16/");
+        wxBitmap bmpFileOpen = cbLoadBitmap(bmpResourcePrefix + wxT("fileopen.png"), wxBITMAP_TYPE_PNG);
+        wxBitmap bmpFileSave = cbLoadBitmap(bmpResourcePrefix + wxT("filesave.png"), wxBITMAP_TYPE_PNG);
+
         wxMenuItem *MenuItemLoadTemplate = new wxMenuItem(submenu, ID_MENU_LOAD_TEMPLATE, _("L&oad settings template"), _("Load saved settings template."));
-        MenuItemLoadTemplate->SetBitmap(wxBitmap(sDataFolder + wxT("/images/16x16/fileopen.png"), wxBITMAP_TYPE_PNG));
+        MenuItemLoadTemplate->SetBitmap(bmpFileOpen);
         submenu->Append(MenuItemLoadTemplate);
+
         wxMenuItem *MenuItemSaveTemplate = new wxMenuItem(submenu, ID_MENU_SAVE_TEMPLATE, _("&Save settings template"), _("Save current settings for future use."));
-        MenuItemSaveTemplate->SetBitmap(wxBitmap(sDataFolder + wxT("/images/16x16/filesave.png"), wxBITMAP_TYPE_PNG));
+        MenuItemSaveTemplate->SetBitmap(bmpFileSave);
         submenu->Append(MenuItemSaveTemplate);
 
         Connect(ID_MENU_DOXYWIZARD,     wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(DoxyBlocks::OnRunDoxywizard));

@@ -29,10 +29,6 @@ mkdir -p ${CB_DEVEL_RESDIR}/compilers
 mkdir -p ${CB_DEVEL_RESDIR}/lexers
 mkdir -p ${CB_DEVEL_RESDIR}/images/settings
 mkdir -p ${CB_DEVEL_RESDIR}/images/codecompletion
-mkdir -p ${CB_DEVEL_RESDIR}/images/12x12
-mkdir -p ${CB_DEVEL_RESDIR}/images/16x16
-mkdir -p ${CB_DEVEL_RESDIR}/images/22x22
-mkdir -p ${CB_DEVEL_RESDIR}/images/32x32
 mkdir -p ${CB_DEVEL_RESDIR}/plugins
 mkdir -p ${CB_DEVEL_RESDIR}/templates
 mkdir -p ${CB_DEVEL_RESDIR}/templates/wizard
@@ -42,10 +38,6 @@ mkdir -p ${CB_OUTPUT_RESDIR}/compilers
 mkdir -p ${CB_OUTPUT_RESDIR}/lexers
 mkdir -p ${CB_OUTPUT_RESDIR}/images/settings
 mkdir -p ${CB_OUTPUT_RESDIR}/images/codecompletion
-mkdir -p ${CB_OUTPUT_RESDIR}/images/12x12
-mkdir -p ${CB_OUTPUT_RESDIR}/images/16x16
-mkdir -p ${CB_OUTPUT_RESDIR}/images/22x22
-mkdir -p ${CB_OUTPUT_RESDIR}/images/32x32
 mkdir -p ${CB_OUTPUT_RESDIR}/plugins
 mkdir -p ${CB_OUTPUT_RESDIR}/templates
 mkdir -p ${CB_OUTPUT_RESDIR}/templates/wizard
@@ -90,9 +82,6 @@ echo Makefile.in >> excludes.txt
 cp -f sdk/resources/lexers/lexer_* ${CB_DEVEL_RESDIR}/lexers > /dev/null
 cp -f src/resources/images/*.png ${CB_DEVEL_RESDIR}/images > /dev/null
 cp -f src/resources/images/settings/*.png ${CB_DEVEL_RESDIR}/images/settings > /dev/null
-cp -f src/resources/images/16x16/*.png ${CB_DEVEL_RESDIR}/images/16x16 > /dev/null
-cp -f src/resources/images/22x22/*.png ${CB_DEVEL_RESDIR}/images/22x22 > /dev/null
-cp -f src/resources/images/32x32/*.png ${CB_DEVEL_RESDIR}/images/32x32 > /dev/null
 cp -f plugins/codecompletion/resources/images/*.png ${CB_DEVEL_RESDIR}/images/codecompletion > /dev/null
 cp -f plugins/compilergcc/resources/compilers/*.xml ${CB_DEVEL_RESDIR}/compilers > /dev/null
 rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ ${CB_DEVEL_RESDIR}/templates/wizard > /dev/null
@@ -105,9 +94,6 @@ cp -f ${CB_DEVEL_RESDIR}/*.zip ${CB_OUTPUT_RESDIR} > /dev/null
 cp -f sdk/resources/lexers/lexer_* ${CB_OUTPUT_RESDIR}/lexers > /dev/null
 cp -f src/resources/images/*.png ${CB_OUTPUT_RESDIR}/images > /dev/null
 cp -f src/resources/images/settings/*.png ${CB_OUTPUT_RESDIR}/images/settings > /dev/null
-cp -f src/resources/images/16x16/*.png ${CB_OUTPUT_RESDIR}/images/16x16 > /dev/null
-cp -f src/resources/images/22x22/*.png ${CB_OUTPUT_RESDIR}/images/22x22 > /dev/null
-cp -f src/resources/images/32x32/*.png ${CB_OUTPUT_RESDIR}/images/32x32 > /dev/null
 cp -f plugins/codecompletion/resources/images/*.png ${CB_OUTPUT_RESDIR}/images/codecompletion > /dev/null
 cp -f plugins/compilergcc/resources/compilers/*.xml ${CB_OUTPUT_RESDIR}/compilers > /dev/null
 rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ ${CB_OUTPUT_RESDIR}/templates/wizard > /dev/null
@@ -153,9 +139,6 @@ if [ -d "${CB_DEVEL_RESDIR}/lib_finder" ]; then
 fi
 
 # misc. contrib plugin settings:
-cp -f ${CB_DEVEL_RESDIR}/images/16x16/*.png    ${CB_OUTPUT_RESDIR}/images/16x16    > /dev/null
-cp -f ${CB_DEVEL_RESDIR}/images/22x22/*.png    ${CB_OUTPUT_RESDIR}/images/22x22    > /dev/null
-cp -f ${CB_DEVEL_RESDIR}/images/32x32/*.png    ${CB_OUTPUT_RESDIR}/images/32x32    > /dev/null
 cp -f ${CB_DEVEL_RESDIR}/images/settings/*.png ${CB_OUTPUT_RESDIR}/images/settings > /dev/null
 
 #=============================================
