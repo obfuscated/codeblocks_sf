@@ -51,10 +51,15 @@ void wxToolBarAddOnXmlHandler::SetToolbarImageSize(int size)
     m_PathReplaceString = wxString::Format(wxT("%dx%d"), size, size);
 }
 
+void wxToolBarAddOnXmlHandler::SetCurrentResourceID(const wxString &id)
+{
+    m_CurrentID = id;
+}
+
 wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param, wxSize size,
                                                      double scaleFactor)
 {
-    wxString name = GetParamValue(param);
+    const wxString name = GetParamValue(param);
     if (name.empty())
         return wxNullBitmap;
 
@@ -66,7 +71,8 @@ wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param, wxSi
     if (!bitmap.Ok())
     {
         LogManager *logger = Manager::Get()->GetLogManager();
-        logger->LogError(wxString::Format(wxT("Failed to load image: '%s'"), finalName.wx_str()));
+        logger->LogError(wxString::Format(wxT("(%s) Failed to load image: '%s'"),
+                                          m_CurrentID.wx_str(), finalName.wx_str()));
         return bitmap;
     }
 
@@ -76,11 +82,13 @@ wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param, wxSi
         return bitmap;
 
     LogManager *logger = Manager::Get()->GetLogManager();
-    logger->LogWarning(wxString::Format(wxT("Image \"%s\" with size [%dx%d] doesn't match ")
-                                        wxT("requested size [%dx%d] resizing (scale factor %.3f)!"),
-                                        finalName.wx_str(), bw, bh,
-                                        int(size.x * scaleFactor), int(size.y * scaleFactor),
-                                        scaleFactor));
+    const wxString msg = wxString::Format(wxT("(%s): Image \"%s\" with size [%dx%d] doesn't match ")
+                                          wxT("requested size [%dx%d] resizing (scale factor ")
+                                          wxT("%.3f)!"),
+                                          m_CurrentID.wx_str(), finalName.wx_str(), bw, bh,
+                                          int(size.x * scaleFactor), int(size.y * scaleFactor),
+                                          scaleFactor);
+    logger->LogWarning(msg);
 
     wxImage image = bitmap.ConvertToImage();
 

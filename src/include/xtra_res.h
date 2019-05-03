@@ -22,6 +22,7 @@ class DLLIMPORT wxToolBarAddOnXmlHandler : public wxXmlResourceHandler
         bool CanHandle(wxXmlNode *node) override;
 
         void SetToolbarImageSize(int size);
+        void SetCurrentResourceID(const wxString &id);
 
     protected:
         bool m_isInside;
@@ -29,6 +30,7 @@ class DLLIMPORT wxToolBarAddOnXmlHandler : public wxXmlResourceHandler
         wxToolBar *m_toolbar;
         int m_ImageSize;
         wxString m_PathReplaceString;
+        wxString m_CurrentID;
 
         wxBitmap GetCenteredBitmap(const wxString& param, wxSize size, double scaleFactor);
 };

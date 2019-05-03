@@ -43,7 +43,7 @@ class FileManager;
 class ColourManager;
 class CCManager;
 class cbSearchResultsLog;
-
+class wxToolBarAddOnXmlHandler;
 
 class DLLIMPORT Manager
 {
@@ -120,9 +120,6 @@ public:
     CCManager*           GetCCManager()                               const;
 
 
-    /////// XML Resource functions ///////
-    /// Inits XML Resource system
-    static void InitXRC(bool force=false);
     /// Loads XRC file(s) using data_path
     static void LoadXRC(wxString relpath);
     static bool LoadResource(const wxString& file);
@@ -142,6 +139,7 @@ public:
     void SetToolbarImageSize(int size);
     /// @return The size in pixels of images in toolbars.
     int GetToolbarImageSize() const;
+    static void SetToolbarHandler(wxToolBarAddOnXmlHandler *handler);
 
     static wxCmdLineParser* GetCmdLineParser();
 
@@ -164,6 +162,7 @@ private:
     static bool            m_BlockYields;
     static bool            m_IsBatch;
     static wxCmdLineParser m_CmdLineParser;
+    static wxToolBarAddOnXmlHandler *m_ToolbarHandler;
 
     int m_ToolbarImageSize;
 

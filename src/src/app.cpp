@@ -611,6 +611,8 @@ bool CodeBlocksApp::OnInit()
     wxInitAllImageHandlers();
     wxXmlResource::Get()->InitAllHandlers();
 
+    Manager::SetToolbarHandler(toolbarAddonHandler);
+
     Manager::Get()->GetLogManager()->Log(F(wxT("Starting ") + appglobals::AppName + wxT(" ") +
                                            appglobals::AppActualVersionVerb + wxT(" ") +
                                            appglobals::AppBuildTimestamp));

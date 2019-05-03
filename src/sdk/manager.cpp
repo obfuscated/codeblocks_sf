@@ -343,19 +343,6 @@ bool Manager::IsAppStartedUp()
     return m_AppStartedUp;
 }
 
-void Manager::InitXRC(bool force)
-{
-    static bool xrcok = false;
-    if (!xrcok || force)
-    {
-        wxFileSystem::AddHandler(new wxZipFSHandler);
-        wxXmlResource::Get()->InsertHandler(new wxToolBarAddOnXmlHandler);
-        wxXmlResource::Get()->InitAllHandlers();
-
-        xrcok = true;
-    }
-}
-
 void Manager::LoadXRC(wxString relpath)
 {
     LoadResource(relpath);
@@ -397,7 +384,11 @@ void Manager::AddonToolBar(wxToolBar* toolBar,wxString resid)
 {
     if (!toolBar)
         return;
+    if (m_ToolbarHandler)
+        m_ToolbarHandler->SetCurrentResourceID(resid);
     wxXmlResource::Get()->LoadObject(toolBar,nullptr,resid,_T("wxToolBarAddOn"));
+    if (m_ToolbarHandler)
+        m_ToolbarHandler->SetCurrentResourceID(wxString());
 }
 
 void Manager::SetToolbarImageSize(int size)
@@ -409,6 +400,11 @@ int Manager::GetToolbarImageSize() const
 {
     cbAssert(m_ToolbarImageSize > 0);
     return m_ToolbarImageSize;
+}
+
+void Manager::SetToolbarHandler(wxToolBarAddOnXmlHandler *handler)
+{
+    m_ToolbarHandler = handler;
 }
 
 wxFrame* Manager::GetAppFrame() const
@@ -642,3 +638,4 @@ bool            Manager::m_AppStartedUp    = false;
 bool            Manager::m_BlockYields     = false;
 bool            Manager::m_IsBatch         = false;
 wxCmdLineParser Manager::m_CmdLineParser;
+wxToolBarAddOnXmlHandler* Manager::m_ToolbarHandler = nullptr;
