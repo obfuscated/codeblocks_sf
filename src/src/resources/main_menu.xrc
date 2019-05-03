@@ -36,7 +36,7 @@
       <object class="separator"/>
       <object class="wxMenuItem" name="idFileOpen">
         <label>&amp;Open...</label>
-        <bitmap>images\16x16\fileopen.png</bitmap>
+        <bitmap>images/16x16/fileopen.png</bitmap>
         <accel>Ctrl-O</accel>
         <help>Open a file or project</help>
       </object>
@@ -49,7 +49,7 @@
         <help>Open a recent project</help>
         <object class="wxMenuItem" name="idFileOpenRecentProjectClearHistory">
           <label>&amp;Clear history</label>
-          <bitmap>images\16x16\history_clear.png</bitmap>
+          <bitmap>images/16x16/history_clear.png</bitmap>
           <help>Clear the recent projects list</help>
         </object>
       </object>
@@ -58,20 +58,20 @@
         <help>Open a recent file</help>
         <object class="wxMenuItem" name="idFileOpenRecentFileClearHistory">
           <label>&amp;Clear history</label>
-          <bitmap>images\16x16\history_clear.png</bitmap>
+          <bitmap>images/16x16/history_clear.png</bitmap>
           <help>Clear the recent files list</help>
         </object>
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idFileSave">
         <label>&amp;Save file</label>
-        <bitmap>images\16x16\filesave.png</bitmap>
+        <bitmap>images/16x16/filesave.png</bitmap>
         <accel>Ctrl-S</accel>
         <help>Save the active file</help>
       </object>
       <object class="wxMenuItem" name="idFileSaveAs">
         <label>Save file &amp;as...</label>
-        <bitmap>images\16x16\filesaveas.png</bitmap>
+        <bitmap>images/16x16/filesaveas.png</bitmap>
         <help>Save the active file under a different name</help>
       </object>
       <object class="separator"/>
@@ -99,14 +99,14 @@
       <object class="separator"/>
       <object class="wxMenuItem" name="idFileSaveAll">
         <label>Save everything</label>
-        <bitmap>images\16x16\filesaveall.png</bitmap>
+        <bitmap>images/16x16/filesaveall.png</bitmap>
         <accel>Ctrl-Shift-S</accel>
         <help>Save all source files, projects and the workspace, if there are changes to them. Save the configuration</help>
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idFileClose">
         <label>&amp;Close file</label>
-        <bitmap>images\16x16\fileclose.png</bitmap>
+        <bitmap>images/16x16/fileclose.png</bitmap>
         <accel>Ctrl-W</accel>
         <help>Close the active file</help>
       </object>
@@ -127,12 +127,12 @@
       <object class="wxMenuItem" name="idFilePrint">
         <label>Print...</label>
         <accel>Ctrl-P</accel>
-        <bitmap>images\16x16\fileprint.png</bitmap>
+        <bitmap>images/16x16/fileprint.png</bitmap>
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idFileExit">
         <label>&amp;Quit</label>
-        <bitmap>images\16x16\exit.png</bitmap>
+        <bitmap>images/16x16/exit.png</bitmap>
         <accel>Ctrl-Q</accel>
         <help>Exit Code::Blocks</help>
       </object>
@@ -141,36 +141,36 @@
       <label>&amp;Edit</label>
       <object class="wxMenuItem" name="idEditUndo">
         <label>&amp;Undo</label>
-        <bitmap>images\16x16\undo.png</bitmap>
+        <bitmap>images/16x16/undo.png</bitmap>
         <accel>Ctrl-Z</accel>
         <help>Undo the last editing operation</help>
       </object>
       <object class="wxMenuItem" name="idEditRedo">
         <label>&amp;Redo</label>
-        <bitmap>images\16x16\redo.png</bitmap>
+        <bitmap>images/16x16/redo.png</bitmap>
         <accel>Ctrl-Shift-Z</accel>
         <help>Redo the last editing operation</help>
       </object>
       <object class="wxMenuItem" name="idEditClearHistory">
         <label>Clear changes history</label>
-        <bitmap>images\16x16\history_clear.png</bitmap>
+        <bitmap>images/16x16/history_clear.png</bitmap>
         <help>Clear the undo-/redo- and (if exists) changebar-history</help>
-        <bitmap>images\16x16\history_clear.png</bitmap>
+        <bitmap>images/16x16/history_clear.png</bitmap>
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idEditCut">
         <label>Cu&amp;t</label>
-        <bitmap>images\16x16\editcut.png</bitmap>
+        <bitmap>images/16x16/editcut.png</bitmap>
         <help>Copy selected text to clipboard and erase it</help>
       </object>
       <object class="wxMenuItem" name="idEditCopy">
         <label>&amp;Copy</label>
-        <bitmap>images\16x16\editcopy.png</bitmap>
+        <bitmap>images/16x16/editcopy.png</bitmap>
         <help>Copy selected text to clipboard</help>
       </object>
       <object class="wxMenuItem" name="idEditPaste">
         <label>&amp;Paste</label>
-        <bitmap>images\16x16\editpaste.png</bitmap>
+        <bitmap>images/16x16/editpaste.png</bitmap>
         <help>Paste text from clipboard</help>
       </object>
       <object class="separator"/>
@@ -193,7 +193,7 @@
         <label>&amp;Bookmarks</label>
         <object class="wxMenuItem" name="idEditBookmarksToggle">
           <label>&amp;Toggle bookmark</label>
-          <bitmap>images\16x16\bookmark_add.png</bitmap>
+          <bitmap>images/16x16/bookmark_add.png</bitmap>
           <accel>Ctrl-B</accel>
           <help>Toggle a bookmark for the current position</help>
         </object>
@@ -609,69 +609,69 @@
       <label>Sea&amp;rch</label>
       <object class="wxMenuItem" name="idSearchFind">
         <label>&amp;Find...</label>
-        <bitmap>images\16x16\filefind.png</bitmap>
+        <bitmap>images/16x16/filefind.png</bitmap>
         <accel>Ctrl-F</accel>
         <help>Search for text</help>
       </object>
       <object class="wxMenuItem" name="idSearchFindInFiles">
         <label>Find in fil&amp;es...</label>
-        <bitmap>images\16x16\findf.png</bitmap>
+        <bitmap>images/16x16/findf.png</bitmap>
         <accel>Ctrl-Shift-F</accel>
         <help>Search for text</help>
       </object>
       <object class="wxMenuItem" name="idSearchFindNext">
         <label>Find &amp;next</label>
-        <bitmap>images\16x16\filefindnext.png</bitmap>
+        <bitmap>images/16x16/filefindnext.png</bitmap>
         <accel>F3</accel>
         <help>Repeat the last search in the same direction</help>
       </object>
       <object class="wxMenuItem" name="idSearchFindPrevious">
         <label>Find &amp;previous</label>
-        <bitmap>images\16x16\filefindprev.png</bitmap>
+        <bitmap>images/16x16/filefindprev.png</bitmap>
         <accel>Shift-F3</accel>
         <help>Repeat the last search in the opposite direction</help>
       </object>
       <object class="wxMenuItem" name="idSearchFindSelectedNext">
         <label>Find &amp;next selected</label>
-        <bitmap>images\16x16\filefindnext.png</bitmap>
+        <bitmap>images/16x16/filefindnext.png</bitmap>
         <accel></accel>
         <help>Search for selected text in the same direction</help>
       </object>
       <object class="wxMenuItem" name="idSearchFindSelectedPrevious">
         <label>Find &amp;previous selected</label>
-        <bitmap>images\16x16\filefindprev.png</bitmap>
+        <bitmap>images/16x16/filefindprev.png</bitmap>
         <accel></accel>
         <help>Search for selected text in the opposite direction</help>
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idSearchReplace">
         <label>&amp;Replace...</label>
-        <bitmap>images\16x16\searchreplace.png</bitmap>
+        <bitmap>images/16x16/searchreplace.png</bitmap>
         <accel>Ctrl-R</accel>
         <help>Find and replace text</help>
       </object>
       <object class="wxMenuItem" name="idSearchReplaceInFiles">
         <label>Replace in file&amp;s...</label>
-        <bitmap>images\16x16\searchreplacef.png</bitmap>
+        <bitmap>images/16x16/searchreplacef.png</bitmap>
         <accel>Ctrl-Shift-R</accel>
         <help>Find and replace text</help>
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idSearchGotoLine">
         <label>Goto &amp;line...</label>
-        <bitmap>images\16x16\goto.png</bitmap>
+        <bitmap>images/16x16/goto.png</bitmap>
         <accel>Ctrl-G</accel>
         <help>Goto a specific line</help>
       </object>
       <object class="wxMenuItem" name="idSearchGotoNextChanged">
         <label>Goto next changed line</label>
-        <bitmap>images\16x16\filefindnext.png</bitmap>
+        <bitmap>images/16x16/filefindnext.png</bitmap>
         <accel>Ctrl-F3</accel>
         <help>Goto next changed line</help>
       </object>
       <object class="wxMenuItem" name="idSearchGotoPreviousChanged">
         <label>Goto previous changed line</label>
-        <bitmap>images\16x16\filefindprev.png</bitmap>
+        <bitmap>images/16x16/filefindprev.png</bitmap>
         <accel>Ctrl-Shift-F3</accel>
         <help>Goto previous changed line</help>
       </object>
@@ -686,7 +686,7 @@
       <label>P&amp;lugins</label>
       <object class="wxMenuItem" name="idPluginsManagePlugins">
         <label>Manage &amp;plugins...</label>
-        <bitmap>images\16x16\plug.png</bitmap>
+        <bitmap>images/16x16/plug.png</bitmap>
         <help>Enable or disable plugins for the next session</help>
       </object>
     </object>
@@ -721,12 +721,12 @@
       <label>&amp;Help</label>
       <object class="wxMenuItem" name="wxID_ABOUT">
         <label>&amp;About...</label>
-        <bitmap>images\16x16\info.png</bitmap>
+        <bitmap>images/16x16/info.png</bitmap>
         <help>About Code::Blocks</help>
       </object>
       <object class="wxMenuItem" name="idHelpTips">
         <label>&amp;Tips</label>
-        <bitmap>images\16x16\idea.png</bitmap>
+        <bitmap>images/16x16/idea.png</bitmap>
         <help>Tips on using Code::Blocks</help>
       </object>
       <object class="wxMenu" name="idHelpPlugins">
