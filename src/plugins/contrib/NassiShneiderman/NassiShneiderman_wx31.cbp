@@ -45,7 +45,10 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -jq9 ..\..\..\devel31\share\CodeBlocks\NassiShneiderman.zip manifest.xml *.xrc" />
-					<Add after="zip -Rq9 ..\..\..\devel31\share\codeblocks\NassiShneiderman.zip images\32x32\*.png images\22x22\*.png images\16x16\*.png" />
+					<Add after="zip -Rq9 ..\..\..\devel31\share\codeblocks\NassiShneiderman.zip images\22x22\*.png" />
+					<Add after="zip -Rq9 ..\..\..\devel31\share\codeblocks\NassiShneiderman.zip images\16x16\*.png images\20x20\*.png images\24x24\*.png" />
+					<Add after="zip -Rq9 ..\..\..\devel31\share\codeblocks\NassiShneiderman.zip images\28x28\*.png images\32x32\*.png images\40x40\*.png" />
+					<Add after="zip -Rq9 ..\..\..\devel31\share\codeblocks\NassiShneiderman.zip images\48x48\*.png images\56x56\*.png images\64x64\*.png" />
 					<Mode after="always" />
 				</ExtraCommands>
 				<Environment>

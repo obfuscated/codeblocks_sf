@@ -1,23 +1,24 @@
 #! /bin/sh
-mkdir -p ../../../devel/share/codeblocks/images/ThreadSearch > /dev/null 2> /dev/null
-mkdir -p ../../../devel/share/codeblocks/images/ThreadSearch/16x16 > /dev/null 2> /dev/null
-mkdir -p ../../../devel/share/codeblocks/images/ThreadSearch/22x22 > /dev/null 2> /dev/null
-mkdir -p ../../../devel/share/codeblocks/images/ThreadSearch/32x32 > /dev/null 2> /dev/null
-mkdir -p ../../../output/share/codeblocks/images/ThreadSearch > /dev/null 2> /dev/null
-mkdir -p ../../../output/share/codeblocks/images/ThreadSearch/16x16 > /dev/null 2> /dev/null
-mkdir -p ../../../output/share/codeblocks/images/ThreadSearch/22x22 > /dev/null 2> /dev/null
-mkdir -p ../../../output/share/codeblocks/images/ThreadSearch/32x32 > /dev/null 2> /dev/null
-mkdir -p ../../../devel/share/codeblocks/images/settings > /dev/null 2> /dev/null
-mkdir -p ../../../output/share/codeblocks/images/settings > /dev/null 2> /dev/null
-cp ./resources/images/*.png ../../../devel/share/codeblocks/images/ThreadSearch/ > /dev/null 2> /dev/null
-cp ./resources/images/16x16/*.png ../../../devel/share/codeblocks/images/ThreadSearch/16x16/ > /dev/null 2> /dev/null
-cp ./resources/images/22x22/*.png ../../../devel/share/codeblocks/images/ThreadSearch/22x22/ > /dev/null 2> /dev/null
-cp ./resources/images/32x32/*.png ../../../devel/share/codeblocks/images/ThreadSearch/32x32/ > /dev/null 2> /dev/null
-cp ./resources/images/*.png ../../../output/share/codeblocks/images/ThreadSearch/ > /dev/null 2> /dev/null
-cp ./resources/images/16x16/*.png ../../../output/share/codeblocks/images/ThreadSearch/16x16/ > /dev/null 2> /dev/null
-cp ./resources/images/22x22/*.png ../../../output/share/codeblocks/images/ThreadSearch/22x22/ > /dev/null 2> /dev/null
-cp ./resources/images/32x32/*.png ../../../output/share/codeblocks/images/ThreadSearch/32x32/ > /dev/null 2> /dev/null
-cp ./resources/*.png ../../../devel/share/codeblocks/images/settings/ > /dev/null 2> /dev/null
-cp ./resources/*.png ../../../output/share/codeblocks/images/settings/ > /dev/null 2> /dev/null
+
+CB_DEVEL=devel$1
+CB_OUTPUT=output$1
+CB_DEVEL_RESDIR=../../../$CB_DEVEL/share/codeblocks/images
+CB_OUTPUT_RESDIR=../../../$CB_OUTPUT/share/codeblocks/images
+
+dirlist=(16x16 20x20 22x22 24x24 28x28 32x32 40x40 48x48 56x56 64x64)
+
+for dir in "${dirlist[@]}"; do
+    mkdir -p ${CB_DEVEL_RESDIR}/ThreadSearch/${dir}
+    mkdir -p ${CB_OUTPUT_RESDIR}/ThreadSearch/${dir}
+
+    cp ./resources/images/${dir}/*.png ${CB_DEVEL_RESDIR}/ThreadSearch/${dir}/ #> /dev/null 2> /dev/null
+    cp ./resources/images/${dir}/*.png ${CB_OUTPUT_RESDIR}/ThreadSearch/${dir}/ #> /dev/null 2> /dev/null
+done
+
+mkdir -p ${CB_DEVEL_RESDIR}/settings > /dev/null 2> /dev/null
+mkdir -p ${CB_OUTPUT_RESDIR}/settings > /dev/null 2> /dev/null
+cp ./resources/*.png ${CB_DEVEL_RESDIR}/settings/ > /dev/null 2> /dev/null
+cp ./resources/*.png ${CB_OUTPUT_RESDIR}/settings/ > /dev/null 2> /dev/null
+
 exit 0
 

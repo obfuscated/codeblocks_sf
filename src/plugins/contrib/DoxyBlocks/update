@@ -1,27 +1,24 @@
 #! /bin/sh
-#
 
-CB_DIR="../../../devel/share/codeblocks/"
+CB_DEVEL=devel$1
+CB_OUTPUT=output$1
+CB_DEVEL_RESDIR=../../../$CB_DEVEL/share/codeblocks/images
+CB_OUTPUT_RESDIR=../../../$CB_OUTPUT/share/codeblocks/images
 
-mkdir -p ${CB_DIR}/images/DoxyBlocks/32x32 > /dev/null 2> /dev/null
-mkdir -p ${CB_DIR}/images/DoxyBlocks/22x22 > /dev/null 2> /dev/null
-mkdir -p ${CB_DIR}/images/DoxyBlocks/16x16 > /dev/null 2> /dev/null
-mkdir -p ${CB_DIR}/images/settings > /dev/null 2> /dev/null
-cp ./images/32x32/*.png ${CB_DIR}/images/DoxyBlocks/32x32 > /dev/null 2> /dev/null
-cp ./images/22x22/*.png ${CB_DIR}/images/DoxyBlocks/22x22 > /dev/null 2> /dev/null
-cp ./images/16x16/*.png ${CB_DIR}/images/DoxyBlocks/16x16/ > /dev/null 2> /dev/null
-cp ./*.png ${CB_DIR}/images/settings/ > /dev/null 2> /dev/null
+dirlist=(16x16 20x20 22x22 24x24 28x28 32x32 40x40 48x48 56x56 64x64)
 
-CB_DIR="../../../output/share/codeblocks/"
+for dir in "${dirlist[@]}"; do
+    mkdir -p ${CB_DEVEL_RESDIR}/DoxyBlocks/${dir}
+    mkdir -p ${CB_OUTPUT_RESDIR}/DoxyBlocks/${dir}
 
-mkdir -p ${CB_DIR}/images/DoxyBlocks/32x32 > /dev/null 2> /dev/null
-mkdir -p ${CB_DIR}/images/DoxyBlocks/22x22 > /dev/null 2> /dev/null
-mkdir -p ${CB_DIR}/images/DoxyBlocks/16x16 > /dev/null 2> /dev/null
-mkdir -p ${CB_DIR}/images/settings > /dev/null 2> /dev/null
-cp ./images/32x32/*.png ${CB_DIR}/images/DoxyBlocks/32x32 > /dev/null 2> /dev/null
-cp ./images/22x22/*.png ${CB_DIR}/images/DoxyBlocks/22x22 > /dev/null 2> /dev/null
-cp ./images/16x16/*.png ${CB_DIR}/images/DoxyBlocks/16x16/ > /dev/null 2> /dev/null
-cp ./*.png ${CB_DIR}/images/settings/ > /dev/null 2> /dev/null
+    cp ./images/${dir}/*.png ${CB_DEVEL_RESDIR}/DoxyBlocks/${dir}/ #> /dev/null 2> /dev/null
+    cp ./images/${dir}/*.png ${CB_OUTPUT_RESDIR}/DoxyBlocks/${dir}/ #> /dev/null 2> /dev/null
+done
+
+mkdir -p ${CB_DEVEL_RESDIR}/settings > /dev/null 2> /dev/null
+mkdir -p ${CB_OUTPUT_RESDIR}/settings > /dev/null 2> /dev/null
+cp *.png ${CB_DEVEL_RESDIR}/settings/ > /dev/null 2> /dev/null
+cp *.png ${CB_OUTPUT_RESDIR}/settings/ > /dev/null 2> /dev/null
 
 exit 0
 
