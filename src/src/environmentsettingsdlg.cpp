@@ -70,6 +70,9 @@ const wxString base_imgs[] =
 };
 const int IMAGES_COUNT = sizeof(base_imgs) / sizeof(wxString);
 
+const int iconSizesCount = 10;
+const int iconSizes[iconSizesCount] = { 16, 20, 22, 24, 28, 32, 40, 48, 56, 64 };
+
 BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxScrollingDialog)
     EVT_BUTTON(XRCID("btnSetAssocs"), EnvironmentSettingsDlg::OnSetAssocs)
     EVT_BUTTON(XRCID("btnManageAssocs"), EnvironmentSettingsDlg::OnManageAssocs)
@@ -176,25 +179,27 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     {
         const int size = cbHelpers::ReadToolbarSizeFromConfig();
 
-        int selection;
-        switch (size)
+        int selection = -1;
+        for (int ii = 0; ii < iconSizesCount; ++ii)
         {
-        case 32:
-            selection = 0;
-            break;
-        case 22:
-            selection = 1;
-            break;
-        case 16:
-        default:
-            selection = 2;
-            break;
+            if (size == iconSizes[ii])
+            {
+                selection = ii;
+                break;
+            }
         }
 
         wxChoice *iconSizes = XRCCTRL(*this, "chToolbarIconSize", wxChoice);
-        iconSizes->Append(_("32 x 32 - Large"));
-        iconSizes->Append(_("22 x 22 - Normal"));
-        iconSizes->Append(_("16 x 16 - small"));
+        iconSizes->Append(_("16 x 16 - Smaller (1.0x)"));
+        iconSizes->Append(_("20 x 20 - Smaller (1.25x)"));
+        iconSizes->Append(_("22 x 22 - Small"));
+        iconSizes->Append(_("24 x 24 - Small (1.5x)"));
+        iconSizes->Append(_("28 x 28 - Large (1.75x)"));
+        iconSizes->Append(_("32 x 32 - Large (2.0x)"));
+        iconSizes->Append(_("40 x 40 - Larger (2.5x)"));
+        iconSizes->Append(_("48 x 48 - Larger (3.0x)"));
+        iconSizes->Append(_("56 x 56 - Larger (3.5x)"));
+        iconSizes->Append(_("64 x 64 - Larger (4.0x)"));
         iconSizes->SetSelection(selection);
     }
 
@@ -585,20 +590,10 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         pcfg->Write(_T("/open_files"),                       (int)  XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->GetSelection());
 
         {
-            int size;
-            switch (XRCCTRL(*this, "chToolbarIconSize", wxChoice)->GetSelection())
-            {
-            case 0:
-                size = 32;
-                break;
-            case 1:
-                size = 22;
-                break;
-            default:
-            case 2:
-                size = 16;
-                break;
-            }
+            const int selection = XRCCTRL(*this, "chToolbarIconSize", wxChoice)->GetSelection();
+            int size = 16;
+            if (selection >= 0 && selection < iconSizesCount)
+                size = iconSizes[selection];
 
             // We call unset to remove the old bool value if it is present.
             cfg->UnSet(_T("/environment/toolbar_size"));
