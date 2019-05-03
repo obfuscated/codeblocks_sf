@@ -11,7 +11,6 @@ usr/share/man/man1/cb_share_config.1
 usr/share/codeblocks/compilers/
 usr/share/codeblocks/icons/
 usr/share/codeblocks/images/*.png
-usr/share/codeblocks/images/16x16
 usr/share/codeblocks/images/codecompletion
 usr/share/codeblocks/images/settings
 usr/share/codeblocks/lexers
