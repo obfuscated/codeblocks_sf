@@ -138,7 +138,7 @@
 										<object class="wxBoxSizer">
 											<object class="sizeritem">
 												<object class="wxBitmapButton" name="ID_BITMAPBUTTON1">
-													<bitmap>images/22x22/incsearchhighlight.png</bitmap>
+													<bitmap>images/24x24/incsearchhighlight.png</bitmap>
 												</object>
 												<flag>wxALL|wxALIGN_BOTTOM</flag>
 												<border>5</border>
@@ -172,7 +172,7 @@
 										<object class="wxBoxSizer">
 											<object class="sizeritem">
 												<object class="wxBitmapButton" name="ID_BITMAPBUTTON2">
-													<bitmap>images/22x22/incsearchselectedonly.png</bitmap>
+													<bitmap>images/24x24/incsearchselectedonly.png</bitmap>
 													<default>1</default>
 												</object>
 												<flag>wxALL|wxALIGN_BOTTOM</flag>
@@ -207,7 +207,7 @@
 										<object class="wxBoxSizer">
 											<object class="sizeritem">
 												<object class="wxBitmapButton" name="ID_BITMAPBUTTON3">
-													<bitmap>images/22x22/incsearchcase.png</bitmap>
+													<bitmap>images/24x24/incsearchcase.png</bitmap>
 													<default>1</default>
 												</object>
 												<flag>wxALL|wxALIGN_BOTTOM</flag>
@@ -242,7 +242,7 @@
 										<object class="wxBoxSizer">
 											<object class="sizeritem">
 												<object class="wxBitmapButton" name="ID_BITMAPBUTTON4">
-													<bitmap>images/22x22/incsearchregex.png</bitmap>
+													<bitmap>images/24x24/incsearchregex.png</bitmap>
 												</object>
 												<flag>wxALL|wxALIGN_BOTTOM</flag>
 												<border>5</border>

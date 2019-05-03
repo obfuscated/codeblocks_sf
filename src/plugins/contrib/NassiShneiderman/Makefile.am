@@ -94,21 +94,6 @@ resources_forZIP = \
 		images/20x20/sourceToggletool.png \
 		images/20x20/switchtool.png \
 		images/20x20/whiletool.png \
-		images/22x22/blocktool.png \
-		images/22x22/breaktool.png \
-		images/22x22/commentToggletool.png \
-		images/22x22/continuetool.png \
-		images/22x22/dowhiletool.png \
-		images/22x22/fortool.png \
-		images/22x22/glassntool.png \
-		images/22x22/glassptool.png \
-		images/22x22/iftool.png \
-		images/22x22/instrtool.png \
-		images/22x22/returntool.png \
-		images/22x22/selecttool.png \
-		images/22x22/sourceToggletool.png \
-		images/22x22/switchtool.png \
-		images/22x22/whiletool.png \
 		images/24x24/blocktool.png \
 		images/24x24/breaktool.png \
 		images/24x24/commentToggletool.png \

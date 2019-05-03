@@ -19,12 +19,6 @@ EXTRA_DIST = advanced_compiler_options.xrc \
 	images/20x20/run.png \
 	images/20x20/select_target.png \
 	images/20x20/stop.png \
-	images/22x22/compile.png \
-	images/22x22/compilerun.png \
-	images/22x22/rebuild.png \
-	images/22x22/run.png \
-	images/22x22/select_target.png \
-	images/22x22/stop.png \
 	images/24x24/compile.png \
 	images/24x24/compilerun.png \
 	images/24x24/rebuild.png \

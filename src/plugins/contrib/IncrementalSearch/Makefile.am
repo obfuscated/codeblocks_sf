@@ -38,15 +38,6 @@ resources_forZIP = \
 	images/20x20/incsearchregex.png \
 	images/20x20/incsearchselectedonly.png \
 	\
-	images/22x22/incsearchcase.png \
-	images/22x22/incsearchclear.png \
-	images/22x22/incsearchfocus.png \
-	images/22x22/incsearchhighlight.png \
-	images/22x22/incsearchnext.png \
-	images/22x22/incsearchprev.png \
-	images/22x22/incsearchregex.png \
-	images/22x22/incsearchselectedonly.png \
-	\
 	images/24x24/incsearchcase.png \
 	images/24x24/incsearchclear.png \
 	images/24x24/incsearchfocus.png \

@@ -31,9 +31,7 @@ EXTRA_DIST = $(srcdir)/*.cbp \
 		manifest.xml \
 		ChangeLog.txt \
 		DoxyBlocks.rc \
-		$(srcdir)/update* \
-		$(srcdir)/images/16x16/*.png
-		$(srcdir)/images/22x22/*.png
+		$(srcdir)/update*
 
 pkgdata_DATA = DoxyBlocks.zip
 
@@ -64,16 +62,6 @@ dist_images20x20_DATA = \
 	$(srcdir)/images/20x20/doxywizard.png \
 	$(srcdir)/images/20x20/extract.png \
 	$(srcdir)/images/20x20/html.png
-
-images22x22dir = $(datadir)/@PACKAGE@/images/DoxyBlocks/22x22
-dist_images22x22_DATA = \
-	$(srcdir)/images/22x22/chm.png \
-	$(srcdir)/images/22x22/comment_block.png \
-	$(srcdir)/images/22x22/comment_line.png \
-	$(srcdir)/images/22x22/configure.png \
-	$(srcdir)/images/22x22/doxywizard.png \
-	$(srcdir)/images/22x22/extract.png \
-	$(srcdir)/images/22x22/html.png
 
 images24x24dir = $(datadir)/@PACKAGE@/images/DoxyBlocks/24x24
 dist_images24x24_DATA = \

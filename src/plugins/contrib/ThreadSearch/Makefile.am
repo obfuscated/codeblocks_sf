@@ -130,33 +130,6 @@ dist_images20x20_DATA = \
 	$(srcdir)/resources/images/20x20/workspace.png \
 	$(srcdir)/resources/images/20x20/workspaceselected.png
 
-images22x22dir = $(datadir)/@PACKAGE@/images/ThreadSearch/22x22
-dist_images22x22_DATA = \
-	$(srcdir)/resources/images/22x22/findfdisabled.png \
-	$(srcdir)/resources/images/22x22/findf.png \
-	$(srcdir)/resources/images/22x22/folderdisabled.png \
-	$(srcdir)/resources/images/22x22/folder.png \
-	$(srcdir)/resources/images/22x22/folderselected.png \
-	$(srcdir)/resources/images/22x22/openfilesdisabled.png \
-	$(srcdir)/resources/images/22x22/openfiles.png \
-	$(srcdir)/resources/images/22x22/openfilesselected.png \
-	$(srcdir)/resources/images/22x22/optionsactive.png \
-	$(srcdir)/resources/images/22x22/optionsdisabled.png \
-	$(srcdir)/resources/images/22x22/options.png \
-	$(srcdir)/resources/images/22x22/projectdisabled.png \
-	$(srcdir)/resources/images/22x22/project.png \
-	$(srcdir)/resources/images/22x22/projectselected.png \
-	$(srcdir)/resources/images/22x22/showdirdisabled.png \
-	$(srcdir)/resources/images/22x22/showdir.png \
-	$(srcdir)/resources/images/22x22/stopdisabled.png \
-	$(srcdir)/resources/images/22x22/stop.png \
-	$(srcdir)/resources/images/22x22/targetdisabled.png \
-	$(srcdir)/resources/images/22x22/target.png \
-	$(srcdir)/resources/images/22x22/targetselected.png \
-	$(srcdir)/resources/images/22x22/workspacedisabled.png \
-	$(srcdir)/resources/images/22x22/workspace.png \
-	$(srcdir)/resources/images/22x22/workspaceselected.png
-
 images24x24dir = $(datadir)/@PACKAGE@/images/ThreadSearch/24x24
 dist_images24x24_DATA = \
 	$(srcdir)/resources/images/24x24/findfdisabled.png \

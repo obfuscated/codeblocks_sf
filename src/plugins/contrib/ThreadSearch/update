@@ -5,7 +5,7 @@ CB_OUTPUT=output$1
 CB_DEVEL_RESDIR=../../../$CB_DEVEL/share/codeblocks/images
 CB_OUTPUT_RESDIR=../../../$CB_OUTPUT/share/codeblocks/images
 
-dirlist=(16x16 20x20 22x22 24x24 28x28 32x32 40x40 48x48 56x56 64x64)
+dirlist=(16x16 20x20 24x24 28x28 32x32 40x40 48x48 56x56 64x64)
 
 for dir in "${dirlist[@]}"; do
     mkdir -p ${CB_DEVEL_RESDIR}/ThreadSearch/${dir}

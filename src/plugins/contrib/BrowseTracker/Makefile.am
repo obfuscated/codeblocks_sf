@@ -52,12 +52,6 @@ resources_forZIP = \
 	images/20x20/mark_prev.png \
 	images/20x20/next.png \
 	images/20x20/prev.png \
-	images/22x22/mark_clear.png \
-	images/22x22/mark_next.png \
-	images/22x22/mark.png \
-	images/22x22/mark_prev.png \
-	images/22x22/next.png \
-	images/22x22/prev.png \
 	images/24x24/mark_clear.png \
 	images/24x24/mark_next.png \
 	images/24x24/mark.png \

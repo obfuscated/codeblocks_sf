@@ -70,8 +70,8 @@ const wxString base_imgs[] =
 };
 const int IMAGES_COUNT = sizeof(base_imgs) / sizeof(wxString);
 
-const int iconSizesCount = 10;
-const int iconSizes[iconSizesCount] = { 16, 20, 22, 24, 28, 32, 40, 48, 56, 64 };
+const int iconSizesCount = 9;
+const int iconSizes[iconSizesCount] = { 16, 20, 24, 28, 32, 40, 48, 56, 64 };
 
 BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxScrollingDialog)
     EVT_BUTTON(XRCID("btnSetAssocs"), EnvironmentSettingsDlg::OnSetAssocs)
@@ -192,7 +192,6 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
         wxChoice *iconSizes = XRCCTRL(*this, "chToolbarIconSize", wxChoice);
         iconSizes->Append(_("16 x 16 - Smaller (1.0x)"));
         iconSizes->Append(_("20 x 20 - Smaller (1.25x)"));
-        iconSizes->Append(_("22 x 22 - Small"));
         iconSizes->Append(_("24 x 24 - Small (1.5x)"));
         iconSizes->Append(_("28 x 28 - Large (1.75x)"));
         iconSizes->Append(_("32 x 32 - Large (2.0x)"));

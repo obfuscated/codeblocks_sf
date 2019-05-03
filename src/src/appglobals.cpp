@@ -83,8 +83,10 @@ int ReadToolbarSizeFromConfig()
     {
         bool smallSize = true;
         if (cfg->Read(_T("/environment/toolbar_size"), &smallSize))
-            size = (smallSize ? 16 : 22);
+            size = (smallSize ? 16 : 24);
     }
+    if (size == 22)
+        size = 24;
     return size;
 }
 

@@ -90,32 +90,6 @@ images_forZIP = \
 	images/20x20/redo.png \
 	images/20x20/searchreplace.png \
 	images/20x20/undo.png \
-	images/22x22/dbginfo.png \
-	images/22x22/dbgnexti.png \
-	images/22x22/dbgnext.png \
-	images/22x22/dbgpause.png \
-	images/22x22/dbgrun.png \
-	images/22x22/dbgrunto.png \
-	images/22x22/dbgstepi.png \
-	images/22x22/dbgstepout.png \
-	images/22x22/dbgstep.png \
-	images/22x22/dbgstop.png \
-	images/22x22/dbgwindow.png \
-	images/22x22/editcopy.png \
-	images/22x22/editcut.png \
-	images/22x22/editpaste.png \
-	images/22x22/filefind.png \
-	images/22x22/filenew.png \
-	images/22x22/fileopen.png \
-	images/22x22/fileprint.png \
-	images/22x22/filesaveall.png \
-	images/22x22/filesaveas.png \
-	images/22x22/filesave.png \
-	images/22x22/newproject.png \
-	images/22x22/redo.png \
-	images/22x22/run.png \
-	images/22x22/searchreplace.png \
-	images/22x22/undo.png \
 	images/24x24/dbginfo.png \
 	images/24x24/dbgnexti.png \
 	images/24x24/dbgnext.png \

@@ -69,7 +69,6 @@ cd src\resources
     images\12x12\*.png ^
     images\16x16\*.png ^
     images\20x20\*.png ^
-    images\22x22\*.png ^
     images\24x24\*.png ^
     images\28x28\*.png ^
     images\32x32\*.png ^
@@ -85,7 +84,6 @@ cd ..\..\plugins\compilergcc\resources
 "%ZIPCMD%" -0 -qu "..\..\..\%CB_DEVEL_RESDIR%\compiler.zip" ^
     images\16x16\*.png ^
     images\20x20\*.png ^
-    images\22x22\*.png ^
     images\24x24\*.png ^
     images\28x28\*.png ^
     images\32x32\*.png ^
@@ -210,7 +208,7 @@ GOTO:EOF
 setlocal
 echo Copy image files from %~1 to %~1
 REM call mkdirSilent %~2
-for %%g in (16x16,20x20,22x22,24x24,28x28,32x32,40x40,48x48,56x56,64x64) do (
+for %%g in (16x16,20x20,24x24,28x28,32x32,40x40,48x48,56x56,64x64) do (
     echo From %~1\%%g to %~2\%%g
     call:mkdirSilent %~2\%%g
     xcopy /D /y %~1\%%g\*.png %~2\%%g > nul
