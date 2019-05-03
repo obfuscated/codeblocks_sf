@@ -18,6 +18,21 @@ else
   fi
 fi
 
+copyImageFiles() {
+    from=$1
+    to=$2
+    echo "Copy ${from} to ${to}"
+
+    dirs=(16x16 20x20 22x22 24x24 28x28 32x32 40x40 48x48 56x56 64x64)
+
+    for dir in "${dirs[@]}"; do
+        echo "  Copy ${from}/${dir} to ${to}/${dir}"
+
+        mkdir -p ${to}/${dir}
+        cp -f ${from}/${dir}/*.png ${to}/${dir} > /dev/null
+    done
+}
+
 echo Creating output directory tree
 
 CB_DEVEL=devel$1
@@ -64,7 +79,8 @@ ${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/todo.zip plugins/todo/resources/manifest.xml 
 ${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/abbreviations.zip plugins/abbreviations/resources/manifest.xml plugins/abbreviations/resources/*.xrc > /dev/null
 echo Packing core UI bitmaps
 cd src/resources
-${ZIPCMD} -0 -qu ../../${CB_DEVEL_RESDIR}/resources.zip images/*.png \
+${ZIPCMD} -0 -qu ../../${CB_DEVEL_RESDIR}/resources.zip \
+    images/*.png \
     images/12x12/*.png \
     images/16x16/*.png \
     images/20x20/*.png \
@@ -134,21 +150,11 @@ if [ -d "${CB_DEVEL_RESDIR}/images/codesnippets" ]; then
 fi
 
 if [ -d "${CB_DEVEL_RESDIR}/images/DoxyBlocks" ]; then
-    mkdir -p ${CB_OUTPUT_RESDIR}/images/DoxyBlocks/32x32/
-    cp -f ${CB_DEVEL_RESDIR}/images/DoxyBlocks/32x32/*.png ${CB_OUTPUT_RESDIR}/images/DoxyBlocks/32x32 > /dev/null
-    mkdir -p ${CB_OUTPUT_RESDIR}/images/DoxyBlocks/22x22
-    cp -f ${CB_DEVEL_RESDIR}/images/DoxyBlocks/22x22/*.png ${CB_OUTPUT_RESDIR}/images/DoxyBlocks/22x22 > /dev/null
-    mkdir -p ${CB_OUTPUT_RESDIR}/images/DoxyBlocks/16x16
-    cp -f ${CB_DEVEL_RESDIR}/images/DoxyBlocks/16x16/*.png ${CB_OUTPUT_RESDIR}/images/DoxyBlocks/16x16 > /dev/null
+    copyImageFiles ${CB_DEVEL_RESDIR}/images/DoxyBlocks ${CB_OUTPUT_RESDIR}/images/DoxyBlocks
 fi
 
 if [ -d "${CB_DEVEL_RESDIR}/images/ThreadSearch" ]; then
-    mkdir -p ${CB_OUTPUT_RESDIR}/images/ThreadSearch/16x16
-    cp -f ${CB_DEVEL_RESDIR}/images/ThreadSearch/16x16/*.png ${CB_OUTPUT_RESDIR}/images/ThreadSearch/16x16 > /dev/null
-    mkdir -p ${CB_OUTPUT_RESDIR}/images/ThreadSearch/22x22
-    cp -f ${CB_DEVEL_RESDIR}/images/ThreadSearch/22x22/*.png ${CB_OUTPUT_RESDIR}/images/ThreadSearch/22x22 > /dev/null
-    mkdir -p ${CB_OUTPUT_RESDIR}/images/ThreadSearch/32x32
-    cp -f ${CB_DEVEL_RESDIR}/images/ThreadSearch/32x32/*.png ${CB_OUTPUT_RESDIR}/images/ThreadSearch/32x32 > /dev/null
+    copyImageFiles ${CB_DEVEL_RESDIR}/images/ThreadSearch ${CB_OUTPUT_RESDIR}/images/ThreadSearch
 fi
 
 if [ -d "${CB_DEVEL_RESDIR}/images/wxsmith" ]; then
@@ -225,4 +231,3 @@ if [ "x$MSYSTEM" = "x" ] ; then
   echo "\$APP_DIR/codeblocks \$@" >> ${CB_DEVEL}/run.sh
   chmod +x ${CB_DEVEL}/run.sh
 fi
-
