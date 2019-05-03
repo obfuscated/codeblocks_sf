@@ -22,10 +22,6 @@ call:mkdirSilent "%CB_DEVEL_RESDIR%\lexers"
 call:mkdirSilent "%CB_DEVEL_RESDIR%\images"
 call:mkdirSilent "%CB_DEVEL_RESDIR%\images\settings"
 call:mkdirSilent "%CB_DEVEL_RESDIR%\images\codecompletion"
-call:mkdirSilent "%CB_DEVEL_RESDIR%\images\12x12"
-call:mkdirSilent "%CB_DEVEL_RESDIR%\images\16x16"
-call:mkdirSilent "%CB_DEVEL_RESDIR%\images\22x22"
-call:mkdirSilent "%CB_DEVEL_RESDIR%\images\32x32"
 call:mkdirSilent "%CB_DEVEL_RESDIR%\plugins"
 call:mkdirSilent "%CB_DEVEL_RESDIR%\templates"
 call:mkdirSilent "%CB_DEVEL_RESDIR%\templates\wizard"
@@ -37,10 +33,6 @@ call:mkdirSilent "%CB_OUTPUT_RESDIR%\lexers"
 call:mkdirSilent "%CB_OUTPUT_RESDIR%\images"
 call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\settings"
 call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\codecompletion"
-call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\12x12"
-call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\16x16"
-call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\22x22"
-call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\32x32"
 call:mkdirSilent "%CB_OUTPUT_RESDIR%\plugins"
 call:mkdirSilent "%CB_OUTPUT_RESDIR%\templates"
 call:mkdirSilent "%CB_OUTPUT_RESDIR%\templates\wizard"
@@ -72,14 +64,36 @@ echo Compressing plugins UI resources
 "%ZIPCMD%" -jqu9 "%CB_DEVEL_RESDIR%\xpmanifest.zip"              plugins\xpmanifest\manifest.xml > nul
 echo Packing core UI bitmaps
 cd src\resources
-"%ZIPCMD%" -0 -qu "..\..\%CB_DEVEL_RESDIR%\resources.zip" images\*.png images\12x12\*.png images\16x16\*.png images\22x22\*.png images\32x32\*.png > nul
+"%ZIPCMD%" -0 -qu "..\..\%CB_DEVEL_RESDIR%\resources.zip" ^
+    images\*.png ^
+    images\12x12\*.png ^
+    images\16x16\*.png ^
+    images\20x20\*.png ^
+    images\22x22\*.png ^
+    images\24x24\*.png ^
+    images\28x28\*.png ^
+    images\32x32\*.png ^
+    images\40x40\*.png ^
+    images\48x48\*.png ^
+    images\56x56\*.png ^
+    images\64x64\*.png ^
+    > nul
 cd ..\..\sdk\resources
-"%ZIPCMD%" -0 -qu "..\..\%CB_DEVEL_RESDIR%\manager_resources.zip" images\*.png images\12x12\*.png images\16x16\*.png images\22x22\*.png images\32x32\*.png > nul
+"%ZIPCMD%" -0 -qu "..\..\%CB_DEVEL_RESDIR%\manager_resources.zip" images\*.png images\12x12\*.png images\16x16\*.png > nul
 echo Packing plugins UI bitmaps
 cd ..\..\plugins\compilergcc\resources
-"%ZIPCMD%" -0 -qu "..\..\..\%CB_DEVEL_RESDIR%\compiler.zip" images\*.png images\16x16\*.png images\22x22\*.png images\32x32\*.png > nul
-cd ..\..\..\plugins\debuggergdb\resources
-"%ZIPCMD%" -0 -qu "%CB_DEVEL_RESDIR%\debugger.zip"          images\*.png images\16x16\*.png images\22x22\*.png images\32x32\*.png > nul
+"%ZIPCMD%" -0 -qu "..\..\..\%CB_DEVEL_RESDIR%\compiler.zip" ^
+    images\16x16\*.png ^
+    images\20x20\*.png ^
+    images\22x22\*.png ^
+    images\24x24\*.png ^
+    images\28x28\*.png ^
+    images\32x32\*.png ^
+    images\40x40\*.png ^
+    images\48x48\*.png ^
+    images\56x56\*.png ^
+    images\64x64\*.png ^
+    > nul
 cd ..\..\..
 
 echo Copying default files
@@ -92,9 +106,6 @@ echo Makefile.in >> excludes%1.txt
 xcopy /D /y sdk\resources\lexers\lexer_*                  "%CB_DEVEL_RESDIR%\lexers" > nul
 xcopy /D /y src\resources\images\*.png                    "%CB_DEVEL_RESDIR%\images" > nul
 xcopy /D /y src\resources\images\settings\*.png           "%CB_DEVEL_RESDIR%\images\settings" > nul
-xcopy /D /y src\resources\images\16x16\*.png              "%CB_DEVEL_RESDIR%\images\16x16" > nul
-xcopy /D /y src\resources\images\22x22\*.png              "%CB_DEVEL_RESDIR%\images\22x22" > nul
-xcopy /D /y src\resources\images\32x32\*.png              "%CB_DEVEL_RESDIR%\images\32x32" > nul
 xcopy /D /y plugins\codecompletion\resources\images\*.png "%CB_DEVEL_RESDIR%\images\codecompletion" > nul
 xcopy /D /y plugins\compilergcc\resources\compilers\*.xml "%CB_DEVEL_RESDIR%\compilers" > nul
 xcopy /D /y /s plugins\scriptedwizard\resources\*         "%CB_DEVEL_RESDIR%\templates\wizard" /EXCLUDE:excludes%1.txt > nul
@@ -107,9 +118,6 @@ xcopy /D /y "%CB_DEVEL_RESDIR%\*.zip"                     "%CB_OUTPUT_RESDIR%" >
 xcopy /D /y sdk\resources\lexers\lexer_*                  "%CB_OUTPUT_RESDIR%\lexers" > nul
 xcopy /D /y src\resources\images\*.png                    "%CB_OUTPUT_RESDIR%\images" > nul
 xcopy /D /y src\resources\images\settings\*.png           "%CB_OUTPUT_RESDIR%\images\settings" > nul
-xcopy /D /y src\resources\images\16x16\*.png              "%CB_OUTPUT_RESDIR%\images\16x16" > nul
-xcopy /D /y src\resources\images\22x22\*.png              "%CB_OUTPUT_RESDIR%\images\22x22" > nul
-xcopy /D /y src\resources\images\32x32\*.png              "%CB_OUTPUT_RESDIR%\images\32x32" > nul
 xcopy /D /y plugins\codecompletion\resources\images\*.png "%CB_OUTPUT_RESDIR%\images\codecompletion" > nul
 xcopy /D /y plugins\compilergcc\resources\compilers\*.xml "%CB_OUTPUT_RESDIR%\compilers" > nul
 xcopy /D /y /s plugins\scriptedwizard\resources\*         "%CB_OUTPUT_RESDIR%\templates\wizard" /EXCLUDE:excludes%1.txt > nul
@@ -128,30 +136,15 @@ if exist "%CB_DEVEL_RESDIR%\images\codesnippets" (
 )
 
 if exist "%CB_DEVEL_RESDIR%\images\DoxyBlocks" (
-    call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\DoxyBlocks\16x16"
-    xcopy /D /y "%CB_DEVEL_RESDIR%\images\DoxyBlocks\16x16\*.png" "%CB_OUTPUT_RESDIR%\images\DoxyBlocks\16x16" > nul
-    call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\DoxyBlocks\22x22"
-    xcopy /D /y "%CB_DEVEL_RESDIR%\images\DoxyBlocks\22x22\*.png" "%CB_OUTPUT_RESDIR%\images\DoxyBlocks\22x22" > nul
-    call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\DoxyBlocks\32x32"
-    xcopy /D /y "%CB_DEVEL_RESDIR%\images\DoxyBlocks\32x32\*.png" "%CB_OUTPUT_RESDIR%\images\DoxyBlocks\32x32" > nul
+    call:copyImageFiles "%CB_DEVEL_RESDIR%\images\DoxyBlocks" "%CB_OUTPUT_RESDIR%\images\DoxyBlocks"
 )
 
 if exist "%CB_DEVEL_RESDIR%\images\fortranproject" (
-    call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\fortranproject\16x16"
-    xcopy /D /y "%CB_DEVEL_RESDIR%\images\fortranproject\16x16\*.png" "%CB_OUTPUT_RESDIR%\images\fortranproject\16x16" > nul
-    call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\fortranproject\22x22"
-    xcopy /D /y "%CB_DEVEL_RESDIR%\images\fortranproject\22x22\*.png" "%CB_OUTPUT_RESDIR%\images\fortranproject\22x22" > nul
-    call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\fortranproject\32x32"
-    xcopy /D /y "%CB_DEVEL_RESDIR%\images\fortranproject\32x32\*.png" "%CB_OUTPUT_RESDIR%\images\fortranproject\32x32" > nul
+    call:copyImageFiles "%CB_DEVEL_RESDIR%\images\fortranproject" "%CB_OUTPUT_RESDIR%\images\fortranproject"
 )
 
 if exist "%CB_DEVEL_RESDIR%\images\ThreadSearch" (
-    call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\ThreadSearch\16x16"
-    xcopy /D /y "%CB_DEVEL_RESDIR%\images\ThreadSearch\16x16\*.png" "%CB_OUTPUT_RESDIR%\images\ThreadSearch\16x16" > nul
-    call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\ThreadSearch\22x22"
-    xcopy /D /y "%CB_DEVEL_RESDIR%\images\ThreadSearch\22x22\*.png" "%CB_OUTPUT_RESDIR%\images\ThreadSearch\22x22" > nul
-    call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\ThreadSearch\32x32"
-    xcopy /D /y "%CB_DEVEL_RESDIR%\images\ThreadSearch\32x32\*.png" "%CB_OUTPUT_RESDIR%\images\ThreadSearch\32x32" > nul
+    call:copyImageFiles "%CB_DEVEL_RESDIR%\images\ThreadSearch" "%CB_OUTPUT_RESDIR%\images\ThreadSearch"
 )
 
 if exist "%CB_DEVEL_RESDIR%\images\wxsmith" (
@@ -166,9 +159,6 @@ if exist "%CB_DEVEL_RESDIR%\lib_finder" (
 
 REM misc. contrib plugin settings:
 echo Copying files of several contrib plugins settings
-xcopy /D /y "%CB_DEVEL_RESDIR%\images\16x16\*.png"    "%CB_OUTPUT_RESDIR%\images\16x16"    > nul
-xcopy /D /y "%CB_DEVEL_RESDIR%\images\22x22\*.png"    "%CB_OUTPUT_RESDIR%\images\22x22"    > nul
-xcopy /D /y "%CB_DEVEL_RESDIR%\images\32x32\*.png"    "%CB_OUTPUT_RESDIR%\images\32x32"    > nul
 xcopy /D /y "%CB_DEVEL_RESDIR%\images\settings\*.png" "%CB_OUTPUT_RESDIR%\images\settings" > nul
 
 REM =============================================
@@ -212,6 +202,20 @@ xcopy /y "%CB_HANDLER_DIR%\*.yes" "%CB_OUTPUT_DIR%" > nul
 GOTO:EOF
 
 :mkdirSilent - create a directory if it doesn't exists
-echo make dir %~1
+echo Make dir %~1
 if not exist "%~1" mkdir "%~1"
+GOTO:EOF
+
+:copyImageFiles - create a directory and copy image files to it
+setlocal
+echo Copy image files from %~1 to %~1
+REM call mkdirSilent %~2
+for %%g in (16x16,20x20,22x22,24x24,28x28,32x32,40x40,48x48,56x56,64x64) do (
+    echo From %~1\%%g to %~2\%%g
+    call:mkdirSilent %~2\%%g
+    xcopy /D /y %~1\%%g\*.png %~2\%%g > nul
+)
+REM     call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\ThreadSearch\32x32"
+REM     xcopy /D /y "%CB_DEVEL_RESDIR%\images\ThreadSearch\32x32\*.png" "%CB_OUTPUT_RESDIR%\images\ThreadSearch\32x32" > nul
+endlocal
 GOTO:EOF

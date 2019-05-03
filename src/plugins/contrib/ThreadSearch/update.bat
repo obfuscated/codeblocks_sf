@@ -1,23 +1,24 @@
 @echo off
-md ..\..\..\devel\share\CodeBlocks\images\ThreadSearch > nul 2>&1
-md ..\..\..\output\share\CodeBlocks\images\ThreadSearch > nul 2>&1
-md ..\..\..\devel\share\CodeBlocks\images\ThreadSearch\16x16 > nul 2>&1
-md ..\..\..\output\share\CodeBlocks\images\ThreadSearch\16x16 > nul 2>&1
-md ..\..\..\devel\share\CodeBlocks\images\ThreadSearch\22x22 > nul 2>&1
-md ..\..\..\output\share\CodeBlocks\images\ThreadSearch\22x22 > nul 2>&1
-md ..\..\..\devel\share\CodeBlocks\images\ThreadSearch\32x32 > nul 2>&1
-md ..\..\..\output\share\CodeBlocks\images\ThreadSearch\32x32 > nul 2>&1
-md ..\..\..\devel\share\CodeBlocks\images\settings > nul 2>&1
-md ..\..\..\output\share\CodeBlocks\images\settings > nul 2>&1
-copy .\resources\images\*.png ..\..\..\devel\share\CodeBlocks\images\ThreadSearch\ > nul 2>&1
-copy .\resources\images\16x16\*.png ..\..\..\devel\share\CodeBlocks\images\ThreadSearch\16x16\ > nul 2>&1
-copy .\resources\images\22x22\*.png ..\..\..\devel\share\CodeBlocks\images\ThreadSearch\22x22\ > nul 2>&1
-copy .\resources\images\32x32\*.png ..\..\..\devel\share\CodeBlocks\images\ThreadSearch\32x32\ > nul 2>&1
-copy .\resources\images\*.png ..\..\..\output\share\CodeBlocks\images\ThreadSearch\ > nul 2>&1
-copy .\resources\images\16x16\*.png ..\..\..\output\share\CodeBlocks\images\ThreadSearch\16x16\ > nul 2>&1
-copy .\resources\images\22x22\*.png ..\..\..\output\share\CodeBlocks\images\ThreadSearch\22x22\ > nul 2>&1
-copy .\resources\images\32x32\*.png ..\..\..\output\share\CodeBlocks\images\ThreadSearch\32x32\ > nul 2>&1
-copy .\resources\*.png ..\..\..\devel\share\CodeBlocks\images\settings\ > nul 2>&1
-copy .\resources\*.png ..\..\..\output\share\CodeBlocks\images\settings\ > nul 2>&1
+
+set CB_DEVEL_DIR=devel%1
+set CB_OUTPUT_DIR=output%1
+set CB_DEVEL_RESDIR=..\..\..\%CB_DEVEL_DIR%\share\CodeBlocks\images
+set CB_OUTPUT_RESDIR=..\..\..\%CB_OUTPUT_DIR%\share\CodeBlocks\images
+
+md %CB_DEVEL_RESDIR%\ThreadSearch > nul 2>&1
+md %CB_OUTPUT_RESDIR%\ThreadSearch > nul 2>&1
+
+for %%g in (16x16,20x20,22x22,24x24,28x28,32x32,40x40,48x48,56x56,64x64) do (
+    md %CB_DEVEL_RESDIR%\ThreadSearch\%%g > nul 2>&1
+    copy .\resources\images\%%g\*.png %CB_DEVEL_RESDIR%\ThreadSearch\%%g > nul 2>&1
+    md %CB_OUTPUT_RESDIR%\ThreadSearch\%%g > nul 2>&1
+    copy .\resources\images\%%g\*.png %CB_OUTPUT_RESDIR%\ThreadSearch\%%g > nul 2>&1
+)
+
+md %CB_DEVEL_RESDIR%\settings > nul 2>&1
+md %CB_OUTPUT_RESDIR%\settings > nul 2>&1
+copy .\resources\*.png %CB_DEVEL_RESDIR%\settings\ > nul 2>&1
+copy .\resources\*.png %CB_OUTPUT_RESDIR%\settings\ > nul 2>&1
+
 exit 0
 
