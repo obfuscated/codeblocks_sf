@@ -304,6 +304,34 @@ struct cbEditorInternalData
         }
     }
 
+    /// Call this only if the ChangeBar is enabled.
+    void SetChangeBarColWidth(bool both)
+    {
+        float pointSize = m_pOwner->m_pControl->StyleGetFont(wxSCI_STYLE_DEFAULT).GetPointSize();
+        if (both)
+        {
+            int width = 4 * (pointSize+m_pOwner->m_pControl->GetZoom()) / pointSize;
+            if (width < 1)
+                width = 1;
+            m_pOwner->m_pControl->SetMarginWidth(C_CHANGEBAR_MARGIN, width);
+            if (m_pOwner->m_pControl2)
+            {
+                width = 4 * (pointSize+m_pOwner->m_pControl2->GetZoom()) / pointSize;
+                if (width < 1)
+                    width = 1;
+                m_pOwner->m_pControl2->SetMarginWidth(C_CHANGEBAR_MARGIN, width);
+            }
+        }
+        else
+        {
+            cbStyledTextCtrl* control = m_pOwner->GetControl();
+            int width = 4 * (pointSize+control->GetZoom()) / pointSize;
+            if (width < 1)
+                width = 1;
+            control->SetMarginWidth(C_CHANGEBAR_MARGIN, width);
+        }
+    }
+
     wxString GetUrl()
     {
         cbStyledTextCtrl* control = m_pOwner->GetControl();
@@ -1523,9 +1551,9 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
                                | (1 << wxSCI_MARKNUM_CHANGEUNSAVED)
                                | (1 << wxSCI_MARKNUM_CHANGESAVED) );
 
-        control->MarkerDefine(wxSCI_MARKNUM_CHANGEUNSAVED, wxSCI_MARK_LEFTRECT);
+        control->MarkerDefine(wxSCI_MARKNUM_CHANGEUNSAVED, wxSCI_MARK_FULLRECT);
         control->MarkerSetBackground(wxSCI_MARKNUM_CHANGEUNSAVED, wxColour(0xFF, 0xE6, 0x04));
-        control->MarkerDefine(wxSCI_MARKNUM_CHANGESAVED, wxSCI_MARK_LEFTRECT);
+        control->MarkerDefine(wxSCI_MARKNUM_CHANGESAVED, wxSCI_MARK_FULLRECT);
         control->MarkerSetBackground(wxSCI_MARKNUM_CHANGESAVED,   wxColour(0x04, 0xFF, 0x50));
     }
     else
@@ -3466,7 +3494,7 @@ void cbEditor::OnZoom(wxScintillaEvent& event)
     int zoom = GetControl()->GetZoom();
     Manager::Get()->GetEditorManager()->SetZoom(zoom);
     // if all editors should be zoomed, we call cbAuiNotebooks SetZoom()
-    bool both = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/zoom_all"));
+    bool both = mgr->ReadBool(_T("/zoom_all"));
     if (both)
         Manager::Get()->GetEditorManager()->GetNotebook()->SetZoom(zoom);
 
@@ -3474,6 +3502,9 @@ void cbEditor::OnZoom(wxScintillaEvent& event)
 
     if (mgr->ReadBool(_T("/folding/show_folds"), true))
         m_pData->SetFoldingColWidth(both);
+
+    if (mgr->ReadBool(_T("/margin/use_changebar"), true))
+        m_pData->SetChangeBarColWidth(both);
 
     OnScintillaEvent(event);
 }
