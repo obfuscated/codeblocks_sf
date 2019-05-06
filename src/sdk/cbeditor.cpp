@@ -284,7 +284,7 @@ struct cbEditorInternalData
         }
     }
 
-    static int calcWidth(cbStyledTextCtrl* control, int baseWidth, int minWidth,
+    static int CalcWidth(cbStyledTextCtrl* control, int baseWidth, int minWidth,
                          float defaultPointSize)
     {
         int width = baseWidth * (defaultPointSize + control->GetZoom()) / defaultPointSize;
@@ -299,18 +299,18 @@ struct cbEditorInternalData
         const float pointSize = m_pOwner->m_pControl->StyleGetFont(wxSCI_STYLE_DEFAULT).GetPointSize();
         if (both)
         {
-            const int width = calcWidth(m_pOwner->m_pControl, baseWidth, minWidth, pointSize);
+            const int width = CalcWidth(m_pOwner->m_pControl, baseWidth, minWidth, pointSize);
             m_pOwner->m_pControl->SetMarginWidth(marginId, width);
             if (m_pOwner->m_pControl2)
             {
-                const int width = calcWidth(m_pOwner->m_pControl2, baseWidth, minWidth, pointSize);
+                const int width = CalcWidth(m_pOwner->m_pControl2, baseWidth, minWidth, pointSize);
                 m_pOwner->m_pControl2->SetMarginWidth(marginId, width);
             }
         }
         else
         {
             cbStyledTextCtrl* control = m_pOwner->GetControl();
-            const int width = calcWidth(control, baseWidth, minWidth, pointSize);
+            const int width = CalcWidth(control, baseWidth, minWidth, pointSize);
             control->SetMarginWidth(marginId, width);
         }
     }
