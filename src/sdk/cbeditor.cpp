@@ -232,8 +232,10 @@ struct cbEditorInternalData
                 }
                 else
                 {
-                    m_pOwner->m_pControl->SetMarginWidth(C_LINE_MARGIN, pixelWidth * 0.75 + cfg->ReadInt(_T("/margin/width_chars"), 6) * pixelWidth);
-                    m_pOwner->m_pControl2->SetMarginWidth(C_LINE_MARGIN, pixelWidth * 0.75 + cfg->ReadInt(_T("/margin/width_chars"), 6) * pixelWidth);
+                    const int charsWidth = cfg->ReadInt(_T("/margin/width_chars"), 6);
+                    const int newWidth = pixelWidth * (0.75 + charsWidth);
+                    m_pOwner->m_pControl->SetMarginWidth(C_LINE_MARGIN, newWidth);
+                    m_pOwner->m_pControl2->SetMarginWidth(C_LINE_MARGIN, newWidth);
                 }
             }
             else
@@ -268,7 +270,9 @@ struct cbEditorInternalData
                 }
                 else
                 {
-                    control->SetMarginWidth(C_LINE_MARGIN, pixelWidth * 0.75 + cfg->ReadInt(_T("/margin/width_chars"), 6) * pixelWidth);
+                    const int charsWidth = cfg->ReadInt(_T("/margin/width_chars"), 6);
+                    const int newWidth = pixelWidth * (0.75 + charsWidth);
+                    control->SetMarginWidth(C_LINE_MARGIN, newWidth);
                 }
             }
         }
