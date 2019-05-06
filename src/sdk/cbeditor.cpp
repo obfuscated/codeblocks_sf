@@ -277,58 +277,31 @@ struct cbEditorInternalData
         }
     }
 
-    void SetFoldingColWidth(bool both=true)
+    /// Call this only if the margin with marginId is enabled and is visible.
+    void SetColumnWidth(int marginId, int baseWidth, int minWidth, bool both)
     {
         float pointSize = m_pOwner->m_pControl->StyleGetFont(wxSCI_STYLE_DEFAULT).GetPointSize();
         if (both)
         {
-            int width = 16 * (pointSize+m_pOwner->m_pControl->GetZoom()) / pointSize;
-            if (width < 1)
-                width = 1;
-            m_pOwner->m_pControl->SetMarginWidth(C_FOLDING_MARGIN, width);
+            int width = baseWidth * (pointSize+m_pOwner->m_pControl->GetZoom()) / pointSize;
+            if (width < minWidth)
+                width = minWidth;
+            m_pOwner->m_pControl->SetMarginWidth(marginId, width);
             if (m_pOwner->m_pControl2)
             {
-                width = 16 * (pointSize+m_pOwner->m_pControl2->GetZoom()) / pointSize;
-                if (width < 1)
-                    width = 1;
-                m_pOwner->m_pControl2->SetMarginWidth(C_FOLDING_MARGIN, width);
+                width = baseWidth * (pointSize+m_pOwner->m_pControl2->GetZoom()) / pointSize;
+                if (width < minWidth)
+                    width = minWidth;
+                m_pOwner->m_pControl2->SetMarginWidth(marginId, width);
             }
         }
         else
         {
             cbStyledTextCtrl* control = m_pOwner->GetControl();
-            int width = 16 * (pointSize+control->GetZoom()) / pointSize;
-            if (width < 1)
-                width = 1;
-            control->SetMarginWidth(C_FOLDING_MARGIN, width);
-        }
-    }
-
-    /// Call this only if the ChangeBar is enabled.
-    void SetChangeBarColWidth(bool both)
-    {
-        float pointSize = m_pOwner->m_pControl->StyleGetFont(wxSCI_STYLE_DEFAULT).GetPointSize();
-        if (both)
-        {
-            int width = 4 * (pointSize+m_pOwner->m_pControl->GetZoom()) / pointSize;
-            if (width < 1)
-                width = 1;
-            m_pOwner->m_pControl->SetMarginWidth(C_CHANGEBAR_MARGIN, width);
-            if (m_pOwner->m_pControl2)
-            {
-                width = 4 * (pointSize+m_pOwner->m_pControl2->GetZoom()) / pointSize;
-                if (width < 1)
-                    width = 1;
-                m_pOwner->m_pControl2->SetMarginWidth(C_CHANGEBAR_MARGIN, width);
-            }
-        }
-        else
-        {
-            cbStyledTextCtrl* control = m_pOwner->GetControl();
-            int width = 4 * (pointSize+control->GetZoom()) / pointSize;
-            if (width < 1)
-                width = 1;
-            control->SetMarginWidth(C_CHANGEBAR_MARGIN, width);
+            int width = baseWidth * (pointSize+control->GetZoom()) / pointSize;
+            if (width < minWidth)
+                width = minWidth;
+            control->SetMarginWidth(marginId, width);
         }
     }
 
@@ -3501,10 +3474,10 @@ void cbEditor::OnZoom(wxScintillaEvent& event)
     m_pData->SetLineNumberColWidth(both);
 
     if (mgr->ReadBool(_T("/folding/show_folds"), true))
-        m_pData->SetFoldingColWidth(both);
+        m_pData->SetColumnWidth(C_FOLDING_MARGIN, 16, 1, both);
 
     if (mgr->ReadBool(_T("/margin/use_changebar"), true))
-        m_pData->SetChangeBarColWidth(both);
+        m_pData->SetColumnWidth(C_CHANGEBAR_MARGIN, 4, 1, both);
 
     OnScintillaEvent(event);
 }
