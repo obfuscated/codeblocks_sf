@@ -73,6 +73,9 @@ const wxString g_EditorModified = _T("*");
 #define C_CHANGEBAR_MARGIN 2
 #define C_FOLDING_MARGIN   3
 
+const int foldingMarginBaseWidth = 16;
+const int changeBarMarginBaseWidth = 4;
+
 /* This struct holds private data for the cbEditor class.
  * It's a paradigm to avoid rebuilding the entire project (as cbEditor is a basic dependency)
  * for just adding a private var or method.
@@ -1516,7 +1519,7 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     // changebar margin
     if (mgr->ReadBool(_T("/margin/use_changebar"), true))
     {
-        control->SetMarginWidth(C_CHANGEBAR_MARGIN, 4);
+        control->SetMarginWidth(C_CHANGEBAR_MARGIN, changeBarMarginBaseWidth);
         control->SetMarginType(C_CHANGEBAR_MARGIN,  wxSCI_MARGIN_SYMBOL);
         // use "|" here or we might break plugins that use the margin (none at the moment)
         control->SetMarginMask(C_CHANGEBAR_MARGIN,
@@ -1593,7 +1596,7 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
 
         control->SetFoldFlags(16);
         control->SetMarginType(C_FOLDING_MARGIN, wxSCI_MARGIN_SYMBOL);
-        control->SetMarginWidth(C_FOLDING_MARGIN, 16);
+        control->SetMarginWidth(C_FOLDING_MARGIN, foldingMarginBaseWidth);
         // use "|" here or we might break plugins that use the margin (none at the moment)
         control->SetMarginMask(C_FOLDING_MARGIN,
                                  control->GetMarginMask(C_FOLDING_MARGIN)
@@ -3474,10 +3477,10 @@ void cbEditor::OnZoom(wxScintillaEvent& event)
     m_pData->SetLineNumberColWidth(both);
 
     if (mgr->ReadBool(_T("/folding/show_folds"), true))
-        m_pData->SetColumnWidth(C_FOLDING_MARGIN, 16, 1, both);
+        m_pData->SetColumnWidth(C_FOLDING_MARGIN, foldingMarginBaseWidth, 1, both);
 
     if (mgr->ReadBool(_T("/margin/use_changebar"), true))
-        m_pData->SetColumnWidth(C_CHANGEBAR_MARGIN, 4, 1, both);
+        m_pData->SetColumnWidth(C_CHANGEBAR_MARGIN, changeBarMarginBaseWidth, 1, both);
 
     OnScintillaEvent(event);
 }
