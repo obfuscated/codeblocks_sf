@@ -95,21 +95,21 @@ cd ..\..\..
 
 echo Copying default files
 REM  Create an exclude pattern file
-echo \.svn\      >  excludes%1.txt
-echo Makefile    >> excludes%1.txt
-echo Makefile.am >> excludes%1.txt
-echo Makefile.in >> excludes%1.txt
+echo \.svn\      >  excludes%TARGET%.txt
+echo Makefile    >> excludes%TARGET%.txt
+echo Makefile.am >> excludes%TARGET%.txt
+echo Makefile.in >> excludes%TARGET%.txt
 
 xcopy /D /y sdk\resources\lexers\lexer_*                  "%CB_DEVEL_RESDIR%\lexers" > nul
 xcopy /D /y src\resources\images\*.png                    "%CB_DEVEL_RESDIR%\images" > nul
 xcopy /D /y src\resources\images\settings\*.png           "%CB_DEVEL_RESDIR%\images\settings" > nul
 xcopy /D /y plugins\codecompletion\resources\images\*.png "%CB_DEVEL_RESDIR%\images\codecompletion" > nul
 xcopy /D /y plugins\compilergcc\resources\compilers\*.xml "%CB_DEVEL_RESDIR%\compilers" > nul
-xcopy /D /y /s plugins\scriptedwizard\resources\*         "%CB_DEVEL_RESDIR%\templates\wizard" /EXCLUDE:excludes%1.txt > nul
-xcopy /D /y templates\common\*                            "%CB_DEVEL_RESDIR%\templates"        /EXCLUDE:excludes%1.txt > nul
-xcopy /D /y templates\win32\*                             "%CB_DEVEL_RESDIR%\templates"        /EXCLUDE:excludes%1.txt > nul
-xcopy /D /y scripts\*                                     "%CB_DEVEL_RESDIR%\scripts"          /EXCLUDE:excludes%1.txt > nul
-xcopy /D /y scripts\tests\*                               "%CB_DEVEL_RESDIR%\scripts\tests"    /EXCLUDE:excludes%1.txt > nul
+xcopy /D /y /s plugins\scriptedwizard\resources\*         "%CB_DEVEL_RESDIR%\templates\wizard" /EXCLUDE:excludes%TARGET%.txt > nul
+xcopy /D /y templates\common\*                            "%CB_DEVEL_RESDIR%\templates"        /EXCLUDE:excludes%TARGET%.txt > nul
+xcopy /D /y templates\win32\*                             "%CB_DEVEL_RESDIR%\templates"        /EXCLUDE:excludes%TARGET%.txt > nul
+xcopy /D /y scripts\*                                     "%CB_DEVEL_RESDIR%\scripts"          /EXCLUDE:excludes%TARGET%.txt > nul
+xcopy /D /y scripts\tests\*                               "%CB_DEVEL_RESDIR%\scripts\tests"    /EXCLUDE:excludes%TARGET%.txt > nul
 
 xcopy /D /y "%CB_DEVEL_RESDIR%\*.zip"                     "%CB_OUTPUT_RESDIR%" > nul
 xcopy /D /y sdk\resources\lexers\lexer_*                  "%CB_OUTPUT_RESDIR%\lexers" > nul
@@ -117,13 +117,13 @@ xcopy /D /y src\resources\images\*.png                    "%CB_OUTPUT_RESDIR%\im
 xcopy /D /y src\resources\images\settings\*.png           "%CB_OUTPUT_RESDIR%\images\settings" > nul
 xcopy /D /y plugins\codecompletion\resources\images\*.png "%CB_OUTPUT_RESDIR%\images\codecompletion" > nul
 xcopy /D /y plugins\compilergcc\resources\compilers\*.xml "%CB_OUTPUT_RESDIR%\compilers" > nul
-xcopy /D /y /s plugins\scriptedwizard\resources\*         "%CB_OUTPUT_RESDIR%\templates\wizard" /EXCLUDE:excludes%1.txt > nul
-xcopy /D /y templates\common\*                            "%CB_OUTPUT_RESDIR%\templates"        /EXCLUDE:excludes%1.txt > nul
-xcopy /D /y templates\win32\*                             "%CB_OUTPUT_RESDIR%\templates"        /EXCLUDE:excludes%1.txt > nul
-xcopy /D /y scripts\*                                     "%CB_OUTPUT_RESDIR%\scripts"          /EXCLUDE:excludes%1.txt > nul
-xcopy /D /y scripts\tests\*                               "%CB_OUTPUT_RESDIR%\scripts\tests"    /EXCLUDE:excludes%1.txt > nul
+xcopy /D /y /s plugins\scriptedwizard\resources\*         "%CB_OUTPUT_RESDIR%\templates\wizard" /EXCLUDE:excludes%TARGET%.txt > nul
+xcopy /D /y templates\common\*                            "%CB_OUTPUT_RESDIR%\templates"        /EXCLUDE:excludes%TARGET%.txt > nul
+xcopy /D /y templates\win32\*                             "%CB_OUTPUT_RESDIR%\templates"        /EXCLUDE:excludes%TARGET%.txt > nul
+xcopy /D /y scripts\*                                     "%CB_OUTPUT_RESDIR%\scripts"          /EXCLUDE:excludes%TARGET%.txt > nul
+xcopy /D /y scripts\tests\*                               "%CB_OUTPUT_RESDIR%\scripts\tests"    /EXCLUDE:excludes%TARGET%.txt > nul
 
-del excludes%1.txt
+del excludes%TARGET%.txt
 
 REM several contrib plugins
 echo Copying files of several contrib plugins
@@ -164,10 +164,10 @@ REM =============================================
 REM =============================================
 
 copy tips.txt "%CB_DEVEL_RESDIR%" > nul
-copy tools\ConsoleRunner\cb_console_runner%1.exe "%CB_DEVEL_DIR%\cb_console_runner.exe"  > nul
+copy tools\ConsoleRunner\cb_console_runner%TARGET%.exe "%CB_DEVEL_DIR%\cb_console_runner.exe"  > nul
 
 copy tips.txt "%CB_OUTPUT_RESDIR%" > nul
-copy tools\ConsoleRunner\cb_console_runner%1.exe "%CB_OUTPUT_DIR%\cb_console_runner.exe" > nul
+copy tools\ConsoleRunner\cb_console_runner%TARGET%.exe "%CB_OUTPUT_DIR%\cb_console_runner.exe" > nul
 
 echo Transferring executable files from devel to output folder
 xcopy /D /y "%CB_DEVEL_DIR%\*.exe"                   "%CB_OUTPUT_DIR%" > nul
