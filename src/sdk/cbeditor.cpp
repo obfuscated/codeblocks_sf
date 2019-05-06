@@ -286,20 +286,21 @@ struct cbEditorInternalData
             if (width < 1)
                 width = 1;
             m_pOwner->m_pControl->SetMarginWidth(C_FOLDING_MARGIN, width);
-            if(m_pOwner->m_pControl2)
+            if (m_pOwner->m_pControl2)
             {
-            width = 16 * (pointSize+m_pOwner->m_pControl2->GetZoom()) / pointSize;
-            if (width < 1)
-                width = 1;
-            m_pOwner->m_pControl2->SetMarginWidth(C_FOLDING_MARGIN, width);
+                width = 16 * (pointSize+m_pOwner->m_pControl2->GetZoom()) / pointSize;
+                if (width < 1)
+                    width = 1;
+                m_pOwner->m_pControl2->SetMarginWidth(C_FOLDING_MARGIN, width);
             }
         }
         else
         {
-            int width = 16 * (pointSize+m_pOwner->GetControl()->GetZoom()) / pointSize;
+            cbStyledTextCtrl* control = m_pOwner->GetControl();
+            int width = 16 * (pointSize+control->GetZoom()) / pointSize;
             if (width < 1)
                 width = 1;
-            m_pOwner->GetControl()->SetMarginWidth(C_FOLDING_MARGIN, width);
+            control->SetMarginWidth(C_FOLDING_MARGIN, width);
         }
     }
 
