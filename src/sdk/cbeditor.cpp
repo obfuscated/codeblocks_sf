@@ -280,30 +280,33 @@ struct cbEditorInternalData
         }
     }
 
+    static int calcWidth(cbStyledTextCtrl* control, int baseWidth, int minWidth,
+                         float defaultPointSize)
+    {
+        int width = baseWidth * (defaultPointSize + control->GetZoom()) / defaultPointSize;
+        if (width < minWidth)
+            width = minWidth;
+        return width;
+    }
+
     /// Call this only if the margin with marginId is enabled and is visible.
     void SetColumnWidth(int marginId, int baseWidth, int minWidth, bool both)
     {
-        float pointSize = m_pOwner->m_pControl->StyleGetFont(wxSCI_STYLE_DEFAULT).GetPointSize();
+        const float pointSize = m_pOwner->m_pControl->StyleGetFont(wxSCI_STYLE_DEFAULT).GetPointSize();
         if (both)
         {
-            int width = baseWidth * (pointSize+m_pOwner->m_pControl->GetZoom()) / pointSize;
-            if (width < minWidth)
-                width = minWidth;
+            const int width = calcWidth(m_pOwner->m_pControl, baseWidth, minWidth, pointSize);
             m_pOwner->m_pControl->SetMarginWidth(marginId, width);
             if (m_pOwner->m_pControl2)
             {
-                width = baseWidth * (pointSize+m_pOwner->m_pControl2->GetZoom()) / pointSize;
-                if (width < minWidth)
-                    width = minWidth;
+                const int width = calcWidth(m_pOwner->m_pControl2, baseWidth, minWidth, pointSize);
                 m_pOwner->m_pControl2->SetMarginWidth(marginId, width);
             }
         }
         else
         {
             cbStyledTextCtrl* control = m_pOwner->GetControl();
-            int width = baseWidth * (pointSize+control->GetZoom()) / pointSize;
-            if (width < minWidth)
-                width = minWidth;
+            const int width = calcWidth(control, baseWidth, minWidth, pointSize);
             control->SetMarginWidth(marginId, width);
         }
     }
