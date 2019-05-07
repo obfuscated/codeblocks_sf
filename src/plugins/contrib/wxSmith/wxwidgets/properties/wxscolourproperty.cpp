@@ -416,10 +416,14 @@ namespace
         {
             ind = GetIndexForValue(cpv.m_type);
         }
+        else if (cpv.m_type == wxPG_COLOUR_CUSTOM)
+        {
+            ind = GetCustomColourIndex();
+        }
         else
         {
-            cpv.m_type = wxPG_COLOUR_CUSTOM;
-            ind = GetCustomColourIndex();
+            cpv.m_type = wxsCOLOUR_DEFAULT;
+            ind = 0;
         }
     }
     else
