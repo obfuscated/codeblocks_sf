@@ -18,37 +18,32 @@
 *
 */
 
-
 #include "wxsimagepanel.h"
-
-
 
 //------------------------------------------------------------------------------
 
 namespace
 {
-
 // Loading images from xpm files
 
     #include "wxImagePanel16.xpm"
     #include "wxImagePanel32.xpm"
 
     wxsRegisterItem<wxsImagePanel> Reg(
-        _T("wxImagePanel"),             				// Class name
-        wxsTContainer,                  					// Item type
-        _T("wxWindows"),                				// License
-        _T("Ron Collins"),              					// Author
-        _T("rcoll@theriver.com"),       			// Author's email
-        _T(""),                         							// Item's homepage
-        _T("Contrib"),              							// Category in palette
-        60,                             								// Priority in palette
-        _T("ImagePanel"),               				// Base part of names for new items
-        wxsCPP,                         						// List of coding languages supported by this item
-        1, 0,                           								// Version
-        wxBitmap(wxImagePanel32_xpm),		// 32x32 bitmap
-        wxBitmap(wxImagePanel16_xpm),		// 16x16 bitmap
-        false);                         							// We do not allow this item inside XRC files
-
+        _T("wxImagePanel"),                  // Class name
+        wxsTContainer,                       // Item type
+        _T("wxWindows"),                     // License
+        _T("Ron Collins"),                   // Author
+        _T("rcoll@theriver.com"),            // Author's email
+        _T(""),                              // Item's homepage
+        _T("Contrib"),                       // Category in palette
+        60,                                  // Priority in palette
+        _T("ImagePanel"),                    // Base part of names for new items
+        wxsCPP,                              // List of coding languages supported by this item
+        1, 0,                                // Version
+        wxBitmap(wxImagePanel32_xpm),        // 32x32 bitmap
+        wxBitmap(wxImagePanel16_xpm),        // 16x16 bitmap
+        false);                              // We do not allow this item inside XRC files
 
     WXS_ST_BEGIN(wxsImagePanelStyles,_T("wxRAISED_BORDER|wxTAB_TRAVERSAL"))
         WXS_ST_CATEGORY("wxImagePanel")
@@ -76,17 +71,18 @@ wxsImagePanel::wxsImagePanel(wxsItemResData* Data):
 
 //------------------------------------------------------------------------------
 
-wxsImagePanel::~wxsImagePanel() {
-
+wxsImagePanel::~wxsImagePanel()
+{
 }
 
 //------------------------------------------------------------------------------
 
-void wxsImagePanel::OnBuildCreatingCode() {
-wxString    vname;
-wxString    iname;
-wxsImage    *image;
-wxString    tt;
+void wxsImagePanel::OnBuildCreatingCode()
+{
+    wxString vname;
+    wxString iname;
+    wxsImage *image;
+    wxString tt;
 
 // we only handle C++ constructs here
 
@@ -100,13 +96,15 @@ wxString    tt;
 
     image = (wxsImage *) wxsImageListEditorDlg::FindTool(this, mImage);
 
-    if (image == NULL) {
+    if (image == NULL)
+    {
         iname = wxEmptyString;
     }
-    else {
+    else
+    {
         iname  = image->GetVarName();
         iname += _("_BMP");
-    };
+    }
 
 // include files
 
@@ -123,9 +121,10 @@ wxString    tt;
 // the image has to be assigned to the panel AFTER the image is created
 // since wxsImage is a wxsTool type, that all happens after the panel is created
 
-    if (iname.Length() > 0) {
-		// Locator comment.
-		tt.Printf(_("// Set the bitmap for %s.\n"), vname.wx_str());
+    if (iname.Length() > 0)
+    {
+        // Locator comment.
+        tt.Printf(_("// Set the bitmap for %s.\n"), vname.wx_str());
         AddEventCode(tt);
 
 #if wxCHECK_VERSION(3, 0, 0)
@@ -158,10 +157,11 @@ wxString    tt;
 
 //------------------------------------------------------------------------------
 
-wxObject* wxsImagePanel::OnBuildPreview(wxWindow* Parent, long Flags) {
-wxImagePanel    *ap;
-wxsImage        *image;
-wxBitmap        bmp;
+wxObject* wxsImagePanel::OnBuildPreview(wxWindow* Parent, long Flags)
+{
+    wxImagePanel *ap;
+    wxsImage     *image;
+    wxBitmap     bmp;
 
 // make a panel
 
@@ -174,11 +174,13 @@ wxBitmap        bmp;
 
 // and make the preview image
 
-    if (image != NULL) {
+    if (image != NULL)
+    {
         bmp = ((wxsImage *) image)->GetPreview();
         ap->SetBitmap(bmp);
     }
-    else if (!mImage.IsEmpty() && mImage != _T("<none>")){
+    else if (!mImage.IsEmpty() && mImage != _T("<none>"))
+    {
         // in case we can't find the name in ImageList, we try to interpret it as a filepath
         // see discussion http://forums.codeblocks.org/index.php/topic,22888.0.html
         wxImage Img(mImage);
@@ -187,7 +189,7 @@ wxBitmap        bmp;
             bmp = wxBitmap(Img);
             ap->SetBitmap(bmp);
         }
-    };
+    }
 
 // and stretch it?
 
@@ -208,15 +210,14 @@ wxBitmap        bmp;
 
 //------------------------------------------------------------------------------
 
-void wxsImagePanel::OnEnumContainerProperties(cb_unused long Flags) {
-static wxString         sImageNames[128];
-static const wxChar    *pImageNames[128];
-
-int                     i,n,k;
-wxsItemResData         *res;
-wxsTool                *tool;
-wxString                ss, tt;
-
+void wxsImagePanel::OnEnumContainerProperties(cb_unused long Flags)
+{
+    static wxString      sImageNames[128];
+    static const wxChar *pImageNames[128];
+    int                  i,n,k;
+    wxsItemResData      *res;
+    wxsTool             *tool;
+    wxString             ss, tt;
 
 // find available images, and pointer to current imagelist
 
@@ -226,17 +227,19 @@ wxString                ss, tt;
     pImageNames[n] = (const wxChar *) sImageNames[n];
     n += 1;
     k = res->GetToolsCount();
-    for(i=0; i<k; i++) {
+    for (i=0; i<k; i++)
+    {
         tool = res->GetTool(i);
         ss = tool->GetUserClass();
 
-        if ((ss == _T("wxImage")) && (n < 127)) {
+        if ((ss == _T("wxImage")) && (n < 127))
+        {
             ss = tool->GetVarName();
             sImageNames[n] = ss;
             pImageNames[n] = (const wxChar *) sImageNames[n];
             n += 1;
-        };
-    };
+        }
+    }
     pImageNames[n] = NULL;
 
     WXS_EDITENUM(wxsImagePanel, mImage, _("Image"), _T("image"), pImageNames, _("<none>"))
@@ -244,11 +247,4 @@ wxString                ss, tt;
 // stretch to fit panel?
 
     WXS_BOOL(wxsImagePanel, mStretch, _("Stretch"), _T("stretch"), false);
-};
-
-
-
-
-
-
-
+}

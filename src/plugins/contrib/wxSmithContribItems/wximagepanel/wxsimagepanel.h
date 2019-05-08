@@ -20,11 +20,10 @@
 #ifndef wxsIMAGEPANEL_H
 #define wxsIMAGEPANEL_H
 
-#include    <wxwidgets/wxscontainer.h>
-#include    <wxwidgets/defitems/wxsimage.h>
-#include    <wxwidgets/properties/wxsimagelisteditordlg.h>
-#include    "wx/wxImagePanel.h"
-
+#include <wxwidgets/wxscontainer.h>
+#include <wxwidgets/defitems/wxsimage.h>
+#include <wxwidgets/properties/wxsimagelisteditordlg.h>
+#include "wx/wxImagePanel.h"
 
 class wxsImagePanel : public wxsContainer
 {
@@ -39,11 +38,8 @@ class wxsImagePanel : public wxsContainer
         virtual void OnBuildCreatingCode();
         virtual void OnEnumContainerProperties(long Flags);
 
-        wxString        mImage;                         // wxsImage info
-        bool            mStretch;                       // fit image to panel
-
-
-
+        wxString mImage;   // wxsImage info
+        bool     mStretch; // fit image to panel
 };
 
 #endif      // wxsIMAGEPANEL_H
