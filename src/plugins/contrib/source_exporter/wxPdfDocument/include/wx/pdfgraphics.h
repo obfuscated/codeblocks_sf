@@ -1,8 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdfgraphics.h
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2006-08-24
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence

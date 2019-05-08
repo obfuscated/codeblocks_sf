@@ -1,10 +1,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdfdecode.cpp
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2006-10-15
-// RCS-ID:      $$
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -63,7 +61,7 @@ wxPdfParser::ASCIIHexDecode(wxMemoryOutputStream* osIn)
     int n = wxPdfTokenizer::GetHex(ch);
     if (n == -1)
     {
-      wxLogError(wxString(wxT("wxPdfParser::ASCIIHexDecode: ")) + 
+      wxLogError(wxString(wxS("wxPdfParser::ASCIIHexDecode: ")) +
                  wxString(_("Illegal character.")));
       osOut->Close();
       delete osOut;
@@ -120,7 +118,7 @@ wxPdfParser::ASCII85Decode(wxMemoryOutputStream* osIn)
     }
     if (ch < '!' || ch > 'u')
     {
-      wxLogError(wxString(wxT("wxPdfParser::ASCII85Decode: ")) + 
+      wxLogError(wxString(wxS("wxPdfParser::ASCII85Decode: ")) +
                  wxString(_("Illegal character.")));
       osOut->Close();
       delete osOut;
@@ -145,7 +143,7 @@ wxPdfParser::ASCII85Decode(wxMemoryOutputStream* osIn)
   int r = 0;
   if (state == 1)
   {
-    wxLogError(wxString(wxT("wxPdfParser::ASCII85Decode: ")) +
+    wxLogError(wxString(wxS("wxPdfParser::ASCII85Decode: ")) +
                wxString(_("Illegal length.")));
     osOut->Close();
     delete osOut;
@@ -185,7 +183,7 @@ wxPdfParser::DecodePredictor(wxMemoryOutputStream* osIn, wxPdfObject* dicPar)
   }
 
   wxPdfDictionary* dic = (wxPdfDictionary*) dicPar;
-  wxPdfObject* obj = ResolveObject(dic->Get(wxT("Predictor")));
+  wxPdfObject* obj = ResolveObject(dic->Get(wxS("Predictor")));
   if (obj == NULL || obj->GetType() != OBJTYPE_NUMBER)
   {
     return osIn;
@@ -197,19 +195,19 @@ wxPdfParser::DecodePredictor(wxMemoryOutputStream* osIn, wxPdfObject* dicPar)
   }
 
   int width = 1;
-  obj = ResolveObject(dic->Get(wxT("Columns")));
+  obj = ResolveObject(dic->Get(wxS("Columns")));
   if (obj != NULL && obj->GetType() == OBJTYPE_NUMBER)
   {
     width = ((wxPdfNumber*) obj)->GetInt();
   }
   int colours = 1;
-  obj = ResolveObject(dic->Get(wxT("Colors")));
+  obj = ResolveObject(dic->Get(wxS("Colors")));
   if (obj != NULL && obj->GetType() == OBJTYPE_NUMBER)
   {
     colours = ((wxPdfNumber*) obj)->GetInt();
   }
   int bpc = 8;
-  obj = ResolveObject(dic->Get(wxT("BitsPerComponent")));
+  obj = ResolveObject(dic->Get(wxS("BitsPerComponent")));
   if (obj != NULL && obj->GetType() == OBJTYPE_NUMBER)
   {
     bpc = ((wxPdfNumber*) obj)->GetInt();
@@ -305,7 +303,7 @@ wxPdfParser::DecodePredictor(wxMemoryOutputStream* osIn, wxPdfObject* dicPar)
         }
         break;
       default:
-        wxLogError(wxString(wxT("wxPdfParser::DecodePredictor: ")) +
+        wxLogError(wxString(wxS("wxPdfParser::DecodePredictor: ")) +
                    wxString(_("PNG filter unknown.")));
         // TODO: Should set error flag and abort method
         break;
@@ -370,7 +368,7 @@ wxPdfLzwDecoder::GetNextCode()
     m_bytePointer++;
     m_nextData = (m_nextData << 8) | ch;
     m_nextBits += 8;
-            
+
     if (m_nextBits < m_bitsToGet)
     {
       ch = m_dataIn->GetC() & 0xff;
@@ -378,14 +376,14 @@ wxPdfLzwDecoder::GetNextCode()
       m_nextData = (m_nextData << 8) | ch;
       m_nextBits += 8;
     }
-            
+
     code = (m_nextData >> (m_nextBits - m_bitsToGet)) & ms_andTable[m_bitsToGet-9];
     m_nextBits -= m_bitsToGet;
   }
 
   return code;
 }
-    
+
 bool
 wxPdfLzwDecoder::Decode(wxMemoryInputStream* dataIn, wxMemoryOutputStream* dataOut)
 {
@@ -397,35 +395,35 @@ wxPdfLzwDecoder::Decode(wxMemoryInputStream* dataIn, wxMemoryOutputStream* dataO
   m_dataIn->SeekI(0);
   if (ch1 == 0 && ch2 == 1)
   {
-    wxLogError(wxString(wxT("wxPdfLzwDecoder::Decode: ")) +
+    wxLogError(wxString(wxS("wxPdfLzwDecoder::Decode: ")) +
                wxString(_("LZW flavour not supported.")));
     return false;
   }
 
   InitializeStringTable();
-        
+
   // Initialize pointers
   m_bytePointer = 0;
   m_bitPointer = 0;
-        
+
   m_nextData = 0;
   m_nextBits = 0;
-        
+
   int code;
   int oldCode = 0;
-        
+
   while ((code = GetNextCode()) != 257)
   {
     if (code == 256)
     {
       InitializeStringTable();
       code = GetNextCode();
-                
+
       if (code == 257)
       {
         break;
       }
-                
+
       WriteString(code);
       oldCode = code;
     }
@@ -448,7 +446,7 @@ wxPdfLzwDecoder::Decode(wxMemoryInputStream* dataIn, wxMemoryOutputStream* dataO
   }
   return true;
 }
-    
+
 void
 wxPdfLzwDecoder::InitializeStringTable()
 {
@@ -462,7 +460,7 @@ wxPdfLzwDecoder::InitializeStringTable()
   {
     m_stringTable[j].Add(j);
   }
-        
+
   m_tableIndex = 258;
   m_bitsToGet = 9;
 }
@@ -490,7 +488,7 @@ wxPdfLzwDecoder::AddStringToTable(int oldCode, char newString)
   }
   m_stringTable[m_tableIndex].Add(newString);
   m_tableIndex++;
-        
+
   if (m_tableIndex == 511)
   {
     m_bitsToGet = 10;

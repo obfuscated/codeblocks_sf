@@ -1,10 +1,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdffontextended.cpp
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2008-08-10
-// RCS-ID:      $$
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -31,16 +29,14 @@
 #include "wx/pdffontdata.h"
 #include "wx/pdffontdatatype1.h"
 
-#include "wxmemdbg.h"
-
 wxPdfFontExtended::wxPdfFontExtended()
-  : m_embed(false), m_subset(false), 
+  : m_embed(false), m_subset(false),
     m_fontData(NULL), m_encoding(NULL)
 {
 }
 
 wxPdfFontExtended::wxPdfFontExtended(const wxPdfFont& font)
-  : m_embed(font.m_embed), m_subset(font.m_subset), 
+  : m_embed(font.m_embed), m_subset(font.m_subset),
     m_fontData(font.m_fontData)
 {
   if (m_fontData != NULL)
@@ -51,9 +47,9 @@ wxPdfFontExtended::wxPdfFontExtended(const wxPdfFont& font)
 }
 
 wxPdfFontExtended::wxPdfFontExtended(const wxPdfFontExtended& font)
-  : m_embed(font.m_embed), m_subset(font.m_subset), 
+  : m_embed(font.m_embed), m_subset(font.m_subset),
     m_fontData(font.m_fontData)
-{ 
+{
   if (m_fontData != NULL)
   {
     m_fontData->IncrementRefCount();
@@ -69,7 +65,7 @@ wxPdfFontExtended::~wxPdfFontExtended()
   }
 }
 
-wxPdfFontExtended& 
+wxPdfFontExtended&
 wxPdfFontExtended::operator=(const wxPdfFontExtended& font)
 { // DO NOT CHANGE THE ORDER OF THESE STATEMENTS!
   // (This order properly handles self-assignment)
@@ -100,19 +96,19 @@ wxPdfFontExtended::IsValid() const
 wxString
 wxPdfFontExtended::GetType() const
 {
-  return (m_fontData != NULL) ? m_fontData->GetType() : wxString(wxT(""));
+  return (m_fontData != NULL) ? m_fontData->GetType() : wxString(wxS(""));
 }
 
 wxString
 wxPdfFontExtended::GetFamily() const
 {
-  return (m_fontData != NULL) ? m_fontData->GetFamily() : wxString(wxT(""));
+  return (m_fontData != NULL) ? m_fontData->GetFamily() : wxString(wxS(""));
 }
 
 wxString
 wxPdfFontExtended::GetName() const
 {
-  return (m_fontData != NULL) ? m_fontData->GetName() : wxString(wxT(""));
+  return (m_fontData != NULL) ? m_fontData->GetName() : wxString(wxS(""));
 }
 
 int
@@ -166,7 +162,7 @@ wxPdfFontExtended::GetBaseEncoding() const
   {
     if (HasDiffs())
     {
-      baseEncoding = wxString(wxT("WinAnsiEncoding"));
+      baseEncoding = wxString(wxS("WinAnsiEncoding"));
     }
   }
   return baseEncoding;
@@ -178,7 +174,7 @@ wxPdfFontExtended::HasDiffs() const
   bool hasDiffs = false;
   if (m_fontData != NULL)
   {
-    if (m_fontData->GetType().IsSameAs(wxT("Type1")) && m_encoding != NULL)
+    if (m_fontData->GetType().IsSameAs(wxS("Type1")) && m_encoding != NULL)
     {
       // TODO: Check whether encoding is different from base encoding
       hasDiffs = true;
@@ -197,7 +193,7 @@ wxPdfFontExtended::GetDiffs() const
   wxString diffs = wxEmptyString;
   if (m_fontData != NULL)
   {
-    if (m_fontData->GetType().IsSameAs(wxT("Type1")) && m_encoding != NULL)
+    if (m_fontData->GetType().IsSameAs(wxS("Type1")) && m_encoding != NULL)
     {
       diffs = m_encoding->GetDifferences();
     }
@@ -230,19 +226,19 @@ wxPdfFontExtended::GetSize2() const
 wxString
 wxPdfFontExtended::GetCMap() const
 {
-  return (m_fontData != NULL) ? m_fontData->GetCMap() : wxString(wxT(""));
+  return (m_fontData != NULL) ? m_fontData->GetCMap() : wxString(wxS(""));
 }
 
 wxString
 wxPdfFontExtended::GetOrdering() const
 {
-  return (m_fontData != NULL) ? m_fontData->GetOrdering() : wxString(wxT(""));
+  return (m_fontData != NULL) ? m_fontData->GetOrdering() : wxString(wxS(""));
 }
 
 wxString
 wxPdfFontExtended::GetSupplement() const
 {
-  return (m_fontData != NULL) ? m_fontData->GetSupplement() : wxString(wxT(""));
+  return (m_fontData != NULL) ? m_fontData->GetSupplement() : wxString(wxS(""));
 }
 
 wxString
@@ -252,7 +248,7 @@ wxPdfFontExtended::GetWidthsAsString(bool subset, wxPdfSortedArrayInt* usedGlyph
   if (m_fontData != NULL)
   {
 #if wxUSE_UNICODE
-    if (m_fontData->GetType().IsSameAs(wxT("Type1")) && m_encoding != NULL)
+    if (m_fontData->GetType().IsSameAs(wxS("Type1")) && m_encoding != NULL)
     {
       widths = ((wxPdfFontDataType1*) m_fontData)->GetWidthsAsString(m_encoding->GetGlyphNames(), subset, usedGlyphs, subsetGlyphs);
     }
@@ -264,7 +260,7 @@ wxPdfFontExtended::GetWidthsAsString(bool subset, wxPdfSortedArrayInt* usedGlyph
   }
   return widths;
 }
-  
+
 double
 wxPdfFontExtended::GetStringWidth(const wxString& s, bool withKerning)
 {
@@ -352,7 +348,7 @@ wxPdfFontExtended::GetDescription() const
   return (m_fontData != NULL) ? m_fontData->GetDescription() : dummyDescription;
 }
 
-wxPdfFont 
+wxPdfFont
 wxPdfFontExtended::GetUserFont() const
 {
   wxPdfFont userFont;
@@ -369,7 +365,7 @@ wxPdfFontExtended::GetUserFont() const
 
 bool
 wxPdfFontExtended::HasEncodingMap() const
-{ 
+{
 #if wxUSE_UNICODE
   return (m_encoding != NULL);
 #else
@@ -384,7 +380,7 @@ wxPdfFontExtended::GetEncodingConv() const
   wxMBConv* conv = NULL;
   if (m_fontData != NULL)
   {
-    if (m_fontData->GetType().IsSameAs(wxT("Type1")) && m_encoding != NULL)
+    if (m_fontData->GetType().IsSameAs(wxS("Type1")) && m_encoding != NULL)
     {
       conv = &wxConvISO8859_1;
     }

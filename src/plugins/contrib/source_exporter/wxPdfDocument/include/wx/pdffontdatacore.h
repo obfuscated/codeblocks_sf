@@ -2,7 +2,6 @@
 // Name:        pdffontdatacore.h
 // Purpose:     Definition of font data for the Adobe core fonts
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2009-05-15
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
@@ -40,7 +39,7 @@ public :
   * \param family the family name of the font
   * \param name the font name
   * \param alias the alias name of the font or an empty string
-  * \param cwArray an array with the character widths 
+  * \param cwArray an array with the character widths
   * \param kpArray an array with kerning pairs
   * \param desc a font description
   */
@@ -85,8 +84,8 @@ public :
   * \param subsetGlyphs the mapping of glyphs to subset glyphs
   * \return the converted string
   */
-  virtual wxString ConvertCID2GID(const wxString& s, const wxPdfEncoding* encoding = NULL, 
-                                  wxPdfSortedArrayInt* usedGlyphs = NULL, 
+  virtual wxString ConvertCID2GID(const wxString& s, const wxPdfEncoding* encoding = NULL,
+                                  wxPdfSortedArrayInt* usedGlyphs = NULL,
                                   wxPdfChar2GlyphMap* subsetGlyphs = NULL) const;
 
 #if wxUSE_UNICODE
@@ -100,7 +99,7 @@ public :
 protected:
 
 private:
-  
+
 };
 
 #endif

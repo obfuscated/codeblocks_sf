@@ -1,8 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdffontparser.h
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2007-06-26
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence

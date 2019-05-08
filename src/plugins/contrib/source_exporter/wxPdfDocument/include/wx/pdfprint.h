@@ -2,10 +2,8 @@
 // Name:        wx/pdfprint.h
 // Purpose:     wxPdfPrinter, wxPdfPrintNativeData
 // Author:      Mark Dootson
-// Modified by:
-// Created:     11 May 2012
-// SVN-ID:      $Id$
-// Copyright:   (c) 2012 Ulrich Telle
+// Created:     2012-05-11
+// Copyright:   (c) 2012 Ulrich Telle, Mark Dooston
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
@@ -680,11 +678,18 @@ public:
     UpdateBoundingBox();
   }
 
+#if wxCHECK_VERSION(3, 1, 2)
+  virtual bool DoGetClippingRect(wxRect& rect) const
+  {
+    return m_dc.DoGetClippingRect(rect);
+  }
+#else // wx < 3.1.2
   virtual void DoGetClippingBox(wxCoord* x, wxCoord* y, wxCoord* w, wxCoord* h) const
   {
     m_dc.DoGetClippingBox(x, y, w, h);
     UpdateBoundingBox();
   }
+#endif // wx 3.1.2 or not
 
   virtual void DestroyClippingRegion()
   {

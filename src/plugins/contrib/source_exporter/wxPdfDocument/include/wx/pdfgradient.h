@@ -1,8 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdfgradient.h
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2009-06-11
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
@@ -218,7 +217,7 @@ public:
   wxPdfColourType GetColourType() { return m_colourType; }
 
   /// Get the buffer holding the gradient data
-  wxMemoryOutputStream* GetBuffer() { return &m_buffer; } 
+  wxMemoryOutputStream* GetBuffer() { return &m_buffer; }
 
 private:
   wxPdfColourType      m_colourType;  ///< colour type of the gradient

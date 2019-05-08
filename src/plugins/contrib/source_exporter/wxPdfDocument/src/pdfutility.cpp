@@ -1,10 +1,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdfutility.cpp
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2009-05-20
-// RCS-ID:      $$
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -23,6 +21,7 @@
 #endif
 
 // includes
+#include "wx/intl.h"
 
 #include "wx/pdfutility.h"
 
@@ -58,7 +57,7 @@ wxPdfUtility::GetUniqueId(const wxString& prefix)
     z += 2147483562;
   }
 
-  uid += wxString::Format(wxT("%08x%05x"), ts.GetSecond(), ts.GetMillisecond());
+  uid += wxString::Format(wxS("%08x%05x"), ts.GetSecond(), ts.GetMillisecond());
   uid += Double2String(z * 4.656613e-9,8);
 
   return uid;
@@ -68,44 +67,26 @@ wxString
 wxPdfUtility::Double2String(double value, int precision)
 {
   wxString number;
-  if (precision < 0)
+#if wxCHECK_VERSION(2,9,1)
+  number = wxString::FromCDouble(value, precision);
+#else
+  wxString format;
+  if (precision == -1)
   {
-    precision = 0;
+    format = wxS("%g");
   }
-  else if (precision > 16)
+  else // Use fixed precision.
   {
-    precision = 16;
+    format.Printf(wxS("%%.%df"), precision);
   }
-
-  // Use absolute value locally
-  double localValue = fabs(value);
-  double localFraction = (localValue - floor(localValue)) +(5. * pow(10.0, -precision-1));
-  if (localFraction >= 1)
-  {
-    localValue += 1.0;
-    localFraction -= 1.0;
-  }
-  localFraction *= pow(10.0, precision);
-
-  if (value < 0)
-  {
-    number += wxString(wxT("-"));
-  }
-
-  number += wxString::Format(wxT("%.0f"), floor(localValue));
-
-  // generate fraction, padding with zero if necessary.
-  if (precision > 0)
-  {
-    number += wxString(wxT("."));
-    wxString fraction = wxString::Format(wxT("%.0f"), floor(localFraction));
-    if (fraction.Length() < ((size_t) precision))
-    {
-      number += wxString(wxT('0'), precision-fraction.Length());
-    }
-    number += fraction;
-  }
-
+  number = wxString::Format(format, value);
+#if wxUSE_INTL
+  wxString dpSeparator = wxLocale::GetInfo(wxLOCALE_DECIMAL_POINT, wxLOCALE_CAT_NUMBER);
+#else
+  wxString dpSeparator(wxS(","));
+#endif
+  number.Replace(dpSeparator, wxS("."));
+#endif
   return number;
 }
 
@@ -122,45 +103,45 @@ wxPdfUtility::String2Double(const wxString& str)
   int jMax = (int) value.Length();
   if (jMax > 0)
   {
-    if (value[j] == wxT('+'))
+    if (value[j] == wxS('+'))
     {
       j++;
     }
-    else if (value[j] == wxT('-'))
+    else if (value[j] == wxS('-'))
     {
       sign = -1;
       j++;
     }
     while (j < jMax && wxIsdigit(value[j]))
     {
-      result = result*10 + (value[j] - wxT('0'));
+      result = result*10 + (value[j] - wxS('0'));
       j++;
     }
-    if (j < jMax && value[j] == wxT('.'))
+    if (j < jMax && value[j] == wxS('.'))
     {
       j++;
       while (j < jMax && wxIsdigit(value[j]))
       {
-        result = result*10 + (value[j] - wxT('0'));
+        result = result*10 + (value[j] - wxS('0'));
         scale++;
         j++;
       }
     }
-    if (j < jMax && (value[j] == wxT('E') || value[j] == wxT('e')))
+    if (j < jMax && (value[j] == wxS('E') || value[j] == wxS('e')))
     {
       j++;
-      if (value[j] == wxT('+'))
+      if (value[j] == wxS('+'))
       {
         j++;
       }
-      else if (value[j] == wxT('-'))
+      else if (value[j] == wxS('-'))
       {
         expsign = -1;
         j++;
       }
       while (j < jMax && wxIsdigit(value[j]))
       {
-        exponent = exponent*10 + (value[j] - wxT('0'));
+        exponent = exponent*10 + (value[j] - wxS('0'));
         j++;
       }
       exponent *= expsign;
@@ -177,13 +158,13 @@ wxPdfUtility::Convert2Roman(int value)
 
   if (value > 0 && value < 4000)
   {
-    static wxString romans = wxT("MDCLXVI");
+    static wxString romans = wxS("MDCLXVI");
     int pos = 6;  // Point to LAST character in 'romans'
     int currentDigit;
 
     while (value > 0)
     {
-      currentDigit = value % 10;   
+      currentDigit = value % 10;
       if (currentDigit == 4 || currentDigit == 9)
       {
         result.Prepend(romans.Mid(pos  - currentDigit / 4, 1));
@@ -207,7 +188,7 @@ wxPdfUtility::Convert2Roman(int value)
   }
   else
   {
-    result = wxT("???");
+    result = wxS("???");
   }
   return result;
 }
@@ -215,7 +196,7 @@ wxPdfUtility::Convert2Roman(int value)
 double
 wxPdfUtility::ForceRange(double value, double minValue, double maxValue)
 {
-  if (value < minValue) 
+  if (value < minValue)
   {
     value = minValue;
   }
@@ -232,8 +213,8 @@ wxPdfUtility::RGB2String(const wxColour& colour)
   double r = colour.Red();
   double g = colour.Green();
   double b = colour.Blue();
-  wxString rgb = Double2String(r/255.,3) + wxT(" ") + 
-                 Double2String(g/255.,3) + wxT(" ") + 
+  wxString rgb = Double2String(r/255.,3) + wxS(" ") +
+                 Double2String(g/255.,3) + wxS(" ") +
                  Double2String(b/255.,3);
   return rgb;
 }

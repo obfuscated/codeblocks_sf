@@ -114,6 +114,7 @@
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
+			<Add directory="wxPdfDocument/include" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-mthreads" />
@@ -201,6 +202,9 @@
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument/include/wx/pdfdoc.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument/include/wx/pdfdoc_version.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument/include/wx/pdfdocdef.h">
@@ -486,6 +490,10 @@
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument/src/pdfdecode.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument/src/pdfdoc_version.rc">
+			<Option compilerVar="WINDRES" />
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument/src/pdfdocument.cpp">

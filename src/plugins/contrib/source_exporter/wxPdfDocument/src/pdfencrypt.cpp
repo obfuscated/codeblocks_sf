@@ -1,10 +1,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdfencrypt.cpp
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2005-08-17
-// RCS-ID:      $$
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -554,7 +552,7 @@ wxPdfEncrypt::ComputeEncryptionKey(const wxString& documentId,
     }
     MD5_Update(&ctx, docId, docIdLength);
   }
-  
+
   // TODO: (Revision 3 or greater) If document metadata is not being encrypted,
   //       pass 4 bytes with the value 0xFFFFFFFF to the MD5 hash function.
 
@@ -753,11 +751,11 @@ wxPdfEncrypt::AES(unsigned char* key, unsigned int keylen,
   m_aes->init(wxPdfRijndael::CBC, wxPdfRijndael::Encrypt, key, wxPdfRijndael::Key16Bytes, textout);
   size_t offset = CalculateStreamOffset();
   int len = m_aes->padEncrypt(&textin[offset], textlen, &textout[offset]);
-  
+
   // It is a good idea to check the error code
   if (len < 0)
   {
-    wxLogError(wxString(wxT("wxPdfEncrypt::AES: ")) +
+    wxLogError(wxString(wxS("wxPdfEncrypt::AES: ")) +
                wxString(_("Error on encrypting.")));
   }
 }

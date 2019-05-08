@@ -1,8 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdffontparsertruetype.h
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2009-03-04
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
@@ -146,7 +145,7 @@ protected:
   * Extracts the names of the font in all the languages available.
   * \param id the name id to retrieve
   * \return a list of unique names
-  */    
+  */
   wxArrayString GetUniqueNames(int id);
 
   /// Get font names
@@ -158,7 +157,7 @@ protected:
   * \param id the name id to retrieve
   * \param namesOnly flag whether to extract only names or names and identifiers
   * \return a list of font names
-  */    
+  */
   wxArrayString GetNames(int id, bool namesOnly = true);
 
   /// Get the English language font name

@@ -6,7 +6,8 @@ noinst_LTLIBRARIES = libwxPdfDocument.la
 
 libwxPdfDocument_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
-libwxPdfDocument_la_SOURCES = src/pdfannotation.cpp \
+libwxPdfDocument_la_SOURCES = \
+				src/pdfannotation.cpp \
 				src/pdfbarcode.cpp \
 				src/pdfcffdecoder.cpp \
 				src/pdfcffindex.cpp \
@@ -17,8 +18,8 @@ libwxPdfDocument_la_SOURCES = src/pdfannotation.cpp \
 				src/pdfencoding.cpp \
 				src/pdfencrypt.cpp \
 				src/pdffont.cpp \
-				src/pdffontdatacore.cpp \
 				src/pdffontdata.cpp \
+				src/pdffontdatacore.cpp \
 				src/pdffontdataopentype.cpp \
 				src/pdffontdatatruetype.cpp \
 				src/pdffontdatatype0.cpp \
@@ -49,7 +50,8 @@ libwxPdfDocument_la_SOURCES = src/pdfannotation.cpp \
 				src/pdfutility.cpp \
 				src/pdfxml.cpp
 
-noinst_HEADERS = include/wx/pdfannotation.h \
+noinst_HEADERS = \
+				include/wx/pdfannotation.h \
 				include/wx/pdfarraydouble.h \
 				include/wx/pdfarraytypes.h \
 				include/wx/pdfbarcode.h \
@@ -60,16 +62,18 @@ noinst_HEADERS = include/wx/pdfannotation.h \
 				include/wx/pdfcolour.h \
 				include/wx/pdfcoonspatchmesh.h \
 				include/wx/pdfcorefontdata.h \
+				include/wx/pdfdc.h \
 				include/wx/pdfdc28.h \
 				include/wx/pdfdc29.h \
-				include/wx/pdfdc.h \
-				include/wx/pdfdocdef.h \
 				include/wx/pdfdoc.h \
+				include/wx/pdfdoc_version.h \
+				include/wx/pdfdocdef.h \
 				include/wx/pdfdocument.h \
 				include/wx/pdfencoding.h \
 				include/wx/pdfencrypt.h \
-				include/wx/pdffontdatacore.h \
+				include/wx/pdffont.h \
 				include/wx/pdffontdata.h \
+				include/wx/pdffontdatacore.h \
 				include/wx/pdffontdataopentype.h \
 				include/wx/pdffontdatatruetype.h \
 				include/wx/pdffontdatatype0.h \
@@ -77,7 +81,6 @@ noinst_HEADERS = include/wx/pdfannotation.h \
 				include/wx/pdffontdescription.h \
 				include/wx/pdffontdetails.h \
 				include/wx/pdffontextended.h \
-				include/wx/pdffont.h \
 				include/wx/pdffontmacosx.h \
 				include/wx/pdffontmanager.h \
 				include/wx/pdffontparser.h \
@@ -104,10 +107,10 @@ noinst_HEADERS = include/wx/pdfannotation.h \
 				include/wx/pdfspotcolour.h \
 				include/wx/pdftemplate.h \
 				include/wx/pdfutility.h \
-				include/wx/pdfxml.h \
-				src/wxmemdbg.h
+				include/wx/pdfxml.h
 
-EXTRA_DIST = src/pdfcjkfontdata.inc \
+EXTRA_DIST = \
+				src/pdfcjkfontdata.inc \
 				src/pdfcmapdata.inc \
 				src/pdfcodepagedata.inc \
 				src/pdfcolourdata.inc \

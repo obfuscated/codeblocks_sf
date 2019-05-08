@@ -1,3 +1,12 @@
+///////////////////////////////////////////////////////////////////////////////
+// Name:        pdfcmapdata.inc
+// Purpose:     Definition of unicode mappings for several predefined cmaps
+// Author:      Ulrich Telle
+// Created:     2009-06-24
+// Copyright:   (c) Ulrich Telle
+// Licence:     wxWindows licence
+///////////////////////////////////////////////////////////////////////////////
+
 /// \file pdfcmapdata.inc Definition of unicode mappings for several predefined cmaps
 
 // Symbol Encoding
@@ -19,13 +28,13 @@ static const wxUint16 gs_unicode_map_symbol[256] =
   0x03b7, 0x03b9, 0x03d5, 0x03ba, 0x03bb, 0x03bc, 0x03bd, 0x03bf,
   0x03c0, 0x03b8, 0x03c1, 0x03c3, 0x03c4, 0x03c5, 0x03d6, 0x03c9,
   0x03be, 0x03c8, 0x03b6, 0x007b, 0x007c, 0x007d, 0x223c, 0x0000,
-  
+
   0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
   0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
   0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
   0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
   0x20ac, 0x03d2, 0x2032, 0x2264, 0x2044, 0x221e, 0x0192, 0x2663,
-  0x2666, 0x2665, 0x2660, 0x2194, 0x2190, 0x2191, 0x2192, 0x2193, 
+  0x2666, 0x2665, 0x2660, 0x2194, 0x2190, 0x2191, 0x2192, 0x2193,
   0x00b0, 0x00b1, 0x2033, 0x2265, 0x00d7, 0x221d, 0x2202, 0x2022,
   0x00f7, 0x2260, 0x2261, 0x2248, 0x2026, 0xf8e6, 0xf8e7, 0x21b5,
   0x2135, 0x2111, 0x211c, 0x2118, 0x2297, 0x2295, 0x2205, 0x2229,
@@ -45,7 +54,7 @@ static const wxUint16 gs_unicode_map_zdb[256] =
   0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
   0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
   0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-  0x0020, 0x2701, 0x2702, 0x2703, 0x2704, 0x260e, 0x2706, 0x2707, 
+  0x0020, 0x2701, 0x2702, 0x2703, 0x2704, 0x260e, 0x2706, 0x2707,
   0x2708, 0x2709, 0x261b, 0x261e, 0x270c, 0x270d, 0x270e, 0x270f,
   0x2710, 0x2711, 0x2712, 0x2713, 0x2714, 0x2715, 0x2716, 0x2717,
   0x2718, 0x2719, 0x271a, 0x271b, 0x271c, 0x271d, 0x271e, 0x271f,
@@ -57,7 +66,7 @@ static const wxUint16 gs_unicode_map_zdb[256] =
   0x2748, 0x2749, 0x274a, 0x274b, 0x25cf, 0x274d, 0x25a0, 0x274f,
   0x2750, 0x2751, 0x2752, 0x25b2, 0x25bc, 0x25c6, 0x2756, 0x25d7,
   0x2758, 0x2759, 0x275a, 0x275b, 0x275c, 0x275d, 0x275e, 0x0000,
-  
+
   0x2768, 0x2769, 0x276a, 0x276b, 0x276c, 0x276d, 0x276e, 0x276f,
   0x2770, 0x2771, 0x2772, 0x2773, 0x2774, 0x2775, 0x0000, 0x0000,
   0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
@@ -79,39 +88,39 @@ static const wxUint16 gs_unicode_map_zdb[256] =
 #if 0
 static const wxChar* gs_glyphs_zdb[] =
 {
-  wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"),
-  wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"),
-  wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"),
-  wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"),
-  wxT("space"),   wxT("a1"),      wxT("a2"),      wxT("a202"),    wxT("a3"),      wxT("a4"),      wxT("a5"),      wxT("a119"),
-  wxT("a118"),    wxT("a117"),    wxT("a11"),     wxT("a12"),     wxT("a13"),     wxT("a14"),     wxT("a15"),     wxT("a16"),
-  wxT("a105"),    wxT("a17"),     wxT("a18"),     wxT("a19"),     wxT("a20"),     wxT("a21"),     wxT("a22"),     wxT("a23"),
-  wxT("a24"),     wxT("a25"),     wxT("a26"),     wxT("a27"),     wxT("a28"),     wxT("a6"),      wxT("a7"),      wxT("a8"),
-  wxT("a9"),      wxT("a10"),     wxT("a29"),     wxT("a30"),     wxT("a31"),     wxT("a32"),     wxT("a33"),     wxT("a34"),
-  wxT("a35"),     wxT("a36"),     wxT("a37"),     wxT("a38"),     wxT("a39"),     wxT("a40"),     wxT("a41"),     wxT("a42"),
-  wxT("a43"),     wxT("a44"),     wxT("a45"),     wxT("a46"),     wxT("a47"),     wxT("a48"),     wxT("a49"),     wxT("a50"),
-  wxT("a51"),     wxT("a52"),     wxT("a53"),     wxT("a54"),     wxT("a55"),     wxT("a56"),     wxT("a57"),     wxT("a58"),
-  wxT("a59"),     wxT("a60"),     wxT("a61"),     wxT("a62"),     wxT("a63"),     wxT("a64"),     wxT("a65"),     wxT("a66"),
-  wxT("a67"),     wxT("a68"),     wxT("a69"),     wxT("a70"),     wxT("a71"),     wxT("a72"),     wxT("a73"),     wxT("a74"),
-  wxT("a203"),    wxT("a75"),     wxT("a204"),    wxT("a76"),     wxT("a77"),     wxT("a78"),     wxT("a79"),     wxT("a81"),
-  wxT("a82"),     wxT("a83"),     wxT("a84"),     wxT("a97"),     wxT("a98"),     wxT("a99"),     wxT("a100"),    wxT(".notdef"),
-  wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"),
-  wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"),
-  wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"),
-  wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"), wxT(".notdef"),
-  wxT(".notdef"), wxT("a101"),    wxT("a102"),    wxT("a103"),    wxT("a104"),    wxT("a106"),    wxT("a107"),    wxT("a108"),
-  wxT("a112"),    wxT("a111"),    wxT("a110"),    wxT("a109"),    wxT("a120"),    wxT("a121"),    wxT("a122"),    wxT("a123"),
-  wxT("a124"),    wxT("a125"),    wxT("a126"),    wxT("a127"),    wxT("a128"),    wxT("a129"),    wxT("a130"),    wxT("a131"),
-  wxT("a132"),    wxT("a133"),    wxT("a134"),    wxT("a135"),    wxT("a136"),    wxT("a137"),    wxT("a138"),    wxT("a139"),
-  wxT("a140"),    wxT("a141"),    wxT("a142"),    wxT("a143"),    wxT("a144"),    wxT("a145"),    wxT("a146"),    wxT("a147"),
-  wxT("a148"),    wxT("a149"),    wxT("a150"),    wxT("a151"),    wxT("a152"),    wxT("a153"),    wxT("a154"),    wxT("a155"),
-  wxT("a156"),    wxT("a157"),    wxT("a158"),    wxT("a159"),    wxT("a160"),    wxT("a161"),    wxT("a163"),    wxT("a164"),
-  wxT("a196"),    wxT("a165"),    wxT("a192"),    wxT("a166"),    wxT("a167"),    wxT("a168"),    wxT("a169"),    wxT("a170"),
-  wxT("a171"),    wxT("a172"),    wxT("a173"),    wxT("a162"),    wxT("a174"),    wxT("a175"),    wxT("a176"),    wxT("a177"),
-  wxT("a178"),    wxT("a179"),    wxT("a193"),    wxT("a180"),    wxT("a199"),    wxT("a181"),    wxT("a200"),    wxT("a182"),
-  wxT(".notdef"), wxT("a201"),    wxT("a183"),    wxT("a184"),    wxT("a197"),    wxT("a185"),    wxT("a194"),    wxT("a198"),
-  wxT("a186"),    wxT("a195"),    wxT("a187"),    wxT("a188"),    wxT("a189"),    wxT("a190"),    wxT("a191"),    wxT(".notdef")
-}; 
+  wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"),
+  wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"),
+  wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"),
+  wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"),
+  wxS("space"),   wxS("a1"),      wxS("a2"),      wxS("a202"),    wxS("a3"),      wxS("a4"),      wxS("a5"),      wxS("a119"),
+  wxS("a118"),    wxS("a117"),    wxS("a11"),     wxS("a12"),     wxS("a13"),     wxS("a14"),     wxS("a15"),     wxS("a16"),
+  wxS("a105"),    wxS("a17"),     wxS("a18"),     wxS("a19"),     wxS("a20"),     wxS("a21"),     wxS("a22"),     wxS("a23"),
+  wxS("a24"),     wxS("a25"),     wxS("a26"),     wxS("a27"),     wxS("a28"),     wxS("a6"),      wxS("a7"),      wxS("a8"),
+  wxS("a9"),      wxS("a10"),     wxS("a29"),     wxS("a30"),     wxS("a31"),     wxS("a32"),     wxS("a33"),     wxS("a34"),
+  wxS("a35"),     wxS("a36"),     wxS("a37"),     wxS("a38"),     wxS("a39"),     wxS("a40"),     wxS("a41"),     wxS("a42"),
+  wxS("a43"),     wxS("a44"),     wxS("a45"),     wxS("a46"),     wxS("a47"),     wxS("a48"),     wxS("a49"),     wxS("a50"),
+  wxS("a51"),     wxS("a52"),     wxS("a53"),     wxS("a54"),     wxS("a55"),     wxS("a56"),     wxS("a57"),     wxS("a58"),
+  wxS("a59"),     wxS("a60"),     wxS("a61"),     wxS("a62"),     wxS("a63"),     wxS("a64"),     wxS("a65"),     wxS("a66"),
+  wxS("a67"),     wxS("a68"),     wxS("a69"),     wxS("a70"),     wxS("a71"),     wxS("a72"),     wxS("a73"),     wxS("a74"),
+  wxS("a203"),    wxS("a75"),     wxS("a204"),    wxS("a76"),     wxS("a77"),     wxS("a78"),     wxS("a79"),     wxS("a81"),
+  wxS("a82"),     wxS("a83"),     wxS("a84"),     wxS("a97"),     wxS("a98"),     wxS("a99"),     wxS("a100"),    wxS(".notdef"),
+  wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"),
+  wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"),
+  wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"),
+  wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"), wxS(".notdef"),
+  wxS(".notdef"), wxS("a101"),    wxS("a102"),    wxS("a103"),    wxS("a104"),    wxS("a106"),    wxS("a107"),    wxS("a108"),
+  wxS("a112"),    wxS("a111"),    wxS("a110"),    wxS("a109"),    wxS("a120"),    wxS("a121"),    wxS("a122"),    wxS("a123"),
+  wxS("a124"),    wxS("a125"),    wxS("a126"),    wxS("a127"),    wxS("a128"),    wxS("a129"),    wxS("a130"),    wxS("a131"),
+  wxS("a132"),    wxS("a133"),    wxS("a134"),    wxS("a135"),    wxS("a136"),    wxS("a137"),    wxS("a138"),    wxS("a139"),
+  wxS("a140"),    wxS("a141"),    wxS("a142"),    wxS("a143"),    wxS("a144"),    wxS("a145"),    wxS("a146"),    wxS("a147"),
+  wxS("a148"),    wxS("a149"),    wxS("a150"),    wxS("a151"),    wxS("a152"),    wxS("a153"),    wxS("a154"),    wxS("a155"),
+  wxS("a156"),    wxS("a157"),    wxS("a158"),    wxS("a159"),    wxS("a160"),    wxS("a161"),    wxS("a163"),    wxS("a164"),
+  wxS("a196"),    wxS("a165"),    wxS("a192"),    wxS("a166"),    wxS("a167"),    wxS("a168"),    wxS("a169"),    wxS("a170"),
+  wxS("a171"),    wxS("a172"),    wxS("a173"),    wxS("a162"),    wxS("a174"),    wxS("a175"),    wxS("a176"),    wxS("a177"),
+  wxS("a178"),    wxS("a179"),    wxS("a193"),    wxS("a180"),    wxS("a199"),    wxS("a181"),    wxS("a200"),    wxS("a182"),
+  wxS(".notdef"), wxS("a201"),    wxS("a183"),    wxS("a184"),    wxS("a197"),    wxS("a185"),    wxS("a194"),    wxS("a198"),
+  wxS("a186"),    wxS("a195"),    wxS("a187"),    wxS("a188"),    wxS("a189"),    wxS("a190"),    wxS("a191"),    wxS(".notdef")
+};
 #endif
 
 // Standard Encoding
@@ -196,7 +205,7 @@ static const wxUint16 gs_unicode_map_macexpert[256] =
   0xF768, 0xF769, 0xF76A, 0xF76B, 0xF76C, 0xF76D, 0xF76E, 0xF76F,
   0xF770, 0xF771, 0xF772, 0xF773, 0xF774, 0xF775, 0xF776, 0xF777,
   0xF778, 0xF779, 0xF77A, 0x20A1, 0xF6DC, 0xF6DD, 0xF6FE, 0x0000,
-  
+
   0x0000, 0xF6E9, 0xF6E0, 0x0000, 0x0000, 0x0000, 0x0000, 0xF7E1,
   0xF7E0, 0xF7E2, 0xF7E4, 0xF7E3, 0xF7E5, 0xF7E7, 0xF7E9, 0xF7E8,
   0xF7EA, 0xF7EB, 0xF7ED, 0xF7EC, 0xF7EE, 0xF7EF, 0xF7F1, 0xF7F3,
@@ -810,46 +819,46 @@ static const struct wxPdfEncodingData
   bool            m_fullsize;
   const wxUint16* m_encodingMap;
   const wxUint16* m_encodingBase;
-#if 0  
+#if 0
   int             m_firstChar;
   int             m_lastChar;
-#endif  
+#endif
 } gs_encodingData[] =
 {
-  { wxT("standard"),     wxT("WinAnsiEncoding"),   false, gs_unicode_map_standard,   gs_unicode_map_winansi },
-  { wxT("winansi"),      wxT("WinAnsiEncoding"),   false, gs_unicode_map_winansi,    gs_unicode_map_winansi },
-  { wxT("macroman"),     wxT("WinAnsiEncoding"),   false, gs_unicode_map_macroman,   gs_unicode_map_winansi },
-  { wxT("macexpert"),    wxT("WinAnsiEncoding"),   true,  gs_unicode_map_macexpert,  gs_unicode_map_winansi },
-  { wxT("symbol"),       wxT(""),                  true,  gs_unicode_map_symbol,     gs_unicode_map_symbol },
-  { wxT("zapfdingbats"), wxT(""),                  true,  gs_unicode_map_zdb,        gs_unicode_map_zdb },
-  { wxT("isolatin1"),    wxT("WinAnsiEncoding"),   false, gs_unicode_map_isolatin1,  gs_unicode_map_winansi },
-  { wxT("iso-8859-1"),   wxT("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_1,  gs_unicode_map_winansi },
-  { wxT("iso-8859-2"),   wxT("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_2,  gs_unicode_map_winansi },
-  { wxT("iso-8859-2"),   wxT("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_2,  gs_unicode_map_winansi },
-  { wxT("iso-8859-3"),   wxT("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_3,  gs_unicode_map_winansi },
-  { wxT("iso-8859-4"),   wxT("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_4,  gs_unicode_map_winansi },
-  { wxT("iso-8859-5"),   wxT("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_5,  gs_unicode_map_winansi },
-  { wxT("iso-8859-6"),   wxT("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_6,  gs_unicode_map_winansi },
-  { wxT("iso-8859-7"),   wxT("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_7,  gs_unicode_map_winansi },
-  { wxT("iso-8859-8"),   wxT("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_8,  gs_unicode_map_winansi },
-  { wxT("iso-8859-9"),   wxT("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_9,  gs_unicode_map_winansi },
-  { wxT("iso-8859-10"),  wxT("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_10, gs_unicode_map_winansi },
-  { wxT("iso-8859-11"),  wxT("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_11, gs_unicode_map_winansi },
-  { wxT("iso-8859-13"),  wxT("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_13, gs_unicode_map_winansi },
-  { wxT("iso-8859-14"),  wxT("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_14, gs_unicode_map_winansi },
-  { wxT("iso-8859-15"),  wxT("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_15, gs_unicode_map_winansi },
-  { wxT("iso-8859-16"),  wxT("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_16, gs_unicode_map_winansi },
-  { wxT("cp-1250"),      wxT("WinAnsiEncoding"),   false, gs_unicode_map_cp1250,     gs_unicode_map_winansi },
-  { wxT("cp-1251"),      wxT("WinAnsiEncoding"),   false, gs_unicode_map_cp1251,     gs_unicode_map_winansi },
-  { wxT("cp-1252"),      wxT("WinAnsiEncoding"),   false, gs_unicode_map_cp1252,     gs_unicode_map_winansi },
-  { wxT("cp-1253"),      wxT("WinAnsiEncoding"),   false, gs_unicode_map_cp1253,     gs_unicode_map_winansi },
-  { wxT("cp-1254"),      wxT("WinAnsiEncoding"),   false, gs_unicode_map_cp1254,     gs_unicode_map_winansi },
-  { wxT("cp-1255"),      wxT("WinAnsiEncoding"),   false, gs_unicode_map_cp1255,     gs_unicode_map_winansi },
-  { wxT("cp-1256"),      wxT("WinAnsiEncoding"),   false, gs_unicode_map_cp1256,     gs_unicode_map_winansi },
-  { wxT("cp-1257"),      wxT("WinAnsiEncoding"),   false, gs_unicode_map_cp1257,     gs_unicode_map_winansi },
-  { wxT("cp-1258"),      wxT("WinAnsiEncoding"),   false, gs_unicode_map_cp1258,     gs_unicode_map_winansi },
-  { wxT("cp-874"),       wxT("WinAnsiEncoding"),   false, gs_unicode_map_cp874,      gs_unicode_map_winansi },
-  { wxT("koi8-r"),       wxT("WinAnsiEncoding"),   false, gs_unicode_map_koi8_r,     gs_unicode_map_winansi }, 
-  { wxT("koi8-u"),       wxT("WinAnsiEncoding"),   false, gs_unicode_map_koi8_u,     gs_unicode_map_winansi }, 
+  { wxS("standard"),     wxS("WinAnsiEncoding"),   false, gs_unicode_map_standard,   gs_unicode_map_winansi },
+  { wxS("winansi"),      wxS("WinAnsiEncoding"),   false, gs_unicode_map_winansi,    gs_unicode_map_winansi },
+  { wxS("macroman"),     wxS("WinAnsiEncoding"),   false, gs_unicode_map_macroman,   gs_unicode_map_winansi },
+  { wxS("macexpert"),    wxS("WinAnsiEncoding"),   true,  gs_unicode_map_macexpert,  gs_unicode_map_winansi },
+  { wxS("symbol"),       wxS(""),                  true,  gs_unicode_map_symbol,     gs_unicode_map_symbol },
+  { wxS("zapfdingbats"), wxS(""),                  true,  gs_unicode_map_zdb,        gs_unicode_map_zdb },
+  { wxS("isolatin1"),    wxS("WinAnsiEncoding"),   false, gs_unicode_map_isolatin1,  gs_unicode_map_winansi },
+  { wxS("iso-8859-1"),   wxS("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_1,  gs_unicode_map_winansi },
+  { wxS("iso-8859-2"),   wxS("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_2,  gs_unicode_map_winansi },
+  { wxS("iso-8859-2"),   wxS("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_2,  gs_unicode_map_winansi },
+  { wxS("iso-8859-3"),   wxS("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_3,  gs_unicode_map_winansi },
+  { wxS("iso-8859-4"),   wxS("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_4,  gs_unicode_map_winansi },
+  { wxS("iso-8859-5"),   wxS("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_5,  gs_unicode_map_winansi },
+  { wxS("iso-8859-6"),   wxS("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_6,  gs_unicode_map_winansi },
+  { wxS("iso-8859-7"),   wxS("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_7,  gs_unicode_map_winansi },
+  { wxS("iso-8859-8"),   wxS("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_8,  gs_unicode_map_winansi },
+  { wxS("iso-8859-9"),   wxS("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_9,  gs_unicode_map_winansi },
+  { wxS("iso-8859-10"),  wxS("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_10, gs_unicode_map_winansi },
+  { wxS("iso-8859-11"),  wxS("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_11, gs_unicode_map_winansi },
+  { wxS("iso-8859-13"),  wxS("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_13, gs_unicode_map_winansi },
+  { wxS("iso-8859-14"),  wxS("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_14, gs_unicode_map_winansi },
+  { wxS("iso-8859-15"),  wxS("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_15, gs_unicode_map_winansi },
+  { wxS("iso-8859-16"),  wxS("WinAnsiEncoding"),   false, gs_unicode_map_iso8859_16, gs_unicode_map_winansi },
+  { wxS("cp-1250"),      wxS("WinAnsiEncoding"),   false, gs_unicode_map_cp1250,     gs_unicode_map_winansi },
+  { wxS("cp-1251"),      wxS("WinAnsiEncoding"),   false, gs_unicode_map_cp1251,     gs_unicode_map_winansi },
+  { wxS("cp-1252"),      wxS("WinAnsiEncoding"),   false, gs_unicode_map_cp1252,     gs_unicode_map_winansi },
+  { wxS("cp-1253"),      wxS("WinAnsiEncoding"),   false, gs_unicode_map_cp1253,     gs_unicode_map_winansi },
+  { wxS("cp-1254"),      wxS("WinAnsiEncoding"),   false, gs_unicode_map_cp1254,     gs_unicode_map_winansi },
+  { wxS("cp-1255"),      wxS("WinAnsiEncoding"),   false, gs_unicode_map_cp1255,     gs_unicode_map_winansi },
+  { wxS("cp-1256"),      wxS("WinAnsiEncoding"),   false, gs_unicode_map_cp1256,     gs_unicode_map_winansi },
+  { wxS("cp-1257"),      wxS("WinAnsiEncoding"),   false, gs_unicode_map_cp1257,     gs_unicode_map_winansi },
+  { wxS("cp-1258"),      wxS("WinAnsiEncoding"),   false, gs_unicode_map_cp1258,     gs_unicode_map_winansi },
+  { wxS("cp-874"),       wxS("WinAnsiEncoding"),   false, gs_unicode_map_cp874,      gs_unicode_map_winansi },
+  { wxS("koi8-r"),       wxS("WinAnsiEncoding"),   false, gs_unicode_map_koi8_r,     gs_unicode_map_winansi },
+  { wxS("koi8-u"),       wxS("WinAnsiEncoding"),   false, gs_unicode_map_koi8_u,     gs_unicode_map_winansi },
   { NULL,                NULL,                     false, NULL,                      NULL } // sentinel empty entry
 };

@@ -2,9 +2,7 @@
 // Name:        pdffontsubsetcff.cpp
 // Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2008-06-24
-// RCS-ID:      $$
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -34,8 +32,6 @@
 #include "wx/pdffontdata.h"
 #include "wx/pdffontsubsetcff.h"
 
-#include "wxmemdbg.h"
-
 static int
 CompareInts(int n1, int n2)
 {
@@ -47,31 +43,29 @@ CompareInts(int n1, int n2)
 // CFF Dict Operators
 // If the high byte is 0 the command is encoded with a single byte.
 
-const int BASEFONTNAME_OP = 0x0c16;
-const int CHARSET_OP      = 0x000f;
-const int CHARSTRINGS_OP  = 0x0011;
-const int CIDCOUNT_OP     = 0x0c22;
-const int COPYRIGHT_OP    = 0x0c00;
-const int ENCODING_OP     = 0x0010;
-const int FAMILYNAME_OP   = 0x0003;
-const int FDARRAY_OP      = 0x0c24;
-const int FDSELECT_OP     = 0x0c25;
-const int FONTBBOX_OP     = 0x0005;
-const int FONTNAME_OP     = 0x0c26;
-const int FULLNAME_OP     = 0x0002;
-const int LOCAL_SUB_OP    = 0x0013;
-const int NOTICE_OP       = 0x0001;
-const int POSTSCRIPT_OP   = 0x0c15;
-const int PRIVATE_OP      = 0x0012;
-const int ROS_OP          = 0x0c1e;
-const int UNIQUEID_OP     = 0x000d;
-const int VERSION_OP      = 0x0000;
-const int WEIGHT_OP       = 0x0004;
-const int XUID_OP         = 0x000e;
-
-const int NUM_STD_STRINGS = 391;
-
-const char SUBR_RETURN_OP = 11;
+enum {
+  BASEFONTNAME_OP = 0x0c16,
+  CHARSET_OP      = 0x000f,
+  CHARSTRINGS_OP  = 0x0011,
+  CIDCOUNT_OP     = 0x0c22,
+  COPYRIGHT_OP    = 0x0c00,
+  ENCODING_OP     = 0x0010,
+  FAMILYNAME_OP   = 0x0003,
+  FDARRAY_OP      = 0x0c24,
+  FDSELECT_OP     = 0x0c25,
+  FONTBBOX_OP     = 0x0005,
+  FONTNAME_OP     = 0x0c26,
+  FULLNAME_OP     = 0x0002,
+  LOCAL_SUB_OP    = 0x0013,
+  NOTICE_OP       = 0x0001,
+  POSTSCRIPT_OP   = 0x0c15,
+  PRIVATE_OP      = 0x0012,
+  ROS_OP          = 0x0c1e,
+  UNIQUEID_OP     = 0x000d,
+  VERSION_OP      = 0x0000,
+  WEIGHT_OP       = 0x0004,
+  XUID_OP         = 0x000e
+};
 
 class wxPdfCffFontObject
 {
@@ -249,7 +243,7 @@ wxPdfFontSubsetCff::ReadFontIndex(wxPdfCffIndexArray* index)
   int maxLength = GetSizeI();
   if (TellI() + 2 > maxLength)
   {
-    wxLogError(wxString(wxT("wxPdfCffSubset::ReadFontIndex: ")) +
+    wxLogError(wxString(wxS("wxPdfCffSubset::ReadFontIndex: ")) +
                wxString(_("Premature end of CFF stream reached while reading index count.")));
     return false;
   }
@@ -259,7 +253,7 @@ wxPdfFontSubsetCff::ReadFontIndex(wxPdfCffIndexArray* index)
     int offsetSize = ReadByte();
     if (TellI() + (count+1)*offsetSize > maxLength)
     {
-      wxLogError(wxString(wxT("wxPdfCffSubset::ReadFontIndex: ")) +
+      wxLogError(wxString(wxS("wxPdfCffSubset::ReadFontIndex: ")) +
                  wxString(_("Premature end of CFF stream reached while reading index data.")));
       return false;
     }
@@ -306,7 +300,7 @@ wxPdfFontSubsetCff::ReadFontName()
     wxPdfCffIndexElement& element = index[0];
     SeekI(element.GetOffset());
     m_fontName = ReadString(element.GetLength());
-    m_fontName += wxT("-Subset");
+    m_fontName += wxS("-Subset");
     SeekI(currentPosition);
   }
   return ok;
@@ -836,14 +830,13 @@ wxPdfFontSubsetCff::SetRosStrings()
 void
 wxPdfFontSubsetCff::SubsetCharstrings()
 {
-/* C::B begin */
-  const int numGlyphsUsed = (int) m_usedGlyphs.GetCount();
-  for (int j = 0; j < numGlyphsUsed; ++j)
+  int numGlyphsUsed = (int) m_usedGlyphs.GetCount();
+  int usedGlyph;
+  for (int j = 0; j < numGlyphsUsed; j++)
   {
-    int usedGlyph = m_usedGlyphs[j];
+    usedGlyph = m_usedGlyphs[j];
     m_charstringsSubsetIndex->Add((*m_charstringsIndex)[usedGlyph]);
   }
-/* C::B end */
 }
 
 void
@@ -1296,13 +1289,13 @@ wxPdfFontSubsetCff::WriteFontSubset()
   WriteCidPrivateDictAndLocalSub();
 
 #if 0
-  wxFileOutputStream cffSubset(wxT("cffsubset.dat"));
+  wxFileOutputStream cffSubset(wxS("cffsubset.dat"));
   wxMemoryInputStream tmp(*m_outFont);
   cffSubset.Write(tmp);
   cffSubset.Close();
 #endif
 #if 0
-  wxLogMessage(wxT("-- Dump outFont --"));
+  wxLogMessage(wxS("-- Dump outFont --"));
     char locBuffer[1024];
     tmp.SeekI(0);
     int copyLength = tmp.GetLength();
@@ -1316,7 +1309,7 @@ wxPdfFontSubsetCff::WriteFontSubset()
       int kk;
       for (kk = 0; kk < bufferLength; kk++)
       {
-        str += wxString::Format(wxT(" %d"), locBuffer[kk]);
+        str += wxString::Format(wxS(" %d"), locBuffer[kk]);
         if (kk % 10 == 9)
         {
           wxLogDebug(str);
@@ -1330,7 +1323,7 @@ wxPdfFontSubsetCff::WriteFontSubset()
     }
 #endif
 #if 0
-  wxFileInputStream cairoIn(wxT("gfsdidot-test-cairo2.pdf"));
+  wxFileInputStream cairoIn(wxS("gfsdidot-test-cairo2.pdf"));
   cairoIn.SeekI(960);
   char cairoBuffer[18710];
   cairoIn.Read(cairoBuffer,18710);
@@ -1339,7 +1332,7 @@ wxPdfFontSubsetCff::WriteFontSubset()
   cairoOut.Close();
   wxMemoryInputStream inCairo(cairoOut);
   wxZlibInputStream zinCairo(inCairo);
-  wxFileOutputStream cairoCff(wxT("cairo-cff.dat"));
+  wxFileOutputStream cairoCff(wxS("cairo-cff.dat"));
   cairoCff.Write(zinCairo);
   cairoCff.Close();
 #endif
@@ -1512,7 +1505,7 @@ wxPdfFontSubsetCff::FindGlobalSubrsUsed()
       else
       {
 #if 0
-        wxLogDebug(wxT("Call ReadASubr i=%d subr=%d"), i, subr);
+        wxLogDebug(wxS("Call ReadASubr i=%d subr=%d"), i, subr);
 #endif
         m_decoder->ReadASubr(m_inFont, start, end, m_globalBias, localBias,
                              *m_hLocalSubrsUsed, m_lLocalSubrsUsed, *m_localSubrIndex);
@@ -1524,7 +1517,7 @@ wxPdfFontSubsetCff::FindGlobalSubrsUsed()
             //Pop the value + check valid
             int lSubr = m_lLocalSubrsUsed.Item(j);
 #if 0
-            wxLogDebug(wxT("Call ReadASubr j=%d subr=%d"), i, subr);
+            wxLogDebug(wxS("Call ReadASubr j=%d subr=%d"), i, subr);
 #endif
             if (lSubr < nLocalSubrs && lSubr >= 0)
             {

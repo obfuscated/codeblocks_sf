@@ -1,8 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdffont.h
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2008-08-10
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
@@ -124,7 +123,7 @@ public :
   */
   bool GetEmbed() const { return m_embed; }
 
-  /// Set subset flag 
+  /// Set subset flag
   /**
   * Enables or disables subsetting for the font. Subsetting can be enabled if and only if
   * the font allows subsetting.
@@ -184,7 +183,7 @@ public :
   * \param replace the character used to replace invalid characters
   * \return converted string
   */
-  wxString ConvertToValid(const wxString& s, wxChar replace = wxT('?')) const;
+  wxString ConvertToValid(const wxString& s, wxChar replace = wxS('?')) const;
 
   /// Get list of supported glyph names
   /**

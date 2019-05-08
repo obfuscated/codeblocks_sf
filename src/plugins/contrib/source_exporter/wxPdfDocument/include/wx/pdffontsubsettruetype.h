@@ -1,8 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdffontsubsettruetype.h
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2005-11-20
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
@@ -46,7 +45,7 @@ public:
 #if defined(__WXMAC__)
 #if wxPDFMACOSX_HAS_CORE_TEXT
   /// Set Mac Core Text font reference
-  void SetCTFontRef(const wxFont& font);                                 
+  void SetCTFontRef(const wxFont& font);
 #endif
 #endif
 
@@ -85,7 +84,7 @@ private:
   wxMemoryOutputStream* m_outFont;    ///< Subset output stream
 
   wxPdfSortedArrayInt*  m_usedGlyphs; ///< list of used glyphs
-  
+
   int    m_fontIndex;                 ///< Index of font in font collection
   bool   m_includeCmap;               ///< Flag whether to include the CMap
 

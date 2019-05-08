@@ -1,8 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdfdc29.h
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2010-11-28
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
@@ -160,7 +159,7 @@ protected:
 
   virtual bool DoBlit(wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height,
                       wxDC* source, wxCoord xsrc, wxCoord ysrc,
-                      wxRasterOperationMode rop = wxCOPY, bool useMask = false, 
+                      wxRasterOperationMode rop = wxCOPY, bool useMask = false,
                       wxCoord xsrcMask = -1, wxCoord ysrcMask = -1);
 
   virtual void DoGetSize(int* width, int* height) const;
@@ -208,16 +207,17 @@ public:
   void SetMapModeStyle(wxPdfMapModeStyle style) { m_mappingModeStyle = style; }
   wxPdfMapModeStyle GetMapModeStyle() const { return m_mappingModeStyle; }
 
-private:
-  int FindPdfFont(wxFont* font) const;
-  void SetupPen();
-  void SetupBrush();
   double ScaleLogicalToPdfX(wxCoord x) const;
   double ScaleLogicalToPdfXRel(wxCoord x) const;
   double ScaleLogicalToPdfY(wxCoord y) const;
   double ScaleLogicalToPdfYRel(wxCoord y) const;
   double ScaleFontSizeToPdf(int pointSize) const;
   int ScalePdfToFontMetric(double metric) const;
+
+private:
+  int FindPdfFont(wxFont* font) const;
+  void SetupPen();
+  void SetupBrush();
   void CalculateFontMetrics(wxPdfFontDescription* desc, int pointSize,
                             int* height, int* ascent, int* descent, int* extLeading) const;
 
@@ -230,6 +230,9 @@ private:
   int            m_imageCount;
   wxPrintData    m_printData;
   wxPdfMapModeStyle m_mappingModeStyle;
+
+  wxPdfColour   m_cachedPdfColour;
+  wxUint32      m_cachedRGB;
 
   bool m_jpegFormat;
   int  m_jpegQuality;

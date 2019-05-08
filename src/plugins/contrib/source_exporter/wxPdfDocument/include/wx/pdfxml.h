@@ -1,8 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdfxml.h
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2005-12-03
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
@@ -68,7 +67,7 @@ public:
 
   /// Check whether current line is marked as last line
   bool IsCurrentLineMarked();
-  
+
   /// Adjust width of current line
   void AddCurrentLineWidth(double width);
 
@@ -184,7 +183,7 @@ public:
 
   /// Set height of cell
   void SetHeight(double h) { m_height = h;};
-  
+
   /// Get height of cell
   double GetHeight() const { return m_height;};
 
@@ -240,10 +239,10 @@ private:
   int               m_border;        ///< border
   double            m_width;         ///< cell width
   double            m_height;        ///< cell height
-  
+
   bool              m_hasCellColour;  ///< flag whether cell has background colour or is transparent
   wxPdfColour       m_colourCell;     ///< cell background colour
-}; 
+};
 
 /// Hashmap class for document links
 WX_DECLARE_HASH_MAP_WITH_DECL(long, wxPdfTableCell*, wxIntegerHash, wxIntegerEqual, wxPdfCellHashMap, class WXDLLIMPEXP_PDFDOC);
@@ -288,6 +287,12 @@ public:
   /// Set border
   void SetBorder(bool border) { m_border = border; }
 
+  /// Set border size
+  void SetBorderWidth(double borderWidth) { m_borderWidth = borderWidth; }
+
+  /// Set border colour
+  void SetBorderColour(wxPdfColour borderColour) { m_borderColour = borderColour; }
+
   /// Check whether border should be drawn
   bool HasBorder() { return m_border; }
 
@@ -330,6 +335,8 @@ private:
   wxPdfCellHashMap   m_table;        ///< array of table cells
   double             m_pad;          ///< cell padding
   bool               m_border;       ///< border flag
+  double             m_borderWidth;  ///< border width (use -1 for current line width)
+  wxPdfColour        m_borderColour; ///< border colour
 };
- 
+
 #endif

@@ -1,8 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdfencrypt.h
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2005-08-16
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence

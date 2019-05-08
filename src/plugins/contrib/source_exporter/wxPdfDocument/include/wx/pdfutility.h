@@ -1,8 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdfutility.h
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2009-05-20
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
@@ -25,7 +24,7 @@ class WXDLLIMPEXP_PDFDOC wxPdfUtility
 public:
   /// Create a unique ID
   static wxString GetUniqueId(const wxString& prefix = wxEmptyString);
-  
+
   /// Formats a floating point number with a fixed precision
   /**
   * \param value the value to be formatted

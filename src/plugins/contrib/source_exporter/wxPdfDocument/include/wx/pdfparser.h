@@ -1,8 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdfparser.h
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2006-05-15
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
@@ -24,13 +23,8 @@
 #include "wx/pdfarraydouble.h"
 #include "wx/pdfobjects.h"
 
-class WXDLLIMPEXP_FWD_PDFDOC wxPdfArray;
-class WXDLLIMPEXP_FWD_PDFDOC wxPdfDictionary;
 class WXDLLIMPEXP_FWD_PDFDOC wxPdfEncrypt;
 class WXDLLIMPEXP_FWD_PDFDOC wxPdfInfo;
-class WXDLLIMPEXP_FWD_PDFDOC wxPdfObject;
-class WXDLLIMPEXP_FWD_PDFDOC wxPdfObjectQueue;
-class WXDLLIMPEXP_FWD_PDFDOC wxPdfStream;
 
 /// Permissions required for import of a document
 // Permission bit  3: Print
@@ -98,7 +92,7 @@ public:
 
   /// Get the type of the last token
   int GetTokenType();
-    
+
   /// Get the token value as a string
   wxString GetStringValue();
 
@@ -107,13 +101,13 @@ public:
 
   /// Check whether the token is a hexadecimal string
   bool IsHexString() { return m_hexString; }
-    
+
   /// Get object reference
   int GetReference();
 
   /// Get object generation
   int GetGeneration();
-    
+
   /// Check byte whether it represents a white space character
   static bool IsWhitespace(int ch);
 

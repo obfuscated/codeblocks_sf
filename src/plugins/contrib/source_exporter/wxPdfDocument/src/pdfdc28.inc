@@ -2,7 +2,6 @@
 // Name:        pdfdc28.inc
 // Purpose:     Implementation of wxPdfDC for wxWidgets 2.8.x
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2010-11-28
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
@@ -13,7 +12,7 @@
 #include <wx/region.h>
 #include <wx/font.h>
 #include <wx/paper.h>
-#include "wx/pdfdc.h" 
+#include "wx/pdfdc.h"
 #include "wx/pdffontmanager.h"
 
 #include <math.h>
@@ -25,11 +24,18 @@ angleByCoords(wxCoord xa, wxCoord ya, wxCoord xc, wxCoord yc)
   double diffX = xa - xc, diffY = -(ya - yc), ret = 0;
   if (diffX == 0) // singularity
   {
-    ret = diffY > 0 ? 90 : -90;
+    ret = diffY > 0 ? 90 : 270;
   }
   else if (diffX >= 0) // quadrants 1, 4
   {
-    ret = (atan(diffY / diffX) * 180.0 / pi);
+    if (diffY >= 0) // quadrant 1
+    {
+      ret = (atan(diffY / diffX) * 180.0 / pi);
+    }
+    else // quadrant 4
+    {
+      ret = 360 + (atan(diffY / diffX) * 180.0 / pi);
+    }
   }
   else // quadrants 2, 3
   {
@@ -114,10 +120,10 @@ wxPdfDC::Init()
   m_imageCount = 0;
 
   SetBackgroundMode(wxSOLID);
-  
+
   m_printData.SetOrientation(wxPORTRAIT);
   m_printData.SetPaperId(wxPAPER_A4);
-  m_printData.SetFilename(wxT("default.pdf"));
+  m_printData.SetFilename(wxS("default.pdf"));
 }
 
 wxPdfDocument*
@@ -166,15 +172,15 @@ wxPdfDC::Clear()
 bool
 wxPdfDC::StartDoc( const wxString& message )
 {
-  wxCHECK_MSG(m_ok, false, wxT("Invalid PDF DC"));
+  wxCHECK_MSG(m_ok, false, wxS("Invalid PDF DC"));
   wxUnusedVar(message);
   if (!m_templateMode && m_pdfDocument == NULL)
   {
-    m_pdfDocument = new wxPdfDocument(m_printData.GetOrientation(), wxString(wxT("pt")), m_printData.GetPaperId());
+    m_pdfDocument = new wxPdfDocument(m_printData.GetOrientation(), wxString(wxS("pt")), m_printData.GetPaperId());
     m_pdfDocument->Open();
     //m_pdfDocument->SetCompression(false);
-    m_pdfDocument->SetAuthor(wxT("wxPdfDC"));
-    m_pdfDocument->SetTitle(wxT("wxPdfDC"));
+    m_pdfDocument->SetAuthor(wxS("wxPdfDC"));
+    m_pdfDocument->SetTitle(wxS("wxPdfDC"));
 
     SetBrush(*wxBLACK_BRUSH);
     SetPen(*wxBLACK_PEN);
@@ -188,7 +194,7 @@ wxPdfDC::StartDoc( const wxString& message )
 void
 wxPdfDC::EndDoc()
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
   if (!m_templateMode)
   {
     m_pdfDocument->SaveAsFile(m_printData.GetFilename());
@@ -200,7 +206,7 @@ wxPdfDC::EndDoc()
 void
 wxPdfDC::StartPage()
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
   if (!m_templateMode)
   {
     // Begin a new page
@@ -229,7 +235,7 @@ wxPdfDC::EndPage()
 void
 wxPdfDC::SetFont(const wxFont& font)
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
   m_font = font;
   if (!font.IsOk())
   {
@@ -260,7 +266,7 @@ wxPdfDC::SetFont(const wxFont& font)
 
   if (ok)
   {
-    ok = m_pdfDocument->SetFont(regFont, styles, ScaleFontSizeToPdf(font.GetPointSize()));    
+    ok = m_pdfDocument->SetFont(regFont, styles, ScaleFontSizeToPdf(font.GetPointSize()));
   }
 }
 
@@ -317,14 +323,14 @@ wxPdfDC::SetTextForeground(const wxColour& colour)
 void
 wxPdfDC::DestroyClippingRegion()
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
   if (m_clipping)
   {
     m_pdfDocument->UnsetClipping();
-    { 
+    {
       wxPen x(GetPen()); SetPen(x);
     }
-    { 
+    {
       wxBrush x(GetBrush()); SetBrush(x);
     }
     {
@@ -342,7 +348,7 @@ wxPdfDC::GetCharHeight() const
   int width;
   if (m_font.Ok())
   {
-    DoGetTextExtent(wxT("x"), &width, &height);
+    DoGetTextExtent(wxS("x"), &width, &height);
   }
   return height;
 }
@@ -354,7 +360,7 @@ wxPdfDC::GetCharWidth() const
   int width = 8;
   if (m_font.Ok())
   {
-    DoGetTextExtent(wxT("x"), &width, &height);
+    DoGetTextExtent(wxS("x"), &width, &height);
   }
   return width;
 }
@@ -385,7 +391,7 @@ wxPdfDC::GetPPI() const
   return wxSize(ppi,ppi);
 }
 
-void 
+void
 wxPdfDC::ComputeScaleAndOrigin()
 {
   m_scaleX = m_logicalScaleX * m_userScaleX;
@@ -460,7 +466,7 @@ wxPdfDC::SetAxisOrientation(bool xLeftRight, bool yBottomUp)
 void
 wxPdfDC::SetLogicalFunction(int function)
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
   // TODO: check implementation
   m_logicalFunction = function;
   switch (function)
@@ -484,7 +490,7 @@ wxPdfDC::DoFloodFill(wxCoord x, wxCoord y, const wxColour& col, int style)
   wxUnusedVar(y);
   wxUnusedVar(col);
   wxUnusedVar(style);
-  wxFAIL_MSG(wxString(wxT("wxPdfDC::FloodFill: "))+_("Not implemented."));
+  wxFAIL_MSG(wxString(wxS("wxPdfDC::FloodFill: "))+_("Not implemented."));
   return false;
 }
 
@@ -520,14 +526,14 @@ wxPdfDC::DoGetPixel(wxCoord x, wxCoord y, wxColour* col) const
   wxUnusedVar(x);
   wxUnusedVar(y);
   wxUnusedVar(col);
-  wxFAIL_MSG(wxString(wxT("wxPdfDC::DoGetPixel: "))+_("Not implemented."));
+  wxFAIL_MSG(wxString(wxS("wxPdfDC::DoGetPixel: "))+_("Not implemented."));
   return false;
 }
 
 void
 wxPdfDC::DoDrawPoint(wxCoord x, wxCoord y)
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
   SetupPen();
   double xx = ScaleLogicalToPdfX(x);
   double yy = ScaleLogicalToPdfY(y);
@@ -540,11 +546,11 @@ wxPdfDC::DoDrawPoint(wxCoord x, wxCoord y)
 void
 wxPdfDC::DoDrawSpline(wxList* points)
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
-  SetPen( m_pen );
-  wxASSERT_MSG( points, wxT("NULL pointer to spline points?") );
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
+  SetupPen();
+  wxASSERT_MSG( points, wxS("NULL pointer to spline points?") );
   const size_t n_points = points->GetCount();
-  wxASSERT_MSG( n_points > 2 , wxT("incomplete list of spline points?") );
+  wxASSERT_MSG( n_points > 2 , wxS("incomplete list of spline points?") );
 
   // Code taken from wxDC MSW implementation
   // quadratic b-spline to cubic bezier spline conversion
@@ -622,12 +628,12 @@ wxPdfDC::DoDrawSpline(wxList* points)
 void
 wxPdfDC::DoDrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2)
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
   if  (m_pen.GetStyle() != wxTRANSPARENT)
   {
     SetupBrush();
     SetupPen();
-    m_pdfDocument->Line(ScaleLogicalToPdfX(x1), ScaleLogicalToPdfY(y1), 
+    m_pdfDocument->Line(ScaleLogicalToPdfX(x1), ScaleLogicalToPdfY(y1),
                         ScaleLogicalToPdfX(x2), ScaleLogicalToPdfY(y2));
     CalcBoundingBox(x1, y1);
     CalcBoundingBox(x2, y2);
@@ -639,7 +645,7 @@ wxPdfDC::DoDrawArc(wxCoord x1, wxCoord y1,
                    wxCoord x2, wxCoord y2,
                    wxCoord xc, wxCoord yc)
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
   SetupBrush();
   SetupPen();
   const wxBrush& curBrush = GetBrush();
@@ -692,7 +698,7 @@ void
 wxPdfDC::DoDrawEllipticArc(wxCoord x, wxCoord y, wxCoord width, wxCoord height,
                            double sa, double ea)
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
   if (sa >= 360 || sa <= -360)
   {
     sa -= int(sa/360)*360;
@@ -729,10 +735,10 @@ wxPdfDC::DoDrawEllipticArc(wxCoord x, wxCoord y, wxCoord width, wxCoord height,
       {
         style = (doFill) ? wxPDF_STYLE_FILL : wxPDF_STYLE_DRAWCLOSE;
       }
-      m_pdfDocument->Ellipse(ScaleLogicalToPdfX(x + 0.5 * width), 
+      m_pdfDocument->Ellipse(ScaleLogicalToPdfX(x + 0.5 * width),
                              ScaleLogicalToPdfY(y + 0.5 * height),
-                             ScaleLogicalToPdfXRel(0.5 * width), 
-                             ScaleLogicalToPdfYRel(0.5 * height), 
+                             ScaleLogicalToPdfXRel(0.5 * width),
+                             ScaleLogicalToPdfYRel(0.5 * height),
                              0, sa, ea, style, 8, true);
       CalcBoundingBox(x, y);
       CalcBoundingBox(x+width, y+height);
@@ -743,12 +749,12 @@ wxPdfDC::DoDrawEllipticArc(wxCoord x, wxCoord y, wxCoord width, wxCoord height,
 void
 wxPdfDC::DoDrawRectangle(wxCoord x, wxCoord y, wxCoord width, wxCoord height)
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
   SetupBrush();
   SetupPen();
   m_pdfDocument->Rect(ScaleLogicalToPdfX(x), ScaleLogicalToPdfY(y),
-                      ScaleLogicalToPdfXRel(width), ScaleLogicalToPdfYRel(height), 
-                      GetDrawingStyle()); 
+                      ScaleLogicalToPdfXRel(width), ScaleLogicalToPdfYRel(height),
+                      GetDrawingStyle());
   CalcBoundingBox(x, y);
   CalcBoundingBox(x+width, y+height);
 }
@@ -758,7 +764,7 @@ wxPdfDC::DoDrawRoundedRectangle(wxCoord x, wxCoord y,
                                 wxCoord width, wxCoord height,
                                 double radius)
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
   if (radius < 0.0)
   {
     // Now, a negative radius is interpreted to mean
@@ -768,9 +774,9 @@ wxPdfDC::DoDrawRoundedRectangle(wxCoord x, wxCoord y,
   }
   SetupBrush();
   SetupPen();
-  m_pdfDocument->RoundedRect(ScaleLogicalToPdfX(x), ScaleLogicalToPdfY(y), 
-                             ScaleLogicalToPdfXRel(width), ScaleLogicalToPdfYRel(height), 
-                             ScaleLogicalToPdfXRel(radius), wxPDF_CORNER_ALL, GetDrawingStyle());  
+  m_pdfDocument->RoundedRect(ScaleLogicalToPdfX(x), ScaleLogicalToPdfY(y),
+                             ScaleLogicalToPdfXRel(width), ScaleLogicalToPdfYRel(height),
+                             ScaleLogicalToPdfXRel(radius), wxPDF_CORNER_ALL, GetDrawingStyle());
   CalcBoundingBox(x, y);
   CalcBoundingBox(x+width, y+height);
 }
@@ -778,14 +784,14 @@ wxPdfDC::DoDrawRoundedRectangle(wxCoord x, wxCoord y,
 void
 wxPdfDC::DoDrawEllipse(wxCoord x, wxCoord y, wxCoord width, wxCoord height)
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
   SetupBrush();
   SetupPen();
-  m_pdfDocument->Ellipse(ScaleLogicalToPdfX(x + width / 2.0), 
-                         ScaleLogicalToPdfY(y + height / 2.0), 
-                         ScaleLogicalToPdfXRel(width / 2.0), 
-                         ScaleLogicalToPdfYRel(height / 2.0), 
-                         0, 0, 360, GetDrawingStyle()); 
+  m_pdfDocument->Ellipse(ScaleLogicalToPdfX(x + width / 2.0),
+                         ScaleLogicalToPdfY(y + height / 2.0),
+                         ScaleLogicalToPdfXRel(width / 2.0),
+                         ScaleLogicalToPdfYRel(height / 2.0),
+                         0, 0, 360, GetDrawingStyle());
   CalcBoundingBox(x-width, y-height);
   CalcBoundingBox(x+width, y+height);
 }
@@ -795,7 +801,7 @@ wxPdfDC::DoCrossHair(wxCoord x, wxCoord y)
 {
   wxUnusedVar(x);
   wxUnusedVar(y);
-  wxFAIL_MSG(wxString(wxT("wxPdfDC::DoCrossHair: "))+_("Not implemented."));
+  wxFAIL_MSG(wxString(wxS("wxPdfDC::DoCrossHair: "))+_("Not implemented."));
 }
 
 void
@@ -808,9 +814,9 @@ void
 wxPdfDC::DoDrawBitmap(const wxBitmap& bitmap, wxCoord x, wxCoord y,
                       bool useMask)
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
-  wxCHECK_RET( IsOk(), wxT("wxPdfDC::DoDrawBitmap - invalid DC") );
-  wxCHECK_RET( bitmap.Ok(), wxT("wxPdfDC::DoDrawBitmap - invalid bitmap") );
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
+  wxCHECK_RET( IsOk(), wxS("wxPdfDC::DoDrawBitmap - invalid DC") );
+  wxCHECK_RET( bitmap.Ok(), wxS("wxPdfDC::DoDrawBitmap - invalid bitmap") );
 
   if (!bitmap.Ok()) return;
 
@@ -831,7 +837,7 @@ wxPdfDC::DoDrawBitmap(const wxBitmap& bitmap, wxCoord x, wxCoord y,
   wxCoord xx = ScaleLogicalToPdfX(x);
   wxCoord yy = ScaleLogicalToPdfY(y);
 
-  wxString imgName = wxString::Format(wxT("pdfdcimg%d"), ++m_imageCount);
+  wxString imgName = wxString::Format(wxS("pdfdcimg%d"), ++m_imageCount);
 
   if (bitmap.GetDepth() == 1)
   {
@@ -839,7 +845,7 @@ wxPdfDC::DoDrawBitmap(const wxBitmap& bitmap, wxCoord x, wxCoord y,
     wxBrush saveBrush = m_brush;
     SetPen(*wxTRANSPARENT_PEN);
     SetBrush(wxBrush(m_textBackgroundColour, wxSOLID));
-    DrawRectangle(xx, yy, ww, hh);        
+    DrawRectangle(xx, yy, ww, hh);
     SetBrush(wxBrush(m_textForegroundColour, wxSOLID));
     m_pdfDocument->Image(imgName, image, xx, yy, ww, hh, wxPdfLink(-1), idMask, m_jpegFormat, m_jpegQuality);
     SetBrush(saveBrush);
@@ -861,19 +867,16 @@ void
 wxPdfDC::DoDrawRotatedText(const wxString& text, wxCoord x, wxCoord y,
                            double angle)
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
 
   wxFont* fontToUse = &m_font;
   if (fontToUse->IsOk())
   {
-    wxFont old = m_font; 
+    wxFont old = m_font;
     wxPdfFontDescription desc = m_pdfDocument->GetFontDescription();
     int height, descent;
     CalculateFontMetrics(&desc, fontToUse->GetPointSize(), &height, NULL, &descent, NULL);
-    if (m_mappingModeStyle != wxPDF_MAPMODESTYLE_PDF)
-    {
-      y += (height - abs(descent));
-    }
+    y += (height - abs(descent));
 
     m_pdfDocument->SetTextColour(m_textForegroundColour.Red(), m_textForegroundColour.Green(), m_textForegroundColour.Blue());
     m_pdfDocument->SetFontSize(ScaleFontSizeToPdf(fontToUse->GetPointSize()));
@@ -885,11 +888,11 @@ wxPdfDC::DoDrawRotatedText(const wxString& text, wxCoord x, wxCoord y,
 bool
 wxPdfDC::DoBlit(wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height,
                 wxDC* source, wxCoord xsrc, wxCoord ysrc,
-                int rop /*= wxCOPY*/, bool useMask /*= false*/, 
+                int rop /*= wxCOPY*/, bool useMask /*= false*/,
                 wxCoord xsrcMask /*= -1*/, wxCoord ysrcMask /*= -1*/)
 {
-  wxCHECK_MSG( IsOk(), false, wxT("wxPdfDC::DoBlit - invalid DC") );
-  wxCHECK_MSG( source->Ok(), false, wxT("wxPdfDC::DoBlit - invalid source DC") );
+  wxCHECK_MSG( IsOk(), false, wxS("wxPdfDC::DoBlit - invalid DC") );
+  wxCHECK_MSG( source->Ok(), false, wxS("wxPdfDC::DoBlit - invalid source DC") );
 
   wxUnusedVar(useMask);
   wxUnusedVar(xsrcMask);
@@ -974,7 +977,7 @@ wxPdfDC::DoGetSizeMM(int* width, int* height) const
       w = paper->GetWidth() / 10;
       h = paper->GetHeight() / 10;
     }
- 
+
     if (m_printData.GetOrientation() == wxLANDSCAPE)
     {
       int tmp = w;
@@ -997,7 +1000,7 @@ wxPdfDC::DoGetSizeMM(int* width, int* height) const
 void
 wxPdfDC::DoDrawLines(int n, wxPoint points[], wxCoord xoffset, wxCoord yoffset)
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
   SetupPen();
   int i;
   for (i = 0; i < n; ++i)
@@ -1023,7 +1026,7 @@ wxPdfDC::DoDrawPolygon(int n, wxPoint points[],
                        wxCoord xoffset, wxCoord yoffset,
                        int fillStyle /* = wxODDEVEN_RULE*/)
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
   SetupBrush();
   SetupPen();
   wxPdfArrayDouble xp;
@@ -1048,7 +1051,7 @@ wxPdfDC::DoDrawPolyPolygon(int n, int count[], wxPoint points[],
                            wxCoord xoffset, wxCoord yoffset,
                            int fillStyle)
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
   if (n > 0)
   {
     SetupBrush();
@@ -1088,7 +1091,7 @@ void
 wxPdfDC::DoSetClippingRegion(wxCoord x, wxCoord y,
                              wxCoord width, wxCoord height)
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
   if (m_clipping)
   {
     DestroyClippingRegion();
@@ -1100,9 +1103,9 @@ wxPdfDC::DoSetClippingRegion(wxCoord x, wxCoord y,
   m_clipY2 = (int) (y + height);
 
   // Use the current path as a clipping region
-  m_pdfDocument->ClippingRect(ScaleLogicalToPdfX(x), 
-                              ScaleLogicalToPdfY(y), 
-                              ScaleLogicalToPdfXRel(width), 
+  m_pdfDocument->ClippingRect(ScaleLogicalToPdfX(x),
+                              ScaleLogicalToPdfY(y),
+                              ScaleLogicalToPdfXRel(width),
                               ScaleLogicalToPdfYRel(height));
   m_clipping = true;
 }
@@ -1114,7 +1117,7 @@ wxPdfDC::DoGetTextExtent(const wxString& text,
                          wxCoord* externalLeading,
                          wxFont* theFont) const
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
   const wxFont* fontToUse = theFont;
   if (!fontToUse)
   {
@@ -1158,7 +1161,7 @@ wxPdfDC::DoGetTextExtent(const wxString& text,
 bool
 wxPdfDC::DoGetPartialTextExtents(const wxString& text, wxArrayInt& widths) const
 {
-  wxCHECK_MSG( m_pdfDocument, false, wxT("wxPdfDC::DoGetPartialTextExtents - invalid DC") );
+  wxCHECK_MSG( m_pdfDocument, false, wxS("wxPdfDC::DoGetPartialTextExtents - invalid DC") );
 
   /// very slow - but correct ??
   const size_t len = text.length();
@@ -1166,11 +1169,11 @@ wxPdfDC::DoGetPartialTextExtents(const wxString& text, wxArrayInt& widths) const
   {
     return true;
   }
-    
+
   widths.Empty();
   widths.Add(0, len);
   int w, h;
-    
+
   wxString buffer;
   buffer.Alloc(len);
 
@@ -1180,7 +1183,7 @@ wxPdfDC::DoGetPartialTextExtents(const wxString& text, wxArrayInt& widths) const
     DoGetTextExtent(buffer, &w, &h);
     widths[i] = w;
   }
-    
+
   buffer.Clear();
   return true;
 }
@@ -1188,7 +1191,7 @@ wxPdfDC::DoGetPartialTextExtents(const wxString& text, wxArrayInt& widths) const
 void
 wxPdfDC::SetupPen()
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
   // pen
   const wxPen& curPen = GetPen();
   if (curPen != wxNullPen)
@@ -1198,34 +1201,50 @@ wxPdfDC::SetupPen()
     style.SetColour(wxColour(curPen.GetColour().Red(),
                              curPen.GetColour().Green(),
                              curPen.GetColour().Blue()));
+    double penWidth = 1.0;
     if (curPen.GetWidth())
     {
-      style.SetWidth(ScaleLogicalToPdfXRel(curPen.GetWidth()));
+      penWidth = ScaleLogicalToPdfXRel(curPen.GetWidth());
+      style.SetWidth(penWidth);
     }
     switch (curPen.GetStyle())
     {
       case wxDOT:
-        dash.Add(1);
-        dash.Add(1);
+        if (wxPDF_LINECAP_BUTT == style.GetLineCap())
+        {
+          dash.Add(1.0 * penWidth);
+        }
+        else
+        {
+          dash.Add(0.0 * penWidth);
+        }
+        dash.Add(2.0 * penWidth);
         style.SetDash(dash);
         break;
       case wxLONG_DASH:
-        dash.Add(4);
-        dash.Add(4);
+        dash.Add(3.5 * penWidth);
+        dash.Add(5.0 * penWidth);
         style.SetDash(dash);
         break;
       case wxSHORT_DASH:
-        dash.Add(2);
-        dash.Add(2);
+        dash.Add(1.5 * penWidth);
+        dash.Add(3.0 * penWidth);
         style.SetDash(dash);
         break;
       case wxDOT_DASH:
         {
-          dash.Add(1);
-          dash.Add(1);
-          dash.Add(4);
-          dash.Add(1);
-          style.SetDash(dash);
+        if (wxPDF_LINECAP_BUTT == style.GetLineCap())
+        {
+          dash.Add(1.0 * penWidth);
+        }
+        else
+        {
+          dash.Add(0.0 * penWidth);
+        }
+        dash.Add(2.0 * penWidth);
+        dash.Add(3.0 * penWidth);
+        dash.Add(2.0 * penWidth);
+        style.SetDash(dash);
         }
         break;
       case wxSOLID:
@@ -1245,7 +1264,7 @@ wxPdfDC::SetupPen()
 void
 wxPdfDC::SetupBrush()
 {
-  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
   // brush
   const wxBrush& curBrush = GetBrush();
   if (curBrush != wxNullBrush)
@@ -1277,7 +1296,7 @@ wxPdfDC::GetDrawingStyle()
   }
   else if (do_brush)
   {
-    style = wxPDF_STYLE_FILL;  
+    style = wxPDF_STYLE_FILL;
   }
   return style;
 }
@@ -1288,7 +1307,7 @@ wxPdfDC::ScaleLogicalToPdfX(wxCoord x) const
   double docScale = 72.0 / (m_ppi * m_pdfDocument->GetScaleFactor());
   return docScale * (((double)((x - m_logicalOriginX) * m_signX) * m_scaleX) + m_deviceOriginX);
 }
-  
+
 double
 wxPdfDC::ScaleLogicalToPdfXRel(wxCoord x) const
 {
@@ -1302,7 +1321,7 @@ wxPdfDC::ScaleLogicalToPdfY(wxCoord y) const
   double docScale = 72.0 / (m_ppi * m_pdfDocument->GetScaleFactor());
   return docScale * (((double)((y - m_logicalOriginY) * m_signY) * m_scaleY) + m_deviceOriginY);
 }
- 
+
 double
 wxPdfDC::ScaleLogicalToPdfYRel(wxCoord y) const
 {
@@ -1333,6 +1352,7 @@ wxPdfDC::ScaleFontSizeToPdf(int pointSize) const
       rval = (double) pointSize * fontScale * m_userScaleY;
       break;
     case wxPDF_MAPMODESTYLE_PDF:
+    case wxPDF_MAPMODESTYLE_PDFFONTSCALE:
       // an implementation where a font size of 12 gets a 12 point font if the
       // mapping mode is wxMM_POINTS and suitable scaled for other modes
       fontScale = (m_mappingMode == wxMM_TEXT) ? (m_ppiPdfFont / m_ppi) : (72.0 / m_ppi);
@@ -1367,7 +1387,7 @@ wxPdfDC::CalculateFontMetrics(wxPdfFontDescription* desc, int pointSize,
   int hheaAscender, hheaDescender, hheaLineGap;
 
   double size;
-  if ((m_mappingModeStyle == wxPDF_MAPMODESTYLE_PDF) && (m_mappingMode != wxMM_TEXT))
+  if (((m_mappingModeStyle == wxPDF_MAPMODESTYLE_PDF) || (m_mappingModeStyle == wxPDF_MAPMODESTYLE_PDFFONTSCALE)) && (m_mappingMode != wxMM_TEXT))
   {
     size = (double) pointSize;
   }
@@ -1400,7 +1420,7 @@ wxPdfDC::CalculateFontMetrics(wxPdfFontDescription* desc, int pointSize,
     em_ascent  = 1325;
     em_descent = 1.085 * desc->GetDescent();
     em_height  = em_ascent + em_descent;
-    em_externalLeading = 33;   
+    em_externalLeading = 33;
   }
 
   if (ascent)

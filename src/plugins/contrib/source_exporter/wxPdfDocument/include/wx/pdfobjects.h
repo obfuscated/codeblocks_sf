@@ -1,8 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdfobjects.h
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2006-10-12
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
@@ -337,7 +336,7 @@ public:
 
   /// Get flag whether the offsets of objects in an object stream are available
   bool HasObjOffsets() { return m_hasObjOffsets; }
-  
+
   /// Get a pointer to the object offsets array
   wxArrayInt* GetObjOffsets() { return &m_objOffsets; }
 

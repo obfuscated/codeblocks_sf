@@ -1,8 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdfcffdecoder.h
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2008-08-01
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
@@ -23,6 +22,9 @@
 #include "wx/pdfdocdef.h"
 #include "wx/pdfarraytypes.h"
 #include "wx/pdfcffindex.h"
+
+const int NUM_STD_STRINGS = 391;
+const char SUBR_RETURN_OP = 11;
 
 // Forward declaration of internal classes
 class wxPdfCffFontObject;
@@ -77,7 +79,7 @@ public:
   * \param localSubIndex the local subroutine index
   */
   void ReadASubr(wxInputStream* stream, int begin, int end,
-                 int globalBias, int localBias, 
+                 int globalBias, int localBias,
                  wxPdfSortedArrayInt& hSubrsUsed, wxArrayInt& lSubrsUsed,
                  wxPdfCffIndexArray& localSubIndex);
 

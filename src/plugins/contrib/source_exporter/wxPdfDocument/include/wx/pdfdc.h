@@ -1,8 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdfdc.h
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2010-11-28
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
@@ -28,7 +27,10 @@ enum wxPdfMapModeStyle
   wxPDF_MAPMODESTYLE_MSW,
   wxPDF_MAPMODESTYLE_GTK,
   wxPDF_MAPMODESTYLE_MAC,
-  wxPDF_MAPMODESTYLE_PDF
+  /// same font sizes and text position as with the wxPdfDocument API
+  wxPDF_MAPMODESTYLE_PDF,
+  /// same font sizes as with the wxPdfDocument API
+  wxPDF_MAPMODESTYLE_PDFFONTSCALE
 };
 
 #if wxCHECK_VERSION(2,9,0)

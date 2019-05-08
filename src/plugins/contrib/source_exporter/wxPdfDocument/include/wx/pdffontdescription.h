@@ -1,8 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdffontdescription.h
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
-// Modified by:
 // Created:     2008-08-10
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
@@ -25,7 +24,7 @@ class WXDLLIMPEXP_PDFDOC wxPdfFontDescription
 public:
   /// Default constructor
   wxPdfFontDescription();
-  
+
   /// Constructor
   /**
   * \param ascent ascender
@@ -58,7 +57,7 @@ public:
 
   /// Copy constructor
   wxPdfFontDescription(const wxPdfFontDescription& desc);
-  
+
   /// Default destructor
   ~wxPdfFontDescription();
 
@@ -73,7 +72,7 @@ public:
   * \return the ascender
   */
   int  GetAscent() const { return m_ascent; };
-  
+
   /// Set descender
   /**
   * \param descent descender
@@ -85,7 +84,7 @@ public:
   * \return the descender
   */
   int  GetDescent() const { return m_descent;};
-  
+
   /// Set CapHeight
   /**
   * \param capHeight the height of capital characters
@@ -97,7 +96,7 @@ public:
   * \return the height of capital characters
   */
   int  GetCapHeight() const { return m_capHeight; };
-  
+
   /// Set font flags
   /**
   * \param flags the font flags
@@ -109,7 +108,7 @@ public:
   * \return the font flags
   */
   int  GetFlags() const { return m_flags; };
-  
+
   /// Set font bounding box
   /**
   * \param fontBBox the bounding box of the font in string representation
@@ -121,7 +120,7 @@ public:
   * \return the bounding box of the font in string representation
   */
   wxString GetFontBBox() const { return m_fontBBox; };
-  
+
   /// Set italic angle
   /**
   * \param italicAngle the italic angle
@@ -133,7 +132,7 @@ public:
   * \return the italic angle
   */
   int  GetItalicAngle() const { return m_italicAngle; };
-  
+
   /// Set StemV
   /**
   * \param stemV the StemV value
@@ -157,7 +156,7 @@ public:
   * \return the width of missing characters
   */
   int  GetMissingWidth() const { return m_missingWidth; };
-  
+
   /// Set xHeight
   /**
   * \param xHeight the height of the character X
@@ -169,7 +168,7 @@ public:
   * \return the height of the character X
   */
   int  GetXHeight() const { return m_xHeight; };
-  
+
   /// Set underline position
   /**
   * \param underlinePosition the position of the underline decoration
@@ -181,7 +180,7 @@ public:
   * \return the position of the underline decoration
   */
   int  GetUnderlinePosition() const { return m_underlinePosition; };
-  
+
   /// Set underline thickness
   /**
   * \param underlineThickness the thickness of the underline decoration
