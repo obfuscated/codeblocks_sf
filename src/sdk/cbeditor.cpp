@@ -321,7 +321,7 @@ struct cbEditorInternalData
         const float scale = 1.0f/1.15f;
 
         const int oldWidth = floorf(control->GetMarginWidth(C_MARKER_MARGIN) * scale);
-        const int newWidth = CalcWidth(control, 16, 1, defaultPointSize);
+        const int newWidth = CalcWidth(control, 18, 1, defaultPointSize);
 
         const int width = floorf(newWidth * scale);
 
