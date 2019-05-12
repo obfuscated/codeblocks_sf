@@ -31,6 +31,10 @@
 #include <wx/dataobj.h>
 #include <wx/clipbrd.h>
 #include <wx/dnd.h>
+#include <wx/image.h>
+#if wxCHECK_VERSION(3, 0, 0)
+    #include <wx/scopedarray.h>
+#endif // wxCHECK_VERSION(3, 0, 0)
 
 #include <memory>
 
@@ -526,7 +530,7 @@ void ScintillaWX::Paste() {
     pdoc->BeginUndoAction();
     ClearSelection(multiPasteMode == SC_MULTIPASTE_EACH);
 
-#if wxUSE_DATAOBJ
+#if wxUSE_CLIPBOARD
     wxTextDataObject data;
     bool gotData = false;
     bool isRectangularClipboard = false;
@@ -554,8 +558,8 @@ void ScintillaWX::Paste() {
 
 #if wxUSE_UNICODE
         // free up the old character buffer in case the text is real big
-        data.SetText(wxEmptyString);
-        text = wxEmptyString;
+        text.clear();
+        data.SetText(text);
 #endif
 /* C::B begin */
         const size_t len = strlen(buf);
@@ -576,7 +580,7 @@ void ScintillaWX::Paste() {
             InsertPaste(buf, len);
         }
     }
-#endif // wxUSE_DATAOBJ
+#endif // wxUSE_CLIPBOARD
 
     pdoc->EndUndoAction();
     NotifyChange();
@@ -668,6 +672,7 @@ void ScintillaWX::AddToPopUp(const char *label, int cmd, bool enabled) {
 // can paste with the middle button.
 void ScintillaWX::ClaimSelection() {
 #ifdef __WXGTK__
+#if wxUSE_CLIPBOARD
     // Put the selected text in the PRIMARY selection
 /* C::B begin */
     if (!SelectionEmpty()) {
@@ -691,6 +696,7 @@ void ScintillaWX::ClaimSelection() {
 #endif // wxCHECK_VERSION
     }
 /* C::B end */
+#endif // wxUSE_CLIPBOARD
 #endif
 }
 
@@ -801,7 +807,7 @@ sptr_t ScintillaWX::DefWndProc(unsigned int /*iMessage*/, uptr_t /*wParam*/, spt
 sptr_t ScintillaWX::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
       switch (iMessage) {
 #if 0  // TODO: check this
-          
+
       case SCI_CALLTIPSHOW: {
           // NOTE: This is copied here from scintilla/src/ScintillaBase.cxx
           // because of the little tweak that needs done below for wxGTK.
@@ -915,7 +921,7 @@ void ScintillaWX::DoPaint(wxDC* dc, wxRect rect) {
         // highlight positions.  So trigger a new paint event that will
         // repaint the whole window.
         stc->Refresh(false);
-        
+
 #if defined(__WXOSX__)
         // On Mac we also need to finish the current paint to make sure that
         // everything is on the screen that needs to be there between now and
@@ -1092,6 +1098,7 @@ void ScintillaWX::DoMiddleButtonUp(Point pt) {
     int newPos = PositionFromLocation(pt);
     MovePositionTo(newPos, Selection::noSel, true);
 
+#if wxUSE_CLIPBOARD
     pdoc->BeginUndoAction();
     wxTextDataObject data;
     bool gotData = false;
@@ -1115,6 +1122,7 @@ void ScintillaWX::DoMiddleButtonUp(Point pt) {
     pdoc->EndUndoAction();
     NotifyChange();
     Redraw();
+#endif // wxUSE_CLIPBOARD
 
     ShowCaretAtCurrentPosition();
     EnsureCaretVisible();
@@ -1359,6 +1367,63 @@ void ScintillaWX::SetUseAntiAliasing(bool useAA) {
 
 bool ScintillaWX::GetUseAntiAliasing() {
     return vs.extraFontFlag != 0;
+}
+
+void ScintillaWX::DoMarkerDefineBitmap(int markerNumber, const wxBitmap& bmp) {
+    if ( 0 <= markerNumber && markerNumber <= MARKER_MAX) {
+        // Build an RGBA buffer from bmp.
+        const int totalPixels = bmp.GetWidth() * bmp.GetHeight();
+#if wxCHECK_VERSION(3, 1, 0)
+        wxScopedArray<unsigned char> rgba(4*bmp.GetWidth()*bmp.GetHeight());
+#elif wxCHECK_VERSION(3, 0, 0)
+        wxScopedArray<unsigned char> rgba(new unsigned char[4*bmp.GetWidth()*bmp.GetHeight()]);
+#else
+        std::unique_ptr<unsigned char[]> rgba(new unsigned char[4*bmp.GetWidth()*bmp.GetHeight()]);
+#endif // wxCHECK_VERSION(3, 1, 0)
+        wxImage img = bmp.ConvertToImage();
+        int curRGBALoc = 0, curDataLoc = 0, curAlphaLoc = 0;
+
+        if ( img.HasMask() ) {
+            for ( int y = 0; y < bmp.GetHeight(); ++y ) {
+                for ( int x = 0 ; x < bmp.GetWidth(); ++x ) {
+                    rgba[curRGBALoc++] = img.GetData()[curDataLoc++];
+                    rgba[curRGBALoc++] = img.GetData()[curDataLoc++];
+                    rgba[curRGBALoc++] = img.GetData()[curDataLoc++];
+                    rgba[curRGBALoc++] = img.IsTransparent(x,y)
+                        ? wxALPHA_TRANSPARENT : wxALPHA_OPAQUE ;
+                }
+            }
+        }
+        else if ( img.HasAlpha() ) {
+            for ( int i = 0; i < totalPixels; ++i ) {
+                rgba[curRGBALoc++] = img.GetData()[curDataLoc++];
+                rgba[curRGBALoc++] = img.GetData()[curDataLoc++];
+                rgba[curRGBALoc++] = img.GetData()[curDataLoc++];
+                rgba[curRGBALoc++] = img.GetAlpha()[curAlphaLoc++];
+            }
+        }
+        else {
+            for ( int i = 0; i < totalPixels; ++i ) {
+                rgba[curRGBALoc++] = img.GetData()[curDataLoc++];
+                rgba[curRGBALoc++] = img.GetData()[curDataLoc++];
+                rgba[curRGBALoc++] = img.GetData()[curDataLoc++];
+                rgba[curRGBALoc++] = wxALPHA_OPAQUE ;
+            }
+        }
+
+        // Now follow the same procedure used for handling the
+        // SCI_MARKERDEFINERGBAIMAGE message, except use the bitmap's width and
+        // height instead of the values stored in sizeRGBAImage.
+        Point bitmapSize = Point::FromInts(bmp.GetWidth(), bmp.GetHeight());
+        vs.markers[markerNumber].SetRGBAImage(bitmapSize, 1.0f, rgba.get());
+        vs.CalcLargestMarkerHeight();
+    }
+    InvalidateStyleData();
+    RedrawSelMargin();
+}
+
+void ScintillaWX::DoRegisterImage(int type, const wxBitmap& bmp) {
+    static_cast<ListBoxImpl*>(ac.lb.get())->RegisterImageHelper(type, bmp);
 }
 
 sptr_t ScintillaWX::DirectFunction(

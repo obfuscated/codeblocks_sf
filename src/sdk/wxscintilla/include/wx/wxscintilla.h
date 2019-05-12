@@ -3095,7 +3095,7 @@ public:
     int MarkerPrevious(int lineStart, int markerMask);
 
     // Define a marker from a bitmap
-    void MarkerDefineBitmap(int markerNumber, const wxBitmap& bmp);
+    void MarkerDefinePixmap(int markerNumber, const char* const* xpmData);
 
     // Add a set of markers to a line.
     void MarkerAddSet(int line, int markerSet);
@@ -3450,7 +3450,7 @@ public:
     bool AutoCompGetDropRestOfWord() const;
 
     // Register an image for use in autocompletion lists.
-    void RegisterImage(int type, const wxBitmap& bmp);
+    void RegisterImage(int type, const char* const* xpmData);
 
     // Clear all the registered images.
     void ClearRegisteredImages();
@@ -3894,19 +3894,19 @@ public:
     // Set the display mode of visual flags for wrapped lines.
     void SetWrapVisualFlags(int wrapVisualFlags);
 
-    // Retrive the display mode of visual flags for wrapped lines.
+    // Retrieve the display mode of visual flags for wrapped lines.
     int GetWrapVisualFlags() const;
 
     // Set the location of visual flags for wrapped lines.
     void SetWrapVisualFlagsLocation(int wrapVisualFlagsLocation);
 
-    // Retrive the location of visual flags for wrapped lines.
+    // Retrieve the location of visual flags for wrapped lines.
     int GetWrapVisualFlagsLocation() const;
 
     // Set the start indent for wrapped lines.
     void SetWrapStartIndent(int indent);
 
-    // Retrive the start indent for wrapped lines.
+    // Retrieve the start indent for wrapped lines.
     int GetWrapStartIndent() const;
 
     // Sets how wrapped sublines are placed. Default is wxSCI_WRAPINDENT_FIXED.
@@ -4615,6 +4615,10 @@ public:
     // Copy the selection, if selection empty copy the line with the caret
     void CopyAllowLine();
 
+    // Compact the document buffer and return a read-only pointer to the
+    // characters in the document.
+    const char* GetCharacterPointer() const;
+
     // Return a read-only pointer to a range of characters in the document.
     // May move the gap so that the range is contiguous, but will only move up
     // to rangeLength bytes.
@@ -5197,6 +5201,12 @@ public:
     // Clear annotations from the given line.
     void AnnotationClearLine(int line);
 
+    // Define a marker from a bitmap.
+    void MarkerDefineBitmap(int markerNumber, const wxBitmap& bmp);
+
+    // Register an image for use in autocompletion lists.
+    void RegisterImage(int type, const wxBitmap& bmp);
+
 
 
     // The following methods are nearly equivalent to their similarly named
@@ -5255,7 +5265,7 @@ public:
 
     virtual void Remove(long from, long to)
     {
-        Replace(from, to, wxT(""));
+        Replace(from, to, wxString());
     }
     virtual void Replace(long from, long to, const wxString& text)
     {

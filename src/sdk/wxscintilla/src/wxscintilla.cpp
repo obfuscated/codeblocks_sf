@@ -687,20 +687,8 @@ int wxScintilla::MarkerPrevious(int lineStart, int markerMask)
 }
 
 // Define a marker from a bitmap
-void wxScintilla::MarkerDefineBitmap(int markerNumber, const wxBitmap& bmp) {
-        // convert bmp to a xpm in a string
-        wxMemoryOutputStream strm;
-        wxImage img = bmp.ConvertToImage();
-        if (img.HasAlpha())
-            img.ConvertAlphaToMask();
-        img.SaveFile(strm, wxBITMAP_TYPE_XPM);
-        size_t len = strm.GetSize();
-        char* buff = new char[len+1];
-        strm.CopyTo(buff, len);
-        buff[len] = 0;
-        SendMsg(SCI_MARKERDEFINEPIXMAP, markerNumber, (sptr_t)buff);
-        delete [] buff;
-
+void wxScintilla::MarkerDefinePixmap(int markerNumber, const char* const* xpmData) {
+        SendMsg(SCI_MARKERDEFINEPIXMAP, markerNumber, (sptr_t)xpmData);
 }
 
 // Add a set of markers to a line.
@@ -1490,20 +1478,8 @@ bool wxScintilla::AutoCompGetDropRestOfWord() const
 }
 
 // Register an image for use in autocompletion lists.
-void wxScintilla::RegisterImage(int type, const wxBitmap& bmp) {
-        // convert bmp to a xpm in a string
-        wxMemoryOutputStream strm;
-        wxImage img = bmp.ConvertToImage();
-        if (img.HasAlpha())
-            img.ConvertAlphaToMask();
-        img.SaveFile(strm, wxBITMAP_TYPE_XPM);
-        size_t len = strm.GetSize();
-        char* buff = new char[len+1];
-        strm.CopyTo(buff, len);
-        buff[len] = 0;
-        SendMsg(SCI_REGISTERIMAGE, type, (sptr_t)buff);
-        delete [] buff;
-
+void wxScintilla::RegisterImage(int type, const char* const* xpmData) {
+        SendMsg(SCI_REGISTERIMAGE, type, (sptr_t)xpmData);
 }
 
 // Clear all the registered images.
@@ -5117,6 +5093,16 @@ bool wxScintilla::GetUseAntiAliasing() {
 
 void wxScintilla::AnnotationClearLine(int line) {
     SendMsg(SCI_ANNOTATIONSETTEXT, line, (sptr_t)NULL);
+}
+
+void wxScintilla::MarkerDefineBitmap(int markerNumber,
+                                     const wxBitmap& bmp) {
+    m_swx->DoMarkerDefineBitmap(markerNumber, bmp);
+}
+
+void wxScintilla::RegisterImage(int type, const wxBitmap& bmp)
+{
+    m_swx->DoRegisterImage(type, bmp);
 }
 
 

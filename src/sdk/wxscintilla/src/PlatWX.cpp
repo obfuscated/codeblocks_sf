@@ -21,17 +21,18 @@
 #include <float.h>
 #include <memory>
 
-#if wxUSE_DISPLAY
 #include <wx/display.h>
-#endif
 
 #include <wx/encconv.h>
 #include <wx/listctrl.h>
 #include <wx/mstream.h>
+#include <wx/xpmdecod.h>
 #include <wx/image.h>
-#include <wx/imaglist.h>
 #include <wx/tokenzr.h>
 #include <wx/dynlib.h>
+#if wxCHECK_VERSION(3, 0, 0)
+    #include <wx/scopedarray.h>
+#endif // wxCHECK_VERSION(3, 0, 0)
 
 /* C::B begin wx2.8 */
 // wxWidgets team has changed the names of this define. To minimize the needed changes later. I
@@ -536,17 +537,36 @@ wxBitmap BitmapFromRGBAImage(int width, int height, const unsigned char *pixelsI
     }
     return bmp;
 }
+#else
+wxBitmap BitmapFromRGBAImage(int width, int height, const unsigned char *pixelsImage)
+{
+    const int totalPixels = width * height;
+    wxScopedArray<unsigned char> data(3*totalPixels);
+    wxScopedArray<unsigned char> alpha(totalPixels);
+    int curDataLocation = 0, curAlphaLocation = 0, curPixelsImageLocation = 0;
+
+    for ( int i = 0; i < totalPixels; ++i )
+    {
+        data[curDataLocation++] = pixelsImage[curPixelsImageLocation++];
+        data[curDataLocation++] = pixelsImage[curPixelsImageLocation++];
+        data[curDataLocation++] = pixelsImage[curPixelsImageLocation++];
+        alpha[curAlphaLocation++] = pixelsImage[curPixelsImageLocation++];
+    }
+
+    wxImage img(width, height, data.get(), alpha.get(), true);
+    wxBitmap bmp(img);
+
+    return bmp;
+}
 #endif
 
 
 void SurfaceImpl::DrawRGBAImage(PRectangle rc, int width, int height,
                                 const unsigned char *pixelsImage)
 {
-#ifdef wxHAS_RAW_BITMAP
     wxRect r = wxRectFromPRectangle(rc);
     wxBitmap bmp = BitmapFromRGBAImage(width, height, pixelsImage);
     hdc->DrawBitmap(bmp, r.x, r.y, true);
-#endif
 }
 
 
@@ -1905,8 +1925,12 @@ void Window::SetPositionRelative(PRectangle rc, Window relativeTo) {
     position.x = wxRound(position.x + rc.left);
     position.y = wxRound(position.y + rc.top);
 
+#if wxCHECK_VERSION(3, 1, 2)
+    const wxRect displayRect = wxDisplay(relativeWin).GetClientArea();
+#else
     const int currentDisplay = wxDisplay::GetFromWindow(relativeWin);
-    const wxRect displayRect = wxDisplay(currentDisplay).GetClientArea();
+    const wxRect displayRect = wxDisplay(currentDisplay != wxNOT_FOUND ? currentDisplay : 0).GetClientArea();
+#endif // wxCHECK_VERSION(3, 1, 2)
 
     if (position.x < displayRect.GetLeft())
         position.x = displayRect.GetLeft();
@@ -2001,17 +2025,11 @@ void Window::SetTitle(const char *s) {
 
 // Returns rectangle of monitor pt is on
 PRectangle Window::GetMonitorRect(Point pt) {
-    wxRect rect;
     if (! wid) return PRectangle();
-#if wxUSE_DISPLAY
     // Get the display the point is found on
     int n = wxDisplay::GetFromPoint(wxPoint(wxRound(pt.x), wxRound(pt.y)));
     wxDisplay dpy(n == wxNOT_FOUND ? 0 : n);
-    rect = dpy.GetGeometry();
-#else
-    wxUnusedVar(pt);
-#endif
-    return PRectangleFromwxRect(rect);
+    return PRectangleFromwxRect(dpy.GetGeometry());
 }
 
 //----------------------------------------------------------------------
@@ -2369,46 +2387,6 @@ inline wxListView* GETLB(WindowID win) {
 
 //----------------------------------------------------------------------
 
-class ListBoxImpl : public ListBox {
-private:
-    int                 lineHeight;
-    bool                unicodeMode;
-    int                 desiredVisibleRows;
-    int                 aveCharWidth;
-    size_t              maxStrWidth;
-    Point               location;       // Caret location at which the list is opened
-    wxImageList*        imgList;
-    wxArrayInt*         imgTypeMap;
-
-public:
-    ListBoxImpl();
-    ~ListBoxImpl();
-    static ListBox *Allocate();
-
-    virtual void SetFont(Font &font) wxOVERRIDE;
-    virtual void Create(Window &parent, int ctrlID, Point location_, int lineHeight_, bool unicodeMode_, int technology_) wxOVERRIDE;
-    virtual void SetAverageCharWidth(int width) wxOVERRIDE;
-    virtual void SetVisibleRows(int rows) wxOVERRIDE;
-    virtual int GetVisibleRows() const wxOVERRIDE;
-    virtual PRectangle GetDesiredRect() wxOVERRIDE;
-    virtual int CaretFromEdge() wxOVERRIDE;
-    virtual void Clear() wxOVERRIDE;
-    virtual void Append(char *s, int type = -1) wxOVERRIDE;
-            void Append(const wxString& text, int type);
-    virtual int Length() wxOVERRIDE;
-    virtual void Select(int n) wxOVERRIDE;
-    virtual int GetSelection() wxOVERRIDE;
-    virtual int Find(const char *prefix) wxOVERRIDE;
-    virtual void GetValue(int n, char *value, int len) wxOVERRIDE;
-    virtual void RegisterImage(int type, const char *xpm_data) wxOVERRIDE;
-            void RegisterImageHelper(int type, wxBitmap& bmp);
-    virtual void RegisterRGBAImage(int type, int width, int height, const unsigned char *pixelsImage) wxOVERRIDE;
-    virtual void ClearRegisteredImages() wxOVERRIDE;
-    virtual void SetDoubleClickAction(CallBackAction, void *) wxOVERRIDE;
-    virtual void SetList(const char* list, char separator, char typesep) wxOVERRIDE;
-};
-
-
 ListBoxImpl::ListBoxImpl()
     : lineHeight(10), unicodeMode(false),
       desiredVisibleRows(5), aveCharWidth(8), maxStrWidth(0),
@@ -2581,7 +2559,7 @@ void ListBoxImpl::GetValue(int n, char *value, int len) {
     value[len-1] = '\0';
 }
 
-void ListBoxImpl::RegisterImageHelper(int type, wxBitmap& bmp)
+void ListBoxImpl::RegisterImageHelper(int type, const wxBitmap& bmp)
 {
     if (! imgList) {
         // assumes all images are the same size
@@ -2601,8 +2579,21 @@ void ListBoxImpl::RegisterImageHelper(int type, wxBitmap& bmp)
 }
 
 void ListBoxImpl::RegisterImage(int type, const char *xpm_data) {
-    wxMemoryInputStream stream(xpm_data, strlen(xpm_data)+1);
-    wxImage img(stream, wxBITMAP_TYPE_XPM);
+    wxXPMDecoder dec;
+    wxImage img;
+
+    // This check is borrowed from src/stc/scintilla/src/XPM.cpp.
+    // Test done is two parts to avoid possibility of overstepping the memory
+    // if memcmp implemented strangely. Must be 4 bytes at least at destination.
+    if ( (0 == memcmp(xpm_data, "/* X", 4)) &&
+         (0 == memcmp(xpm_data, "/* XPM */", 9)) )
+    {
+        wxMemoryInputStream stream(xpm_data, strlen(xpm_data)+1);
+        img = dec.ReadFile(stream);
+    }
+    else
+        img = dec.ReadData(reinterpret_cast<const char* const*>(xpm_data));
+
     wxBitmap bmp(img);
     RegisterImageHelper(type, bmp);
 }
@@ -2611,10 +2602,8 @@ void ListBoxImpl::RegisterImage(int type, const char *xpm_data) {
 void ListBoxImpl::RegisterRGBAImage(int type, int width, int height,
                                     const unsigned char *pixelsImage)
 {
-#ifdef wxHAS_RAW_BITMAP
     wxBitmap bmp = BitmapFromRGBAImage(width, height, pixelsImage);
     RegisterImageHelper(type, bmp);
-#endif
 }
 
 
