@@ -77,7 +77,21 @@ cd src\resources
     images\64x64\*.png ^
     > nul
 cd ..\..\sdk\resources
-"%ZIPCMD%" -0 -qu "..\..\%CB_DEVEL_RESDIR%\manager_resources.zip" images\*.png images\12x12\*.png images\16x16\*.png > nul
+"%ZIPCMD%" -0 -qu "..\..\%CB_DEVEL_RESDIR%\manager_resources.zip" ^
+    images\*.png ^
+    images\8x8\*.png ^
+    images\10x10\*.png ^
+    images\12x12\*.png ^
+    images\16x16\*.png ^
+    images\20x20\*.png ^
+    images\24x24\*.png ^
+    images\28x28\*.png ^
+    images\32x32\*.png ^
+    images\40x40\*.png ^
+    images\48x48\*.png ^
+    images\56x56\*.png ^
+    images\64x64\*.png ^
+    > nul
 echo Packing plugins UI bitmaps
 cd ..\..\plugins\compilergcc\resources
 "%ZIPCMD%" -0 -qu "..\..\..\%CB_DEVEL_RESDIR%\compiler.zip" ^

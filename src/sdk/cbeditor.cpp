@@ -315,6 +315,90 @@ struct cbEditorInternalData
         }
     }
 
+    static void SetMarkerWidth(cbStyledTextCtrl* control, float defaultPointSize)
+    {
+        // Leave 15% for borders.
+        const float scale = 1.0f/1.15f;
+
+        const int oldWidth = floorf(control->GetMarginWidth(C_MARKER_MARGIN) * scale);
+        const int newWidth = CalcWidth(control, 16, 1, defaultPointSize);
+
+        const int width = floorf(newWidth * scale);
+
+        const int possibleWidths[] = { 8, 10, 12, 16, 20, 24, 28, 32, 40, 48, 56, 64 };
+
+        // Try to select the largest width that is available, but is smaller than the calculated
+        // width.
+        int selectedWidth = possibleWidths[0];
+        for (int possible : possibleWidths)
+        {
+            if (possible <= width)
+                selectedWidth = possible;
+            else
+                break;
+        }
+
+        int oldSelectedWidth = possibleWidths[0];
+        for (int possible : possibleWidths)
+        {
+            if (possible <= oldWidth)
+                oldSelectedWidth = possible;
+            else
+                break;
+        }
+
+        // We don't want to reload images if the width haven't changed!
+        if (selectedWidth != oldSelectedWidth)
+        {
+            control->SetMarginWidth(C_MARKER_MARGIN, newWidth);
+            SetupBreakpointMarkers(control, selectedWidth);
+        }
+    }
+
+    void SetMarkerColumnWidth(bool both)
+    {
+        const float pointSize = m_pOwner->m_pControl->StyleGetFont(wxSCI_STYLE_DEFAULT).GetPointSize();
+        if (both)
+        {
+            SetMarkerWidth(m_pOwner->m_pControl, pointSize);
+            if (m_pOwner->m_pControl2)
+                SetMarkerWidth(m_pOwner->m_pControl2, pointSize);
+        }
+        else
+            SetMarkerWidth(m_pOwner->GetControl(), pointSize);
+    }
+
+    static void SetupBreakpointMarkers(cbStyledTextCtrl* control, int size)
+    {
+        wxString basepath = ConfigManager::GetDataFolder() + wxT("/manager_resources.zip#zip:/images/");
+        basepath += wxString::Format(wxT("%dx%d/"), size, size);
+        ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
+        bool imageBP = mgr->ReadBool(_T("/margin_1_image_bp"), true);
+        if (imageBP)
+        {
+            wxBitmap iconBP    = cbLoadBitmap(basepath + wxT("breakpoint.png"),          wxBITMAP_TYPE_PNG);
+            wxBitmap iconBPDis = cbLoadBitmap(basepath + wxT("breakpoint_disabled.png"), wxBITMAP_TYPE_PNG);
+            wxBitmap iconBPOth = cbLoadBitmap(basepath + wxT("breakpoint_other.png"),    wxBITMAP_TYPE_PNG);
+            if (iconBP.IsOk() && iconBPDis.IsOk() && iconBPOth.IsOk())
+            {
+                control->MarkerDefineBitmap(BREAKPOINT_MARKER,          iconBP   );
+                control->MarkerDefineBitmap(BREAKPOINT_DISABLED_MARKER, iconBPDis);
+                control->MarkerDefineBitmap(BREAKPOINT_OTHER_MARKER,    iconBPOth);
+            }
+            else
+                imageBP = false; // apply default markers
+        }
+        if (!imageBP)
+        {
+            control->MarkerDefine(BREAKPOINT_MARKER,                 BREAKPOINT_STYLE);
+            control->MarkerSetBackground(BREAKPOINT_MARKER,          wxColour(0xFF, 0x00, 0x00));
+            control->MarkerDefine(BREAKPOINT_DISABLED_MARKER,        BREAKPOINT_STYLE);
+            control->MarkerSetBackground(BREAKPOINT_DISABLED_MARKER, wxColour(0x90, 0x90, 0x90));
+            control->MarkerDefine(BREAKPOINT_OTHER_MARKER,           BREAKPOINT_STYLE);
+            control->MarkerSetBackground(BREAKPOINT_OTHER_MARKER,    wxColour(0x59, 0x74, 0x8e));
+        }
+    }
+
     wxString GetUrl()
     {
         cbStyledTextCtrl* control = m_pOwner->GetControl();
@@ -1487,31 +1571,8 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     control->MarkerSetBackground(BOOKMARK_MARKER, wxColour(0xA0, 0xA0, 0xFF));
 
     // 2.) Marker for Breakpoints etc...
-    const wxString &basepath = ConfigManager::GetDataFolder() + wxT("/manager_resources.zip#zip:/images/12x12/");
-    bool imageBP = mgr->ReadBool(_T("/margin_1_image_bp"), true);
-    if (imageBP)
-    {
-      wxBitmap iconBP    = cbLoadBitmap(basepath + wxT("breakpoint.png"),          wxBITMAP_TYPE_PNG);
-      wxBitmap iconBPDis = cbLoadBitmap(basepath + wxT("breakpoint_disabled.png"), wxBITMAP_TYPE_PNG);
-      wxBitmap iconBPOth = cbLoadBitmap(basepath + wxT("breakpoint_other.png"),    wxBITMAP_TYPE_PNG);
-      if (iconBP.IsOk() && iconBPDis.IsOk() && iconBPOth.IsOk())
-      {
-          control->MarkerDefineBitmap(BREAKPOINT_MARKER,          iconBP   );
-          control->MarkerDefineBitmap(BREAKPOINT_DISABLED_MARKER, iconBPDis);
-          control->MarkerDefineBitmap(BREAKPOINT_OTHER_MARKER,    iconBPOth);
-      }
-      else
-        imageBP = false; // apply default markers
-    }
-    if (!imageBP)
-    {
-        control->MarkerDefine(BREAKPOINT_MARKER,                 BREAKPOINT_STYLE);
-        control->MarkerSetBackground(BREAKPOINT_MARKER,          wxColour(0xFF, 0x00, 0x00));
-        control->MarkerDefine(BREAKPOINT_DISABLED_MARKER,        BREAKPOINT_STYLE);
-        control->MarkerSetBackground(BREAKPOINT_DISABLED_MARKER, wxColour(0x90, 0x90, 0x90));
-        control->MarkerDefine(BREAKPOINT_OTHER_MARKER,           BREAKPOINT_STYLE);
-        control->MarkerSetBackground(BREAKPOINT_OTHER_MARKER,    wxColour(0x59, 0x74, 0x8e));
-    }
+    cbEditorInternalData::SetupBreakpointMarkers(control, 16);
+
     // 3.) Marker for Debugging (currently debugged line) etc...
     control->MarkerDefine(DEBUG_MARKER, DEBUG_STYLE);
     control->MarkerSetBackground(DEBUG_MARKER, wxColour(0xFF, 0xFF, 0x00));
@@ -3488,6 +3549,8 @@ void cbEditor::OnZoom(wxScintillaEvent& event)
 
     if (mgr->ReadBool(_T("/margin/use_changebar"), true))
         m_pData->SetColumnWidth(C_CHANGEBAR_MARGIN, changeBarMarginBaseWidth, 1, both);
+
+    m_pData->SetMarkerColumnWidth(both);
 
     OnScintillaEvent(event);
 }
