@@ -84,8 +84,8 @@ void ReopenEditor::OnAttach()
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
     m_IsManaged = cfg->ReadBool(_T("/reopen_editor/managed"),true);
 
-    const wxString prefix = ConfigManager::GetDataFolder() + _T("/images/16x16/");
-    m_LogIcon = cbLoadBitmap(prefix + _T("undo.png"), wxBITMAP_TYPE_PNG);
+    const wxString undoImgFile = ConfigManager::GetDataFolder() + _T("/resources.zip#zip:images/16x16/undo.png");
+    m_LogIcon = cbLoadBitmap(undoImgFile, wxBITMAP_TYPE_PNG);
 
     ShowList();
 }

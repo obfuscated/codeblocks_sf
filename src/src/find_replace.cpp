@@ -126,8 +126,8 @@ void FindReplace::CreateSearchLog()
     widths.Add(48);
     widths.Add(640);
 
-    wxString prefix = ConfigManager::GetDataFolder() + _T("/images/16x16/");
-    wxBitmap * bmp = new wxBitmap(cbLoadBitmap(prefix + _T("filefind.png"), wxBITMAP_TYPE_PNG));
+    const wxString imgFile = ConfigManager::GetDataFolder() + _T("/resources.zip#zip:images/16x16/filefind.png");
+    wxBitmap * bmp = new wxBitmap(cbLoadBitmap(imgFile, wxBITMAP_TYPE_PNG));
 
     m_pSearchLog = new cbSearchResultsLog(titles, widths);
     CodeBlocksLogEvent evt(cbEVT_ADD_LOG_WINDOW, m_pSearchLog, _("Search results"), bmp);
