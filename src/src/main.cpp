@@ -5152,6 +5152,8 @@ void MainFrame::OnHighlightMenu(cb_unused wxCommandEvent& event)
     wxMenu mm;
     const wxMenuItemList &menuItems = hl->GetMenuItems();
 
+    const wxString selectLanguageName = colour_set->GetLanguageName(ed->GetLanguage());
+
     for (size_t ii = 0; ii < menuItems.GetCount(); ++ii)
     {
         if (ii > 0 && (ii % 20) == 0)
@@ -5160,8 +5162,8 @@ void MainFrame::OnHighlightMenu(cb_unused wxCommandEvent& event)
         const wxMenuItem *item = menuItems[ii];
         wxMenuItem *newItem = mm.Append(item->GetId(), item->GetItemLabel(), item->GetHelp(),
                                         item->GetKind());
-        if (item->IsCheckable())
-            newItem->Check(item->IsChecked());
+        if (item->GetItemLabel() == selectLanguageName)
+            newItem->Check(true);
     }
 
     wxRect rect;
