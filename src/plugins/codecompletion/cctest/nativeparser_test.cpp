@@ -234,7 +234,7 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
 
     // the test cases are list as the last line of the file, so we loop backwards, and stop if an
     // empty line is found
-    for (size_t l = allLines.size() - 1; l >= 0; l--)
+    for (ssize_t l = allLines.size() - 1; l >= 0; l--)
     {
         wxString str = allLines[l];
         // a test case should be put in a line, and start with the double slash
