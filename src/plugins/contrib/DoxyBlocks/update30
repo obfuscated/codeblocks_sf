@@ -1,4 +1,4 @@
 #! /bin/sh
 
-source ./update 30
+./update 30
 exit 0
