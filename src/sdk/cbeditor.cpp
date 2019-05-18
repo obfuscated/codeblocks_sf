@@ -1350,6 +1350,37 @@ inline void OverrideUseTabsPerLanguage(cbStyledTextCtrl *control)
     }
 }
 
+static void SetEditorTechnology(cbStyledTextCtrl *control, ConfigManager *config)
+{
+    if (!control)
+        return;
+#if defined(__WXMSW__) && wxCHECK_VERSION(3, 1, 0)
+    const int technology = config->ReadInt(wxT("/technology"), 0);
+    if (technology == 1)
+        control->SetTechnology(wxSCI_TECHNOLOGY_DIRECTWRITE);
+    else
+        control->SetTechnology(wxSCI_TECHNOLOGY_DEFAULT);
+
+    const int fontQuality = config->ReadInt(wxT("/font_quality"), 0);
+    switch (fontQuality)
+    {
+    default:
+    case 0:
+        control->SetFontQuality(wxSCI_EFF_QUALITY_DEFAULT);
+        break;
+    case 1:
+        control->SetFontQuality(wxSCI_EFF_QUALITY_NON_ANTIALIASED);
+        break;
+    case 2:
+        control->SetFontQuality(wxSCI_EFF_QUALITY_ANTIALIASED);
+        break;
+    case 3:
+        control->SetFontQuality(wxSCI_EFF_QUALITY_LCD_OPTIMIZED);
+        break;
+    }
+#endif // defined(__WXMSW__) && wxCHECK_VERSION(3, 1, 0)
+}
+
 void cbEditor::SetEditorStyleBeforeFileOpen()
 {
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
@@ -1384,6 +1415,9 @@ void cbEditor::SetEditorStyleBeforeFileOpen()
 
     OverrideUseTabsPerLanguage(m_pControl);
     OverrideUseTabsPerLanguage(m_pControl2);
+
+    SetEditorTechnology(m_pControl, mgr);
+    SetEditorTechnology(m_pControl2, mgr);
 }
 
 void cbEditor::SetEditorStyleAfterFileOpen()

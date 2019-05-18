@@ -25,7 +25,7 @@
 									<weight>bold</weight>
 									<family>swiss</family>
 								</font>
-								<style>wxALIGN_CENTRE|wxNO_BORDER|wxTRANSPARENT_WINDOW</style>
+								<style>wxALIGN_CENTRE|wxBORDER_NONE|wxTRANSPARENT_WINDOW</style>
 							</object>
 							<flag>wxALIGN_CENTER_VERTICAL</flag>
 							<option>1</option>
@@ -509,7 +509,7 @@
 																	<object class="sizeritem">
 																		<object class="wxFlexGridSizer">
 																			<cols>2</cols>
-																			<rows>3</rows>
+																			<rows>5</rows>
 																			<object class="sizeritem">
 																				<object class="wxStaticText" name="wxID_ANY">
 																					<label>Show spaces in editor:</label>
@@ -570,7 +570,49 @@
 																					</content>
 																					<selection>2</selection>
 																				</object>
-																				<flag>wxEXPAND</flag>
+																				<flag>wxBOTTOM|wxEXPAND</flag>
+																				<border>5</border>
+																				<option>1</option>
+																			</object>
+																			<object class="sizeritem">
+																				<object class="wxStaticText" name="ID_STATICTEXT13">
+																					<label>Technology:</label>
+																				</object>
+																				<flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+																				<border>5</border>
+																				<option>1</option>
+																			</object>
+																			<object class="sizeritem">
+																				<object class="wxChoice" name="cmbTechnology">
+																					<content>
+																						<item>Default</item>
+																						<item>DirectWrite (Windows Vista and newer)</item>
+																					</content>
+																					<selection>0</selection>
+																				</object>
+																				<flag>wxBOTTOM|wxEXPAND</flag>
+																				<border>5</border>
+																				<option>1</option>
+																			</object>
+																			<object class="sizeritem">
+																				<object class="wxStaticText" name="ID_STATICTEXT14">
+																					<label>Font quality:</label>
+																				</object>
+																				<flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+																				<border>5</border>
+																				<option>1</option>
+																			</object>
+																			<object class="sizeritem">
+																				<object class="wxChoice" name="cmbFontQuality">
+																					<content>
+																						<item>Default</item>
+																						<item>Non antialiased</item>
+																						<item>Antialiased</item>
+																						<item>LCD optimized</item>
+																					</content>
+																					<selection>0</selection>
+																				</object>
+																				<flag>wxBOTTOM|wxEXPAND</flag>
 																				<border>5</border>
 																				<option>1</option>
 																			</object>

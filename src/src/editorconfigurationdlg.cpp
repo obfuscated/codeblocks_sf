@@ -93,6 +93,8 @@ BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxScrollingDialog)
 
     EVT_LISTBOOK_PAGE_CHANGED(XRCID("nbMain"), EditorConfigurationDlg::OnPageChanged)
     EVT_BUTTON(XRCID("btnWSColour"),                   EditorConfigurationDlg::OnChooseColour)
+
+    EVT_UPDATE_UI(XRCID("cmbFontQuality"),             EditorConfigurationDlg::OnUpdateUIFontQuality)
 END_EVENT_TABLE()
 
 EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
@@ -146,6 +148,21 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "spnTabSize",                  wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/tab_size"),                    4));
     XRCCTRL(*this, "cmbViewWS",                   wxChoice)->SetSelection(cfg->ReadInt(_T("/view_whitespace"),           0));
     XRCCTRL(*this, "cmbCaretBuffer", wxChoice)->SetSelection(cfg->ReadInt(wxT("/caret_buffer"), 2));
+
+    wxChoice *cmbTechnology = XRCCTRL(*this, "cmbTechnology", wxChoice);
+    wxChoice *cmbFontQuality = XRCCTRL(*this, "cmbFontQuality", wxChoice);
+
+#if defined(__WXMSW__) && wxCHECK_VERSION(3, 1, 0)
+    cmbTechnology->SetSelection(cfg->ReadInt(wxT("/technology"), 0));
+    cmbFontQuality->SetSelection(cfg->ReadInt(wxT("/font_quality"), 0));
+#else
+    cmbTechnology->SetSelection(0);
+    cmbTechnology->Enable(false);
+
+    cmbFontQuality->SetSelection(0);
+    cmbFontQuality->Enable(false);
+#endif // defined(__WXMSW__) && wxCHECK_VERSION(3, 1, 0)
+
     XRCCTRL(*this, "rbTabText",                   wxRadioBox)->SetSelection(cfg->ReadBool(_T("/tab_text_relative"),      false)? 1 : 0);
 
     XRCCTRL(*this, "chkTrackPreprocessor",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/track_preprocessor"),         true));
@@ -1042,6 +1059,12 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/tab_size"),                            XRCCTRL(*this, "spnTabSize",                           wxSpinCtrl)->GetValue());
         cfg->Write(_T("/view_whitespace"),                     XRCCTRL(*this, "cmbViewWS",                            wxChoice)->GetSelection());
         cfg->Write(_T("/caret_buffer"), XRCCTRL(*this, "cmbCaretBuffer", wxChoice)->GetSelection());
+
+#if defined(__WXMSW__) && wxCHECK_VERSION(3, 1, 0)
+    cfg->Write(_T("/technology"), XRCCTRL(*this, "cmbTechnology", wxChoice)->GetSelection());
+    cfg->Write(_T("/font_quality"), XRCCTRL(*this, "cmbFontQuality", wxChoice)->GetSelection());
+#endif // defined(__WXMSW__) && wxCHECK_VERSION(3, 1, 0)
+
         cfg->Write(_T("/tab_text_relative"),                   XRCCTRL(*this, "rbTabText",                            wxRadioBox)->GetSelection() ? true : false);
         // find & replace, regex searches
 
@@ -1193,4 +1216,10 @@ void EditorConfigurationDlg::EndModal(int retCode)
 void EditorConfigurationDlg::OnMultipleSelections(wxCommandEvent& event)
 {
     XRCCTRL(*this, "chkEnableAdditionalSelectionTyping", wxCheckBox)->Enable( event.IsChecked() );
+}
+
+void EditorConfigurationDlg::OnUpdateUIFontQuality(wxUpdateUIEvent& event)
+{
+    wxChoice *cmbTechnology = XRCCTRL(*this, "cmbTechnology", wxChoice);
+    event.Enable(cmbTechnology->GetSelection() != 0);
 }
