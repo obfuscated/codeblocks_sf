@@ -47,11 +47,22 @@
 #endif
 #if wxUSE_GRAPHICS_CONTEXT
     #include <wx/dcgraph.h>
-    #include <wx/dcscreen.h>
 #endif
 
 #include "Platform.h"
 #include "PlatWX.h"
+#if defined(__WXMSW__) && wxUSE_GRAPHICS_DIRECT2D
+#define HAVE_DIRECTWRITE_TECHNOLOGY
+#endif
+
+#if wxCHECK_VERSION(3, 1, 0) && defined(__WXMSW__) && !defined(HAVE_DIRECTWRITE_TECHNOLOGY)
+    #error "You need to have Direct2D capable wxWidget build to build Code::Blocks. We want to support fonts with ligatures!!!"
+#endif // wxCHECK_VERSION(3, 1, 0) && defined(__WXMSW__) && !defined(HAVE_DIRECTWRITE_TECHNOLOGY)
+
+#ifdef HAVE_DIRECTWRITE_TECHNOLOGY
+#include <wx/dcscreen.h>
+#endif
+
 #include "ScintillaWX.h"
 #include "Scintilla.h"
 #include "FontQuality.h"
@@ -186,11 +197,11 @@ void Font::Create(const FontParameters &fp) {
     wxFontWithAscent* newFont = new wxFontWithAscent(font);
     fid = newFont;
 
-#if wxUSE_GRAPHICS_DIRECT2D
+#ifdef HAVE_DIRECTWRITE_TECHNOLOGY
     if ( fp.technology == wxSCI_TECHNOLOGY_DIRECTWRITE ) {
         newFont->SetSurfaceFontData(new SurfaceFontDataD2D(fp));
     }
-#endif // wxUSE_GRAPHICS_DIRECT2D
+#endif // HAVE_DIRECTWRITE_TECHNOLOGY
 }
 
 
@@ -762,7 +773,7 @@ void SurfaceImpl::SetDBCSMode(int WXUNUSED(codePage)) {
     // dbcsMode = codePage == SC_CP_DBCS;
 }
 
-#if wxUSE_GRAPHICS_DIRECT2D
+#ifdef HAVE_DIRECTWRITE_TECHNOLOGY
 
 //----------------------------------------------------------------------
 // SurfaceFontDataD2D
@@ -1873,16 +1884,16 @@ void SurfaceD2D::DrawTextCommon(PRectangle rc, Font &font_, XYPOSITION ybase,
     }
 }
 
-#endif // wxUSE_GRAPHICS_DIRECT2D
+#endif // HAVE_DIRECTWRITE_TECHNOLOGY
 
 Surface *Surface::Allocate(int technology) {
     wxUnusedVar(technology);
 
-#if wxUSE_GRAPHICS_DIRECT2D
+#ifdef HAVE_DIRECTWRITE_TECHNOLOGY
     if ( technology == wxSCI_TECHNOLOGY_DIRECTWRITE ) {
         return new SurfaceD2D;
     }
-#endif // wxUSE_GRAPHICS_DIRECT2D
+#endif // HAVE_DIRECTWRITE_TECHNOLOGY
     return new SurfaceImpl;
 }
 
