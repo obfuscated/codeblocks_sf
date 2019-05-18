@@ -181,7 +181,7 @@ bool ProjectOptionsManipulator::OperateProject(cbProject* prj, wxArrayString& re
   if      (scan_opt == ProjectOptionsManipulatorDlg::eFiles)
     ProcessFiles(prj, result);
   else if (scan_opt == ProjectOptionsManipulatorDlg::eChangeCompiler)
-    ProcessChangeCompiler(prj, src, dst);
+    ProcessChangeCompiler(prj, src, dst, result);
   else
   {
     if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eCompiler) )
@@ -252,7 +252,7 @@ void ProjectOptionsManipulator::ProcessFiles(cbProject* prj, wxArrayString& resu
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-void ProjectOptionsManipulator::ProcessChangeCompiler(cbProject* prj, const wxString& src, const wxString& dst)
+void ProjectOptionsManipulator::ProcessChangeCompiler(cbProject* prj, const wxString& src, const wxString& dst, wxArrayString& result)
 {
   Compiler* dst_comp = CompilerFactory::GetCompilerByName(dst);
   Compiler* src_comp = nullptr;
@@ -274,15 +274,29 @@ void ProjectOptionsManipulator::ProcessChangeCompiler(cbProject* prj, const wxSt
     }
   }
 
+  bool changed = false;
+
   if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
   {
     if (nullptr != src_comp) // replace only if compiler match
     {
       if ( prj->GetCompilerID().IsSameAs(src_comp->GetID()) )
-        prj->SetCompilerID(dst_comp->GetID());
+      {
+          prj->SetCompilerID(dst_comp->GetID());
+          changed = true;
+      }
+
     }
     else
-      prj->SetCompilerID(dst_comp->GetID()); // replace every compiler of this target
+    {
+        prj->SetCompilerID(dst_comp->GetID()); // replace every compiler of this target
+        changed = true;
+    }
+
+    if(changed)
+        result.Add(wxString::Format(_("Project '%s': Changed compiler to '%s'."),
+                                        prj->GetTitle().wx_str(), dst_comp->GetName().wx_str()));
+
   }
 
   if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eTarget) )
@@ -296,10 +310,22 @@ void ProjectOptionsManipulator::ProcessChangeCompiler(cbProject* prj, const wxSt
       if (nullptr != src_comp) // replace only if compiler match
       {
         if ( tgt->GetCompilerID().IsSameAs(src_comp->GetID()) )
-          tgt->SetCompilerID(dst_comp->GetID());
+        {
+            tgt->SetCompilerID(dst_comp->GetID());
+            changed = true;
+        }
+
       }
       else
-        tgt->SetCompilerID(dst_comp->GetID()); // replace every compiler of this target
+      {
+          tgt->SetCompilerID(dst_comp->GetID()); // replace every compiler of this target
+          changed = true;
+      }
+
+
+      if(changed)
+        result.Add(wxString::Format(_("Project '%s', target '%s': Changed compiler to '%s'."),
+                                        prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), dst_comp->GetName().wx_str()));
     }
   }
 }

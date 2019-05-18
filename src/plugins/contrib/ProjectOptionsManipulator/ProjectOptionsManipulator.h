@@ -32,7 +32,7 @@ private:
 
   // Somewhat special operations:
   void ProcessFiles(cbProject* prj, wxArrayString& result);
-  void ProcessChangeCompiler(cbProject* prj, const wxString& src, const wxString& dst);
+  void ProcessChangeCompiler(cbProject* prj, const wxString& src, const wxString& dst, wxArrayString& result);
 
   // Default options:
   void ProcessCompilerOptions   (cbProject* prj, const wxString& opt, const wxString& opt_new, wxArrayString& result);
