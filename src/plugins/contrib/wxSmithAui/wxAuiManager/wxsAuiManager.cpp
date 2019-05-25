@@ -668,6 +668,12 @@ void wxsAuiManager::OnAddChildQPP(wxsItem* Child,wxsAdvQPP* QPP)
     if ( ChildExtra->m_FirstAdd )
     {
         ChildExtra->m_FirstAdd = false;
+
+        // Every name of an wxAUI Item needs an unique name
+        // This name is generated from the default name and the current index.
+        // The index is incremented automatically for each child
+        ChildExtra->m_Name = ChildExtra->m_Name + wxString::Format(wxT("%d"), Index);
+
         std::unique_ptr<wxFrame, std::function<void(wxFrame*)>> shortLiveFrame(new wxFrame(nullptr, wxID_ANY, wxEmptyString),
                                                                                [](wxFrame* frame){ frame->Destroy(); });  // deleter
         if ( wxDynamicCast(Child->BuildPreview(shortLiveFrame.get(),0),wxAuiToolBar) )
