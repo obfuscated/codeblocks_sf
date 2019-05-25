@@ -96,6 +96,7 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
         return false;
     }
 
+    int failedProjects = 0;
     // first loop to load projects
     while (proj)
     {
@@ -114,8 +115,10 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
             cbProject* pProject = GetpMan()->LoadProject(fname.GetFullPath(), false); // don't activate it
             if (!pProject)
             {
-                cbMessageBox(_("Unable to open ") + projectFilename,
-                 _("Opening WorkSpace") + filename, wxICON_WARNING);
+                GetpMsg()->LogError(wxString::Format(_("Unable to open \"%s\" during opening workspace \"%s\" "),
+                                                       projectFilename.c_str(),
+                                                       filename.c_str()));
+                failedProjects++;
             }
         }
         proj = proj->NextSiblingElement("Project");
@@ -155,6 +158,12 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
             }
         }
         proj = proj->NextSiblingElement("Project");
+    }
+
+    if (failedProjects > 0)
+    {
+        cbMessageBox(wxString::Format(_("%d projects could not be loaded.\nPlease see the Log window for details"), failedProjects),
+                     _("Opening WorkSpace"), wxICON_WARNING);
     }
 
     return true;
