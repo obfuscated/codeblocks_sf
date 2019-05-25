@@ -296,6 +296,8 @@ int idLeftSash              = XRCID("idLeftSash");
 int idBottomSash            = XRCID("idBottomSash");
 int idCloseFullScreen       = XRCID("idCloseFullScreen");
 
+int idGetGlobalAccels   = XRCID("idGetGlobalAccels");
+
 int idFileNext              = wxNewId();
 int idFilePrev              = wxNewId();
 int idShiftTab              = wxNewId();
@@ -547,6 +549,9 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idShiftTab,   MainFrame::OnShiftTab)
     EVT_MENU(idCtrlAltTab, MainFrame::OnCtrlAltTab)
 
+    // Let plugins get copy of global accelerators
+    EVT_MENU(idGetGlobalAccels,       MainFrame::OnGetGlobalAccels)
+
     /// Used for mouse right click in the free area of MainFrame
     EVT_RIGHT_UP(MainFrame::OnMouseRightUp)
 
@@ -587,7 +592,9 @@ MainFrame::MainFrame(wxWindow* parent)
     SetDropTarget(new cbFileDropTarget(this));
 
     // Accelerator table
-    wxAcceleratorEntry entries[8];
+    m_AccelCount = 8;
+    m_pAccelEntries = new wxAcceleratorEntry[m_AccelCount];
+    wxAcceleratorEntry* entries = m_pAccelEntries;
     entries[0].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  (int) 'W', idFileCloseAll);
     entries[1].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  WXK_F4,    idFileCloseAll);
     entries[2].Set(wxACCEL_CTRL,                  (int) 'W', idFileClose);
@@ -596,7 +603,7 @@ MainFrame::MainFrame(wxWindow* parent)
     entries[5].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  WXK_F6,    idFilePrev);
     entries[6].Set(wxACCEL_SHIFT,                 WXK_TAB,   idShiftTab);
     entries[7].Set(wxACCEL_CTRL | wxACCEL_ALT,    WXK_TAB,   idCtrlAltTab);
-    m_pAccel = new wxAcceleratorTable(8, entries);
+    m_pAccel = new wxAcceleratorTable(m_AccelCount, entries);
 
     SetAcceleratorTable(*m_pAccel);
 
@@ -5241,4 +5248,17 @@ void MainFrame::SetChecksForViewToolbarsMenu(wxMenu &menu)
 
     menu.Check(idViewToolMain,     m_LayoutManager.GetPane(m_pToolbar).IsShown());
     menu.Check(idViewToolDebugger, m_LayoutManager.GetPane(m_debuggerToolbarHandler->GetToolbar(false)).IsShown());
+}
+
+void MainFrame::OnGetGlobalAccels(wxCommandEvent& event)
+{
+    event.SetInt(m_AccelCount);
+    void* pUserVector = event.GetClientData();
+
+    // vector<MyClass*>& v = *reinterpret_cast<vector<MyClass*> *>(voidPointerName);
+    std::vector<wxAcceleratorEntry>& globalAccels = *reinterpret_cast<std::vector<wxAcceleratorEntry> *>(pUserVector);
+    event.SetInt(m_AccelCount);
+    for (size_t ii=0; ii < m_AccelCount; ++ii)
+        globalAccels.push_back(m_pAccelEntries[ii]);
+    return;
 }

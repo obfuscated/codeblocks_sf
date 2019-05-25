@@ -76,6 +76,9 @@ class MainFrame : public wxFrame
         bool LayoutMessagePaneDifferent(const wxString& layout1,const wxString& layout2, bool checkSelection=false);
     public:
         wxAcceleratorTable* m_pAccel;
+        wxAcceleratorEntry* m_pAccelEntries;
+        size_t              m_AccelCount;
+
         MainFrame(wxWindow* parent = (wxWindow*)NULL);
         ~MainFrame();
 
@@ -297,6 +300,10 @@ class MainFrame : public wxFrame
         void OnNotebookDoubleClick(CodeBlocksEvent& event);
         // Statusbar highlighting menu
         void OnHighlightMenu(wxCommandEvent& event);
+
+        // Allow plugins to obtain copy of global accelerators
+        void OnGetGlobalAccels(wxCommandEvent& event);
+
     protected:
         void CreateIDE();
         void CreateMenubar();
