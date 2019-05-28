@@ -11,13 +11,27 @@ libkeybinder_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefi
 libkeybinder_la_LIBADD = ../../../sdk/libcodeblocks.la $(WX_LIBS)
 
 libkeybinder_la_SOURCES = cbkeybinder.cpp \
+			cbkeyConfigPanel.cpp \
+			cJSON.cpp \
+			clKeyboardBindingConfig.cpp \
+			clKeyboardManager.cpp \
+			configurationpanel.cpp \
+			json_node.cpp \
 			keybinder.cpp \
 			menuutils.cpp
 
 noinst_HEADERS = cbkeybinder.h \
+			cbKeyConfigPanel.h \
+			cJSON.h \
+			clKeyboardBindingConfig.h \
+			clKeyboardManager.h \
+			configurationpanel.h \
 			debugging.h \
+			json_node.h \
 			keybinder.h \
-			menuutils.h
+			macros.h \
+			menuutils.h \
+			wxstringhash.h
 
 EXTRA_DIST = $(srcdir)/*.cbp manifest.xml
 

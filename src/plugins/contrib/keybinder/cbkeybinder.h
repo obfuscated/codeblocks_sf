@@ -19,154 +19,102 @@
 #endif
 
 #include <wx/string.h>
-#include <wx/timer.h>
+//-#include <wx/timer.h>
+#include <wx/listbook.h>
 
 #include "cbplugin.h" // the base class we 're inheriting
 #include "configurationpanel.h"
+#include "clKeyboardManager.h"
 #include "keybinder.h"
+#include "cbKeyConfigPanel.h"
+
+// Modified Keybinder for CodeBlocks KeyBnder v2.0
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "1.0.51 2015/08/21"
+#define VERSION "2.0.05 2019/05/19"
 // -----------------------------------
-class MyDialog;
 class wxKeyConfigPanel;
 class wxKeyProfileArray;
 class wxWindow;
 class wxEvent;
 class wxMenuBar;
 class wxLogWindow;
-class wxArrayPtrVoid;
-
+class cbKeyBinder;
 // ----------------------------------------------------------------------------
-//  cbKeyBinder class declaration
+//  cbKeyBinder class (the plugin)
 // ----------------------------------------------------------------------------
 class cbKeyBinder : public cbPlugin
 {
-    friend class MyDialog;
 	public:
 		cbKeyBinder();
 		~cbKeyBinder();
+
 		int GetConfigurationGroup() const { return cgEditor; }
         cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
+
 		void BuildMenu(wxMenuBar* menuBar);
 		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
 		bool BuildToolBar(wxToolBar* toolBar);
-		void OnAttach(); // fires when the plugin is attached to the application
-		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
+		void OnAttach();                    // fires when the plugin is attached to the application
+		void OnRelease(bool appShutDown);   // fires when the plugin is released from the application
+        void OnKeyBinderRefreshRequested(wxCommandEvent& event); //(pecan 2019/04/26)
 
       #ifdef LOGGING
-        // allocate wxLogWindow in the header
-        wxLogWindow* pMyLog;
+        // allocate wxLogWindow when debugging
+        wxLogWindow* m_pMyLog;
       #endif
-
-        // the array of key profiles used by this sample app
-        wxKeyProfileArray* m_pKeyProfArr;
 
         //memorized menubar from BuildMenu(...)
         wxMenuBar* m_pMenuBar;
 
-        // possible locations of config file
-        wxString m_sConfigFolder;
-        wxString m_sExecuteFolder;
-        wxString m_sDataFolder;
-
         // Users Key file name eg. %HOME%\cbKeybinder.ini
-        wxString m_sKeyFilename;
-        wxString m_sKeyFilePath;
-        wxString m_OldKeyFilename;
+        wxString m_OldKeyBinderFullFilePath;
+        wxString m_UserPersonality;
 
-        // Switch to reload keybinding
-        bool m_bBound;
-
-        // utility function to update the menu key labels
-        // and re-attach the window event handlers after key changes
-        void UpdateArr(wxKeyProfileArray &r);
-        void Rebind(bool update=true);
-        // key definition configuration dialog
-        cbConfigurationPanel* OnKeyConfig(wxWindow* parent);
-        void OnKeyConfigDialogDone(MyDialog* dlg);
-
-        // save/load key definitions
-        void OnSave(bool backitup = false);
-        void OnLoad();
-        // Enable/Disable Merge
-        int EnableMerge(bool allow);
-        int IsEnabledMerge() const {return m_mergeEnabled;}
-        bool IsMerging() const {return m_bMerging;}
-        void IsMerging(bool state){m_bMerging = state;}
-        bool VerifyKeyBind(const wxString& strKeyCode, const int numShortcuts);
+        //-bool VerifyKeyBind(const wxString& strKeyCode, const int numShortcuts);
         int RemoveKeyBindingsFor(const wxString& strKeyCode, wxKeyProfile* pkp);
 
     protected:
-        wxADD_KEYBINDER_SUPPORT();
+        //-wxADD_KEYBINDER_SUPPORT(); no longer needed in KeyBinder 2.0
 
     private:
-        void OnProjectOpened(CodeBlocksEvent& event);
-        void OnProjectActivated(CodeBlocksEvent& event);
-        void OnProjectClosed(CodeBlocksEvent& event);
-        void OnProjectFileAdded(CodeBlocksEvent& event);
-        void OnProjectFileRemoved(CodeBlocksEvent& event);
-        void OnEditorOpen(CodeBlocksEvent& event);
-        void OnEditorClose(CodeBlocksEvent& event);
-        void OnMergeTimer(wxTimerEvent& event);
         void OnAppStartupDone(CodeBlocksEvent& event);
-        void AttachEditor(wxWindow* pEditor);
-        void OnWindowCreateEvent(wxEvent& event);
-        void OnWindowDestroyEvent(wxEvent& event);
-        void DetachEditor(wxWindow* pWindow, bool deleteEvtHandler = true);
-        void MergeDynamicMenus();
         void OnAppStartShutdown(CodeBlocksEvent& event);
-        void OnIdle(wxIdleEvent& event);
-        void OnTimerAlarm(wxTimerEvent& event);
-        void OnMenuBarModify(CodeBlocksEvent& event);
+        void OnConfigListbookEvent(wxListbookEvent& event);
+        void OnConfigListbookClose(wxEvent& event);
+
+        wxString GetUserPersonality() {return m_UserPersonality; }
+        bool     CreateKeyBindDefaultFile(bool refresh);
+        bool     OnSaveKbOldFormatCfgFile(wxKeyProfileArray* pKeyProfileArray, wxString oldFmtMnuScanFilePath, bool backitup);
+        int      ConvertMenuScanToKeyMnuAcceratorsConf(wxString keybinderFile, wxString acceratorFile);
+        int      ConvertOldKeybinderIniToAcceratorsConf(wxString keybinderFile, wxString acceleratorFile);
+        bool     MergeAcceleratorTable(wxTextFile& textOutFile);
+        int      RemoveCopyPasteBindings(wxKeyProfile* pkp);
         wxString FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
-        void MergeAcceleratorTable(const bool mergeAccelTable = false);
-        int  RemoveCopyPasteBindings(wxKeyProfile* pkp);
+        wxString GetPluginVersion();
+
+        wxString GetStringsFromArray(const wxArrayString& array, const wxString& separator, bool SeparatorAtEnd);
+        wxArrayString GetArrayFromStrings(const wxString& text, const wxString& separator, bool trimSpaces);
+        int           FindLineInFileContaining(wxTextFile& txtFile, wxString& pattern);
 
 
         wxWindow*       pcbWindow;              //main app window
-        wxArrayPtrVoid  m_EditorPtrs;           //attached editor windows
-        bool            bKeyFileErrMsgShown;
-        int             m_MenuModifiedByMerge;  //menu dynamically modified
-        int             m_mergeEnabled;         //merging menus allowed
-        bool            m_bMerging;             //merging menus active
-        bool            m_menuPreviouslyBuilt;
+        wxListbook*     m_pConfigListbook;      // CBs Configuration panel wxListbook
 
     private:
-        wxTimer         m_Timer;
-        void    StartMergeTimer(int secs){ m_Timer.Start( secs*1000, wxTIMER_ONE_SHOT); }
-        void    StopMergeTimer(){ m_Timer.Stop();}
-        bool    m_bTimerAlarm;
-        bool    m_bAppShutDown;
-        bool    m_bConfigBusy;
+        bool            m_bAppShutDown;
+        bool            m_menuPreviouslyBuilt;
+        int             m_mode;
+        bool            m_AppStartupDone;
+        UsrConfigPanel* m_pUsrConfigPanel;
+        bool            m_KeyBinderRefreshRequested;        //(pecan 2019/04/26)
+        wxString        m_cbExeTimeStampstr;                //(pecan 2019/04/29)
+
+        clKeyboardManager* m_pKBMgr;
 
 		DECLARE_EVENT_TABLE()
 
 };//class cbKeyBinder
-// ----------------------------------------------------------------------------
-//  MyDialog class declaration
-// ----------------------------------------------------------------------------
-class MyDialog : public cbConfigurationPanel
-{
-public:
-	wxKeyConfigPanel* m_pConfigPanel;
-
-public:
-    // ctor(s)
-    MyDialog(cbKeyBinder* pKeyBinderPlgn, wxKeyProfileArray& arr, wxWindow* parent, const wxString& title, int);
-	~MyDialog();
-
-
-    wxString GetTitle() const { return _("Keyboard shortcuts"); }
-    wxString GetBitmapBaseName() const { return _T("onekeytobindthem"); }
-	void OnApply();
-	void OnCancel(){}
-
-private:
-    cbKeyBinder* m_pKeyBinderPlgn;
-    // any class wishing to process wxWindows events must use this macro
-    DECLARE_EVENT_TABLE()
-};
 
 #endif // CBKEYBINDER_H
 // 11/9/2005
@@ -376,7 +324,7 @@ private:
 //
 //  closed  1/11/2006 1:20 PM opened 1/11/2006 1:20 PM
 //          Re: wxKeyBinder problems/solutions discussion
-//          Â« Reply #7 on: Today at 01:06:03 PM Â»
+//          « Reply #7 on: Today at 01:06:03 PM »
 //      	Reply with quote
 //          Quote from: Pecan on January 10, 2006, 06:40:49 PM
 //          ...Have commited KeyBinder v0.4.8 (svn 1708)...
@@ -712,4 +660,9 @@ private:
 // ----------------------------------------------------------------------------
 //  Commit  1.0.51 2015/08/21
 //          51) fixes for wxWidgets 3.0 using negative menu id's
+// ----------------------------------------------------------------------------
+//          2.0.00 2019/04/7
+//              Rewrite using CodeLite method for global accelerator table shortcuts
+//              Removes use of a bazillion wxEvtHandlers
+//
 // ----------------------------------------------------------------------------

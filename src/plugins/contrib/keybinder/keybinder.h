@@ -9,6 +9,8 @@
 /////////////////////////////////////////////////////////////////////////////
 // RCS-ID:      $Id$
 
+// Modified Keybinder for CodeBlocks KeyBnder v2.0 2019/04/8
+
 #define NOT !
 
 #ifndef __KEYBINDER_G__
@@ -30,10 +32,12 @@
 #include "wx/combobox.h"
 #include "wx/app.h"
 
-#include "debugging.h"
+//-#include "debugging.h"
 
 // The maximum number of shortcuts associated with each wxCmd.
-#define wxCMD_MAX_SHORTCUTS                3
+//-#define wxCMD_MAX_SHORTCUTS                3
+// Change to 2 on 2019/04/5 as one menu shortcut and one global shortcut
+#define wxCMD_MAX_SHORTCUTS                2
 
 #ifndef wxID_INVALID
     // A value used to represent an invalid id...
@@ -512,93 +516,6 @@ public:
 
 class wxKeyBinder;
 
-//! This is a wxEvtHandler which can be attached to any wxWindow-derived
-//! class. It handles only the key events calling a wxKeyBinder to process
-//! them. wxKeyBinder will process only hotkeys and will skip any other
-//! unregistered key combination.
-//! In these cases wxBinderEvtHandler just returns and wxWidgets will call
-//! the next handler in the chain (which is usually the wxWindow which was
-//! attached to this wxBinderEvtHandler).
-
-//-v0.1- class WXDLLIMPEXP_KEYBINDER wxBinderEvtHandler : public wxEvtHandler
-// ----------------------------------------------------------------------------
-class wxBinderEvtHandler : public wxEvtHandler
-// ----------------------------------------------------------------------------
-{
-    //! The wxKeyBinder called by wxBinderEvtHandler when receiving a wxKeyEvent.
-    wxKeyBinder *m_pBinder;
-
-    //! The target window which will process the keyevents if they're not
-    //! registered hotkeys (this check is done by wxKeyBinder).
-    wxWindow *m_pTarget;
-
-protected:
-
-    //! The event handler for wxKeyEvents.
-    void OnChar(wxKeyEvent &event);
-
-public:
-
-    //! Attaches this event handler to the given window.
-    //! The given keybinder will be called on each keyevent.
-    wxBinderEvtHandler(wxKeyBinder *p, wxWindow *tg)
-        : m_pBinder(p), m_pTarget(tg)
-    { m_pTarget->PushEventHandler(this);}
-
-    //! Removes this event handler from the window you specified
-    //! during construction (the target window).
-    virtual ~wxBinderEvtHandler()
-    {
-        // dtor
-        if ( m_pTarget )
-        {
-            // Avoid assert "where did the event handler go?". Verify the event handler exists
-            // NOTE: the wxWindow event handler list is always terminated with window handler
-            wxWindow* pWin = m_pTarget;
-            wxEvtHandler* handlerCur = pWin->GetEventHandler();
-            while ( (handlerCur != pWin) && handlerCur )
-            {
-                wxEvtHandler* handlerNext = handlerCur->GetNextHandler();
-                if ( handlerCur == this )
-                {
-                    #if LOGGING
-                    if (pWin)
-                    LOGIT( _T("WxKeyBinder:DetachAll:Deleteing EvtHdlr for [%s] %p"), pWin->GetLabel().GetData(), pWin);
-                    #endif
-                    m_pTarget->RemoveEventHandler(this);
-                    return;
-                }
-                handlerCur = handlerNext;
-            }
-        }
-    }
-
-
-    //! Returns TRUE if this event handler is attached to the given window.
-    bool IsAttachedTo(wxWindow *p)
-        { return p == m_pTarget; }
-
-    //! Returns the wxKeyBinder which is called-back by this event handler.
-    wxKeyBinder *GetBinder() const
-        { return m_pBinder; }
-
-    //! Returns the window which this event handler is filtering.
-    wxWindow *GetTargetWnd() const
-        { return m_pTarget; }
-
-    //! If the window disappears, we have to have a way to say so
-    //! Set the window validity     //+v0.4.9
-    wxWindow* SetWndInvalid(wxWindow* pnewWnd=0)
-        { m_pTarget=pnewWnd; return m_pTarget; }
-
-
-private:
-    DECLARE_CLASS(wxBinderEvtHandler)
-    DECLARE_EVENT_TABLE()
-};
-
-
-
 
 // Define the wxADD_KEYBINDER_SUPPORT: you should use it inside a protected
 // block of the windows which want to use the wxKeyBinder facilities
@@ -619,94 +536,19 @@ private:
 #endif
 
 
-//! A special wxApp. Doesn't work yet on wxGTK.
-//! This should be another way to use wxKeyBinder: the usual way is to
-//! call wxKeyBinder::Attach to define the windows whose events will be
-//! filtered for the hotkeys...
-//! wxBinderApp should avoid all calls to wxKeyBinderAttach filtering
-//! the events using the wxApp::FilterEvent() function.
-//-v0.1-class WXDLLIMPEXP_KEYBINDER wxBinderApp : public wxApp
-// ----------------------------------------------------------------------------
-class wxBinderApp : public wxApp
-// ----------------------------------------------------------------------------
-{
-    wxKeyBinder *m_pGlobalBinder;
-    wxEvtHandler *m_pGlobalHdl;
-
-public:
-    wxBinderApp() { m_pGlobalHdl = NULL; m_pGlobalBinder = NULL; }
-    virtual ~wxBinderApp() {}
-
-
-    //! The core of wxBinderApp.
-    int FilterEvent(wxEvent &ev);
-
-    //! Returns TRUE if \c child is a child window (maybe nested into
-    //! other windows) of the given \c parent.
-    static bool IsChildOf(wxWindow *parent, wxWindow *child);
-
-    //! Returns the first top level parent of the given window
-    //! or NULL if the given window has no top level parents.
-    static wxWindow *GetTopLevelParent(wxWindow *wnd);
-
-
-public:        // accessors
-
-    void SetGlobalBinder(wxKeyBinder *p)
-        { m_pGlobalBinder = p; }
-    void SetGlobalHandler(wxEvtHandler *p)
-        { m_pGlobalHdl = p; }
-
-    wxKeyBinder *GetGlobalBinder() const
-        { return m_pGlobalBinder; }
-    wxEvtHandler *GetGlobalHandler() const
-        { return m_pGlobalHdl ; }
-};//wxBinderApp
-
-
-
-//! This is the real keybinder. This object is an event handler which
-//! can be #Attach()ed to any wxWindow to intercept the keypresses
-//! that window receives and then to (if they match a shortcut key
-//! associated with one of the wxCmd contained) translate them in
-//! events (the type of the event which is generated depends from
-//! the type wxCmd which is triggered; see wxCmd::Exec) which are
-//! sent to the window which is #Attach()ed to this key binder.
-//!
 //! This class contains an array of wxCmd and exposes some utilities
 //! to add/remove/edit them and their wxKeyBind.
 //!
-//! VERY IMPORTANT: to allow the wxKeyBinder class to intercept *all*
-//!                 the keypresses which are sent to the #Attach()ed
-//!                 window, also hotkeys, you must use the
-//!                 wxADD_KEYBINDER_SUPPORT macro inside the declaration
-//!                 of that window.
-//!
-//-v0.1-class WXDLLIMPEXP_KEYBINDER wxKeyBinder : public wxObject
 // ----------------------------------------------------------------------------
 class wxKeyBinder : public wxObject
 // ----------------------------------------------------------------------------
 {
-  public:
-    // Names of windows to which keybinder can attach //+v0.4.4
-    static wxArrayString usableWindows;               //+v0.4.4
-protected:
+    public:
+
+    protected:
 
     //! The array of wxCmd-derived classes.
     wxCmdArray m_arrCmd;
-
-    //! The array of windows attached to this keybinder.
-    //! This info is very important when deleting the keybinder
-    //! (which can automatically #Detach() itself).
-    //! Besides, with this array, something interesting could be
-    //! done in future (like global shortcuts: command events sent
-    //! to all attached windows even if the command shortcut comes
-    //! from one of the attached windows only)...
-    //wxArrayPtrVoid m_arrAttachedWnd;
-    //wxWindowList m_lstAttachedWnd;        // I don't like wxList...
-
-    //! The array of wxBinderEvtHandler held by this keybinder.
-    wxArrayPtrVoid m_arrHandlers;
 
 protected:
 
@@ -759,15 +601,9 @@ public:
     	DeepCopy(tocopy);
 	}
 
-
-    virtual ~wxKeyBinder() { DetachAll(); }
-
-
+    virtual ~wxKeyBinder() {}
 
 public:        // miscellaneous
-
-    //! The event handler for wxKeyEvents.
-    void OnChar(wxKeyEvent &event, wxEvtHandler *next);
 
     //! Deep copies the given object.
     void DeepCopy(const wxKeyBinder &p) {
@@ -795,43 +631,10 @@ public:        // miscellaneous
     void Reset() {
         m_arrCmd.Clear();
     }
-    // Recursively update sub menu items        //+v0.4.24
+    // Recursively update sub menu items
     void UpdateSubMenu(wxMenu* pMenu);
     //! Updates all the commands contained.
-    void UpdateAllCmd(wxMenuBar* pMnuBar);      //v0.4.17
-
-    //! Enables/disables all the wxBinderEvtHandler associated with
-    //! the windows we've been attached to.
-    void Enable(bool bEnable = TRUE)
-     {
-        for (int i=0; i < (int)m_arrHandlers.GetCount(); i++)
-         {
-            ((wxBinderEvtHandler*)m_arrHandlers.Item(i))->SetEvtHandlerEnabled(bEnable);
-         }
-     }
-
-    //! Attaches this class to the given window.
-    void Attach(wxWindow *p);
-
-    //! Attaches this keybinder to the given window and recursively to
-    //! all its children so that all hotkeys will be surely intercepted.
-    void AttachRecursively(wxWindow *p);
-
-    //! Detaches this event handler from the given window.
-    void Detach(wxWindow *p, bool deleteEvtHandler = true);
-
-    //! Detaches this event handler from all the window it's attached to.
-    void DetachAll();
-
-    //! Returns TRUE if the given window is attached to this keybinder.
-    bool IsAttachedTo(wxWindow *p) const
-        { return FindHandlerIdxFor(p) != wxNOT_FOUND; }
-
-    //! Returns the index of the handler for the given window.
-    int FindHandlerIdxFor(wxWindow *p) const;
-
-    //! Returns the wxBinderEvtHandler for the given window.
-    wxBinderEvtHandler *FindHandlerFor(wxWindow *p) const;
+    void UpdateAllCmd(wxMenuBar* pMnuBar);
 
     //! Imports the wxMenuCmd created importing them from
     //! the given menu bar.
@@ -886,14 +689,6 @@ public:        // miscellaneous
         return m_arrCmd.GetCount();
     }
 
-    int GetAttachedWndCount() const {
-        return m_arrHandlers.GetCount();
-    }
-
-    wxWindow *GetWindow(int n) const {
-        return ((wxBinderEvtHandler*)m_arrHandlers.Item(n))->GetTargetWnd();
-    }
-
     wxCmd *GetMatchingCmd(const wxKeyEvent &key) const {
         int i = FindMatchingCmd(key);
         if (i != -1)
@@ -933,8 +728,6 @@ public:        // miscellaneous
         return wxArrayString();
     }
 
-    wxArrayPtrVoid *GetHandlersArr()        { return &m_arrHandlers; }
-
     wxCmdArray *GetArray()                    { return &m_arrCmd;    }
     const wxCmdArray *GetArray() const        { return &m_arrCmd; }
 
@@ -945,8 +738,8 @@ public:        // miscellaneous
 
 
   private:
-    void OnWinClosed(wxCloseEvent& event); //+v0.4.7
     DECLARE_CLASS(wxKeyBinder)
+
 };//wxKeyBinder
 // ----------------------------------------------------------------------------
 
@@ -1118,33 +911,6 @@ public:
         Clear();
     }
 
-    //! Attaches all the wxKeyProfiles to the given window.
-    //! \note This function should be used very carefully !
-    //!       If all the keybinders are attached to the same window
-    //!
-    void AttachAllTo(wxWindow *w) {
-        for (int i=0; i<GetCount(); i++)
-            Item(i)->Attach(w);
-    }
-
-    //! Enables/disables all the wxKeyProfiles. See wxKeyBinder::Enable.
-    void EnableAll(bool bEnable = TRUE) {
-        for (int i=0; i<GetCount(); i++)
-            Item(i)->Enable(bEnable);
-    }
-
-    //! Detaches all the wxKeyProfiles from the given window.
-    void DetachAllFrom(wxWindow *w) {
-        for (int i=0; i<GetCount(); i++)
-            Item(i)->Detach(w);
-    }
-
-    //! Detaches all the wxKeyProfiles from *all* their attached windows.
-    void DetachAll() {
-        for (int i=0; i<GetCount(); i++)
-            Item(i)->DetachAll();       //v0.1-Bombs if frame is gone
-    }
-
     //! Updates all the wxCmds contained.
     void UpdateAllCmd(wxMenuBar* pMnuBar) {
         for (int i=0; i<GetCount(); i++)
@@ -1170,11 +936,6 @@ public:
     }
 
 };//wxKeyProfileArray
-
-
-
-
-
 
 //! A special text control where the user keypresses are displayed
 //! as the contained text.
@@ -1230,28 +991,21 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-
-
-
-
-
 // IDs used by wxKeyConfigPanel
-#define wxKEYBINDER_BASEID                    30000        // start from this value
+#define wxKEYBINDER_BASEID                  30000        // start from this value
 
-#define wxKEYBINDER_COMMANDS_BOX_ID            wxKEYBINDER_BASEID+1
-#define wxKEYBINDER_BINDINGS_BOX_ID            wxKEYBINDER_BASEID+2
+#define wxKEYBINDER_COMMANDS_BOX_ID         wxKEYBINDER_BASEID+1
+#define wxKEYBINDER_BINDINGS_BOX_ID         wxKEYBINDER_BASEID+2
 #define wxKEYBINDER_KEY_FIELD_ID            wxKEYBINDER_BASEID+3
-#define wxKEYBINDER_ASSIGN_KEY_ID            wxKEYBINDER_BASEID+4
-#define wxKEYBINDER_REMOVE_KEY_ID            wxKEYBINDER_BASEID+5
+#define wxKEYBINDER_ASSIGN_KEY_ID           wxKEYBINDER_BASEID+4
+#define wxKEYBINDER_REMOVE_KEY_ID           wxKEYBINDER_BASEID+5
 #define wxKEYBINDER_REMOVEALL_KEY_ID        wxKEYBINDER_BASEID+6
-#define wxKEYBINDER_KEYPROFILES_ID            wxKEYBINDER_BASEID+7
-#define wxKEYBINDER_CATEGORIES_ID            wxKEYBINDER_BASEID+8
-#define wxKEYBINDER_ADD_PROFILEBTN_ID        wxKEYBINDER_BASEID+9
+#define wxKEYBINDER_KEYPROFILES_ID          wxKEYBINDER_BASEID+7
+#define wxKEYBINDER_CATEGORIES_ID           wxKEYBINDER_BASEID+8
+#define wxKEYBINDER_ADD_PROFILEBTN_ID       wxKEYBINDER_BASEID+9
 #define wxKEYBINDER_REMOVE_PROFILEBTN_ID    wxKEYBINDER_BASEID+10
 
-
 #define wxKEYBINDER_SELECTED_POSTFIX        wxT(" (selected)")
-
 
 //! \name wxKeyConfigPanel BUILD flags
 //! These flags affect the way a wxKeyConfigPanel is created.
@@ -1345,7 +1099,10 @@ private:
 //!    profile can be obtained using #GetSelProfile().
 //!
 //class /*-v0.1-WXDLLIMPEXP_KEYBINDER*/ wxKeyConfigPanel : public wxPanel
+
+// ----------------------------------------------------------------------------
 class wxKeyConfigPanel : public wxPanel
+// ----------------------------------------------------------------------------
 {
 public:
 
@@ -1359,10 +1116,13 @@ public:
         const wxString& name = wxT("wxKeyConfigPanel"));
 
     virtual ~wxKeyConfigPanel();
+    wxButton* m_pOK; // the OK button
 
 
-public:        // import commands (to call BEFORE ShowModal):
-            // they affect the tree control only
+public:
+
+    // import commands (to call BEFORE ShowModal):
+    // they affect the tree control only
 
     //! Adds to the tree of user-editable commands, the menuitems
     //! contained in the given menubar.
@@ -1383,8 +1143,10 @@ public:        // import commands (to call BEFORE ShowModal):
                                 const wxString &rootname = wxT("Commands"));
 
 
-public:        // keyprofile utilities (to call BEFORE ShowModal):
-            // they affect the keybindings only
+public:
+
+    // keyprofile utilities (to call BEFORE ShowModal):
+    // they affect the keybindings only
 
     //! Adds a new keyprofile to the keyprofile combo box.
     //! \note This function does not select the given keyprofile
@@ -1477,7 +1239,7 @@ protected:        // event handlers
     void OnKeyPressed(wxCommandEvent &event);
 
 
-protected:        // build functions; these ones can be overridden to
+protected:      // build functions; these ones can be overridden to
                 // customize wxKeyConfigPanel appearances
 
     virtual void BuildCtrls();
@@ -1556,7 +1318,7 @@ protected:        // the subwindows of this dialog
     wxButton *m_pRemoveAllBtn;
 
     // used when wxKEYBINDER_USE_TREECTRL is in the build flags
-    wxTreeCtrl *m_pCommandsTree;
+    wxTreeCtrl* m_pCommandsTree;
 
     // used when wxKEYBINDER_USE_LISTBOX is in the build flags
     wxComboBox *m_pCategories;

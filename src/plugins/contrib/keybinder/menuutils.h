@@ -9,6 +9,8 @@
 /////////////////////////////////////////////////////////////////////////////
 // RCS-ID:      $Id$
 
+// Modified menuutils.h for CodeBlocks KeyBnder v2.0 2019/04/8
+
 
 #ifndef __WX_MENUUTILS_H__
 #define __WX_MENUUTILS_H__
@@ -271,11 +273,11 @@ public:
 
 	//! Works like #FillTreeBranch but this function also removes all the tree
 	//! items (before starting) and then builds the root with the given label.
-	void FillTreeCtrl(wxMenuBar *p, wxTreeCtrl *ctrl,
+	void FillTreeCtrl(wxMenuBar *pMnuBar, wxTreeCtrl* pTreectrl,
                         const wxString &rootname = wxT("root"))
     {
-		ctrl->DeleteAllItems();
-		FillTreeBranch(p, ctrl, ctrl->AddRoot(rootname));
+		pTreectrl->DeleteAllItems();
+		FillTreeBranch(pMnuBar, pTreectrl, pTreectrl->AddRoot(rootname));
 	}
 
 protected:
@@ -352,7 +354,7 @@ protected:
 // ***************************************************************************
 //                  wxMenuShortcutWalker
 // ***************************************************************************
-//! An helper class which is used by wxKeyBinder to import the
+//! A helper class which is used by wxKeyBinder to import the
 //! wxMenuCmd associated to a menu bar.
 //! This function uses the wxMenuWalker algorithm to create a
 //! plain list of wxMenuCmd (without any hierarchical structure)

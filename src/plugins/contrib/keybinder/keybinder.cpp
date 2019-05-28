@@ -10,38 +10,12 @@
 /////////////////////////////////////////////////////////////////////////////
 // RCS-ID:      $Id$
 
-
-#if defined(kbLOGGING)
-    #include "debugging.h"
-#endif
+// Modified Keybinder for CodeBlocks KeyBnder v2.0 2019/04/8
 
 #ifdef __GNUG__
-#pragma implementation "keybinder.h"
+#pragma implementation "keybinder.h" //necessary for linux, else undefines when linking
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-#pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-    #include "wx/log.h"
-#endif
-
-#if defined(CB_PRECOMP)
-#include "sdk.h"
-#else
-    #include "sdk_events.h"
-    #include "manager.h"
-    #include "projectmanager.h"
-    #include "editormanager.h"
-    #include "cbworkspace.h"
-    #include "cbproject.h"
-    #include "logmanager.h"
-#endif
 
 // includes
 #include <wx/event.h>
@@ -56,42 +30,40 @@
 #include "wx/config.h"
 #include "wx/tokenzr.h"
 
+#if defined(kbLOGGING)
+    #include "debugging.h"
+#endif
+
+// For compilers that support precompilation, includes "wx/wx.h".
+#include "wx/wxprec.h"
+
+#ifndef WX_PRECOMP
+    #include "wx/wx.h"
+    #include "wx/log.h"
+#endif
+
+#include "manager.h"
+#include "logmanager.h"
+
+//#if defined(CB_PRECOMP)
+//#include "sdk.h"
+//#else
+//    #include "sdk_events.h"
+//    #include "manager.h"
+//    #include "projectmanager.h"
+//    #include "editormanager.h"
+//    #include "cbworkspace.h"
+//    #include "cbproject.h"
+//    #include "logmanager.h"
+//#endif
+
+
 // class definition for wxKeyProfile
 IMPLEMENT_CLASS(wxKeyProfile, wxKeyBinder)
 
 
 // event table for wxKeyBinder
 IMPLEMENT_CLASS(wxKeyBinder, wxObject)
-
-IMPLEMENT_CLASS(wxBinderEvtHandler, wxEvtHandler)
-BEGIN_EVENT_TABLE(wxBinderEvtHandler, wxEvtHandler)
-
-    // this is obviously the most important event handler; we don't
-    // want to intercept wxEVT_KEY_UP because we don't need them:
-    // a command must be immediately executed when one of its shortcuts
-    // is sent to the window.
-    EVT_KEY_DOWN(wxBinderEvtHandler::OnChar)
-
-    // if we intercept also these events, then we would have some problems
-    // with the ENTER keypresses: the wxBinderEvtHandler would be called
-    // three times with three different events which would then generate
-    // three command executions
-#if 0
-    EVT_KEY_UP(wxBinderEvtHandler::OnChar)
-    EVT_CHAR(wxBinderEvtHandler::OnChar)
-#endif
-
-#if defined( __WXMSW__    )        // supported only on Win32
-#if wxUSE_HOTKEY            // enabled?
-    // I don't think this is needed because wxEVT_HOTKEY are generated
-    // only in some special cases...
-    EVT_HOTKEY(wxID_ANY, wxBinderEvtHandler::OnChar)
-#endif
-#endif
-
-END_EVENT_TABLE()
-
-
 
 // event table for wxKeyMonitorTextCtrl
 IMPLEMENT_CLASS(wxKeyMonitorTextCtrl, wxTextCtrl)
@@ -141,16 +113,10 @@ END_EVENT_TABLE()
 // ------------------
     int wxCmd::m_nCmdTypes = 0;
     wxCmd::wxCmdType wxCmd::m_arrCmdType[];
-// window names allowed for which keybinder may attach()
-    wxArrayString wxKeyBinder::usableWindows;                    //+v0.4.4
-// window used by AttachRecursively, App.TopWindow
-    wxWindow* mainAppWindow = 0;
-    extern wxString* pKeyFilename;              // Name of .ini key file
 
 // ----------------------------------------------------------------------------
 // wxKeyBind STATIC utilities
 // ----------------------------------------------------------------------------
-
 // ----------------------------------------------------------------------------
 wxString wxKeyBind::NumpadKeyCodeToString(int keyCode)
 // ----------------------------------------------------------------------------
@@ -237,7 +203,7 @@ wxString wxKeyBind::KeyCodeToString(int keyCode)
 {
     wxString res;
 
-    //LOGIT("KeyCodeToString_IN:keyCode[%d]char[%c]", keyCode, keyCode );
+    //wxLogMessage("KeyCodeToString_IN:keyCode[%d]char[%c]", keyCode, keyCode );
 
     switch (keyCode)
     {
@@ -382,7 +348,7 @@ wxString wxKeyBind::KeyCodeToString(int keyCode)
     }//default
 
     //#if LOGGING
-    // LOGIT(_T("KeyCodeToStringOUT:keyCode[%d]char[%c]Desc[%s]"),
+    // wxLogMessage(_T("KeyCodeToStringOUT:keyCode[%d]char[%c]Desc[%s]"),
     //            keyCode, keyCode, res.GetData() );
     //#endif
 
@@ -496,7 +462,7 @@ int wxKeyBind::StringToKeyModifier(const wxString &keyModifier)
 int wxKeyBind::GetKeyModifier(wxKeyEvent &event)
 // ----------------------------------------------------------------------------
 {
-// NOTE: wxWidgets2.6.2 returns false on modifier keys for Ctrl+Alt+UP/DOWN combination.
+// Note: wxWidgets2.6.2 returns false on modifier keys for Ctrl+Alt+UP/DOWN combination.
 //       It returns Ctrl+Alt+PRIOR instead of UP/DOWN and shows false for ctrl & alt.
 //       Same is true for Ctrl+Shift+UP/Down.
 //       Alt+Shift+Up/Down work ok.
@@ -659,12 +625,12 @@ bool wxCmd::Save(wxConfigBase *p, const wxString &key, bool bCleanOld) const
         shortcuts += GetShortcut(j)->GetStr() + wxT("|");
 
     const wxString fullMenuPath = GetFullMenuPath(GetId());
-    //LOGIT( _T("\nfullPath[%s]"), fullMenuPath.c_str() );
+    //wxLogMessage( _T("\nfullPath[%s]"), fullMenuPath.c_str() );
 
     // write the entry in the format NAME|DESC|SHORTCUT1|SHORTCUT2...|SHORTCUTn
     wxString value = wxString::Format(wxT("%s|%s|%s"),
                                     //GetName().c_str(),
-                                    fullMenuPath.c_str(),
+                                    fullMenuPath.c_str(),       //(2007/6/15)
                                     GetDescription().c_str(),
                                     shortcuts.c_str());
 
@@ -672,7 +638,7 @@ bool wxCmd::Save(wxConfigBase *p, const wxString &key, bool bCleanOld) const
     if (bCleanOld && p->Exists(key))
         p->DeleteEntry(key);        // delete old stuff...
 
-    //LOGIT( _T("wxCmd::Save Key[%s] value[%s]"), key.c_str(), value.c_str() );
+    //wxLogMessage( _T("wxCmd::Save Key[%s] value[%s]"), key.c_str(), value.c_str() );
     return p->Write(key, value);
 }
 // ----------------------------------------------------------------------------
@@ -690,15 +656,16 @@ bool wxCmd::Load(wxConfigBase *p, const wxString &key)
     if (m_strName.IsEmpty())
         return FALSE;    // this is an invalid entry...
 
+    //(2007/6/15)
     wxString fullMenuPath = m_strName;
     m_strName = fullMenuPath.AfterLast(wxT('\\'));
-    //LOGIT( _T("wxCmd::Load fullMenuPath[%s],m_strName[%s]"), fullMenuPath.c_str(), m_strName.c_str() );
+    //wxLogMessage( _T("wxCmd::Load fullMenuPath[%s],m_strName[%s]"), fullMenuPath.c_str(), m_strName.c_str() );
 
     // the ID of this command should have been already set by the caller
     // which created us... niz, wxCmd::Create() called from wxKeyBinder::Load().
     // NB: the id came from the cfg file and it could be invalid if the menu
     // id's have changed or shifted. Happens a lot during CodeBlocks development
-    // or when a plugin farts a bunch with the menu items.
+    // or when a plugin churns a bunch with the menu items.
     wxASSERT_MSG(m_nId != wxID_INVALID,
         wxT("ID must be set while creating of this wxCmd"));
     // extract the keybindings...
@@ -714,7 +681,7 @@ bool wxCmd::Load(wxConfigBase *p, const wxString &key)
 bool wxCmd::LoadFromString(const wxString& cfgCmdString)
 // ----------------------------------------------------------------------------
 {
-    wxString fmt = cfgCmdString;;
+    wxString fmt = cfgCmdString;
     if (fmt.empty())
         return FALSE;
 
@@ -725,9 +692,10 @@ bool wxCmd::LoadFromString(const wxString& cfgCmdString)
     if (m_strName.IsEmpty())
         return FALSE;    // this is an invalid entry...
 
+    //(2007/6/15)
     wxString fullMenuPath = m_strName;
     m_strName = fullMenuPath.AfterLast(wxT('\\'));
-    //LOGIT( _T("wxCmd::Load fullMenuPath[%s],m_strName[%s]"), fullMenuPath.c_str(), m_strName.c_str() );
+    //wxLogMessage( _T("wxCmd::Load fullMenuPath[%s],m_strName[%s]"), fullMenuPath.c_str(), m_strName.c_str() );
 
     // the ID of this command should have been already set by the caller
     // which created us... niz, wxCmd::Create() called from wxKeyBinder::Load().
@@ -775,92 +743,6 @@ void wxCmdArray::Clear()
 
     // the array should be already empty
     m_arr.Clear();
-}
-
-
-
-
-
-// ----------------------------------------------------------------------------
-// wxBinderEvtHandler
-// ----------------------------------------------------------------------------
-
-void wxBinderEvtHandler::OnChar(wxKeyEvent &p)
-{
-    // we'll just call the wxKeyBinder OnChar function telling it
-    // to execute the command on the next handler in the chain...
-    // we do this because only wxKeyBinder holds the array of
-    // commands & command-shortcuts...
-    m_pBinder->OnChar(p, GetNextHandler());
-}
-
-// ----------------------------------------------------------------------------
-// wxBinderApp
-// ----------------------------------------------------------------------------
-
-int wxBinderApp::FilterEvent(wxEvent &ev)
-{
-    wxEvtHandler *client = m_pGlobalHdl;
-    wxEvtHandler *top = GetTopWindow();
-
-    wxWindow *focused = wxWindow::FindFocus();
-
-    if (!client) client=top;
-    if (client != top) return -1;
-
-    wxASSERT(client);
-    wxEventType t = ev.GetEventType();
-    if (t == wxEVT_KEY_DOWN) {
-
-        if (focused != NULL && focused != client &&
-            GetTopLevelParent(focused) != client) {
-
-            wxLogDebug(wxT("wxBinderApp::FilterEvent - discarding this keypress because our ")
-                    wxT("main frame does not have the focus..."));
-            return -1;
-        }
-
-        // pass this event to our keybinder
-        m_pGlobalBinder->OnChar((wxKeyEvent &)ev, client);
-        return ev.GetSkipped();
-    }
-
-    return -1;
-}
-
-// static
-// ----------------------------------------------------------------------------
-wxWindow *wxBinderApp::GetTopLevelParent(wxWindow *wnd)
-// ----------------------------------------------------------------------------
-{
-    if (wnd->IsTopLevel())
-        return wnd;
-    if (wnd->GetParent())
-        return GetTopLevelParent(wnd->GetParent());
-
-    return FALSE;
-}
-
-// static
-// ----------------------------------------------------------------------------
-bool wxBinderApp::IsChildOf(wxWindow *parent, wxWindow *child)
-// ----------------------------------------------------------------------------
-{
-    if (parent == child)
-        return TRUE;
-
-    for (wxWindowList::compatibility_iterator node = parent->GetChildren().GetFirst();
-        node;
-        node = node->GetNext())
-    {
-        // recursively check each child
-        wxWindow *win = (wxWindow *)node->GetData();
-
-        if (win && IsChildOf(win, child))
-            return TRUE;
-    }
-
-    return FALSE;
 }
 // ----------------------------------------------------------------------------
 //  wxKeyBinder
@@ -928,9 +810,9 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
             //if (changed)
             //{ //show change in log
             //    #ifdef LOGGING
-            //     LOGIT( _T("MnuLabel[%s] MnuKey[%s]"), menuItemLabel.GetData(), menuItemKeyStr.GetData() );
+            //     wxLogMessage( _T("MnuLabel[%s] MnuKey[%s]"), menuItemLabel.GetData(), menuItemKeyStr.GetData() );
             //     int n = pCmd->GetShortcutCount();
-            //     LOGIT( _T("arrLabel[%s] arrKey[%s]"), pCmd->GetName().GetData(),
+            //     wxLogMessage( _T("arrLabel[%s] arrKey[%s]"), pCmd->GetName().GetData(),
             //            n?GetShortcutStr(nMenuItemID,0).GetData():wxEmptyString );
             //   #endif //LOGGING
             //}
@@ -990,8 +872,8 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
             if (not pCmd)
             { //CreateNew command did not allocate
                 #if defined(LOGGING)
-                LOGIT(wxT("Merge:CreateNew refused to allocate the new wxCmd"));
-                LOGIT(wxT("Label[%s],ID[%d]"), menuItemLabel.GetData(), nMenuItemID);
+                wxLogMessage(wxT("Merge:CreateNew refused to allocate the new wxCmd"));
+                wxLogMessage(wxT("Label[%s],ID[%d]"), menuItemLabel.GetData(), nMenuItemID);
                 #endif
                 return modified;
             }
@@ -1005,16 +887,16 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
             AddShortcut(nMenuItemID, menuItemKeyStr, true );
             #ifdef LOGGING
                 #if wxCHECK_VERSION(3, 0, 0)
-                LOGIT(wxT("Merge change type[%d]:item[%lu]:id[%d]:@[%p]text[%s]key[%s]"), changed, static_cast<unsigned long>(j), nMenuItemID, pMenuItem, pMenuItem->GetItemLabel().wx_str(), menuItemKeyStr.wx_str() );
+                wxLogMessage(wxT("Merge change type[%d]:item[%lu]:id[%d]:@[%p]text[%s]key[%s]"), changed, static_cast<unsigned long>(j), nMenuItemID, pMenuItem, pMenuItem->GetItemLabel().wx_str(), menuItemKeyStr.wx_str() );
                 #else
-                LOGIT(wxT("Merge change type[%d]:item[%lu]:id[%d]:@[%p]text[%s]key[%s]"), changed, static_cast<unsigned long>(j), nMenuItemID, pMenuItem, pMenuItem->GetText().wx_str(), menuItemKeyStr.wx_str() );
+                wxLogMessage(wxT("Merge change type[%d]:item[%lu]:id[%d]:@[%p]text[%s]key[%s]"), changed, static_cast<unsigned long>(j), nMenuItemID, pMenuItem, pMenuItem->GetText().wx_str(), menuItemKeyStr.wx_str() );
                 #endif
             #endif
         }//if changed
         else
         {   // menu item has not changed
             #ifdef LOGGING
-             //LOGIT(wxT("Merge:NoChange:pos[%d]id[%d]@[%p]text[%s]key[%s]"),j,nMenuItemID,pMenuItem,pMenuItem->GetText().c_str(), menuItemKeyStr.c_str() );
+             //wxLogMessage(wxT("Merge:NoChange:pos[%d]id[%d]@[%p]text[%s]key[%s]"),j,nMenuItemID,pMenuItem,pMenuItem->GetText().c_str(), menuItemKeyStr.c_str() );
             #endif
         }
         // count changed array wxCmd items
@@ -1044,7 +926,7 @@ int wxKeyBinder::MergeDynamicMenuItems(wxMenuBar* pMenuBar)     //v0.4.25
         MergeSubMenu(pMenu, changed);
     }
     #ifdef LOGGING
-     LOGIT( _T("MergeDynamicMenuItems() modified %d items"), changed );
+     wxLogMessage( _T("MergeDynamicMenuItems() modified %d items"), changed );
     #endif //LOGGING
 
     // ---------------------------------------------------------------
@@ -1059,7 +941,7 @@ int wxKeyBinder::MergeDynamicMenuItems(wxMenuBar* pMenuBar)     //v0.4.25
         if (not pMenuBar->FindItem( pCmd->GetId(), NULL) )
         {
             #if defined(LOGGING)
-            LOGIT( _T("Merge Removing old[%s][%d]"), pCmd->GetName().c_str(),pCmd->GetId() );
+            wxLogMessage( _T("Merge Removing old[%s][%d]"), pCmd->GetName().c_str(),pCmd->GetId() );
             #endif
             RemoveCmd( pCmd);
             ++changed;
@@ -1071,7 +953,7 @@ int wxKeyBinder::MergeDynamicMenuItems(wxMenuBar* pMenuBar)     //v0.4.25
 
 }//MergeDynamicMenuItems
 // ----------------------------------------------------------------------------
-void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //+v0.4.24
+void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)
 // ----------------------------------------------------------------------------
 {
     // Recursively update shortcut keys for sub menu items
@@ -1093,7 +975,7 @@ void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //+v0.4.24
         {
             GetMenuItemAccStr(pMenuItem, menuItemKeyStr);
             #ifdef LOGGING
-             //LOGIT(wxT("UpdateAllCmd ById Ok on:[%d][%s] key[%s]"),
+             //wxLogMessage(wxT("UpdateAllCmd ById Ok on:[%d][%s] key[%s]"),
              //       pMenuItem->GetId(),pMenuItem->GetLabel().Trim().GetData(), menuItemKeyStr.GetData() );
             #endif
             m_arrCmd.Item(k)->Update(pMenuItem);
@@ -1107,9 +989,9 @@ void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //+v0.4.24
             {
                 #ifdef LOGGING
                  #if wxCHECK_VERSION(3, 0, 0)
-                 LOGIT(wxT("UpdateAllCmd ById Failed on:[%d][%s]"), pMenuItem->GetId(), pMenuItem->GetItemLabel().GetData() );
+                 wxLogMessage(wxT("UpdateAllCmd ById Failed on:[%d][%s]"), pMenuItem->GetId(), pMenuItem->GetItemLabel().GetData() );
                  #else
-                 LOGIT(wxT("UpdateAllCmd ById Failed on:[%d][%s]"), pMenuItem->GetId(), pMenuItem->GetText().GetData() );
+                 wxLogMessage(wxT("UpdateAllCmd ById Failed on:[%d][%s]"), pMenuItem->GetId(), pMenuItem->GetText().GetData() );
                  #endif
                 #else
                  #if wxCHECK_VERSION(3, 0, 0)
@@ -1127,7 +1009,7 @@ void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //+v0.4.24
 ////                if (-1 != (k = FindMatchingName(pMenuItem->GetLabel().Trim() )))
 ////                {   // Look for wxCmd with this menu label
 ////                    #ifdef LOGGING
-////                     LOGIT(wxT("UpdateAllCmd ByLabel on:%d:%d:%p:[%s] key[%s]"),
+////                     wxLogMessage(wxT("UpdateAllCmd ByLabel on:%d:%d:%p:[%s] key[%s]"),
 ////                            j,k,pMenuItem,pMenuItem->GetLabel().Trim().GetData(), menuItemKeyStr.GetData() );
 ////                    #endif
 ////                    m_arrCmd.Item(k)->Update(pMenuItem);
@@ -1137,128 +1019,18 @@ void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //+v0.4.24
     }//rof
 }//updateSubmenu
 // ----------------------------------------------------------------------------
-void wxKeyBinder::UpdateAllCmd(wxMenuBar* pMenuBar) {     //v0.4.17
+void wxKeyBinder::UpdateAllCmd(wxMenuBar* pMenuBar)
 // ----------------------------------------------------------------------------
+{
     //! Updates all the commands on the menu
-    if (m_arrHandlers.GetCount() == 0)
-        return;        // we are not attached to any window... we can skip
-                    // this update...
 
-    //pecan 2006/4/23
-    // This code used to update the menus using the keybinder array as the source
-    // But that missed duplicate menu items, and plugin added items.
-    // so.. we update using the menus as the source and the array as a database
-
-    //for (int i=0; i < (int)m_arrCmd.GetCount(); i++)
-    //    m_arrCmd.Item(i)->Update();
-
-    //pecan 2006/4/22
-    // Menu items used to be updated by referencing the keybinder array info as source.
-    // But this missed duplicate menu items, updating only the first duplicate.
-    // So.. search, referencing the menu items as source
-
-   //menu bar item count (level 1)
+    //menu bar item count (level 1)
     size_t nLevel1Knt = pMenuBar->GetMenuCount();
     for (size_t i=0; i < nLevel1Knt ;i++ )
     {
         wxMenu* pMenu = pMenuBar->GetMenu(i);
         UpdateSubMenu(pMenu);
-    }//rof
-}
-// ----------------------------------------------------------------------------
-// wxKeyBinder FindHandlerFor
-// ----------------------------------------------------------------------------
-
-wxBinderEvtHandler *wxKeyBinder::FindHandlerFor(wxWindow *p) const
-{
-    int idx = FindHandlerIdxFor(p);
-    if (idx == wxNOT_FOUND) return NULL;
-
-    return (wxBinderEvtHandler *)m_arrHandlers.Item(idx);
-}
-
-// ----------------------------------------------------------------------------
-//  wxKeyBinder FindHandlerIdxFor
-// ----------------------------------------------------------------------------
-int wxKeyBinder::FindHandlerIdxFor(wxWindow *p) const
-{
-    for (int i=0; i<(int)m_arrHandlers.GetCount(); i++)
-        if (((wxBinderEvtHandler *)m_arrHandlers.Item(i))->IsAttachedTo(p))
-            return i;
-
-    return wxNOT_FOUND;
-}
-
-// ----------------------------------------------------------------------------
-//  wxKeyBinder Attach
-// ----------------------------------------------------------------------------
-void wxKeyBinder::Attach(wxWindow *p)
-{
-    //-LOGIT( _T("wxKeyBinder:Attach for [%p]"), p );
-
-    if (!p || IsAttachedTo(p))
-        return;        // already attached !!!
-
-    //-LOGIT( _T("wxKeyBinder:Attach2[%p]"), p );
-
-    if (p->GetExtraStyle() & wxWS_EX_TRANSIENT)
-        return;        // do not attach ourselves to temporary windows !!
-
-    //-LOGIT( _T("wxKeyBinder:Attach3[%p]"), p );
-
-    //+v0.4.4 we allow only static windows to be attached by codeblocks
-    // Disappearing frames/windows cause crashes
-    wxString windowName = p->GetName().MakeLower();
-
-    if (wxNOT_FOUND == usableWindows.Index(_T("*"),false)) //+v0.4.4 debugging
-    if (wxNOT_FOUND == usableWindows.Index(windowName,false)) //+v0.4.2
-    {
-        //-LOGIT( _T("wxKeyBinder::Attach skipping [%s]"), p->GetName().c_str() );
-        return;
     }
-
-    wxLogDebug(wxT("wxKeyBinder::Attach - attaching to [%s] %p"), p->GetName().c_str(),p);
-
-    // create a new event handler for this window
-    wxEvtHandler *h = new wxBinderEvtHandler(this, p);
-
-    // add the handler to our lists
-    m_arrHandlers.Add((void*)h);
-
-    // we need to update our commands...
-    //-UpdateAllCmd(); This loop is executed for every attach. Stop it!
-    //-UpdateAllCmd(wxMenuCmd::m_pMenuBar); //This loop is executed for every attach. Stop it!
-}
-
-// ----------------------------------------------------------------------------
-void wxKeyBinder::AttachRecursively(wxWindow *p)
-// ----------------------------------------------------------------------------
-{
-     if (!p)
-        return;
-
-    // memorize this main window pointer and hook closing windows
-    // in order to remove the OnChar event handler    //+v0.4.4
-    if ( NOT mainAppWindow )
-    {
-        mainAppWindow = p ;
-    }
-
-    Attach(p);
-
-     // this is the standard way wxWidgets uses to iterate through children...
-    for (wxWindowList::compatibility_iterator node = p->GetChildren().GetFirst();
-        node;
-        node = node->GetNext())
-    {
-        // recursively attach each child
-        wxWindow *win = (wxWindow *)node->GetData();
-
-        if (win)                             //v-0.1
-            AttachRecursively(win);
-    }
-    // we need to update our commands...
-    //UpdateAllCmd();
 }
 // ----------------------------------------------------------------------------
 wxWindow* wxKeyBinder::FindWindowRecursively(const wxWindow* parent, const wxWindow* handle)
@@ -1311,69 +1083,6 @@ wxWindow* wxKeyBinder::winExists(wxWindow *parent)
     return NULL;
 }
 // ----------------------------------------------------------------------------
-//  wxKeyBinder OnWinClosed
-// ----------------------------------------------------------------------------
-void wxKeyBinder::OnWinClosed(wxCloseEvent& event)
-{ //+v0.4.7
-    //make sure OnChar eventHandlers arn't orphaned
-    wxWindow* pwin = (wxWindow*)event.GetEventObject();
-    Detach( pwin);
-    event.Skip();
-    return;
-}//OnWinClosed
-// ----------------------------------------------------------------------------
-//  wxKeyBinder Detach
-// ----------------------------------------------------------------------------
-void wxKeyBinder::Detach(wxWindow *p, bool deleteEvtHandler)
-{
-    if (!p || !IsAttachedTo(p))
-        return;        // this is not attached...
-    #if defined(LOGGING)
-    LOGIT(wxT("wxKeyBinder::Detach - detaching from [%s] %p"), p->GetName().c_str(),p);
-    #endif
-
-    // remove the event handler
-    int idx = FindHandlerIdxFor(p);
-    wxBinderEvtHandler *toremove = (wxBinderEvtHandler*)m_arrHandlers.Item(idx);
-    m_arrHandlers.RemoveAt(idx, 1);
-
-    // the wxBinderEvtHandler will remove itself from p's event handlers
-    if (deleteEvtHandler) delete toremove;
-}
-// ----------------------------------------------------------------------------
-void wxKeyBinder::DetachAll()
-// ----------------------------------------------------------------------------
-{
-    wxWindow* pWin;
-    wxLogDebug(wxT("wxKeyBinder::DetachAll - detaching from all my [%d] targets"), GetAttachedWndCount());
-
-    //- delete all handlers (they will automatically remove themselves from
-    //- event handler chains)
-    //-    for (int i=0; i < (int)m_arrHandlers.GetCount(); i++)
-    //-        delete (wxBinderEvtHandler*)m_arrHandlers.Item(i);
-
-    for (int i=0; i < (int)m_arrHandlers.GetCount(); i++)
-    {
-        wxBinderEvtHandler* pHdlr = (wxBinderEvtHandler*)m_arrHandlers.Item(i);
-        pWin = pHdlr->GetTargetWnd();     //+v0.4
-        if  ( NOT winExists( pWin ) )
-        {
-            // tell dtor not to crash by using RemoveEventHander()
-            pHdlr->SetWndInvalid(0);
-            #if defined(LOGGING)
-            LOGIT( _T("WxKeyBinder:DetachAll:window NOT found %p <----------"), pWin);
-            #endif
-        }
-        else
-            delete pHdlr;  //dtor calls RemoveEventHandler()
-    }
-
-    // and clear the array
-    m_arrHandlers.Clear();
-
-}//DetachAll
-
-// ----------------------------------------------------------------------------
 //  wxKeyBinder ImportMenuBarCmd
 // ----------------------------------------------------------------------------
 void wxKeyBinder::ImportMenuBarCmd(wxMenuBar *p)
@@ -1383,96 +1092,6 @@ void wxKeyBinder::ImportMenuBarCmd(wxMenuBar *p)
     // it's very easy performing this task using a wxMenuShortcutWalker  :-)
     wlkr.ImportMenuBarCmd(p, &m_arrCmd);
 }
-
-// ----------------------------------------------------------------------------
-//  wxKeyBinder OnChar
-// ----------------------------------------------------------------------------
-void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
-{
-    // this is the first function which is called when the user presses
-    // a key in the window Attach()ed to this key binder: we have to
-    // find if the given keyevent matches a key shortcut and eventually
-    // exec the command associated with that shortcut...
-    wxCmd *p = GetMatchingCmd(event);
-
-
-    // AVOID TO INTERCEPT Alt+F4 KEYPRESSES !!!
-    // For some reasons on wxMSW 2.5.2 (at least) this provokes a crash
-    // which is really difficult to spot... better leave it...
-    if (p && p->IsBindTo(wxKeyBind(wxT("Alt+F4"))))
-    {
-        wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring an Alt+F4 event [%d]"),
-                    event.GetKeyCode());
-        event.Skip();
-        return;
-    }
-    // Let wxWidgets handle menu checkable items // FIXME (ph#):There's a fix for this in ICC version
-    // View menu check items are being ignored once unchecked.
-    // UpdateUI isn't called to maintain the check status.
-    // Attempting to programmatically re-check no longer works.
-    // This means that secondary hotkeys for check menu items are ineffective.
-    // Cf, https://sourceforge.net/p/codeblocks/tickets/273/
-    wxMenuBar* pMenuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
-    wxMenuItem* pMenuItem = p ? pMenuBar->FindItem(p->m_nId) : nullptr;
-    if (pMenuItem and pMenuItem->IsCheckable() )
-    {
-        wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring a menu View event [%d]"),
-                    event.GetKeyCode());
-        event.Skip();
-        return;
-    }
-
-    ////#if 0
-    ////    // for some reason we need to avoid processing also of the ENTER keypresses...
-    ////    if (p && p->IsBindTo(wxKeyBind(wxT("ENTER")))) {
-    ////
-    ////        wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring an ENTER event [%d]"),
-    ////                    event.GetKeyCode());
-    ////        //-wxLogDebug("\n");
-    ////
-    ////        event.Skip();
-    ////        return;
-    ////    }
-    ////#endif
-
-    // if the given event is not a shortcut key...
-    if (p == NULL) {
-
-        //wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring this keyevent [%d]"),
-        //            event.GetKeyCode());
-        event.Skip();        // ... skip it
-
-    } else {
-
-        wxEvtHandler *client = next;//this->GetNextHandler();
-        /*if (client == NULL) {
-
-            //int found = -1;
-            for (int i=0; i < (int)m_arrAttachedWnd.GetCount(); i++)
-                if (((wxWindow*)m_arrAttachedWnd.Item(i)) == event.GetEventObject())//->GetId() == event.GetId())
-                    client = (wxWindow*)m_arrAttachedWnd.Item(i);
-        }*/
-
-        if (client == NULL) {
-
-            wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring this keyevent [%d] because I'm not ")
-                wxT("attached to the window which generated the keypress..."), event.GetKeyCode());
-            event.Skip();        // ... skip it
-            return;
-        }
-        #ifdef LOGGING
-            LOGIT(wxT("wxKeyBinder::OnChar - calling the Exec() function of the [%s] ")
-                wxT("wxCmd on the keycode [%d] (event timestamp: %ld)"),
-                p->GetName().wx_str(), event.GetKeyCode(), event.GetTimestamp());
-            wxLogDebug(wxT("wxKeyBinder::OnChar - window[%s][%p]"),
-                ((wxWindow*)event.GetEventObject())->GetName().GetData(),
-                 event.GetEventObject() );
-        #endif
-        p->Exec(event.GetEventObject(),        // otherwise, tell wxCmd to send the
-                client);                    // associated wxEvent to the next handler in the chain
-    }
-}
-
 // ----------------------------------------------------------------------------
 //  wxKeyBinder Save
 // ----------------------------------------------------------------------------
@@ -1602,9 +1221,9 @@ bool wxKeyBinder::LoadFromString(const wxString& cfgCmdString)
     //m_arrCmd.Clear();
 
     //-cont = p->GetFirstEntry(str, idx);
-    for (int once = 0; once == 0 ; ++once)
-        {
-
+    switch(true)
+    {
+        default:
         // try to decode this entry
         if (str.StartsWith(wxCMD_CONFIG_PREFIX))    // "bind" string ?
         {
@@ -1731,7 +1350,7 @@ bool wxKeyProfileArray::Save(wxConfigBase *cfg, const wxString &key, bool bClean
     for (int i=0; i<GetCount(); i++)
     {
         #if defined(LOGGING)
-        LOGIT(wxT("wxKeyProfileArray::Save profile[%d]"),i);
+        wxLogMessage(wxT("wxKeyProfileArray::Save profile[%d]"),i);
         #endif
         // save all our elements into a subkey of the given key
         b &= Item(i)->Save(cfg, basekey + wxKEYPROFILE_CONFIG_PREFIX +
@@ -1844,7 +1463,7 @@ void wxKeyMonitorTextCtrl::OnKey(wxKeyEvent &event)
         // Command must begin with 'Ctrl-' 'Alt-' or 'Shift-' F1-F??
             wxString keyStrokeString = wxKeyBind::GetKeyStrokeString(event);
             #if defined(LOGGING)
-            LOGIT( _T("KeyStrokString[%s]"),keyStrokeString.c_str() );
+            wxLogMessage( _T("KeyStrokString[%s]"),keyStrokeString.c_str() );
             #endif
         if (not keyStrokeString.IsEmpty() ) do{
             if (keyStrokeString.Length() <2) { keyStrokeString.Clear(); break;}
@@ -1895,8 +1514,10 @@ wxKeyConfigPanel::wxKeyConfigPanel(wxWindow* parent,
     // ImportXXXX() functions to enable the use of the panel !!!!
     GetMainCtrl()->SetFocus();
     UpdateButtons();
-}
 
+    // init capture of ok button //(2019/04/6)
+    m_pOK = nullptr;
+}
 // ----------------------------------------------------------------------------
 wxKeyConfigPanel::~wxKeyConfigPanel()
 // ----------------------------------------------------------------------------
@@ -1910,8 +1531,16 @@ wxKeyConfigPanel::~wxKeyConfigPanel()
         // the client data field untouched...
         if (data) delete data;
     }
+    if (m_pOK) //(2019/04/6)
+    {
+        #if wxVERSION_NUMBER >= 3000    //(wx28 2019/04/19)
+            m_pOK->GetEventHandler()->Disconnect(wxID_OK, wxEVT_BUTTON, wxCommandEventHandler( wxKeyConfigPanel::OnApplyChanges), NULL, this);
+        #else
+            m_pOK->GetEventHandler()->Disconnect(wxID_OK, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( wxKeyConfigPanel::OnApplyChanges), NULL, this);
+        #endif
+        m_pOK = nullptr;
+    }
 }
-
 // ----------------------------------------------------------------------------
 void wxKeyConfigPanel::BuildCtrls()
 // ----------------------------------------------------------------------------
@@ -2090,7 +1719,8 @@ void wxKeyConfigPanel::ImportMenuBarCmd(wxMenuBar *p, const wxString &rootname)
     Reset();
 
     // the wxKeyBinder class can easily generate a tree structure...
-    if (IsUsingTreeCtrl()) {
+    if (IsUsingTreeCtrl())
+    {
 
         AddRootIfMissing(rootname);
 
@@ -2100,7 +1730,8 @@ void wxKeyConfigPanel::ImportMenuBarCmd(wxMenuBar *p, const wxString &rootname)
         // expand the root (just for aesthetic/comfort reasons)...
         m_pCommandsTree->Expand(m_pCommandsTree->GetRootItem());
 
-    } else {
+    } else //using combo box
+    {
 
         wxMenuComboListWalker wlkr;
         wlkr.FillComboListCtrl(p, m_pCategories);
@@ -2197,7 +1828,7 @@ void wxKeyConfigPanel::AddProfiles(const wxKeyProfileArray &arr)
     //    wxString desc = pcmd->GetDescription();
     //    wxString name = pcmd->GetName();
     //    int type = pcmd->GetType();
-    //    LOGIT( _T("shortcut count for[%s]is[%d]type[%d]"),
+    //    wxLogMessage( _T("shortcut count for[%s]is[%d]type[%d]"),
     //          strKeyCode.c_str(), shortcutsCount, type);
     //    for (int kk = 0; kk < shortcutsCount; ++kk )
     //    {
@@ -2211,7 +1842,7 @@ void wxKeyConfigPanel::AddProfiles(const wxKeyProfileArray &arr)
     //            if (pkbind->GetModifiers() & wxACCEL_ALT)
     //                strKeyCode.Prepend(_T("Alt-"));
     //
-    //            LOGIT( _T("keybind[%d.%d] for [%s] is [%s]"),
+    //            wxLogMessage( _T("keybind[%d.%d] for [%s] is [%s]"),
     //                    id, kk, name.c_str(), strKeyCode.c_str());
     //        }
     //    }//for kk
@@ -2224,7 +1855,7 @@ void wxKeyConfigPanel::AddProfiles(const wxKeyProfileArray &arr)
 void wxKeyConfigPanel::SetSelProfile(int n)
 // ----------------------------------------------------------------------------
 {
-    wxASSERT(m_pKeyProfiles && n >= 0 && n < static_cast<int>(m_pKeyProfiles->GetCount()));
+    wxASSERT(m_pKeyProfiles && (n >= 0) && (n < static_cast<int>(m_pKeyProfiles->GetCount())) );
 
     m_pKeyProfiles->SetSelection(n);
     m_nCurrentProf = n;
@@ -2380,7 +2011,7 @@ wxKeyProfileArray wxKeyConfigPanel::GetProfiles() const
 void wxKeyConfigPanel::UpdateButtons()
 // ----------------------------------------------------------------------------
 {
-    wxLogDebug(wxT("wxKeyConfigPanel::UpdateButtons"));
+    //-wxLogDebug(wxT("wxKeyConfigPanel::UpdateButtons"));
 
     wxString str;
 
@@ -2418,7 +2049,7 @@ void wxKeyConfigPanel::UpdateButtons()
 void wxKeyConfigPanel::UpdateDesc()
 // ----------------------------------------------------------------------------
 {
-    wxLogDebug(wxT("wxKeyConfigPanel::UpdateDesc"));
+    //-wxLogDebug(wxT("wxKeyConfigPanel::UpdateDesc"));
     //-wxLogDebug("\n");
     wxCmd *p = GetSelCmd();
 
@@ -2552,8 +2183,16 @@ void wxKeyConfigPanel::ShowSizer(wxSizer *toshow, bool show)
 // wxKeyConfigPanel - event handlers
 // ----------------------------------------------------------------------------
 
+// ----------------------------------------------------------------------------
 void wxKeyConfigPanel::OnApplyChanges(wxCommandEvent &event)
+// ----------------------------------------------------------------------------
 {
+    // If shortcut control is not empty, give user change to 'Add' //(2019/04/6)
+    if (not m_pKeyField->GetValue().empty())
+        if (wxYES == wxMessageBox(_T("Did you forget to 'Add' the shortcut key?"),
+                     _T("Warning"), wxYES_NO, this) )
+                    return;
+
     // apply changed bindings to the original binder
     ApplyChanges();
     event.Skip();        // let parent know that changes were applied
@@ -2564,14 +2203,14 @@ void wxKeyConfigPanel::OnProfileEditing(wxCommandEvent &)
 {
     wxASSERT(m_nCurrentProf != -1);
     // This routine is screwing up unix, and its never called on MSW
-    // so.. forget it //(pecan 2006/9/23) // FIXME (ph#): verify this
+    // so.. forget it //(2006/9/23)
     return ;
 
     wxString oldname = m_kBinder.GetName();
         // on unix, this routine is being entered with oldname == ""
         // We're not going to save the blank temp profile anyway
-        // so ignore this situation //(pecan 2006.09.22)
-    if ( oldname == wxEmptyString )     //(pecan 2006.09.23)
+        // so ignore this situation //(2006.09.22)
+    if ( oldname == wxEmptyString )     //(2006.09.23)
         return;
     wxString newname = m_pKeyProfiles->GetValue();//ev.GetString();
     if (newname == oldname)
@@ -2594,7 +2233,7 @@ void wxKeyConfigPanel::OnProfileEditing(wxCommandEvent &)
 void wxKeyConfigPanel::OnTreeCommandSelected(wxTreeEvent &)
 // ----------------------------------------------------------------------------
 {
-    wxLogDebug(wxT("wxKeyConfigPanel::OnTreeCommandSelected"));
+    //-wxLogDebug(wxT("wxKeyConfigPanel::OnTreeCommandSelected"));
     //-wxLogDebug("\n");
 
     // one of the group in the tree ctrl has been selected:
@@ -2607,8 +2246,22 @@ void wxKeyConfigPanel::OnTreeCommandSelected(wxTreeEvent &)
 
     // ...and the description must be updated
     UpdateDesc();
-}
 
+    // find and capture the OK button //(2019/04/6)
+    if (not m_pOK)
+    {
+        //-wxWindow* pwin = wxFindWindowByName(_T("KeyBinder"));
+        wxWindow* pwin = wxFindWindowByName(_T("Configure editor"));
+        if ( pwin )
+            m_pOK = (wxButton*)pwin->FindWindowById(wxID_OK,pwin);
+        if (m_pOK)
+        #if wxVERSION_NUMBER >= 3000    //(wx28 2019/04/19)
+            m_pOK->GetEventHandler()->Connect(wxID_OK, wxEVT_BUTTON, wxCommandEventHandler( wxKeyConfigPanel::OnApplyChanges), NULL, this);
+        #else
+            m_pOK->GetEventHandler()->Connect(wxID_OK, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( wxKeyConfigPanel::OnApplyChanges), NULL, this);
+        #endif // wxVERSION_NUMBER
+    }
+}
 // ----------------------------------------------------------------------------
 void wxKeyConfigPanel::OnListCommandSelected(wxCommandEvent &)
 // ----------------------------------------------------------------------------
@@ -2660,7 +2313,7 @@ void wxKeyConfigPanel::OnCategorySelected(wxCommandEvent &ev)
 void wxKeyConfigPanel::OnProfileSelected(wxCommandEvent &)
 // ----------------------------------------------------------------------------
 {
-    wxLogDebug(wxT("wxKeyConfigPanel::OnProfileSelected"));
+    //-wxLogDebug(wxT("wxKeyConfigPanel::OnProfileSelected"));
     //-wxLogDebug("\n");
 
     int selidx = m_pKeyProfiles->GetSelection();
@@ -2671,7 +2324,7 @@ void wxKeyConfigPanel::OnProfileSelected(wxCommandEvent &)
         // did the user modify the old profile ?
         if (m_bProfileHasBeenModified)
         {
-            //(pecan 2006/9/23)
+            //(2006/9/23)
             //////////////////////////////////////////////////////////////////////////////
             // This routine keeps saving an empty profile. Disabled until I find out why.
             //////////////////////////////////////////////////////////////////////////////
@@ -2749,12 +2402,12 @@ void wxKeyConfigPanel::OnAssignKey(wxCommandEvent &)
     wxASSERT(m_pKeyField->IsValidKeyComb());
 
     wxCmd *sel = GetSelCmd();
-    if (!sel)
+    if (not sel)
     {  //got null sel
         wxLogDebug(wxT("KeyBinder:GetSelCmd() error in OnAssignKey()"));
         //wxMessageBox(wxT("KeyBinding file corrupted. Please delete it.")); //+v0.4
         wxMessageBox(wxT("KeyBinding file corrupted. Please delete\n")
-            + *pKeyFilename); //v0.4.24
+            );//-+ *pKeyConfigFilename); //(2019/03/1)
         return;
     }
 

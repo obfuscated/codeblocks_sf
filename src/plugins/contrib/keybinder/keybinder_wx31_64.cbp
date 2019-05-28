@@ -91,14 +91,26 @@
 			<Add after="zip -j9 ..\..\..\devel31_64\share\CodeBlocks\keybinder.zip manifest.xml" />
 			<Mode after="always" />
 		</ExtraCommands>
+		<Unit filename="cJSON.cpp" />
+		<Unit filename="cJSON.h" />
+		<Unit filename="cbKeyConfigPanel.h" />
+		<Unit filename="cbkeyConfigPanel.cpp" />
 		<Unit filename="cbkeybinder.cpp" />
 		<Unit filename="cbkeybinder.h" />
+		<Unit filename="clKeyboardBindingConfig.cpp" />
+		<Unit filename="clKeyboardBindingConfig.h" />
+		<Unit filename="clKeyboardManager.cpp" />
+		<Unit filename="clKeyboardManager.h" />
 		<Unit filename="debugging.h" />
+		<Unit filename="json_node.cpp" />
+		<Unit filename="json_node.h" />
 		<Unit filename="keybinder.cpp" />
 		<Unit filename="keybinder.h" />
+		<Unit filename="macros.h" />
 		<Unit filename="manifest.xml" />
 		<Unit filename="menuutils.cpp" />
 		<Unit filename="menuutils.h" />
+		<Unit filename="wxstringhash.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
