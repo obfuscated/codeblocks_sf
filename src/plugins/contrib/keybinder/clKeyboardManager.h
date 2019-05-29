@@ -27,7 +27,7 @@
 #include <wx/event.h>
 #include <wx/filename.h>
 #include "macros.h"
-#include "wxStringHash.h"   //required for wxWidgets < wx3100
+#include "wxstringhash.h"   //required for wxWidgets < wx3100
 
 struct  MenuItemData {
     wxString resourceID;
