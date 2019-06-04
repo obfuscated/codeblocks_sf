@@ -51,39 +51,39 @@ namespace
 #else
     static const wxChar* wxsColourLabels[] = {
 #endif // wxCHECK_VERSION
-        _("Default"),
-        _("Custom"),
-        _("Scrollbar"),
-        _("Desktop"),
-        _("Active window caption"),
-        _("Inactive window caption"),
-        _("Menu background"),
-        _("Window background"),
-        _("Window frame"),
-        _("Menu text"),
-        _("Text in window"),
-        _("Text in window caption"),
-        _("Active window border"),
-        _("Inactive window border"),
-        _("Background for MDI apps"),
-        _("Selected item"),
-        _("Text of selected item"),
-        _("Face of button"),
-        _("Edge of button"),
-        _("Grayed (disabled) text"),
-        _("Text on buttons"),
-        _("Text of inactive caption"),
-        _("Highlight colour for buttons"),
-        _("Dark shadow for 3D items"),
-        _("Light for 3D items"),
-        _("Tooltip text"),
-        _("Tooltip background"),
-        _("Listbox"),
-        _("Hot light"),
-        _("Gradient of active caption"),
-        _("Gradnent of inactive caption"),
-        _("Selected menu item"),
-        _("Menu bar"),
+        wxTRANSLATE("Default"),
+        wxTRANSLATE("Custom"),
+        wxTRANSLATE("Scrollbar"),
+        wxTRANSLATE("Desktop"),
+        wxTRANSLATE("Active window caption"),
+        wxTRANSLATE("Inactive window caption"),
+        wxTRANSLATE("Menu background"),
+        wxTRANSLATE("Window background"),
+        wxTRANSLATE("Window frame"),
+        wxTRANSLATE("Menu text"),
+        wxTRANSLATE("Text in window"),
+        wxTRANSLATE("Text in window caption"),
+        wxTRANSLATE("Active window border"),
+        wxTRANSLATE("Inactive window border"),
+        wxTRANSLATE("Background for MDI apps"),
+        wxTRANSLATE("Selected item"),
+        wxTRANSLATE("Text of selected item"),
+        wxTRANSLATE("Face of button"),
+        wxTRANSLATE("Edge of button"),
+        wxTRANSLATE("Grayed (disabled) text"),
+        wxTRANSLATE("Text on buttons"),
+        wxTRANSLATE("Text of inactive caption"),
+        wxTRANSLATE("Highlight colour for buttons"),
+        wxTRANSLATE("Dark shadow for 3D items"),
+        wxTRANSLATE("Light for 3D items"),
+        wxTRANSLATE("Tooltip text"),
+        wxTRANSLATE("Tooltip background"),
+        wxTRANSLATE("Listbox"),
+        wxTRANSLATE("Hot light"),
+        wxTRANSLATE("Gradient of active caption"),
+        wxTRANSLATE("Gradnent of inactive caption"),
+        wxTRANSLATE("Selected menu item"),
+        wxTRANSLATE("Menu bar"),
         0
     };
 
@@ -563,7 +563,7 @@ namespace
 
         if (val.m_type == wxsCOLOUR_DEFAULT)
         {
-            return wxsColourLabels[ind];
+            return m_choices.GetLabel(ind);
         }
 
         return ColourToString(val.m_colour, ind);
