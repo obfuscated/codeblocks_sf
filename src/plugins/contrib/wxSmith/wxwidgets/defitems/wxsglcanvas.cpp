@@ -204,7 +204,11 @@ void wxsGLCanvas::OnBuildCreatingCode()
             Codef( _T("\t0, 0 };\n") );
 
             // Now we can create our window
-            Codef(_T("%C(%W, %I, %P, %S, %T, %N, %v);\n"),aname.wx_str());
+            Codef(_T("#if wxCHECK_VERSION(3,0,0)\n"));
+            Codef(_T("\t%C(%W, %I, %v, %P, %S, %T, %N);\n"),aname.wx_str());
+            Codef(_T("#else\n"));
+            Codef(_T("\t%C(%W, %I, %P, %S, %T, %N, %v);\n"),aname.wx_str());
+            Codef(_T("#endif // wxCHECK_VERSION\n"));
 
             BuildSetupWindowCode();
             break;
