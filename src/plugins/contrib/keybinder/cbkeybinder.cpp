@@ -192,7 +192,7 @@ void cbKeyBinder::OnConfigListbookEvent(wxListbookEvent& event)
         int sel = event.GetSelection();
         wxListbook* plb = (wxListbook*)event.GetEventObject();
         wxString label = plb->GetPageText(sel);
-        if (label == _T("Keyboard shortcuts") )
+        if (label == _("Keyboard shortcuts") )
         {
             wxMenuBar* pMenuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
             m_pUsrConfigPanel->GetKeyConfigPanelPhaseII(pMenuBar, m_pUsrConfigPanel, m_mode);
@@ -463,7 +463,7 @@ bool cbKeyBinder::CreateKeyBindDefaultFile(bool refresh)
     {
         // start the menu walker process
         wxKeyProfileArray* pKeyProfileArray = new wxKeyProfileArray();
-        wxKeyProfile* pPrimary = new wxKeyProfile(wxT("Primary"), wxT("Primary keyprofile"));
+        wxKeyProfile* pPrimary = new wxKeyProfile(_("Primary"), _("Primary keyprofile"));
 
         // remove keyprofiles from our array
         for (int i=0; i<pKeyProfileArray->GetCount();i++)
@@ -522,7 +522,7 @@ bool cbKeyBinder::CreateKeyBindDefaultFile(bool refresh)
     // Too many errors or missing menu items, old cbKeyBinder10.ini not a good match for current menu structure
     if ( (not ok) or (missingMenuItems != 0) )
     {
-        wxString msg = _T("Preserving older key bindings failed.\nWill create key bindings from current menu structure.");
+        wxString msg = _("Preserving older key bindings failed.\nWill create key bindings from current menu structure.");
         #if defined(LOGGING)
             LOGIT( msg );
         #endif
@@ -582,9 +582,9 @@ bool cbKeyBinder::OnSaveKbOldFormatCfgFile(wxKeyProfileArray* pKeyProfArr, wxStr
     else
     {
         ok = false;
-        wxString msg = wxString::Format(wxT("Keybinder:Error saving menu scan key file %s"), m_KeyBinderCfgFilename.wx_str());
+        wxString msg = wxString::Format(_("Keybinder:Error saving menu scan key file %s"), m_KeyBinderCfgFilename.wx_str());
         Manager::Get()->GetLogManager()->Log(msg);
-        wxMessageBox(msg, wxT("KeyBinder Save Error"), wxOK | wxICON_ERROR);
+        wxMessageBox(msg, _("KeyBinder Save Error"), wxOK | wxICON_ERROR);
     }
     if (cfg)
         wxDELETE( cfg);
@@ -607,7 +607,7 @@ int cbKeyBinder::ConvertMenuScanToKeyMnuAcceratorsConf(wxString keybinderFile, w
 
     if (not fncbkb.FileExists())
     {
-        wxASSERT_MSG(0, _T("ConvertMenuScanToKeyMnuAcceratorsConf() called, but file does not exist."));
+        wxASSERT_MSG(0, _("ConvertMenuScanToKeyMnuAcceratorsConf() called, but file does not exist."));
         return false;
     }
     // remove old KeyMnuAccels.conf
@@ -620,11 +620,11 @@ int cbKeyBinder::ConvertMenuScanToKeyMnuAcceratorsConf(wxString keybinderFile, w
     wxTextFile txtacc(fnclacc.GetFullPath());
     if (not txtacc.Create() )
     {
-        wxASSERT_MSG(0, _T("ConvertMenuScanToKeyMnuAcceratorsConf() failed to create "+acceleratorFile) );
+        wxASSERT_MSG(0, _("ConvertMenuScanToKeyMnuAcceratorsConf() failed to create "+acceleratorFile) );
     }
     if (not txtacc.Open())
     {
-        wxASSERT_MSG(0, _T("ConvertMenuScanToKeyMnuAcceratorsConf() failed to open "+acceleratorFile) );
+        wxASSERT_MSG(0, _("ConvertMenuScanToKeyMnuAcceratorsConf() failed to open "+acceleratorFile) );
         return -1;
     }
 
@@ -676,9 +676,9 @@ int cbKeyBinder::ConvertMenuScanToKeyMnuAcceratorsConf(wxString keybinderFile, w
 
     if (missingMenuItems)
     {
-        wxString msg = wxString::Format(_T("Convert found %u unmatched menu items."), (unsigned)missingMenuItems);
+        wxString msg = wxString::Format(_("Convert found %u unmatched menu items."), (unsigned)missingMenuItems);
         #if defined(LOGGING)
-            //cbMessageBox(msg, _T("Converter"), wxOK, Manager::Get()->GetAppWindow());
+            //cbMessageBox(msg, _("Converter"), wxOK, Manager::Get()->GetAppWindow());
         #endif
         return missingMenuItems;
     }
@@ -702,13 +702,13 @@ int cbKeyBinder::ConvertOldKeybinderIniToAcceratorsConf(wxString oldKeybinderFil
     wxFileName fncbkb(oldKeybinderFile);
     if (not fncbkb.FileExists())
     {
-        wxASSERT_MSG(0, wxString::Format(_T("ConvertKeybinderIni called, but %s file does not exist."), fncbkb.GetFullPath().wx_str()) );
+        wxASSERT_MSG(0, wxString::Format(_("ConvertKeybinderIni called, but %s file does not exist."), fncbkb.GetFullPath().wx_str()) );
         return -1;
     }
     wxTextFile txtkb(fncbkb.GetFullPath());
     if (not txtkb.Open() )
     {
-        wxASSERT_MSG(0, _T("ConvertKeybinderIni failed to open " + oldKeybinderFile) );
+        wxASSERT_MSG(0, _("ConvertKeybinderIni failed to open " + oldKeybinderFile) );
         return -1;
     }
 
@@ -716,13 +716,13 @@ int cbKeyBinder::ConvertOldKeybinderIniToAcceratorsConf(wxString oldKeybinderFil
     wxFileName fnclacc(newAcceleratorFile);
     if (not fnclacc.FileExists())
     {
-        wxASSERT_MSG(0, wxString::Format(_T("ConvertKeybinderIni called, but %s file does not exist."), fnclacc.GetFullPath().wx_str()) );
+        wxASSERT_MSG(0, wxString::Format(_("ConvertKeybinderIni called, but %s file does not exist."), fnclacc.GetFullPath().wx_str()) );
         return -1;
     }
     wxTextFile txtacc(fnclacc.GetFullPath());
     if (not txtacc.Open())
     {
-        wxASSERT_MSG(0, _T("ConvertKeybinderIni failed to open " + newAcceleratorFile) );
+        wxASSERT_MSG(0, _("ConvertKeybinderIni failed to open " + newAcceleratorFile) );
         return -1;
     }
 
@@ -1102,7 +1102,7 @@ wxString cbKeyBinder::FindAppPath(const wxString& argv0, const wxString& cwd, co
     // Search PATH.
 
     wxPathList pathList;
-    pathList.AddEnvList(wxT("PATH"));
+    pathList.AddEnvList(_("PATH"));
     str = pathList.FindAbsoluteValidPath(argv0Str);
     if (!str.IsEmpty())
     {

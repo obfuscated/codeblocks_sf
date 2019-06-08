@@ -80,7 +80,7 @@
 		<Unit filename="manifest.xml" />
 		<Unit filename="menuutils.cpp" />
 		<Unit filename="menuutils.h" />
-		<Unit filename="wxStringHash.h" />
+		<Unit filename="wxstringhash.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

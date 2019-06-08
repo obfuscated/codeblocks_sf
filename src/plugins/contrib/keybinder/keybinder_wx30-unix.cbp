@@ -94,7 +94,7 @@
 			<Option target="default" />
 			<Option target="KeyBinder plugin" />
 		</Unit>
-		<Unit filename="wxStringHash.h" />
+		<Unit filename="wxstringhash.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

@@ -574,10 +574,10 @@ void clKeyboardManager::CheckForDuplicateAccels(MenuItemDataMap_t& accelMap) con
             long srcMenuID; srcIter->first.ToLong(&srcMenuID);
             long foundMenuID; foundIter->first.ToLong(&foundMenuID);
 
-            wxString msg = wxString::Format(_T("Conflicting menu items: \'%s\' && \'%s\'"),
+            wxString msg = wxString::Format(_("Conflicting menu items: \'%s\' && \'%s\'"),
                                             srcMenuLabel.wx_str(), foundMenuLabel.wx_str())
-                         + wxString::Format(_T("\n   Both using shortcut: \'%s\'"), foundIter->second.accel.wx_str())
-                         + wxString::Format(_T(" (IDs [%ld] [%ld])"),srcMenuID, foundMenuID );
+                         + wxString::Format(_("\n   Both using shortcut: \'%s\'"), foundIter->second.accel.wx_str())
+                         + wxString::Format(_(" (IDs [%ld] [%ld])"),srcMenuID, foundMenuID );
             msg += _T("\n\n");
             dupMsgs.Add(msg);
             patternIter = foundIter;
@@ -589,17 +589,17 @@ void clKeyboardManager::CheckForDuplicateAccels(MenuItemDataMap_t& accelMap) con
         bool isParentWindowDialog = false;
         // Get top window to solve msg window getting hidden behind keybinder dialog
         wxWindow* pMainWin = nullptr;
-        if ( (pMainWin = wxFindWindowByLabel(_T("Configure editor"))) )
-        {   pMainWin = wxFindWindowByLabel(_T("Configure editor"));
+        if ( (pMainWin = wxFindWindowByLabel(_("Configure editor"))) )
+        {   pMainWin = wxFindWindowByLabel(_("Configure editor"));
             isParentWindowDialog = true;
         }
         else pMainWin = Manager::Get()->GetAppWindow();
-        wxString msg = _T("Keyboard shortcut conflicts found.\n");
+        wxString msg = _("Keyboard shortcut conflicts found.\n");
         if (not isParentWindowDialog)
-            msg += _T("Use Settings/Editor/KeyboardShortcuts to resolve conflicts.\n\n");
+            msg += _("Use Settings/Editor/KeyboardShortcuts to resolve conflicts.\n\n");
         for (size_t ii=0; ii<dupMsgs.GetCount(); ++ii)
             msg += dupMsgs[ii];
-        //-cbMessageBox(msg, _T("Keyboard shortcuts conflicts"), wxOK, pMainWin);
+        //-cbMessageBox(msg, _("Keyboard shortcuts conflicts"), wxOK, pMainWin);
         AnnoyingDialog dlg(_("Keyboard shortcuts conflicts"), msg, wxART_INFORMATION,  AnnoyingDialog::OK);
         dlg.ShowModal();
     }//endif dupMsgs
@@ -622,7 +622,7 @@ void clKeyboardManager::AddGlobalAccelerator(const wxString& resourceID,
 void clKeyboardManager::RestoreDefaults()
 // ----------------------------------------------------------------------------
 {
-    wxASSERT_MSG(0, _T("RestoreDefaults not support yet !"));
+    wxASSERT_MSG(0, _("RestoreDefaults not supported yet !"));
     return ;
 
     // Decide which file we want to load, take the user settings file first
@@ -754,7 +754,7 @@ wxString clKeyboardManager::KeyCodeToString(int keyCode) //(2019/02/25)
 	case WXK_PAUSE:
 	case WXK_NUMLOCK:
 	case WXK_SCROLL :
-		wxLogDebug(wxT("wxKeyBind::KeyCodeToString - ignored key: [%d]"), keyCode);
+		wxLogDebug(_("wxKeyBind::KeyCodeToString - ignored key: [%d]"), keyCode);
 		return wxEmptyString;
 
 		// these must be ABSOLUTELY ignored: they are key modifiers
@@ -884,7 +884,7 @@ wxString clKeyboardManager::KeyCodeToString(int keyCode) //(2019/02/25)
 		} else {
 
 			// we couldn't create a description for the given keycode...
-			wxLogDebug(wxT("wxKeyBind::KeyCodeToString - unknown key: [%d]"), keyCode);
+			wxLogDebug(_("wxKeyBind::KeyCodeToString - unknown key: [%d]"), keyCode);
 			return wxEmptyString;
 		}
 	}//default

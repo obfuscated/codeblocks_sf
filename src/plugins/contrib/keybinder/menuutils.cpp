@@ -337,7 +337,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
     if (m_nShortcuts <= 0)
     {
         #if defined(LOGGING)
-        wxLogMessage(wxT("wxMenuCmd::Update - no shortcuts defined for [%s]"), str.c_str());
+        wxLogMessage(_("wxMenuCmd::Update - no shortcuts defined for [%s]"), str.c_str());
         #endif
 
         // no more shortcuts for this menuitem: SetText()
@@ -352,7 +352,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
 
     wxString newtext = str+wxT("\t")+GetShortcut(0)->GetStr();
     #if defined(LOGGING)
-    wxLogMessage(wxT("wxMenuCmd::Update - setting the new text to [%s]"), newtext.c_str());
+    wxLogMessage(_("wxMenuCmd::Update - setting the new text to [%s]"), newtext.c_str());
     #endif
 
 
@@ -410,7 +410,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
     if (m_nShortcuts <= 0) {
         if ( ! pItemAccel) return;
         #if LOGGING
-         wxLogMessage(wxT("wxMenuCmd::Update - Removing shortcuts [%d][%s] for [%d][%s]"),pLclMnuItem->GetId(), strText.wx_str(), m_nId, newtext.wx_str());
+         wxLogMessage(_("wxMenuCmd::Update - Removing shortcuts [%d][%s] for [%d][%s]"),pLclMnuItem->GetId(), strText.wx_str(), m_nId, newtext.wx_str());
         #endif
         // set "non bitmapped" text to preserve menu width
         #if wxCHECK_VERSION(3, 0, 0)
@@ -435,7 +435,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
          && ( pItemAccel->GetKeyCode() == pPrfAccel->GetKeyCode() ) )
          return;
     #if LOGGING
-     wxLogMessage(wxT("wxMenuCmd::Update - Setting shortcuts for [%d][%s]"), pLclMnuItem->GetId(), newtext.wx_str());
+     wxLogMessage(_("wxMenuCmd::Update - Setting shortcuts for [%d][%s]"), pLclMnuItem->GetId(), newtext.wx_str());
     #endif
     #if wxCHECK_VERSION(3, 0, 0)
     pLclMnuItem->SetItemLabel(newtext);
@@ -529,7 +529,7 @@ void wxMenuCmd::Exec(wxObject *origin, wxEvtHandler *client)
 // ----------------------------------------------------------------------------
 {
     wxCommandEvent menuEvent(wxEVT_COMMAND_MENU_SELECTED, GetId());
-    wxASSERT_MSG(client, wxT("An empty client handler ?!?"));
+    wxASSERT_MSG(client, _("An empty client handler ?!?"));
 
     // set up the event and process it...
     menuEvent.SetEventObject(origin);
@@ -592,6 +592,8 @@ wxCmd *wxMenuCmd::CreateNew(wxString sCmdName, int id)
 
     if (not pMenuItem)
     {
+        wxLogDebug(_("KeyBinder:CreateNew() not created[%d][%s]"), id, cmdName.GetData());
+        // ... also an untranslated msg so I can read it.
         wxLogDebug(_T("KeyBinder:CreateNew() not created[%d][%s]"), id, cmdName.GetData());
         return NULL;
     }
@@ -631,7 +633,7 @@ void wxMenuWalker::WalkMenuItem(wxMenuBar* p, wxMenuItem* m, void* data)
     //dont fool with itemized filenames, GetLabel cant handle file slashes //v0.2
     if (IsNumericMenuItem(m)) return;   //v0.2
 
-    //wxLogMessage(wxT("wxMenuWalker::WalkMenuItem - walking on [%s] at level [%d]"),
+    //wxLogMessage(_("wxMenuWalker::WalkMenuItem - walking on [%s] at level [%d]"),
     //          m->GetLabel().c_str(), m_nLevel);
 
     void* tmp = OnMenuItemWalk(p, m, data);
@@ -640,7 +642,7 @@ void wxMenuWalker::WalkMenuItem(wxMenuBar* p, wxMenuItem* m, void* data)
     {
         // if this item contains a sub menu, add recursively the menu items
         // of that sub menu... using the cookie from OnMenuItemWalk.
-        //wxLogMessage(wxT("wxMenuWalker::WalkMenuItem - recursing on [%s]"), m->GetLabel().c_str());
+        //wxLogMessage(_("wxMenuWalker::WalkMenuItem - recursing on [%s]"), m->GetLabel().c_str());
 
         m_nLevel++;
         WalkMenu(p, m->GetSubMenu(), tmp);
@@ -657,7 +659,7 @@ void wxMenuWalker::WalkMenu(wxMenuBar* p, wxMenu* m, void* data)
 // ----------------------------------------------------------------------------
 {
 
-    //wxLogMessage(wxT("wxMenuWalker::WalkMenu - walking on [%s] at level [%d]"),
+    //wxLogMessage(_("wxMenuWalker::WalkMenu - walking on [%s] at level [%d]"),
     //          m->GetTitle().c_str(), m_nLevel);
 
     for (int i=0; i < (int)m->GetMenuItemCount(); i++)
@@ -694,7 +696,7 @@ void wxMenuWalker::Walk(wxMenuBar* pMnuBar, void *data)
         wxMenu* pMnu = pMnuBar->GetMenu(i);
 
         m_nLevel++;
-        //wxLogMessage(wxT("wxMenuWalker::Walk - walking on [%s] at level [%d]"),
+        //wxLogMessage(_("wxMenuWalker::Walk - walking on [%s] at level [%d]"),
         //          p->GetLabelTop(i).c_str(), m_nLevel);
 
         void* tmp = OnMenuWalk(pMnuBar, pMnu, data);
@@ -813,7 +815,7 @@ void wxMenuComboListWalker::FillComboListCtrl(wxMenuBar *p, wxComboBox *combo)
 void *wxMenuComboListWalker::OnMenuWalk(wxMenuBar *p, wxMenu *m, void *)
 // ----------------------------------------------------------------------------
 {
-    //wxLogMessage(wxT("wxMenuWalker::OnMenuWalk - walking on [%s]"), m->GetTitle().c_str());
+    //wxLogMessage(_("wxMenuWalker::OnMenuWalk - walking on [%s]"), m->GetTitle().c_str());
 
     wxString toadd;
 
@@ -850,7 +852,7 @@ void *wxMenuComboListWalker::OnMenuWalk(wxMenuBar *p, wxMenu *m, void *)
     wxClientData* cd = new wxExComboItemData();
 
     // and create a new element in our combbox
-    //wxLogMessage(wxT("wxMenuComboListWalker::OnMenuWalk - appending [%s]"), toadd.c_str());
+    //wxLogMessage(_("wxMenuComboListWalker::OnMenuWalk - appending [%s]"), toadd.c_str());
 
     m_pCategories->Append(toadd, cd);
     return cd;
@@ -860,7 +862,7 @@ void *wxMenuComboListWalker::OnMenuWalk(wxMenuBar *p, wxMenu *m, void *)
 void *wxMenuComboListWalker::OnMenuItemWalk(wxMenuBar *, wxMenuItem *m, void *data)
 // ----------------------------------------------------------------------------
 {
-    //wxLogMessage(wxT("wxMenuWalker::OnMenuItemWalk - walking on [%s]"), m->GetLabel().c_str());
+    //wxLogMessage(_("wxMenuWalker::OnMenuItemWalk - walking on [%s]"), m->GetLabel().c_str());
 
     //int last = m_pCategories->GetCount()-1;
     wxExComboItemData *p = (wxExComboItemData *)data;//m_pCategories->GetClientObject(last);
@@ -936,7 +938,9 @@ void wxMenuShortcutWalker::DeleteData(void *
 // ----------------------------------------------------------------------------
 {
     wxASSERT_MSG(data == NULL,
-        wxT("wxMenuShortcutWalker does not use the 'data' parameter"));
+        _("wxMenuShortcutWalker does not use the 'data' parameter")
+            + _T("\nwxMenuShortcutWalker does not use the 'data' parameter") // English for me too.
+        );
 }
 // ----------------------------------------------------------------------------
 

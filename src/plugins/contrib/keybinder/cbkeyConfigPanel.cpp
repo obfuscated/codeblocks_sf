@@ -80,7 +80,7 @@ UsrConfigPanel::UsrConfigPanel(wxWindow* parent, const wxString& /*title*/, int 
     //-wxKeyProfile* pPrimary; move to header
     wxFrame* pTopFrame = dynamic_cast<wxFrame*>(wxTheApp->GetTopWindow());
     wxMenuBar* pMenuBar = pTopFrame->GetMenuBar();
-    m_pPrimaryProfile = new wxKeyProfile(wxT("Primary"), wxT("Our primary keyprofile"));
+    m_pPrimaryProfile = new wxKeyProfile(_("Primary"), _("Our primary keyprofile"));
 
     // remove keyprofiles from our array
     for (int i=0; i < m_pKeyProfileArray->GetCount();i++)
