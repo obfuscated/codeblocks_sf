@@ -187,10 +187,9 @@ cp -f ${CB_DEVEL_RESDIR}/images/settings/*.png ${CB_OUTPUT_RESDIR}/images/settin
 #=============================================
 
 cp -f tips.txt ${CB_DEVEL_RESDIR} > /dev/null
-cp -f tools/ConsoleRunner/cb_console_runner${EXEEXT} ${CB_DEVEL} > /dev/null
 
 cp -f tips.txt ${CB_OUTPUT_RESDIR} > /dev/null
-cp -f tools/ConsoleRunner/cb_console_runner${EXEEXT} ${CB_OUTPUT} > /dev/null
+cp -f ${CB_DEVEL}/cb_console_runner${EXEEXT} ${CB_OUTPUT} > /dev/null
 cp -f ${CB_DEVEL}/codeblocks${EXEEXT} ${CB_OUTPUT} > /dev/null
 
 if [ -f "${CB_DEVEL}/cb_share_config${EXEEXT}" ]
@@ -207,6 +206,7 @@ then
 fi
 
 cp -f ${CB_DEVEL}/*.${LIBEXT} ${CB_OUTPUT} > /dev/null
+cp -f ${CB_DEVEL}/lib*.a ${CB_OUTPUT} > /dev/null
 cp -f ${CB_DEVEL_RESDIR}/plugins/*.${LIBEXT} ${CB_OUTPUT_RESDIR}/plugins > /dev/null
 
 echo Stripping debug info from output tree

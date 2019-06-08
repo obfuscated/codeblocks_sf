@@ -76,7 +76,6 @@
 			<Add library="codeblocks" />
 			<Add library="wxpropgrid" />
 			<Add directory="../../../devel" />
-			<Add directory="../../../base/tinyxml" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="./update" />

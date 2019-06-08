@@ -41,7 +41,6 @@
 			<Add option="-std=c++11" />
 			<Add directory="../../../include" />
 			<Add directory="../../../include/tinyxml" />
-			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../../../include/scripting/include" />
 			<Add directory="../../../include/scripting/sqplus" />
@@ -61,7 +60,6 @@
 			<Add library="libcodeblocks.a" />
 			<Add library="wxflatnotebook" />
 			<Add directory="../../../devel" />
-			<Add directory="../../../base/tinyxml" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="./update" />

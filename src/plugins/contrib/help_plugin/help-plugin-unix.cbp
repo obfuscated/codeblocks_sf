@@ -8,7 +8,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="bzip2">
-				<Option output="bzip2/libbzip2" prefix_auto="0" extension_auto="1" />
+				<Option output="../../../devel/libbzip2" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../../.objs/plugins/contrib/help_plugin/bzip2" />
 				<Option type="2" />
@@ -20,7 +20,7 @@
 				</Compiler>
 			</Target>
 			<Target title="zlib">
-				<Option output="zlib/libz" prefix_auto="0" extension_auto="1" />
+				<Option output="../../../devel/libz" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../../.objs/plugins/contrib/help_plugin/zlib" />
 				<Option type="2" />
@@ -45,8 +45,8 @@
 					<Add option="$(#CB_RELEASE_TYPE)" />
 				</Compiler>
 				<Linker>
-					<Add library="bzip2/libbzip2.a" />
-					<Add library="zlib/libz.a" />
+					<Add library="bzip2" />
+					<Add library="z" />
 				</Linker>
 			</Target>
 		</Build>
@@ -75,11 +75,8 @@
 		<Linker>
 			<Add option="`wx-config --version=2.8 --libs`" />
 			<Add option="-Wl,--no-undefined" />
-			<Add library="libcodeblocks.a" />
+			<Add library="codeblocks" />
 			<Add directory="../../../devel" />
-			<Add directory="../../../sdk/scripting/lib" />
-			<Add directory="bzip2" />
-			<Add directory="zlib" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="zip -j9 ../../../devel/share/codeblocks/help_plugin.zip manifest.xml *.xrc *.png" />

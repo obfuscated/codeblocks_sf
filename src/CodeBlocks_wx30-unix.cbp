@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="tinyXML">
-				<Option output="base/tinyxml/txml" prefix_auto="1" extension_auto="1" />
+				<Option output="devel30/txml" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs30" />
 				<Option type="2" />
@@ -17,7 +17,7 @@
 				</Compiler>
 			</Target>
 			<Target title="AutoRevision">
-				<Option output="build_tools/autorevision/autorevision" prefix_auto="1" extension_auto="1" />
+				<Option output="$(TARGET_OBJECT_DIR)/autorevision" prefix_auto="1" extension_auto="1" />
 				<Option object_output=".objs30" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -29,11 +29,10 @@
 				<Linker>
 					<Add option="-Wl,--no-undefined" />
 					<Add library="txml" />
-					<Add directory="base/tinyxml" />
 				</Linker>
 			</Target>
 			<Target title="ConsoleRunner">
-				<Option output="tools/ConsoleRunner/cb_console_runner" prefix_auto="1" extension_auto="1" />
+				<Option output="devel30/cb_console_runner" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="tools/ConsoleRunner" />
 				<Option object_output=".objs30" />
 				<Option type="1" />
@@ -47,7 +46,7 @@
 				</Linker>
 			</Target>
 			<Target title="Squirrel">
-				<Option output="sdk/scripting/lib/squirrel" prefix_auto="1" extension_auto="1" />
+				<Option output="devel30/squirrel" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs30" />
 				<Option type="2" />
@@ -59,10 +58,10 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel std lib">
-				<Option output="sdk/scripting/lib/sqstdlib" prefix_auto="1" extension_auto="1" />
+				<Option output="devel30/sqstdlib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs30" />
-				<Option external_deps="sdk/scripting/lib/libsquirrel.a;" />
+				<Option external_deps="devel30/libsquirrel.a;" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -72,10 +71,10 @@
 				</Compiler>
 			</Target>
 			<Target title="SqPlus">
-				<Option output="sdk/scripting/lib/sqplus" prefix_auto="1" extension_auto="1" />
+				<Option output="devel30/sqplus" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs30" />
-				<Option external_deps="sdk/scripting/lib/libsquirrel.a;sdk/scripting/lib/libsqstdlib.a;" />
+				<Option external_deps="devel30/libsquirrel.a;devel30/libsqstdlib.a;" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -108,7 +107,7 @@
 				<Option output="devel30/libcodeblocks" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="devel30" />
 				<Option object_output=".objs30" />
-				<Option external_deps="base/tinyxml/libtxml.a;sdk/scripting/lib/libsquirrel.a;sdk/scripting/lib/libsqstdlib.a;sdk/scripting/lib/libsqplus.a;devel30/libwxscintilla_cb.a;" />
+				<Option external_deps="devel30/libtxml.a;devel30/libsquirrel.a;devel30/libsqstdlib.a;devel30/libsqplus.a;devel30/libwxscintilla_cb.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -137,11 +136,9 @@
 					<Add library="sqplus" />
 					<Add library="sqstdlib" />
 					<Add library="squirrel" />
-					<Add directory="devel30" />
-					<Add directory="sdk/scripting/lib" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="build_tools/autorevision/autorevision +wx +int +t .. include/autorevision.h" />
+					<Add before="$(TARGET_OBJECT_DIR)/autorevision +wx +int +t .. include/autorevision.h" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -168,7 +165,6 @@
 				</Compiler>
 				<Linker>
 					<Add library="codeblocks" />
-					<Add directory="devel30" />
 				</Linker>
 			</Target>
 			<Target title="Abbreviations">
@@ -191,7 +187,6 @@
 					<Add option="`$(WX_CONFIG) --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
-					<Add directory="devel30" />
 				</Linker>
 			</Target>
 			<Target title="AStyle">
@@ -212,7 +207,6 @@
 					<Add option="`$(WX_CONFIG) --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
-					<Add directory="devel30" />
 				</Linker>
 			</Target>
 			<Target title="Autosave">
@@ -232,11 +226,10 @@
 					<Add option="`$(WX_CONFIG) --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
-					<Add directory="devel30" />
 				</Linker>
 			</Target>
 			<Target title="Compiler depslib">
-				<Option output="plugins/compilergcc/depslib/depslib" prefix_auto="1" extension_auto="1" />
+				<Option output="devel30/depslib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs30" />
 				<Option type="2" />
@@ -250,7 +243,7 @@
 				<Option output="devel30/share/codeblocks/plugins/compiler" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30" />
 				<Option object_output=".objs30" />
-				<Option external_deps="plugins/compilergcc/depslib/libdepslib.a;" />
+				<Option external_deps="devel30/libdepslib.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -268,8 +261,6 @@
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add library="depslib" />
-					<Add directory="devel30" />
-					<Add directory="plugins/compilergcc/depslib" />
 				</Linker>
 			</Target>
 			<Target title="Debugger">
@@ -289,7 +280,6 @@
 					<Add option="`$(WX_CONFIG) --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
-					<Add directory="devel30" />
 				</Linker>
 			</Target>
 			<Target title="Code-completion">
@@ -316,7 +306,6 @@
 					<Add option="`$(WX_CONFIG) --libs std,aui`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
-					<Add directory="devel30" />
 				</Linker>
 			</Target>
 			<Target title="Class wizard">
@@ -336,7 +325,6 @@
 					<Add option="`$(WX_CONFIG) --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
-					<Add directory="devel30" />
 				</Linker>
 			</Target>
 			<Target title="Default MIME handler">
@@ -356,7 +344,6 @@
 					<Add option="`$(WX_CONFIG) --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
-					<Add directory="devel30" />
 				</Linker>
 			</Target>
 			<Target title="Occurrences Highlighting">
@@ -376,7 +363,6 @@
 					<Add option="`$(WX_CONFIG) --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
-					<Add directory="devel30" />
 				</Linker>
 			</Target>
 			<Target title="Open files list">
@@ -396,7 +382,6 @@
 					<Add option="`$(WX_CONFIG) --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
-					<Add directory="devel30" />
 				</Linker>
 			</Target>
 			<Target title="Projects-workspaces importer">
@@ -422,7 +407,6 @@
 					<Add option="`$(WX_CONFIG) --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
-					<Add directory="devel30" />
 				</Linker>
 			</Target>
 			<Target title="Scripted wizard">
@@ -444,7 +428,6 @@
 					<Add option="`$(WX_CONFIG) --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
-					<Add directory="devel30" />
 				</Linker>
 			</Target>
 			<Target title="To-do">
@@ -470,7 +453,6 @@
 					<Add option="`$(WX_CONFIG) --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
-					<Add directory="devel30" />
 				</Linker>
 			</Target>
 			<Target title="XP look &amp; feel">
@@ -531,7 +513,7 @@
 		<Linker>
 			<Add option="`$(WX_CONFIG) --libs std,aui,propgrid`" />
 			<Add option="-Wl,--no-undefined" />
-			<Add directory="base/tinyxml" />
+			<Add directory="devel30" />
 		</Linker>
 		<Unit filename="base/tinyxml/tinystr.cpp">
 			<Option target="tinyXML" />
