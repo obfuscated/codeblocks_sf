@@ -217,7 +217,7 @@ void UsrConfigPanel::GetKeyConfigPanelPhaseII(wxMenuBar* pMenuBar, UsrConfigPane
     SetSizer(main);
     //-main->SetSizeHints(pUsrConfigPanel); causes panel to shrink
 
-    // on return from here, CB will display the panel and menu tree
+    // on return from here, wxWidgets will display the panel and menu tree
     // CB will call OnAppy() or OnCanel() when the user finishes
 
 }//UsrConfigDlg

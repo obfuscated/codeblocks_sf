@@ -195,7 +195,9 @@ void cbKeyBinder::OnConfigListbookEvent(wxListbookEvent& event)
         if (label == _("Keyboard shortcuts") )
         {
             wxMenuBar* pMenuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
+            m_pUsrConfigPanel->Freeze();    // dont show panel updating
             m_pUsrConfigPanel->GetKeyConfigPanelPhaseII(pMenuBar, m_pUsrConfigPanel, m_mode);
+            m_pUsrConfigPanel->Thaw();      // unfreeze updates
         }
     }
 
