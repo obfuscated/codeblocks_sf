@@ -42,6 +42,7 @@
 #include <sqplus.h>
 
 #include "appglobals.h"
+#include "cbart_provider.h"
 #include "associations.h"
 #include "cbauibook.h"
 #include "cbstyledtextctrl.h"
@@ -712,6 +713,8 @@ bool CodeBlocksApp::OnInit()
             const int size = cbHelpers::ReadToolbarSizeFromConfig();
             toolbarAddonHandler->SetToolbarImageSize(size);
             Manager::Get()->SetToolbarImageSize(size);
+
+            wxArtProvider::Push(new cbArtProvider(ConfigManager::GetDataFolder(), size));
         }
 
         // Splash screen moved to this place, otherwise it would be short visible, even if we only pass filenames via DDE/IPC

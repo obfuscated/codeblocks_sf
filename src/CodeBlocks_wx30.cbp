@@ -4013,6 +4013,12 @@
 		<Unit filename="src/breakpointsdlg.h">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/cbart_provider.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/cbart_provider.h">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/compilersettingsdlg.cpp">
 			<Option target="src" />
 		</Unit>

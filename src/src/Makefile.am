@@ -40,6 +40,7 @@ codeblocks_SOURCES = app.cpp \
 			appglobals.cpp \
 			backtracedlg.cpp \
 			breakpointsdlg.cpp \
+			cbart_provider.cpp \
 			compilersettingsdlg.cpp \
 			cpuregistersdlg.cpp \
 			crashhandler.cpp \
@@ -80,6 +81,7 @@ noinst_HEADERS = app.h \
 			backtracedlg.h \
 			batchbuild.h \
 			breakpointsdlg.h \
+			cbart_provider.h \
 			compilersettingsdlg.h \
 			cpuregistersdlg.h \
 			crashhandler.h \
