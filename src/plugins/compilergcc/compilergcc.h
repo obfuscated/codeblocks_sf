@@ -77,6 +77,7 @@ enum BuildAction
     baBuildFile
 };
 
+class cbArtProvider;
 class wxComboBox;
 class wxGauge;
 class wxStaticText;
@@ -326,6 +327,8 @@ class CompilerGCC : public cbCompilerPlugin
         size_t m_MaxProgress;
         size_t m_CurrentProgress;
         bool   m_LogBuildProgressPercentage;
+
+        cbArtProvider *m_pArtProvider;
 
         DECLARE_EVENT_TABLE()
 };

@@ -51,6 +51,7 @@
 #include "compileroptionsdlg.h"
 #include "directcommands.h"
 #include "globals.h"
+#include "cbart_provider.h"
 #include "cbworkspace.h"
 #include "cbstyledtextctrl.h"
 
@@ -304,7 +305,8 @@ CompilerGCC::CompilerGCC() :
     m_RunTargetPostBuild(false),
     m_RunProjectPostBuild(false),
     m_IsWorkspaceOperation(false),
-    m_LogBuildProgressPercentage(false)
+    m_LogBuildProgressPercentage(false),
+    m_pArtProvider(nullptr)
 {
     if (!Manager::LoadResource(_T("compiler.zip")))
         NotifyMissingFile(_T("compiler.zip"));
@@ -355,6 +357,20 @@ void CompilerGCC::OnAttach()
     AllocProcesses();
 
     LogManager* msgMan = Manager::Get()->GetLogManager();
+
+    {
+        const wxString prefix = ConfigManager::GetDataFolder() + wxT("/compiler.zip#zip:/images");
+        m_pArtProvider = new cbArtProvider(prefix, Manager::Get()->GetToolbarImageSize());
+
+        m_pArtProvider->AddMapping(wxT("compiler/compile"), wxT("compile.png"));
+        m_pArtProvider->AddMapping(wxT("compiler/run"), wxT("run.png"));
+        m_pArtProvider->AddMapping(wxT("compiler/compile_run"), wxT("compilerun.png"));
+        m_pArtProvider->AddMapping(wxT("compiler/rebuild"), wxT("rebuild.png"));
+        m_pArtProvider->AddMapping(wxT("compiler/stop"), wxT("stop.png"));
+        m_pArtProvider->AddMapping(wxT("compiler/select_target"), wxT("select_target.png"));
+
+        wxArtProvider::Push(m_pArtProvider);
+    }
 
     // create compiler's log
     m_pLog = new BuildLogger();
@@ -467,6 +483,9 @@ void CompilerGCC::OnRelease(bool appShutDown)
     FreeProcesses();
 
     CompilerFactory::UnregisterCompilers();
+
+    wxArtProvider::Delete(m_pArtProvider);
+    m_pArtProvider = nullptr;
 }
 
 int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)

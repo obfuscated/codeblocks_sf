@@ -771,6 +771,9 @@
 		<Unit filename="include/blockallocated.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/cbart_provider.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/cbauibook.h">
 			<Option target="sdk" />
 		</Unit>
@@ -2514,6 +2517,9 @@
 		<Unit filename="sdk/blockallocated.cpp">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/cbart_provider.cpp">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/cbauibook.cpp">
 			<Option target="sdk" />
 		</Unit>
@@ -4025,12 +4031,6 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/breakpointsdlg.h">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/cbart_provider.cpp">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/cbart_provider.h">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/compilersettingsdlg.cpp">

@@ -140,6 +140,7 @@ class CodeBlocksApp : public wxApp
         wxArrayString m_DelayedFilesToOpen;
     private:
         void SetupPersonality(const wxString& personality);
+        void SetupImageSizes(wxToolBarAddOnXmlHandler *toolbarAddonHandler);
 
 
         wxString m_Prefix; // directory specified in --prefix switch

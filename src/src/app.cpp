@@ -570,6 +570,53 @@ void CodeBlocksApp::InitLocale()
     }
 }
 
+void CodeBlocksApp::SetupImageSizes(wxToolBarAddOnXmlHandler *toolbarAddonHandler)
+{
+    const int size = cbHelpers::ReadToolbarSizeFromConfig();
+    toolbarAddonHandler->SetToolbarImageSize(size);
+    Manager::Get()->SetToolbarImageSize(size);
+
+    const wxString prefix = ConfigManager::GetDataFolder() + wxT("/resources.zip#zip:/images");
+    cbArtProvider *provider = new cbArtProvider(prefix, size);
+
+    provider->AddMapping(wxT("core/file_open"), wxT("fileopen.png"));
+    provider->AddMapping(wxT("core/history_clear"), wxT("history_clear.png"));
+    provider->AddMapping(wxT("core/file_save"), wxT("filesave.png"));
+    provider->AddMapping(wxT("core/file_save_as"), wxT("filesaveas.png"));
+    provider->AddMapping(wxT("core/file_save_all"), wxT("filesaveall.png"));
+    provider->AddMapping(wxT("core/file_close"), wxT("fileclose.png"));
+    provider->AddMapping(wxT("core/file_print"), wxT("fileprint.png"));
+    provider->AddMapping(wxT("core/exit"), wxT("exit.png"));
+    provider->AddMapping(wxT("core/undo"), wxT("undo.png"));
+    provider->AddMapping(wxT("core/redo"), wxT("redo.png"));
+    provider->AddMapping(wxT("core/edit_cut"), wxT("editcut.png"));
+    provider->AddMapping(wxT("core/edit_copy"), wxT("editcopy.png"));
+    provider->AddMapping(wxT("core/edit_paste"), wxT("editpaste.png"));
+    provider->AddMapping(wxT("core/bookmark_add"), wxT("bookmark_add.png"));
+    provider->AddMapping(wxT("core/find"), wxT("filefind.png"));
+    provider->AddMapping(wxT("core/find_in_files"), wxT("findf.png"));
+    provider->AddMapping(wxT("core/find_next"), wxT("filefindnext.png"));
+    provider->AddMapping(wxT("core/find_prev"), wxT("filefindprev.png"));
+    provider->AddMapping(wxT("core/search_replace"), wxT("searchreplace.png"));
+    provider->AddMapping(wxT("core/search_replace_in_files"), wxT("searchreplacef.png"));
+    provider->AddMapping(wxT("core/goto"), wxT("goto.png"));
+    provider->AddMapping(wxT("core/manage_plugins"), wxT("plug.png"));
+    provider->AddMapping(wxT("core/help_info"), wxT("info.png"));
+    provider->AddMapping(wxT("core/help_idea"), wxT("idea.png"));
+
+    provider->AddMapping(wxT("core/dbg/run"), wxT("dbgrun.png"));
+    provider->AddMapping(wxT("core/dbg/pause"), wxT("dbgpause.png"));
+    provider->AddMapping(wxT("core/dbg/stop"), wxT("dbgstop.png"));
+    provider->AddMapping(wxT("core/dbg/run_to"), wxT("dbgrunto.png"));
+    provider->AddMapping(wxT("core/dbg/next"), wxT("dbgnext.png"));
+    provider->AddMapping(wxT("core/dbg/step"), wxT("dbgstep.png"));
+    provider->AddMapping(wxT("core/dbg/step_out"), wxT("dbgstepout.png"));
+    provider->AddMapping(wxT("core/dbg/next_inst"), wxT("dbgnexti.png"));
+    provider->AddMapping(wxT("core/dbg/step_inst"), wxT("dbgstepi.png"));
+
+    wxArtProvider::Push(provider);
+}
+
 bool CodeBlocksApp::OnInit()
 {
 #ifdef __WXMSW__
@@ -709,13 +756,7 @@ bool CodeBlocksApp::OnInit()
             }
         }
 
-        {
-            const int size = cbHelpers::ReadToolbarSizeFromConfig();
-            toolbarAddonHandler->SetToolbarImageSize(size);
-            Manager::Get()->SetToolbarImageSize(size);
-
-            wxArtProvider::Push(new cbArtProvider(ConfigManager::GetDataFolder(), size));
-        }
+        SetupImageSizes(toolbarAddonHandler);
 
         // Splash screen moved to this place, otherwise it would be short visible, even if we only pass filenames via DDE/IPC
         // we also don't need it, if only a single instance is allowed

@@ -3,7 +3,7 @@
   <object class="wxMenu" name="compiler_menu">
     <object class="wxMenuItem" name="idCompilerMenuCompile">
       <label>&amp;Build</label>
-      <bitmap>images\16x16\compile.png</bitmap>
+      <bitmap stock_id="compiler/compile"/>
       <accel>Ctrl-F9</accel>
       <help>Build current project</help>
     </object>
@@ -14,19 +14,19 @@
     </object>
     <object class="wxMenuItem" name="idCompilerMenuRun">
       <label>&amp;Run</label>
-      <bitmap>images\16x16\run.png</bitmap>
+      <bitmap stock_id="compiler/run"/>
       <accel>Ctrl-F10</accel>
       <help>Run current project</help>
     </object>
     <object class="wxMenuItem" name="idCompilerMenuCompileAndRun">
       <label>Bui&amp;ld and run</label>
-      <bitmap>images\16x16\compilerun.png</bitmap>
+      <bitmap stock_id="compiler/compile_run"/>
       <accel>F9</accel>
       <help>Build and run current project</help>
     </object>
     <object class="wxMenuItem" name="idCompilerMenuRebuild">
       <label>Rebuil&amp;d</label>
-      <bitmap>images\16x16\rebuild.png</bitmap>
+      <bitmap stock_id="compiler/rebuild"/>
       <accel>Ctrl-F11</accel>
       <help>Rebuild current project</help>
     </object>
@@ -50,7 +50,7 @@
     <object class="separator"/>
     <object class="wxMenuItem" name="idCompilerMenuKillProcess">
       <label>&amp;Abort</label>
-      <bitmap>images\16x16\stop.png</bitmap>
+      <bitmap stock_id="compiler/stop"/>
       <help>Abort the running build process</help>
     </object>
     <object class="separator"/>
@@ -77,6 +77,7 @@
       <object class="wxMenuItem" name="idMenuSelectTargetDialog">
         <label>Select target</label>
         <help>Shows a dialog with all targets</help>
+        <bitmap stock_id="compiler/select_target"/>
       </object>
       <object class="separator"/>
     </object>
