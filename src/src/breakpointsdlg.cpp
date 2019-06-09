@@ -90,7 +90,12 @@ BreakpointsDlg::BreakpointsDlg() :
     const double scaleFactor = cbGetContentScaleFactor(*parent);
 
     // Setup the image list for the enabled/disabled icons.
+#ifdef __WXMSW__
+    m_icons.Create(floor(selectedHeight), floor(selectedHeight), true);
+#else
     m_icons.Create(floor(selectedHeight / scaleFactor), floor(selectedHeight / scaleFactor), true);
+#endif // __WXMSW__
+
     const wxString &basepath = ConfigManager::GetDataFolder()
                              + wxT("/manager_resources.zip#zip:/images/")
                              + sizeStr;
