@@ -67,6 +67,7 @@ images_forZIP = \
 	images/16x16/window_fullscreen.png \
 	images/16x16/workspace.png \
 	images/16x16/workspace-readonly.png \
+	images/20x20/bookmark_add.png \
 	images/20x20/dbginfo.png \
 	images/20x20/dbgnexti.png \
 	images/20x20/dbgnext.png \
@@ -81,15 +82,28 @@ images_forZIP = \
 	images/20x20/editcopy.png \
 	images/20x20/editcut.png \
 	images/20x20/editpaste.png \
+	images/20x20/exit.png \
+	images/20x20/fileclose.png \
+	images/20x20/filefindnext.png \
 	images/20x20/filefind.png \
+	images/20x20/filefindprev.png \
 	images/20x20/filenew.png \
 	images/20x20/fileopen.png \
 	images/20x20/fileprint.png \
 	images/20x20/filesaveall.png \
+	images/20x20/filesaveas.png \
 	images/20x20/filesave.png \
+	images/20x20/findf.png \
+	images/20x20/goto.png \
+	images/20x20/history_clear.png \
+	images/20x20/idea.png \
+	images/20x20/info.png \
+	images/20x20/plug.png \
 	images/20x20/redo.png \
+	images/20x20/searchreplacef.png \
 	images/20x20/searchreplace.png \
 	images/20x20/undo.png \
+	images/24x24/bookmark_add.png \
 	images/24x24/dbginfo.png \
 	images/24x24/dbgnexti.png \
 	images/24x24/dbgnext.png \
@@ -104,15 +118,28 @@ images_forZIP = \
 	images/24x24/editcopy.png \
 	images/24x24/editcut.png \
 	images/24x24/editpaste.png \
+	images/24x24/exit.png \
+	images/24x24/fileclose.png \
+	images/24x24/filefindnext.png \
 	images/24x24/filefind.png \
+	images/24x24/filefindprev.png \
 	images/24x24/filenew.png \
 	images/24x24/fileopen.png \
 	images/24x24/fileprint.png \
 	images/24x24/filesaveall.png \
+	images/24x24/filesaveas.png \
 	images/24x24/filesave.png \
+	images/24x24/findf.png \
+	images/24x24/goto.png \
+	images/24x24/history_clear.png \
+	images/24x24/idea.png \
+	images/24x24/info.png \
+	images/24x24/plug.png \
 	images/24x24/redo.png \
+	images/24x24/searchreplacef.png \
 	images/24x24/searchreplace.png \
 	images/24x24/undo.png \
+	images/28x28/bookmark_add.png \
 	images/28x28/dbginfo.png \
 	images/28x28/dbgnexti.png \
 	images/28x28/dbgnext.png \
@@ -127,15 +154,28 @@ images_forZIP = \
 	images/28x28/editcopy.png \
 	images/28x28/editcut.png \
 	images/28x28/editpaste.png \
+	images/28x28/exit.png \
+	images/28x28/fileclose.png \
+	images/28x28/filefindnext.png \
 	images/28x28/filefind.png \
+	images/28x28/filefindprev.png \
 	images/28x28/filenew.png \
 	images/28x28/fileopen.png \
 	images/28x28/fileprint.png \
 	images/28x28/filesaveall.png \
+	images/28x28/filesaveas.png \
 	images/28x28/filesave.png \
+	images/28x28/findf.png \
+	images/28x28/goto.png \
+	images/28x28/history_clear.png \
+	images/28x28/idea.png \
+	images/28x28/info.png \
+	images/28x28/plug.png \
 	images/28x28/redo.png \
+	images/28x28/searchreplacef.png \
 	images/28x28/searchreplace.png \
 	images/28x28/undo.png \
+	images/32x32/bookmark_add.png \
 	images/32x32/dbginfo.png \
 	images/32x32/dbgnexti.png \
 	images/32x32/dbgnext.png \
@@ -150,15 +190,28 @@ images_forZIP = \
 	images/32x32/editcopy.png \
 	images/32x32/editcut.png \
 	images/32x32/editpaste.png \
+	images/32x32/exit.png \
+	images/32x32/fileclose.png \
+	images/32x32/filefindnext.png \
 	images/32x32/filefind.png \
+	images/32x32/filefindprev.png \
 	images/32x32/filenew.png \
 	images/32x32/fileopen.png \
 	images/32x32/fileprint.png \
 	images/32x32/filesaveall.png \
+	images/32x32/filesaveas.png \
 	images/32x32/filesave.png \
+	images/32x32/findf.png \
+	images/32x32/goto.png \
+	images/32x32/history_clear.png \
+	images/32x32/idea.png \
+	images/32x32/info.png \
+	images/32x32/plug.png \
 	images/32x32/redo.png \
+	images/32x32/searchreplacef.png \
 	images/32x32/searchreplace.png \
 	images/32x32/undo.png \
+	images/40x40/bookmark_add.png \
 	images/40x40/dbginfo.png \
 	images/40x40/dbgnexti.png \
 	images/40x40/dbgnext.png \
@@ -173,15 +226,28 @@ images_forZIP = \
 	images/40x40/editcopy.png \
 	images/40x40/editcut.png \
 	images/40x40/editpaste.png \
+	images/40x40/exit.png \
+	images/40x40/fileclose.png \
+	images/40x40/filefindnext.png \
 	images/40x40/filefind.png \
+	images/40x40/filefindprev.png \
 	images/40x40/filenew.png \
 	images/40x40/fileopen.png \
 	images/40x40/fileprint.png \
 	images/40x40/filesaveall.png \
+	images/40x40/filesaveas.png \
 	images/40x40/filesave.png \
+	images/40x40/findf.png \
+	images/40x40/goto.png \
+	images/40x40/history_clear.png \
+	images/40x40/idea.png \
+	images/40x40/info.png \
+	images/40x40/plug.png \
 	images/40x40/redo.png \
+	images/40x40/searchreplacef.png \
 	images/40x40/searchreplace.png \
 	images/40x40/undo.png \
+	images/48x48/bookmark_add.png \
 	images/48x48/dbginfo.png \
 	images/48x48/dbgnexti.png \
 	images/48x48/dbgnext.png \
@@ -196,15 +262,28 @@ images_forZIP = \
 	images/48x48/editcopy.png \
 	images/48x48/editcut.png \
 	images/48x48/editpaste.png \
+	images/48x48/exit.png \
+	images/48x48/fileclose.png \
+	images/48x48/filefindnext.png \
 	images/48x48/filefind.png \
+	images/48x48/filefindprev.png \
 	images/48x48/filenew.png \
 	images/48x48/fileopen.png \
 	images/48x48/fileprint.png \
 	images/48x48/filesaveall.png \
+	images/48x48/filesaveas.png \
 	images/48x48/filesave.png \
+	images/48x48/findf.png \
+	images/48x48/goto.png \
+	images/48x48/history_clear.png \
+	images/48x48/idea.png \
+	images/48x48/info.png \
+	images/48x48/plug.png \
 	images/48x48/redo.png \
+	images/48x48/searchreplacef.png \
 	images/48x48/searchreplace.png \
 	images/48x48/undo.png \
+	images/56x56/bookmark_add.png \
 	images/56x56/dbginfo.png \
 	images/56x56/dbgnexti.png \
 	images/56x56/dbgnext.png \
@@ -219,15 +298,28 @@ images_forZIP = \
 	images/56x56/editcopy.png \
 	images/56x56/editcut.png \
 	images/56x56/editpaste.png \
+	images/56x56/exit.png \
+	images/56x56/fileclose.png \
+	images/56x56/filefindnext.png \
 	images/56x56/filefind.png \
+	images/56x56/filefindprev.png \
 	images/56x56/filenew.png \
 	images/56x56/fileopen.png \
 	images/56x56/fileprint.png \
 	images/56x56/filesaveall.png \
+	images/56x56/filesaveas.png \
 	images/56x56/filesave.png \
+	images/56x56/findf.png \
+	images/56x56/goto.png \
+	images/56x56/history_clear.png \
+	images/56x56/idea.png \
+	images/56x56/info.png \
+	images/56x56/plug.png \
 	images/56x56/redo.png \
+	images/56x56/searchreplacef.png \
 	images/56x56/searchreplace.png \
 	images/56x56/undo.png \
+	images/64x64/bookmark_add.png \
 	images/64x64/dbginfo.png \
 	images/64x64/dbgnexti.png \
 	images/64x64/dbgnext.png \
@@ -242,13 +334,25 @@ images_forZIP = \
 	images/64x64/editcopy.png \
 	images/64x64/editcut.png \
 	images/64x64/editpaste.png \
+	images/64x64/exit.png \
+	images/64x64/fileclose.png \
+	images/64x64/filefindnext.png \
 	images/64x64/filefind.png \
+	images/64x64/filefindprev.png \
 	images/64x64/filenew.png \
 	images/64x64/fileopen.png \
 	images/64x64/fileprint.png \
 	images/64x64/filesaveall.png \
+	images/64x64/filesaveas.png \
 	images/64x64/filesave.png \
+	images/64x64/findf.png \
+	images/64x64/goto.png \
+	images/64x64/history_clear.png \
+	images/64x64/idea.png \
+	images/64x64/info.png \
+	images/64x64/plug.png \
 	images/64x64/redo.png \
+	images/64x64/searchreplacef.png \
 	images/64x64/searchreplace.png \
 	images/64x64/undo.png
 
