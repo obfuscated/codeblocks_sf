@@ -8,7 +8,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="bzip2">
-				<Option output="../../../devel31_64/libbzip2.a" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../devel31_64/libbz2_help.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output="../../../.objs31_64/plugins/contrib/help_plugin/bzip2" />
 				<Option type="2" />
@@ -63,7 +63,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-mthreads" />
-					<Add library="bzip2" />
+					<Add library="bz2_help" />
 					<Add library="z" />
 				</Linker>
 				<ExtraCommands>
