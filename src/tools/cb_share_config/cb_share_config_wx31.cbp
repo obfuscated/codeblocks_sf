@@ -47,7 +47,7 @@
 			<Add library="txml" />
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 			<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)" />
-			<Add directory="../../base/tinyxml" />
+			<Add directory="../../devel31" />
 		</Linker>
 		<Unit filename="app.cpp" />
 		<Unit filename="app.h" />

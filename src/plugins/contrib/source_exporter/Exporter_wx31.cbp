@@ -8,7 +8,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="wxPdfDocument">
-				<Option output="wxPdfDocument/lib31/wxPdfDocument" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel31/wxPdfDocument" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../../.objs31/plugins/contrib/source_exporter" />
 				<Option type="2" />
@@ -20,7 +20,7 @@
 				</Compiler>
 			</Target>
 			<Target title="makefont">
-				<Option output="wxPdfDocument/makefont/makefont" prefix_auto="0" extension_auto="1" />
+				<Option output="../../../devel31/wxPdfDocument/makefont" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="wxPdfDocument/makefont" />
 				<Option object_output="../../../.objs31/plugins/contrib/source_exporter" />
 				<Option type="1" />
@@ -32,7 +32,7 @@
 				</Linker>
 			</Target>
 			<Target title="minimal">
-				<Option output="wxPdfDocument/samples/minimal/minimal" prefix_auto="0" extension_auto="1" />
+				<Option output="../../../devel31/wxPdfDocument/minimal" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="wxPdfDocument/samples/minimal" />
 				<Option object_output="../../../.objs31/plugins/contrib/source_exporter" />
 				<Option type="1" />
@@ -44,7 +44,7 @@
 				</Linker>
 			</Target>
 			<Target title="pdfdc">
-				<Option output="wxPdfDocument/samples/pdfdcl/pdfdc" prefix_auto="0" extension_auto="1" />
+				<Option output="../../../devel31/wxPdfDocument/pdfdc" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="wxPdfDocument/samples/pdfdc" />
 				<Option object_output="../../../.objs31/plugins/contrib/source_exporter" />
 				<Option type="1" />
@@ -58,7 +58,7 @@
 			<Target title="default">
 				<Option output="../../../devel31/share/CodeBlocks/plugins/Exporter" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs31/plugins/contrib/source_exporter" />
-				<Option external_deps="wxPdfDocument/lib31/libwxPdfDocument.a;" />
+				<Option external_deps="../../../devel31/libwxPdfDocument.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
@@ -79,7 +79,6 @@
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add library="gdi32" />
 					<Add directory="../../../devel31" />
-					<Add directory="wxPdfDocument/lib31" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ..\..\..\devel31\share\CodeBlocks\Exporter.zip manifest.xml" />
@@ -113,6 +112,7 @@
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX31.include)" />
+			<Add directory="wxPdfDocument/include" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-mthreads" />
@@ -200,6 +200,9 @@
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument/include/wx/pdfdoc.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument/include/wx/pdfdoc_version.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument/include/wx/pdfdocdef.h">
@@ -485,6 +488,10 @@
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument/src/pdfdecode.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument/src/pdfdoc_version.rc">
+			<Option compilerVar="WINDRES" />
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument/src/pdfdocument.cpp">

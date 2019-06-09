@@ -178,17 +178,18 @@ REM =============================================
 REM =============================================
 
 copy tips.txt "%CB_DEVEL_RESDIR%" > nul
-copy tools\ConsoleRunner\cb_console_runner%TARGET%.exe "%CB_DEVEL_DIR%\cb_console_runner.exe"  > nul
-
 copy tips.txt "%CB_OUTPUT_RESDIR%" > nul
-copy tools\ConsoleRunner\cb_console_runner%TARGET%.exe "%CB_OUTPUT_DIR%\cb_console_runner.exe" > nul
+
+copy "%CB_DEVEL_DIR%\cb_console_runner.exe "%CB_OUTPUT_DIR%\cb_console_runner.exe" > nul
 
 echo Transferring executable files from devel to output folder
-xcopy /D /y "%CB_DEVEL_DIR%\*.exe"                   "%CB_OUTPUT_DIR%" > nul
+xcopy /D /y "%CB_DEVEL_DIR%\*.exe" "%CB_OUTPUT_DIR%" > nul
 echo Transferring DLL files from devel to output folder
-xcopy /D /y "%CB_DEVEL_DIR%\*.dll"                   "%CB_OUTPUT_DIR%" > nul
+xcopy /D /y "%CB_DEVEL_DIR%\*.dll" "%CB_OUTPUT_DIR%" > nul
+echo Transferring LIB files from devel to output folder
+xcopy /D /y "%CB_DEVEL_DIR%\*.a" "%CB_OUTPUT_DIR%" > nul
 echo Transferring DLL plugin files from devel to output folder
-xcopy /D /y "%CB_DEVEL_RESDIR%\plugins\*.dll"        "%CB_OUTPUT_RESDIR%\plugins" > nul
+xcopy /D /y "%CB_DEVEL_RESDIR%\plugins\*.dll" "%CB_OUTPUT_RESDIR%\plugins" > nul
 
 echo Stripping debug info from output tree
 strip "%CB_OUTPUT_DIR%\*.exe"

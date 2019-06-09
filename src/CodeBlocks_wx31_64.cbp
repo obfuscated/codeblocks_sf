@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="tinyXML">
-				<Option output="base/tinyxml/txml31_64" prefix_auto="1" extension_auto="1" />
+				<Option output="devel31_64/txml" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs31_64" />
 				<Option type="2" />
@@ -28,12 +28,11 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="txml31_64" />
-					<Add directory="base/tinyxml" />
+					<Add library="txml" />
 				</Linker>
 			</Target>
 			<Target title="ConsoleRunner">
-				<Option output="tools/ConsoleRunner/cb_console_runner31_64" prefix_auto="1" extension_auto="1" />
+				<Option output="devel31_64/cb_console_runner" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="tools/ConsoleRunner" />
 				<Option object_output=".objs31_64" />
 				<Option type="1" />
@@ -44,7 +43,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel">
-				<Option output="sdk/scripting/lib/squirrel31_64" prefix_auto="1" extension_auto="1" />
+				<Option output="devel31_64/squirrel" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs31_64" />
 				<Option type="2" />
@@ -56,10 +55,10 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel std lib">
-				<Option output="sdk/scripting/lib/sqstdlib31_64" prefix_auto="1" extension_auto="1" />
+				<Option output="devel31_64/sqstdlib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs31_64" />
-				<Option external_deps="sdk/scripting/lib/libsquirrel31_64.a;" />
+				<Option external_deps="devel31_64/libsquirrel.a;" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -69,10 +68,10 @@
 				</Compiler>
 			</Target>
 			<Target title="SqPlus">
-				<Option output="sdk/scripting/lib/sqplus31_64" prefix_auto="1" extension_auto="1" />
+				<Option output="devel31_64/sqplus" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs31_64" />
-				<Option external_deps="sdk/scripting/lib/libsquirrel31_64.a;sdk/scripting/lib/libsqstdlib31_64.a;" />
+				<Option external_deps="devel31_64/libsquirrel.a;devel31_64/libsqstdlib.a;" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -112,7 +111,7 @@
 				<Option output="devel31_64/codeblocks" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel31_64" />
 				<Option object_output=".objs31_64" />
-				<Option external_deps="base/tinyxml/libtxml31_64.a;sdk/scripting/lib/libsquirrel31_64.a;sdk/scripting/lib/libsqstdlib31_64.a;sdk/scripting/lib/libsqplus31_64.a;devel31_64/libwxscintilla_cb.a;" />
+				<Option external_deps="devel31_64/libtxml.a;devel31_64/libsquirrel.a;devel31_64/libsqstdlib.a;devel31_64/libsqplus.a;devel31_64/libwxscintilla_cb.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --verbose -p debug" />
@@ -142,14 +141,12 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="shfolder" />
-					<Add library="txml31_64" />
+					<Add library="txml" />
 					<Add library="wxscintilla_cb" />
-					<Add library="sqplus31_64" />
-					<Add library="sqstdlib31_64" />
-					<Add library="squirrel31_64" />
+					<Add library="sqplus" />
+					<Add library="sqstdlib" />
+					<Add library="squirrel" />
 					<Add library="gdi32" />
-					<Add directory="devel31_64" />
-					<Add directory="sdk/scripting/lib" />
 				</Linker>
 				<ExtraCommands>
 					<Add before="$(TARGET_OBJECT_DIR)\autorevision +wx +int +t .. include/autorevision.h" />
@@ -204,7 +201,6 @@
 					<Add library="rpcrt4" />
 					<Add library="advapi32" />
 					<Add library="wsock32" />
-					<Add directory="devel31_64" />
 					<Add directory="exchndl/win64/lib" />
 				</Linker>
 				<ExtraCommands>
@@ -244,7 +240,6 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel31_64" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist devel31_64\share\CodeBlocks mkdir devel31_64\share\CodeBlocks" />
@@ -277,7 +272,6 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel31_64" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist devel31_64\share\CodeBlocks mkdir devel31_64\share\CodeBlocks" />
@@ -308,7 +302,6 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel31_64" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist devel31_64\share\CodeBlocks mkdir devel31_64\share\CodeBlocks" />
@@ -317,7 +310,7 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="Compiler depslib">
-				<Option output="plugins/compilergcc/depslib/depslib31_64" prefix_auto="1" extension_auto="1" />
+				<Option output="devel31_64/depslib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs31_64" />
 				<Option type="2" />
@@ -334,7 +327,7 @@
 				<Option output="devel31_64/share/CodeBlocks/plugins/compiler" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel31_64" />
 				<Option object_output=".objs31_64" />
-				<Option external_deps="devel31_64/libcodeblocks.a;plugins/compilergcc/depslib/libdepslib31_64.a;" />
+				<Option external_deps="devel31_64/libcodeblocks.a;devel31_64/libdepslib.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
@@ -356,9 +349,7 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add library="depslib31_64" />
-					<Add directory="devel31_64" />
-					<Add directory="plugins/compilergcc/depslib" />
+					<Add library="depslib" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist devel31_64\share\CodeBlocks mkdir devel31_64\share\CodeBlocks" />
@@ -392,7 +383,6 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel31_64" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist devel31_64\share\CodeBlocks mkdir devel31_64\share\CodeBlocks" />
@@ -430,7 +420,6 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel31_64" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist devel31_64\share\CodeBlocks mkdir devel31_64\share\CodeBlocks" />
@@ -461,7 +450,6 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel31_64" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist devel31_64\share\CodeBlocks mkdir devel31_64\share\CodeBlocks" />
@@ -492,7 +480,6 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel31_64" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist devel31_64\share\CodeBlocks mkdir devel31_64\share\CodeBlocks" />
@@ -523,7 +510,6 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel31_64" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist devel31_64\share\CodeBlocks mkdir devel31_64\share\CodeBlocks" />
@@ -554,7 +540,6 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel31_64" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist devel31_64\share\CodeBlocks mkdir devel31_64\share\CodeBlocks" />
@@ -591,7 +576,6 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel31_64" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist devel31_64\share\CodeBlocks mkdir devel31_64\share\CodeBlocks" />
@@ -624,7 +608,6 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel31_64" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist devel31_64\share\CodeBlocks mkdir devel31_64\share\CodeBlocks" />
@@ -661,7 +644,6 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel31_64" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist devel31_64\share\CodeBlocks mkdir devel31_64\share\CodeBlocks" />
@@ -692,7 +674,6 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel31_64" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist devel31_64\share\CodeBlocks mkdir devel31_64\share\CodeBlocks" />
@@ -738,8 +719,8 @@
 		</ResourceCompiler>
 		<Linker>
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-			<Add directory="base/tinyxml" />
 			<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)" />
+			<Add directory="devel31_64" />
 		</Linker>
 		<Unit filename="base/tinyxml/tinystr.cpp">
 			<Option target="tinyXML" />

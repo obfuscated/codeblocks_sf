@@ -35,6 +35,7 @@
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DWXUSINGDLL" />
+			<Add option="-std=gnu++11" />
 			<Add option="-D_WIN64" />
 			<Add directory="$(#WX30_64.include)" />
 			<Add directory="$(#WX30_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
@@ -46,10 +47,10 @@
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-mthreads" />
-			<Add library="txml30_64" />
+			<Add library="txml" />
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 			<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)" />
-			<Add directory="..\..\base\tinyxml" />
+			<Add directory="../../devel30_64" />
 		</Linker>
 		<Unit filename="app.cpp" />
 		<Unit filename="app.h" />

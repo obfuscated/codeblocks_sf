@@ -8,7 +8,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="libbz2">
-				<Option output="bzip2/libbz2.a" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../devel30/libbz2_devpak.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output="../../../.objs30/plugins/contrib/devpak_plugin" />
 				<Option type="2" />
@@ -46,8 +46,11 @@
 				</Compiler>
 				<Linker>
 					<Add option="-mthreads" />
-					<Add library="bz2" />
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add library="bz2_devpak" />
 					<Add directory="../../../devel30" />
+					<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip ..\..\..\devel30\share\CodeBlocks\devpakupdater.zip manifest.xml *.xrc" />
@@ -74,10 +77,6 @@
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />
-			<Add library="codeblocks" />
-			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-			<Add directory="bzip2" />
-			<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)" />
 		</Linker>
 		<Unit filename="bzip2/blocksort.c">
 			<Option compilerVar="CC" />
