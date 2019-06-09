@@ -1167,6 +1167,43 @@ double cbGetContentScaleFactor(wxWindow &window)
 #endif // wxCHECK_VERSION(3, 0, 0)
 }
 
+#ifdef __WXGTK__
+// GTK 2 doesn't support scaling.
+// GTK 3 supports scaling, but doesn't support fractional values.
+// In both cases we need to make up our on scaling value.
+// For other platforms the value returned by GetContentScalingFactor seems adequate.
+double cbGetActualContentScaleFactor(wxWindow &window)
+{
+#if wxCHECK_VERSION(3, 1, 0)
+    wxDisplay display(wxDisplay::GetFromWindow(&window));
+    const wxSize ppi = display.GetPPI();
+    return ppi.y / 96.0;
+#else // wxCHECK_VERSION(3, 1, 0)
+    // This code is the simplest version which works in the most common case.
+    // If people complain that multi-monitor setups behave strangely, this should be revised with
+    // direct calls to GTK/GDK functions.
+
+    // This function might return bad results for multi screen setups.
+    const wxSize mm = wxGetDisplaySizeMM();
+    if (mm.x == 0 || mm.y == 0)
+        return 1.0;
+    const wxSize pixels = wxGetDisplaySize();
+
+    const double ppiX = wxRound((pixels.x * inches2mm) / mm.x);
+    const double ppiY = wxRound((pixels.y * inches2mm) / mm.y);
+
+    // My guess is that smaller scaling factor would look better. Probably it has effect only in
+    // multi monitor setups where there are monitors with different dpi.
+    return std::min(ppiX / 96.0, ppiY /96.0);
+#endif // wxCHECK_VERSION(3, 1, 0)
+}
+#else // __WXGTK__
+double cbGetActualContentScaleFactor(wxWindow &window)
+{
+    return window.GetContentScaleFactor();
+}
+#endif // __WXGTK__
+
 int cbFindMinSize(int targetSize, const int possibleSize[], int numWidths)
 {
     int selected = possibleSize[0];
