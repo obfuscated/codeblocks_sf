@@ -36,6 +36,16 @@ cbArtProvider::cbArtProvider(const wxString &prefix, int size)
     m_idToPath[wxT("core/manage_plugins")] = wxT("plug.png");
     m_idToPath[wxT("core/help_info")] = wxT("info.png");
     m_idToPath[wxT("core/help_idea")] = wxT("idea.png");
+
+    m_idToPath[wxT("core/dbg/run")] = wxT("dbgrun.png");
+    m_idToPath[wxT("core/dbg/pause")] = wxT("dbgpause.png");
+    m_idToPath[wxT("core/dbg/stop")] = wxT("dbgstop.png");
+    m_idToPath[wxT("core/dbg/run_to")] = wxT("dbgrunto.png");
+    m_idToPath[wxT("core/dbg/next")] = wxT("dbgnext.png");
+    m_idToPath[wxT("core/dbg/step")] = wxT("dbgstep.png");
+    m_idToPath[wxT("core/dbg/step_out")] = wxT("dbgstepout.png");
+    m_idToPath[wxT("core/dbg/next_inst")] = wxT("dbgnexti.png");
+    m_idToPath[wxT("core/dbg/step_inst")] = wxT("dbgstepi.png");
 }
 
 wxBitmap cbArtProvider::CreateBitmap(const wxArtID& id, const wxArtClient& client,

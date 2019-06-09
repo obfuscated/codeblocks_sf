@@ -7,55 +7,55 @@
     <object class="separator"/>
     <object class="wxMenuItem" name="idDebuggerMenuDebug">
       <label>&amp;Start / Continue</label>
-      <bitmap>images\16x16\dbgrun.png</bitmap>
+      <bitmap stock_id="core/dbg/run"/>
       <accel>F8</accel>
       <help>Run current project in debugger</help>
     </object>
     <object class="wxMenuItem" name="idDebuggerMenuBreak">
       <label>Break debugger</label>
-      <bitmap>images\16x16\dbgpause.png</bitmap>
+      <bitmap stock_id="core/dbg/pause"/>
       <help>Break the debuggee in order to examine its state</help>
     </object>
     <object class="wxMenuItem" name="idDebuggerMenuStop">
       <label>Stop debugger</label>
-      <bitmap>images\16x16\dbgstop.png</bitmap>
+      <bitmap stock_id="core/dbg/stop"/>
       <help>Stop current debugging session</help>
       <accel>Shift-F8</accel>
     </object>
     <object class="wxMenuItem" name="idDebuggerMenuRunToCursor">
       <label>Run to cursor</label>
-      <bitmap>images\16x16\dbgrunto.png</bitmap>
+      <bitmap stock_id="core/dbg/run_to"/>
       <accel>F4</accel>
       <help>Run program until it reaches the current line</help>
     </object>
     <object class="separator"/>
     <object class="wxMenuItem" name="idDebuggerMenuNext">
       <label>Next line</label>
-      <bitmap>images\16x16\dbgnext.png</bitmap>
+      <bitmap stock_id="core/dbg/next"/>
       <accel>F7</accel>
       <help>Execute the next line of code</help>
     </object>
     <object class="wxMenuItem" name="idDebuggerMenuStep">
       <label>Step into</label>
-      <bitmap>images\16x16\dbgstep.png</bitmap>
+      <bitmap stock_id="core/dbg/step"/>
       <accel>Shift-F7</accel>
       <help>Execute the next line of code, but step inside functions</help>
     </object>
     <object class="wxMenuItem" name="idDebuggerMenuStepOut">
       <label>Step out</label>
-      <bitmap>images\16x16\dbgstepout.png</bitmap>
+      <bitmap stock_id="core/dbg/step_out"/>
       <accel>Ctrl-F7</accel>
       <help>Continue execution until the current frame exits</help>
     </object>
     <object class="wxMenuItem" name="idDebuggerMenuNextInstr">
       <label>Next instruction</label>
-      <bitmap>images\16x16\dbgnexti.png</bitmap>
+      <bitmap stock_id="core/dbg/next_inst"/>
       <accel>Alt-F7</accel>
       <help>Execute the next assembly instruction</help>
     </object>
     <object class="wxMenuItem" name="idDebuggerMenuStepIntoInstr">
       <label>Step into instruction</label>
-      <bitmap>images\16x16\dbgstepi.png</bitmap>
+      <bitmap stock_id="core/dbg/step_inst"/>
       <accel>Shift-Alt-F7</accel>
       <help>Execute the next assembly instruction, if it is a function call step into it</help>
     </object>
