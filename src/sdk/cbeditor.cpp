@@ -327,25 +327,9 @@ struct cbEditorInternalData
 
         const int possibleWidths[] = { 8, 10, 12, 16, 20, 24, 28, 32, 40, 48, 56, 64 };
 
-        // Try to select the largest width that is available, but is smaller than the calculated
-        // width.
-        int selectedWidth = possibleWidths[0];
-        for (int possible : possibleWidths)
-        {
-            if (possible <= width)
-                selectedWidth = possible;
-            else
-                break;
-        }
+        const int selectedWidth = cbFindMinSize(width, possibleWidths, cbCountOf(possibleWidths));
+        const int oldSelectedWidth = cbFindMinSize(oldWidth, possibleWidths, cbCountOf(possibleWidths));
 
-        int oldSelectedWidth = possibleWidths[0];
-        for (int possible : possibleWidths)
-        {
-            if (possible <= oldWidth)
-                oldSelectedWidth = possible;
-            else
-                break;
-        }
 
         // We don't want to reload images if the width haven't changed!
         if (selectedWidth != oldSelectedWidth)

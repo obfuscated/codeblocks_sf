@@ -296,6 +296,9 @@ extern DLLIMPORT wxBitmap cbLoadBitmapScaled(const wxString& filename, wxBitmapT
 /// It is defined only to hide its absence from wx2.8.
 extern DLLIMPORT double cbGetContentScaleFactor(wxWindow &window);
 
+/// Try to select the largest size that is available, but is smaller than targetSize.
+extern DLLIMPORT int cbFindMinSize(int targetSize, const int possibleSize[], int numWidths);
+
 // compatibility function
 inline wxBitmap LoadPNGWindows2000Hack(const wxString& filename){ return cbLoadBitmap(filename); }
 
@@ -441,5 +444,12 @@ namespace platform
 // not yet optimal but should do for now
 // one thing that's not checked yet are circular symlinks - watch out!
 extern DLLIMPORT wxString realpath(const wxString& path);
+
+/// Function which could be used to get the number of elements in a statically sized array.
+template<typename T, int N>
+constexpr int cbCountOf(const T (&)[N])
+{
+    return N;
+}
 
 #endif // SDK_GLOBALS_H

@@ -1167,6 +1167,19 @@ double cbGetContentScaleFactor(wxWindow &window)
 #endif // wxCHECK_VERSION(3, 0, 0)
 }
 
+int cbFindMinSize(int targetSize, const int possibleSize[], int numWidths)
+{
+    int selected = possibleSize[0];
+    for (int ii = 0; ii < numWidths; ++ii)
+    {
+        if (possibleSize[ii] <= targetSize)
+            selected = possibleSize[ii];
+        else
+            break;
+    }
+    return selected;
+}
+
 // this doesn't work under wxGTK, and is only needed on wxMSW, we work around it on wxGTK
 #ifdef __WXMSW__
 void SetSettingsIconsStyle(wxListCtrl* lc, SettingsIconsStyle style)
