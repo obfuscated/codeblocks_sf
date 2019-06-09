@@ -538,7 +538,9 @@ void DoxyBlocks::BuildMenu(wxMenuBar *menuBar)
     if(idx != wxNOT_FOUND){
         wxMenu *submenu = new wxMenu;
         wxString sDataFolder(ConfigManager::GetDataFolder());
-        wxString prefix = sDataFolder + wxT("/images/DoxyBlocks/16x16/");
+        const int imageSize = Manager::Get()->GetToolbarImageSize();
+        const wxString prefix = sDataFolder + wxString::Format(wxT("/images/DoxyBlocks/%dx%d/"),
+                                                               imageSize, imageSize);
 
         wxMenuItem *MenuItemDoxywizard = new wxMenuItem(submenu, ID_MENU_DOXYWIZARD, _("&Doxywizard...\tCtrl-Shift-D"), _("Run doxywizard."));
         MenuItemDoxywizard->SetBitmap(wxBitmap(prefix + wxT("doxywizard.png"), wxBITMAP_TYPE_PNG));
@@ -572,9 +574,8 @@ void DoxyBlocks::BuildMenu(wxMenuBar *menuBar)
         submenu->Append(MenuItemConfig);
         submenu->AppendSeparator();
 
-        const wxString bmpResourcePrefix = sDataFolder + wxT("/resources.zip#zip:images/16x16/");
-        wxBitmap bmpFileOpen = cbLoadBitmap(bmpResourcePrefix + wxT("fileopen.png"), wxBITMAP_TYPE_PNG);
-        wxBitmap bmpFileSave = cbLoadBitmap(bmpResourcePrefix + wxT("filesave.png"), wxBITMAP_TYPE_PNG);
+        wxBitmap bmpFileOpen = wxArtProvider::GetBitmap(wxT("core/file_open"), wxART_MENU);
+        wxBitmap bmpFileSave = wxArtProvider::GetBitmap(wxT("core/file_save"), wxART_MENU);
 
         wxMenuItem *MenuItemLoadTemplate = new wxMenuItem(submenu, ID_MENU_LOAD_TEMPLATE, _("L&oad settings template"), _("Load saved settings template."));
         MenuItemLoadTemplate->SetBitmap(bmpFileOpen);
