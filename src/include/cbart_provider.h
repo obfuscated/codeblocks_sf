@@ -22,18 +22,18 @@ protected:
 private:
     wxString m_prefix;
 
-#if wxCHECK_VERSION(3, 0, 0)
-    typedef std::unordered_map<wxString, wxString> MapStockIdToPath;
-#else
     struct StringHash
     {
         size_t operator()(const wxString& s) const
         {
+#if wxCHECK_VERSION(3, 0, 0)
+            return std::hash<std::wstring>()(s.ToStdWstring());
+#else
             return std::hash<std::wstring>()(s.wc_str());
+#endif // wxCHECK_VERSION
         }
     };
     typedef std::unordered_map<wxString, wxString, StringHash> MapStockIdToPath;
-#endif // wxCHECK_VERSION
 
     MapStockIdToPath m_idToPath;
 };
