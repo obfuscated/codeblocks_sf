@@ -1200,7 +1200,7 @@ double cbGetActualContentScaleFactor(wxWindow &window)
 #else // __WXGTK__
 double cbGetActualContentScaleFactor(wxWindow &window)
 {
-    return window.GetContentScaleFactor();
+    return cbGetContentScaleFactor(window);
 }
 #endif // __WXGTK__
 
