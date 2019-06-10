@@ -2414,9 +2414,9 @@ void wxKeyConfigPanel::OnAssignKey(wxCommandEvent &)
     if (sel->GetShortcutCount() >= wxCMD_MAX_SHORTCUTS) {
 
         // sorry...
-        wxMessageBox(wxString::Format(_("Cannot add more than %d shortcuts ") +
-                    _("to a single command..."), wxCMD_MAX_SHORTCUTS),
-                    _("Cannot add another shortcut"));
+        wxMessageBox(wxString::Format(_("Cannot add more than %d shortcuts to a single command..."),
+                                      wxCMD_MAX_SHORTCUTS),
+                     _("Cannot add another shortcut"));
         return;
     }
 
@@ -2507,9 +2507,7 @@ void wxKeyConfigPanel::OnAddProfile(wxCommandEvent &)
 
     // we'll use one of wx common dialogs
     wxTextEntryDialog dlg(this,
-        _("Input the name of the new profile.\n") +
-        _("The new profile will be initially set to a copy of the last selected profile."),
-        _("Add new profile"));
+        _("Input the name of the new profile.\nThe new profile will be initially set to a copy of the last selected profile. Add new profile"));
     dlg.SetValue(sel->GetName());
 
     bool valid = FALSE;
@@ -2525,8 +2523,7 @@ void wxKeyConfigPanel::OnAddProfile(wxCommandEvent &)
 
         if (!valid) {
 
-            wxMessageBox(_("The given profile name is already in use.\n") +
-                        _("Enter another name."));
+            wxMessageBox(_("The given profile name is already in use.\nEnter another name."));
         }
     }
 
@@ -2548,8 +2545,8 @@ void wxKeyConfigPanel::OnRemoveProfile(wxCommandEvent &)
 
     if (m_pKeyProfiles->GetCount() == 1) {
 
-        wxMessageBox(("Cannot delete this profile. It's the only available profile."),
-                    _("Warning"));
+        wxMessageBox(_("Cannot delete this profile. It's the only available profile."),
+                     _("Warning"));
         return;
     }
 
