@@ -12,7 +12,7 @@
 				<Option platforms="Unix;Mac;" />
 				<Option output="../../../devel30/share/codeblocks/plugins/libwxSmithContribItems" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs30/plugins/contrib/wxSmithContribItems" />
-				<Option external_deps="../../../devel30/libwxsmithlib.so;../../../devel30/libwxchartctrl.so;../../../devel30/libwxcustombutton.so;../../../devel30/libwxflatnotebook.so;../../../devel30/libwxdatetimepicker.so;../../../devel30/libwximagepanel.so;../../../devel30/libwxspeedbutton.so;../../../devel30/libwxkwic.so;" />
+				<Option external_deps="../../../devel30/libwxsmithlib.so;../../../devel30/libwxchartctrl.so;../../../devel30/libwxcustombutton.so;../../../devel30/libwxflatnotebook.so;../../../devel30/libwximagepanel.so;../../../devel30/libwxspeedbutton.so;../../../devel30/libwxkwic.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
