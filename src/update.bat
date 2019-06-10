@@ -180,7 +180,7 @@ REM =============================================
 copy tips.txt "%CB_DEVEL_RESDIR%" > nul
 copy tips.txt "%CB_OUTPUT_RESDIR%" > nul
 
-copy "%CB_DEVEL_DIR%\cb_console_runner.exe "%CB_OUTPUT_DIR%\cb_console_runner.exe" > nul
+copy "%CB_DEVEL_DIR%\cb_console_runner.exe" "%CB_OUTPUT_DIR%\cb_console_runner.exe" > nul
 
 echo Transferring executable files from devel to output folder
 xcopy /D /y "%CB_DEVEL_DIR%\*.exe" "%CB_OUTPUT_DIR%" > nul
