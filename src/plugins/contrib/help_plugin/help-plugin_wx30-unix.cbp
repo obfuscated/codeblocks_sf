@@ -45,7 +45,7 @@
 					<Add option="$(#CB_RELEASE_TYPE)" />
 				</Compiler>
 				<Linker>
-					<Add library="bzip2" />
+					<Add library="bz2_help" />
 					<Add library="z" />
 				</Linker>
 			</Target>
@@ -72,7 +72,7 @@
 			<Add directory="../../../include/scripting/bindings" />
 			<Add directory="../../../include/scripting/include" />
 			<Add directory="../../../include/scripting/sqplus" />
-			<Add directory="bz2_help" />
+			<Add directory="bzip2" />
 			<Add directory="zlib" />
 		</Compiler>
 		<Linker>
