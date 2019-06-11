@@ -1174,11 +1174,11 @@ double cbGetContentScaleFactor(wxWindow &window)
 // For other platforms the value returned by GetContentScalingFactor seems adequate.
 double cbGetActualContentScaleFactor(wxWindow &window)
 {
-#if wxCHECK_VERSION(3, 1, 0)
+#if wxCHECK_VERSION(3, 1, 2)
     wxDisplay display(wxDisplay::GetFromWindow(&window));
     const wxSize ppi = display.GetPPI();
     return ppi.y / 96.0;
-#else // wxCHECK_VERSION(3, 1, 0)
+#else // wxCHECK_VERSION(3, 1, 2)
     // This code is the simplest version which works in the most common case.
     // If people complain that multi-monitor setups behave strangely, this should be revised with
     // direct calls to GTK/GDK functions.
@@ -1195,7 +1195,7 @@ double cbGetActualContentScaleFactor(wxWindow &window)
     // My guess is that smaller scaling factor would look better. Probably it has effect only in
     // multi monitor setups where there are monitors with different dpi.
     return std::min(ppiX / 96.0, ppiY /96.0);
-#endif // wxCHECK_VERSION(3, 1, 0)
+#endif // wxCHECK_VERSION(3, 1, 2)
 }
 #else // __WXGTK__
 double cbGetActualContentScaleFactor(wxWindow &window)
