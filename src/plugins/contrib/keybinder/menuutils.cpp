@@ -938,8 +938,8 @@ void wxMenuShortcutWalker::DeleteData(void *
 // ----------------------------------------------------------------------------
 {
     wxASSERT_MSG(data == NULL,
-        _("wxMenuShortcutWalker does not use the 'data' parameter")
-            + _T("\nwxMenuShortcutWalker does not use the 'data' parameter") // English for me too.
+                _("wxMenuShortcutWalker does not use the 'data' parameter"
+                  "\nwxMenuShortcutWalker does not use the 'data' parameter") // English for me too.
         );
 }
 // ----------------------------------------------------------------------------
