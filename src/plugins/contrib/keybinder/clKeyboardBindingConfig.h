@@ -17,6 +17,7 @@
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
 
+#include "configmanager.h"
 #include "clKeyboardManager.h"
 
 class  clKeyboardBindingConfig
@@ -30,7 +31,7 @@ public:
     clKeyboardBindingConfig& Save();
 
     bool Exists() const {
-        wxFileName fn(wxStandardPaths::Get().GetUserDataDir(), _T("cbKeyBinder20.conf"));
+        wxFileName fn(ConfigManager::GetConfigFolder(), _T("cbKeyBinder20.conf"));
         wxString personality = Manager::Get()->GetPersonalityManager()->GetPersonality();
         fn.SetName(personality + _T(".") + fn.GetName());
 

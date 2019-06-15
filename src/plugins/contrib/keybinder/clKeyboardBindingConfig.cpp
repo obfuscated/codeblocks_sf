@@ -15,6 +15,7 @@
 
 #include "manager.h"
 #include "personalitymanager.h"
+#include "configmanager.h"
 
 #include "clKeyboardBindingConfig.h"
 #include "json_node.h"
@@ -31,7 +32,7 @@ clKeyboardBindingConfig::~clKeyboardBindingConfig() {}
 clKeyboardBindingConfig& clKeyboardBindingConfig::Load()
 // ----------------------------------------------------------------------------
 {
-    wxFileName fn(wxStandardPaths::Get().GetUserDataDir(), _T("cbKeyBinder20.conf"));
+    wxFileName fn(ConfigManager::GetConfigFolder(), _T("cbKeyBinder20.conf"));
     //-fn.AppendDir("config");
     wxString personality = Manager::Get()->GetPersonalityManager()->GetPersonality();
     fn.SetName(personality + _T(".") + fn.GetName());
@@ -91,7 +92,8 @@ clKeyboardBindingConfig& clKeyboardBindingConfig::Save()
         binding.addProperty(_T("parentMenu"), iter->second.parentMenu);
         menuArr.arrayAppend(binding);
     }
-    wxFileName fn(wxStandardPaths::Get().GetUserDataDir(), _T("cbKeyBinder20.conf"));
+    wxString configDir = ConfigManager::GetConfigFolder();
+    wxFileName fn(configDir, _T("cbKeyBinder20.conf"));
     wxString personality = Manager::Get()->GetPersonalityManager()->GetPersonality();
     fn.SetName(personality + _T(".") + fn.GetName());
 

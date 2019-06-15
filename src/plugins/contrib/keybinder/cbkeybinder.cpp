@@ -287,7 +287,7 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
         LOGIT( _T("m_UserPersonality is[%s]"), m_UserPersonality.GetData() );
     #endif
 
-    m_OldKeyBinderFullFilePath = wxStandardPaths::Get().GetUserDataDir();
+    m_OldKeyBinderFullFilePath = ConfigManager::GetConfigFolder();
     m_OldKeyBinderFullFilePath = m_OldKeyBinderFullFilePath + wxFILE_SEP_PATH;
     m_OldKeyBinderFullFilePath << m_UserPersonality + wxT(".cbKeyBinder10.ini") ;
     if (not wxFileExists(m_OldKeyBinderFullFilePath)) m_OldKeyBinderFullFilePath = wxEmptyString;
@@ -338,7 +338,7 @@ void cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event)
     // keyMnuAccels.conf contains the default accerators created by walking the menu structure.
     // %appdata%\<personality>.cbKeyBinder??.ini contains the key bindings from the previous version of this plugin.
 
-    wxFileName fnKeyBindings(wxStandardPaths::Get().GetUserDataDir(), _T("cbKeyBinder20.conf"));
+    wxFileName fnKeyBindings(ConfigManager::GetConfigFolder(), _T("cbKeyBinder20.conf"));
     fnKeyBindings.SetName(GetUserPersonality() +_T(".") + fnKeyBindings.GetName());
 
     bool isRefreshRequest = (event.GetId() == idKeyBinderRefresh);
@@ -428,13 +428,14 @@ bool cbKeyBinder::CreateKeyBindDefaultFile(bool refresh)
 
     // GetDataDir() returns the directory where the executable file is located
     // GetUserDataDir() returns ...\%appdata%\<thisAppName>
+    // ConfigManager::GetConfigFolder() is the right way to do this.
 
     // userPersonality comes from the CodeBlocks /p argument or else set to 'default'
     wxFileName fnTempKeyMnuAccels(wxStandardPaths::Get().GetTempDir(), _T("keyMnuAccels.conf"));
     fnTempKeyMnuAccels.SetName(GetUserPersonality() + _T(".") + fnTempKeyMnuAccels.GetName());
 
     // cbKeyBinder20.conf == defaults key bindings + user key bindings (filename is prefixed with userPersonality.)
-    wxFileName fnNewcbKeyBinderConf(wxStandardPaths::Get().GetUserDataDir(), _T("cbKeyBinder20.conf"));
+    wxFileName fnNewcbKeyBinderConf(ConfigManager::GetConfigFolder(), _T("cbKeyBinder20.conf"));
     fnNewcbKeyBinderConf.SetName(GetUserPersonality() + _T(".") +fnNewcbKeyBinderConf.GetName());
 
     #if defined(LOGGING)
@@ -504,7 +505,7 @@ bool cbKeyBinder::CreateKeyBindDefaultFile(bool refresh)
         int oldPlgnVersionNum = plgnVersionNum - 10;
 
         wxString oldVersionFile = wxString::Format(_T("cbKeyBinder%d.ini"), oldPlgnVersionNum);
-        wxFileName fnOldVersionKeyBindings(wxStandardPaths::Get().GetUserDataDir(), _T("cbKeyBinder10.ini"));
+        wxFileName fnOldVersionKeyBindings(ConfigManager::GetConfigFolder(), _T("cbKeyBinder10.ini"));
         fnOldVersionKeyBindings.SetName(GetUserPersonality() +_T(".") + fnOldVersionKeyBindings.GetName());
 
         ok = fnOldVersionKeyBindings.FileExists();
@@ -549,6 +550,7 @@ bool cbKeyBinder::OnSaveKbOldFormatCfgFile(wxKeyProfileArray* pKeyProfArr, wxStr
     // GetDataDir() returns the directory where the executable file is located
     // GetUserDataDir() returns the %appdata% directory
     // GetTempDir() returns system temporary directory
+    // ConfigManager::GetConfigFolder() is the right way to do it for CodeBlocks.
 
     wxUnusedVar(backitup);
     wxFileName fnKeyBinderCfg(oldFmtMnuScanFilePath);

@@ -62,6 +62,9 @@ JSONRoot::~JSONRoot()
 
 void JSONRoot::save(const wxFileName& fn) const
 {
+    #if defined(LOGGING)
+        wxString filename = fn.GetFullPath(); //debugging
+    #endif
     wxFFile fp(fn.GetFullPath(), wxT("w+b"));
     if(fp.IsOpened()) {
         fp.Write(toElement().format(), wxConvUTF8);

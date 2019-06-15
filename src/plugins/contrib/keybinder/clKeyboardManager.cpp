@@ -264,6 +264,7 @@ void clKeyboardManager::Initialize(bool isRefreshRequest)
         // Decide which file we want to load, take the user settings file first
         // GetUserDataDir() == "c:\Users\<username>\AppData\Roaming\<appname>\config\keybindings.conf"
         // GetDataDir()     == executable directory
+        // ConfigManager::GetConfigFolder() is the right way to do it for CodeBlocks.
 
         // Old accererator setting are in %appdata%
         wxFileName fnOldSettings(wxStandardPaths::Get().GetTempDir(), _T("keyMnuAccels.conf"));
@@ -630,7 +631,7 @@ void clKeyboardManager::RestoreDefaults()
     wxString personality = Manager::Get()->GetPersonalityManager()->GetPersonality();
     fnOldSettings.SetName(personality + _T(".") + fnOldSettings.GetName());
 
-    wxFileName fnNewSettings(wxStandardPaths::Get().GetUserDataDir(), _T("cbKeyBinder20.conf"));
+    wxFileName fnNewSettings(ConfigManager::GetConfigFolder(), _T("cbKeyBinder20.conf"));
     fnNewSettings.SetName(personality + _T(".") + fnNewSettings.GetName());
 
 
