@@ -529,7 +529,7 @@ void wxMenuCmd::Exec(wxObject *origin, wxEvtHandler *client)
 // ----------------------------------------------------------------------------
 {
     wxCommandEvent menuEvent(wxEVT_COMMAND_MENU_SELECTED, GetId());
-    wxASSERT_MSG(client, _("An empty client handler ?!?"));
+    wxASSERT_MSG(client, wxT("An empty client handler ?!?"));
 
     // set up the event and process it...
     menuEvent.SetEventObject(origin);
@@ -938,8 +938,7 @@ void wxMenuShortcutWalker::DeleteData(void *
 // ----------------------------------------------------------------------------
 {
     wxASSERT_MSG(data == NULL,
-                _("wxMenuShortcutWalker does not use the 'data' parameter"
-                  "\nwxMenuShortcutWalker does not use the 'data' parameter") // English for me too.
+                wxT("wxMenuShortcutWalker does not use the 'data' parameter")
         );
 }
 // ----------------------------------------------------------------------------

@@ -611,7 +611,7 @@ int cbKeyBinder::ConvertMenuScanToKeyMnuAcceratorsConf(wxString keybinderFile, w
 
     if (not fncbkb.FileExists())
     {
-        wxASSERT_MSG(0, _("ConvertMenuScanToKeyMnuAcceratorsConf() called, but file does not exist."));
+        wxASSERT_MSG(0, wxT("ConvertMenuScanToKeyMnuAcceratorsConf() called, but file does not exist."));
         return false;
     }
     // remove old KeyMnuAccels.conf
@@ -624,11 +624,11 @@ int cbKeyBinder::ConvertMenuScanToKeyMnuAcceratorsConf(wxString keybinderFile, w
     wxTextFile txtacc(fnclacc.GetFullPath());
     if (not txtacc.Create() )
     {
-        wxASSERT_MSG(0, _("ConvertMenuScanToKeyMnuAcceratorsConf() failed to create "+acceleratorFile) );
+        wxASSERT_MSG(0, wxT("ConvertMenuScanToKeyMnuAcceratorsConf() failed to create "+acceleratorFile) );
     }
     if (not txtacc.Open())
     {
-        wxASSERT_MSG(0, _("ConvertMenuScanToKeyMnuAcceratorsConf() failed to open "+acceleratorFile) );
+        wxASSERT_MSG(0, wxT("ConvertMenuScanToKeyMnuAcceratorsConf() failed to open "+acceleratorFile) );
         return -1;
     }
 
@@ -706,13 +706,13 @@ int cbKeyBinder::ConvertOldKeybinderIniToAcceratorsConf(wxString oldKeybinderFil
     wxFileName fncbkb(oldKeybinderFile);
     if (not fncbkb.FileExists())
     {
-        wxASSERT_MSG(0, wxString::Format(_("ConvertKeybinderIni called, but %s file does not exist."), fncbkb.GetFullPath().wx_str()) );
+        wxASSERT_MSG(0, wxString::Format(wxT("ConvertKeybinderIni called, but %s file does not exist."), fncbkb.GetFullPath().wx_str()) );
         return -1;
     }
     wxTextFile txtkb(fncbkb.GetFullPath());
     if (not txtkb.Open() )
     {
-        wxASSERT_MSG(0, _("ConvertKeybinderIni failed to open " + oldKeybinderFile) );
+        wxASSERT_MSG(0, wxT("ConvertKeybinderIni failed to open " + oldKeybinderFile) );
         return -1;
     }
 
@@ -720,13 +720,13 @@ int cbKeyBinder::ConvertOldKeybinderIniToAcceratorsConf(wxString oldKeybinderFil
     wxFileName fnclacc(newAcceleratorFile);
     if (not fnclacc.FileExists())
     {
-        wxASSERT_MSG(0, wxString::Format(_("ConvertKeybinderIni called, but %s file does not exist."), fnclacc.GetFullPath().wx_str()) );
+        wxASSERT_MSG(0, wxString::Format(wxT("ConvertKeybinderIni called, but %s file does not exist."), fnclacc.GetFullPath().wx_str()) );
         return -1;
     }
     wxTextFile txtacc(fnclacc.GetFullPath());
     if (not txtacc.Open())
     {
-        wxASSERT_MSG(0, _("ConvertKeybinderIni failed to open " + newAcceleratorFile) );
+        wxASSERT_MSG(0, wxT("ConvertKeybinderIni failed to open " + newAcceleratorFile) );
         return -1;
     }
 

@@ -282,7 +282,7 @@ void clKeyboardManager::Initialize(bool isRefreshRequest)
         else    // else use executable dir accerators.conf.default accerators
         {
             //-fnFileToLoad = fnDefaultOldSettings;
-            wxASSERT_MSG(0, _("clKeyboardManager::Initialize() missing accerators.conf file"));
+            wxASSERT_MSG(0, wxT("clKeyboardManager::Initialize() missing accerators.conf file"));
         }
 
         if(fnFileToLoad.FileExists())
@@ -623,7 +623,7 @@ void clKeyboardManager::AddGlobalAccelerator(const wxString& resourceID,
 void clKeyboardManager::RestoreDefaults()
 // ----------------------------------------------------------------------------
 {
-    wxASSERT_MSG(0, _("RestoreDefaults not supported yet !"));
+    wxASSERT_MSG(0, wxT("RestoreDefaults not supported yet !"));
     return ;
 
     // Decide which file we want to load, take the user settings file first

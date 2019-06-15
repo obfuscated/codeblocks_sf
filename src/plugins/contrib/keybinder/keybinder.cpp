@@ -667,7 +667,7 @@ bool wxCmd::Load(wxConfigBase *p, const wxString &key)
     // id's have changed or shifted. Happens a lot during CodeBlocks development
     // or when a plugin churns a bunch with the menu items.
     wxASSERT_MSG(m_nId != wxID_INVALID,
-        _("ID must be set when creating this wxCmd"));
+        wxT("ID must be set when creating this wxCmd"));
     // extract the keybindings...
     while (tknzr.HasMoreTokens())
     {   wxString token = tknzr.GetNextToken();
@@ -703,7 +703,7 @@ bool wxCmd::LoadFromString(const wxString& cfgCmdString)
     // id's have changed or shifted. Happens a lot during CodeBlocks development
     // or when a plugin farts a bunch with the menu items.
     wxASSERT_MSG(m_nId != wxID_INVALID,
-        _("ID must be set when creating this wxCmd"));
+        wxT("ID must be set when creating this wxCmd"));
 
     // extract the keybindings...
     while (tknzr.HasMoreTokens())
@@ -1494,10 +1494,10 @@ wxKeyConfigPanel::wxKeyConfigPanel(wxWindow* parent,
 
     wxASSERT_MSG((m_nBuildMode & wxKEYBINDER_USE_LISTBOX) ||
                 (m_nBuildMode & wxKEYBINDER_USE_TREECTRL),
-                _("You must specify one of the two !!"));
+                wxT("You must specify one of the two !!"));
     wxASSERT_MSG(!((m_nBuildMode & wxKEYBINDER_USE_LISTBOX) &&
                  (m_nBuildMode & wxKEYBINDER_USE_TREECTRL)),
-                _("You cannot specify them both !!"));
+                wxT("You cannot specify them both !!"));
 
     // build everything
     BuildCtrls();
