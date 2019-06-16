@@ -1984,7 +1984,13 @@ void Window::InvalidateRectangle(PRectangle rc) {
 }
 
 void Window::SetFont(Font &font) {
+    wxFont &f=*((wxFont*)font.GetID());
     GETWIN(wid)->SetFont(*((wxFont*)font.GetID()));
+
+    int fontSize;
+    GETWIN(wid)->GetTextExtent(wxT("A"), nullptr, &fontSize, nullptr, nullptr, &f);
+
+    printf("Window::SetFont: ps: %d; fs: %d\n", f.GetPointSize(), fontSize);
 }
 
 void Window::SetCursor(Cursor curs) {
@@ -2423,7 +2429,10 @@ void ListBoxImpl::Create(Window &parent, int ctrlID, Point location_, int lineHe
     maxStrWidth = 0;
     wid = new wxSCIListBoxWin(GETWIN(parent.GetID()), ctrlID, location);
     if (imgList != NULL)
+    {
+        printf("ListBoxImpl::Create %d; set image list\n", lineHeight_);
         GETLB(wid)->SetImageList(imgList, wxIMAGE_LIST_SMALL);
+    }
 }
 
 
@@ -2574,9 +2583,14 @@ void ListBoxImpl::RegisterImageHelper(int type, const wxBitmap& bmp)
 {
     if (! imgList) {
         // assumes all images are the same size
+        printf("ListBoxImpl::RegisterImageHelper imagelist size: %dx%d lineHeight: %d\n",
+               bmp.GetWidth(), bmp.GetHeight(), lineHeight);
         imgList = new wxImageList(bmp.GetWidth(), bmp.GetHeight(), true);
         imgTypeMap = new wxArrayInt;
     }
+
+    printf("ListBoxImpl::RegisterImageHelper size: %dx%d lineHeight: %d\n",
+           bmp.GetWidth(), bmp.GetHeight(), lineHeight);
 
     int idx = imgList->Add(bmp);
 
@@ -2622,7 +2636,10 @@ void ListBoxImpl::ClearRegisteredImages() {
     wxDELETE(imgList);
     wxDELETE(imgTypeMap);
     if (wid)
+    {
         GETLB(wid)->SetImageList(NULL, wxIMAGE_LIST_SMALL);
+        printf("reset image list\n");
+    }
 }
 
 

@@ -860,6 +860,8 @@ void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCTo
                 CCLogger::Get()->DebugLog(wxT("Generating tokens list..."));
 
             const int fontSize = CalcStcFontSize(stc);
+
+            printf("requesting font: %d\n", fontSize);
             wxImageList* ilist = m_NativeParser.GetImageList(fontSize);
             stc->ClearRegisteredImages();
 
@@ -3499,6 +3501,9 @@ wxBitmap CodeCompletion::GetImage(ImageId::Id id, int fontSize)
             default:
                 ;
         }
+
+        printf("Loading image: '%s' (requested size: %d; found: %d)\n", filename.utf8_str().data(),
+               fontSize, size);
 
         if (!filename.empty())
         {
