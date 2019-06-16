@@ -129,7 +129,7 @@ public:
      * @param path the new added path
      * @param hasExt the file path has extensions, such as C:/aaa/bbb.cpp
      */
-static void AddPaths(wxArrayString& dirs, const wxString& path, bool hasExt);
+    static void AddPaths(wxArrayString& dirs, const wxString& path, bool hasExt);
 
     // the functions below are handling and managing Parser object
 
@@ -272,13 +272,6 @@ protected:
 
     /** Get cbProject and Parser pointer, according to the current active editor */
     std::pair<cbProject*, ParserBase*> GetParserInfoByCurrentEditor();
-
-    /** Used to support Symbol browser and codecompletion UI
-     *  Image list is used to initialize the symbol browser tree node image.
-     */
-    void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxBitmap& mask = wxNullBitmap);
-    void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxColour& maskColour);
-    void SetTokenKindImage(int kind, const wxIcon& icon);
 
     /** set the class browser view mode */
     void SetCBViewMode(const BrowserViewMode& mode);
