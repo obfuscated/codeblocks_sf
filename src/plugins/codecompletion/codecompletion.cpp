@@ -1827,6 +1827,7 @@ void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
 void CodeCompletion::OnViewClassBrowser(wxCommandEvent& event)
 {
 #if wxCHECK_VERSION(3, 0, 0)
+    (void)event;
     cbMessageBox(_("The symbols browser is disabled in wx3.x builds.\n"
                     "We've done this because it causes crashes."), _("Information"), wxICON_INFORMATION);
     return;
