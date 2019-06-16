@@ -11,6 +11,8 @@
 
 #include <queue>
 #include <map>
+#include <memory>
+#include <unordered_map>
 
 #include <wx/event.h>
 
@@ -107,10 +109,10 @@ public:
     /** Return true if all the parser's batch-parse stages are finished, otherwise return false*/
     bool Done();
 
-    /** Used to support Symbol browser and codecompletion UI
-     *  Image list is used to initialize the symbol browser tree node image.
+    /** Provides images for the Symbol browser (for tree node images) and AutoCompletion list.
+     *  @param maxSize Maximum size that will fit in the UI.
      */
-    wxImageList* GetImageList() { return m_ImageList; }
+    wxImageList* GetImageList(int maxSize);
 
     /** Returns the image assigned to a specific token for a symbol browser */
     int GetTokenKindImage(const Token* token);
@@ -473,7 +475,10 @@ private:
      */
     ProjectSearchDirsMap         m_ProjectSearchDirsMap;
     int                          m_HookId;    //!< project loader hook ID
-    wxImageList*                 m_ImageList; //!< Images for class browser
+
+    /// Stores image lists for different sizes. See GetImageList.
+    typedef std::unordered_map<int, std::unique_ptr<wxImageList>> SizeToImageList;
+    SizeToImageList m_ImageListMap;
 
     /** all the files which opened, but does not belong to any cbp */
     wxArrayString                m_StandaloneFiles;

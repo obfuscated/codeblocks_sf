@@ -1217,6 +1217,12 @@ int cbFindMinSize(int targetSize, const int possibleSize[], int numWidths)
     return selected;
 }
 
+int cbFindMinSize16to64(int targetSize)
+{
+    const int sizes[] = { 16, 20, 24, 28, 32, 40, 48, 56, 64 };
+    return cbFindMinSize(targetSize, sizes, cbCountOf(sizes));
+}
+
 // this doesn't work under wxGTK, and is only needed on wxMSW, we work around it on wxGTK
 #ifdef __WXMSW__
 void SetSettingsIconsStyle(wxListCtrl* lc, SettingsIconsStyle style)

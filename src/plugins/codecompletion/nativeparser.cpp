@@ -127,11 +127,72 @@ int idTimerParsingOneByOne = wxNewId();
 /** if this option is enabled, there will be many log messages when doing semantic match */
 bool s_DebugSmartSense = false;
 
+static void AddToImageList(wxImageList *list, const wxString &path)
+{
+    wxBitmap bmp = cbLoadBitmap(path, wxBITMAP_TYPE_PNG);
+    if (!bmp.IsOk())
+    {
+        printf("failed to load: %s\n", path.utf8_str().data());
+    }
+    list->Add(bmp);
+}
+
+static wxImageList* LoadImageList(int size)
+{
+    wxImageList *list = new wxImageList(size, size);
+    wxBitmap bmp;
+    const wxString prefix = ConfigManager::GetDataFolder()
+                          + wxString::Format(_T("/images/codecompletion/%dx%d/"), size, size);
+
+    // Bitmaps must be added by order of PARSER_IMG_* consts.
+    AddToImageList(list, prefix + _T("class_folder.png")); // PARSER_IMG_CLASS_FOLDER
+    AddToImageList(list, prefix + _T("class.png")); // PARSER_IMG_CLASS
+    AddToImageList(list, prefix + _T("class_private.png")); // PARSER_IMG_CLASS_PRIVATE
+    AddToImageList(list, prefix + _T("class_protected.png")); // PARSER_IMG_CLASS_PROTECTED
+    AddToImageList(list, prefix + _T("class_public.png")); // PARSER_IMG_CLASS_PUBLIC
+    AddToImageList(list, prefix + _T("ctor_private.png")); // PARSER_IMG_CTOR_PRIVATE
+    AddToImageList(list, prefix + _T("ctor_protected.png")); // PARSER_IMG_CTOR_PROTECTED
+    AddToImageList(list, prefix + _T("ctor_public.png")); // PARSER_IMG_CTOR_PUBLIC
+    AddToImageList(list, prefix + _T("dtor_private.png")); // PARSER_IMG_DTOR_PRIVATE
+    AddToImageList(list, prefix + _T("dtor_protected.png")); // PARSER_IMG_DTOR_PROTECTED
+    AddToImageList(list, prefix + _T("dtor_public.png")); // PARSER_IMG_DTOR_PUBLIC
+    AddToImageList(list, prefix + _T("method_private.png")); // PARSER_IMG_FUNC_PRIVATE
+    AddToImageList(list, prefix + _T("method_protected.png")); // PARSER_IMG_FUNC_PRIVATE
+    AddToImageList(list, prefix + _T("method_public.png")); // PARSER_IMG_FUNC_PUBLIC
+    AddToImageList(list, prefix + _T("var_private.png")); // PARSER_IMG_VAR_PRIVATE
+    AddToImageList(list, prefix + _T("var_protected.png")); // PARSER_IMG_VAR_PROTECTED
+    AddToImageList(list, prefix + _T("var_public.png")); // PARSER_IMG_VAR_PUBLIC
+    AddToImageList(list, prefix + _T("macro_def.png")); // PARSER_IMG_MACRO_DEF
+    AddToImageList(list, prefix + _T("enum.png")); // PARSER_IMG_ENUM
+    AddToImageList(list, prefix + _T("enum_private.png")); // PARSER_IMG_ENUM_PRIVATE
+    AddToImageList(list, prefix + _T("enum_protected.png")); // PARSER_IMG_ENUM_PROTECTED
+    AddToImageList(list, prefix + _T("enum_public.png")); // PARSER_IMG_ENUM_PUBLIC
+    AddToImageList(list, prefix + _T("enumerator.png")); // PARSER_IMG_ENUMERATOR
+    AddToImageList(list, prefix + _T("namespace.png")); // PARSER_IMG_NAMESPACE
+    AddToImageList(list, prefix + _T("typedef.png")); // PARSER_IMG_TYPEDEF
+    AddToImageList(list, prefix + _T("typedef_private.png")); // PARSER_IMG_TYPEDEF_PRIVATE
+    AddToImageList(list, prefix + _T("typedef_protected.png")); // PARSER_IMG_TYPEDEF_PROTECTED
+    AddToImageList(list, prefix + _T("typedef_public.png")); // PARSER_IMG_TYPEDEF_PUBLIC
+    AddToImageList(list, prefix + _T("symbols_folder.png")); // PARSER_IMG_SYMBOLS_FOLDER
+    AddToImageList(list, prefix + _T("vars_folder.png")); // PARSER_IMG_VARS_FOLDER
+    AddToImageList(list, prefix + _T("funcs_folder.png")); // PARSER_IMG_FUNCS_FOLDER
+    AddToImageList(list, prefix + _T("enums_folder.png")); // PARSER_IMG_ENUMS_FOLDER
+    AddToImageList(list, prefix + _T("macro_def_folder.png")); // PARSER_IMG_MACRO_DEF_FOLDER
+    AddToImageList(list, prefix + _T("others_folder.png")); // PARSER_IMG_OTHERS_FOLDER
+    AddToImageList(list, prefix + _T("typedefs_folder.png")); // PARSER_IMG_TYPEDEF_FOLDER
+    AddToImageList(list, prefix + _T("macro_use.png")); // PARSER_IMG_MACRO_USE
+    AddToImageList(list, prefix + _T("macro_use_private.png")); // PARSER_IMG_MACRO_USE_PRIVATE
+    AddToImageList(list, prefix + _T("macro_use_protected.png")); // PARSER_IMG_MACRO_USE_PROTECTED
+    AddToImageList(list, prefix + _T("macro_use_public.png")); // PARSER_IMG_MACRO_USE_PUBLIC
+    AddToImageList(list, prefix + _T("macro_use_folder.png")); // PARSER_IMG_MACRO_USE_FOLDER
+
+    return list;
+}
+
 NativeParser::NativeParser() :
     m_TimerParsingOneByOne(this, idTimerParsingOneByOne),
     m_ClassBrowser(nullptr),
     m_ClassBrowserIsFloating(false),
-    m_ImageList(nullptr),
     m_ParserPerWorkspace(false),
     m_LastAISearchWasGlobal(false),
     m_LastControl(nullptr),
@@ -142,92 +203,6 @@ NativeParser::NativeParser() :
 {
     m_TempParser = new Parser(this, nullptr);
     m_Parser     = m_TempParser;
-
-    m_ImageList = new wxImageList(16, 16);
-    wxBitmap bmp;
-    wxString prefix;
-    prefix = ConfigManager::GetDataFolder() + _T("/images/codecompletion/");
-    // bitmaps must be added by order of PARSER_IMG_* consts
-    bmp = cbLoadBitmap(prefix + _T("class_folder.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_CLASS_FOLDER
-    bmp = cbLoadBitmap(prefix + _T("class.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_CLASS
-    bmp = cbLoadBitmap(prefix + _T("class_private.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_CLASS_PRIVATE
-    bmp = cbLoadBitmap(prefix + _T("class_protected.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_CLASS_PROTECTED
-    bmp = cbLoadBitmap(prefix + _T("class_public.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_CLASS_PUBLIC
-    bmp = cbLoadBitmap(prefix + _T("ctor_private.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_CTOR_PRIVATE
-    bmp = cbLoadBitmap(prefix + _T("ctor_protected.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_CTOR_PROTECTED
-    bmp = cbLoadBitmap(prefix + _T("ctor_public.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_CTOR_PUBLIC
-    bmp = cbLoadBitmap(prefix + _T("dtor_private.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_DTOR_PRIVATE
-    bmp = cbLoadBitmap(prefix + _T("dtor_protected.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_DTOR_PROTECTED
-    bmp = cbLoadBitmap(prefix + _T("dtor_public.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_DTOR_PUBLIC
-    bmp = cbLoadBitmap(prefix + _T("method_private.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_FUNC_PRIVATE
-    bmp = cbLoadBitmap(prefix + _T("method_protected.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_FUNC_PRIVATE
-    bmp = cbLoadBitmap(prefix + _T("method_public.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_FUNC_PUBLIC
-    bmp = cbLoadBitmap(prefix + _T("var_private.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_VAR_PRIVATE
-    bmp = cbLoadBitmap(prefix + _T("var_protected.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_VAR_PROTECTED
-    bmp = cbLoadBitmap(prefix + _T("var_public.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_VAR_PUBLIC
-    bmp = cbLoadBitmap(prefix + _T("macro_def.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_MACRO_DEF
-    bmp = cbLoadBitmap(prefix + _T("enum.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_ENUM
-    bmp = cbLoadBitmap(prefix + _T("enum_private.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_ENUM_PRIVATE
-    bmp = cbLoadBitmap(prefix + _T("enum_protected.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_ENUM_PROTECTED
-    bmp = cbLoadBitmap(prefix + _T("enum_public.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_ENUM_PUBLIC
-    bmp = cbLoadBitmap(prefix + _T("enumerator.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_ENUMERATOR
-    bmp = cbLoadBitmap(prefix + _T("namespace.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_NAMESPACE
-    bmp = cbLoadBitmap(prefix + _T("typedef.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_TYPEDEF
-    bmp = cbLoadBitmap(prefix + _T("typedef_private.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_TYPEDEF_PRIVATE
-    bmp = cbLoadBitmap(prefix + _T("typedef_protected.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_TYPEDEF_PROTECTED
-    bmp = cbLoadBitmap(prefix + _T("typedef_public.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_TYPEDEF_PUBLIC
-    bmp = cbLoadBitmap(prefix + _T("symbols_folder.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_SYMBOLS_FOLDER
-    bmp = cbLoadBitmap(prefix + _T("vars_folder.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_VARS_FOLDER
-    bmp = cbLoadBitmap(prefix + _T("funcs_folder.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_FUNCS_FOLDER
-    bmp = cbLoadBitmap(prefix + _T("enums_folder.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_ENUMS_FOLDER
-    bmp = cbLoadBitmap(prefix + _T("macro_def_folder.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_MACRO_DEF_FOLDER
-    bmp = cbLoadBitmap(prefix + _T("others_folder.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_OTHERS_FOLDER
-    bmp = cbLoadBitmap(prefix + _T("typedefs_folder.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_TYPEDEF_FOLDER
-    bmp = cbLoadBitmap(prefix + _T("macro_use.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_MACRO_USE
-    bmp = cbLoadBitmap(prefix + _T("macro_use_private.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_MACRO_USE_PRIVATE
-    bmp = cbLoadBitmap(prefix + _T("macro_use_protected.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_MACRO_USE_PROTECTED
-    bmp = cbLoadBitmap(prefix + _T("macro_use_public.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_MACRO_USE_PUBLIC
-    bmp = cbLoadBitmap(prefix + _T("macro_use_folder.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_MACRO_USE_FOLDER
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
     m_ParserPerWorkspace = cfg->ReadBool(_T("/parser_per_workspace"), false);
@@ -249,7 +224,6 @@ NativeParser::~NativeParser()
     ProjectLoaderHooks::UnregisterHook(m_HookId, true);
     RemoveClassBrowser();
     ClearParsers();
-    Delete(m_ImageList);
     Delete(m_TempParser);
 }
 
@@ -360,6 +334,21 @@ bool NativeParser::Done()
     }
     TRACE(_T("NativeParser::Done(): %s"), done ? _T("true"): _T("false"));
     return done;
+}
+
+wxImageList* NativeParser::GetImageList(int maxSize)
+{
+    const int size = cbFindMinSize16to64(maxSize);
+
+    SizeToImageList::iterator it = m_ImageListMap.find(size);
+    if (it == m_ImageListMap.end())
+    {
+        wxImageList *list = LoadImageList(size);
+        m_ImageListMap.insert(SizeToImageList::value_type(size, std::unique_ptr<wxImageList>(list)));
+        return list;
+    }
+    else
+        return it->second.get();
 }
 
 int NativeParser::GetTokenKindImage(const Token* token)
