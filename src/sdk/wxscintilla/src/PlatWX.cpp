@@ -2210,7 +2210,7 @@ public:
 #endif
         lv->SetSize(x, y, w, h);
         // reset the column widths
-        lv->SetColumnWidth(0, IconWidth()+4);
+        lv->SetColumnWidth(0, IconWidth()+8);
         lv->SetColumnWidth(1, w - 2 - lv->GetColumnWidth(0) -
                            wxSystemSettings::GetMetric(wxSYS_VSCROLL_X));
         event.Skip();
@@ -2325,7 +2325,7 @@ public:
         wxSize sz = GetClientSize();
         lv->SetSize(sz);
         // reset the column widths
-        lv->SetColumnWidth(0, IconWidth()+4);
+        lv->SetColumnWidth(0, IconWidth()+8);
         lv->SetColumnWidth(1, sz.x - 2 - lv->GetColumnWidth(0) -
                            wxSystemSettings::GetMetric(wxSYS_VSCROLL_X));
         event.Skip();
