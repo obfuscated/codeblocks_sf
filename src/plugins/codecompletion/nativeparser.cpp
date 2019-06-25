@@ -142,7 +142,8 @@ static wxImageList* LoadImageList(int size)
     wxImageList *list = new wxImageList(size, size);
     wxBitmap bmp;
     const wxString prefix = ConfigManager::GetDataFolder()
-                          + wxString::Format(_T("/images/codecompletion/%dx%d/"), size, size);
+                          + wxString::Format(_T("/codecompletion.zip#zip:images/%dx%d/"), size,
+                                             size);
 
     // Bitmaps must be added by order of PARSER_IMG_* consts.
     AddToImageList(list, prefix + _T("class_folder.png")); // PARSER_IMG_CLASS_FOLDER

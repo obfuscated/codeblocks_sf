@@ -302,7 +302,6 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{pkgdatadir}/compilers/*
 %{pkgdatadir}/icons/*
 %{pkgdatadir}/images/*.png
-%{pkgdatadir}/images/codecompletion/*
 %{pkgdatadir}/images/settings/*
 %{pkgdatadir}/lexers/*
 %{pkgdatadir}/scripts/*

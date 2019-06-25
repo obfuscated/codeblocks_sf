@@ -3476,7 +3476,8 @@ wxBitmap CodeCompletion::GetImage(ImageId::Id id, int fontSize)
     if (it == m_images.end())
     {
         const wxString prefix = ConfigManager::GetDataFolder()
-                              + wxString::Format(_T("/images/codecompletion/%dx%d/"), size, size);
+                              + wxString::Format(_T("/codecompletion.zip#zip:images/%dx%d/"), size,
+                                                 size);
 
         wxString filename;
         switch (id)
