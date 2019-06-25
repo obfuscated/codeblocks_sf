@@ -428,8 +428,8 @@ void ClassBrowserBuilderThread::BuildTree()
     wxStopWatch sw_total;
 #endif
     // 1.) Registration of images
-    m_CCTreeCtrlTop->SetImageList(m_NativeParser->GetImageList());
-    m_CCTreeCtrlBottom->SetImageList(m_NativeParser->GetImageList());
+    m_CCTreeCtrlTop->SetImageList(m_NativeParser->GetImageList(16));
+    m_CCTreeCtrlBottom->SetImageList(m_NativeParser->GetImageList(16));
 
     // 2.) Create initial root node, if not already there
     wxTreeItemId root = m_CCTreeCtrlTop->GetRootItem();

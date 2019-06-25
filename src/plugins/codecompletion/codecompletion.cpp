@@ -279,118 +279,6 @@ namespace CodeCompletionHelper
 
 }//namespace CodeCompletionHelper
 
-// empty bitmap for use as C++ keywords icon in code-completion list
-/* XPM */
-static const char * cpp_keyword_xpm[] = {
-"16 16 2 1",
-"     c None",
-".    c #04049B",
-"                ",
-"  .......       ",
-" .........      ",
-" ..     ..      ",
-"..              ",
-"..   ..     ..  ",
-"..   ..     ..  ",
-".. ...... ......",
-".. ...... ......",
-"..   ..     ..  ",
-"..   ..     ..  ",
-"..      ..      ",
-"...     ..      ",
-" .........      ",
-"  .......       ",
-"                "};
-
-// bitmap for use as D keywords icon in code-completion list
-/* XPM */
-static const char *d_keyword_xpm[] = {
-/* width height num_colors chars_per_pixel */
-"    14    14      6            1",
-/* colors */
-"  c none",
-". c #fefefe",
-"# c #e43a3a",
-"a c #e40000",
-"b c #e48f8f",
-"c c #8f0000",
-/* pixels */
-"              ",
-"              ",
-"  .#aaaa#b.   ",
-"  baabb#aa#   ",
-"  ba#   baa#  ",
-"  ba#    bcab ",
-"  ba#     #a# ",
-"  ba#     bac ",
-"  ba#     ba# ",
-"  ba#     bc# ",
-"  ba#     #cb ",
-"  bcc    ac#  ",
-"  #aa###ac#   ",
-"  cccccc#b    "
-};
-
-
-// bitmap for other-than-C++ keywords
-// it's pretty nice actually :)
-/* XPM */
-static const char * unknown_keyword_xpm[] = {
-"16 16 7 1",
-"     c None",
-".    c #FF8800",
-"+    c #FF8D0B",
-"@    c #FF9115",
-"#    c #FFA948",
-"$    c #FFC686",
-"%    c #FFFFFF",
-"                ",
-"                ",
-"      ....      ",
-"    ........    ",
-"   ..+@+.....   ",
-"   .+#$#+....   ",
-"  ..@$%$@.....  ",
-"  ..+#$#+.....  ",
-"  ...+@+......  ",
-"  ............  ",
-"   ..........   ",
-"   ..........   ",
-"    ........    ",
-"      ....      ",
-"                ",
-"                "};
-
-// bitmap for #include file listings
-/* XPM */
-static const char* header_file_xpm[] = {
-"16 16 9 1",
-"   c None",
-"+  c #D23E39",
-"$  c #CF0C0A",
-"@  c #CB524B",
-"&  c #E2D8D8",
-"#  c #C7C7C4",
-"_  c #E4B9B5",
-"-  c #F7F9F7",
-"=  c #EBE9E7",
-"  #########     ",
-"  #=-----####   ",
-"  #--------=##  ",
-"  #--------=-#  ",
-"  #--=@_-----#  ",
-"  #--=+_-----#  ",
-"  #--=++@_---#  ",
-"  #--&$@@$=--#  ",
-"  #--&$__$&=-#  ",
-"  #--&$__$&=-#  ",
-"  #--&$__$&=-#  ",
-"  #-==#=&#==-#  ",
-"  #-========-#  ",
-"  #----=====-#  ",
-"  ############  ",
-"                "};
-
 // menu IDs
 // just because we don't know other plugins' used identifiers,
 // we use wxNewId() to generate a guaranteed unique ID ;), instead of enum
@@ -944,6 +832,15 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(bool isAuto
     return tokens;
 }
 
+static int CalcStcFontSize(cbStyledTextCtrl *stc)
+{
+    wxFont defaultFont = stc->StyleGetFont(wxSCI_STYLE_DEFAULT);
+    defaultFont.SetPointSize(defaultFont.GetPointSize() + stc->GetZoom());
+    int fontSize;
+    stc->GetTextExtent(wxT("A"), nullptr, &fontSize, nullptr, nullptr, &defaultFont);
+    return fontSize;
+}
+
 void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCToken>& tokens, bool preprocessorOnly)
 {
     const bool caseSens = m_NativeParser.GetParser().Options().caseSensitive;
@@ -962,7 +859,8 @@ void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCTo
             if (s_DebugSmartSense)
                 CCLogger::Get()->DebugLog(wxT("Generating tokens list..."));
 
-            wxImageList* ilist = m_NativeParser.GetImageList();
+            const int fontSize = CalcStcFontSize(stc);
+            wxImageList* ilist = m_NativeParser.GetImageList(fontSize);
             stc->ClearRegisteredImages();
 
             tokens.reserve(result.size());
@@ -1035,11 +933,11 @@ void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCTo
                     wxString strLang = colour_set->GetLanguageName(lang);
                     // if its sourcecode/header file and a known fileformat, show the corresponding icon
                     if (isC && strLang == wxT("C/C++"))
-                        stc->RegisterImage(iidx, wxBitmap(cpp_keyword_xpm));
+                        stc->RegisterImage(iidx, GetImage(ImageId::KeywordCPP, fontSize));
                     else if (isC && strLang == wxT("D"))
-                        stc->RegisterImage(iidx, wxBitmap(d_keyword_xpm));
+                        stc->RegisterImage(iidx, GetImage(ImageId::KeywordD, fontSize));
                     else
-                        stc->RegisterImage(iidx, wxBitmap(unknown_keyword_xpm));
+                        stc->RegisterImage(iidx, GetImage(ImageId::Unknown, fontSize));
                     // the first two keyword sets are the primary and secondary keywords (for most lexers at least)
                     // but this is now configurable in global settings
                     for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
@@ -1123,8 +1021,9 @@ void CodeCompletion::DoCodeCompletePreprocessor(int tknStart, int tknEnd, cbEdit
             tokens.push_back(CCToken(wxNOT_FOUND, macros[i], PARSER_IMG_MACRO_DEF));
     }
     stc->ClearRegisteredImages();
+    const int fontSize = CalcStcFontSize(stc);
     stc->RegisterImage(PARSER_IMG_MACRO_DEF,
-                       m_NativeParser.GetImageList()->GetBitmap(PARSER_IMG_MACRO_DEF));
+                       m_NativeParser.GetImageList(fontSize)->GetBitmap(PARSER_IMG_MACRO_DEF));
 }
 
 void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tknEnd, std::vector<CCToken>& tokens)
@@ -1270,7 +1169,8 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
         for (StringSet::const_iterator ssIt = files.begin(); ssIt != files.end(); ++ssIt)
             tokens.push_back(CCToken(wxNOT_FOUND, *ssIt, 0));
         stc->ClearRegisteredImages();
-        stc->RegisterImage(0, wxBitmap(header_file_xpm));
+        const int fontSize = CalcStcFontSize(stc);
+        stc->RegisterImage(0, GetImage(ImageId::HeaderFile, fontSize));
     }
 }
 
@@ -3566,4 +3466,57 @@ void CodeCompletion::OnEditorActivatedTimer(cb_unused wxTimerEvent& event)
     m_TimerToolbar.Start(TOOLBAR_REFRESH_DELAY, wxTIMER_ONE_SHOT);
     TRACE(_T("CodeCompletion::OnEditorActivatedTimer(): Current activated file is %s"), curFile.wx_str());
     UpdateEditorSyntax();
+}
+
+wxBitmap CodeCompletion::GetImage(ImageId::Id id, int fontSize)
+{
+    const int size = cbFindMinSize16to64(fontSize);
+    const ImageId key(id, size);
+    ImagesMap::const_iterator it = m_images.find(key);
+    if (it == m_images.end())
+    {
+        const wxString prefix = ConfigManager::GetDataFolder()
+                              + wxString::Format(_T("/images/codecompletion/%dx%d/"), size, size);
+
+        wxString filename;
+        switch (id)
+        {
+            case ImageId::HeaderFile:
+                filename = prefix + wxT("header.png");
+                break;
+            case ImageId::KeywordCPP:
+                filename = prefix + wxT("keyword_cpp.png");
+                break;
+            case ImageId::KeywordD:
+                filename = prefix + wxT("keyword_d.png");
+                break;
+            case ImageId::Unknown:
+                filename = prefix + wxT("unknown.png");
+                break;
+
+            case ImageId::Last:
+            default:
+                ;
+        }
+
+        if (!filename.empty())
+        {
+            wxBitmap bitmap = cbLoadBitmap(filename);
+            if (!bitmap.IsOk())
+            {
+                const wxString msg = wxString::Format(_("Cannot load image: '%s'!"),
+                                                      filename.wx_str());
+                Manager::Get()->GetLogManager()->LogError(msg);
+            }
+            m_images[key] = bitmap;
+            return bitmap;
+        }
+        else
+        {
+            m_images[key] = wxNullBitmap;
+            return wxNullBitmap;
+        }
+    }
+    else
+        return it->second;
 }

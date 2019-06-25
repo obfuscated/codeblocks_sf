@@ -22,6 +22,7 @@
 #include <wx/timer.h>
 
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include <set>
 
@@ -507,6 +508,47 @@ private:
 
     // requires access to: m_NativeParser.GetParser().GetTokenTree()
     friend wxString DocumentationHelper::OnDocumentationLink(wxHtmlLinkEvent&, bool&);
+
+private:
+    /// @{ Code related to image storage. Images are different size and are used in the Auto
+    /// Completion list.
+
+    struct ImageId
+    {
+        enum Id : int
+        {
+            HeaderFile,
+            KeywordCPP,
+            KeywordD,
+            Unknown,
+            Last
+        };
+
+        ImageId() : id(Last), size(-1) {}
+        ImageId(Id id, int size) : id(id), size(size) {}
+
+        bool operator==(const ImageId &o) const
+        {
+            return id == o.id && size == o.size;
+        }
+
+        Id id;
+        int size;
+    };
+
+    struct ImageIdHash
+    {
+        size_t operator()(const ImageId &id) const
+        {
+            return std::hash<uint64_t>()(uint64_t(id.id))+(uint64_t(id.size)<<32);
+        }
+    };
+
+    typedef std::unordered_map<ImageId, wxBitmap, ImageIdHash> ImagesMap;
+    ImagesMap m_images;
+
+    wxBitmap GetImage(ImageId::Id id, int fontSize);
+    /// @}
 
     DECLARE_EVENT_TABLE()
 };
