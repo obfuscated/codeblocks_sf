@@ -25,11 +25,7 @@ wxBitmap cbArtProvider::CreateBitmap(const wxArtID& id, const wxArtClient& clien
 
     MapStockIdToPath::const_iterator it = m_idToPath.find(id);
     if (it == m_idToPath.end())
-    {
-        wxString msg = wxString::Format(wxT("cbArtProvider: Unknown id '%s'"), id.wx_str());
-        Manager::Get()->GetLogManager()->LogError(msg);
         return wxNullBitmap;
-    }
 
     const wxString filepath = m_prefix + it->second;
     wxBitmap result = cbLoadBitmap(filepath);
