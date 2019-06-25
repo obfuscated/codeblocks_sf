@@ -211,7 +211,21 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
          */
         wxHtmlWindow* m_pHtml;
 
-        int m_LastACLaunchState[2];
+        struct LastACLaunchState
+        {
+            void init(int caret, int token, int zoom)
+            {
+                caretStart = caret;
+                tokenStart = token;
+                editorZoom = zoom;
+            }
+
+            int caretStart;
+            int tokenStart;
+            int editorZoom;
+        };
+
+        LastACLaunchState m_LastACLaunchState;
 
         /** Cached autocomplete list.
          * It is the data CCManager uses to populate the (wx)scintilla autocomplete list window

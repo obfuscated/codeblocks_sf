@@ -145,13 +145,6 @@ enum TooltipMode
  */
 #define FROM_TIMER 1
 
-enum ACLaunchState
-{
-    lsTknStart,
-    lsCaretStart
-};
-
-
 //{ Unfocusable popup
 
 // imported with small changes from PlatWX.cpp
@@ -283,7 +276,8 @@ CCManager::CCManager() :
     m_CallTipChars[nullptr] = std::set<wxChar>(ctChars.begin(), ctChars.end());
     const wxString alChars = wxT(".:<>\"#/"); // default set
     m_AutoLaunchChars[nullptr] = std::set<wxChar>(alChars.begin(), alChars.end());
-    m_LastACLaunchState[lsCaretStart] = wxSCI_INVALID_POSITION;
+
+    m_LastACLaunchState.init(wxSCI_INVALID_POSITION, wxSCI_INVALID_POSITION, 0);
 
     // init documentation popup
     m_pPopup = new UnfocusablePopupWindow(Manager::Get()->GetAppFrame());
@@ -373,7 +367,7 @@ cbCodeCompletionPlugin* CCManager::GetProviderFor(cbEditor* ed)
 
     m_pLastEditor = ed;
     m_pLastCCPlugin = nullptr;
-    m_LastACLaunchState[lsCaretStart] = wxSCI_INVALID_POSITION;
+    m_LastACLaunchState.caretStart = wxSCI_INVALID_POSITION;
     const PluginsArray& pa = Manager::Get()->GetPluginManager()->GetCodeCompletionOffers();
     for (size_t i = 0; i < pa.GetCount(); ++i)
     {
@@ -518,7 +512,7 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
 
     cbStyledTextCtrl* stc = ed->GetControl();
     int tknEnd = stc->GetCurrentPos();
-    if (tknEnd == m_LastACLaunchState[lsCaretStart] && !m_AutocompTokens.empty())
+    if (tknEnd == m_LastACLaunchState.caretStart && stc->GetZoom() == m_LastACLaunchState.editorZoom && !m_AutocompTokens.empty())
     {
         DoBufferedCC(stc);
         return;
@@ -539,9 +533,7 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
             m_CallTipActive = wxSCI_INVALID_POSITION;
 
         m_OwnsAutocomp = true;
-        m_LastACLaunchState[lsTknStart] = tknStart;
-        m_LastACLaunchState[lsCaretStart] = tknEnd;
-
+        m_LastACLaunchState.init(tknEnd, tknStart, stc->GetZoom());
         m_LastAutocompIndex = 0;
 
         wxScintillaEvent autoCompFinishEvt(wxEVT_SCI_AUTOCOMP_SELECTION);
@@ -592,8 +584,8 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
         if (tknIt != m_AutocompTokens.end() && tknIt->displayName.StartsWith(contextStr))
             stc->AutoCompSelect(tknIt->displayName);
     }
-    m_LastACLaunchState[lsTknStart] = tknStart;
-    m_LastACLaunchState[lsCaretStart] = tknEnd;
+
+    m_LastACLaunchState.init(tknEnd, tknStart, stc->GetZoom());
 }
 
 // cbEVT_APP_DEACTIVATED
@@ -1234,7 +1226,7 @@ void CCManager::DoBufferedCC(cbStyledTextCtrl* stc)
     if (!stc->CallTipActive())
         m_CallTipActive = wxSCI_INVALID_POSITION;
     // display
-    stc->AutoCompShow(m_LastACLaunchState[lsCaretStart] - m_LastACLaunchState[lsTknStart], items);
+    stc->AutoCompShow(m_LastACLaunchState.caretStart - m_LastACLaunchState.tokenStart, items);
     m_OwnsAutocomp = true;
 
     // We need to check if the auto completion is active, because if there are no matches scintilla will close
