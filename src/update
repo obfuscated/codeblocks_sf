@@ -43,7 +43,6 @@ CB_OUTPUT_RESDIR=$CB_OUTPUT/share/codeblocks
 mkdir -p ${CB_DEVEL_RESDIR}/compilers
 mkdir -p ${CB_DEVEL_RESDIR}/lexers
 mkdir -p ${CB_DEVEL_RESDIR}/images/settings
-mkdir -p ${CB_DEVEL_RESDIR}/images/codecompletion
 mkdir -p ${CB_DEVEL_RESDIR}/plugins
 mkdir -p ${CB_DEVEL_RESDIR}/templates
 mkdir -p ${CB_DEVEL_RESDIR}/templates/wizard
@@ -52,7 +51,6 @@ mkdir -p ${CB_DEVEL_RESDIR}/scripts/tests
 mkdir -p ${CB_OUTPUT_RESDIR}/compilers
 mkdir -p ${CB_OUTPUT_RESDIR}/lexers
 mkdir -p ${CB_OUTPUT_RESDIR}/images/settings
-mkdir -p ${CB_OUTPUT_RESDIR}/images/codecompletion
 mkdir -p ${CB_OUTPUT_RESDIR}/plugins
 mkdir -p ${CB_OUTPUT_RESDIR}/templates
 mkdir -p ${CB_OUTPUT_RESDIR}/templates/wizard
@@ -120,6 +118,18 @@ ${ZIPCMD} -0 -qu ../../../${CB_DEVEL_RESDIR}/compiler.zip \
     images/56x56/*.png \
     images/64x64/*.png \
     > /dev/null
+cd ../../../plugins/codecompletion/resources
+${ZIPCMD} -0 -qu ../../../${CB_DEVEL_RESDIR}/codecompletion.zip \
+    images/16x16/*.png \
+    images/20x20/*.png \
+    images/24x24/*.png \
+    images/28x28/*.png \
+    images/32x32/*.png \
+    images/40x40/*.png \
+    images/48x48/*.png \
+    images/56x56/*.png \
+    images/64x64/*.png \
+    > /dev/null
 cd ../../..
 
 echo Copying files
@@ -132,7 +142,6 @@ echo Makefile.in >> excludes.txt
 cp -f sdk/resources/lexers/lexer_* ${CB_DEVEL_RESDIR}/lexers > /dev/null
 cp -f src/resources/images/*.png ${CB_DEVEL_RESDIR}/images > /dev/null
 cp -f src/resources/images/settings/*.png ${CB_DEVEL_RESDIR}/images/settings > /dev/null
-cp -f plugins/codecompletion/resources/images/*.png ${CB_DEVEL_RESDIR}/images/codecompletion > /dev/null
 cp -f plugins/compilergcc/resources/compilers/*.xml ${CB_DEVEL_RESDIR}/compilers > /dev/null
 rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ ${CB_DEVEL_RESDIR}/templates/wizard > /dev/null
 rsync -au --exclude-from=excludes.txt templates/common/ ${CB_DEVEL_RESDIR}/templates > /dev/null
@@ -144,7 +153,6 @@ cp -f ${CB_DEVEL_RESDIR}/*.zip ${CB_OUTPUT_RESDIR} > /dev/null
 cp -f sdk/resources/lexers/lexer_* ${CB_OUTPUT_RESDIR}/lexers > /dev/null
 cp -f src/resources/images/*.png ${CB_OUTPUT_RESDIR}/images > /dev/null
 cp -f src/resources/images/settings/*.png ${CB_OUTPUT_RESDIR}/images/settings > /dev/null
-cp -f plugins/codecompletion/resources/images/*.png ${CB_OUTPUT_RESDIR}/images/codecompletion > /dev/null
 cp -f plugins/compilergcc/resources/compilers/*.xml ${CB_OUTPUT_RESDIR}/compilers > /dev/null
 rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ ${CB_OUTPUT_RESDIR}/templates/wizard > /dev/null
 rsync -au --exclude-from=excludes.txt templates/common/ ${CB_OUTPUT_RESDIR}/templates > /dev/null

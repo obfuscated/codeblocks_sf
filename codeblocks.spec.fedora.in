@@ -201,7 +201,6 @@ fi
 %{pkgdatadir}/icons
 %dir %{pkgdatadir}/images
 %{pkgdatadir}/images/*.png
-%{pkgdatadir}/images/codecompletion
 %{pkgdatadir}/images/settings
 %{pkgdatadir}/lexers
 %{pkgdatadir}/scripts

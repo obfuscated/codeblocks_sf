@@ -21,7 +21,6 @@ call:mkdirSilent "%CB_DEVEL_RESDIR%\compilers"
 call:mkdirSilent "%CB_DEVEL_RESDIR%\lexers"
 call:mkdirSilent "%CB_DEVEL_RESDIR%\images"
 call:mkdirSilent "%CB_DEVEL_RESDIR%\images\settings"
-call:mkdirSilent "%CB_DEVEL_RESDIR%\images\codecompletion"
 call:mkdirSilent "%CB_DEVEL_RESDIR%\plugins"
 call:mkdirSilent "%CB_DEVEL_RESDIR%\templates"
 call:mkdirSilent "%CB_DEVEL_RESDIR%\templates\wizard"
@@ -32,7 +31,6 @@ call:mkdirSilent "%CB_OUTPUT_RESDIR%\compilers"
 call:mkdirSilent "%CB_OUTPUT_RESDIR%\lexers"
 call:mkdirSilent "%CB_OUTPUT_RESDIR%\images"
 call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\settings"
-call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\codecompletion"
 call:mkdirSilent "%CB_OUTPUT_RESDIR%\plugins"
 call:mkdirSilent "%CB_OUTPUT_RESDIR%\templates"
 call:mkdirSilent "%CB_OUTPUT_RESDIR%\templates\wizard"
@@ -105,6 +103,18 @@ cd ..\..\plugins\compilergcc\resources
     images\56x56\*.png ^
     images\64x64\*.png ^
     > nul
+cd ..\..\..\plugins\codecompletion\resources
+"%ZIPCMD%" -0 -qu "..\..\..\%CB_DEVEL_RESDIR%\codecompletion.zip" ^
+    images\16x16\*.png ^
+    images\20x20\*.png ^
+    images\24x24\*.png ^
+    images\28x28\*.png ^
+    images\32x32\*.png ^
+    images\40x40\*.png ^
+    images\48x48\*.png ^
+    images\56x56\*.png ^
+    images\64x64\*.png ^
+    > nul
 cd ..\..\..
 
 echo Copying default files
@@ -117,7 +127,6 @@ echo Makefile.in >> excludes%TARGET%.txt
 xcopy /D /y sdk\resources\lexers\lexer_*                  "%CB_DEVEL_RESDIR%\lexers" > nul
 xcopy /D /y src\resources\images\*.png                    "%CB_DEVEL_RESDIR%\images" > nul
 xcopy /D /y src\resources\images\settings\*.png           "%CB_DEVEL_RESDIR%\images\settings" > nul
-xcopy /D /y plugins\codecompletion\resources\images\*.png "%CB_DEVEL_RESDIR%\images\codecompletion" > nul
 xcopy /D /y plugins\compilergcc\resources\compilers\*.xml "%CB_DEVEL_RESDIR%\compilers" > nul
 xcopy /D /y /s plugins\scriptedwizard\resources\*         "%CB_DEVEL_RESDIR%\templates\wizard" /EXCLUDE:excludes%TARGET%.txt > nul
 xcopy /D /y templates\common\*                            "%CB_DEVEL_RESDIR%\templates"        /EXCLUDE:excludes%TARGET%.txt > nul
@@ -129,7 +138,6 @@ xcopy /D /y "%CB_DEVEL_RESDIR%\*.zip"                     "%CB_OUTPUT_RESDIR%" >
 xcopy /D /y sdk\resources\lexers\lexer_*                  "%CB_OUTPUT_RESDIR%\lexers" > nul
 xcopy /D /y src\resources\images\*.png                    "%CB_OUTPUT_RESDIR%\images" > nul
 xcopy /D /y src\resources\images\settings\*.png           "%CB_OUTPUT_RESDIR%\images\settings" > nul
-xcopy /D /y plugins\codecompletion\resources\images\*.png "%CB_OUTPUT_RESDIR%\images\codecompletion" > nul
 xcopy /D /y plugins\compilergcc\resources\compilers\*.xml "%CB_OUTPUT_RESDIR%\compilers" > nul
 xcopy /D /y /s plugins\scriptedwizard\resources\*         "%CB_OUTPUT_RESDIR%\templates\wizard" /EXCLUDE:excludes%TARGET%.txt > nul
 xcopy /D /y templates\common\*                            "%CB_OUTPUT_RESDIR%\templates"        /EXCLUDE:excludes%TARGET%.txt > nul
