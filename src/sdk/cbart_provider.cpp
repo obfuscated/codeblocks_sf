@@ -18,12 +18,12 @@ void cbArtProvider::AddMapping(const wxString &stockId, const wxString &fileName
 }
 
 wxBitmap cbArtProvider::CreateBitmap(const wxArtID& id, const wxArtClient& client,
-                                     const wxSize &size)
+                                     cb_unused const wxSize &size)
 {
     if (client != wxT("wxART_MENU_C"))
         return wxNullBitmap;
 
-    MapStockIdToPath::const_iterator it = m_idToPath.find(id);
+    const MapStockIdToPath::const_iterator it = m_idToPath.find(id);
     if (it == m_idToPath.end())
         return wxNullBitmap;
 
@@ -31,8 +31,8 @@ wxBitmap cbArtProvider::CreateBitmap(const wxArtID& id, const wxArtClient& clien
     wxBitmap result = cbLoadBitmap(filepath);
     if (!result.IsOk())
     {
-        wxString msg = wxString::Format(wxT("cbArtProvider: Cannot load image '%s'"),
-                                        filepath.wx_str());
+        const wxString msg = wxString::Format(wxT("cbArtProvider: Cannot load image '%s'"),
+                                              filepath.wx_str());
         Manager::Get()->GetLogManager()->LogError(msg);
     }
 
