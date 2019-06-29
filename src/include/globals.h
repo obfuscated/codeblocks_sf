@@ -314,6 +314,23 @@ extern DLLIMPORT int cbFindMinSize(int targetSize, const int possibleSize[], int
 /// Calls cbFindMinSize for the most common case for sizes from 16 to 64.
 extern DLLIMPORT int cbFindMinSize16to64(int targetSize);
 
+/// Cross platform way to create properly scaled image lists.
+extern DLLIMPORT std::unique_ptr<wxImageList> cbMakeScaledImageList(int size, double scaleFactor,
+                                                                    int &outActualSize);
+
+/// Add an bitmap to an image list. This is HiDPI aware and handles if the bitmap is not OK (it
+/// creates an read square bitmap).
+/// @param list The image list where the image is added.
+/// @param bitmap Bitmap to add.
+/// @param size This is the actual size of the image (scaling is applied to it).
+/// @param listSize The is the actual size of the image list (see the outActualSize parameter of
+///        cbMakeScaledImageList).
+/// @param scaleFactor This is the scaling factor returned by cbGetContentScaleFactor.
+/// @retval true If the image is OK.
+/// @retval false If the image wasn't OK and a red square image has been added to the list.
+extern DLLIMPORT bool cbAddBitmapToImageList(wxImageList &list, const wxBitmap &bitmap, int size,
+                                             int listSize, double scaleFactor);
+
 // compatibility function
 inline wxBitmap LoadPNGWindows2000Hack(const wxString& filename){ return cbLoadBitmap(filename); }
 

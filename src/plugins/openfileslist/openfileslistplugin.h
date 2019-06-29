@@ -70,7 +70,7 @@ class OpenFilesListPlugin : public cbPlugin
         void OnBuildTargetSelected(CodeBlocksEvent& event);
 
         wxTreeCtrl* m_pTree;
-        wxImageList* m_pImages;
+        std::unique_ptr<wxImageList> m_pImages;
         wxMenu* m_ViewMenu;
         wxMenuItem* m_ViewPreserveChk;
     private:

@@ -85,23 +85,38 @@ void OpenFilesListPlugin::OnAttach()
                             wxTR_HAS_BUTTONS | wxNO_BORDER | wxTR_HIDE_ROOT);
 
     // load bitmaps
-    wxBitmap bmp;
-    m_pImages = new wxImageList(16, 16);
-    wxString prefix = ConfigManager::GetDataFolder() + _T("/images/");
+    {
+        const double scaleFactor = cbGetContentScaleFactor(*m_pTree);
+        const double actualScaleFactor = cbGetActualContentScaleFactor(*m_pTree);
+        const int targetHeight = floor(16 * actualScaleFactor);
+        const int size = cbFindMinSize16to64(targetHeight);
 
-    bmp = cbLoadBitmap(prefix + _T("folder_open.png"), wxBITMAP_TYPE_PNG); // folder
-    m_pImages->Add(bmp);
+        int imageListSize;
+        m_pImages = cbMakeScaledImageList(size, scaleFactor, imageListSize);
 
-    bmp = cbLoadBitmap(prefix + _T("ascii.png"), wxBITMAP_TYPE_PNG); // file
-    m_pImages->Add(bmp);
+        const wxString prefix = ConfigManager::GetDataFolder() + _T("/images/");
+        const wxString treePrefix = ConfigManager::GetDataFolder()
+                                  + wxString::Format(_T("/resources.zip#zip:images/tree/%dx%d/"),
+                                                     size, size);
 
-    bmp = cbLoadBitmap(prefix + _T("modified_file.png"), wxBITMAP_TYPE_PNG); // modified file
-    m_pImages->Add(bmp);
+        wxBitmap bmp;
+        bmp = cbLoadBitmapScaled(treePrefix + _T("folder_open.png"), wxBITMAP_TYPE_PNG,
+                                 scaleFactor);
+        cbAddBitmapToImageList(*m_pImages, bmp, size, imageListSize, scaleFactor);
 
-    bmp = cbLoadBitmap(prefix + _T("file-readonly.png"), wxBITMAP_TYPE_PNG); // read only file
-    m_pImages->Add(bmp);
+        bmp = cbLoadBitmapScaled(treePrefix + _T("file.png"), wxBITMAP_TYPE_PNG, scaleFactor);
+        cbAddBitmapToImageList(*m_pImages, bmp, size, imageListSize, scaleFactor);
 
-    m_pTree->SetImageList(m_pImages);
+        bmp = cbLoadBitmapScaled(treePrefix + _T("file-modified.png"), wxBITMAP_TYPE_PNG,
+                                 scaleFactor);
+        cbAddBitmapToImageList(*m_pImages, bmp, size, imageListSize, scaleFactor);
+
+        bmp = cbLoadBitmapScaled(treePrefix + _T("file-readonly.png"), wxBITMAP_TYPE_PNG,
+                                 scaleFactor);
+        cbAddBitmapToImageList(*m_pImages, bmp, size, imageListSize, scaleFactor);
+    }
+
+    m_pTree->SetImageList(m_pImages.get());
     m_pTree->AddRoot(_T("Opened Files"), 0, 0);
 
     // first build of the tree
@@ -154,8 +169,7 @@ void OpenFilesListPlugin::OnRelease(cb_unused bool appShutDown)
     m_pTree->Destroy();
     m_pTree = nullptr;
 
-    delete m_pImages;
-    m_pImages = nullptr;
+    m_pImages.reset();
 }
 
 void OpenFilesListPlugin::BuildMenu(wxMenuBar* menuBar)

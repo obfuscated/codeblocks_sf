@@ -1227,6 +1227,44 @@ int cbFindMinSize16to64(int targetSize)
     return cbFindMinSize(targetSize, sizes, cbCountOf(sizes));
 }
 
+std::unique_ptr<wxImageList> cbMakeScaledImageList(int size, double scaleFactor,
+                                                   int &outActualSize)
+{
+#ifdef __WXMSW__
+    outActualSize = size;
+#else
+    outActualSize = floor(size / scaleFactor);
+#endif // __WXMSW__
+
+    return std::unique_ptr<wxImageList>(new wxImageList(outActualSize, outActualSize));
+}
+
+bool cbAddBitmapToImageList(wxImageList &list, const wxBitmap &bitmap, int size, int listSize,
+                            double scaleFactor)
+{
+    if (bitmap.IsOk())
+    {
+        list.Add(bitmap);
+        return true;
+    }
+    else
+    {
+        wxBitmap missingBitmap;
+#if wxCHECK_VERSION(3, 1, 0)
+        missingBitmap.CreateScaled(listSize, listSize,  wxBITMAP_SCREEN_DEPTH, scaleFactor);
+#else
+        missingBitmap.Create(listSize, listSize);
+#endif // wxCHECK_VERSION(3, 1, 0)
+
+        wxMemoryDC dc;
+        dc.SelectObject(missingBitmap);
+        dc.SetBrush(*wxRED_BRUSH);
+        dc.DrawRectangle(0, 0, size, size);
+        list.Add(missingBitmap);
+        return false;
+    }
+}
+
 // this doesn't work under wxGTK, and is only needed on wxMSW, we work around it on wxGTK
 #ifdef __WXMSW__
 void SetSettingsIconsStyle(wxListCtrl* lc, SettingsIconsStyle style)
@@ -1662,41 +1700,22 @@ std::unique_ptr<wxImageList> cbProjectTreeImages::MakeImageList(int baseSize, wx
         _T("folder_open.png"),           // fvsFolder,            FolderIconIndex()
         _T("vfolder_open.png"),          // fvsVirtualFolder,     VirtualFolderIconIndex()
     };
-    wxBitmap bmp;
 
     const double scaleFactor = cbGetContentScaleFactor(treeParent);
     const int targetHeight = floor(baseSize * cbGetActualContentScaleFactor(treeParent));
     const int size = cbFindMinSize16to64(targetHeight);
 
-#ifdef __WXMSW__
-    const int imageListSize = size;
-#else
-    const int imageListSize = floor(size / scaleFactor);
-#endif // __WXMSW__
-
-    std::unique_ptr<wxImageList> images(new wxImageList(imageListSize, imageListSize));
+    int imageListSize;
+    std::unique_ptr<wxImageList> images = cbMakeScaledImageList(size, scaleFactor, imageListSize);
 
     const wxString prefix = ConfigManager::ReadDataPath()
                           + wxString::Format(_T("/resources.zip#zip:images/tree/%dx%d/"),
                                              size, size);
-
+    wxBitmap bmp;
     for (const wxString &img : imgs)
     {
         bmp = cbLoadBitmapScaled(prefix + img, wxBITMAP_TYPE_PNG, scaleFactor);
-        if (!bmp.IsOk())
-        {
-#if wxCHECK_VERSION(3, 1, 0)
-            bmp.CreateScaled(imageListSize, imageListSize,  wxBITMAP_SCREEN_DEPTH, scaleFactor);
-#else
-            bmp.Create(imageListSize, imageListSize);
-#endif // wxCHECK_VERSION(3, 1, 0)
-
-            wxMemoryDC dc;
-            dc.SelectObject(bmp);
-            dc.SetBrush(*wxRED_BRUSH);
-            dc.DrawRectangle(0, 0, size, size);
-        }
-        images->Add(bmp);
+        cbAddBitmapToImageList(*images, bmp, size, imageListSize, scaleFactor);
     }
     return images;
 }
