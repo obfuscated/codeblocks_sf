@@ -1172,13 +1172,16 @@ double cbGetContentScaleFactor(wxWindow &window)
 // GTK 3 supports scaling, but doesn't support fractional values.
 // In both cases we need to make up our on scaling value.
 // For other platforms the value returned by GetContentScalingFactor seems adequate.
-double cbGetActualContentScaleFactor(wxWindow &window)
+double cbGetActualContentScaleFactor(cb_unused wxWindow &window)
 {
-#if wxCHECK_VERSION(3, 1, 2)
-    wxDisplay display(wxDisplay::GetFromWindow(&window));
-    const wxSize ppi = display.GetPPI();
+#if wxCHECK_VERSION(3, 0, 0)
+    // It is possible to use the window to find a display, but unfortunately this doesn't work well,
+    // because we call this function mostly on windows which haven't been shown. This leads to
+    // warnings in the log about ClientToScreen failures.
+    // If there are problems on multi-monitor setups we should think about some other solution. :(
+    const wxSize ppi = wxGetDisplayPPI();
     return ppi.y / 96.0;
-#else // wxCHECK_VERSION(3, 1, 2)
+#else // wxCHECK_VERSION(3, 0, 0)
     // This code is the simplest version which works in the most common case.
     // If people complain that multi-monitor setups behave strangely, this should be revised with
     // direct calls to GTK/GDK functions.
@@ -1195,7 +1198,7 @@ double cbGetActualContentScaleFactor(wxWindow &window)
     // My guess is that smaller scaling factor would look better. Probably it has effect only in
     // multi monitor setups where there are monitors with different dpi.
     return std::min(ppiX / 96.0, ppiY /96.0);
-#endif // wxCHECK_VERSION(3, 1, 2)
+#endif // wxCHECK_VERSION(3, 0, 0)
 }
 #else // __WXGTK__
 double cbGetActualContentScaleFactor(wxWindow &window)
