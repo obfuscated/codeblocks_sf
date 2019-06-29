@@ -91,7 +91,7 @@ BreakpointsDlg::BreakpointsDlg() :
 
     // Setup the image list for the enabled/disabled icons.
 #ifdef __WXMSW__
-    m_icons.Create(floor(selectedHeight), floor(selectedHeight), true);
+    m_icons.Create(selectedHeight, selectedHeight, true);
 #else
     m_icons.Create(floor(selectedHeight / scaleFactor), floor(selectedHeight / scaleFactor), true);
 #endif // __WXMSW__
