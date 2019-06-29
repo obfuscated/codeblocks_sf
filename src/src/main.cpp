@@ -1771,7 +1771,7 @@ void MainFrame::DoFixToolbarsLayout()
     // 1. reset the best/min sizes loaded from the layout file.
     // 2. set new best size
     //
-    // The reset operation is needed because wxAUI do nothing when the values for min/best sizes
+    // The reset operation is needed because wxAUI does nothing when the values for min/best sizes
     // aren't equal to wxDefaultSize.
     // I'm not really sure why we need the second pass. :(
 
@@ -1785,7 +1785,6 @@ void MainFrame::DoFixToolbarsLayout()
             info.min_size = wxDefaultSize;
         }
     }
-    m_LayoutManager.Update();
 
     for (size_t i = 0; i < panes.GetCount(); ++i)
     {
@@ -1796,6 +1795,8 @@ void MainFrame::DoFixToolbarsLayout()
             info.floating_size = wxDefaultSize;
         }
     }
+
+    m_LayoutManager.Update();
 }
 
 void MainFrame::DoSelectLayout(const wxString& name)
@@ -2328,7 +2329,6 @@ void MainFrame::DoUpdateLayout()
         return;
 
     DoFixToolbarsLayout();
-    m_LayoutManager.Update();
 }
 
 void MainFrame::DoUpdateAppTitle()
@@ -5085,7 +5085,6 @@ void MainFrame::OnDockWindowVisibility(cb_unused CodeBlocksDockEvent& event)
 
 void MainFrame::OnLayoutUpdate(cb_unused CodeBlocksLayoutEvent& event)
 {
-    DoFixToolbarsLayout();
     DoUpdateLayout();
 }
 
