@@ -123,10 +123,10 @@ static wxString GetCodeblocksEventName(wxEventType type)
 
 Manager::Manager() :
     m_pAppWindow(nullptr),
-    m_ToolbarImageSize(0),
-    m_MenuImageSize(0),
     m_SearchResultLog(nullptr)
 {
+    for (int &size : m_ImageSizes)
+        size = 0;
 }
 
 Manager::~Manager()
@@ -368,7 +368,8 @@ wxMenu *Manager::LoadMenu(wxString menu_id,bool createonfailure)
 
 wxToolBar* Manager::CreateEmptyToolbar()
 {
-    const wxSize size(m_ToolbarImageSize, m_ToolbarImageSize);
+    const wxSize size(m_ImageSizes[UIComponentImageSize::Toolbars],
+                      m_ImageSizes[UIComponentImageSize::Toolbars]);
     wxWindow *appFrame = GetAppFrame();
 
 #ifdef __WXMSW__
@@ -395,26 +396,16 @@ void Manager::AddonToolBar(wxToolBar* toolBar,wxString resid)
         m_ToolbarHandler->SetCurrentResourceID(wxString());
 }
 
-void Manager::SetToolbarImageSize(int size)
+void Manager::SetImageSize(int size, UIComponentImageSize component)
 {
-    m_ToolbarImageSize = size;
+    cbAssert(component>=0 && component < UIComponentImageSize::Last);
+    m_ImageSizes[component] = size;
 }
 
-int Manager::GetToolbarImageSize() const
+int Manager::GetImageSize(UIComponentImageSize component) const
 {
-    cbAssert(m_ToolbarImageSize > 0);
-    return m_ToolbarImageSize;
-}
-
-void Manager::SetMenuImageSize(int size)
-{
-    m_MenuImageSize = size;
-}
-
-int Manager::GetMenuImageSize() const
-{
-    cbAssert(m_MenuImageSize > 0);
-    return m_MenuImageSize;
+    cbAssert(component>=0 && component < UIComponentImageSize::Last);
+    return m_ImageSizes[component];
 }
 
 void Manager::SetToolbarHandler(wxToolBarAddOnXmlHandler *handler)

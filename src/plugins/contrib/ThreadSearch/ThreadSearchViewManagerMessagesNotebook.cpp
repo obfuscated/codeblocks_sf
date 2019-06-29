@@ -30,7 +30,10 @@ void ThreadSearchViewManagerMessagesNotebook::AddViewToManager()
     if ( m_IsManaged == false )
     {
         // Creates log image
-        const wxString imgFile = ConfigManager::GetDataFolder() + _T("/resources.zip#zip:images/16x16/findf.png");
+        const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponentImageSize::InfoPaneNotebooks);
+        const wxString imgFile = ConfigManager::GetDataFolder()
+                               + wxString::Format(_T("/resources.zip#zip:/images/%dx%d/findf.png"),
+                                                  uiSize, uiSize);
         wxBitmap * bmp = new wxBitmap(cbLoadBitmap(imgFile, wxBITMAP_TYPE_PNG));
 
         // Adds log to C::B Messages notebook
