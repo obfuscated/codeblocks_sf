@@ -1685,7 +1685,11 @@ std::unique_ptr<wxImageList> cbProjectTreeImages::MakeImageList(int baseSize, wx
         bmp = cbLoadBitmapScaled(prefix + img, wxBITMAP_TYPE_PNG, scaleFactor);
         if (!bmp.IsOk())
         {
-            bmp.Create(size, size);
+#if wxCHECK_VERSION(3, 1, 0)
+            bmp.CreateScaled(imageListSize, imageListSize,  wxBITMAP_SCREEN_DEPTH, scaleFactor);
+#else
+            bmp.Create(imageListSize, imageListSize);
+#endif // wxCHECK_VERSION(3, 1, 0)
 
             wxMemoryDC dc;
             dc.SelectObject(bmp);
