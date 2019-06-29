@@ -141,6 +141,12 @@ public:
     int GetToolbarImageSize() const;
     static void SetToolbarHandler(wxToolBarAddOnXmlHandler *handler);
 
+    /// Sets the global variable which stores the size of images in menus.
+    /// @note If you're not in main.cpp do not call this!
+    void SetMenuImageSize(int size);
+    /// @return The size in pixels of images in menus.
+    int GetMenuImageSize() const;
+
     static wxCmdLineParser* GetCmdLineParser();
 
     // event sinks
@@ -165,6 +171,7 @@ private:
     static wxToolBarAddOnXmlHandler *m_ToolbarHandler;
 
     int m_ToolbarImageSize;
+    int m_MenuImageSize;
 
     // event sinks
     typedef std::vector< IEventFunctorBase<CodeBlocksEvent>* >       EventSinksArray;

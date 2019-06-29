@@ -121,7 +121,11 @@ static wxString GetCodeblocksEventName(wxEventType type)
 }
 #endif // PPRCESS_EVENT_PERFORMANCE_MEASURE
 
-Manager::Manager() : m_pAppWindow(nullptr), m_ToolbarImageSize(0), m_SearchResultLog(nullptr)
+Manager::Manager() :
+    m_pAppWindow(nullptr),
+    m_ToolbarImageSize(0),
+    m_MenuImageSize(0),
+    m_SearchResultLog(nullptr)
 {
 }
 
@@ -400,6 +404,17 @@ int Manager::GetToolbarImageSize() const
 {
     cbAssert(m_ToolbarImageSize > 0);
     return m_ToolbarImageSize;
+}
+
+void Manager::SetMenuImageSize(int size)
+{
+    m_MenuImageSize = size;
+}
+
+int Manager::GetMenuImageSize() const
+{
+    cbAssert(m_MenuImageSize > 0);
+    return m_MenuImageSize;
 }
 
 void Manager::SetToolbarHandler(wxToolBarAddOnXmlHandler *handler)
