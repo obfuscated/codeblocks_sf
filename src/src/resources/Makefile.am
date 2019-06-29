@@ -452,8 +452,41 @@ treeImages_forZIP = \
 	images/tree/64x64/workspace.png \
 	images/tree/64x64/workspace-readonly.png
 
-resources.zip: $(srcdir)/*.xrc $(images_forZIP) $(treeImages_forZIP) $(srcdir)/images/*.png
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/resources.zip *.xrc images/*.png $(images_forZIP) $(treeImages_forZIP) > /dev/null
+infoPaneImages_forZIP = \
+	images/infopane/16x16/edit.png \
+	images/infopane/16x16/flag.png \
+	images/infopane/16x16/misc.png \
+	images/infopane/20x20/edit.png \
+	images/infopane/20x20/flag.png \
+	images/infopane/20x20/misc.png \
+	images/infopane/24x24/edit.png \
+	images/infopane/24x24/flag.png \
+	images/infopane/24x24/misc.png \
+	images/infopane/28x28/edit.png \
+	images/infopane/28x28/flag.png \
+	images/infopane/28x28/misc.png \
+	images/infopane/32x32/edit.png \
+	images/infopane/32x32/flag.png \
+	images/infopane/32x32/misc.png \
+	images/infopane/40x40/edit.png \
+	images/infopane/40x40/flag.png \
+	images/infopane/40x40/misc.png \
+	images/infopane/48x48/edit.png \
+	images/infopane/48x48/flag.png \
+	images/infopane/48x48/misc.png \
+	images/infopane/56x56/edit.png \
+	images/infopane/56x56/flag.png \
+	images/infopane/56x56/misc.png \
+	images/infopane/64x64/edit.png \
+	images/infopane/64x64/flag.png \
+	images/infopane/64x64/misc.png
+
+resources.zip: \
+		$(srcdir)/*.xrc $(images_forZIP) $(treeImages_forZIP) $(infoPaneImages_forZIP) \
+		$(srcdir)/images/*.png
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/resources.zip *.xrc images/*.png $(images_forZIP) \
+		$(treeImages_forZIP) $(infoPaneImages_forZIP) \
+		> /dev/null
 
 start_here.zip: $(srcdir)/start_here/*.htm* $(srcdir)/start_here/*.png
 	PWD=`pwd` cd $(srcdir)/start_here && zip $(PWD)/start_here.zip *.htm* *.png > /dev/null

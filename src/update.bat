@@ -82,6 +82,15 @@ cd src\resources
     images\tree\48x48\*.png ^
     images\tree\56x56\*.png ^
     images\tree\64x64\*.png ^
+    images\infopane\16x16\*.png ^
+    images\infopane\20x20\*.png ^
+    images\infopane\24x24\*.png ^
+    images\infopane\28x28\*.png ^
+    images\infopane\32x32\*.png ^
+    images\infopane\40x40\*.png ^
+    images\infopane\48x48\*.png ^
+    images\infopane\56x56\*.png ^
+    images\infopane\64x64\*.png ^
     > nul
 cd ..\..\sdk\resources
 "%ZIPCMD%" -0 -qu "..\..\%CB_DEVEL_RESDIR%\manager_resources.zip" ^
