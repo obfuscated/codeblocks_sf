@@ -11,6 +11,7 @@
 
 #ifndef CB_PRECOMP
     #include <wx/choicdlg.h>
+    #include <wx/dcmemory.h>
     #include <wx/file.h>
     #include <wx/filename.h>
     #include <wx/filesys.h>
@@ -1682,6 +1683,15 @@ std::unique_ptr<wxImageList> cbProjectTreeImages::MakeImageList(int baseSize, wx
     for (const wxString &img : imgs)
     {
         bmp = cbLoadBitmapScaled(prefix + img, wxBITMAP_TYPE_PNG, scaleFactor);
+        if (!bmp.IsOk())
+        {
+            bmp.Create(size, size);
+
+            wxMemoryDC dc;
+            dc.SelectObject(bmp);
+            dc.SetBrush(*wxRED_BRUSH);
+            dc.DrawRectangle(0, 0, size, size);
+        }
         images->Add(bmp);
     }
     return images;
