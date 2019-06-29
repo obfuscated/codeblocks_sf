@@ -1256,10 +1256,15 @@ bool cbAddBitmapToImageList(wxImageList &list, const wxBitmap &bitmap, int size,
         missingBitmap.Create(listSize, listSize);
 #endif // wxCHECK_VERSION(3, 1, 0)
 
-        wxMemoryDC dc;
-        dc.SelectObject(missingBitmap);
-        dc.SetBrush(*wxRED_BRUSH);
-        dc.DrawRectangle(0, 0, size, size);
+        {
+            // Draw red square image. Do the drawing in a separate scope, because we need to
+            // deselect the missing bitmap from the DC before calling the Add method.
+            wxMemoryDC dc;
+            dc.SelectObject(missingBitmap);
+            dc.SetBrush(*wxRED_BRUSH);
+            dc.DrawRectangle(0, 0, size, size);
+        }
+
         list.Add(missingBitmap);
         return false;
     }
