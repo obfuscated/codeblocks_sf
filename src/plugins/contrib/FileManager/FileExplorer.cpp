@@ -336,8 +336,8 @@ FileExplorer::FileExplorer(wxWindow *parent,wxWindowID id,
 
     SetAutoLayout(TRUE);
 
-    wxImageList *treeImages = cbProjectTreeImages::MakeImageList();
-    m_Tree->SetImageList(treeImages);
+    m_TreeImages = cbProjectTreeImages::MakeImageList(16, *this);
+    m_Tree->SetImageList(m_TreeImages.get());
 
     ReadConfig();
     if(m_Loc->GetCount()>m_favdirs.GetCount())
@@ -359,9 +359,6 @@ FileExplorer::FileExplorer(wxWindow *parent,wxWindowID id,
 
 FileExplorer::~FileExplorer()
 {
-    wxImageList *treeImages = m_Tree->GetImageList();
-    delete treeImages;
-
     m_kill=true;
     m_updatetimer->Stop();
     delete m_dir_monitor;

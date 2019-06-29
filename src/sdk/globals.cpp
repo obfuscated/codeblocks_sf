@@ -1627,7 +1627,7 @@ wxString cbGetTextFromUser(const wxString& message, const wxString& caption, con
 }
 
 
-wxImageList* cbProjectTreeImages::MakeImageList()
+std::unique_ptr<wxImageList> cbProjectTreeImages::MakeImageList(int baseSize, wxWindow &treeParent)
 {
     static const wxString imgs[fvsLast] =
     {
@@ -1662,12 +1662,25 @@ wxImageList* cbProjectTreeImages::MakeImageList()
         _T("vfolder_open.png"),          // fvsVirtualFolder,     VirtualFolderIconIndex()
     };
     wxBitmap bmp;
-    wxImageList *images = new wxImageList(16, 16);
-    wxString prefix = ConfigManager::ReadDataPath() + _T("/images/");
+
+    const double scaleFactor = cbGetContentScaleFactor(treeParent);
+    const int targetHeight = floor(baseSize * cbGetActualContentScaleFactor(treeParent));
+    const int size = cbFindMinSize16to64(targetHeight);
+
+#ifdef __WXMSW__
+    const int imageListSize = size;
+#else
+    const int imageListSize = floor(size / scaleFactor);
+#endif // __WXMSW__
+
+    std::unique_ptr<wxImageList> images(new wxImageList(imageListSize, imageListSize));
+
+    const wxString prefix = ConfigManager::ReadDataPath()
+                          + wxString::Format(_T("/images/tree/%dx%d/"), size, size);
 
     for (const wxString &img : imgs)
     {
-        bmp = cbLoadBitmap(prefix + img, wxBITMAP_TYPE_PNG); // workspace
+        bmp = cbLoadBitmapScaled(prefix + img, wxBITMAP_TYPE_PNG, scaleFactor);
         images->Add(bmp);
     }
     return images;

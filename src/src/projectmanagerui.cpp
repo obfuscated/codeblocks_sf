@@ -245,8 +245,6 @@ ProjectManagerUI::ProjectManagerUI() :
 
 ProjectManagerUI::~ProjectManagerUI()
 {
-    delete m_pImages;
-    m_pImages = nullptr;
     m_pNotebook->Destroy();
 }
 
@@ -258,9 +256,10 @@ void ProjectManagerUI::InitPane()
         return;
 
     m_pTree = new cbTreeCtrl(m_pNotebook, ID_ProjectManager);
-    delete m_pImages;
-    m_pImages = cbProjectTreeImages::MakeImageList();
-    m_pTree->SetImageList(m_pImages);
+
+    m_pImages = cbProjectTreeImages::MakeImageList(16, *m_pNotebook);
+    m_pTree->SetImageList(m_pImages.get());
+
     m_pNotebook->AddPage(m_pTree, _("Projects"));
 }
 

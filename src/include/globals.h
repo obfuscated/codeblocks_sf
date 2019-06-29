@@ -6,6 +6,7 @@
 #ifndef SDK_GLOBALS_H
 #define SDK_GLOBALS_H
 
+#include <memory>
 #include <vector>
 
 #include <wx/string.h>
@@ -114,7 +115,14 @@ enum FileVisualState
 class DLLIMPORT cbProjectTreeImages
 {
     public:
-        static wxImageList* MakeImageList();
+        /// Create an image list with images which could be used in file trees.
+        /// Currently used in the project manager and the file manager.
+        /// @param baseSize The size of the images at when scale factor is 1.
+        /// @param treeParent The parent of the tree where the image list would be used. It is used
+        ///        to query the scaling factor from it.
+        /// @return wxImageList object which contains images which could be indexed with the values
+        ///         from the FileVisualState enum.
+        static std::unique_ptr<wxImageList> MakeImageList(int baseSize, wxWindow &treeParent);
 
         /** @return The workspace icon index in the image list.
             @param  read_only Return the read-only icon for a workspace?

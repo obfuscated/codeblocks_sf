@@ -138,7 +138,7 @@ class ProjectManagerUI : public wxEvtHandler, public cbProjectManagerUI
         cbAuiNotebook*       m_pNotebook;
         cbTreeCtrl*          m_pTree;
         wxTreeItemId         m_TreeRoot;
-        wxImageList*         m_pImages;
+        std::unique_ptr<wxImageList> m_pImages;
         int                  m_TreeVisualState;
         int                  m_TreeFreezeCounter;
         wxArrayTreeItemIds   m_DraggingSelection;
