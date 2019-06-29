@@ -208,6 +208,7 @@ END_EVENT_TABLE()
 
 ProjectManagerUI::ProjectManagerUI() :
     m_pTree(nullptr),
+    m_pImages(nullptr),
     m_TreeFreezeCounter(0),
     m_isCheckingForExternallyModifiedProjects(false)
 {
@@ -255,60 +256,12 @@ void ProjectManagerUI::InitPane()
         return;
     if (m_pTree)
         return;
-    BuildTree();
-    m_pNotebook->AddPage(m_pTree, _("Projects"));
-}
 
-void ProjectManagerUI::BuildTree()
-{
     m_pTree = new cbTreeCtrl(m_pNotebook, ID_ProjectManager);
-
-    static const wxString imgs[] =
-    {
-        // NOTE: Keep in sync with FileVisualState in globals.h!
-
-        // The following are related to (editable, source-) file states
-        _T("file.png"),                  // fvsNormal
-        _T("file-missing.png"),          // fvsMissing,
-        _T("file-modified.png"),         // fvsModified,
-        _T("file-readonly.png"),         // fvsReadOnly,
-
-        // The following are related to version control systems (vc)
-        _T("rc-file-added.png"),         // fvsVcAdded,
-        _T("rc-file-conflict.png"),      // fvsVcConflict,
-        _T("rc-file-missing.png"),       // fvsVcMissing,
-        _T("rc-file-modified.png"),      // fvsVcModified,
-        _T("rc-file-outofdate.png"),     // fvsVcOutOfDate,
-        _T("rc-file-uptodate.png"),      // fvsVcUpToDate,
-        _T("rc-file-requireslock.png"),  // fvsVcRequiresLock,
-        _T("rc-file-external.png"),      // fvsVcExternal,
-        _T("rc-file-gotlock.png"),       // fvsVcGotLock,
-        _T("rc-file-lockstolen.png"),    // fvsVcLockStolen,
-        _T("rc-file-mismatch.png"),      // fvsVcMismatch,
-        _T("rc-file-noncontrolled.png"), // fvsVcNonControlled,
-
-        // The following are related to C::B workspace/project/folder/virtual
-        _T("workspace.png"),             // fvsWorkspace,         WorkspaceIconIndex()
-        _T("workspace-readonly.png"),    // fvsWorkspaceReadOnly, WorkspaceIconIndex(true)
-        _T("project.png"),               // fvsProject,           ProjectIconIndex()
-        _T("project-readonly.png"),      // fvsProjectReadOnly,   ProjectIconIndex(true)
-        _T("folder_open.png"),           // fvsFolder,            FolderIconIndex()
-        _T("vfolder_open.png"),          // fvsVirtualFolder,     VirtualFolderIconIndex()
-
-        wxEmptyString
-    };
-    wxBitmap bmp;
-    m_pImages = new wxImageList(16, 16);
-    wxString prefix = ConfigManager::ReadDataPath() + _T("/images/");
-
-    int i = 0;
-    while (!imgs[i].IsEmpty())
-    {
-        bmp = cbLoadBitmap(prefix + imgs[i], wxBITMAP_TYPE_PNG); // workspace
-        m_pImages->Add(bmp);
-        ++i;
-    }
+    delete m_pImages;
+    m_pImages = cbProjectTreeImages::MakeImageList();
     m_pTree->SetImageList(m_pImages);
+    m_pNotebook->AddPage(m_pTree, _("Projects"));
 }
 
 void ProjectManagerUI::RebuildTree()

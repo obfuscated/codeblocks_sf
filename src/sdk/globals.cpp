@@ -1629,7 +1629,7 @@ wxString cbGetTextFromUser(const wxString& message, const wxString& caption, con
 
 wxImageList* cbProjectTreeImages::MakeImageList()
 {
-    static const wxString imgs[] =
+    static const wxString imgs[fvsLast] =
     {
         // NOTE: Keep in sync with FileVisualState in globals.h!
 
@@ -1660,16 +1660,14 @@ wxImageList* cbProjectTreeImages::MakeImageList()
         _T("project-readonly.png"),      // fvsProjectReadOnly,   ProjectIconIndex(true)
         _T("folder_open.png"),           // fvsFolder,            FolderIconIndex()
         _T("vfolder_open.png"),          // fvsVirtualFolder,     VirtualFolderIconIndex()
-
-        wxEmptyString
     };
     wxBitmap bmp;
     wxImageList *images = new wxImageList(16, 16);
     wxString prefix = ConfigManager::ReadDataPath() + _T("/images/");
 
-    for (int i = 0; !imgs[i].IsEmpty(); ++i)
+    for (const wxString &img : imgs)
     {
-        bmp = cbLoadBitmap(prefix + imgs[i], wxBITMAP_TYPE_PNG); // workspace
+        bmp = cbLoadBitmap(prefix + img, wxBITMAP_TYPE_PNG); // workspace
         images->Add(bmp);
     }
     return images;
