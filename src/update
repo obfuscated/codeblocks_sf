@@ -88,6 +88,15 @@ ${ZIPCMD} -0 -qu ../../${CB_DEVEL_RESDIR}/resources.zip \
     images/48x48/*.png \
     images/56x56/*.png \
     images/64x64/*.png \
+    images/tree/16x16/*.png \
+    images/tree/20x20/*.png \
+    images/tree/24x24/*.png \
+    images/tree/28x28/*.png \
+    images/tree/32x32/*.png \
+    images/tree/40x40/*.png \
+    images/tree/48x48/*.png \
+    images/tree/56x56/*.png \
+    images/tree/64x64/*.png \
     > /dev/null
 cd ../../sdk/resources
 ${ZIPCMD} -0 -qu ../../${CB_DEVEL_RESDIR}/manager_resources.zip \
@@ -142,7 +151,6 @@ echo Makefile.in >> excludes.txt
 cp -f sdk/resources/lexers/lexer_* ${CB_DEVEL_RESDIR}/lexers > /dev/null
 cp -f src/resources/images/*.png ${CB_DEVEL_RESDIR}/images > /dev/null
 cp -f src/resources/images/settings/*.png ${CB_DEVEL_RESDIR}/images/settings > /dev/null
-copyImageFiles src/resources/images/tree ${CB_DEVEL_RESDIR}/images/tree
 cp -f plugins/compilergcc/resources/compilers/*.xml ${CB_DEVEL_RESDIR}/compilers > /dev/null
 rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ ${CB_DEVEL_RESDIR}/templates/wizard > /dev/null
 rsync -au --exclude-from=excludes.txt templates/common/ ${CB_DEVEL_RESDIR}/templates > /dev/null
@@ -154,7 +162,6 @@ cp -f ${CB_DEVEL_RESDIR}/*.zip ${CB_OUTPUT_RESDIR} > /dev/null
 cp -f sdk/resources/lexers/lexer_* ${CB_OUTPUT_RESDIR}/lexers > /dev/null
 cp -f src/resources/images/*.png ${CB_OUTPUT_RESDIR}/images > /dev/null
 cp -f src/resources/images/settings/*.png ${CB_OUTPUT_RESDIR}/images/settings > /dev/null
-copyImageFiles src/resources/images/tree ${CB_OUTPUT_RESDIR}/images/tree
 cp -f plugins/compilergcc/resources/compilers/*.xml ${CB_OUTPUT_RESDIR}/compilers > /dev/null
 rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ ${CB_OUTPUT_RESDIR}/templates/wizard > /dev/null
 rsync -au --exclude-from=excludes.txt templates/common/ ${CB_OUTPUT_RESDIR}/templates > /dev/null

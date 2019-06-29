@@ -356,12 +356,109 @@ images_forZIP = \
 	images/64x64/searchreplace.png \
 	images/64x64/undo.png
 
-resources.zip: $(srcdir)/*.xrc $(images_forZIP) $(srcdir)/images/*.png
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/resources.zip *.xrc images/*.png $(images_forZIP) > /dev/null
+treeImages_forZIP = \
+	images/tree/16x16/file-missing.png \
+	images/tree/16x16/file-modified.png \
+	images/tree/16x16/file.png \
+	images/tree/16x16/file-readonly.png \
+	images/tree/16x16/folder_open.png \
+	images/tree/16x16/project.png \
+	images/tree/16x16/project-readonly.png \
+	images/tree/16x16/rc-file-added.png \
+	images/tree/16x16/rc-file-conflict.png \
+	images/tree/16x16/rc-file-external.png \
+	images/tree/16x16/rc-file-gotlock.png \
+	images/tree/16x16/rc-file-lockstolen.png \
+	images/tree/16x16/rc-file-mismatch.png \
+	images/tree/16x16/rc-file-missing.png \
+	images/tree/16x16/rc-file-modified.png \
+	images/tree/16x16/rc-file-noncontrolled.png \
+	images/tree/16x16/rc-file-outofdate.png \
+	images/tree/16x16/rc-file-requireslock.png \
+	images/tree/16x16/rc-file-uptodate.png \
+	images/tree/16x16/vfolder_open.png \
+	images/tree/16x16/workspace.png \
+	images/tree/16x16/workspace-readonly.png \
+	images/tree/20x20/file-missing.png \
+	images/tree/20x20/file-modified.png \
+	images/tree/20x20/file.png \
+	images/tree/20x20/file-readonly.png \
+	images/tree/20x20/folder_open.png \
+	images/tree/20x20/project.png \
+	images/tree/20x20/project-readonly.png \
+	images/tree/20x20/workspace.png \
+	images/tree/20x20/workspace-readonly.png \
+	images/tree/24x24/file-missing.png \
+	images/tree/24x24/file-modified.png \
+	images/tree/24x24/file.png \
+	images/tree/24x24/file-readonly.png \
+	images/tree/24x24/folder_open.png \
+	images/tree/24x24/project.png \
+	images/tree/24x24/project-readonly.png \
+	images/tree/24x24/workspace.png \
+	images/tree/24x24/workspace-readonly.png \
+	images/tree/28x28/file-missing.png \
+	images/tree/28x28/file-modified.png \
+	images/tree/28x28/file.png \
+	images/tree/28x28/file-readonly.png \
+	images/tree/28x28/folder_open.png \
+	images/tree/28x28/project.png \
+	images/tree/28x28/project-readonly.png \
+	images/tree/28x28/workspace.png \
+	images/tree/28x28/workspace-readonly.png \
+	images/tree/32x32/file-missing.png \
+	images/tree/32x32/file-modified.png \
+	images/tree/32x32/file.png \
+	images/tree/32x32/file-readonly.png \
+	images/tree/32x32/folder_open.png \
+	images/tree/32x32/project.png \
+	images/tree/32x32/project-readonly.png \
+	images/tree/32x32/workspace.png \
+	images/tree/32x32/workspace-readonly.png \
+	images/tree/40x40/file-missing.png \
+	images/tree/40x40/file-modified.png \
+	images/tree/40x40/file.png \
+	images/tree/40x40/file-readonly.png \
+	images/tree/40x40/folder_open.png \
+	images/tree/40x40/project.png \
+	images/tree/40x40/project-readonly.png \
+	images/tree/40x40/workspace.png \
+	images/tree/40x40/workspace-readonly.png \
+	images/tree/48x48/file-missing.png \
+	images/tree/48x48/file-modified.png \
+	images/tree/48x48/file.png \
+	images/tree/48x48/file-readonly.png \
+	images/tree/48x48/folder_open.png \
+	images/tree/48x48/project.png \
+	images/tree/48x48/project-readonly.png \
+	images/tree/48x48/workspace.png \
+	images/tree/48x48/workspace-readonly.png \
+	images/tree/56x56/file-missing.png \
+	images/tree/56x56/file-modified.png \
+	images/tree/56x56/file.png \
+	images/tree/56x56/file-readonly.png \
+	images/tree/56x56/folder_open.png \
+	images/tree/56x56/project.png \
+	images/tree/56x56/project-readonly.png \
+	images/tree/56x56/workspace.png \
+	images/tree/56x56/workspace-readonly.png \
+	images/tree/64x64/file-missing.png \
+	images/tree/64x64/file-modified.png \
+	images/tree/64x64/file.png \
+	images/tree/64x64/file-readonly.png \
+	images/tree/64x64/folder_open.png \
+	images/tree/64x64/project.png \
+	images/tree/64x64/project-readonly.png \
+	images/tree/64x64/workspace.png \
+	images/tree/64x64/workspace-readonly.png
+
+resources.zip: $(srcdir)/*.xrc $(images_forZIP) $(treeImages_forZIP) $(srcdir)/images/*.png
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/resources.zip *.xrc images/*.png $(images_forZIP) $(treeImages_forZIP) > /dev/null
 
 start_here.zip: $(srcdir)/start_here/*.htm* $(srcdir)/start_here/*.png
 	PWD=`pwd` cd $(srcdir)/start_here && zip $(PWD)/start_here.zip *.htm* *.png > /dev/null
 
 EXTRA_DIST = \
 	$(srcdir)/*.manifest \
-	$(images_forZIP)
+	$(images_forZIP) \
+	$(treeImages_forZIP)

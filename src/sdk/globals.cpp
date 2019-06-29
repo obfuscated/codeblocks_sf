@@ -1676,7 +1676,8 @@ std::unique_ptr<wxImageList> cbProjectTreeImages::MakeImageList(int baseSize, wx
     std::unique_ptr<wxImageList> images(new wxImageList(imageListSize, imageListSize));
 
     const wxString prefix = ConfigManager::ReadDataPath()
-                          + wxString::Format(_T("/images/tree/%dx%d/"), size, size);
+                          + wxString::Format(_T("/resources.zip#zip:images/tree/%dx%d/"),
+                                             size, size);
 
     for (const wxString &img : imgs)
     {
