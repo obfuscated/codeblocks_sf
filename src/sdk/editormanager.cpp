@@ -109,6 +109,7 @@ struct EditorManagerInternalData
     /* Static data */
 
     EditorManager* m_pOwner;
+    wxBitmap m_ReadonlyIcon;
     bool m_SetFocusFlag;
 };
 
@@ -1043,7 +1044,20 @@ void EditorManager::MarkReadOnly(int page, bool readOnly)
 {
     if (page > -1)
     {
-        wxBitmap bmp = readOnly ? cbLoadBitmap(ConfigManager::GetDataFolder() + _T("/images/") + _T("readonly.png")) : wxNullBitmap;
+        // The file is read-only and we don't have an image loaded - load it now.
+        if (readOnly && !m_pData->m_ReadonlyIcon.IsOk())
+        {
+            const int targetHeight = floor(16 * cbGetActualContentScaleFactor(*m_pNotebook));
+            const int size = cbFindMinSize16to64(targetHeight);
+
+            const wxString path = ConfigManager::GetDataFolder()
+                                + wxString::Format(wxT("/manager_resources.zip#zip:/images/%dx%d/readonly.png"),
+                                                   size, size);
+
+            m_pData->m_ReadonlyIcon = cbLoadBitmapScaled(path, wxBITMAP_TYPE_PNG,
+                                                         cbGetContentScaleFactor(*m_pNotebook));
+        }
+        wxBitmap bmp = readOnly ? m_pData->m_ReadonlyIcon : wxNullBitmap;
         if (m_pNotebook)
             m_pNotebook->SetPageBitmap(page, bmp);
     }
