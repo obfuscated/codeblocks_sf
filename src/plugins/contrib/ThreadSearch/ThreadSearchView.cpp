@@ -974,7 +974,7 @@ void ThreadSearchView::UpdateSearchButtons(bool enable, eSearchButtonLabel label
 
 wxString GetToolbarImagePrefix()
 {
-    const int size = Manager::Get()->GetImageSize(Manager::UIComponentImageSize::Toolbars);
+    const int size = Manager::Get()->GetImageSize(Manager::UIComponent::Toolbars);
     return ConfigManager::GetDataFolder()
         + wxString::Format(wxT("/images/ThreadSearch/%dx%d/"), size, size);
 }

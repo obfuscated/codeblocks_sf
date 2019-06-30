@@ -269,7 +269,7 @@ void IncrementalSearch::BuildMenu(wxMenuBar* menuBar)
                                                 _("&Incremental search\tCtrl-I"),
                                                 _("Set focus on Incremental Search input and show the toolbar, if hidden") );
 
-        const int imageSize = Manager::Get()->GetImageSize(Manager::UIComponentImageSize::Toolbars);
+        const int imageSize = Manager::Get()->GetImageSize(Manager::UIComponent::Toolbars);
         const wxString prefix = ConfigManager::GetDataFolder()
                               + wxString::Format(wxT("/IncrementalSearch.zip#zip:/images/%dx%d/"),
                                                 imageSize, imageSize);

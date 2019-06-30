@@ -127,6 +127,8 @@ Manager::Manager() :
 {
     for (int &size : m_ImageSizes)
         size = 0;
+    for (double &factor : m_UIScaleFactor)
+        factor = 0;
 }
 
 Manager::~Manager()
@@ -368,8 +370,7 @@ wxMenu *Manager::LoadMenu(wxString menu_id,bool createonfailure)
 
 wxToolBar* Manager::CreateEmptyToolbar()
 {
-    const wxSize size(m_ImageSizes[UIComponentImageSize::Toolbars],
-                      m_ImageSizes[UIComponentImageSize::Toolbars]);
+    const wxSize size(m_ImageSizes[UIComponent::Toolbars], m_ImageSizes[UIComponent::Toolbars]);
     wxWindow *appFrame = GetAppFrame();
 
 #ifdef __WXMSW__
@@ -396,16 +397,28 @@ void Manager::AddonToolBar(wxToolBar* toolBar,wxString resid)
         m_ToolbarHandler->SetCurrentResourceID(wxString());
 }
 
-void Manager::SetImageSize(int size, UIComponentImageSize component)
+void Manager::SetImageSize(int size, UIComponent component)
 {
-    cbAssert(component>=0 && component < UIComponentImageSize::Last);
+    cbAssert(component>=0 && component < UIComponent::Last);
     m_ImageSizes[component] = size;
 }
 
-int Manager::GetImageSize(UIComponentImageSize component) const
+int Manager::GetImageSize(UIComponent component) const
 {
-    cbAssert(component>=0 && component < UIComponentImageSize::Last);
+    cbAssert(component>=0 && component < UIComponent::Last);
     return m_ImageSizes[component];
+}
+
+void Manager::SetUIScaleFactor(double scaleFactor, UIComponent component)
+{
+    cbAssert(component>=0 && component < UIComponent::Last);
+    m_UIScaleFactor[component] = scaleFactor;
+}
+
+double Manager::GetUIScaleFactor(UIComponent component) const
+{
+    cbAssert(component>=0 && component < UIComponent::Last);
+    return m_UIScaleFactor[component];
 }
 
 void Manager::SetToolbarHandler(wxToolBarAddOnXmlHandler *handler)

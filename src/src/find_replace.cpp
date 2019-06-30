@@ -126,11 +126,12 @@ void FindReplace::CreateSearchLog()
     widths.Add(48);
     widths.Add(640);
 
-    const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponentImageSize::InfoPaneNotebooks);
+    const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
+    const int uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::InfoPaneNotebooks);
     const wxString imgFile = ConfigManager::GetDataFolder()
                           + wxString::Format(_T("/resources.zip#zip:/images/%dx%d/filefind.png"),
                                              uiSize, uiSize);
-    wxBitmap * bmp = new wxBitmap(cbLoadBitmap(imgFile, wxBITMAP_TYPE_PNG));
+    wxBitmap * bmp = new wxBitmap(cbLoadBitmapScaled(imgFile, wxBITMAP_TYPE_PNG, uiScaleFactor));
 
     m_pSearchLog = new cbSearchResultsLog(titles, widths);
     CodeBlocksLogEvent evt(cbEVT_ADD_LOG_WINDOW, m_pSearchLog, _("Search results"), bmp);

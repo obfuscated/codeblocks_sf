@@ -360,7 +360,7 @@ void CompilerGCC::OnAttach()
 
     {
         const wxString prefix = ConfigManager::GetDataFolder() + wxT("/compiler.zip#zip:/images");
-        m_pArtProvider = new cbArtProvider(prefix, Manager::Get()->GetImageSize(Manager::UIComponentImageSize::Menus));
+        m_pArtProvider = new cbArtProvider(prefix, Manager::Get()->GetImageSize(Manager::UIComponent::Menus));
 
         m_pArtProvider->AddMapping(wxT("compiler/compile"), wxT("compile.png"));
         m_pArtProvider->AddMapping(wxT("compiler/run"), wxT("run.png"));
@@ -378,11 +378,13 @@ void CompilerGCC::OnAttach()
     msgMan->Slot(m_PageIndex).title = _("Build log");
 //    msgMan->SetBatchBuildLog(m_PageIndex);
     // set log image
-    const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponentImageSize::InfoPaneNotebooks);
+    const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
+    const int uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::InfoPaneNotebooks);
     const wxString prefix = ConfigManager::GetDataFolder()
                           + wxString::Format(_T("/resources.zip#zip:/images/infopane/%dx%d/"),
                                              uiSize, uiSize);
-    wxBitmap* bmp = new wxBitmap(cbLoadBitmap(prefix + _T("misc.png"), wxBITMAP_TYPE_PNG));
+    wxBitmap* bmp = new wxBitmap(cbLoadBitmapScaled(prefix + _T("misc.png"), wxBITMAP_TYPE_PNG,
+                                                    uiScaleFactor));
     msgMan->Slot(m_PageIndex).icon = bmp;
 
     // create warnings/errors log
@@ -400,7 +402,8 @@ void CompilerGCC::OnAttach()
     m_ListPageIndex = msgMan->SetLog(m_pListLog);
     msgMan->Slot(m_ListPageIndex).title = _("Build messages");
     // set log image
-    bmp = new wxBitmap(cbLoadBitmap(prefix + _T("flag.png"), wxBITMAP_TYPE_PNG));
+    bmp = new wxBitmap(cbLoadBitmapScaled(prefix + _T("flag.png"), wxBITMAP_TYPE_PNG,
+                                          uiScaleFactor));
     msgMan->Slot(m_ListPageIndex).icon = bmp;
 
     CodeBlocksLogEvent evtAdd1(cbEVT_ADD_LOG_WINDOW, m_pLog, msgMan->Slot(m_PageIndex).title, msgMan->Slot(m_PageIndex).icon);
