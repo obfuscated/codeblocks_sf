@@ -26,109 +26,93 @@ noinst_HEADERS = Config.h \
 		DoxyBlocksLogger.h \
 		version.h
 
+resources_forZIP = \
+	images/16x16/chm.png \
+	images/16x16/comment_block.png \
+	images/16x16/comment_line.png \
+	images/16x16/configure.png \
+	images/16x16/doxywizard.png \
+	images/16x16/extract.png \
+	images/16x16/html.png \
+	\
+	images/20x20/chm.png \
+	images/20x20/comment_block.png \
+	images/20x20/comment_line.png \
+	images/20x20/configure.png \
+	images/20x20/doxywizard.png \
+	images/20x20/extract.png \
+	images/20x20/html.png \
+	\
+	images/24x24/chm.png \
+	images/24x24/comment_block.png \
+	images/24x24/comment_line.png \
+	images/24x24/configure.png \
+	images/24x24/doxywizard.png \
+	images/24x24/extract.png \
+	images/24x24/html.png \
+	\
+	images/28x28/chm.png \
+	images/28x28/comment_block.png \
+	images/28x28/comment_line.png \
+	images/28x28/configure.png \
+	images/28x28/doxywizard.png \
+	images/28x28/extract.png \
+	images/28x28/html.png \
+	\
+	images/32x32/chm.png \
+	images/32x32/comment_block.png \
+	images/32x32/comment_line.png \
+	images/32x32/configure.png \
+	images/32x32/doxywizard.png \
+	images/32x32/extract.png \
+	images/32x32/html.png \
+	\
+	images/40x40/chm.png \
+	images/40x40/comment_block.png \
+	images/40x40/comment_line.png \
+	images/40x40/configure.png \
+	images/40x40/doxywizard.png \
+	images/40x40/extract.png \
+	images/40x40/html.png \
+	\
+	images/48x48/chm.png \
+	images/48x48/comment_block.png \
+	images/48x48/comment_line.png \
+	images/48x48/configure.png \
+	images/48x48/doxywizard.png \
+	images/48x48/extract.png \
+	images/48x48/html.png \
+	\
+	images/56x56/chm.png \
+	images/56x56/comment_block.png \
+	images/56x56/comment_line.png \
+	images/56x56/configure.png \
+	images/56x56/doxywizard.png \
+	images/56x56/extract.png \
+	images/56x56/html.png \
+	\
+	images/64x64/chm.png \
+	images/64x64/comment_block.png \
+	images/64x64/comment_line.png \
+	images/64x64/configure.png \
+	images/64x64/doxywizard.png \
+	images/64x64/extract.png \
+	images/64x64/html.png
+
 EXTRA_DIST = $(srcdir)/*.cbp \
 		wxsmith/ConfigPanel.wxs \
 		manifest.xml \
 		ChangeLog.txt \
 		DoxyBlocks.rc \
-		$(srcdir)/update*
+		$(srcdir)/update* \
+		$(resources_forZIP)
 
 pkgdata_DATA = DoxyBlocks.zip
 
 CLEANFILES = $(pkgdata_DATA)
 
-DoxyBlocks.zip: manifest.xml
-	PWD=`pwd` cd $(srcdir) && zip -R $(PWD)/DoxyBlocks.zip manifest.xml > /dev/null
+DoxyBlocks.zip: manifest.xml $(resources_forZIP)
+	PWD=`pwd` cd $(srcdir) && zip -R $(PWD)/DoxyBlocks.zip manifest.xml $(resources_forZIP) > /dev/null
 
 confimagesdir = $(datadir)/@PACKAGE@/images/settings
 dist_confimages_DATA = $(srcdir)/*.png
-
-images16x16dir = $(datadir)/@PACKAGE@/images/DoxyBlocks/16x16
-dist_images16x16_DATA = \
-	$(srcdir)/images/16x16/chm.png \
-	$(srcdir)/images/16x16/comment_block.png \
-	$(srcdir)/images/16x16/comment_line.png \
-	$(srcdir)/images/16x16/configure.png \
-	$(srcdir)/images/16x16/doxywizard.png \
-	$(srcdir)/images/16x16/extract.png \
-	$(srcdir)/images/16x16/html.png
-
-images20x20dir = $(datadir)/@PACKAGE@/images/DoxyBlocks/20x20
-dist_images20x20_DATA = \
-	$(srcdir)/images/20x20/chm.png \
-	$(srcdir)/images/20x20/comment_block.png \
-	$(srcdir)/images/20x20/comment_line.png \
-	$(srcdir)/images/20x20/configure.png \
-	$(srcdir)/images/20x20/doxywizard.png \
-	$(srcdir)/images/20x20/extract.png \
-	$(srcdir)/images/20x20/html.png
-
-images24x24dir = $(datadir)/@PACKAGE@/images/DoxyBlocks/24x24
-dist_images24x24_DATA = \
-	$(srcdir)/images/24x24/chm.png \
-	$(srcdir)/images/24x24/comment_block.png \
-	$(srcdir)/images/24x24/comment_line.png \
-	$(srcdir)/images/24x24/configure.png \
-	$(srcdir)/images/24x24/doxywizard.png \
-	$(srcdir)/images/24x24/extract.png \
-	$(srcdir)/images/24x24/html.png
-
-images28x28dir = $(datadir)/@PACKAGE@/images/DoxyBlocks/28x28
-dist_images28x28_DATA = \
-	$(srcdir)/images/28x28/chm.png \
-	$(srcdir)/images/28x28/comment_block.png \
-	$(srcdir)/images/28x28/comment_line.png \
-	$(srcdir)/images/28x28/configure.png \
-	$(srcdir)/images/28x28/doxywizard.png \
-	$(srcdir)/images/28x28/extract.png \
-	$(srcdir)/images/28x28/html.png
-
-images32x32dir = $(datadir)/@PACKAGE@/images/DoxyBlocks/32x32
-dist_images32x32_DATA = \
-	$(srcdir)/images/32x32/chm.png \
-	$(srcdir)/images/32x32/comment_block.png \
-	$(srcdir)/images/32x32/comment_line.png \
-	$(srcdir)/images/32x32/configure.png \
-	$(srcdir)/images/32x32/doxywizard.png \
-	$(srcdir)/images/32x32/extract.png \
-	$(srcdir)/images/32x32/html.png
-
-images40x40dir = $(datadir)/@PACKAGE@/images/DoxyBlocks/40x40
-dist_images40x40_DATA = \
-	$(srcdir)/images/40x40/chm.png \
-	$(srcdir)/images/40x40/comment_block.png \
-	$(srcdir)/images/40x40/comment_line.png \
-	$(srcdir)/images/40x40/configure.png \
-	$(srcdir)/images/40x40/doxywizard.png \
-	$(srcdir)/images/40x40/extract.png \
-	$(srcdir)/images/40x40/html.png
-
-images48x48dir = $(datadir)/@PACKAGE@/images/DoxyBlocks/48x48
-dist_images48x48_DATA = \
-	$(srcdir)/images/48x48/chm.png \
-	$(srcdir)/images/48x48/comment_block.png \
-	$(srcdir)/images/48x48/comment_line.png \
-	$(srcdir)/images/48x48/configure.png \
-	$(srcdir)/images/48x48/doxywizard.png \
-	$(srcdir)/images/48x48/extract.png \
-	$(srcdir)/images/48x48/html.png
-
-images56x56dir = $(datadir)/@PACKAGE@/images/DoxyBlocks/56x56
-dist_images56x56_DATA = \
-	$(srcdir)/images/56x56/chm.png \
-	$(srcdir)/images/56x56/comment_block.png \
-	$(srcdir)/images/56x56/comment_line.png \
-	$(srcdir)/images/56x56/configure.png \
-	$(srcdir)/images/56x56/doxywizard.png \
-	$(srcdir)/images/56x56/extract.png \
-	$(srcdir)/images/56x56/html.png
-
-images64x64dir = $(datadir)/@PACKAGE@/images/DoxyBlocks/64x64
-dist_images64x64_DATA = \
-	$(srcdir)/images/64x64/chm.png \
-	$(srcdir)/images/64x64/comment_block.png \
-	$(srcdir)/images/64x64/comment_line.png \
-	$(srcdir)/images/64x64/configure.png \
-	$(srcdir)/images/64x64/doxywizard.png \
-	$(srcdir)/images/64x64/extract.png \
-	$(srcdir)/images/64x64/html.png

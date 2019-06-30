@@ -172,10 +172,6 @@ if exist "%CB_DEVEL_RESDIR%\images\codesnippets" (
     xcopy /D /y "%CB_DEVEL_RESDIR%\images\codesnippets\*.png" "%CB_OUTPUT_RESDIR%\images\codesnippets" > nul
 )
 
-if exist "%CB_DEVEL_RESDIR%\images\DoxyBlocks" (
-    call:copyImageFiles "%CB_DEVEL_RESDIR%\images\DoxyBlocks" "%CB_OUTPUT_RESDIR%\images\DoxyBlocks"
-)
-
 if exist "%CB_DEVEL_RESDIR%\images\fortranproject" (
     call:copyImageFiles "%CB_DEVEL_RESDIR%\images\fortranproject" "%CB_OUTPUT_RESDIR%\images\fortranproject"
 )
