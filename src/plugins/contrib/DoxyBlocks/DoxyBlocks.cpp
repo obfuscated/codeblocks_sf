@@ -620,13 +620,19 @@ void DoxyBlocks::BuildModuleMenu(const ModuleType type, wxMenu *menu, const File
     // Add the comment functions to the editor's context-sensitive menu.
     if(type == mtEditorManager){
         wxMenu *submenu = new wxMenu;
-        wxString prefix = ConfigManager::GetDataFolder() + wxT("/images/DoxyBlocks/16x16/");
+        const int imageSize = Manager::Get()->GetImageSize(Manager::UIComponent::Menus);
+        const int uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::Menus);
+        const wxString prefix = ConfigManager::GetDataFolder()
+                              + wxString::Format(wxT("/DoxyBlocks.zip#zip:images/%dx%d/"),
+                                                 imageSize, imageSize);
 
         wxMenuItem *MenuItemBlockComment = new wxMenuItem(submenu, ID_MENU_BLOCKCOMMENT, _("&Block Comment"), _("Insert a comment block at the current line."));
-        MenuItemBlockComment->SetBitmap(wxBitmap(prefix + wxT("comment_block.png"), wxBITMAP_TYPE_PNG));
+        MenuItemBlockComment->SetBitmap(cbLoadBitmapScaled(prefix + wxT("comment_block.png"),
+                                                           wxBITMAP_TYPE_PNG, uiScaleFactor));
         submenu->Append(MenuItemBlockComment);
         wxMenuItem *MenuItemLineComment = new wxMenuItem(submenu, ID_MENU_LINECOMMENT, _("&Line Comment"), _("Insert a line comment at the current cursor position."));
-        MenuItemLineComment->SetBitmap(wxBitmap(prefix + wxT("comment_line.png"), wxBITMAP_TYPE_PNG));
+        MenuItemLineComment->SetBitmap(cbLoadBitmapScaled(prefix + wxT("comment_line.png"),
+                                                          wxBITMAP_TYPE_PNG, uiScaleFactor));
         submenu->Append(MenuItemLineComment);
 
         const wxString label = wxT("Do&xyBlocks");
