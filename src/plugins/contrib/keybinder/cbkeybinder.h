@@ -31,7 +31,7 @@
 // Modified Keybinder for CodeBlocks KeyBnder v2.0
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "2.0.05 2019/05/19"
+#define VERSION "2.0.06 2019/06/29"
 // -----------------------------------
 class wxKeyConfigPanel;
 class wxKeyProfileArray;
@@ -664,5 +664,8 @@ class cbKeyBinder : public cbPlugin
 //          2.0.00 2019/04/7
 //              Rewrite using CodeLite method for global accelerator table shortcuts
 //              Removes use of a bazillion wxEvtHandlers
+//          2.0.06 2019/06/29
+//              Re-instate clKeyboardManager.cpp lines 187-193
+//              Setting new accel in Linux will not work unless also set in global acceleratorTable
 //
 // ----------------------------------------------------------------------------

@@ -184,16 +184,15 @@ void clKeyboardManager::DoUpdateMenu(wxMenu* menu, MenuItemDataIntMap_t& accels,
             // remove the matches entry from the accels map
             accels.erase(where);
         }
-        else    //(2019/04/25)
-        {   // Put only non-menu items in the accelerator table.
-            // Else they'll fire events even after the menu item is deleted.
-            wxAcceleratorEntry* a = wxAcceleratorEntry::Create(item->GetItemLabel());
-            if(a) {
-                a->Set(a->GetFlags(), a->GetKeyCode(), item->GetId());
-                table.push_back(*a);
-                wxDELETE(a);
-            }
+        //(2019/06/29) Linux: set accels in global table, else linux menu accels wont work
+        wxAcceleratorEntry* a = wxAcceleratorEntry::Create(item->GetItemLabel());
+        if(a)
+        {
+            a->Set(a->GetFlags(), a->GetKeyCode(), item->GetId());
+            table.push_back(*a);
+            wxDELETE(a);
         }
+
     }//for iter
 }
 // ----------------------------------------------------------------------------
