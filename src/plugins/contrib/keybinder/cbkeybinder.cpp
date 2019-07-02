@@ -295,7 +295,7 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
     // if no old personality + keybindings file, look for ancient keybindings file (2019/07/2)
     if (m_OldKeyBinderFullFilePath.empty())
     {
-        m_OldKeyBinderFullFilePath = ConfigManager::GetConfigFolder() + wxT("\\cbKeyBinder10.ini") ; //keyBindings before personalities existed
+        m_OldKeyBinderFullFilePath = ConfigManager::GetConfigFolder() + sep + wxT("cbKeyBinder10.ini") ; //keyBindings before personalities existed
         // prepend personality to copy of ancient cbKeybinder10.ini
         if (wxFileExists(m_OldKeyBinderFullFilePath))
         {   wxFileName personalityKeyBinderFile(m_OldKeyBinderFullFilePath);

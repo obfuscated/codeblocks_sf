@@ -31,7 +31,7 @@
 // Modified Keybinder for CodeBlocks KeyBnder v2.0
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "2.0.06 2019/06/29"
+#define VERSION "2.0.07 2019/07/2"
 // -----------------------------------
 class wxKeyConfigPanel;
 class wxKeyProfileArray;
@@ -666,6 +666,8 @@ class cbKeyBinder : public cbPlugin
 //              Removes use of a bazillion wxEvtHandlers
 //          2.0.06 2019/06/29
 //              Re-instate clKeyboardManager.cpp lines 187-193
+//          2.0.07 2019/07/2
 //              Setting new accel in Linux will not work unless also set in global acceleratorTable
+//              Use ancient "cbKeyBinder10.ini" standalone when no <personality>.cbKeyBinder10.ini exists
 //
 // ----------------------------------------------------------------------------
