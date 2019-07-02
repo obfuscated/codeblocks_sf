@@ -670,6 +670,7 @@ MainFrame::~MainFrame()
 {
     SetAcceleratorTable(wxNullAcceleratorTable);
     delete m_pAccel;
+    delete m_pAccelEntries;
 
     DeInitPrinting();
 

@@ -290,7 +290,22 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
     m_OldKeyBinderFullFilePath = ConfigManager::GetConfigFolder();
     m_OldKeyBinderFullFilePath = m_OldKeyBinderFullFilePath + wxFILE_SEP_PATH;
     m_OldKeyBinderFullFilePath << m_UserPersonality + wxT(".cbKeyBinder10.ini") ;
-    if (not wxFileExists(m_OldKeyBinderFullFilePath)) m_OldKeyBinderFullFilePath = wxEmptyString;
+    if (not wxFileExists(m_OldKeyBinderFullFilePath))
+        m_OldKeyBinderFullFilePath = wxEmptyString;
+    // if no old personality + keybindings file, look for ancient keybindings file (2019/07/2)
+    if (m_OldKeyBinderFullFilePath.empty())
+    {
+        m_OldKeyBinderFullFilePath = ConfigManager::GetConfigFolder() + wxT("\\cbKeyBinder10.ini") ; //keyBindings before personalities existed
+        // prepend personality to copy of ancient cbKeybinder10.ini
+        if (wxFileExists(m_OldKeyBinderFullFilePath))
+        {   wxFileName personalityKeyBinderFile(m_OldKeyBinderFullFilePath);
+            personalityKeyBinderFile.SetName(m_UserPersonality + _T(".") + personalityKeyBinderFile.GetName());
+            wxCopyFile(m_OldKeyBinderFullFilePath, personalityKeyBinderFile.GetFullPath());
+            m_OldKeyBinderFullFilePath = personalityKeyBinderFile.GetFullPath();
+        }
+        if (not wxFileExists(m_OldKeyBinderFullFilePath))
+            m_OldKeyBinderFullFilePath = wxEmptyString;
+    }
 
     #if LOGGING
         if (m_OldKeyBinderFullFilePath.Len())
