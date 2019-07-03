@@ -176,10 +176,6 @@ if exist "%CB_DEVEL_RESDIR%\images\fortranproject" (
     call:copyImageFiles "%CB_DEVEL_RESDIR%\images\fortranproject" "%CB_OUTPUT_RESDIR%\images\fortranproject"
 )
 
-if exist "%CB_DEVEL_RESDIR%\images\ThreadSearch" (
-    call:copyImageFiles "%CB_DEVEL_RESDIR%\images\ThreadSearch" "%CB_OUTPUT_RESDIR%\images\ThreadSearch"
-)
-
 if exist "%CB_DEVEL_RESDIR%\images\wxsmith" (
     call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\wxsmith"
     xcopy /D /y "%CB_DEVEL_RESDIR%\images\wxsmith\*.png" "%CB_OUTPUT_RESDIR%\images\wxsmith" > nul

@@ -140,6 +140,8 @@ ThreadSearch::ThreadSearch()
               m_SplitterMode(wxSPLIT_VERTICAL),
               m_FileSorting(InsertIndexManager::SortByFilePath)
 {
+    if (!Manager::LoadResource(_T("ThreadSearch.zip")))
+        NotifyMissingFile(_T("ThreadSearch.zip"));
 }
 
 // destructor
@@ -582,7 +584,7 @@ bool ThreadSearch::BuildToolBar(wxToolBar* toolBar)
     m_pToolbar = toolBar;
     m_pThreadSearchView->SetToolBar(toolBar);
 
-    const wxString &prefix = GetToolbarImagePrefix();
+    const wxString &prefix = GetImagePrefix(true);
 
     m_pCboSearchExpr = new wxComboBox(toolBar, controlIDs.Get(ControlIDs::idCboSearchExpr),
                                       wxEmptyString, wxDefaultPosition, wxSize(130, -1), 0, NULL, wxCB_DROPDOWN);
