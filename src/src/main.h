@@ -75,8 +75,8 @@ class MainFrame : public wxFrame
         bool LayoutDifferent(const wxString& layout1,const wxString& layout2,const wxString& delimiter=_("|"));
         bool LayoutMessagePaneDifferent(const wxString& layout1,const wxString& layout2, bool checkSelection=false);
     public:
-        wxAcceleratorTable* m_pAccel;
-        wxAcceleratorEntry* m_pAccelEntries;
+        std::unique_ptr<wxAcceleratorTable> m_pAccel;
+        std::unique_ptr<wxAcceleratorEntry[]> m_pAccelEntries;
         size_t              m_AccelCount;
 
         MainFrame(wxWindow* parent = (wxWindow*)NULL);

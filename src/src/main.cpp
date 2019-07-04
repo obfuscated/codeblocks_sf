@@ -594,17 +594,16 @@ MainFrame::MainFrame(wxWindow* parent)
 
     // Accelerator table
     m_AccelCount = 8;
-    m_pAccelEntries = new wxAcceleratorEntry[m_AccelCount];
-    wxAcceleratorEntry* entries = m_pAccelEntries;
-    entries[0].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  (int) 'W', idFileCloseAll);
-    entries[1].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  WXK_F4,    idFileCloseAll);
-    entries[2].Set(wxACCEL_CTRL,                  (int) 'W', idFileClose);
-    entries[3].Set(wxACCEL_CTRL,                  WXK_F4,    idFileClose);
-    entries[4].Set(wxACCEL_CTRL,                  WXK_F6,    idFileNext);
-    entries[5].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  WXK_F6,    idFilePrev);
-    entries[6].Set(wxACCEL_SHIFT,                 WXK_TAB,   idShiftTab);
-    entries[7].Set(wxACCEL_CTRL | wxACCEL_ALT,    WXK_TAB,   idCtrlAltTab);
-    m_pAccel = new wxAcceleratorTable(m_AccelCount, entries);
+    m_pAccelEntries.reset(new wxAcceleratorEntry[m_AccelCount]);
+    m_pAccelEntries[0].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  (int) 'W', idFileCloseAll);
+    m_pAccelEntries[1].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  WXK_F4,    idFileCloseAll);
+    m_pAccelEntries[2].Set(wxACCEL_CTRL,                  (int) 'W', idFileClose);
+    m_pAccelEntries[3].Set(wxACCEL_CTRL,                  WXK_F4,    idFileClose);
+    m_pAccelEntries[4].Set(wxACCEL_CTRL,                  WXK_F6,    idFileNext);
+    m_pAccelEntries[5].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  WXK_F6,    idFilePrev);
+    m_pAccelEntries[6].Set(wxACCEL_SHIFT,                 WXK_TAB,   idShiftTab);
+    m_pAccelEntries[7].Set(wxACCEL_CTRL | wxACCEL_ALT,    WXK_TAB,   idCtrlAltTab);
+    m_pAccel.reset(new wxAcceleratorTable(m_AccelCount, m_pAccelEntries.get()));
 
     SetAcceleratorTable(*m_pAccel);
 
@@ -669,8 +668,6 @@ MainFrame::MainFrame(wxWindow* parent)
 MainFrame::~MainFrame()
 {
     SetAcceleratorTable(wxNullAcceleratorTable);
-    delete m_pAccel;
-    delete m_pAccelEntries;
 
     DeInitPrinting();
 
