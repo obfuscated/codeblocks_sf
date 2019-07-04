@@ -269,11 +269,13 @@ void IncrementalSearch::BuildMenu(wxMenuBar* menuBar)
                                                 _("&Incremental search\tCtrl-I"),
                                                 _("Set focus on Incremental Search input and show the toolbar, if hidden") );
 
-        const int imageSize = Manager::Get()->GetImageSize(Manager::UIComponent::Toolbars);
+        const int imageSize = Manager::Get()->GetImageSize(Manager::UIComponent::Menus);
+        const double uiScale = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::Menus);
         const wxString prefix = ConfigManager::GetDataFolder()
                               + wxString::Format(wxT("/IncrementalSearch.zip#zip:/images/%dx%d/"),
                                                 imageSize, imageSize);
-        wxBitmap image = cbLoadBitmap(prefix + wxT("incsearchfocus.png"));
+        wxBitmap image = cbLoadBitmapScaled(prefix + wxT("incsearchfocus.png"), wxBITMAP_TYPE_PNG,
+                                            uiScale);
         itemTmp->SetBitmap(image);
 
         // find "Find previous" and insert after it
