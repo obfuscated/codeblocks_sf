@@ -778,6 +778,8 @@ void MainFrame::CreateIDE()
         // help us much, because the window hasn't been shown yet).
 
         Manager::Get()->SetImageSize(uiSize16, Manager::UIComponent::Menus);
+        Manager::Get()->SetUIScaleFactor(cbGetContentScaleFactor(*this),
+                                         Manager::UIComponent::Menus);
 
         const wxString prefix = ConfigManager::GetDataFolder() + wxT("/resources.zip#zip:/images");
         cbArtProvider *provider = new cbArtProvider(prefix, uiSize16);

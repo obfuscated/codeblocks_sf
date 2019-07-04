@@ -186,10 +186,6 @@ if [ -d "${CB_DEVEL_RESDIR}/images/codesnippets" ]; then
     cp -f ${CB_DEVEL_RESDIR}/images/codesnippets/*.png ${CB_OUTPUT_RESDIR}/images/codesnippets > /dev/null
 fi
 
-if [ -d "${CB_DEVEL_RESDIR}/images/DoxyBlocks" ]; then
-    copyImageFiles ${CB_DEVEL_RESDIR}/images/DoxyBlocks ${CB_OUTPUT_RESDIR}/images/DoxyBlocks
-fi
-
 if [ -d "${CB_DEVEL_RESDIR}/images/ThreadSearch" ]; then
     copyImageFiles ${CB_DEVEL_RESDIR}/images/ThreadSearch ${CB_OUTPUT_RESDIR}/images/ThreadSearch
 fi
