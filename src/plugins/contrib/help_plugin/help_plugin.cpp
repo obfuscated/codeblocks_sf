@@ -354,18 +354,6 @@ void HelpPlugin::AddToHelpMenu(int id, const wxString &help, bool
 
     if (id == idHelpMenus[0])
       helpMenu->AppendSeparator();
-
-#ifdef __WXMSW__
-    if (fromIni)
-    {
-      wxMenuItem *mitem = new wxMenuItem(0, id, help);
-      wxFont &font = mitem->GetFont();
-      font.SetWeight(wxFONTWEIGHT_BOLD);
-      mitem->SetFont(font);
-      helpMenu->Append(mitem);
-    }
-    else
-#endif
       helpMenu->Append(id, help);
   }
 }
