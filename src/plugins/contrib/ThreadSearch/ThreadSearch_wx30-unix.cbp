@@ -54,7 +54,6 @@
 			<Add directory="../../../devel30" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 ../../../devel30/share/codeblocks/ThreadSearch.zip manifest.xml" />
 			<Add after="./update30" />
 			<Mode after="always" />
 		</ExtraCommands>

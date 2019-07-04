@@ -66,7 +66,6 @@
 			<Add option="-mthreads" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 ..\..\..\devel30_64\share\codeblocks\ThreadSearch.zip manifest.xml" />
 			<Add after="update30_64.bat" />
 			<Mode after="always" />
 		</ExtraCommands>

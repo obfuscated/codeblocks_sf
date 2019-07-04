@@ -2,23 +2,28 @@
 
 CB_DEVEL=devel$1
 CB_OUTPUT=output$1
-CB_DEVEL_RESDIR=../../../$CB_DEVEL/share/codeblocks/images
-CB_OUTPUT_RESDIR=../../../$CB_OUTPUT/share/codeblocks/images
-
-# This is done this stupid/convoluted way, because dash/posix doesn't have arrays!
-dirs="16x16 20x20 24x24 28x28 32x32 40x40 48x48 56x56 64x64"
-echo "$dirs" | tr ' ' '\n' | while read dir; do
-    mkdir -p ${CB_DEVEL_RESDIR}/ThreadSearch/${dir}
-    mkdir -p ${CB_OUTPUT_RESDIR}/ThreadSearch/${dir}
-
-    cp ./resources/images/${dir}/*.png ${CB_DEVEL_RESDIR}/ThreadSearch/${dir}/ #> /dev/null 2> /dev/null
-    cp ./resources/images/${dir}/*.png ${CB_OUTPUT_RESDIR}/ThreadSearch/${dir}/ #> /dev/null 2> /dev/null
-done
+CB_DEVEL_RESDIR=../../../${CB_DEVEL}/share/codeblocks/images
+CB_OUTPUT_RESDIR=../../../${CB_OUTPUT}/share/codeblocks/images
+CB_DEVEL_ZIPDIR=../../../${CB_DEVEL}/share/codeblocks
 
 mkdir -p ${CB_DEVEL_RESDIR}/settings > /dev/null 2> /dev/null
 mkdir -p ${CB_OUTPUT_RESDIR}/settings > /dev/null 2> /dev/null
 cp ./resources/*.png ${CB_DEVEL_RESDIR}/settings/ > /dev/null 2> /dev/null
 cp ./resources/*.png ${CB_OUTPUT_RESDIR}/settings/ > /dev/null 2> /dev/null
+
+zip -j9 ${CB_DEVEL_ZIPDIR}/ThreadSearch.zip manifest.xml
+cd resources/
+zip -Rq9 ../${CB_DEVEL_ZIPDIR}/ThreadSearch.zip \
+    images/16x16/*.png \
+    images/20x20/*.png \
+    images/24x24/*.png \
+    images/28x28/*.png \
+    images/32x32/*.png \
+    images/40x40/*.png \
+    images/48x48/*.png \
+    images/56x56/*.png \
+    images/64x64/*.png
+cd ..
 
 exit 0
 
