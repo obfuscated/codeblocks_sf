@@ -23,9 +23,6 @@ resources_forZIP = \
 	project_manager_file_types.xrc \
 	scripting_security_dlg.xrc \
 	select_target.xrc \
-	images/8x8/breakpoint_disabled.png \
-	images/8x8/breakpoint_other.png \
-	images/8x8/breakpoint.png \
 	images/10x10/breakpoint_disabled.png \
 	images/10x10/breakpoint_other.png \
 	images/10x10/breakpoint.png \
@@ -35,31 +32,43 @@ resources_forZIP = \
 	images/16x16/breakpoint_disabled.png \
 	images/16x16/breakpoint_other.png \
 	images/16x16/breakpoint.png \
+	images/16x16/readonly.png \
 	images/16x16/select_target.png \
 	images/20x20/breakpoint_disabled.png \
 	images/20x20/breakpoint_other.png \
 	images/20x20/breakpoint.png \
+	images/20x20/readonly.png \
 	images/24x24/breakpoint_disabled.png \
 	images/24x24/breakpoint_other.png \
 	images/24x24/breakpoint.png \
+	images/24x24/readonly.png \
 	images/28x28/breakpoint_disabled.png \
 	images/28x28/breakpoint_other.png \
 	images/28x28/breakpoint.png \
+	images/28x28/readonly.png \
 	images/32x32/breakpoint_disabled.png \
 	images/32x32/breakpoint_other.png \
 	images/32x32/breakpoint.png \
+	images/32x32/readonly.png \
 	images/40x40/breakpoint_disabled.png \
 	images/40x40/breakpoint_other.png \
 	images/40x40/breakpoint.png \
+	images/40x40/readonly.png \
 	images/48x48/breakpoint_disabled.png \
 	images/48x48/breakpoint_other.png \
 	images/48x48/breakpoint.png \
+	images/48x48/readonly.png \
 	images/56x56/breakpoint_disabled.png \
 	images/56x56/breakpoint_other.png \
 	images/56x56/breakpoint.png \
+	images/56x56/readonly.png \
 	images/64x64/breakpoint_disabled.png \
 	images/64x64/breakpoint_other.png \
 	images/64x64/breakpoint.png \
+	images/64x64/readonly.png \
+	images/8x8/breakpoint_disabled.png \
+	images/8x8/breakpoint_other.png \
+	images/8x8/breakpoint.png \
 	images/closebutton.png \
 	images/select_target.png
 
