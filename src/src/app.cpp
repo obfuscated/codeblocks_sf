@@ -573,7 +573,7 @@ void CodeBlocksApp::SetupImageSizes(wxToolBarAddOnXmlHandler *toolbarAddonHandle
 {
     const int size = cbHelpers::ReadToolbarSizeFromConfig();
     toolbarAddonHandler->SetToolbarImageSize(size);
-    Manager::Get()->SetToolbarImageSize(size);
+    Manager::Get()->SetImageSize(size, Manager::UIComponentImageSize::Toolbars);
 }
 
 bool CodeBlocksApp::OnInit()

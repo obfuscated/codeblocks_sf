@@ -312,7 +312,7 @@ class MainFrame : public wxFrame
         void AddToolbarItem(int id, const wxString& title, const wxString& shortHelp, const wxString& longHelp, const wxString& image);
         void RecreateMenuBar();
         void RegisterEvents();
-        void SetupGUILogging();
+        void SetupGUILogging(int uiSize16);
         void SetupDebuggerUI();
 
         void RegisterScriptFunctions();

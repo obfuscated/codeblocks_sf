@@ -964,8 +964,11 @@ TextCtrlLogger* DebuggerManager::GetLogger(int &index)
         LogSlot &slot = msgMan->Slot(m_loggerIndex);
         slot.title = _("Debugger");
         // set log image
-        wxString prefix = ConfigManager::GetDataFolder() + _T("/images/");
-        wxBitmap* bmp = new wxBitmap(cbLoadBitmap(prefix + _T("misc_16x16.png"), wxBITMAP_TYPE_PNG));
+        const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponentImageSize::InfoPaneNotebooks);
+        const wxString prefix = ConfigManager::GetDataFolder()
+                              + wxString::Format(_T("/resources.zip#zip:/images/infopane/%dx%d/"),
+                                                 uiSize, uiSize);
+        wxBitmap* bmp = new wxBitmap(cbLoadBitmap(prefix + _T("misc.png"), wxBITMAP_TYPE_PNG));
         slot.icon = bmp;
 
         CodeBlocksLogEvent evtAdd(cbEVT_ADD_LOG_WINDOW, m_logger, slot.title, slot.icon);

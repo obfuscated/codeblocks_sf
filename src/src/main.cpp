@@ -757,9 +757,12 @@ void MainFrame::CreateIDE()
         m_pPrjManUI = new BatchProjectManagerUI;
     m_pPrjMan->SetUI(m_pPrjManUI);
 
+    const int targetHeight = floor(16 * cbGetActualContentScaleFactor(*this));
+    const int uiSize16 = cbFindMinSize16to64(targetHeight);
+
     // All message posted before this call are either lost or sent to stdout/stderr.
     // On windows stdout and stderr aren't accessible.
-    SetupGUILogging();
+    SetupGUILogging(uiSize16);
 
     {
         wxString msg = wxString::Format(wxT("Loaded config file '%s'"),
@@ -774,13 +777,10 @@ void MainFrame::CreateIDE()
         // size of the images. Also do this here when we have a main window (probably this doesn't
         // help us much, because the window hasn't been shown yet).
 
-        const int targetHeight = floor(16 * cbGetActualContentScaleFactor(*this));
-        const int size = cbFindMinSize16to64(targetHeight);
-
-        Manager::Get()->SetMenuImageSize(size);
+        Manager::Get()->SetImageSize(uiSize16, Manager::UIComponentImageSize::Menus);
 
         const wxString prefix = ConfigManager::GetDataFolder() + wxT("/resources.zip#zip:/images");
-        cbArtProvider *provider = new cbArtProvider(prefix, size);
+        cbArtProvider *provider = new cbArtProvider(prefix, uiSize16);
 
         provider->AddMapping(wxT("core/file_open"), wxT("fileopen.png"));
         provider->AddMapping(wxT("core/history_clear"), wxT("history_clear.png"));
@@ -846,7 +846,7 @@ void MainFrame::CreateIDE()
 }
 
 
-void MainFrame::SetupGUILogging()
+void MainFrame::SetupGUILogging(int uiSize16)
 {
     // allow new docked windows to use be 3/4 of the available space, the default (0.3) is sometimes too small, especially for "Logs & others"
     m_LayoutManager.SetDockSizeConstraint(0.75,0.75);
@@ -855,6 +855,7 @@ void MainFrame::SetupGUILogging()
     wxSize clientsize = GetClientSize();
 
     LogManager* mgr = Manager::Get()->GetLogManager();
+    Manager::Get()->SetImageSize(uiSize16, Manager::UIComponentImageSize::InfoPaneNotebooks);
 
     if (!Manager::IsBatchBuild())
     {
@@ -4826,7 +4827,7 @@ void MainFrame::OnSettingsEnvironment(cb_unused wxCommandEvent& event)
             ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
             const int newToolbarSize = cfg->ReadInt(_T("/environment/toolbar_size"),
                                                     cbHelpers::defaultToolbarSize);
-            needRestart = (newToolbarSize != Manager::Get()->GetToolbarImageSize());
+            needRestart = (newToolbarSize != Manager::Get()->GetImageSize(Manager::UIComponentImageSize::Toolbars));
         }
 
         Manager::Get()->GetLogManager()->NotifyUpdate();

@@ -134,18 +134,22 @@ public:
 
     wxToolBar* CreateEmptyToolbar();
     static void AddonToolBar(wxToolBar* toolBar,wxString resid);
-    /// Sets the global variable which stores the size of images in toolbars.
-    /// @note If you're not in app.cpp do not call this!
-    void SetToolbarImageSize(int size);
-    /// @return The size in pixels of images in toolbars.
-    int GetToolbarImageSize() const;
     static void SetToolbarHandler(wxToolBarAddOnXmlHandler *handler);
 
-    /// Sets the global variable which stores the size of images in menus.
-    /// @note If you're not in main.cpp do not call this!
-    void SetMenuImageSize(int size);
-    /// @return The size in pixels of images in menus.
-    int GetMenuImageSize() const;
+    enum UIComponentImageSize
+    {
+        Toolbars,
+        Menus,
+        InfoPaneNotebooks,
+
+        Last // Just a marker for the last element
+    };
+
+    /// Sets the global variable which stores the size of images for the given UI component.
+    /// @note If you're not in app.cpp or main.cpp DO NOT call this!
+    void SetImageSize(int size, UIComponentImageSize component);
+    /// @return The size in pixels of images in the specified UI component.
+    int GetImageSize(UIComponentImageSize component) const;
 
     static wxCmdLineParser* GetCmdLineParser();
 
@@ -170,8 +174,7 @@ private:
     static wxCmdLineParser m_CmdLineParser;
     static wxToolBarAddOnXmlHandler *m_ToolbarHandler;
 
-    int m_ToolbarImageSize;
-    int m_MenuImageSize;
+    int m_ImageSizes[UIComponentImageSize::Last];
 
     // event sinks
     typedef std::vector< IEventFunctorBase<CodeBlocksEvent>* >       EventSinksArray;
