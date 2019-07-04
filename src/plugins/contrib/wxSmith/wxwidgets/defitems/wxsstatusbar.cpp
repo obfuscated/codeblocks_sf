@@ -146,6 +146,9 @@ void wxsStatusBar::OnAddExtraProperties(wxsPropertyGridManager* Grid)
     #endif
     m_FieldsId = Grid->Append(NEW_IN_WXPG14X wxIntProperty(_("Fields"),wxPG_LABEL,m_Fields));
 
+    m_FieldsId->SetAttribute(wxPG_ATTR_MIN, 1);
+    m_FieldsId->SetAttribute(wxPG_ATTR_MAX, 30);
+
     for ( int i=0; i<m_Fields; i++ )
     {
         wxPGId ParentProp = Grid->Append(NEW_IN_WXPG14X wxParentProperty(wxString::Format(_("Field %d"),i+1),wxPG_LABEL));
