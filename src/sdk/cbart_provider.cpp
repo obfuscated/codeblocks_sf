@@ -28,7 +28,8 @@ wxBitmap cbArtProvider::CreateBitmap(const wxArtID& id, const wxArtClient& clien
         return wxNullBitmap;
 
     const wxString filepath = m_prefix + it->second;
-    wxBitmap result = cbLoadBitmap(filepath);
+    const double uiScale = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::Menus);
+    wxBitmap result = cbLoadBitmapScaled(filepath, wxBITMAP_TYPE_PNG, uiScale);
     if (!result.IsOk())
     {
         const wxString msg = wxString::Format(wxT("cbArtProvider: Cannot load image '%s'"),
