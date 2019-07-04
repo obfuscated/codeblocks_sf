@@ -44,7 +44,7 @@ using namespace wxsFlags;
 
 namespace
 {
-    const int ToolsTreeImageId = wxsResourceTree::LoadImage(_T("/images/misc_16x16.png"));
+    const int ToolsTreeImageId = wxsResourceTree::LoadImage(_T("images/wxsmith/tools16.png"));
 }
 
 wxsItemResData::wxsItemResData(
