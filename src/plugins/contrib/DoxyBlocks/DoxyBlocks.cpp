@@ -538,7 +538,7 @@ void DoxyBlocks::BuildMenu(wxMenuBar *menuBar)
     if(idx != wxNOT_FOUND){
         wxMenu *submenu = new wxMenu;
         wxString sDataFolder(ConfigManager::GetDataFolder());
-        const int imageSize = Manager::Get()->GetImageSize(Manager::UIComponentImageSize::Toolbars);
+        const int imageSize = Manager::Get()->GetImageSize(Manager::UIComponent::Toolbars);
         const wxString prefix = sDataFolder + wxString::Format(wxT("/images/DoxyBlocks/%dx%d/"),
                                                                imageSize, imageSize);
 
@@ -630,7 +630,7 @@ bool DoxyBlocks::BuildToolBar(wxToolBar *toolBar)
         return false;
 
     m_pToolbar = toolBar;
-    const int toolbarSize = Manager::Get()->GetImageSize(Manager::UIComponentImageSize::Toolbars);
+    const int toolbarSize = Manager::Get()->GetImageSize(Manager::UIComponent::Toolbars);
     const wxString prefix = ConfigManager::GetDataFolder()
                           + wxString::Format(wxT("/images/DoxyBlocks/%dx%d/"),
                                              toolbarSize,toolbarSize);

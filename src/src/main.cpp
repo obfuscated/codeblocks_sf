@@ -777,7 +777,7 @@ void MainFrame::CreateIDE()
         // size of the images. Also do this here when we have a main window (probably this doesn't
         // help us much, because the window hasn't been shown yet).
 
-        Manager::Get()->SetImageSize(uiSize16, Manager::UIComponentImageSize::Menus);
+        Manager::Get()->SetImageSize(uiSize16, Manager::UIComponent::Menus);
 
         const wxString prefix = ConfigManager::GetDataFolder() + wxT("/resources.zip#zip:/images");
         cbArtProvider *provider = new cbArtProvider(prefix, uiSize16);
@@ -855,7 +855,9 @@ void MainFrame::SetupGUILogging(int uiSize16)
     wxSize clientsize = GetClientSize();
 
     LogManager* mgr = Manager::Get()->GetLogManager();
-    Manager::Get()->SetImageSize(uiSize16, Manager::UIComponentImageSize::InfoPaneNotebooks);
+    Manager::Get()->SetImageSize(uiSize16, Manager::UIComponent::InfoPaneNotebooks);
+    Manager::Get()->SetUIScaleFactor(cbGetContentScaleFactor(*this),
+                                     Manager::UIComponent::InfoPaneNotebooks);
 
     if (!Manager::IsBatchBuild())
     {
@@ -4827,7 +4829,7 @@ void MainFrame::OnSettingsEnvironment(cb_unused wxCommandEvent& event)
             ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
             const int newToolbarSize = cfg->ReadInt(_T("/environment/toolbar_size"),
                                                     cbHelpers::defaultToolbarSize);
-            needRestart = (newToolbarSize != Manager::Get()->GetImageSize(Manager::UIComponentImageSize::Toolbars));
+            needRestart = (newToolbarSize != Manager::Get()->GetImageSize(Manager::UIComponent::Toolbars));
         }
 
         Manager::Get()->GetLogManager()->NotifyUpdate();

@@ -84,11 +84,12 @@ void ReopenEditor::OnAttach()
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
     m_IsManaged = cfg->ReadBool(_T("/reopen_editor/managed"),true);
 
-    const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponentImageSize::InfoPaneNotebooks);
+    const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
+    const int uiScaleFactor = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::InfoPaneNotebooks);
     const wxString undoImgFile = ConfigManager::GetDataFolder()
                                + wxString::Format(_T("/resources.zip#zip:/images/%dx%d/undo.png"),
                                                   uiSize, uiSize);
-    m_LogIcon = cbLoadBitmap(undoImgFile, wxBITMAP_TYPE_PNG);
+    m_LogIcon = cbLoadBitmapScaled(undoImgFile, wxBITMAP_TYPE_PNG, uiScaleFactor);
 
     ShowList();
 }

@@ -136,7 +136,7 @@ public:
     static void AddonToolBar(wxToolBar* toolBar,wxString resid);
     static void SetToolbarHandler(wxToolBarAddOnXmlHandler *handler);
 
-    enum UIComponentImageSize
+    enum UIComponent
     {
         Toolbars,
         Menus,
@@ -147,9 +147,15 @@ public:
 
     /// Sets the global variable which stores the size of images for the given UI component.
     /// @note If you're not in app.cpp or main.cpp DO NOT call this!
-    void SetImageSize(int size, UIComponentImageSize component);
+    void SetImageSize(int size, UIComponent component);
     /// @return The size in pixels of images in the specified UI component.
-    int GetImageSize(UIComponentImageSize component) const;
+    int GetImageSize(UIComponent component) const;
+
+    /// Sets the global variable which stores the scale factor for the given UI component.
+    /// @note If you're not in app.cpp or main.cpp DO NOT call this!
+    void SetUIScaleFactor(double scaleFactor, UIComponent component);
+    /// @return The scale factor of the specified UI component.
+    double GetUIScaleFactor(UIComponent component) const;
 
     static wxCmdLineParser* GetCmdLineParser();
 
@@ -174,7 +180,8 @@ private:
     static wxCmdLineParser m_CmdLineParser;
     static wxToolBarAddOnXmlHandler *m_ToolbarHandler;
 
-    int m_ImageSizes[UIComponentImageSize::Last];
+    int m_ImageSizes[UIComponent::Last];
+    double m_UIScaleFactor[UIComponent::Last];
 
     // event sinks
     typedef std::vector< IEventFunctorBase<CodeBlocksEvent>* >       EventSinksArray;

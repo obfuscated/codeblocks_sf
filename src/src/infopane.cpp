@@ -55,11 +55,11 @@ END_EVENT_TABLE()
 
 InfoPane::InfoPane(wxWindow* parent) : cbAuiNotebook(parent, idNB, wxDefaultPosition, wxDefaultSize, infopane_flags)
 {
-    const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponentImageSize::InfoPaneNotebooks);
+    const int uiSize = Manager::Get()->GetImageSize(Manager::UIComponent::InfoPaneNotebooks);
     const wxString path = ConfigManager::GetDataFolder()
                           + wxString::Format(_T("/resources.zip#zip:/images/infopane/%dx%d/edit.png"),
                                              uiSize, uiSize);
-    m_DefaultBitmap = cbLoadBitmap(path, wxBITMAP_TYPE_PNG);
+    m_DefaultBitmap = cbLoadBitmapScaled(path, wxBITMAP_TYPE_PNG, cbGetContentScaleFactor(*parent));
 }
 
 InfoPane::~InfoPane()

@@ -35,7 +35,7 @@ void ThreadSearchViewManagerMessagesNotebook::AddViewToManager()
 		// Creates log image
 		wxBitmap bmp;
 		wxString prefix = ConfigManager::GetDataFolder() + _T("/images/16x16/");
-		bmp = cbLoadBitmap(prefix + _T("filefind.png"), wxBITMAP_TYPE_PNG);
+		bmp = cbLoadBitmapScaled(prefix + _T("filefind.png"), wxBITMAP_TYPE_PNG, );
 
 		// Adds log to C::B Messages notebook
 		CodeBlocksLogEvent evtShow(cbEVT_ADD_LOG_WINDOW, m_pThreadSearchView, wxString(_T("Snippets search")), &bmp);
