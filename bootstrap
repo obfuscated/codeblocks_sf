@@ -64,7 +64,7 @@ rm -rf autom4te.cache
 
 # Make the build more robust if a Makefile.am is removed from the file system, but it is not removed
 # from the configure.ac file.
-find | grep -v wxSmithSTC/stc| grep Makefile.in$ | xargs -i rm -v {}
+find . | grep -v wxSmithSTC/stc| grep Makefile.in$ | xargs rm -v
 
 # Fire up autotools
 $LIBTOOLIZE --force --copy && \
