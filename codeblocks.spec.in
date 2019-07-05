@@ -419,8 +419,6 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{pkgdatadir}/wxsmithcontribitems.zip
 %{pkgdatadir}/wxSmithAui.zip
 %{pkgdatadir}/images/codesnippets/*
-%{pkgdatadir}/images/DoxyBlocks/*
-%{pkgdatadir}/images/ThreadSearch/*
 %{pkgdatadir}/images/wxsmith/*
 %{pkgdatadir}/lib_finder/*
 %if 0%{?spellchecker}

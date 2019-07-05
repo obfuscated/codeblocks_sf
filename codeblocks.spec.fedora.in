@@ -253,8 +253,6 @@ fi
 %files contrib
 %{_mandir}/man1/codesnippets.*.gz
 
-%{pkgdatadir}/images/DoxyBlocks
-
 %{pkgdatadir}/AutoVersioning.zip
 %{pkgdatadir}/BrowseTracker.zip
 %{pkgdatadir}/Cccc.zip
@@ -291,7 +289,6 @@ fi
 %{pkgdatadir}/wxsmith.zip
 %{pkgdatadir}/wxSmithAui.zip
 %{pkgdatadir}/wxsmithcontribitems.zip
-%{pkgdatadir}/images/ThreadSearch
 %{pkgdatadir}/images/codesnippets
 %{pkgdatadir}/images/wxsmith
 %{pkgdatadir}/lib_finder
