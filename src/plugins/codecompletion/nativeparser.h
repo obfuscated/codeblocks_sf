@@ -400,7 +400,7 @@ private:
     void AddCompilerIncludeDirsToParser(const Compiler* compiler, ParserBase* parser);
 
     /** Collect the default compiler include file search paths. called by AddCompilerDirs() function*/
-    const wxArrayString& GetGCCCompilerDirs(const wxString &cpp_compiler);
+    const wxArrayString& GetGCCCompilerDirs(const wxString& cpp_path, const wxString& cpp_executable);
 
     /** Add the collected default GCC compiler include search paths to a parser */
     void AddGCCCompilerDirs(const wxString& masterPath, const wxString& compilerCpp, ParserBase* parser);
@@ -409,6 +409,9 @@ private:
      * "base" is not empty. Replaces macros.
      */
     void AddIncludeDirsToParser(const wxArrayString& dirs, const wxString& base, ParserBase* parser);
+
+    /** Runs an app safely (protected against re-entry) and returns output and error */
+    bool SafeExecute(const wxString& app_path, const wxString& app, const wxString& args, wxArrayString &output, wxArrayString &error);
 
     /** Event handler when the batch parse starts, print some log information */
     void OnParserStart(wxCommandEvent& event);

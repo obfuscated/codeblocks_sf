@@ -1067,6 +1067,7 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
     // fill a list of matching files
     StringSet files;
 
+    // #include < or #include "
     cbProject* project = m_NativeParser.GetProjectByEditor(ed);
 
     // since we are going to access the m_SystemHeadersMap, we add a locker here
@@ -1480,7 +1481,7 @@ wxArrayString CodeCompletion::GetLocalIncludeDirs(cbProject* project, const wxAr
     }
 
     dirs.Sort(CodeCompletionHelper::CompareStringLen);
-    return dirs; //return all the local dirs
+    return dirs; // return all the local dirs
 }
 
 wxArrayString& CodeCompletion::GetSystemIncludeDirs(cbProject* project, bool force)
