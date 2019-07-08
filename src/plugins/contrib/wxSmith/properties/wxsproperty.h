@@ -48,7 +48,7 @@ class wxsPropertyContainer;
 #if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
 #define wxPGVariant                     wxVariant
 #define wxPGId                          wxPGProperty*
-#define wxParentProperty                wxPGProperty
+#define wxParentProperty                wxStringProperty
 #define wxCustomPropertyClass           wxPGProperty
 #define wxEnumPropertyClass             wxEnumProperty
 #define wxPG_VALUETYPE(T)               wxT(#T)
