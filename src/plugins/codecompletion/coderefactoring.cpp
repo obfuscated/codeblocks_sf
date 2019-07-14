@@ -10,6 +10,7 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
+    #include <wx/artprov.h>
     #include <wx/button.h>
     #include <wx/image.h>
     #include <wx/sizer.h>
@@ -71,8 +72,10 @@ public:
     {
         wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
         wxBoxSizer* infoSizer = new wxBoxSizer(wxHORIZONTAL);
-        const wxString findImgFile = ConfigManager::GetDataFolder() + _T("/resources.zip#zip:images/32x32/filefind.png");
-        wxStaticBitmap* findIco = new wxStaticBitmap(this, wxID_ANY, cbLoadBitmap(findImgFile, wxBITMAP_TYPE_PNG));
+        const wxBitmap iconBmp = wxArtProvider::GetBitmap(wxT("core/find"), wxART_BUTTON);
+        wxStaticBitmap* findIco = new wxStaticBitmap(this, wxID_ANY, iconBmp, wxDefaultPosition,
+                                                     wxSize(iconBmp.GetWidth(),
+                                                            iconBmp.GetHeight()));
         infoSizer->Add(findIco, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
         wxStaticText* scopeText = new wxStaticText(this, wxID_ANY, _("Please choose the find scope for search tokens"));
         infoSizer->Add(scopeText, 1, wxALL | wxALIGN_CENTER_VERTICAL,
