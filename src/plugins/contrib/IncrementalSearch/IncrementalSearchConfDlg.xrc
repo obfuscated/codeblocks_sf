@@ -138,9 +138,9 @@
 										<object class="wxBoxSizer">
 											<object class="sizeritem">
 												<object class="wxBitmapButton" name="ID_BITMAPBUTTON1">
-													<bitmap>images/24x24/incsearchhighlight.png</bitmap>
+													<bitmap stock_id="incremental_search/highlight" stock_client="wxART_BUTTON" />
 												</object>
-												<flag>wxALL|wxALIGN_BOTTOM</flag>
+												<flag>wxALL|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -172,10 +172,10 @@
 										<object class="wxBoxSizer">
 											<object class="sizeritem">
 												<object class="wxBitmapButton" name="ID_BITMAPBUTTON2">
-													<bitmap>images/24x24/incsearchselectedonly.png</bitmap>
+													<bitmap stock_id="incremental_search/selected_only" stock_client="wxART_BUTTON" />
 													<default>1</default>
 												</object>
-												<flag>wxALL|wxALIGN_BOTTOM</flag>
+												<flag>wxALL|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -207,10 +207,10 @@
 										<object class="wxBoxSizer">
 											<object class="sizeritem">
 												<object class="wxBitmapButton" name="ID_BITMAPBUTTON3">
-													<bitmap>images/24x24/incsearchcase.png</bitmap>
+													<bitmap stock_id="incremental_search/case" stock_client="wxART_BUTTON" />
 													<default>1</default>
 												</object>
-												<flag>wxALL|wxALIGN_BOTTOM</flag>
+												<flag>wxALL|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -242,9 +242,9 @@
 										<object class="wxBoxSizer">
 											<object class="sizeritem">
 												<object class="wxBitmapButton" name="ID_BITMAPBUTTON4">
-													<bitmap>images/24x24/incsearchregex.png</bitmap>
+													<bitmap stock_id="incremental_search/regex" stock_client="wxART_BUTTON" />
 												</object>
-												<flag>wxALL|wxALIGN_BOTTOM</flag>
+												<flag>wxALL|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">

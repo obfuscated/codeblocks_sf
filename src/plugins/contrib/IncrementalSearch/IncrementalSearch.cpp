@@ -11,6 +11,8 @@
 
 #include "sdk.h"
 
+#include "IncrementalSearch.h"
+
 #ifndef CB_PRECOMP
     #include <wx/menu.h>
     #include <wx/settings.h>
@@ -26,8 +28,9 @@
 
 #include <wx/combo.h>
 #include <wx/listbox.h>
-#include <cbstyledtextctrl.h>
-#include "IncrementalSearch.h"
+
+#include "cbart_provider.h"
+#include "cbstyledtextctrl.h"
 #include "IncrementalSearchConfDlg.h"
 
 // Register the plugin with Code::Blocks.
@@ -186,6 +189,19 @@ void IncrementalSearch::OnAttach()
     // You should check for it in other functions, because if it
     // is FALSE, it means that the application did *not* "load"
     // (see: does not need) this plugin...
+
+    {
+        const wxString prefix = ConfigManager::GetDataFolder() + wxT("/IncrementalSearch.zip#zip:/images");
+        m_ArtProvider = new cbArtProvider(prefix);
+
+        m_ArtProvider->AddMapping(wxT("incremental_search/highlight"), wxT("incsearchhighlight.png"));
+        m_ArtProvider->AddMapping(wxT("incremental_search/selected_only"), wxT("incsearchselectedonly.png"));
+        m_ArtProvider->AddMapping(wxT("incremental_search/case"), wxT("incsearchcase.png"));
+        m_ArtProvider->AddMapping(wxT("incremental_search/regex"), wxT("incsearchregex.png"));
+
+        wxArtProvider::Push(m_ArtProvider);
+    }
+
     m_pEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
     if (mbar->FindItem(idIncSearchFocus)) // if BuildMenu is called afterwards this may not exist yet
@@ -235,6 +251,9 @@ void IncrementalSearch::OnRelease(bool /*appShutDown*/)
     cfg->Write(_T("/incremental_search/last_searched_items"), m_pChoice->GetStrings());
     m_pTextCtrl->Disconnect(wxEVT_KEY_DOWN);
     m_pTextCtrl->Disconnect(wxEVT_KILL_FOCUS);
+
+    wxArtProvider::Delete(m_ArtProvider);
+    m_ArtProvider = nullptr;
 
     // TODO : KILLERBOT : menu entries should be removed, right ?????
     // TODO : JENS : no, the menubar gets recreated after a plugin changes (install, uninstall or unload), see MainFrame::PluginsUpdated(plugin, status)

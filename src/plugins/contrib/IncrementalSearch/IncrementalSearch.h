@@ -15,6 +15,7 @@
 #include <cbplugin.h>
 #include <wx/wxscintilla.h>
 
+class cbArtProvider;
 class cbStyledTextCtrl;
 class wxComboCtrl;
 class cbIncSearchComboPopUp;
@@ -97,6 +98,7 @@ private:
     const int m_IndicHighlight;
     int m_LengthFound;
     long m_LastInsertionPoint;
+    cbArtProvider *m_ArtProvider = nullptr;
 
     DECLARE_EVENT_TABLE()
 };
