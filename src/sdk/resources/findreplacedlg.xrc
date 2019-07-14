@@ -139,7 +139,7 @@
 																		</content>
 																		<style>wxRA_SPECIFY_COLS</style>
 																	</object>
-																	<flag>wxLEFT|wxEXPAND</flag>
+																	<flag>wxALL|wxEXPAND</flag>
 																	<border>4</border>
 																	<option>1</option>
 																</object>
@@ -150,28 +150,28 @@
 															<object class="wxCheckBox" name="chkMatchCase1">
 																<label>&amp;Match case</label>
 															</object>
-															<flag>wxTOP|wxBOTTOM|wxEXPAND</flag>
+															<flag>wxALL|wxEXPAND</flag>
 															<border>4</border>
 														</object>
 														<object class="sizeritem">
 															<object class="wxCheckBox" name="chkRegEx1">
 																<label>Regular e&amp;xpression</label>
 															</object>
-															<flag>wxBOTTOM|wxEXPAND</flag>
+															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 															<border>4</border>
 														</object>
 														<object class="sizeritem">
 															<object class="wxCheckBox" name="chkAutoWrapSearch">
 																<label>A&amp;uto-wrap at EOF</label>
 															</object>
-															<flag>wxEXPAND</flag>
+															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 															<border>4</border>
 														</object>
 														<object class="sizeritem">
 															<object class="wxCheckBox" name="chkMultiLine1">
 																<label>Multi-&amp;line search</label>
 															</object>
-															<flag>wxTOP|wxBOTTOM|wxEXPAND</flag>
+															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 															<border>4</border>
 														</object>
 														<object class="sizeritem">
@@ -179,7 +179,7 @@
 																<label>Ma&amp;ke EOLs consistent&#x0A;before search</label>
 																<tooltip>Slower but catches mixed line endings</tooltip>
 															</object>
-															<flag>wxBOTTOM|wxEXPAND</flag>
+															<flag>wxALL|wxEXPAND</flag>
 															<border>4</border>
 														</object>
 													</object>
@@ -372,39 +372,40 @@
 																		</content>
 																		<style>wxRA_SPECIFY_COLS</style>
 																	</object>
-																	<flag>wxLEFT|wxEXPAND</flag>
+																	<flag>wxALL|wxEXPAND</flag>
 																	<border>4</border>
 																	<option>1</option>
 																</object>
 															</object>
 															<flag>wxEXPAND</flag>
+															<border>4</border>
 														</object>
 														<object class="sizeritem">
 															<object class="wxCheckBox" name="chkMatchCase2">
 																<label>&amp;Match case</label>
 															</object>
-															<flag>wxTOP|wxBOTTOM|wxEXPAND</flag>
+															<flag>wxALL|wxEXPAND</flag>
 															<border>4</border>
 														</object>
 														<object class="sizeritem">
 															<object class="wxCheckBox" name="chkRegEx2">
 																<label>Regular e&amp;xpression</label>
 															</object>
-															<flag>wxBOTTOM|wxEXPAND</flag>
+															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 															<border>4</border>
 														</object>
 														<object class="sizeritem">
 															<object class="wxCheckBox" name="chkMultiLine2">
 																<label>Multi-&amp;line search</label>
 															</object>
-															<flag>wxBOTTOM|wxEXPAND</flag>
+															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 															<border>4</border>
 														</object>
 														<object class="sizeritem">
 															<object class="wxCheckBox" name="chkFixEOLs2">
 																<label>Ma&amp;ke EOLs consistent&#x0A;before search</label>
 															</object>
-															<flag>wxBOTTOM|wxEXPAND</flag>
+															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 															<border>4</border>
 														</object>
 														<object class="sizeritem">
@@ -412,7 +413,7 @@
 																<label>&amp;Delete previous search results</label>
 																<hidden>1</hidden>
 															</object>
-															<flag>wxEXPAND</flag>
+															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 															<border>4</border>
 														</object>
 													</object>
@@ -439,7 +440,7 @@
 												</content>
 												<style>wxRA_SPECIFY_COLS</style>
 											</object>
-											<flag>wxALL|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxBOTTOM|wxLEFT|wxALIGN_TOP</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
@@ -482,21 +483,21 @@
 															</object>
 															<object class="sizeritem">
 																<object class="wxBitmapButton" name="btnSelectTarget">
-																	<bitmap stock_id="compiler/select_target"/>
+																	<bitmap stock_id="compiler/select_target" />
 																</object>
-																<flag>wxSHAPED</flag>
+																<flag>wxLEFT|wxEXPAND</flag>
 																<border>5</border>
-																<option>1</option>
 															</object>
 															<object class="spacer">
 																<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 															</object>
 														</object>
 														<flag>wxALL|wxEXPAND</flag>
+														<border>5</border>
 													</object>
 												</object>
 											</object>
-											<flag>wxALL|wxEXPAND</flag>
+											<flag>wxTOP|wxBOTTOM|wxLEFT|wxEXPAND</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -515,7 +516,7 @@
 																<object class="wxStaticText" name="wxID_STATIC">
 																	<label>Path:</label>
 																</object>
-																<flag>wxTOP|wxRIGHT|wxALIGN_TOP</flag>
+																<flag>wxALL|wxALIGN_TOP</flag>
 																<border>4</border>
 															</object>
 															<object class="sizeritem">
@@ -528,13 +529,14 @@
 																	<label>...</label>
 																	<size>24,-1</size>
 																</object>
-																<flag>wxALIGN_TOP</flag>
+																<flag>wxLEFT|wxALIGN_TOP</flag>
+																<border>4</border>
 															</object>
 															<object class="sizeritem">
 																<object class="wxStaticText" name="wxID_STATIC">
 																	<label>Mask:</label>
 																</object>
-																<flag>wxTOP|wxRIGHT|wxALIGN_TOP</flag>
+																<flag>wxALL|wxALIGN_TOP</flag>
 																<border>4</border>
 															</object>
 															<object class="sizeritem">
@@ -559,7 +561,7 @@
 																<flag>wxALIGN_TOP</flag>
 															</object>
 														</object>
-														<flag>wxEXPAND</flag>
+														<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 														<border>4</border>
 													</object>
 													<object class="sizeritem">
@@ -568,7 +570,7 @@
 																<object class="wxCheckBox" name="chkSearchRecursively">
 																	<label>Recurse subdirectories</label>
 																</object>
-																<flag>wxALIGN_TOP</flag>
+																<flag>wxLEFT|wxALIGN_TOP</flag>
 															</object>
 															<object class="spacer">
 																<flag>wxEXPAND</flag>
@@ -578,10 +580,11 @@
 																<object class="wxCheckBox" name="chkSearchHidden">
 																	<label>Hidden files</label>
 																</object>
-																<flag>wxALIGN_TOP</flag>
+																<flag>wxLEFT|wxALIGN_TOP</flag>
+																<border>4</border>
 															</object>
 														</object>
-														<flag>wxEXPAND</flag>
+														<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 														<border>4</border>
 													</object>
 												</object>
