@@ -46,7 +46,7 @@
 												<object class="sizeritem">
 													<object class="wxButton" name="btnPlatformProj">
 														<label>...</label>
-														<size>24,24</size>
+														<style>wxBU_EXACTFIT</style>
 													</object>
 													<flag>wxALIGN_CENTER_VERTICAL</flag>
 												</object>
@@ -111,18 +111,17 @@
 														</object>
 														<object class="sizeritem">
 															<object class="wxTextCtrl" name="txtExecutionDir">
-																<size>402,25</size>
 																<enabled>0</enabled>
 															</object>
-															<flag>wxALIGN_CENTER_VERTICAL</flag>
+															<flag>wxALIGN_LEFT</flag>
 															<border>2</border>
 															<option>1</option>
 														</object>
 														<object class="sizeritem">
 															<object class="wxButton" name="btnExecutionDir">
 																<label>...</label>
-																<size>24,24</size>
 																<enabled>0</enabled>
+																<style>wxBU_EXACTFIT</style>
 															</object>
 															<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 														</object>
@@ -401,7 +400,7 @@
 																<object class="sizeritem">
 																	<object class="wxButton" name="btnPlatform">
 																		<label>...</label>
-																		<size>24,24</size>
+																		<style>wxBU_EXACTFIT</style>
 																	</object>
 																	<flag>wxALIGN_TOP</flag>
 																</object>
@@ -484,7 +483,7 @@
 																<object class="sizeritem">
 																	<object class="wxButton" name="btnBrowseOutputFilename">
 																		<label>...</label>
-																		<size>24,24</size>
+																		<style>wxBU_EXACTFIT</style>
 																	</object>
 																	<flag>wxALIGN_TOP</flag>
 																</object>
@@ -508,7 +507,7 @@
 																<object class="sizeritem">
 																	<object class="wxButton" name="btnBrowseImportLibraryFilename">
 																		<label>...</label>
-																		<size>24,24</size>
+																		<style>wxBU_EXACTFIT</style>
 																	</object>
 																	<flag>wxALIGN_TOP</flag>
 																</object>
@@ -532,7 +531,7 @@
 																<object class="sizeritem">
 																	<object class="wxButton" name="btnBrowseDefinitionFileFilename">
 																		<label>...</label>
-																		<size>24,24</size>
+																		<style>wxBU_EXACTFIT</style>
 																	</object>
 																	<flag>wxALIGN_TOP</flag>
 																</object>
@@ -585,7 +584,7 @@
 																<object class="sizeritem">
 																	<object class="wxButton" name="btnBrowseWorkingDir">
 																		<label>...</label>
-																		<size>24,24</size>
+																		<style>wxBU_EXACTFIT</style>
 																	</object>
 																	<flag>wxALIGN_TOP</flag>
 																</object>
@@ -608,7 +607,7 @@
 																<object class="sizeritem">
 																	<object class="wxButton" name="btnBrowseObjectDir">
 																		<label>...</label>
-																		<size>24,24</size>
+																		<style>wxBU_EXACTFIT</style>
 																	</object>
 																	<flag>wxALIGN_TOP</flag>
 																</object>
@@ -711,7 +710,7 @@
 													<item2>TreeCtrl1</item2>
 													<item2></item2>
 												</items_text>
-												<style>wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER</style>
+												<style>wxTR_DEFAULT_STYLE|wxBORDER_SUNKEN</style>
 											</object>
 											<flag>wxEXPAND</flag>
 											<option>1</option>
