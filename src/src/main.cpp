@@ -820,6 +820,9 @@ void MainFrame::CreateIDE()
         provider->AddMapping(wxT("core/dbg/next_inst"), wxT("dbgnexti.png"));
         provider->AddMapping(wxT("core/dbg/step_inst"), wxT("dbgstepi.png"));
 
+        provider->AddMappingF(wxT("core/folder_open"), wxT("tree/%dx%d/folder_open.png"));
+        provider->AddMappingF(wxT("core/gear"), wxT("infopane/%dx%d/misc.png"));
+
         wxArtProvider::Push(provider);
     }
 

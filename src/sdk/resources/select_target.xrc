@@ -65,7 +65,7 @@
 							</object>
 							<object class="sizeritem">
 								<object class="wxBitmapButton" name="btnHostApplication">
-									<bitmap stock_id="wxART_FILE_OPEN" stock_client="wxART_BUTTON" />
+									<bitmap stock_id="core/file_open" stock_client="wxART_BUTTON" />
 								</object>
 								<flag>wxALIGN_CENTER_VERTICAL</flag>
 								<border>8</border>

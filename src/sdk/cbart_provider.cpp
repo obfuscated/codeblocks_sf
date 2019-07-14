@@ -10,11 +10,19 @@
 cbArtProvider::cbArtProvider(const wxString &prefix)
 {
     m_prefix = prefix;
+    if (!prefix.EndsWith(wxT("/")))
+        m_prefix += wxT("/");
 }
 
 void cbArtProvider::AddMapping(const wxString &stockId, const wxString &fileName)
 {
-    m_idToPath[stockId] = fileName;
+    m_idToPath[stockId] = Data(fileName, false);
+}
+
+void cbArtProvider::AddMappingF(const wxString &stockId, const wxString &fileName)
+{
+    m_idToPath[stockId] = Data(fileName, true);
+}
 
 wxBitmap cbArtProvider::DoCreateBitmap(const wxArtID& id, Manager::UIComponent uiComponent) const
 {
@@ -25,8 +33,12 @@ wxBitmap cbArtProvider::DoCreateBitmap(const wxArtID& id, Manager::UIComponent u
     const int size = Manager::Get()->GetImageSize(uiComponent);
     const double uiScale = Manager::Get()->GetUIScaleFactor(uiComponent);
 
-    const wxString filepath = wxString::Format(wxT("%s/%dx%d/%s"), m_prefix.wx_str(), size,
-                                               size, it->second.wx_str());
+    wxString filepath = m_prefix;
+    if (!it->second.hasFormatting)
+        filepath += wxString::Format(wxT("%dx%d/%s"), size, size, it->second.path.wx_str());
+    else
+        filepath += wxString::Format(it->second.path, size, size);
+
     wxBitmap result = cbLoadBitmapScaled(filepath, wxBITMAP_TYPE_PNG, uiScale);
     if (!result.IsOk())
     {

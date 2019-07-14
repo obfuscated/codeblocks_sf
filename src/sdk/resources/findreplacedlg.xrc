@@ -525,11 +525,10 @@
 																<option>1</option>
 															</object>
 															<object class="sizeritem">
-																<object class="wxButton" name="btnBrowsePath">
-																	<label>...</label>
-																	<size>24,-1</size>
+																<object class="wxBitmapButton" name="btnBrowsePath">
+																	<bitmap stock_id="core/folder_open" />
 																</object>
-																<flag>wxLEFT|wxALIGN_TOP</flag>
+																<flag>wxLEFT|wxEXPAND</flag>
 																<border>4</border>
 															</object>
 															<object class="sizeritem">

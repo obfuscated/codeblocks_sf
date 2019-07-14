@@ -23,14 +23,14 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxBitmapButton" name="btnBrowse">
-							<bitmap stock_id="wxART_FILE_OPEN" stock_client="wxART_BUTTON" />
+							<bitmap stock_id="core/folder_open" stock_client="wxART_BUTTON" />
 						</object>
 						<flag>wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxBitmapButton" name="btnOther">
-							<bitmap stock_id="wxART_EXECUTABLE_FILE" stock_client="wxART_BUTTON" />
+							<bitmap stock_id="core/gear" stock_client="wxART_BUTTON" />
 						</object>
 						<flag>wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>

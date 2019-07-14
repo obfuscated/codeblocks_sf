@@ -21,6 +21,10 @@ public:
 
     /// Map a stockId to a path inside the prefix.
     void AddMapping(const wxString &stockId, const wxString &fileName);
+    /// Map a stockId to a path inside the prefix. The fileName is expected to contain two integer
+    /// printf formatting flags (%d). If you fail to provide them the behaviour is undefined!
+    /// Example fileName could look like this: "some-secondary-prefix/%dx%d/filename.png".
+    void AddMappingF(const wxString &stockId, const wxString &fileName);
 protected:
     wxBitmap CreateBitmap(const wxArtID& id, const wxArtClient& client,
                           const wxSize &size) override;
@@ -40,7 +44,17 @@ private:
 #endif // wxCHECK_VERSION
         }
     };
-    typedef std::unordered_map<wxString, wxString, StringHash> MapStockIdToPath;
+
+    struct Data
+    {
+        Data() : hasFormatting(false) {}
+        Data(const wxString &path, bool hasFormatting) : path(path), hasFormatting(hasFormatting) {}
+
+        wxString path;
+        bool hasFormatting;
+    };
+
+    typedef std::unordered_map<wxString, Data, StringHash> MapStockIdToPath;
 
     MapStockIdToPath m_idToPath;
 };
