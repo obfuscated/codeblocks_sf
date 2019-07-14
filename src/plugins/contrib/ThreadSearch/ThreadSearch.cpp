@@ -140,8 +140,6 @@ ThreadSearch::ThreadSearch()
               m_SplitterMode(wxSPLIT_VERTICAL),
               m_FileSorting(InsertIndexManager::SortByFilePath)
 {
-    if (!Manager::LoadResource(_T("ThreadSearch.zip")))
-        NotifyMissingFile(_T("ThreadSearch.zip"));
 }
 
 // destructor

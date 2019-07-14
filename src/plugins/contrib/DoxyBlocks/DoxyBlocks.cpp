@@ -107,9 +107,6 @@ DoxyBlocks::DoxyBlocks() :
     m_bAutoVersioning(false)
 {
     m_pConfig = new DoxyBlocksConfig;
-
-    if (!Manager::LoadResource(_T("DoxyBlocks.zip")))
-        NotifyMissingFile(_T("DoxyBlocks.zip"));
 }
 
 // destructor
