@@ -778,8 +778,12 @@ void MainFrame::CreateIDE()
         Manager::Get()->SetUIScaleFactor(cbGetContentScaleFactor(*this),
                                          Manager::UIComponent::Menus);
 
+        Manager::Get()->SetImageSize(uiSize16, Manager::UIComponent::Main);
+        Manager::Get()->SetUIScaleFactor(cbGetContentScaleFactor(*this),
+                                         Manager::UIComponent::Main);
+
         const wxString prefix = ConfigManager::GetDataFolder() + wxT("/resources.zip#zip:/images");
-        cbArtProvider *provider = new cbArtProvider(prefix, uiSize16);
+        cbArtProvider *provider = new cbArtProvider(prefix);
 
         provider->AddMapping(wxT("core/file_open"), wxT("fileopen.png"));
         provider->AddMapping(wxT("core/history_clear"), wxT("history_clear.png"));

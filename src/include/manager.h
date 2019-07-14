@@ -141,6 +141,7 @@ public:
         Toolbars,
         Menus,
         InfoPaneNotebooks,
+        Main,
 
         Last // Just a marker for the last element
     };

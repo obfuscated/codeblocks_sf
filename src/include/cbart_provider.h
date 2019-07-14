@@ -4,21 +4,28 @@
 #include <wx/artprov.h>
 #include <unordered_map>
 
-/// Custom art provider used to make menu item icons look good on HiDPI displays.
-/// The size is set at the beginning of execution and cannot change. The requested size is ignored.
-/// Use <bitmap stock_id="core/XXX"/> in the xrc file to load images from this provider.
+#ifndef CB_PRECOMP
+    #include "manager.h"
+#endif // CB_PRECOMP
+
+/// Custom art provider used to make menu item and bitmap button icons look good on HiDPI displays.
+/// The size is set at the beginning of execution and cannot change. See Manager::GetImageSize. The
+/// requested size is ignored. Use <bitmap stock_id="XXX/YYY"/> in the xrc file to load images from
+/// this provider. Plugins can create their own providers (set the XXX part of the resource id to
+/// something meaningful and unique for the plugin).
 class cbArtProvider : public wxArtProvider
 {
 public:
     /// @param prefix Path where to search for images. It must contain folders of the form NNxNN.
-    /// @param size The size of images which would be loaded. A folder prefix/<size>x<size> must
-    /// exists.
-    cbArtProvider(const wxString &prefix, int size);
+    cbArtProvider(const wxString &prefix);
 
+    /// Map a stockId to a path inside the prefix.
     void AddMapping(const wxString &stockId, const wxString &fileName);
 protected:
     wxBitmap CreateBitmap(const wxArtID& id, const wxArtClient& client,
                           const wxSize &size) override;
+private:
+    wxBitmap DoCreateBitmap(const wxArtID& id, Manager::UIComponent uiComponent) const;
 private:
     wxString m_prefix;
 

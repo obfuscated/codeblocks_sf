@@ -360,7 +360,7 @@ void CompilerGCC::OnAttach()
 
     {
         const wxString prefix = ConfigManager::GetDataFolder() + wxT("/compiler.zip#zip:/images");
-        m_pArtProvider = new cbArtProvider(prefix, Manager::Get()->GetImageSize(Manager::UIComponent::Menus));
+        m_pArtProvider = new cbArtProvider(prefix);
 
         m_pArtProvider->AddMapping(wxT("compiler/compile"), wxT("compile.png"));
         m_pArtProvider->AddMapping(wxT("compiler/run"), wxT("run.png"));
