@@ -16,7 +16,24 @@ cp *.png "../../../devel/share/codeblocks/images/settings/"
 cp *.png "../../../output/share/codeblocks/images/settings/"
 cp OnlineSpellChecking.xml  "../../../devel/share/codeblocks/SpellChecker/"
 cp OnlineSpellChecking.xml  "../../../output/share/codeblocks/SpellChecker/"
-cp rc/*.png "../../../devel/share/codeblocks/SpellChecker/"
-cp rc/*.png "../../../output/share/codeblocks/SpellChecker/"
+
+copyImageFiles() {
+    from=$1
+    to=$2
+    echo "Copy ${from} to ${to}"
+
+    # This is done this stupid/convoluted way, because dash/posix doesn't have arrays!
+    dirs="16x16 20x20 24x24 28x28 32x32 40x40 48x48 56x56 64x64"
+    echo "$dirs" | tr ' ' '\n' | while read dir; do
+        echo "  Copy ${from}/${dir} to ${to}/${dir}"
+
+        mkdir -p ${to}/${dir}
+        cp -f ${from}/${dir}/*.png ${to}/${dir} > /dev/null
+    done
+}
+
+copyImageFiles rc ../../../devel/share/codeblocks/SpellChecker
+copyImageFiles rc ../../../output/share/codeblocks/SpellChecker
+
 exit 0
 

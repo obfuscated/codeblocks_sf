@@ -159,20 +159,6 @@ const wxString SpellCheckerConfig::GetThesaurusPath()const
     return thesPath;
 }
 
-const wxString SpellCheckerConfig::GetBitmapPath()const
-{
-    wxString bitmPath = m_BitmPath;
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(bitmPath);
-    if (    wxDirExists(bitmPath)
-            && !wxFindFirstFile(bitmPath + wxFILE_SEP_PATH + wxT("*.png"), wxFILE).IsEmpty() )
-    {
-        Manager::Get()->GetLogManager()->DebugLog(_T("Detected bitmap path: ") + bitmPath);
-        return bitmPath;
-    }
-    Manager::Get()->GetLogManager()->DebugLog(_T("Current bitmap path: ") + m_pPlugin->GetOnlineCheckerConfigPath());
-    return m_pPlugin->GetOnlineCheckerConfigPath();
-}
-
 void SpellCheckerConfig::DetectDictionaryPath()
 {
     wxArrayString dictPaths;
