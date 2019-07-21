@@ -4,58 +4,58 @@
     <object class="tool" name="idDebuggerMenuDebug">
 	  <tooltip>Debug / Continue</tooltip>
       <longhelp>Debug or continue program (depends on context)</longhelp>
-      <bitmap>images/22x22/dbgrun.png</bitmap>
+      <bitmap stock_id="core/dbg/run"/>
     </object>
     <object class="tool" name="idDebuggerMenuRunToCursor">
       <tooltip>Run to cursor</tooltip>
       <longhelp>Run program until it reaches the current line</longhelp>
-      <bitmap>images/22x22/dbgrunto.png</bitmap>
+      <bitmap stock_id="core/dbg/run_to"/>
     </object>
     <object class="tool" name="idDebuggerMenuNext">
       <tooltip>Next line</tooltip>
       <longhelp>Execute the next line of code</longhelp>
-      <bitmap>images/22x22/dbgnext.png</bitmap>
+      <bitmap stock_id="core/dbg/next"/>
     </object>
     <object class="tool" name="idDebuggerMenuStep">
       <tooltip>Step into</tooltip>
       <longhelp>Execute the next line of code, but step inside functions</longhelp>
-      <bitmap>images/22x22/dbgstep.png</bitmap>
+      <bitmap stock_id="core/dbg/step"/>
     </object>
     <object class="tool" name="idDebuggerMenuStepOut">
       <tooltip>Step out</tooltip>
       <longhelp>Continue execution until the current frame exits</longhelp>
-      <bitmap>images/22x22/dbgstepout.png</bitmap>
+      <bitmap stock_id="core/dbg/step_out"/>
     </object>
     <object class="tool" name="idDebuggerMenuNextInstr">
       <tooltip>Next instruction</tooltip>
       <longhelp>Execute the next assembly instruction</longhelp>
-      <bitmap>images/22x22/dbgnexti.png</bitmap>
+      <bitmap stock_id="core/dbg/next_inst"/>
     </object>
     <object class="tool" name="idDebuggerMenuStepIntoInstr">
       <tooltip>Step into instruction</tooltip>
       <longhelp>Execute the next assembly instruction, if it is a function call step into it</longhelp>
-      <bitmap>images/22x22/dbgstepi.png</bitmap>
+      <bitmap stock_id="core/dbg/step_inst"/>
     </object>
     <object class="tool" name="idDebuggerMenuBreak">
       <tooltip>Break debugger</tooltip>
       <longhelp>Break the debuggee in order to examine its state</longhelp>
-      <bitmap>images/22x22/dbgpause.png</bitmap>
+      <bitmap stock_id="core/dbg/pause"/>
     </object>
     <object class="tool" name="idDebuggerToolbarStop">
       <tooltip>Stop debugger</tooltip>
       <longhelp>Stop current debugging session</longhelp>
-      <bitmap>images/22x22/dbgstop.png</bitmap>
+      <bitmap stock_id="core/dbg/stop"/>
     </object>
     <object class="separator" />
     <object class="tool" name="idDebuggerToolWindows">
       <tooltip>Debugging windows</tooltip>
       <longhelp>Show/hide debugging windows</longhelp>
-      <bitmap>images/22x22/dbgwindow.png</bitmap>
+      <bitmap stock_id="core/dbg/window"/>
     </object>
     <object class="tool" name="idDebuggerToolInfo">
       <tooltip>Various info</tooltip>
       <longhelp>Show information about various debugging subjects</longhelp>
-      <bitmap>images/22x22/dbginfo.png</bitmap>
+      <bitmap stock_id="core/dbg/info"/>
     </object>
   </object>
 </resource>

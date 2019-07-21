@@ -798,6 +798,7 @@ void MainFrame::CreateIDE()
         cbArtProvider *provider = new cbArtProvider(prefix);
 
         provider->AddMapping(wxT("core/file_open"), wxT("fileopen.png"));
+        provider->AddMapping(wxT("core/file_new"), wxT("filenew.png"));
         provider->AddMapping(wxT("core/history_clear"), wxT("history_clear.png"));
         provider->AddMapping(wxT("core/file_save"), wxT("filesave.png"));
         provider->AddMapping(wxT("core/file_save_as"), wxT("filesaveas.png"));
@@ -831,6 +832,8 @@ void MainFrame::CreateIDE()
         provider->AddMapping(wxT("core/dbg/step_out"), wxT("dbgstepout.png"));
         provider->AddMapping(wxT("core/dbg/next_inst"), wxT("dbgnexti.png"));
         provider->AddMapping(wxT("core/dbg/step_inst"), wxT("dbgstepi.png"));
+        provider->AddMapping(wxT("core/dbg/window"), wxT("dbgwindow.png"));
+        provider->AddMapping(wxT("core/dbg/info"), wxT("dbginfo.png"));
 
         provider->AddMappingF(wxT("core/folder_open"), wxT("tree/%dx%d/folder_open.png"));
         provider->AddMappingF(wxT("core/gear"), wxT("infopane/%dx%d/misc.png"));

@@ -4,27 +4,27 @@
     <object class="tool" name="idCompilerMenuCompile">
       <tooltip>Build</tooltip>
       <longhelp>Build the active project</longhelp>
-      <bitmap>images/22x22/compile.png</bitmap>
+      <bitmap stock_id="compiler/compile" />
     </object>
     <object class="tool" name="idCompilerMenuRun">
       <tooltip>Run</tooltip>
       <longhelp>Run the active project</longhelp>
-      <bitmap>images/22x22/run.png</bitmap>
+      <bitmap stock_id="compiler/run" />
     </object>
     <object class="tool" name="idCompilerMenuCompileAndRun">
       <tooltip>Build and run</tooltip>
       <longhelp>Build and run the active project</longhelp>
-      <bitmap>images/22x22/compilerun.png</bitmap>
+      <bitmap stock_id="compiler/compile_run" />
     </object>
     <object class="tool" name="idCompilerMenuRebuild">
       <tooltip>Rebuild</tooltip>
       <longhelp>Rebuild all modules in the active project</longhelp>
-      <bitmap>images/22x22/rebuild.png</bitmap>
+      <bitmap stock_id="compiler/rebuild" />
     </object>
     <object class="tool" name="idCompilerMenuKillProcess">
       <tooltip>Abort</tooltip>
       <longhelp>Abort the running build process</longhelp>
-      <bitmap>images/22x22/stop.png</bitmap>
+      <bitmap stock_id="compiler/stop" />
       <disabled>1</disabled>
     </object>
     <object class="wxChoice" name="idToolTarget">
