@@ -50,16 +50,34 @@ noinst_HEADERS = help_common.h \
 			man2html.h \
 			defs.h \
 			MANFrame.h
+resources_forZIP = \
+	help_plugin.xrc \
+	manifest.xml \
+	images/16x16/zoomin.png \
+	images/16x16/zoomout.png \
+	images/20x20/zoomin.png \
+	images/20x20/zoomout.png \
+	images/24x24/zoomin.png \
+	images/24x24/zoomout.png \
+	images/28x28/zoomin.png \
+	images/28x28/zoomout.png \
+	images/32x32/zoomin.png \
+	images/32x32/zoomout.png \
+	images/40x40/zoomin.png \
+	images/40x40/zoomout.png \
+	images/48x48/zoomin.png \
+	images/48x48/zoomout.png \
+	images/56x56/zoomin.png \
+	images/56x56/zoomout.png \
+	images/64x64/zoomin.png \
+	images/64x64/zoomout.png
 
 EXTRA_DIST = $(srcdir)/*.cbp \
-			help_plugin.xrc \
-			zoomin.png \
-			zoomout.png \
-			manifest.xml \
-			Readme.txt
+			Readme.txt \
+			$(resources_forZIP)
 
 pkgdata_DATA = help_plugin.zip
 CLEANFILES = $(pkgdata_DATA)
 
-help_plugin.zip: manifest.xml help_plugin.xrc
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/help_plugin.zip manifest.xml *.xrc *.png > /dev/null
+help_plugin.zip: $(resources_forZIP)
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/help_plugin.zip $(resources_forZIP) > /dev/null

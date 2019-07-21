@@ -209,8 +209,16 @@ void HelpPlugin::OnAttach()
     // load configuration (only saved in our config dialog)
     HelpCommon::LoadHelpFilesVector(m_Vector);
 
-    wxBitmap zoominbmp = wxXmlResource::Get()->LoadBitmap(_T("ZoomInBitmap"));
-    wxBitmap zoomoutbmp = wxXmlResource::Get()->LoadBitmap(_T("ZoomOutBitmap"));
+    const int imageSize = Manager::Get()->GetImageSize(Manager::UIComponent::Main);
+    const double uiScale = Manager::Get()->GetUIScaleFactor(Manager::UIComponent::Main);
+
+    const wxString bmpPrefix = ConfigManager::GetDataFolder()
+                             + wxString::Format(wxT("/help_plugin.zip#zip:/images/%dx%d/"),
+                                                imageSize, imageSize);
+    wxBitmap zoominbmp = cbLoadBitmapScaled(bmpPrefix + wxT("zoomin.png"), wxBITMAP_TYPE_PNG,
+                                            uiScale);
+    wxBitmap zoomoutbmp = cbLoadBitmapScaled(bmpPrefix + wxT("zoomout.png"), wxBITMAP_TYPE_PNG,
+                                             uiScale);
 
     m_manFrame = new MANFrame(Manager::Get()->GetAppWindow(), wxID_ANY, zoominbmp, zoomoutbmp);
     SetManPageDirs(m_manFrame);
