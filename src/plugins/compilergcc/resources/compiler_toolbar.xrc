@@ -36,7 +36,7 @@
     <object class="tool" name="idMenuSelectTargetDialog">
       <tooltip>Show the Select target dialog</tooltip>
       <longhelp>Show the Select target dialog</longhelp>
-      <bitmap>images/22x22/select_target.png</bitmap>
+      <bitmap stock_id="sdk/select_target" />
       <disabled>1</disabled>
     </object>
   </object>

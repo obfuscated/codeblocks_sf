@@ -367,7 +367,6 @@ void CompilerGCC::OnAttach()
         m_pArtProvider->AddMapping(wxT("compiler/compile_run"), wxT("compilerun.png"));
         m_pArtProvider->AddMapping(wxT("compiler/rebuild"), wxT("rebuild.png"));
         m_pArtProvider->AddMapping(wxT("compiler/stop"), wxT("stop.png"));
-        m_pArtProvider->AddMapping(wxT("compiler/select_target"), wxT("select_target.png"));
 
         wxArtProvider::Push(m_pArtProvider);
     }

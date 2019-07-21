@@ -77,7 +77,7 @@
       <object class="wxMenuItem" name="idMenuSelectTargetDialog">
         <label>Select target</label>
         <help>Shows a dialog with all targets</help>
-        <bitmap stock_id="compiler/select_target"/>
+        <bitmap stock_id="sdk/select_target"/>
       </object>
       <object class="separator"/>
     </object>

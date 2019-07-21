@@ -483,7 +483,7 @@
 															</object>
 															<object class="sizeritem">
 																<object class="wxBitmapButton" name="btnSelectTarget">
-																	<bitmap stock_id="compiler/select_target" />
+																	<bitmap stock_id="sdk/select_target" />
 																</object>
 																<flag>wxLEFT|wxEXPAND</flag>
 																<border>5</border>

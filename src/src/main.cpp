@@ -771,6 +771,17 @@ void MainFrame::CreateIDE()
     SetupDebuggerUI();
 
     {
+        // Setup the art provider with the images stored in manager_resources.zip
+        const wxString prefix = ConfigManager::GetDataFolder()
+                              + wxT("/manager_resources.zip#zip:/images");
+        cbArtProvider *provider = new cbArtProvider(prefix);
+
+        provider->AddMapping(wxT("sdk/select_target"), wxT("select_target.png"));
+
+        wxArtProvider::Push(provider);
+    }
+
+    {
         // Setup the art provider for the main menu. Use scaling factor detection to determine the
         // size of the images. Also do this here when we have a main window (probably this doesn't
         // help us much, because the window hasn't been shown yet).
