@@ -569,13 +569,6 @@ void CodeBlocksApp::InitLocale()
     }
 }
 
-void CodeBlocksApp::SetupImageSizes(wxToolBarAddOnXmlHandler *toolbarAddonHandler)
-{
-    const int size = cbHelpers::ReadToolbarSizeFromConfig();
-    toolbarAddonHandler->SetToolbarImageSize(size);
-    Manager::Get()->SetImageSize(size, Manager::UIComponent::Toolbars);
-}
-
 bool CodeBlocksApp::OnInit()
 {
 #ifdef __WXMSW__
@@ -714,8 +707,6 @@ bool CodeBlocksApp::OnInit()
                 return false;
             }
         }
-
-        SetupImageSizes(toolbarAddonHandler);
 
         // Splash screen moved to this place, otherwise it would be short visible, even if we only pass filenames via DDE/IPC
         // we also don't need it, if only a single instance is allowed

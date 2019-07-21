@@ -74,6 +74,20 @@ namespace appglobals
 namespace cbHelpers
 {
 
+/// Read the toolbar size setting from config.
+/// We store the value selected by the user without applying the scale factor.
+/// There are only 4 allow values to choose from.
+///
+/// These are the allowed values (1x column) and their values after the scale factor is applied.
+/// |-------|-----|-----|-----|-----|-----|-----|-----|
+/// |       |1x   |1.25x|1.5x |1.75 |2x   |2.5x |3x   |
+/// |-------|-----|-----|-----|-----|-----|-----|-----|
+/// |Normal |16   |20   |24   |28   |32   |40   |48   |
+/// |Large  |24   |28   |32   |40   |48   |56   |64   |
+/// |Larger |32   |40   |48   |56   |64   |64   |64   |
+/// |Largest|64   |64   |64   |64   |64   |64   |64   |
+/// |-------|-----|-----|-----|-----|-----|-----|-----|
+///
 int ReadToolbarSizeFromConfig()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
@@ -87,7 +101,8 @@ int ReadToolbarSizeFromConfig()
     }
     if (size == 22)
         size = 24;
-    return size;
+    const int possibleSizes[] = { 16, 24, 32, 64 };
+    return cbFindMinSize(size, possibleSizes, cbCountOf(possibleSizes));
 }
 
 } // namespace cbHelpers

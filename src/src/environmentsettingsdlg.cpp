@@ -70,8 +70,7 @@ const wxString base_imgs[] =
 };
 const int IMAGES_COUNT = sizeof(base_imgs) / sizeof(wxString);
 
-const int iconSizesCount = 9;
-const int iconSizes[iconSizesCount] = { 16, 20, 24, 28, 32, 40, 48, 56, 64 };
+const int iconSizes[] = { 16, 24, 32, 64 };
 
 BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxScrollingDialog)
     EVT_BUTTON(XRCID("btnSetAssocs"), EnvironmentSettingsDlg::OnSetAssocs)
@@ -180,7 +179,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
         const int size = cbHelpers::ReadToolbarSizeFromConfig();
 
         int selection = -1;
-        for (int ii = 0; ii < iconSizesCount; ++ii)
+        for (int ii = 0; ii < cbCountOf(iconSizes); ++ii)
         {
             if (size == iconSizes[ii])
             {
@@ -189,17 +188,23 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
             }
         }
 
-        wxChoice *iconSizes = XRCCTRL(*this, "chToolbarIconSize", wxChoice);
-        iconSizes->Append(_("16 x 16 - Smaller (1.0x)"));
-        iconSizes->Append(_("20 x 20 - Smaller (1.25x)"));
-        iconSizes->Append(_("24 x 24 - Small (1.5x)"));
-        iconSizes->Append(_("28 x 28 - Large (1.75x)"));
-        iconSizes->Append(_("32 x 32 - Large (2.0x)"));
-        iconSizes->Append(_("40 x 40 - Larger (2.5x)"));
-        iconSizes->Append(_("48 x 48 - Larger (3.0x)"));
-        iconSizes->Append(_("56 x 56 - Larger (3.5x)"));
-        iconSizes->Append(_("64 x 64 - Larger (4.0x)"));
-        iconSizes->SetSelection(selection);
+        wxChoice *control = XRCCTRL(*this, "chToolbarIconSize", wxChoice);
+        const double actualScaleFactor = cbGetActualContentScaleFactor(*Manager::Get()->GetAppFrame());
+        int scaledSize;
+
+        scaledSize = cbFindMinSize16to64(iconSizes[0] * actualScaleFactor);
+        control->Append(_("Normal") + wxString::Format(wxT(" (%dx%d)"), scaledSize, scaledSize));
+
+        scaledSize = cbFindMinSize16to64(iconSizes[1] * actualScaleFactor);
+        control->Append(_("Large") + wxString::Format(wxT(" (%dx%d)"), scaledSize, scaledSize));
+
+        scaledSize = cbFindMinSize16to64(iconSizes[2] * actualScaleFactor);
+        control->Append(_("Larger") + wxString::Format(wxT(" (%dx%d)"), scaledSize, scaledSize));
+
+        scaledSize = cbFindMinSize16to64(iconSizes[3] * actualScaleFactor);
+        control->Append(_("Largest") + wxString::Format(wxT(" (%dx%d)"), scaledSize, scaledSize));
+
+        control->SetSelection(selection);
     }
 
     XRCCTRL(*this, "chSettingsIconsSize",     wxChoice)->SetSelection(cfg->ReadInt(_T("/environment/settings_size"), 0));
@@ -591,7 +596,7 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         {
             const int selection = XRCCTRL(*this, "chToolbarIconSize", wxChoice)->GetSelection();
             int size = 16;
-            if (selection >= 0 && selection < iconSizesCount)
+            if (selection >= 0 && selection < cbCountOf(iconSizes))
                 size = iconSizes[selection];
 
             // We call unset to remove the old bool value if it is present.

@@ -401,6 +401,12 @@ void Manager::SetImageSize(int size, UIComponent component)
 {
     cbAssert(component>=0 && component < UIComponent::Last);
     m_ImageSizes[component] = size;
+
+    if (component == UIComponent::Toolbars)
+    {
+        cbAssert(m_ToolbarHandler);
+        m_ToolbarHandler->SetToolbarImageSize(size);
+    }
 }
 
 int Manager::GetImageSize(UIComponent component) const

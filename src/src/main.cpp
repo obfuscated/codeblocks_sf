@@ -754,7 +754,8 @@ void MainFrame::CreateIDE()
         m_pPrjManUI = new BatchProjectManagerUI;
     m_pPrjMan->SetUI(m_pPrjManUI);
 
-    const int targetHeight = floor(16 * cbGetActualContentScaleFactor(*this));
+    const double actualScaleFactor = cbGetActualContentScaleFactor(*this);
+    const int targetHeight = floor(16 * actualScaleFactor);
     const int uiSize16 = cbFindMinSize16to64(targetHeight);
 
     // All message posted before this call are either lost or sent to stdout/stderr.
@@ -824,6 +825,13 @@ void MainFrame::CreateIDE()
         provider->AddMappingF(wxT("core/gear"), wxT("infopane/%dx%d/misc.png"));
 
         wxArtProvider::Push(provider);
+    }
+
+    {
+        // Setup toolbar sizes
+        const int configSize = cbHelpers::ReadToolbarSizeFromConfig();
+        const int scaledSize = cbFindMinSize16to64(configSize * actualScaleFactor);
+        Manager::Get()->SetImageSize(scaledSize, Manager::UIComponent::Toolbars);
     }
 
     CreateMenubar();
@@ -4823,6 +4831,7 @@ void MainFrame::OnPluginUnloaded(CodeBlocksEvent& event)
 void MainFrame::OnSettingsEnvironment(cb_unused wxCommandEvent& event)
 {
     bool needRestart = false;
+    const int originalToolbarSize = cbHelpers::ReadToolbarSizeFromConfig();
 
     EnvironmentSettingsDlg dlg(this, m_LayoutManager.GetArtProvider());
     PlaceWindow(&dlg);
@@ -4835,7 +4844,7 @@ void MainFrame::OnSettingsEnvironment(cb_unused wxCommandEvent& event)
             ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
             const int newToolbarSize = cfg->ReadInt(_T("/environment/toolbar_size"),
                                                     cbHelpers::defaultToolbarSize);
-            needRestart = (newToolbarSize != Manager::Get()->GetImageSize(Manager::UIComponent::Toolbars));
+            needRestart = (newToolbarSize != originalToolbarSize);
         }
 
         Manager::Get()->GetLogManager()->NotifyUpdate();
