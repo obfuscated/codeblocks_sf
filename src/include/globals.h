@@ -302,11 +302,11 @@ extern DLLIMPORT wxBitmap cbLoadBitmapScaled(const wxString& filename, wxBitmapT
 
 /// Wrapper function for wxWidnow::GetContentScaleFactor.
 /// It is defined only to hide its absence from wx2.8.
-extern DLLIMPORT double cbGetContentScaleFactor(wxWindow &window);
+extern DLLIMPORT double cbGetContentScaleFactor(const wxWindow &window);
 
 /// Similar to cbGetContentScaleFactor, but might return different results on
 /// GTK+ 2 and 3. It should be used to hide the odd behaviour of these to platforms.
-extern DLLIMPORT double cbGetActualContentScaleFactor(wxWindow &window);
+extern DLLIMPORT double cbGetActualContentScaleFactor(const wxWindow &window);
 
 /// Try to select the largest size that is available, but is smaller than targetSize.
 extern DLLIMPORT int cbFindMinSize(int targetSize, const int possibleSize[], int numWidths);

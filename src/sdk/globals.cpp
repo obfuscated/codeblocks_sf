@@ -1159,7 +1159,7 @@ wxBitmap cbLoadBitmapScaled(const wxString& filename, wxBitmapType bitmapType, d
 #endif // defined(__WXOSX__) || (defined(__WXGTK3__) && wxCHECK_VERSION(3, 1, 2))
 }
 
-double cbGetContentScaleFactor(wxWindow &window)
+double cbGetContentScaleFactor(const wxWindow &window)
 {
 #if wxCHECK_VERSION(3, 0, 0)
     return window.GetContentScaleFactor();
@@ -1173,7 +1173,7 @@ double cbGetContentScaleFactor(wxWindow &window)
 // GTK 3 supports scaling, but doesn't support fractional values.
 // In both cases we need to make up our on scaling value.
 // For other platforms the value returned by GetContentScalingFactor seems adequate.
-double cbGetActualContentScaleFactor(cb_unused wxWindow &window)
+double cbGetActualContentScaleFactor(cb_unused const wxWindow &window)
 {
 #if wxCHECK_VERSION(3, 0, 0)
     // It is possible to use the window to find a display, but unfortunately this doesn't work well,
