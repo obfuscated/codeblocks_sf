@@ -832,6 +832,8 @@ void MainFrame::CreateIDE()
         const int configSize = cbHelpers::ReadToolbarSizeFromConfig();
         const int scaledSize = cbFindMinSize16to64(configSize * actualScaleFactor);
         Manager::Get()->SetImageSize(scaledSize, Manager::UIComponent::Toolbars);
+        Manager::Get()->SetUIScaleFactor(cbGetContentScaleFactor(*this),
+                                         Manager::UIComponent::Toolbars);
     }
 
     CreateMenubar();

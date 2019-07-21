@@ -412,6 +412,7 @@ void Manager::SetImageSize(int size, UIComponent component)
 int Manager::GetImageSize(UIComponent component) const
 {
     cbAssert(component>=0 && component < UIComponent::Last);
+    cbAssert(m_ImageSizes[component] > 0);
     return m_ImageSizes[component];
 }
 
@@ -424,6 +425,7 @@ void Manager::SetUIScaleFactor(double scaleFactor, UIComponent component)
 double Manager::GetUIScaleFactor(UIComponent component) const
 {
     cbAssert(component>=0 && component < UIComponent::Last);
+    cbAssert(m_UIScaleFactor[component] >= 1.0);
     return m_UIScaleFactor[component];
 }
 

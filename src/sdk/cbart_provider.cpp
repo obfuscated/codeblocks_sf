@@ -57,6 +57,8 @@ wxBitmap cbArtProvider::CreateBitmap(const wxArtID& id, const wxArtClient& clien
         return DoCreateBitmap(id, Manager::UIComponent::Menus);
     else if (client == wxT("wxART_BUTTON_C"))
         return DoCreateBitmap(id, Manager::UIComponent::Main);
+    else if (client == wxT("wxART_TOOLBAR_C"))
+        return DoCreateBitmap(id, Manager::UIComponent::Toolbars);
 
     return wxNullBitmap;
 }

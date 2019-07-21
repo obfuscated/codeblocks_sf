@@ -56,9 +56,44 @@ void wxToolBarAddOnXmlHandler::SetCurrentResourceID(const wxString &id)
     m_CurrentID = id;
 }
 
+// if 'param' has stock_id/stock_client, extracts them and returns true
+// Taken from wxWidgets.
+static bool GetStockArtAttrs(wxString &art_id, wxString &art_client, const wxXmlNode *paramNode,
+                             const wxString& defaultArtClient)
+{
+    if (paramNode)
+    {
+        art_id = paramNode->GetAttribute(wxT("stock_id"), wxString());
+
+        if (!art_id.empty())
+        {
+            art_id = wxART_MAKE_ART_ID_FROM_STR(art_id);
+
+            art_client = paramNode->GetAttribute(wxT("stock_client"), wxString());
+            if (art_client.empty())
+                art_client = defaultArtClient;
+            else
+                art_client = wxART_MAKE_CLIENT_ID_FROM_STR(art_client);
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
 wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param, wxSize size,
                                                      double scaleFactor)
 {
+    wxString artId, artClient;
+    if (GetStockArtAttrs(artId, artClient, GetParamNode(param), wxART_TOOLBAR))
+    {
+        wxBitmap stockArt = wxArtProvider::GetBitmap(artId, artClient, size * scaleFactor);
+        if (stockArt.IsOk())
+            return stockArt;
+    }
+
     const wxString name = GetParamValue(param);
     if (name.empty())
         return wxNullBitmap;
