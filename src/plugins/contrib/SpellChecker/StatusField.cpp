@@ -1,7 +1,7 @@
 #include "StatusField.h"
 
 #include <wx/stattext.h>
-#include <wx/statbmp.h>
+#include <wx/generic/statbmpg.h>
 #include <wx/image.h>
 #include <wx/menu.h>
 #include <wx/msgdlg.h>
@@ -158,7 +158,7 @@ void SpellCheckerStatusField::Update()
         }
         else
         {
-            m_bitmap = new wxStaticBitmap(this, wxID_ANY, bm);
+            m_bitmap = new wxGenericStaticBitmap(this, wxID_ANY, bm);
             m_bitmap->Connect(wxEVT_LEFT_UP,
                               wxMouseEventHandler(SpellCheckerStatusField::OnPressed), nullptr,
                               this);

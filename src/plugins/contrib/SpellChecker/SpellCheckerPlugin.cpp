@@ -162,7 +162,8 @@ void SpellCheckerPlugin::Init()
 void SpellCheckerPlugin::CreateStatusField(cbStatusBar *bar)
 {
     m_fld = new SpellCheckerStatusField(bar, this, m_sccfg);
-    bar->AddField(this, m_fld, 60);
+//    bar->AddField(this, m_fld, 60);// * cbGetContentScaleFactor(*bar));
+    bar->AddField(this, m_fld, 60 * cbGetActualContentScaleFactor(*bar));
 }
 #endif
 

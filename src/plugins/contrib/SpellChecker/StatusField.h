@@ -4,7 +4,7 @@
 #include <wx/panel.h>
 
 
-class wxStaticBitmap;
+class wxGenericStaticBitmap;
 class wxStaticText;
 class SpellCheckerConfig;
 class SpellCheckerPlugin;
@@ -18,7 +18,7 @@ public:
     //void SetLanguage(const wxString &lang);
     void Update();
 private:
-    wxStaticBitmap *m_bitmap;
+    wxGenericStaticBitmap *m_bitmap;
     wxStaticText   *m_text;
     SpellCheckerConfig *m_sccfg;
     SpellCheckerPlugin *m_plugin;
