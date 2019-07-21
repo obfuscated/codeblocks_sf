@@ -32,41 +32,19 @@ images_forZIP = \
 	images/16x16/filenew.png \
 	images/16x16/fileopen.png \
 	images/16x16/fileprint.png \
-	images/16x16/filequickprint.png \
 	images/16x16/filesaveall.png \
 	images/16x16/filesaveas.png \
 	images/16x16/filesave.png \
 	images/16x16/findf.png \
-	images/16x16/folder_new.png \
-	images/16x16/folder_open.png \
-	images/16x16/folder.png \
-	images/16x16/folder_yel_open.png \
-	images/16x16/folder_yel.png \
 	images/16x16/goto.png \
 	images/16x16/history_clear.png \
 	images/16x16/idea.png \
 	images/16x16/info.png \
-	images/16x16/mark_clear.png \
-	images/16x16/mark_next.png \
-	images/16x16/mark.png \
-	images/16x16/mark_prev.png \
-	images/16x16/newproject.png \
-	images/16x16/next.png \
 	images/16x16/plug.png \
-	images/16x16/prev.png \
-	images/16x16/projectnew.png \
-	images/16x16/project.png \
-	images/16x16/project-readonly.png \
 	images/16x16/redo.png \
-	images/16x16/run.png \
 	images/16x16/searchreplacef.png \
 	images/16x16/searchreplace.png \
 	images/16x16/undo.png \
-	images/16x16/view_sidetree.png \
-	images/16x16/view_tree.png \
-	images/16x16/window_fullscreen.png \
-	images/16x16/workspace.png \
-	images/16x16/workspace-readonly.png \
 	images/20x20/bookmark_add.png \
 	images/20x20/dbginfo.png \
 	images/20x20/dbgnexti.png \
