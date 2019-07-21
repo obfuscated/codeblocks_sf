@@ -44,11 +44,9 @@ SpellCheckerStatusField::SpellCheckerStatusField(wxWindow* parent, SpellCheckerP
     Connect(idEnableSpellCheck, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerStatusField::OnSelect), NULL, this);
     Connect(idEditPersonalDictionary, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerStatusField::OnEditPersonalDictionary), NULL, this);
 
-    m_text->Connect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
-    m_text->Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
-
-    Connect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
-    Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
+    m_text->Connect(wxEVT_LEFT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnPressed), NULL,
+                    this);
+    Connect(wxEVT_LEFT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnPressed), NULL, this);
 }
 
 SpellCheckerStatusField::~SpellCheckerStatusField()
@@ -59,10 +57,13 @@ SpellCheckerStatusField::~SpellCheckerStatusField()
     Disconnect(idEnableSpellCheck, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerStatusField::OnSelect), NULL, this);
     Disconnect(idEditPersonalDictionary, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerStatusField::OnEditPersonalDictionary), NULL, this);
 
-    m_text->Disconnect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp));
+    m_text->Disconnect(wxEVT_LEFT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnPressed));
     if (m_bitmap)
-        m_bitmap->Disconnect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp));
-    Disconnect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp));
+    {
+        m_bitmap->Disconnect(wxEVT_LEFT_UP,
+                             wxMouseEventHandler(SpellCheckerStatusField::OnPressed));
+    }
+    Disconnect(wxEVT_LEFT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnPressed));
 }
 
 static wxBitmap LoadImageInPath(const wxString &path, wxString fileName,
@@ -158,11 +159,8 @@ void SpellCheckerStatusField::Update()
         else
         {
             m_bitmap = new wxStaticBitmap(this, wxID_ANY, bm);
-            m_bitmap->Connect(wxEVT_RIGHT_UP,
-                              wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), nullptr,
-                              this);
-            m_bitmap->Connect(wxEVT_LEFT_DCLICK,
-                              wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), nullptr,
+            m_bitmap->Connect(wxEVT_LEFT_UP,
+                              wxMouseEventHandler(SpellCheckerStatusField::OnPressed), nullptr,
                               this);
         }
 
@@ -197,7 +195,7 @@ void SpellCheckerStatusField::DoSize()
     }
 }
 
-void SpellCheckerStatusField::OnRightUp(cb_unused wxMouseEvent &event)
+void SpellCheckerStatusField::OnPressed(cb_unused wxMouseEvent &event)
 {
     m_sccfg->ScanForDictionaries();
     wxMenu *popup = new wxMenu();

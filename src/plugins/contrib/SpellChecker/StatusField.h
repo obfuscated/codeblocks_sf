@@ -25,7 +25,7 @@ private:
 
 private:
     void OnSize(wxSizeEvent &event);
-    void OnRightUp(wxMouseEvent &event);
+    void OnPressed(wxMouseEvent &event);
     void OnSelect(wxCommandEvent &event);
     void OnEditPersonalDictionary(wxCommandEvent &event);
 
