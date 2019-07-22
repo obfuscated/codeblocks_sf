@@ -616,7 +616,7 @@ MainFrame::MainFrame(wxWindow* parent)
 #ifdef __WXMSW__
     SetIcon(wxICON(A_MAIN_ICON));
 #else
-    SetIcon(wxIcon(app));
+    SetIcon(wxIcon(app_xpm));
 #endif // __WXMSW__
 
     // even it is possible that the statusbar is not visible at the moment, create the statusbar so the plugins can create their own fields on the it:
