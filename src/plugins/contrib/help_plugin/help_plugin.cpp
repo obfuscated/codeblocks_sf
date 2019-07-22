@@ -345,25 +345,20 @@ bool HelpPlugin::BuildToolBar(wxToolBar * /*toolBar*/)
     return false;
 }
 
-void HelpPlugin::AddToHelpMenu(int id, const wxString &help, bool
-#ifdef __WXMSW__
-    fromIni
-#endif
-)
+void HelpPlugin::AddToHelpMenu(int id, const wxString &help, cb_unused bool fromIni)
 {
-  if (!m_pMenuBar)
-    return;
+    if (!m_pMenuBar)
+        return;
 
-  int pos = m_pMenuBar->FindMenu(_("&Help"));
+    const int pos = m_pMenuBar->FindMenu(_("&Help"));
+    if (pos != wxNOT_FOUND)
+    {
+        wxMenu *helpMenu = m_pMenuBar->GetMenu(pos);
+        if (id == idHelpMenus[0])
+            helpMenu->AppendSeparator();
 
-  if (pos != wxNOT_FOUND)
-  {
-    wxMenu *helpMenu = m_pMenuBar->GetMenu(pos);
-
-    if (id == idHelpMenus[0])
-      helpMenu->AppendSeparator();
-      helpMenu->Append(id, help);
-  }
+        helpMenu->Append(id, help);
+    }
 }
 
 void HelpPlugin::RemoveFromHelpMenu(int id, const wxString & /*help*/)
