@@ -472,4 +472,5 @@ start_here.zip: $(srcdir)/start_here/*.htm* $(srcdir)/start_here/*.png
 EXTRA_DIST = \
 	$(srcdir)/*.manifest \
 	$(images_forZIP) \
+	$(infoPaneImages_forZIP) \
 	$(treeImages_forZIP)
