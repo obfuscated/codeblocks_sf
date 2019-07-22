@@ -1202,7 +1202,7 @@ double cbGetActualContentScaleFactor(cb_unused const wxWindow &window)
 #endif // wxCHECK_VERSION(3, 0, 0)
 }
 #else // __WXGTK__
-double cbGetActualContentScaleFactor(wxWindow &window)
+double cbGetActualContentScaleFactor(const wxWindow &window)
 {
     return cbGetContentScaleFactor(window);
 }
