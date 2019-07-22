@@ -202,13 +202,7 @@ void wxsChart::OnAddExtraProperties(wxsPropertyGridManager* Grid)
     Grid->SetTargetPage(0);
     #endif
 
-
-    #if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
-    m_ChartPointsCountId = Grid->Append(new wxIntProperty(_("Number of data sets"),wxPG_LABEL,
-    #else
-    m_ChartPointsCountId = Grid->Append(wxIntProperty(_("Number of data sets"),wxPG_LABEL,
-    #endif
-                                                      (int)m_ChartPointsDesc.Count()));
+    m_ChartPointsCountId = Grid->Append(NEW_IN_WXPG14X wxIntProperty(_("Number of data sets"), wxPG_LABEL, (int)m_ChartPointsDesc.Count()));
 
     for ( int i=0; i<(int)m_ChartPointsDesc.Count(); i++ )
     {
@@ -363,11 +357,8 @@ void wxsChart::AppendPropertyForSet(wxsPropertyGridManager* Grid,int Position)
     ChartPointsDesc* Desc = m_ChartPointsDesc[Position];
     wxString SetName = wxString::Format(_("Set %d"),Position+1);
 
-    #if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
-    Desc->Id = Grid->Append(new wxParentProperty(SetName,wxPG_LABEL));
-    #else
-    Desc->Id = Grid->Append(wxParentProperty(SetName,wxPG_LABEL));
-    #endif
+    Desc->Id = Grid->Append(NEW_IN_WXPG14X wxParentProperty(SetName,wxPG_LABEL));
+    Desc->Id->ChangeFlag(wxPG_PROP_READONLY, true);
 
     static const wxChar* Types[] =
     {
@@ -382,15 +373,9 @@ void wxsChart::AppendPropertyForSet(wxsPropertyGridManager* Grid,int Position)
         Bar, Bar3D, Pie, Pie3D, Points, Points3D, Line, Line3D, Area, Area3D
     };
 
-    #if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
-    Desc->TypeId = Grid->AppendIn(Desc->Id,new wxEnumProperty(_("Type"),wxPG_LABEL,Types,Values,Desc->Type));
-    Desc->NameId = Grid->AppendIn(Desc->Id,new wxStringProperty(_("Name"),wxPG_LABEL,Desc->Name));
-    Desc->PointsCountId = Grid->AppendIn(Desc->Id,new wxIntProperty(_("Number of points"),wxPG_LABEL,(int)Desc->Points.Count()));
-    #else
-    Desc->TypeId = Grid->AppendIn(Desc->Id,wxEnumProperty(_("Type"),wxPG_LABEL,Types,Values,Desc->Type));
-    Desc->NameId = Grid->AppendIn(Desc->Id,wxStringProperty(_("Name"),wxPG_LABEL,Desc->Name));
-    Desc->PointsCountId = Grid->AppendIn(Desc->Id,wxIntProperty(_("Number of points"),wxPG_LABEL,(int)Desc->Points.Count()));
-    #endif
+    Desc->TypeId = Grid->AppendIn(Desc->Id, NEW_IN_WXPG14X wxEnumProperty(_("Type"), wxPG_LABEL,Types,Values,Desc->Type));
+    Desc->NameId = Grid->AppendIn(Desc->Id, NEW_IN_WXPG14X wxStringProperty(_("Name"), wxPG_LABEL,Desc->Name));
+    Desc->PointsCountId = Grid->AppendIn(Desc->Id, NEW_IN_WXPG14X wxIntProperty(_("Number of points"), wxPG_LABEL, (int)Desc->Points.Count()));
 
     for ( int i=0; i<(int)Desc->Points.Count(); i++ )
     {
@@ -484,17 +469,11 @@ void wxsChart::AppendPropertyForPoint(wxsPropertyGridManager* Grid,ChartPointsDe
     PointDesc* Desc = SetDesc->Points[Position];
     wxString Name = wxString::Format(_("Point %d"),Position+1);
 
-    #if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
-    Desc->Id = Grid->AppendIn(SetDesc->Id,new wxParentProperty(Name,wxPG_LABEL));
-    Desc->NameId = Grid->AppendIn(Desc->Id,new wxStringProperty(_("Name"),wxPG_LABEL,Desc->Name));
-    Desc->XId = Grid->AppendIn(Desc->Id,new wxStringProperty(_("X"),wxPG_LABEL,wxString::Format(_T("%lf"),Desc->X)));
-    Desc->YId = Grid->AppendIn(Desc->Id,new wxStringProperty(_("Y"),wxPG_LABEL,wxString::Format(_T("%lf"),Desc->Y)));
-    #else
-    Desc->Id = Grid->AppendIn(SetDesc->Id,wxParentProperty(Name,wxPG_LABEL));
-    Desc->NameId = Grid->AppendIn(Desc->Id,wxStringProperty(_("Name"),wxPG_LABEL,Desc->Name));
-    Desc->XId = Grid->AppendIn(Desc->Id,wxStringProperty(_("X"),wxPG_LABEL,wxString::Format(_T("%lf"),Desc->X)));
-    Desc->YId = Grid->AppendIn(Desc->Id,wxStringProperty(_("Y"),wxPG_LABEL,wxString::Format(_T("%lf"),Desc->Y)));
-    #endif
+    Desc->Id = Grid->AppendIn(SetDesc->Id, NEW_IN_WXPG14X wxParentProperty(Name,wxPG_LABEL));
+    Desc->Id->ChangeFlag(wxPG_PROP_READONLY, true);
+    Desc->NameId = Grid->AppendIn(Desc->Id, NEW_IN_WXPG14X wxStringProperty(_("Name"), wxPG_LABEL,Desc->Name));
+    Desc->XId = Grid->AppendIn(Desc->Id, NEW_IN_WXPG14X wxStringProperty(_("X"), wxPG_LABEL,wxString::Format(_T("%lf"),Desc->X)));
+    Desc->YId = Grid->AppendIn(Desc->Id, NEW_IN_WXPG14X wxStringProperty(_("Y"), wxPG_LABEL,wxString::Format(_T("%lf"),Desc->Y)));
 }
 
 bool wxsChart::HandleChangeInPoint(wxsPropertyGridManager* Grid,wxPGId Id,ChartPointsDesc* SetDesc,int Position,bool Global)
