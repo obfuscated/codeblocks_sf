@@ -16,7 +16,7 @@
 * along with SpellChecker. If not, see <http://www.gnu.org/licenses/>.
 *
 */
-#include "hunspell/hunspell.hxx"
+#include "hunspell.hxx"
 #include "HunspellInterface.h"
 
 #include <wx/filename.h>
