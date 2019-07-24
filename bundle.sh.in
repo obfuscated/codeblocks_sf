@@ -90,3 +90,4 @@ rsync -rlpdtgou  ${INSTALL_SHAREDIR}/templates ${SHAREDATADIR}/
 rsync -rlpdtgou  ${INSTALL_SHAREDIR}/lexers ${SHAREDATADIR}/
 rsync -rlpdtgou  ${INSTALL_SHAREDIR}/scripts ${SHAREDATADIR}/
 rsync -rlpdtgou  ${INSTALL_SHAREDIR}/compilers ${SHAREDATADIR}/
+rsync -rlpdtgou  ${INSTALL_SHAREDIR}/SpellChecker ${SHAREDATADIR}/
