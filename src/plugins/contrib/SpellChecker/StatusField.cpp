@@ -12,6 +12,10 @@
 
 #include "SpellCheckerConfig.h"
 #include "SpellCheckerPlugin.h"
+
+#include <logmanager.h>
+#include <macrosmanager.h>
+
 #define LANGS 10
 
 namespace
@@ -33,14 +37,6 @@ SpellCheckerStatusField::SpellCheckerStatusField(wxWindow* parent, SpellCheckerP
     //ctor
     m_text = new wxStaticText(this, wxID_ANY, m_sccfg->GetDictionaryName());
 
-    wxString imgPath = m_sccfg->GetBitmapPath() + wxFILE_SEP_PATH + m_sccfg->GetDictionaryName() + _T(".png");
-    if ( wxFileExists(imgPath) )
-    {
-        wxBitmap bm(wxImage(imgPath, wxBITMAP_TYPE_PNG));
-        if ( bm.IsOk() )
-            m_bitmap = new wxStaticBitmap(this, wxID_ANY, bm);
-    }
-
     Update();
 
     Connect(wxEVT_SIZE, wxSizeEventHandler(SpellCheckerStatusField::OnSize), NULL, this);
@@ -49,12 +45,9 @@ SpellCheckerStatusField::SpellCheckerStatusField(wxWindow* parent, SpellCheckerP
     Connect(idEditPersonalDictionary, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerStatusField::OnEditPersonalDictionary), NULL, this);
 
     m_text->Connect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
-    if (m_bitmap)
-        m_bitmap->Connect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
-    Connect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
     m_text->Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
-    if (m_bitmap)
-        m_bitmap->Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
+
+    Connect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
     Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
 }
 
@@ -72,36 +65,108 @@ SpellCheckerStatusField::~SpellCheckerStatusField()
     Disconnect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp));
 }
 
+static wxBitmap LoadImageInPath(const wxString &path, wxString fileName,
+                                const wxWindow &windowForScaling)
+{
+    const double actualScaleFactor = cbGetActualContentScaleFactor(windowForScaling);
+    const int size = cbFindMinSize16to64(16 * actualScaleFactor);
+    const wxString sizePath = wxString::Format(wxT("%dx%d"), size, size);
+
+    wxString imgPath = path + wxFILE_SEP_PATH + sizePath + wxFILE_SEP_PATH;
+
+    wxBitmap bmp = cbLoadBitmapScaled(imgPath + fileName, wxBITMAP_TYPE_PNG,
+                                      cbGetContentScaleFactor(windowForScaling));
+    if (bmp.IsOk())
+    {
+        const wxString msg = wxString::Format(wxT("Loading image: '%s' succeeded!"),
+                                              (imgPath + fileName).wx_str());
+        Manager::Get()->GetLogManager()->DebugLog(msg);
+        return bmp;
+    }
+
+    // some dictionaries are distributed with hyphens
+    wxString fileName2 = fileName;
+    fileName2.Replace(wxT("-"), wxT("_"));
+
+    const wxString msg1 = wxString::Format(wxT("Loading image: '%s' failed!"),
+                                           (imgPath + fileName).wx_str());
+    if (fileName == fileName2)
+    {
+        Manager::Get()->GetLogManager()->DebugLog(msg1);
+        return wxNullBitmap;
+    }
+
+    bmp = cbLoadBitmapScaled(imgPath + fileName2, wxBITMAP_TYPE_PNG,
+                             cbGetContentScaleFactor(windowForScaling));
+    if (!bmp.IsOk())
+    {
+        const wxString msg2 = wxString::Format(wxT("Loading image: '%s' failed!"),
+                                              (imgPath + fileName2).wx_str());
+        Manager::Get()->GetLogManager()->DebugLog(msg1);
+        Manager::Get()->GetLogManager()->DebugLog(msg2);
+    }
+
+    const wxString msg = wxString::Format(wxT("Loading image: '%s' succeeded!"),
+                                          (imgPath + fileName2).wx_str());
+    Manager::Get()->GetLogManager()->DebugLog(msg);
+
+    return bmp;
+}
+
 //void SpellCheckerStatusField::SetLanguage(const wxString &language)
 void SpellCheckerStatusField::Update()
 {
-    wxString imgPath = m_sccfg->GetBitmapPath() + wxFILE_SEP_PATH;
+    wxString name;
+    wxString fileName;
+
     if (m_sccfg->GetEnableOnlineChecker())
     {
-        wxString name = m_sccfg->GetDictionaryName();
-        m_text->SetLabel(name);
-        if (!wxFileExists(imgPath + name + _T(".png")))
-            name.Replace(wxT("-"), wxT("_")); // some dictionaries are distributed with hyphens
-        imgPath += name + _T(".png");
+        name = m_sccfg->GetDictionaryName();
+        fileName = name + _T(".png");
     }
     else
     {
-        m_text->SetLabel(_("off"));
-        imgPath += _T("disabled.png");
+        name = _("off");
+        fileName = _T("disabled.png");
+    }
+
+    m_text->SetLabel(name);
+
+    wxBitmap bm;
+    {
+        wxString bmpPath = m_sccfg->GetRawBitmapPath();
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(bmpPath);
+        bm = LoadImageInPath(bmpPath, fileName, *this);
+    }
+
+    if (!bm.IsOk())
+    {
+        const wxString bmpPath = m_plugin->GetOnlineCheckerConfigPath();
+        bm = LoadImageInPath(bmpPath, fileName, *this);
     }
 
     bool imgOK = false;
-    if ( m_bitmap && wxFileExists(imgPath) )
+    if (bm.IsOk())
     {
-        wxBitmap bm(wxImage(imgPath, wxBITMAP_TYPE_PNG));
-        if ( bm.IsOk() )
+        m_text->Hide();
+        if (m_bitmap)
         {
-            m_text->Hide();
             m_bitmap->Hide();
             m_bitmap->SetBitmap(bm);
             m_bitmap->Show();
-            imgOK = true;
         }
+        else
+        {
+            m_bitmap = new wxStaticBitmap(this, wxID_ANY, bm);
+            m_bitmap->Connect(wxEVT_RIGHT_UP,
+                              wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), nullptr,
+                              this);
+            m_bitmap->Connect(wxEVT_LEFT_DCLICK,
+                              wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), nullptr,
+                              this);
+        }
+
+        imgOK = true;
     }
 
     if (!imgOK)

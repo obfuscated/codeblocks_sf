@@ -100,18 +100,7 @@
 					<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c if not exist ..\..\..\devel30_64\share\CodeBlocks\SpellChecker mkdir ..\..\..\devel30_64\share\CodeBlocks\SpellChecker" />
-					<Add after="cmd /c if not exist ..\..\..\devel30_64\share\CodeBlocks\images\settings mkdir ..\..\..\devel30_64\share\CodeBlocks\images\settings" />
-					<Add after="zip -j9 ..\..\..\devel30_64\share\CodeBlocks\SpellChecker.zip manifest.xml SpellCheckSettingsPanel.xrc" />
-					<Add after='xcopy /Y *.png &quot;..\..\..\devel30_64\share\Codeblocks\images\settings\*&quot;' />
-					<Add after='xcopy /Y *.png &quot;..\..\..\output30_64\share\Codeblocks\images\settings\*&quot;' />
-					<Add after='xcopy /Y OnlineSpellChecking.xml  &quot;..\..\..\devel30_64\share\CodeBlocks\SpellChecker\&quot;' />
-					<Add after='xcopy /Y dictionaries\*.aff &quot;..\..\..\devel30_64\share\CodeBlocks\SpellChecker\&quot;' />
-					<Add after='xcopy /Y dictionaries\*.dic &quot;..\..\..\devel30_64\share\CodeBlocks\SpellChecker\&quot;' />
-					<Add after='xcopy /Y dictionaries\th_*.dat &quot;..\..\..\devel30_64\share\CodeBlocks\SpellChecker\&quot;' />
-					<Add after='xcopy /Y dictionaries\th_*.idx &quot;..\..\..\devel30_64\share\CodeBlocks\SpellChecker\&quot;' />
-					<Add after='xcopy /Y rc\*.png &quot;..\..\..\devel30_64\share\CodeBlocks\SpellChecker\&quot;' />
-					<Add after='xcopy /Y &quot;..\..\..\devel30_64\share\CodeBlocks\SpellChecker\*&quot; &quot;..\..\..\output30_64\share\CodeBlocks\SpellChecker\*&quot;' />
+					<Add after="update30_64.bat" />
 					<Mode after="always" />
 				</ExtraCommands>
 				<Environment>
