@@ -45,10 +45,10 @@
 					<Add option="-fno-keep-inline-dllexport" />
 					<Add option="-DHUNSPELL_STATIC" />
 					<Add option="-D_WIN64" />
-					<Add directory="hunspell\src" />
-					<Add directory="wxspellchecker\include" />
+					<Add directory="hunspell/src/hunspell" />
+					<Add directory="wxspellchecker/include" />
 					<Add directory="$(#WX30_64.include)" />
-					<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+					<Add directory="$(#WX30_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 				</Compiler>
 				<Linker>
 					<Add library="hunspell" />
@@ -67,7 +67,7 @@
 				<Option object_output="..\..\..\.objs30_64\plugins\contrib\SpellChecker" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-check-associations -ns -nd -p debug" />
+				<Option parameters="--debug-log --no-check-associations -ns -nd --multiple-instance -p debug" />
 				<Option host_application="..\..\..\devel30_64\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>

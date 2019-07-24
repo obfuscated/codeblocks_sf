@@ -41,7 +41,7 @@
 					<Add option="-pipe" />
 					<Add option="-mthreads" />
 					<Add option="-DHUNSPELL_STATIC" />
-					<Add directory="hunspell/src" />
+					<Add directory="hunspell/src/hunspell" />
 					<Add directory="wxspellchecker/include" />
 					<Add directory="$(#wx.include)" />
 					<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
