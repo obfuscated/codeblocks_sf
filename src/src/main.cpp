@@ -777,6 +777,7 @@ void MainFrame::CreateIDE()
         cbArtProvider *provider = new cbArtProvider(prefix);
 
         provider->AddMapping(wxT("sdk/select_target"), wxT("select_target.png"));
+        provider->AddMapping(wxT("sdk/missing_icon"), wxT("missing_icon.png"));
 
         wxArtProvider::Push(provider);
     }
