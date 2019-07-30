@@ -133,6 +133,18 @@ cd ..\..\..\plugins\codecompletion\resources
     images\56x56\*.png ^
     images\64x64\*.png ^
     > nul
+cd ..\..\..\plugins\abbreviations\resources
+"%ZIPCMD%" -0 -qu "..\..\..\%CB_DEVEL_RESDIR%\abbreviations.zip" ^
+    images\16x16\*.png ^
+    images\20x20\*.png ^
+    images\24x24\*.png ^
+    images\28x28\*.png ^
+    images\32x32\*.png ^
+    images\40x40\*.png ^
+    images\48x48\*.png ^
+    images\56x56\*.png ^
+    images\64x64\*.png ^
+    > nul
 cd ..\..\..
 
 echo Copying default files
