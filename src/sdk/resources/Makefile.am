@@ -7,7 +7,6 @@ resources_forZIP = \
 	confirm_replace.xrc \
 	edit_array_order.xrc \
 	edit_array_string.xrc \
-	editor_manager.xrc \
 	edit_pair.xrc \
 	edit_path.xrc \
 	edit_tool.xrc \
@@ -85,8 +84,7 @@ resources_forZIP = \
 	images/64x64/select_target.png \
 	images/8x8/breakpoint_disabled.png \
 	images/8x8/breakpoint_other.png \
-	images/8x8/breakpoint.png \
-	images/closebutton.png
+	images/8x8/breakpoint.png
 
 dist_noinst_DATA = \
 	$(resources_forZIP)

@@ -2829,9 +2829,6 @@
 		<Unit filename="sdk/resources/edit_tool.xrc">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/resources/editor_manager.xrc">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/resources/external_deps.xrc">
 			<Option target="sdk" />
 		</Unit>

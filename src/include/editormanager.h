@@ -23,7 +23,6 @@
 DLLIMPORT extern int ID_NBEditorManager;
 DLLIMPORT extern int ID_EditorManager;
 DLLIMPORT extern int idEditorManagerCheckFiles;
-DLLIMPORT extern int ID_EditorManagerCloseButton;
 
 // forward decls
 class EditorBase;
