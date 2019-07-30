@@ -354,6 +354,10 @@ bool IsPointerType(wxString type)
         return true;
     else if (type.EndsWith(wxT("* volatile")))
         return true;
+    else if (type.EndsWith(wxT("* const volatile")))
+        return true;
+    else if (type.EndsWith(wxT("restrict"))) // restrict is only for pointer types
+        return true;
     return false;
 }
 
