@@ -86,17 +86,27 @@ static bool GetStockArtAttrs(wxString &art_id, wxString &art_client, const wxXml
 wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param, wxSize size,
                                                      double scaleFactor)
 {
+    wxXmlNode *paramNode = GetParamNode(param);
+    // If there is no such tag as requested it is best to return null bitmap, so default processing
+    // could have chance to work.
+    if (!paramNode)
+        return wxNullBitmap;
+
     wxString artId, artClient;
-    if (GetStockArtAttrs(artId, artClient, GetParamNode(param), wxART_TOOLBAR))
+    if (GetStockArtAttrs(artId, artClient, paramNode, wxART_TOOLBAR))
     {
         wxBitmap stockArt = wxArtProvider::GetBitmap(artId, artClient, size * scaleFactor);
         if (stockArt.IsOk())
             return stockArt;
     }
 
+#if wxCHECK_VERSION(3, 0, 0)
+    const wxString name = GetParamValue(paramNode);
+#else
     const wxString name = GetParamValue(param);
+#endif
     if (name.empty())
-        return wxNullBitmap;
+        return wxArtProvider::GetBitmap(wxT("sdk/missing_icon"), wxART_TOOLBAR, size * scaleFactor);
 
     wxString finalName = name;
     finalName.Replace(wxT("22x22"), m_PathReplaceString);
@@ -108,7 +118,8 @@ wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param, wxSi
         LogManager *logger = Manager::Get()->GetLogManager();
         logger->LogError(wxString::Format(wxT("(%s) Failed to load image: '%s'"),
                                           m_CurrentID.wx_str(), finalName.wx_str()));
-        return bitmap;
+
+        return wxArtProvider::GetBitmap(wxT("sdk/missing_icon"), wxART_TOOLBAR, size * scaleFactor);
     }
 
     int bw = bitmap.GetWidth();
