@@ -364,6 +364,19 @@ treeImages_forZIP = \
 	images/tree/20x20/folder_open.png \
 	images/tree/20x20/project.png \
 	images/tree/20x20/project-readonly.png \
+	images/tree/20x20/rc-file-added.png \
+	images/tree/20x20/rc-file-conflict.png \
+	images/tree/20x20/rc-file-external.png \
+	images/tree/20x20/rc-file-gotlock.png \
+	images/tree/20x20/rc-file-lockstolen.png \
+	images/tree/20x20/rc-file-mismatch.png \
+	images/tree/20x20/rc-file-missing.png \
+	images/tree/20x20/rc-file-modified.png \
+	images/tree/20x20/rc-file-noncontrolled.png \
+	images/tree/20x20/rc-file-outofdate.png \
+	images/tree/20x20/rc-file-requireslock.png \
+	images/tree/20x20/rc-file-uptodate.png \
+	images/tree/20x20/vfolder_open.png \
 	images/tree/20x20/workspace.png \
 	images/tree/20x20/workspace-readonly.png \
 	images/tree/24x24/file-missing.png \
@@ -373,6 +386,19 @@ treeImages_forZIP = \
 	images/tree/24x24/folder_open.png \
 	images/tree/24x24/project.png \
 	images/tree/24x24/project-readonly.png \
+	images/tree/24x24/rc-file-added.png \
+	images/tree/24x24/rc-file-conflict.png \
+	images/tree/24x24/rc-file-external.png \
+	images/tree/24x24/rc-file-gotlock.png \
+	images/tree/24x24/rc-file-lockstolen.png \
+	images/tree/24x24/rc-file-mismatch.png \
+	images/tree/24x24/rc-file-missing.png \
+	images/tree/24x24/rc-file-modified.png \
+	images/tree/24x24/rc-file-noncontrolled.png \
+	images/tree/24x24/rc-file-outofdate.png \
+	images/tree/24x24/rc-file-requireslock.png \
+	images/tree/24x24/rc-file-uptodate.png \
+	images/tree/24x24/vfolder_open.png \
 	images/tree/24x24/workspace.png \
 	images/tree/24x24/workspace-readonly.png \
 	images/tree/28x28/file-missing.png \
@@ -382,6 +408,19 @@ treeImages_forZIP = \
 	images/tree/28x28/folder_open.png \
 	images/tree/28x28/project.png \
 	images/tree/28x28/project-readonly.png \
+	images/tree/28x28/rc-file-added.png \
+	images/tree/28x28/rc-file-conflict.png \
+	images/tree/28x28/rc-file-external.png \
+	images/tree/28x28/rc-file-gotlock.png \
+	images/tree/28x28/rc-file-lockstolen.png \
+	images/tree/28x28/rc-file-mismatch.png \
+	images/tree/28x28/rc-file-missing.png \
+	images/tree/28x28/rc-file-modified.png \
+	images/tree/28x28/rc-file-noncontrolled.png \
+	images/tree/28x28/rc-file-outofdate.png \
+	images/tree/28x28/rc-file-requireslock.png \
+	images/tree/28x28/rc-file-uptodate.png \
+	images/tree/28x28/vfolder_open.png \
 	images/tree/28x28/workspace.png \
 	images/tree/28x28/workspace-readonly.png \
 	images/tree/32x32/file-missing.png \
@@ -391,6 +430,19 @@ treeImages_forZIP = \
 	images/tree/32x32/folder_open.png \
 	images/tree/32x32/project.png \
 	images/tree/32x32/project-readonly.png \
+	images/tree/32x32/rc-file-added.png \
+	images/tree/32x32/rc-file-conflict.png \
+	images/tree/32x32/rc-file-external.png \
+	images/tree/32x32/rc-file-gotlock.png \
+	images/tree/32x32/rc-file-lockstolen.png \
+	images/tree/32x32/rc-file-mismatch.png \
+	images/tree/32x32/rc-file-missing.png \
+	images/tree/32x32/rc-file-modified.png \
+	images/tree/32x32/rc-file-noncontrolled.png \
+	images/tree/32x32/rc-file-outofdate.png \
+	images/tree/32x32/rc-file-requireslock.png \
+	images/tree/32x32/rc-file-uptodate.png \
+	images/tree/32x32/vfolder_open.png \
 	images/tree/32x32/workspace.png \
 	images/tree/32x32/workspace-readonly.png \
 	images/tree/40x40/file-missing.png \
@@ -400,6 +452,19 @@ treeImages_forZIP = \
 	images/tree/40x40/folder_open.png \
 	images/tree/40x40/project.png \
 	images/tree/40x40/project-readonly.png \
+	images/tree/40x40/rc-file-added.png \
+	images/tree/40x40/rc-file-conflict.png \
+	images/tree/40x40/rc-file-external.png \
+	images/tree/40x40/rc-file-gotlock.png \
+	images/tree/40x40/rc-file-lockstolen.png \
+	images/tree/40x40/rc-file-mismatch.png \
+	images/tree/40x40/rc-file-missing.png \
+	images/tree/40x40/rc-file-modified.png \
+	images/tree/40x40/rc-file-noncontrolled.png \
+	images/tree/40x40/rc-file-outofdate.png \
+	images/tree/40x40/rc-file-requireslock.png \
+	images/tree/40x40/rc-file-uptodate.png \
+	images/tree/40x40/vfolder_open.png \
 	images/tree/40x40/workspace.png \
 	images/tree/40x40/workspace-readonly.png \
 	images/tree/48x48/file-missing.png \
@@ -409,6 +474,19 @@ treeImages_forZIP = \
 	images/tree/48x48/folder_open.png \
 	images/tree/48x48/project.png \
 	images/tree/48x48/project-readonly.png \
+	images/tree/48x48/rc-file-added.png \
+	images/tree/48x48/rc-file-conflict.png \
+	images/tree/48x48/rc-file-external.png \
+	images/tree/48x48/rc-file-gotlock.png \
+	images/tree/48x48/rc-file-lockstolen.png \
+	images/tree/48x48/rc-file-mismatch.png \
+	images/tree/48x48/rc-file-missing.png \
+	images/tree/48x48/rc-file-modified.png \
+	images/tree/48x48/rc-file-noncontrolled.png \
+	images/tree/48x48/rc-file-outofdate.png \
+	images/tree/48x48/rc-file-requireslock.png \
+	images/tree/48x48/rc-file-uptodate.png \
+	images/tree/48x48/vfolder_open.png \
 	images/tree/48x48/workspace.png \
 	images/tree/48x48/workspace-readonly.png \
 	images/tree/56x56/file-missing.png \
@@ -418,6 +496,19 @@ treeImages_forZIP = \
 	images/tree/56x56/folder_open.png \
 	images/tree/56x56/project.png \
 	images/tree/56x56/project-readonly.png \
+	images/tree/56x56/rc-file-added.png \
+	images/tree/56x56/rc-file-conflict.png \
+	images/tree/56x56/rc-file-external.png \
+	images/tree/56x56/rc-file-gotlock.png \
+	images/tree/56x56/rc-file-lockstolen.png \
+	images/tree/56x56/rc-file-mismatch.png \
+	images/tree/56x56/rc-file-missing.png \
+	images/tree/56x56/rc-file-modified.png \
+	images/tree/56x56/rc-file-noncontrolled.png \
+	images/tree/56x56/rc-file-outofdate.png \
+	images/tree/56x56/rc-file-requireslock.png \
+	images/tree/56x56/rc-file-uptodate.png \
+	images/tree/56x56/vfolder_open.png \
 	images/tree/56x56/workspace.png \
 	images/tree/56x56/workspace-readonly.png \
 	images/tree/64x64/file-missing.png \
@@ -427,6 +518,19 @@ treeImages_forZIP = \
 	images/tree/64x64/folder_open.png \
 	images/tree/64x64/project.png \
 	images/tree/64x64/project-readonly.png \
+	images/tree/64x64/rc-file-added.png \
+	images/tree/64x64/rc-file-conflict.png \
+	images/tree/64x64/rc-file-external.png \
+	images/tree/64x64/rc-file-gotlock.png \
+	images/tree/64x64/rc-file-lockstolen.png \
+	images/tree/64x64/rc-file-mismatch.png \
+	images/tree/64x64/rc-file-missing.png \
+	images/tree/64x64/rc-file-modified.png \
+	images/tree/64x64/rc-file-noncontrolled.png \
+	images/tree/64x64/rc-file-outofdate.png \
+	images/tree/64x64/rc-file-requireslock.png \
+	images/tree/64x64/rc-file-uptodate.png \
+	images/tree/64x64/vfolder_open.png \
 	images/tree/64x64/workspace.png \
 	images/tree/64x64/workspace-readonly.png
 
