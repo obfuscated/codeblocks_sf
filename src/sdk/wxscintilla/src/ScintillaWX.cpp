@@ -35,6 +35,7 @@
 #if wxCHECK_VERSION(3, 0, 0)
     #include <wx/scopedarray.h>
 #endif // wxCHECK_VERSION(3, 0, 0)
+#include <wx/dcbuffer.h>
 
 #include <memory>
 
@@ -65,6 +66,7 @@
 #endif
 /* C::B end */
 
+//----------------------------------------------------------------------
 // Helper classes
 
 class wxSCITimer : public wxTimer {
@@ -103,62 +105,42 @@ void  wxSCIDropTarget::OnLeave() {
 #endif // wxUSE_DRAG_AND_DROP
 
 
-#if wxUSE_POPUPWIN
-#include "wx/popupwin.h"
-#define wxSCICallTipBase wxPopupWindow
-#else
-#include "wx/frame.h"
-#define wxSCICallTipBase wxFrame
-#endif
-
-#include "wx/dcbuffer.h"
-
-class wxSCICallTip : public wxSCICallTipBase {
+class wxSCICallTip : public wxSCIPopupWindow {
 public:
     wxSCICallTip(wxWindow* parent, CallTip* ct, ScintillaWX* swx) :
-#if wxUSE_POPUPWIN
-        wxSCICallTipBase(parent, wxBORDER_NONE),
-#else
-        wxSCICallTipBase(parent, -1, wxEmptyString, wxDefaultPosition, wxDefaultSize,
-                         wxFRAME_NO_TASKBAR
-                         | wxFRAME_FLOAT_ON_PARENT
-                         | wxBORDER_NONE
-#ifdef __WXMAC__
-                         | wxPOPUP_WINDOW
-#endif
-            ),
-#endif
-          m_ct(ct), m_swx(swx), m_cx(wxDefaultCoord), m_cy(wxDefaultCoord)
-        {
-            SetBackgroundStyle(wxBG_STYLE_CUSTOM);
-            SetName(wxT("wxSTCCallTip"));
-        }
+        wxSCIPopupWindow(parent), m_ct(ct), m_swx(swx)
+    {
+        Bind(wxEVT_LEFT_DOWN, &wxSCICallTip::OnLeftDown, this);
+        Bind(wxEVT_SIZE, &wxSCICallTip::OnSize, this);
+        Bind(wxEVT_PAINT, &wxSCICallTip::OnPaint, this);
 
-    ~wxSCICallTip() {
-#if wxUSE_POPUPWIN && defined(__WXGTK__)
-        wxRect rect = GetRect();
-        rect.x = m_cx;
-        rect.y = m_cy;
-        GetParent()->Refresh(false, &rect);
+#ifdef __WXMSW__
+        Bind(wxEVT_ERASE_BACKGROUND, &wxSTCCallTip::OnEraseBackground, this);
+        SetBackgroundStyle(wxBG_STYLE_ERASE);
+#else
+        SetBackgroundStyle(wxBG_STYLE_PAINT);
 #endif
+
+        SetName("wxSTCCallTip");
     }
 
-    bool AcceptsFocus() const wxOVERRIDE { return false; }
-
-    void OnPaint(wxPaintEvent& WXUNUSED(evt))
+    void DrawBack(const wxSize& size)
     {
-        wxAutoBufferedPaintDC dc(this);
+        m_back = wxBitmap(size);
+        wxMemoryDC mem(m_back);
         Surface* surfaceWindow = Surface::Allocate(m_swx->technology);
-        surfaceWindow->Init(&dc, m_ct->wDraw.GetID());
+        surfaceWindow->Init(&mem, m_ct->wDraw.GetID());
         m_ct->PaintCT(surfaceWindow);
         surfaceWindow->Release();
         delete surfaceWindow;
     }
 
-    void OnFocus(wxFocusEvent& event)
+    virtual void Refresh(bool eraseBg=true, const wxRect *rect=NULL) wxOVERRIDE
     {
-        GetParent()->SetFocus();
-        event.Skip();
+        if ( rect == NULL )
+            DrawBack(GetSize());
+
+        wxSCIPopupWindow::Refresh(eraseBg, rect);
     }
 
     void OnLeftDown(wxMouseEvent& event)
@@ -169,57 +151,44 @@ public:
         m_swx->CallTipClick();
     }
 
-    virtual void DoSetSize(int x, int y,
-                           int width, int height,
-                           int sizeFlags = wxSIZE_AUTO) wxOVERRIDE
+    void OnSize(wxSizeEvent& event)
     {
-        // convert coords to screen coords since we're a top-level window
-        if (x != wxDefaultCoord) {
-            m_cx = x;
-            GetParent()->ClientToScreen(&x, NULL);
-        }
-        if (y != wxDefaultCoord) {
-            m_cy = y;
-            GetParent()->ClientToScreen(NULL, &y);
-        }
-        wxSCICallTipBase::DoSetSize(x, y, width, height, sizeFlags);
+        DrawBack(event.GetSize());
+        event.Skip();
     }
 
-#if wxUSE_POPUPWIN
+#ifdef __WXMSW__
+
+    void OnPaint(wxPaintEvent& WXUNUSED(evt))
+    {
+        wxRect upd = GetUpdateClientRect();
+        wxMemoryDC mem(m_back);
+        wxPaintDC dc(this);
+
+        dc.Blit(upd.GetX(), upd.GetY(), upd.GetWidth(), upd.GetHeight(), &mem,
+                upd.GetX(), upd.GetY());
+    }
+
+    void OnEraseBackground(wxEraseEvent& event)
+    {
+        event.GetDC()->DrawBitmap(m_back, 0, 0);
+    }
+
 #else
-    virtual bool Show( bool show = true )
-    {
-        // Although we're a frame, we always want the parent to be active, so
-        // raise it whenever we get shown.
-        bool rv = wxSCICallTipBase::Show(show);
-        if (rv && show)
-        {
-            wxTopLevelWindow *frame = wxDynamicCast(
-                wxGetTopLevelParent(GetParent()), wxTopLevelWindow);
-            if (frame)
-                frame->Raise();
-        }
-        return rv;
-    }
-#endif
 
-    wxPoint GetMyPosition()
+    void OnPaint(wxPaintEvent& WXUNUSED(evt))
     {
-        return wxPoint(m_cx, m_cy);
+        wxAutoBufferedPaintDC dc(this);
+        dc.DrawBitmap(m_back, 0, 0);
     }
+
+#endif // __WXMSW__
 
 private:
     CallTip*      m_ct;
     ScintillaWX*  m_swx;
-    int           m_cx, m_cy;
-    DECLARE_EVENT_TABLE();
+    wxBitmap      m_back;
 };
-
-BEGIN_EVENT_TABLE(wxSCICallTip, wxSCICallTipBase)
-    EVT_PAINT(wxSCICallTip::OnPaint)
-    EVT_SET_FOCUS(wxSCICallTip::OnFocus)
-    EVT_LEFT_DOWN(wxSCICallTip::OnLeftDown)
-END_EVENT_TABLE()
 
 
 //----------------------------------------------------------------------
@@ -333,6 +302,9 @@ void ScintillaWX::Initialise() {
     kmap.AssignCmdKey(SCK_UP, SCI_CTRL, SCI_DOCUMENTSTART);
     kmap.AssignCmdKey(SCK_DOWN, SCI_CTRL, SCI_DOCUMENTEND);
 #endif // __WXMAC__
+
+    static_cast<ListBoxImpl*>(ac.lb.get())->SetListInfo(&listType, &(ac.posStart),
+                                                  &(ac.startLen));
 }
 
 
@@ -379,9 +351,11 @@ bool ScintillaWX::SetIdle(bool on) {
     if (idler.state != on) {
         // connect or disconnect the EVT_IDLE handler
         if (on)
-            stc->Connect(wxID_ANY, wxEVT_IDLE, wxIdleEventHandler(wxScintilla::OnIdle));
+            stc->Bind(wxEVT_IDLE, &wxScintilla::OnIdle, stc);
+//            stc->Connect(wxID_ANY, wxEVT_IDLE, wxIdleEventHandler(wxScintilla::OnIdle));
         else
-            stc->Disconnect(wxID_ANY, wxEVT_IDLE, wxIdleEventHandler(wxScintilla::OnIdle));
+            stc->Unbind(wxEVT_IDLE, &wxScintilla::OnIdle, stc);
+//            stc->Disconnect(wxID_ANY, wxEVT_IDLE, wxIdleEventHandler(wxScintilla::OnIdle));
         idler.state = on;
     }
     return idler.state;
@@ -435,7 +409,7 @@ bool ScintillaWX::ModifyScrollBars(int nMax, int nPage) {
 
     int vertEnd = nMax+1;
     if (!verticalScrollBarVisible)
-        vertEnd = 0;
+        nPage = vertEnd + 1;
 
     // Check the vertical scrollbar
     if (stc->m_vScrollBar == NULL) {  // Use built-in scrollbar
@@ -463,15 +437,15 @@ bool ScintillaWX::ModifyScrollBars(int nMax, int nPage) {
     int horizEnd = scrollWidth;
     if (horizEnd < 0)
         horizEnd = 0;
+    int pageWidth = static_cast<int>(rcText.Width());
     if (!horizontalScrollBarVisible || Wrapping())
-        horizEnd = 0;
-    int pageWidth = wxRound(rcText.Width());
+        pageWidth = horizEnd + 1;
 
     if (stc->m_hScrollBar == NULL) {  // Use built-in scrollbar
         int sbMax    = stc->GetScrollRange(wxHORIZONTAL);
         int sbThumb  = stc->GetScrollThumb(wxHORIZONTAL);
         int sbPos    = stc->GetScrollPos(wxHORIZONTAL);
-        if ((sbMax != horizEnd) || (sbThumb != pageWidth) || (sbPos != 0)) {
+        if ((sbMax != horizEnd) || (sbThumb != pageWidth)) {
             stc->SetScrollbar(wxHORIZONTAL, sbPos, pageWidth, horizEnd);
             modified = true;
             if (scrollWidth < pageWidth) {
@@ -483,7 +457,7 @@ bool ScintillaWX::ModifyScrollBars(int nMax, int nPage) {
         int sbMax    = stc->m_hScrollBar->GetRange();
         int sbThumb  = stc->m_hScrollBar->GetPageSize();
         int sbPos    = stc->m_hScrollBar->GetThumbPosition();
-        if ((sbMax != horizEnd) || (sbThumb != pageWidth) || (sbPos != 0)) {
+        if ((sbMax != horizEnd) || (sbThumb != pageWidth)) {
             stc->m_hScrollBar->SetScrollbar(sbPos, pageWidth, horizEnd, pageWidth);
             modified = true;
             if (scrollWidth < pageWidth) {

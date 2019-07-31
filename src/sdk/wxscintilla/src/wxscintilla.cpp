@@ -25,6 +25,7 @@
                verbatim from src.h.in.
  */
 
+#include "wx/wxscintilla.h"
 #include <ctype.h>
 #include <memory>
 
@@ -44,7 +45,6 @@
 #endif
 
 #include "ScintillaWX.h"
-#include "wx/wxscintilla.h"
 
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
@@ -129,6 +129,7 @@ DEFINE_EVENT_TYPE( wxEVT_SCI_CLIPBOARD_COPY );
 DEFINE_EVENT_TYPE( wxEVT_SCI_CLIPBOARD_PASTE );
 DEFINE_EVENT_TYPE( wxEVT_SCI_AUTOCOMP_COMPLETED );
 DEFINE_EVENT_TYPE( wxEVT_SCI_MARGIN_RIGHT_CLICK );
+DEFINE_EVENT_TYPE( wxEVT_SCI_AUTOCOMP_SELECTION_CHANGE );
 
 
 BEGIN_EVENT_TABLE(wxScintilla, wxControl)
