@@ -414,6 +414,12 @@ bool CodeBlocksApp::LoadConfig()
 
     data.append(_T("/share/codeblocks"));
 
+    wxFileName filename(data);
+    if (filename.IsRelative())
+        filename.MakeAbsolute();
+
+    data = filename.GetFullPath();
+
     cfg->Write(_T("data_path"), data);
 
     //m_HasDebugLog = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/has_debug_log"), false) || m_HasDebugLog;
