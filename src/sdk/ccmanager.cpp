@@ -300,7 +300,7 @@ CCManager::CCManager() :
     wxMenuBar* menuBar = mainFrame->GetMenuBar();
     if (menuBar)
     {
-        int idx = menuBar->FindMenu(wxT("&Edit"));
+        int idx = menuBar->FindMenu(_("&Edit"));
         wxMenu* edMenu = menuBar->GetMenu(idx < 0 ? 0 : idx);
         const wxMenuItemList& itemsList = edMenu->GetMenuItems();
         size_t insertPos = itemsList.GetCount();
