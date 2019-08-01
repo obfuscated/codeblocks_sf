@@ -638,8 +638,8 @@ void CCManager::OnEditorOpen(CodeBlocksEvent& event)
     if (ed)
     {
         cbStyledTextCtrl* stc = ed->GetControl();
-        stc->Connect(wxEVT_COMMAND_LIST_ITEM_SELECTED,
-                     wxListEventHandler(CCManager::OnAutocompleteSelect), nullptr, this);
+        stc->Connect(wxEVT_SCI_AUTOCOMP_SELECTION_CHANGE,
+                     wxScintillaEventHandler(CCManager::OnAutocompleteSelect), nullptr, this);
 
         setupColours(ed, Manager::Get()->GetColourManager());
     }
@@ -669,8 +669,9 @@ void CCManager::OnEditorClose(CodeBlocksEvent& event)
     if (ed && ed->GetControl())
     {
         // TODO: is this ever called?
-        ed->GetControl()->Disconnect(wxEVT_COMMAND_LIST_ITEM_SELECTED,
-                                     wxListEventHandler(CCManager::OnAutocompleteSelect), nullptr, this);
+        ed->GetControl()->Disconnect(wxEVT_SCI_AUTOCOMP_SELECTION_CHANGE,
+                                     wxScintillaEventHandler(CCManager::OnAutocompleteSelect),
+                                     nullptr, this);
     }
 }
 
@@ -1032,7 +1033,7 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
     }
 }
 
-void CCManager::OnAutocompleteSelect(wxListEvent& event)
+void CCManager::OnAutocompleteSelect(wxScintillaEvent& event)
 {
     event.Skip();
     m_AutocompSelectTimer.Start(AUTOCOMP_SELECT_DELAY, wxTIMER_ONE_SHOT);
@@ -1047,8 +1048,9 @@ void CCManager::OnAutocompleteSelect(wxListEvent& event)
     if (!evtWin)
         return;
 
-    m_DocPos = m_pPopup->GetParent()->ScreenToClient(evtWin->GetScreenPosition());
-    m_DocPos.x += evtWin->GetSize().x;
+    const int autoCompletionWidth = event.GetLParam();
+    m_DocPos = m_pPopup->GetParent()->ScreenToClient(wxPoint(event.GetX(), event.GetY()));
+    m_DocPos.x += autoCompletionWidth;
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     wxRect edRect = ed->GetRect();
     if (!m_pPopup->IsShown())
@@ -1071,7 +1073,7 @@ void CCManager::OnAutocompleteSelect(wxListEvent& event)
         }
     }
     if ((m_DocPos.x + m_DocSize.x) > m_WindowBound)
-        m_DocPos.x -= evtWin->GetSize().x + m_DocSize.x; // show to the left instead
+        m_DocPos.x -= autoCompletionWidth + m_DocSize.x; // show to the left instead
     else
         m_DocSize.x = std::min(m_WindowBound - m_DocPos.x, edRect.width * 5 / 12);
 }

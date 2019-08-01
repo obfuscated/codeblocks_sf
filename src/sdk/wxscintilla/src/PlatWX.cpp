@@ -2956,7 +2956,17 @@ void wxSCIListBox::SelectHelper(int i)
 
         if ( 0 <= i && i < static_cast<int>(m_labels.size()) )
             evt.SetString(m_labels[i]);
+/* C::B begin */
+        // We need this to position the documentation popup correctly.
+        wxWindow *popup = GetParent();
+        const wxPoint position = popup->GetScreenPosition();
+        evt.SetX(position.x);
+        evt.SetY(position.y);
 
+        const wxSize size = popup->GetSize();
+        evt.SetLParam(size.x);
+        evt.SetWParam(size.y);
+/* C::B end */
         stc->ProcessWindowEvent(evt);
     }
 }
