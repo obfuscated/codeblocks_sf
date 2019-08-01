@@ -2159,7 +2159,11 @@ PRectangle Window::GetMonitorRect(Point pt) {
 #elif wxUSE_POPUPWIN
 
     wxSCIPopupBase::wxSCIPopupBase(wxWindow* parent)
+    #if wxCHECK_VERSION(3, 1, 3)
                    :wxPopupWindow(parent, wxPU_CONTAINS_CONTROLS)
+    #else
+                   :wxPopupWindow(parent)
+    #endif
     {
     }
 
@@ -2677,6 +2681,24 @@ int wxSCIListBoxVisualData::GetStartLen() const
     return (m_startLen?*m_startLen:0);
 }
 
+int SCIFromDIP(wxWindow *window, int v) {
+#if wxCHECK_VERSION(3,1,0)
+    return window->FromDIP(v);
+#else
+    return v;
+#endif
+}
+
+
+#if !wxCHECK_VERSION(3,1,0)
+template<typename C>
+struct wxSystemThemedControl : C
+{
+    void EnableSystemTheme() {}
+
+};
+#endif
+
 // The class is intended to look like a standard listbox (with an optional
 // icon). However, it needs to look like it has focus even when it doesn't.
 class wxSCIListBox : public wxSystemThemedControl<wxVListBox>
@@ -2762,9 +2784,9 @@ wxSCIListBox::wxSCIListBox(wxWindow* parent, wxSCIListBoxVisualData* v, int ht)
     wxVListBox::Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                        wxBORDER_NONE);
 
-    m_imagePadding             = FromDIP(1);
-    m_textBoxToTextGap         = FromDIP(3);
-    m_textExtraVerticalPadding = FromDIP(1);
+    m_imagePadding             = SCIFromDIP(this, 1);
+    m_textBoxToTextGap         = SCIFromDIP(this, 3);
+    m_textExtraVerticalPadding = SCIFromDIP(this, 1);
 
     SetBackgroundColour(m_visualData->GetBgColour());
 
@@ -3192,7 +3214,7 @@ wxSCIListBoxWin::wxSCIListBoxWin(wxWindow* parent, wxSCIListBox** lb,
 #ifdef __WXOSX_COCOA__
     const int borderThickness = 0;
 #else
-    const int borderThickness = FromDIP(1);
+    const int borderThickness = SCIFromDIP(this, 1);
 #endif
     wxBoxSizer* bSizer = new wxBoxSizer(wxVERTICAL);
     bSizer->Add(*lb, 1, wxEXPAND|wxALL, borderThickness);
