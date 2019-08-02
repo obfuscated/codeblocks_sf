@@ -36,13 +36,6 @@ class wxScintillaEvent;
  * Another kind of tip is the tooltip, this is the tip window shown when mouse hover on a specified
  * token(such as variable token), ccmanager queries this information by asking CCToken information
  * from ccplugin.
- *
- * Note: Under Windows, scroll events are always directed to the window in focus, making it
- * difficult to scroll the autocomplete list and the doxygen popup with the mouse.  So, under
- * Windows we catch scroll requests to the cbStyledTextCtrl, and run them through
- * CCManager::OnPopupScroll(). This filters the event, and if the mouse is over the autocomplete
- * list or the doxygen popup, the scroll event is instead sent there (and skipped for the editor
- * window).
  */
 class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
 {
@@ -131,11 +124,6 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         /** Defer canceling the calltip to avoid a crash issue. @see CCManager::OnDeferredCallTipShow */
         void OnDeferredCallTipCancel(wxCommandEvent& event);
 
-#ifdef __WXMSW__
-        /** Intercept cbStyledTextCtrl scroll events and forward to autocomplete/documentation popups. */
-        void OnPopupScroll(wxMouseEvent& event);
-#endif // __WXMSW__
-
         /** A link is clicked in the document window. */
         void OnHtmlLink(wxHtmlLinkEvent& event);
 
@@ -189,13 +177,6 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         wxTimer m_AutocompSelectTimer;
         wxSize m_DocSize; //!< Size of the documentation popup.
         wxPoint m_DocPos; //!< Location of the documentation popup.
-
-#ifdef __WXMSW__
-        /** a handle to the autocomplete list window created by (wx)scintilla, needed under Windows
-         * to determine its dimensions (so the scroll event can be sent to it, if relevant)
-         */
-        wxListView* m_pAutocompPopup;
-#endif // __WXMSW__
 
         cbEditor* m_pLastEditor; //!< Last editor operated on.
         cbCodeCompletionPlugin* m_pLastCCPlugin; //!< The plugin handling m_pLastEditor.

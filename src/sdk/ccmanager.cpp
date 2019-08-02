@@ -266,9 +266,6 @@ CCManager::CCManager() :
     m_CallTipTimer(this, idCallTipTimer),
     m_AutoLaunchTimer(this, idAutoLaunchTimer),
     m_AutocompSelectTimer(this, idAutocompSelectTimer),
-#ifdef __WXMSW__
-    m_pAutocompPopup(nullptr),
-#endif // __WXMSW__
     m_pLastEditor(nullptr),
     m_pLastCCPlugin(nullptr)
 {
@@ -1040,9 +1037,6 @@ void CCManager::OnAutocompleteSelect(wxScintillaEvent& event)
     wxObject* evtObj = event.GetEventObject();
     if (!evtObj)
         return;
-#ifdef __WXMSW__
-    m_pAutocompPopup = static_cast<wxListView*>(evtObj);
-#endif // __WXMSW__
 
     wxWindow* evtWin = static_cast<wxWindow*>(evtObj)->GetParent();
     if (!evtWin)
@@ -1108,19 +1102,6 @@ void CCManager::OnDeferredCallTipCancel(wxCommandEvent& WXUNUSED(event))
     if (ed)
         static_cast<wxScintilla*>(ed->GetControl())->CallTipCancel();
 }
-
-#ifdef __WXMSW__
-void CCManager::OnPopupScroll(wxMouseEvent& event)
-{
-    const wxPoint& pos = m_pLastEditor->GetControl()->ClientToScreen(event.GetPosition());
-    if (m_pPopup->GetScreenRect().Contains(pos))
-        m_pHtml->GetEventHandler()->ProcessEvent(event);
-    else if (m_pAutocompPopup && m_pAutocompPopup->GetScreenRect().Contains(pos))
-        m_pAutocompPopup->ScrollList(0, event.GetWheelRotation() / -4); // TODO: magic number... can we hook to the actual event?
-    else
-        event.Skip();
-}
-#endif // __WXMSW__
 
 void CCManager::OnHtmlLink(wxHtmlLinkEvent& event)
 {
@@ -1251,10 +1232,6 @@ void CCManager::DoHidePopup()
     if (!m_pPopup->IsShown())
         return;
     m_pPopup->Hide();
-#ifdef __WXMSW__
-    if (m_pLastEditor && m_pLastEditor->GetControl())
-        m_pLastEditor->GetControl()->Disconnect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(CCManager::OnPopupScroll), nullptr, this);
-#endif // __WXMSW__
 }
 
 void CCManager::DoShowDocumentation(cbEditor* ed)
@@ -1286,9 +1263,6 @@ void CCManager::DoShowDocumentation(cbEditor* ed)
     if (!m_pPopup->IsShown())
     {
         m_pPopup->Show();
-#ifdef __WXMSW__
-        ed->GetControl()->Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(CCManager::OnPopupScroll), nullptr, this);
-#endif // __WXMSW__
     }
 }
 
