@@ -173,6 +173,8 @@ AC_SUBST(LIBS)
 
 WX_GTK_CFLAGS=
 WX_GTK_LIBS=
+WX_GDK_CFLAGS=
+WX_GDK_LIBS=
 WX_X11_CFLAGS=
 WX_X11_LIBS=
 
@@ -218,10 +220,14 @@ case $WX_BASENAME in
 						*wx_gtk3*)
 							AC_MSG_NOTICE([gtk3 used])
 							PKG_CHECK_MODULES([GTK], [gtk+-3.0 >= 3.0.0])
+							AC_MSG_NOTICE([gdk3 used])
+							PKG_CHECK_MODULES([GDK], [gdk-3.0 >= 3.0.0])
 						;;
 						*wx_gtk2*)
 							AC_MSG_NOTICE([gtk2 used])
 							PKG_CHECK_MODULES([GTK], [gtk+-2.0 >= 2.0.0])
+							AC_MSG_NOTICE([gdk2 used])
+							PKG_CHECK_MODULES([GDK], [gdk-2.0 >= 2.0.0])
 						;;
 					esac
 				fi
@@ -257,6 +263,8 @@ case $WX_BASENAME in
 		CB_FONTCONFIG_LIBS="$FONTCONFIG_LIBS"
 		WX_GTK_CFLAGS="$GTK_CFLAGS"
 		WX_GTK_LIBS="$GTK_LIBS"
+		WX_GDK_CFLAGS="$GDK_CFLAGS"
+		WX_GDK_LIBS="$GDK_LIBS"
 		AC_PATH_XTRA
 		WX_X11_CFLAGS="`echo $X_CFLAGS | sed 's/ -INONE//'`"
 		WX_X11_LIBS="`echo $X_LIBS | sed 's/ -LNONE//' | sed 's/ -RNONE//'`"
@@ -313,8 +321,8 @@ if test "x$HAVE_WX29_TRUE" = "x" ; then
     WXPROPGRID_DIR=
     WXPROPGRID_LIB=
     WXPROPGRID_INCLUDE=
-    SCINTILLA_GTK_CFLAGS=
-    SCINTILLA_GTK_LIBS=
+    SCINTILLA_GTK_CFLAGS="$WX_GDK_CFLAGS"
+    SCINTILLA_GTK_LIBS="$WX_GDK_LIBS"
 else
     AC_MSG_RESULT(no)
     WXPROPGRID_DIR=wxpropgrid
@@ -326,8 +334,8 @@ else
         AC_MSG_NOTICE([setting additional flags for gcc $GCC_FULL_VERSION]: $gcc48_flags)
         CXXFLAGS="$gcc48_flags $CXXFLAGS"
     fi
-    SCINTILLA_GTK_CFLAGS="$WX_GTK_CFLAGS"
-    SCINTILLA_GTK_LIBS="$WX_GTK_LIBS"
+    SCINTILLA_GTK_CFLAGS="$WX_GTK_CFLAGS $WX_GDK_CFLAGS"
+    SCINTILLA_GTK_LIBS="$WX_GTK_LIBS $WX_GDK_LIBS"
 fi
 
 if test "x$HAVE_SQUIRREL_TRUE" = "x" ; then

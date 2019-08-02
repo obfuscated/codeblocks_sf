@@ -90,6 +90,7 @@
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="`pkg-config gdk-2.0 --cflags`" />
 					<Add option="-D__WX__" />
 					<Add option="-DGTK" />
 					<Add option="-DLINK_LEXERS" />
@@ -130,7 +131,7 @@
 					<Add directory="include/mozilla_chardet/xpcom/glue" />
 				</Compiler>
 				<Linker>
-					<Add option="`pkg-config glib-2.0 --libs`" />
+					<Add option="`pkg-config glib-2.0 gdk-2.0 --libs`" />
 					<Add library="txml" />
 					<Add library="wxscintilla_cb" />
 					<Add library="sqplus" />

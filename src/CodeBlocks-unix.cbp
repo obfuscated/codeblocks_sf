@@ -83,7 +83,7 @@
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="`pkg-config gtk+-2.0 --cflags`" />
+					<Add option="`pkg-config gtk+-2.0 gdk-2.0 --cflags`" />
 					<Add option="-D__WX__" />
 					<Add option="-DGTK" />
 					<Add option="-DLINK_LEXERS" />
@@ -123,7 +123,7 @@
 				<Option createStaticLib="1" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
-					<Add option="`pkg-config glib-2.0 --cflags`" />
+					<Add option="`pkg-config glib-2.0 gdk-2.0 --cflags`" />
 					<Add directory="include" />
 					<Add directory="include/tinyxml" />
 					<Add directory="include/scripting/bindings" />
