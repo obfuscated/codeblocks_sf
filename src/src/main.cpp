@@ -4642,11 +4642,15 @@ void MainFrame::OnToggleBar(wxCommandEvent& event)
 
     if (win)
     {
+        // For checked menu items, event.IsChecked() will not reflect the actual status of the menu item
+        //  when this event was previously event.Skip()'ed after the menu item change.
+        bool isShown = m_LayoutManager.GetPane(win).IsShown();
+
         // use last visible size as BestSize, Logs & others does no longer "forget" it's size
-        if (!event.IsChecked())
+        if (!isShown)
              m_LayoutManager.GetPane(win).BestSize(win->GetSize());
 
-        m_LayoutManager.GetPane(win).Show(event.IsChecked());
+        m_LayoutManager.GetPane(win).Show(not isShown); //toggle
         if (toolbar)
             FitToolbars(m_LayoutManager, this);
         DoUpdateLayout();
