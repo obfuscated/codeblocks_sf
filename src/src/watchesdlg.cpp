@@ -381,7 +381,7 @@ WatchesDlg::WatchesDlg() :
 #if wxCHECK_VERSION(3, 0, 0)
     #define wxPG_EX_DISABLE_TLP_TRACKING 0x00000000
 #endif
-    m_grid->SetExtraStyle(wxPG_EX_DISABLE_TLP_TRACKING | wxPG_EX_HELP_AS_TOOLTIPS);
+    m_grid->SetExtraStyle(wxPG_EX_DISABLE_TLP_TRACKING | wxPG_EX_HELP_AS_TOOLTIPS | wxPG_EX_ALWAYS_ALLOW_FOCUS);
     m_grid->SetDropTarget(new WatchesDropTarget);
     m_grid->SetColumnCount(3);
     m_grid->SetVirtualWidth(0);
