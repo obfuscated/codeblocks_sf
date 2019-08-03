@@ -70,6 +70,7 @@
 
 #ifdef HAVE_DIRECTWRITE_TECHNOLOGY
 #include <wx/dcscreen.h>
+#include <float.h> // for FLT_MAX
 #endif
 
 #include "ScintillaWX.h"

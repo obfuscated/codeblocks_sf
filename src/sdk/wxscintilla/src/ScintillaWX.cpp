@@ -115,7 +115,7 @@ public:
         Bind(wxEVT_PAINT, &wxSCICallTip::OnPaint, this);
 
 #ifdef __WXMSW__
-        Bind(wxEVT_ERASE_BACKGROUND, &wxSTCCallTip::OnEraseBackground, this);
+        Bind(wxEVT_ERASE_BACKGROUND, &wxSCICallTip::OnEraseBackground, this);
         SetBackgroundStyle(wxBG_STYLE_ERASE);
 #else
         SetBackgroundStyle(wxBG_STYLE_PAINT);
