@@ -55,6 +55,10 @@ public:
             void SetListInfo(int*, int*, int*);
 };
 
+//* C::B begin */
+// This code is moved to wxscipopup.h, so it can be used for other popups.
+// In our cases we use it for the documentation popup.
+#if 0
 
 //----------------------------------------------------------------------
 // wxSCIPopupWindow
@@ -157,6 +161,8 @@ private:
     wxWindow* m_tlw;
 };
 
+#endif // 0
+/* C::B end */
 
 //----------------------------------------------------------------------
 // SurfaceData

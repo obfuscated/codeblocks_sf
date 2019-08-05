@@ -3360,6 +3360,9 @@
 		<Unit filename="sdk/wxscintilla/include/wx/wxscintilla.h">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/include/wx/wxscipopup.h">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/PlatWX.cpp">
 			<Option target="scintilla" />
 		</Unit>

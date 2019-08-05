@@ -58,6 +58,7 @@
 
 #include "Platform.h"
 #include "PlatWX.h"
+#include "wx/wxscipopup.h"
 #include "Scintilla.h"
 #include "FontQuality.h"
 #if defined(__WXMSW__) && wxUSE_GRAPHICS_DIRECT2D

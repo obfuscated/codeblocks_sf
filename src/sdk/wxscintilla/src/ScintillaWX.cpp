@@ -50,6 +50,7 @@
 #include "ScintillaWX.h"
 #include "ExternalLexer.h"
 #include "PlatWX.h"
+#include "wx/wxscipopup.h"
 
 #ifdef __WXMSW__
     // GetHwndOf()
