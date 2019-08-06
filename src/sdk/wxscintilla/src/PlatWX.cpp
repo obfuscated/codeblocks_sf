@@ -2343,9 +2343,7 @@ bool wxSCIPopupWindow::AcceptsFocus() const
 
 void wxSCIPopupWindow::DoSetSize(int x, int y, int width, int height, int flags)
 {
-    if ( m_initialPosition == wxDefaultPosition
-            && x != wxDefaultCoord && y != wxDefaultCoord )
-        m_initialPosition = wxPoint(x, y);
+    m_initialPosition = wxPoint(x, y);
 
     // convert coords to screen coords since we're a top-level window
     if (x != wxDefaultCoord)
