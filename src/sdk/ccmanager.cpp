@@ -1282,6 +1282,10 @@ void CCManager::DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int p
     int offset = stc->PointFromPosition(stc->PositionFromLine(line)).x > marginWidth ? 0 : 2;
     pos = std::max(argsPos, stc->PositionFromPoint(wxPoint(marginWidth, stc->PointFromPosition(pos).y)) + offset);
     pos = std::min(pos, stc->GetLineEndPosition(line)); // do not go to next line
+
+    if (stc->AutoCompActive())
+        return;
+
     if (stc->CallTipActive() && m_LastTipPos != pos)
         stc->CallTipCancel(); // force tip popup to invalidate (sometimes fails to otherwise do so on Windows)
     stc->CallTipShow(pos, tip);
