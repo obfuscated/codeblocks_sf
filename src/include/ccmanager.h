@@ -13,7 +13,7 @@
     #include "cbplugin.h"
 #endif
 
-class UnfocusablePopupWindow;
+class wxSCIPopupWindow;
 class wxHtmlLinkEvent;
 class wxHtmlWindow;
 class wxListEvent;
@@ -185,7 +185,7 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
          * the window for the doxygen popup, with properties so it is always on top,
          * but cannot be focused.
          */
-        UnfocusablePopupWindow* m_pPopup;
+        wxSCIPopupWindow* m_pPopup;
 
         /** Documentation popup.
          * it is the rendered doxygen documentation to display in the popup

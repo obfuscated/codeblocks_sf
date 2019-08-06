@@ -33,6 +33,7 @@
 #include "cbcolourmanager.h"
 #include "cbstyledtextctrl.h"
 #include "editor_hooks.h"
+#include "wx/wxscipopup.h"
 
 namespace CCManagerHelper
 {
@@ -145,114 +146,6 @@ enum TooltipMode
  */
 #define FROM_TIMER 1
 
-//{ Unfocusable popup
-
-// imported with small changes from PlatWX.cpp
-class UnfocusablePopupWindow :
-#if wxUSE_POPUPWIN
-    public wxPopupWindow
-#else
-     public wxFrame
-#endif // wxUSE_POPUPWIN
-{
-public:
-#if wxUSE_POPUPWIN
-    typedef wxPopupWindow BaseClass;
-
-    UnfocusablePopupWindow(wxWindow* parent, int style = wxBORDER_NONE) :
-        wxPopupWindow(parent, style)
-#else
-    typedef wxFrame BaseClass;
-
-    UnfocusablePopupWindow(wxWindow* parent, int style = 0) :
-        wxFrame(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
-                style | wxFRAME_NO_TASKBAR | wxFRAME_FLOAT_ON_PARENT | wxNO_BORDER | wxFRAME_SHAPED
-#ifdef __WXMAC__
-                | wxPOPUP_WINDOW
-#endif // __WXMAC__
-                )
-#endif // wxUSE_POPUPWIN
-    {
-        Hide();
-    }
-
-    bool Destroy() override;
-    void OnFocus(wxFocusEvent& event);
-    void ActivateParent();
-
-    void DoSetSize(int x, int y, int width, int height, int sizeFlags = wxSIZE_AUTO) override;
-    bool Show(bool show = true) override;
-
-private:
-    DECLARE_EVENT_TABLE()
-};
-
-// On OSX and (possibly others) there can still be pending
-// messages/events for the list control when Scintilla wants to
-// close it, so do a pending delete of it instead of destroying
-// immediately.
-bool UnfocusablePopupWindow::Destroy()
-{
-#ifdef __WXMAC__
-    // The bottom edge of this window is not getting properly
-    // refreshed upon deletion, so help it out...
-    wxWindow* p = GetParent();
-    wxRect r(GetPosition(), GetSize());
-    r.SetHeight(r.GetHeight()+1);
-    p->Refresh(false, &r);
-#endif
-    if ( !wxPendingDelete.Member(this) )
-        wxPendingDelete.Append(this);
-    return true;
-}
-
-void UnfocusablePopupWindow::OnFocus(wxFocusEvent& event)
-{
-    ActivateParent();
-    GetParent()->SetFocus();
-    event.Skip();
-}
-
-void UnfocusablePopupWindow::ActivateParent()
-{
-    // Although we're a frame, we always want the parent to be active, so
-    // raise it whenever we get shown, focused, etc.
-    wxTopLevelWindow *frame = wxDynamicCast(
-        wxGetTopLevelParent(GetParent()), wxTopLevelWindow);
-    if (frame)
-        frame->Raise();
-}
-
-void UnfocusablePopupWindow::DoSetSize(int x, int y,
-                       int width, int height,
-                       int sizeFlags)
-{
-    // convert coords to screen coords since we're a top-level window
-    if (x != wxDefaultCoord)
-        GetParent()->ClientToScreen(&x, NULL);
-
-    if (y != wxDefaultCoord)
-        GetParent()->ClientToScreen(NULL, &y);
-
-    BaseClass::DoSetSize(x, y, width, height, sizeFlags);
-}
-
-bool UnfocusablePopupWindow::Show(bool show)
-{
-    bool rv = BaseClass::Show(show);
-    if (rv && show)
-        ActivateParent();
-#ifdef __WXMAC__
-    GetParent()->Refresh(false);
-#endif
-    return rv;
-}
-
-BEGIN_EVENT_TABLE(UnfocusablePopupWindow, UnfocusablePopupWindow::BaseClass)
-    EVT_SET_FOCUS(UnfocusablePopupWindow::OnFocus)
-END_EVENT_TABLE()
-
-//} end Unfocusable popup
 
 
 // class constructor
@@ -277,7 +170,7 @@ CCManager::CCManager() :
     m_LastACLaunchState.init(wxSCI_INVALID_POSITION, wxSCI_INVALID_POSITION, 0);
 
     // init documentation popup
-    m_pPopup = new UnfocusablePopupWindow(Manager::Get()->GetAppFrame());
+    m_pPopup = new wxSCIPopupWindow(Manager::Get()->GetAppFrame());
     m_pHtml = new wxHtmlWindow(m_pPopup, wxID_ANY, wxDefaultPosition,
                                wxDefaultSize, wxHW_SCROLLBAR_AUTO | wxBORDER_SIMPLE);
     int sizes[7] = {};
