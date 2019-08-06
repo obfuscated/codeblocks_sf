@@ -2183,11 +2183,11 @@ PRectangle Window::GetMonitorRect(Point pt) {
         // Do not activate the window when it is shown.
         bool wxSCIPopupBase::Show(bool show)
         {
-            if ( !wxWindowBase::Show(show) )
-                return false;
-
             if ( show )
             {
+                if ( !wxWindowBase::Show(show) )
+                    return false;
+
                 HWND hWnd = reinterpret_cast<HWND>(GetHandle());
                 if ( GetName() == "wxSCICallTip" )
                     ::AnimateWindow(hWnd, 25, AW_BLEND);
@@ -2198,7 +2198,9 @@ PRectangle Window::GetMonitorRect(Point pt) {
                                SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
             }
             else
+            {
                 wxPopupWindow::Show(false);
+            }
 
             return true;
         }
