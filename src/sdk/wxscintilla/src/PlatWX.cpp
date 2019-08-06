@@ -1942,11 +1942,13 @@ PRectangle Window::GetPosition() {
 }
 
 void Window::SetPosition(PRectangle rc) {
+    printf("Window::SetPosition: %.3f, %.3f, %.3f, %.3f\n", rc.left, rc.top, rc.right, rc.bottom);
     wxRect r = wxRectFromPRectangle(rc);
     GETWIN(wid)->SetSize(r);
 }
 
 void Window::SetPositionRelative(PRectangle rc, Window relativeTo) {
+    printf("Window::SetPositionRelative: %.3f, %.3f, %.3f, %.3f\n", rc.left, rc.top, rc.right, rc.bottom);
     wxWindow *relativeWin = GETWIN(relativeTo.wid);
 
     wxPoint position = relativeWin->GetScreenPosition();
@@ -2707,6 +2709,10 @@ class wxSCIListBox : public wxSystemThemedControl<wxVListBox>
 {
 public:
     wxSCIListBox(wxWindow*, wxSCIListBoxVisualData*, int);
+    ~wxSCIListBox()
+    {
+        printf("~wxSCIListBox(%p)\n", this);
+    }
 
     // wxWindow overrides
     virtual bool AcceptsFocus() const wxOVERRIDE;
@@ -2783,6 +2789,7 @@ wxSCIListBox::wxSCIListBox(wxWindow* parent, wxSCIListBoxVisualData* v, int ht)
               m_aveCharWidth(8), m_textHeight(ht), m_itemHeight(ht),
               m_textTopGap(0), m_imageAreaWidth(0), m_imageAreaHeight(0)
 {
+    printf("wxSCIListBox(%p)\n", this);
     wxVListBox::Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                        wxBORDER_NONE);
 
@@ -3245,10 +3252,12 @@ void wxSCIListBoxWin::OnPaint(wxPaintEvent& WXUNUSED(evt))
 ListBoxImpl::ListBoxImpl()
             :m_listBox(NULL), m_visualData(new wxSCIListBoxVisualData(5))
 {
+    printf("ListBoxImpl(%p)\n", this);
 }
 
 ListBoxImpl::~ListBoxImpl() {
     delete m_visualData;
+    printf("~ListBoxImpl(%p)\n", this);
 }
 
 
@@ -3263,6 +3272,7 @@ void ListBoxImpl::Create(Window &parent, int WXUNUSED(ctrlID),
                          int WXUNUSED(technology_)) {
     wid = new wxSCIListBoxWin(GETWIN(parent.GetID()), &m_listBox, m_visualData,
                               lineHeight_);
+    printf("ListBoxImpl::Create(%p) popup:%p\n", this, wid);
 }
 
 
