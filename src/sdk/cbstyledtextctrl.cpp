@@ -34,7 +34,6 @@ std::map<int, std::set<int> > cbStyledTextCtrl::CommentLexerStyles;
 
 BEGIN_EVENT_TABLE(cbStyledTextCtrl, wxScintilla)
     EVT_CONTEXT_MENU(cbStyledTextCtrl::OnContextMenu)
-    EVT_KILL_FOCUS  (cbStyledTextCtrl::OnKillFocus)
     EVT_MIDDLE_DOWN (cbStyledTextCtrl::OnMouseMiddleDown)
     EVT_SET_FOCUS   (cbStyledTextCtrl::OnSetFocus)
     EVT_KEY_DOWN    (cbStyledTextCtrl::OnKeyDown)
@@ -73,18 +72,6 @@ void cbStyledTextCtrl::operator=(const cbStyledTextCtrl& /*rhs*/)
 }
 
 // events
-
-void cbStyledTextCtrl::OnKillFocus(wxFocusEvent& event)
-{
-    // cancel auto-completion list when losing focus
-    if ( AutoCompActive() )
-        AutoCompCancel();
-
-    if ( CallTipActive() )
-        CallTipCancel();
-
-    event.Skip();
-}
 
 void cbStyledTextCtrl::OnSetFocus(wxFocusEvent& event)
 {

@@ -78,7 +78,6 @@ class DLLIMPORT cbStyledTextCtrl : public wxScintilla
         void MakeNearbyLinesVisible(int line);
     private:
         void OnContextMenu(wxContextMenuEvent& event);
-        void OnKillFocus(wxFocusEvent& event);
         void OnSetFocus(wxFocusEvent& event);
         void OnMouseMiddleDown(wxMouseEvent& event);
         void OnKeyDown(wxKeyEvent& event);
