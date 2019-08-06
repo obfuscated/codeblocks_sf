@@ -743,6 +743,7 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
             else if (stc->AutoCompActive())
             {
                 stc->AutoCompCancel();
+                DoHidePopup();
                 m_AutocompPosition = stc->GetCurrentPos();
                 if (CCManagerHelper::IsPosVisible(m_AutocompPosition, stc))
                     m_AutoLaunchTimer.Start(SCROLL_REFRESH_DELAY, wxTIMER_ONE_SHOT);
