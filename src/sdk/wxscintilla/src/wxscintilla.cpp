@@ -5315,6 +5315,27 @@ void wxScintilla::OnContextMenu(wxContextMenuEvent& evt) {
 
 void wxScintilla::OnMouseWheel(wxMouseEvent& evt)
 {
+/* C::B begin */
+    {
+        // Redirect scroll events to windows under the mouse pointer.
+        // This makes it possible to scroll the listbox in autocompletion popup.
+        // Also it makes it really easy to support scrolling of controls in popup.
+        // Probably it is windows only.
+
+        const wxPoint& mousePosition = ClientToScreen(evt.GetPosition());
+
+        wxWindow *win = wxFindWindowAtPoint(mousePosition);
+        // Check if we've found a window and it is different from the current one.
+        if (win && win != this)
+        {
+            wxMouseEvent newevt(evt);
+            newevt.SetPosition(win->ScreenToClient(mousePosition));
+            win->ProcessWindowEvent(newevt);
+            return;
+        }
+    }
+/* C::B end */
+
     // if the mouse wheel is not captured, test if the mouse
     // pointer is over the editor window and if not, don't
     // handle the message but pass it on.
