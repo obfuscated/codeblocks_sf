@@ -2,7 +2,6 @@
 <CodeBlocks_workspace_file>
 	<Workspace title="CodeBlocks Workspace wx3.1.x">
 		<Project filename="CodeBlocks_wx31.cbp" active="1" />
-
 		<Project filename="tools/Addr2LineUI/Addr2LineUI_wx31.cbp" />
 		<Project filename="tools/cb_share_config/cb_share_config_wx31.cbp" />
 		<Project filename="tools/CBLauncher/CbLauncher_wx31.cbp" />
@@ -17,8 +16,6 @@
 		<Project filename="plugins/contrib/wxSmithAui/wxSmithAui_wx31.cbp">
 			<Depends filename="plugins/contrib/wxSmith/wxSmith_wx31.cbp" />
 		</Project>
-		<Project filename="plugins/contrib/wxSmithOpenGLCanvas/wxSmithOpenGLCanvas_wx31.cbp" />
-
 		<Project filename="plugins/contrib/AutoVersioning/AutoVersioning_wx31.cbp" />
 		<Project filename="plugins/contrib/BrowseTracker/BrowseTracker_wx31.cbp" />
 		<Project filename="plugins/contrib/byogames/byogames_wx31.cbp" />
@@ -60,22 +57,5 @@
 			<Depends filename="plugins/contrib/wxContribItems/wxContribItems_wx31.cbp" />
 		</Project>
 		<Project filename="plugins/contrib/ToolsPlus/ToolsPlus_wx31.cbp" />
-		<!-- Project filename="plugins/contrib/Valgrind/Valgrind-unix.cbp" / -->
-
-		<Project filename="tools/cbp2make/cbp2make_wx31.cbp" />
-		<Project filename="plugins/contrib/ColorCoder/ColorCoder_wx31.cbp" />
-		<Project filename="plugins/contrib/CompileOnDemand/CompileOnDemand_wx31.cbp" />
-		<Project filename="plugins/contrib/cbDiff/cbDiff_wx31.cbp" />
-		<Project filename="plugins/contrib/cbGcov/cbGcov_wx31.cbp" />
-		<Project filename="plugins/contrib/cbInno/Inno_wx31.cbp" />
-		<Project filename="plugins/contrib/GitBlocks/GitBlocks_wx31.cbp" />
-		<Project filename="plugins/contrib/KeyMacs/KeyMacs_wx31.cbp" />
-		<Project filename="plugins/contrib/cbMakeGen/cbmakegen_wx31.cbp" />
-		<Project filename="plugins/contrib/MiniDoc/MiniDoc_wx31.cbp" />
-		<Project filename="plugins/contrib/ReplaceInFiles/ReplaceInFiles_wx31.cbp" />
-		<Project filename="plugins/contrib/rssblocks/rssblocks_wx31.cbp" />
-		<Project filename="plugins/contrib/TabVsSpace/TabVsSpace_wx31.cbp" />
-		<Project filename="plugins/contrib/UmlBlocks/UmlBlocks_wx31.cbp" />
-		<Project filename="plugins/contrib/xpmeditor/XPMEditor_wx31.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
