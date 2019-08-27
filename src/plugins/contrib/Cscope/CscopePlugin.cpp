@@ -9,6 +9,7 @@
     #include "projectmanager.h"
 #endif
 #include <configurationpanel.h>
+#include <configmanager.h>
 #include <cbstyledtextctrl.h>
 #include "CscopePlugin.h"
 
@@ -129,6 +130,14 @@ void CscopePlugin::OnRelease(bool appShutDown)
 }
 
 
+cbConfigurationPanel* CscopePlugin::GetConfigurationPanel(wxWindow* parent)
+{
+    if ( !IsAttached() )
+        return NULL;
+
+    return new CscopeConfigPanel(parent);
+}
+
 void CscopePlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* /*data*/)
 {
     if ( !IsAttached() || m_pProcess) return;
@@ -237,7 +246,10 @@ void CscopePlugin::DoCscopeCommand(const wxString &cmd, const wxString &endMsg)
     {
         delete m_pProcess;
         m_pProcess = NULL;
-        m_view->GetWindow()->SetMessage(_T("Error while calling cscope occurred!"), 0);
+        wxString errorMessage = _T("Error while calling cscope executable occurred! You maybe have to fix the executable in Settings->Environment->CScope.");
+        m_view->GetWindow()->SetMessage(errorMessage, 0);
+        Manager::Get()->GetLogManager()->LogError(_T("CScope: ") + errorMessage);
+        Manager::Get()->GetLogManager()->LogError(_T("CScope: Failed CScope command:") + cmd);
     }
 
     //set environment variables back
@@ -328,6 +340,13 @@ void CscopePlugin::OnFind(wxCommandEvent &event)
 }
 wxString CscopePlugin::GetCscopeBinaryName()
 {
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("cscope"));
+    if (cfg)
+    {
+       return cfg->Read(_T("cscope_app"), _T("cscope"));
+    }
+
+    Manager::Get()->GetLogManager()->LogError(_T("cscope: Could not load config manager for cscope! Could not lookup for executable name."));
 	return _T("cscope");
 }
 void CscopePlugin::OnCscopeUI(wxUpdateUIEvent &event)

@@ -6,12 +6,12 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="..\..\..\devel30_64\share\CodeBlocks\plugins\Cscope" prefix_auto="1" extension_auto="1" />
-				<Option object_output="..\..\..\.objs30_64\plugins\contrib\Cscope" />
+				<Option output="../../../devel30_64/share/CodeBlocks/plugins/Cscope" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs30_64/plugins/contrib/Cscope" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance --no-check-associations -ns -nd -p debug" />
-				<Option host_application="..\..\..\devel30_64\codeblocks.exe" />
+				<Option host_application="../../../devel30_64/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 			</Target>
 			<Environment>
@@ -39,10 +39,10 @@
 			<Add option="-DcbDEBUG" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#WX30_64.include)" />
-			<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\include\tinyxml" />
-			<Add directory="..\..\..\sdk\wxscintilla\include" />
+			<Add directory="$(#WX30_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
+			<Add directory="../../../sdk/wxscintilla/include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX30_64.include)" />
@@ -51,8 +51,8 @@
 			<Add option="-mthreads" />
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 			<Add library="codeblocks" />
-			<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)" />
-			<Add directory="..\..\..\devel30_64" />
+			<Add directory="$(#WX30_64.lib)/gcc_dll$(WX_CFG)" />
+			<Add directory="../../../devel30_64" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="zip -j9 ..\..\..\devel30_64\share\CodeBlocks\Cscope.zip manifest.xml" />
@@ -60,6 +60,8 @@
 		</ExtraCommands>
 		<Unit filename="CscopeConfig.cpp" />
 		<Unit filename="CscopeConfig.h" />
+		<Unit filename="CscopeConfigPanel.cpp" />
+		<Unit filename="CscopeConfigPanel.h" />
 		<Unit filename="CscopeEntryData.cpp" />
 		<Unit filename="CscopeEntryData.h" />
 		<Unit filename="CscopeParserThread.cpp" />
@@ -75,10 +77,17 @@
 		<Unit filename="CscopeView.cpp" />
 		<Unit filename="CscopeView.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="wxsmith/CscopeConfigPanel.wxs" />
 		<Extensions>
 			<code_completion />
 			<envvars />
 			<debugger />
+			<fortran_project />
+			<wxsmith version="1">
+				<resources>
+					<wxPanel wxs="wxsmith/CscopeConfigPanel.wxs" src="CscopeConfigPanel.cpp" hdr="CscopeConfigPanel.h" fwddecl="0" i18n="1" name="CscopeConfigPanel" language="CPP" />
+				</resources>
+			</wxsmith>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

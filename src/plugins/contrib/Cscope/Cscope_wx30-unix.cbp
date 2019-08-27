@@ -52,6 +52,8 @@
 		</Compiler>
 		<Unit filename="CscopeConfig.cpp" />
 		<Unit filename="CscopeConfig.h" />
+		<Unit filename="CscopeConfigPanel.cpp" />
+		<Unit filename="CscopeConfigPanel.h" />
 		<Unit filename="CscopeEntryData.cpp" />
 		<Unit filename="CscopeEntryData.h" />
 		<Unit filename="CscopeParserThread.cpp" />
@@ -67,11 +69,17 @@
 		<Unit filename="CscopeView.cpp" />
 		<Unit filename="CscopeView.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="wxsmith/CscopeConfigPanel.wxs" />
 		<Extensions>
 			<code_completion />
 			<envvars />
 			<debugger />
 			<lib_finder disable_auto="1" />
+			<wxsmith version="1">
+				<resources>
+					<wxPanel wxs="wxsmith/CscopeConfigPanel.wxs" src="CscopeConfigPanel.cpp" hdr="CscopeConfigPanel.h" fwddecl="0" i18n="1" name="CscopeConfigPanel" language="CPP" />
+				</resources>
+			</wxsmith>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

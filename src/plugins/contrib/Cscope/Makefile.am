@@ -17,7 +17,8 @@ libCscope_la_SOURCES = CscopeConfig.cpp \
 			CscopeProcess.cpp \
 			CscopeStatusMessage.cpp \
 			CscopeTab.cpp \
-			CscopeView.cpp
+			CscopeView.cpp \
+			CscopeConfigPanel.cpp
 
 noinst_HEADERS = CscopeConfig.h \
 		CscopeEntryData.h \
@@ -26,7 +27,8 @@ noinst_HEADERS = CscopeConfig.h \
 		CscopeProcess.h \
 		CscopeStatusMessage.h \
 		CscopeTab.h \
-		CscopeView.h
+		CscopeView.h \
+		CscopeConfigPanel.h
 
 EXTRA_DIST = 	$(srcdir)/*.cbp \
 		manifest.xml

@@ -20,6 +20,7 @@
 
 
 #include <cbplugin.h> // for "class cbPlugin"
+#include "CscopeConfigPanel.h"
 
 #include <queue>
 
@@ -53,7 +54,7 @@ class CscopePlugin : public cbPlugin
           * @param parent The parent window.
           * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
           */
-        virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* /*parent*/){ return 0; }
+        virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
 
         /** Return plugin's configuration panel for projects.
           * The panel returned from this function will be added in the project's

@@ -3,7 +3,7 @@
     <SdkVersion major="1" minor="11"  release="12" />
     <Plugin name="Cscope">
         <Value title="Cscope" />
-        <Value version="0.2" />
+        <Value version="0.3" />
         <Value description="" />
         <Value author="Daniel Anselmi" />
         <Value authorEmail="danselmi@NOSPAM@gmx.ch" />
