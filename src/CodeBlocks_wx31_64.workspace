@@ -4,7 +4,6 @@
 		<Project filename="CodeBlocks_wx31_64.cbp" active="1" />
 		<Project filename="tools/Addr2LineUI/Addr2LineUI_wx31_64.cbp" />
 		<Project filename="tools/cb_share_config/cb_share_config_wx31_64.cbp" />
-		<Project filename="tools/cbp2make/cbp2make_wx31_64.cbp" />
 		<Project filename="tools/CBLauncher/CbLauncher_wx31_64.cbp" />
 		<Project filename="tools/cbp2make/cbp2make_wx31_64.cbp" />
 		<Project filename="plugins/codecompletion/cctest_wx31_64.cbp" />
