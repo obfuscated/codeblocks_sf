@@ -699,7 +699,7 @@ void ToDoListView::OnButtonRefresh(cb_unused wxCommandEvent& event)
 }
 
 void ToDoListView::OnDoubleClick(cb_unused wxCommandEvent& event)
-{    // pecan 1/2/2006 12PM : Switched with OnListItemSelected by Rick 20/07/2007
+{
     long item = control->GetNextItem(-1,
                                      wxLIST_NEXT_ALL,
                                      wxLIST_STATE_SELECTED);

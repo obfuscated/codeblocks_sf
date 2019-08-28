@@ -910,7 +910,7 @@ void ProjectManagerUI::OnTreeBeginDrag(wxTreeEvent& event)
         if ( ! ProjectCanDragNode(prj, m_pTree, id))
             continue;
 
-        // We allow drag and drop for normal files or projects, //(pecan 2018/03/22)+
+        // We allow drag and drop for normal files or projects,
         // but not for mixed selection, or any other project items
         if ( ftd->GetKind() == FileTreeData::ftdkFile )
         {

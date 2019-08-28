@@ -2028,6 +2028,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         // here is last \"
         if (commandIsQuoted)
             command << strQUOTE;
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(command, target);
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(command);
     }
     else
     {

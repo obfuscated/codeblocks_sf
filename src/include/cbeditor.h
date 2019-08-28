@@ -287,7 +287,7 @@ class DLLIMPORT cbEditor : public EditorBase
 
         // misc. functions
         wxMenu* CreateContextSubMenu(long id) override;
-        void AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone) override;  //pecan 2006/03/22
+        void AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone) override;
 
         HighlightLanguage GetLanguage( ) const { return m_lang; }
         /// Sets the language for this editor.
@@ -371,8 +371,8 @@ class DLLIMPORT cbEditor : public EditorBase
 
         // one event handler for all popup menu entries
         void OnContextMenuEntry(wxCommandEvent& event);
-        bool OnBeforeBuildContextMenu(const wxPoint& position, ModuleType type) override;    //pecan 2006/03/22
-        void OnAfterBuildContextMenu(ModuleType type) override;                              //pecan 2006/03/22
+        bool OnBeforeBuildContextMenu(const wxPoint& position, ModuleType type) override;
+        void OnAfterBuildContextMenu(ModuleType type) override;
 
         void DestroySplitView();
 
