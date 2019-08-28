@@ -10,6 +10,7 @@
 #include <sdk.h>
 #include "debuggerdriver.h"
 #include "debuggergdb.h"
+#include "macrosmanager.h"
 
 #include <cbdebugger_interfaces.h>
 
@@ -72,6 +73,7 @@ wxString DebuggerDriver::GetDebuggersWorkingDirectory() const
 void DebuggerDriver::SetArguments(const wxString& args)
 {
     m_Args = args;
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(m_Args);
 }
 
 void DebuggerDriver::ShowFile(const wxString& file, int line)
