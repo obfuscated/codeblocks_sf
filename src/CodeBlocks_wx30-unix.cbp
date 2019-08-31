@@ -131,9 +131,9 @@
 					<Add directory="include/mozilla_chardet/xpcom/glue" />
 				</Compiler>
 				<Linker>
+					<Add option="-lwxscintilla_cb" />
 					<Add option="`pkg-config glib-2.0 gdk-2.0 --libs`" />
 					<Add library="txml" />
-					<Add library="wxscintilla_cb" />
 					<Add library="sqplus" />
 					<Add library="sqstdlib" />
 					<Add library="squirrel" />

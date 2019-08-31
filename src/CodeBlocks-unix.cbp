@@ -138,10 +138,9 @@
 					<Add directory="sdk/wxpropgrid/include" />
 				</Compiler>
 				<Linker>
-					<Add option="`pkg-config glib-2.0 --libs`" />
-					<Add option="`pkg-config gtk+-2.0 --libs`" />
+					<Add option="-lwxscintilla_cb" />
+					<Add option="`pkg-config glib-2.0 gtk+-2.0 --libs`" />
 					<Add library="txml" />
-					<Add library="wxscintilla_cb" />
 					<Add library="sqplus" />
 					<Add library="sqstdlib" />
 					<Add library="squirrel" />

@@ -63,10 +63,10 @@
 					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --version=2.8 --libs`" />
-					<Add option="-lwxSpellChecker" />
-					<Add option="`pkg-config hunspell --libs`" />
 					<Add library="codeblocks" />
+					<Add option="-lwxSpellChecker" />
+					<Add option="`wx-config --version=2.8 --libs`" />
+					<Add option="`pkg-config hunspell --libs`" />
 					<Add directory="../../../devel" />
 				</Linker>
 				<ExtraCommands>
