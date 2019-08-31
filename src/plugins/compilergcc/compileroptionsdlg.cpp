@@ -282,7 +282,6 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         wxWindow* win = XRCCTRL(*this, "btnAddCompiler", wxButton);
         wxSizer* sizer2 = win->GetContainingSizer();
         sizer2->Clear(true);
-        sizer2->RecalcSizes();
         sizer2->Layout();
 
         // disable "Make" elements, if project is not using custom makefile
