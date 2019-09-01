@@ -449,9 +449,12 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
                 RemoteDebugging& rd = it->second;
 
                 // if no different than defaults, skip it
-                if (rd.serialPort.IsEmpty() && rd.ip.IsEmpty() &&
-                    rd.additionalCmds.IsEmpty() && rd.additionalCmdsBefore.IsEmpty() &&
-                    !rd.skipLDpath && !rd.extendedRemote)
+                if (rd.serialPort.IsEmpty() && rd.serialBaud == wxT("115200")
+                    && rd.ip.IsEmpty() && rd.ipPort.IsEmpty()
+                    && !rd.skipLDpath && !rd.extendedRemote
+                    && rd.additionalCmds.IsEmpty() && rd.additionalCmdsBefore.IsEmpty()
+                    && rd.additionalShellCmdsAfter.IsEmpty()
+                    && rd.additionalShellCmdsBefore.IsEmpty())
                 {
                     continue;
                 }
@@ -464,7 +467,7 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
                 tgtnode->SetAttribute("conn_type", (int)rd.connType);
                 if (!rd.serialPort.IsEmpty())
                     tgtnode->SetAttribute("serial_port", cbU2C(rd.serialPort));
-                if (!rd.serialBaud.IsEmpty())
+                if (rd.serialBaud != wxT("115200"))
                     tgtnode->SetAttribute("serial_baud", cbU2C(rd.serialBaud));
                 if (!rd.ip.IsEmpty())
                     tgtnode->SetAttribute("ip_address", cbU2C(rd.ip));
