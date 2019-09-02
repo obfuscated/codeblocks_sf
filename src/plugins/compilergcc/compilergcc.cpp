@@ -2429,6 +2429,8 @@ void CompilerGCC::BuildStateManagement()
             // check if it should build with "All"
             // run target pre-build steps
             cmds = dc.GetPreBuildCommands(bt);
+            // Print Build banner here, else preBuild commands appear to belong to previous target
+            PrintBanner(baBuild, m_pBuildingProject, bt);
             break;
         }
 
@@ -2463,8 +2465,7 @@ void CompilerGCC::BuildStateManagement()
 
         case bsTargetBuild:
         {
-            PrintBanner(baBuild, m_pBuildingProject, bt);
-
+            // Build banner has already been printed at bsTargetPreBuild
             // run target build
             if ( UseMake(m_pBuildingProject) )
             {
