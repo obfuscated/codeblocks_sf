@@ -567,7 +567,7 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
         m_SearchMenu->Append(idMenuGotoDeclaration,    _("Goto declaration\tCtrl-Shift-."));
         m_SearchMenu->Append(idMenuGotoImplementation, _("Goto implementation\tCtrl-."));
         m_SearchMenu->Append(idMenuFindReferences,     _("Find references\tAlt-."));
-        m_SearchMenu->Append(idMenuOpenIncludeFile,    _("Open include file\tCtrl-Shift-."));
+        //-m_SearchMenu->Append(idMenuOpenIncludeFile,    _("Open include file\tCtrl-Shift-.")); This is a conflict with idMenuGotoDeclaration
     }
     else
         CCLogger::Get()->DebugLog(_T("Could not find Search menu!"));
