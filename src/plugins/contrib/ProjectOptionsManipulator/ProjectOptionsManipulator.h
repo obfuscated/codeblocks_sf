@@ -49,7 +49,7 @@ private:
 
   // Helper functions:
   bool HasOption(const wxArrayString& opt_array, const wxString& opt);
-  bool HasOption(const wxArrayString& opt_array, const wxString& opt, wxString& full_opt);
+  bool HasOption(const wxArrayString& opt_array, const wxString& opt, wxArrayString& full_opt);
 
   bool IsValidTarget(const ProjectBuildTarget* tgt);
 
