@@ -23,6 +23,7 @@
 #include "wxslistbox.h"
 
 #include <prep.h>
+#include <wx/listbox.h>
 
 namespace
 {

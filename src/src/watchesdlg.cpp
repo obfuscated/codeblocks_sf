@@ -10,6 +10,7 @@
 #include "sdk.h"
 #ifndef CB_PRECOMP
     #include <wx/app.h>
+    #include <wx/dcclient.h>
     #include <wx/dnd.h>
     #include <wx/fontutil.h>
     #include <wx/menu.h>
@@ -27,6 +28,7 @@
 #include <algorithm>
 
 #include <wx/propgrid/propgrid.h>
+#include <wx/propgrid/editors.h>
 
 #include "watchesdlg.h"
 
