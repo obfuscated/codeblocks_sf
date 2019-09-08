@@ -1253,6 +1253,7 @@ bool cbAddBitmapToImageList(wxImageList &list, const wxBitmap &bitmap, int size,
 #if wxCHECK_VERSION(3, 1, 0)
         missingBitmap.CreateScaled(listSize, listSize,  wxBITMAP_SCREEN_DEPTH, scaleFactor);
 #else
+        (void)scaleFactor;
         missingBitmap.Create(listSize, listSize);
 #endif // wxCHECK_VERSION(3, 1, 0)
 
