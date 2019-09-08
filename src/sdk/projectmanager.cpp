@@ -67,7 +67,8 @@ class NullProjectManagerUI : public cbProjectManagerUI
         bool QueryCloseWorkspace() override  { return true; }
         int AskForBuildTargetIndex(cbProject* project = nullptr) override { (void)project; return -1; }
         wxArrayInt AskForMultiBuildTargetIndex(cbProject* project = nullptr) override { (void)project; return wxArrayInt(); }
-        void ConfigureProjectDependencies(cbProject* base = nullptr) override { (void)base; }
+        void ConfigureProjectDependencies(cb_unused cbProject* base,
+                                          cb_unused wxWindow *parent) override {}
         void SwitchToProjectsPage() override {}
 };
 

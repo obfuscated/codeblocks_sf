@@ -118,10 +118,11 @@ class DLLIMPORT cbProjectManagerUI
         virtual wxArrayInt AskForMultiBuildTargetIndex(cbProject* project = nullptr) = 0;
 
         /** Displays a dialog to setup project dependencies.
-          * @param base The project to setup its dependencies. Can be NULL (default) because
-          * there's a project selection combo in the dialog.
+          * @param base The project to setup its dependencies. Can be NULL because there's a
+          * project selection combo in the dialog.
+          * @param parent Parent window which should be used to show the dialog.
           */
-        virtual void ConfigureProjectDependencies(cbProject* base = nullptr) = 0;
+        virtual void ConfigureProjectDependencies(cbProject* base, wxWindow *parent) = 0;
 
         /** Switches the management's notebook to the Projects tab */
         virtual void SwitchToProjectsPage() = 0;

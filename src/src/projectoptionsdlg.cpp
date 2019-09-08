@@ -606,7 +606,7 @@ void ProjectOptionsDlg::OnBuildOrderClick(cb_unused wxCommandEvent& event)
 
 void ProjectOptionsDlg::OnProjectDepsClick(cb_unused wxCommandEvent& event)
 {
-    Manager::Get()->GetProjectManager()->GetUI().ConfigureProjectDependencies(m_Project);
+    Manager::Get()->GetProjectManager()->GetUI().ConfigureProjectDependencies(m_Project, this);
 }
 
 void ProjectOptionsDlg::OnProjectBuildOptionsClick(cb_unused wxCommandEvent& event)

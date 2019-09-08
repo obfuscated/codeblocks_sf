@@ -2612,9 +2612,9 @@ wxArrayInt ProjectManagerUI::AskForMultiBuildTargetIndex(cbProject* project)
     return indices;
 }
 
-void ProjectManagerUI::ConfigureProjectDependencies(cbProject* base)
+void ProjectManagerUI::ConfigureProjectDependencies(cbProject* base, wxWindow *parent)
 {
-    ProjectDepsDlg dlg(Manager::Get()->GetAppWindow(), base);
+    ProjectDepsDlg dlg(parent, base);
     PlaceWindow(&dlg);
     dlg.ShowModal();
 }

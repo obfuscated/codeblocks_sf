@@ -51,7 +51,7 @@ class ProjectManagerUI : public wxEvtHandler, public cbProjectManagerUI
 
         int AskForBuildTargetIndex(cbProject* project);
         wxArrayInt AskForMultiBuildTargetIndex(cbProject* project);
-        void ConfigureProjectDependencies(cbProject* base);
+        void ConfigureProjectDependencies(cbProject* base, wxWindow *parent);
         void CheckForExternallyModifiedProjects();
 
     private:
@@ -191,6 +191,7 @@ class BatchProjectManagerUI : public cbProjectManagerUI
         {
             return wxArrayInt();
         }
-        void ConfigureProjectDependencies(cb_unused cbProject* base = nullptr) override {}
+        void ConfigureProjectDependencies(cb_unused cbProject* base,
+                                          cb_unused wxWindow *parent) override {}
         void SwitchToProjectsPage() override {}
 };
