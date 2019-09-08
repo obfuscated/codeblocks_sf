@@ -618,8 +618,12 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         cfg->Write(_T("/environment/view/layout_to_toggle"),    XRCCTRL(*this, "choLayoutToToggle", wxChoice)->GetStringSelection());
 
         cfg->Write(_T("/locale/enable"),                     (bool) XRCCTRL(*this, "chkI18N", wxCheckBox)->GetValue());
-        const int langSelection = XRCCTRL(*this, "choLanguage", wxChoice)->GetSelection();
-        const wxLanguageInfo *info = wxLocale::FindLanguageInfo(XRCCTRL(*this, "choLanguage", wxChoice)->GetString(langSelection));
+
+        wxChoice *chLanguage = XRCCTRL(*this, "choLanguage", wxChoice);
+        const int langSelection = chLanguage->GetSelection();
+        const wxLanguageInfo *info = nullptr;
+        if (langSelection != wxNOT_FOUND)
+            info = wxLocale::FindLanguageInfo(chLanguage->GetString(langSelection));
         if (info)
             cfg->Write(_T("/locale/language"), info->CanonicalName);
         else
