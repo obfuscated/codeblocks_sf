@@ -1124,6 +1124,7 @@ void ProjectOptionsDlg::OnPlatform(wxCommandEvent& event)
 
     wxArrayString arr = GetArrayFromString(GetStringFromPlatforms(spAll, true));
     MultiSelectDlg dlg(this, arr, isAll, _("Select supported platforms:"), _("Build target platforms"));
+    PlaceWindow(&dlg);
     if (!isAll)
     {
         wxArrayString sel = GetArrayFromString(txtP->GetValue());
