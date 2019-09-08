@@ -37,7 +37,7 @@
 // this is the plugins SDK version number
 // it will change when the SDK interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR   1
-#define PLUGIN_SDK_VERSION_MINOR   43
+#define PLUGIN_SDK_VERSION_MINOR   44
 #define PLUGIN_SDK_VERSION_RELEASE 0
 
 // class decls
@@ -365,7 +365,7 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
           * @param project The selected project (can be NULL).
           * @param target The selected target (can be NULL).
           */
-        virtual int Configure(cbProject* project, ProjectBuildTarget* target = nullptr) = 0;
+        virtual int Configure(cbProject* project, ProjectBuildTarget* target, wxWindow *parent) = 0;
     private:
 };
 

@@ -612,7 +612,7 @@ void ProjectOptionsDlg::OnProjectDepsClick(cb_unused wxCommandEvent& event)
 void ProjectOptionsDlg::OnProjectBuildOptionsClick(cb_unused wxCommandEvent& event)
 {
     if (m_pCompiler)
-        m_pCompiler->Configure(m_Project);
+        m_pCompiler->Configure(m_Project, nullptr, this);
 }
 
 void ProjectOptionsDlg::OnTargetBuildOptionsClick(cb_unused wxCommandEvent& event)
@@ -624,14 +624,14 @@ void ProjectOptionsDlg::OnTargetBuildOptionsClick(cb_unused wxCommandEvent& even
 
         ProjectBuildTarget* target = m_Project->GetBuildTarget(targetIdx);
         if (target)
-            m_pCompiler->Configure(m_Project, target);
+            m_pCompiler->Configure(m_Project, target, this);
     }
 }
 
 void ProjectOptionsDlg::OnAddBuildTargetClick(cb_unused wxCommandEvent& event)
 {
     wxString targetName = cbGetTextFromUser(_("Enter the new build target name:"),
-                                            _("New build target"));
+                                            _("New build target"), wxString(), this);
     if (!ValidateTargetName(targetName))
         return;
 
@@ -670,7 +670,7 @@ void ProjectOptionsDlg::OnEditBuildTargetClick(cb_unused wxCommandEvent& event)
     wxString oldTargetName = target->GetTitle();
     wxString newTargetName = cbGetTextFromUser(_("Change the build target name:"),
                                                _("Rename build target"),
-                                              oldTargetName);
+                                              oldTargetName, this);
     if (newTargetName == oldTargetName || !ValidateTargetName(newTargetName))
         return;
 
@@ -698,7 +698,7 @@ void ProjectOptionsDlg::OnCopyBuildTargetClick(cb_unused wxCommandEvent& event)
 
     wxString newTargetName = cbGetTextFromUser(_("Enter the duplicated build target's name:"),
                                                _("Duplicate build target"),
-                                              _("Copy of ") + target->GetTitle());
+                                               _("Copy of ") + target->GetTitle(), this);
     if (!ValidateTargetName(newTargetName))
         return;
     if (!m_Project->DuplicateBuildTarget(targetIdx, newTargetName))
@@ -913,7 +913,7 @@ void ProjectOptionsDlg::OnFileToggleMarkClick(cb_unused wxCommandEvent& event)
 void ProjectOptionsDlg::OnFileMarkOnClick(cb_unused wxCommandEvent& event)
 {
     wxString wildcard = cbGetTextFromUser(_("Select wildcard (file mask) to toggle on:"),
-                                          _("Select files"), _T("*.*"));
+                                          _("Select files"), _T("*.*"), this);
     if (wildcard.IsEmpty()) return; // user pressed Cancel
 
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
@@ -937,7 +937,7 @@ void ProjectOptionsDlg::OnFileMarkOnClick(cb_unused wxCommandEvent& event)
 void ProjectOptionsDlg::OnFileMarkOffClick(cb_unused wxCommandEvent& event)
 {
     wxString wildcard = cbGetTextFromUser(_("Select wildcard (file mask) to toggle off:"),
-                                          _("Select files"), _T("*.*"));
+                                          _("Select files"), _T("*.*"), this);
     if (wildcard.IsEmpty()) return; // user pressed Cancel
 
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);

@@ -493,9 +493,9 @@ void CompilerGCC::OnRelease(bool appShutDown)
     m_pArtProvider = nullptr;
 }
 
-int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
+int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target, wxWindow *parent)
 {
-    cbConfigurationDialog dlg(Manager::Get()->GetAppWindow(), wxID_ANY, _("Project build options"));
+    cbConfigurationDialog dlg(parent, wxID_ANY, _("Project build options"));
     cbConfigurationPanel* panel = new CompilerOptionsDlg(&dlg, this, project, target);
     panel->SetParentDialog(&dlg);
     dlg.AttachConfigurationPanel(panel);
@@ -523,7 +523,7 @@ cbConfigurationPanel* CompilerGCC::GetConfigurationPanel(wxWindow* parent)
 
 void CompilerGCC::OnConfig(cb_unused wxCommandEvent& event)
 {
-    Configure(NULL);
+    Configure(nullptr, nullptr, Manager::Get()->GetAppWindow());
 }
 
 void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
@@ -3295,12 +3295,12 @@ void CompilerGCC::OnProjectCompilerOptions(cb_unused wxCommandEvent& event)
             if (activeTarget)
                 target = currentProject->GetBuildTarget(activeTarget->GetTitle());
         }
-        Configure(currentProject, target);
+        Configure(currentProject, target, Manager::Get()->GetAppWindow());
     }
     else
     {
         if (cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject())
-            Configure(prj);
+            Configure(prj, nullptr, Manager::Get()->GetAppWindow());
     }
 }
 
@@ -3319,7 +3319,7 @@ void CompilerGCC::OnTargetCompilerOptions(cb_unused wxCommandEvent& event)
 
     ProjectBuildTarget* target = 0;
     m_RealTargetIndex = bak;
-    Configure(m_pProject, target);
+    Configure(m_pProject, target, Manager::Get()->GetAppWindow());
 }
 
 void CompilerGCC::OnKillProcess(cb_unused wxCommandEvent& event)
