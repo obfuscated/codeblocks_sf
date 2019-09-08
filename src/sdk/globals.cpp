@@ -1325,24 +1325,48 @@ wxRect cbGetMonitorRectForWindow(wxWindow *window)
     return monitorRect;
 }
 
+cbChildWindowPlacement cbGetChildWindowPlacement(ConfigManager &appConfig)
+{
+    int intChildWindowPlacement = appConfig.ReadInt(wxT("/dialog_placement/child_placement"),
+                                                    int(cbChildWindowPlacement::CenterOnParent));
+    if (intChildWindowPlacement < 0 || intChildWindowPlacement >= 3)
+        intChildWindowPlacement = 0;
+
+    return cbChildWindowPlacement(intChildWindowPlacement);
+}
+
 void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
 {
     if (!w)
         cbThrow(_T("Passed NULL pointer to PlaceWindow."));
 
-    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
-    if (!enforce && cfg->ReadBool(_T("/dialog_placement/do_place")) == false)
-        return;
+    int the_mode;
+
+    if (!enforce)
+    {
+        ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
+        const cbChildWindowPlacement placement =  cbGetChildWindowPlacement(*cfg);
+        switch (placement)
+        {
+            case cbChildWindowPlacement::CenterOnParent:
+                w->CenterOnParent();
+                return;
+            case cbChildWindowPlacement::CenterOnDisplay:
+            {
+                if (mode == pdlBest)
+                    the_mode = cfg->ReadInt(_T("/dialog_placement/dialog_position"), (int) pdlCentre);
+                else
+                    the_mode = (int) mode;
+                break;
+            }
+            case cbChildWindowPlacement::LeaveToWM:
+                return;
+        }
+    }
 
     wxWindow* referenceWindow = Manager::Get()->GetAppWindow();
     if (!referenceWindow)    // no application window available, so this is as good as we can get
         referenceWindow = w;
-
-    int the_mode;
-    if (mode == pdlBest)
-        the_mode = cfg->ReadInt(_T("/dialog_placement/dialog_position"), (int) pdlCentre);
-    else
-        the_mode = (int) mode;
 
     const wxRect monitorRect = cbGetMonitorRectForWindow(referenceWindow);
     wxRect windowRect = w->GetRect();
@@ -1397,7 +1421,6 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
             windowRect = wxRect(x1, y1, x2-x1, y2-y1);
         }
         break;
-
 
         case pdlClip:
         {

@@ -322,7 +322,7 @@
 																<label>Double-Click on editor tab toggles layout</label>
 																<checked>1</checked>
 															</object>
-															<flag>wxALIGN_LEFT</flag>
+															<flag>wxTOP|wxALIGN_LEFT</flag>
 															<border>4</border>
 														</object>
 														<object class="sizeritem">
@@ -341,7 +341,7 @@
 																	<border>4</border>
 																</object>
 															</object>
-															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+															<flag>wxALL|wxEXPAND</flag>
 															<border>4</border>
 															<option>1</option>
 														</object>
@@ -423,11 +423,31 @@
 											<object class="wxStaticBoxSizer">
 												<orient>wxVERTICAL</orient>
 												<object class="sizeritem">
-													<object class="wxCheckBox" name="chkDoPlace">
-														<label>Enhanced multi-monitor dialog placement</label>
+													<object class="wxBoxSizer">
+														<object class="sizeritem">
+															<object class="wxStaticText" name="ID_STATICTEXT26">
+																<label>Child window placement</label>
+															</object>
+															<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+															<border>5</border>
+														</object>
+														<object class="sizeritem">
+															<object class="wxChoice" name="chChildWindowPlace">
+																<content>
+																	<item>Center on Parent</item>
+																	<item>Center on Monitor</item>
+																	<item>Leave to OS/Window Manager</item>
+																</content>
+																<selection>0</selection>
+															</object>
+															<flag>wxLEFT</flag>
+															<border>5</border>
+															<option>1</option>
+														</object>
 													</object>
-													<flag>wxTOP|wxBOTTOM|wxLEFT</flag>
-													<border>4</border>
+													<flag>wxTOP|wxBOTTOM|wxLEFT|wxALIGN_LEFT</flag>
+													<border>5</border>
+													<option>1</option>
 												</object>
 												<object class="sizeritem">
 													<object class="wxCheckBox" name="chkPlaceHead">

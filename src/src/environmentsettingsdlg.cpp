@@ -85,7 +85,7 @@ BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxScrollingDialog)
     EVT_BUTTON(XRCID("btnAuiInactiveCaptionTextColour"), EnvironmentSettingsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnResetDefaultColours"), EnvironmentSettingsDlg::OnResetDefaultColours)
     EVT_CHECKBOX(XRCID("chkUseIPC"), EnvironmentSettingsDlg::OnUseIpcCheck)
-    EVT_CHECKBOX(XRCID("chkDoPlace"), EnvironmentSettingsDlg::OnPlaceCheck)
+    EVT_CHOICE(XRCID("chChildWindowPlace"), EnvironmentSettingsDlg::OnPlaceCheck)
     EVT_CHECKBOX(XRCID("chkPlaceHead"), EnvironmentSettingsDlg::OnHeadCheck)
     EVT_CHECKBOX(XRCID("chkAutoHideMessages"), EnvironmentSettingsDlg::OnAutoHide)
     EVT_CHECKBOX(XRCID("chkI18N"), EnvironmentSettingsDlg::OnI18NCheck)
@@ -168,12 +168,12 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     XRCCTRL(*this, "txtOpenFolder", wxTextCtrl)->SetValue(openFolderCommand);
 
     // tab "View"
-    bool do_place = cfg->ReadBool(_T("/dialog_placement/do_place"), false);
-    XRCCTRL(*this, "chkDoPlace", wxCheckBox)->SetValue(do_place);
+    const cbChildWindowPlacement childWindowPlacement = cbGetChildWindowPlacement(*cfg);
+    XRCCTRL(*this, "chChildWindowPlace", wxChoice)->SetSelection(int(childWindowPlacement));
     XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->SetValue(cfg->ReadInt(_T("/dialog_placement/dialog_position"), 0) == pdlHead ? 1 : 0);
-    XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->Enable(do_place);
+    XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->Enable(childWindowPlacement == cbChildWindowPlacement::CenterOnDisplay);
 
-    XRCCTRL(*this, "rbProjectOpen",           wxRadioBox)->SetSelection(pcfg->ReadInt(_T("/open_files"), 1));
+    XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->SetSelection(pcfg->ReadInt(_T("/open_files"), 1));
 
     {
         const int size = cbHelpers::ReadToolbarSizeFromConfig();
@@ -544,9 +544,11 @@ void EnvironmentSettingsDlg::OnUseTabMousewheel(cb_unused wxCommandEvent& event)
     XRCCTRL(*this, "chkNBInvertMove", wxCheckBox)->Enable(en);
 }
 
-void EnvironmentSettingsDlg::OnPlaceCheck(wxCommandEvent& event)
+void EnvironmentSettingsDlg::OnPlaceCheck(cb_unused wxCommandEvent& event)
 {
-    XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->Enable(event.IsChecked());
+    wxChoice *place = XRCCTRL(*this, "chChildWindowPlace", wxChoice);
+    const cbChildWindowPlacement placement = cbChildWindowPlacement(place->GetSelection());
+    XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->Enable(placement == cbChildWindowPlacement::CenterOnDisplay);
 }
 
 void EnvironmentSettingsDlg::OnHeadCheck(wxCommandEvent& event)
@@ -631,7 +633,14 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
 
         mcfg->Write(_T("/log_font_size"),                    (int)  XRCCTRL(*this, "spnLogFontSize",          wxSpinCtrl)->GetValue());
 
-        cfg->Write(_T("/dialog_placement/do_place"),         (bool) XRCCTRL(*this, "chkDoPlace",     wxCheckBox)->GetValue());
+        {
+            // Keep in sync with the code in cbGetChildWindowPlacement.
+            int placement = XRCCTRL(*this, "chChildWindowPlace", wxChoice)->GetSelection();
+            if (placement < 0 || placement >= 3)
+                placement = 0;
+            cfg->Write(wxT("/dialog_placement/child_placement"), placement);
+        }
+
         cfg->Write(_T("/dialog_placement/dialog_position"),  (int)  XRCCTRL(*this, "chkPlaceHead",   wxCheckBox)->GetValue() ? pdlHead : pdlCentre);
 
         // tab "Appearence"

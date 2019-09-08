@@ -19,6 +19,7 @@
 
 #include "settings.h"
 
+class ConfigManager;
 class TiXmlDocument;
 class wxFileSystem;
 
@@ -382,6 +383,18 @@ enum cbPlaceDialogMode
     pdlConstrain,
     pdlClip
 };
+
+enum class cbChildWindowPlacement
+{
+    CenterOnParent,
+    CenterOnDisplay,
+    LeaveToWM
+};
+
+/// @param appConfig Configuration manager pointing to the "app" namespace.
+/// @return The setting of the child window placement policy. It is used by PlaceWindow to decide
+///         where to place newly created child windows.
+cbChildWindowPlacement cbGetChildWindowPlacement(ConfigManager &appConfig);
 
 /** Fix the size and place of a window.
   *
