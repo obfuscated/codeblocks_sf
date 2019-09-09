@@ -447,7 +447,6 @@
 													</object>
 													<flag>wxTOP|wxBOTTOM|wxLEFT|wxALIGN_LEFT</flag>
 													<border>5</border>
-													<option>1</option>
 												</object>
 												<object class="sizeritem">
 													<object class="wxCheckBox" name="chkPlaceHead">
