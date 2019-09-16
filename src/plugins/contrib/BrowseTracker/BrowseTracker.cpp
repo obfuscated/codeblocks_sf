@@ -141,6 +141,8 @@ namespace
     int idToolMarkPrev = XRCID("idMarkPrev");
     int idToolMarkNext = XRCID("idMarkNext");
     int idToolMarksClear = XRCID("idMarksClear");
+
+    wxString sep = wxFileName::GetPathSeparator();
 };
 
 // ----------------------------------------------------------------------------
@@ -277,41 +279,32 @@ void BrowseTracker::OnAttach()
     #if defined(LOGGING)
      LOGIT( _T("BT Argv[0][%s] Cwd[%s]"), wxTheApp->argv[0], ::wxGetCwd().GetData() );
     #endif
-    m_ExecuteFolder = FindAppPath(wxTheApp->argv[0], ::wxGetCwd(), wxEmptyString);
 
     // remove the double //s from filename
     m_ConfigFolder.Replace(_T("//"),_T("/"));
-    m_ExecuteFolder.Replace(_T("//"),_T("/"));
     #if defined(LOGGING)
         LOGIT(wxT("CfgFolder[%s]"),m_ConfigFolder.c_str());
-        LOGIT(wxT("ExecFolder[%s]"),m_ExecuteFolder.c_str());
     #endif
 
     // get the CodeBlocks "personality" argument
     wxString m_Personality = Manager::Get()->GetPersonalityManager()->GetPersonality();
-	if (m_Personality == wxT("default")) m_Personality = wxEmptyString;
+    m_CfgFilenameStr = m_ConfigFolder +sep + m_Personality + _T(".") +m_AppName + _T(".ini"); //(pecan 2019/08/30)
 
-    // if codesnippets.ini is in the executable folder, use it
-    // else use the default config folder
-    m_CfgFilenameStr = m_ExecuteFolder + wxFILE_SEP_PATH;
-    if (not m_Personality.IsEmpty()) m_CfgFilenameStr << m_Personality + wxT(".") ;
-    m_CfgFilenameStr << m_AppName + _T(".ini");
-
-    if (::wxFileExists(m_CfgFilenameStr)) {;/*OK Use exe path*/}
-    else // use the default.conf folder
-    {   m_CfgFilenameStr = m_ConfigFolder + wxFILE_SEP_PATH;
-        if (not m_Personality.IsEmpty()) m_CfgFilenameStr <<  m_Personality + wxT(".") ;
-        m_CfgFilenameStr << m_AppName + _T(".ini");
-        // if default doesn't exist, create it
-        if (not ::wxDirExists(m_ConfigFolder))
-            ::wxMkdir(m_ConfigFolder);
+    // If no <personality.>BrowseTracker.ini, try for plain "BrowseTracker.ini"
+    if (not wxFileExists(m_CfgFilenameStr))
+    {
+        wxString ancientIni = m_ConfigFolder + sep + m_AppName + _T(".ini");
+        if (wxFileExists(ancientIni) ) //ancient standalone BrowseTracker.ini
+            wxCopyFile(ancientIni, m_CfgFilenameStr);
     }
+    // if config dir doesn't exist, create it
+    if (not ::wxDirExists(m_ConfigFolder))
+        ::wxMkdir(m_ConfigFolder);
     // ---------------------------------------
     // Initialize Globals
     // ---------------------------------------
-    TrackerCfgFullPath = m_CfgFilenameStr;
     #if defined(LOGGING)
-     LOGIT( _T("BT TrackerCfgFullPath[%s]"),TrackerCfgFullPath.c_str() );
+     LOGIT( _T("BT TrackerCfgFullPath[%s]"),GetBrowseTrackerCfgFilename().c_str() );
     #endif
 
     ReadUserOptions( m_CfgFilenameStr );

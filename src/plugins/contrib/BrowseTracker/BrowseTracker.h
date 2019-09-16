@@ -281,7 +281,7 @@ class BrowseTracker : public cbPlugin
         wxToolBar*      m_pToolBar;
 
         wxString        m_ConfigFolder;
-        wxString        m_ExecuteFolder;
+        //-wxString        m_ExecuteFolder;
         wxString        m_AppName;
         wxString        TrackerCfgFullPath;
         bool            m_bProjectIsLoading;

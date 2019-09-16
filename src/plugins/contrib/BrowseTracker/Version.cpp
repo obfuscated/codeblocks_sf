@@ -273,6 +273,8 @@ AppVersion::~AppVersion()
 //           Change config tool bar setting to "Show Toolbar Always"
 //  pecan  1.2.106 2019/04/6
 //           Use wxFormBuilder 3.9.0 to fix wxFont deprecation in config.cpp
+//  pecan  1.2.107 2019/07/5
+//           If no <personality.>BrowseTracker.ini use standalone BrowseTracker.ini
 // ----------------------------------------------------------------------------
 //  //FIXME: Bugs
 //      01) Requires CB to be restarted after Install before Alt-Left/Right work.
