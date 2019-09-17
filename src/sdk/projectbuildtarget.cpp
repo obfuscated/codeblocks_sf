@@ -142,18 +142,6 @@ void ProjectBuildTarget::SetTargetType(TargetType pt)
         SetUseConsoleRunner(true); // by default, use console runner
 }
 
-// target dependencies: targets to be compiled (if necessary) before this one
-void ProjectBuildTarget::AddTargetDep(ProjectBuildTarget* target)
-{
-    m_TargetDeps.Add(target);
-}
-
-// get the list of dependency targets of this target
-BuildTargets& ProjectBuildTarget::GetTargetDeps()
-{
-    return m_TargetDeps;
-}
-
 ProjectFile* ProjectBuildTarget::GetFile(int index)
 {
     if (m_FileArray.GetCount() == 0)

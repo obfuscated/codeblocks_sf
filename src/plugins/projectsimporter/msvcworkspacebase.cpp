@@ -194,7 +194,6 @@ void MSVCWorkspaceBase::updateProjects()
                     }
                     else if (type==ttStaticLib) fname = targetDep->GetOutputFilename();
                     targetProj->AddLinkLib(fname.GetFullPath());
-                    targetProj->AddTargetDep(targetDep);
                     // TO REMOVE
                     wxString deps = targetProj->GetExternalDeps();
                     deps << fname.GetFullPath() << _T(';');

@@ -102,16 +102,6 @@ class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
 
         void SetTargetType(TargetType pt) override; // overriden
 
-        /** Targets to be compiled (if necessary) before this one.
-          * Add a target to the list of dependencies of this target. Be careful
-          * not to add a target more than once.
-          * @param target The build target to add as a dependency.
-          */
-        virtual void AddTargetDep(ProjectBuildTarget* target);
-
-        /** @return A list of dependency targets of this target. */
-        virtual BuildTargets& GetTargetDeps();
-
         /** Provides an easy way to iterate all the files belonging in this target.
           * @return A list of files belonging in this target. */
         virtual FilesList& GetFilesList(){ return m_Files; }
@@ -137,7 +127,6 @@ class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
         cbProject*       m_Project;
         wxString         m_ExternalDeps;
         wxString         m_AdditionalOutputFiles;
-        BuildTargets     m_TargetDeps;
         FilesList        m_Files;
         ProjectFileArray m_FileArray;
         bool             m_BuildWithAll; // obsolete: left just to convert old projects to use virtual targets
