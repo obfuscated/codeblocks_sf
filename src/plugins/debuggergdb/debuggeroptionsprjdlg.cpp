@@ -55,7 +55,7 @@ DebuggerOptionsProjectDlg::DebuggerOptionsProjectDlg(wxWindow* parent, DebuggerG
     {
         control->Append(project->GetBuildTarget(i)->GetTitle());
     }
-    control->SetSelection(-1);
+    control->SetSelection(0);
 
     LoadCurrentRemoteDebuggingRecord();
     Manager::Get()->RegisterEventSink(cbEVT_BUILDTARGET_REMOVED, new cbEventFunctor<DebuggerOptionsProjectDlg, CodeBlocksEvent>(this, &DebuggerOptionsProjectDlg::OnBuildTargetRemoved));
@@ -286,11 +286,15 @@ void DebuggerOptionsProjectDlg::OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event))
 
     en = XRCCTRL(*this, "lstTargets", wxListBox)->GetSelection() != wxNOT_FOUND;
 
-    XRCCTRL(*this, "cmbConnType", wxChoice)->Enable(en);
-    XRCCTRL(*this, "txtSerial", wxTextCtrl)->Enable(en);
-    XRCCTRL(*this, "cmbBaud", wxChoice)->Enable(en);
-    XRCCTRL(*this, "txtIP", wxTextCtrl)->Enable(en);
-    XRCCTRL(*this, "txtPort", wxTextCtrl)->Enable(en);
+    wxChoice *cmbConnType = XRCCTRL(*this, "cmbConnType", wxChoice);
+
+    const bool serial = (cmbConnType->GetSelection() == 2);
+
+    cmbConnType->Enable(en);
+    XRCCTRL(*this, "txtSerial", wxTextCtrl)->Enable(en && serial);
+    XRCCTRL(*this, "cmbBaud", wxChoice)->Enable(en && serial);
+    XRCCTRL(*this, "txtIP", wxTextCtrl)->Enable(en && !serial);
+    XRCCTRL(*this, "txtPort", wxTextCtrl)->Enable(en && !serial);
     XRCCTRL(*this, "txtCmds", wxTextCtrl)->Enable(en);
     XRCCTRL(*this, "txtCmdsBefore", wxTextCtrl)->Enable(en);
     XRCCTRL(*this, "chkSkipLDpath", wxCheckBox)->Enable(en);
