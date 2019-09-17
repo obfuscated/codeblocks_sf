@@ -389,8 +389,12 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
                         rd.connType = (RemoteDebugging::ConnectionType)atol(rdOpt->Attribute("conn_type"));
                     if (rdOpt->Attribute("serial_port"))
                         rd.serialPort = cbC2U(rdOpt->Attribute("serial_port"));
+
                     if (rdOpt->Attribute("serial_baud"))
                         rd.serialBaud = cbC2U(rdOpt->Attribute("serial_baud"));
+                    if (rd.serialBaud.empty())
+                        rd.serialBaud = wxT("115200");
+
                     if (rdOpt->Attribute("ip_address"))
                         rd.ip = cbC2U(rdOpt->Attribute("ip_address"));
                     if (rdOpt->Attribute("ip_port"))

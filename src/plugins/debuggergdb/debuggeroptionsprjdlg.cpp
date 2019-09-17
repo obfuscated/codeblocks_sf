@@ -168,7 +168,10 @@ void DebuggerOptionsProjectDlg::LoadCurrentRemoteDebuggingRecord()
         RemoteDebugging& rd = m_CurrentRemoteDebugging[bt];
         XRCCTRL(*this, "cmbConnType", wxChoice)->SetSelection((int)rd.connType);
         XRCCTRL(*this, "txtSerial", wxTextCtrl)->SetValue(rd.serialPort);
-        XRCCTRL(*this, "cmbBaud", wxChoice)->SetStringSelection(rd.serialBaud);
+
+        const wxString baud = (rd.serialBaud.empty() ? wxString(wxT("115200")) : rd.serialBaud);
+        XRCCTRL(*this, "cmbBaud", wxChoice)->SetStringSelection(baud);
+
         XRCCTRL(*this, "txtIP", wxTextCtrl)->SetValue(rd.ip);
         XRCCTRL(*this, "txtPort", wxTextCtrl)->SetValue(rd.ipPort);
         XRCCTRL(*this, "txtCmds", wxTextCtrl)->SetValue(rd.additionalCmds);
