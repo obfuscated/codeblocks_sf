@@ -32,6 +32,19 @@ ProjectBuildTarget::ProjectBuildTarget(cbProject* parentProject)
     m_FileArray.Clear();
 }
 
+ProjectBuildTarget::ProjectBuildTarget(const ProjectBuildTarget &bt, cbProject* parentProject) :
+    CompileTargetBase(bt),
+    m_Project(parentProject),
+    m_ExternalDeps(bt.m_ExternalDeps),
+    m_AdditionalOutputFiles(bt.m_AdditionalOutputFiles),
+    m_FileArray(ProjectFile::CompareProjectFiles),
+    m_BuildWithAll(bt.m_BuildWithAll),
+    m_CreateStaticLib(bt.m_CreateStaticLib),
+    m_CreateDefFile(bt.m_CreateDefFile),
+    m_UseConsoleRunner(bt.m_UseConsoleRunner)
+{
+}
+
 // class destructor
 ProjectBuildTarget::~ProjectBuildTarget()
 {

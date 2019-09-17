@@ -26,6 +26,10 @@ class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
     public:
         /// Constructor
         ProjectBuildTarget(cbProject* parentProject);
+
+        /// Something like a copy constructor
+        ProjectBuildTarget(const ProjectBuildTarget &bt, cbProject* parentProject);
+
         /// Destructor
         ~ProjectBuildTarget() override;
 
@@ -105,6 +109,7 @@ class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
         /** Provides an easy way to iterate all the files belonging in this target.
           * @return A list of files belonging in this target. */
         virtual FilesList& GetFilesList(){ return m_Files; }
+        virtual const FilesList& GetFilesList() const { return m_Files; }
 
         /** @return The number of files in the target. */
         int GetFilesCount(){ return m_Files.size(); }

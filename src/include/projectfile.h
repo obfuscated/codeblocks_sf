@@ -40,7 +40,7 @@ class DLLIMPORT ProjectFile
 {
     public:
         /// Constructor
-        ProjectFile(cbProject* prj);
+        explicit ProjectFile(cbProject* prj);
         /// Destructor
         ~ProjectFile();
 
@@ -222,6 +222,9 @@ class DLLIMPORT ProjectFile
         static int CompareProjectFiles(ProjectFile* item1, ProjectFile* item2);
     protected:
         friend class cbProject;
+
+        /// Something like a copy constructor. Used by cbProject::operator=.
+        ProjectFile(cbProject* prj, const ProjectFile &pf);
 
         void DoUpdateFileDetails(ProjectBuildTarget* target);
         cbProject* project;

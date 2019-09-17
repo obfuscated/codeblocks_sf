@@ -101,6 +101,8 @@ class DLLIMPORT cbProject : public CompileTargetBase
         /// Destructor
         ~cbProject() override;
 
+        cbProject& operator=(const cbProject &p);
+
         /** @return True if the project fully loaded, false if not. */
         bool IsLoaded() const { return m_Loaded; }
 
