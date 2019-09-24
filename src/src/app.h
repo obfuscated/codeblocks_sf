@@ -112,6 +112,9 @@ class CodeBlocksApp : public wxApp
         virtual int OnRun();
         wxString GetAppPath() const;
         int ParseCmdLine(MainFrame* handlerFrame, const wxString& CmdLine = wxEmptyString);
+        #if wxCHECK_VERSION(3,0,0)
+        void OnCloseBatchBuildWindow(wxCloseEvent& evt);
+        #endif // wxCHECK_VERSION
         void OnAppActivate(wxActivateEvent& event);
         bool OnCmdLineParsed(wxCmdLineParser& parser);
         void OnFatalException();

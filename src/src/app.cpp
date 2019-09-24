@@ -757,8 +757,17 @@ bool CodeBlocksApp::OnInit()
             s_Loading = false;
             LoadDelayedFiles(frame);
 
+#if wxCHECK_VERSION(3,0,0)
+            // The OnInit function should only start the application but do no heavy work
+            // CallAfter will queue the function at the end of the event loop, so
+            // OnInit is finished before the build process is started.
+            // Starting the build process here will lead to crashes on linux
+            CallAfter([this]() { this->BatchJob(); });
+#else
             BatchJob();
             frame->Close();
+#endif // wxCHECK_VERSION
+
             return true;
         }
 
@@ -982,6 +991,10 @@ int CodeBlocksApp::BatchJob()
     wxString bb_title = m_pBatchBuildDialog->GetTitle();
     m_pBatchBuildDialog->SetTitle(bb_title + _T(" - ") + title);
     m_pBatchBuildDialog->Show();
+#if wxCHECK_VERSION(3,0,0)
+    // Clean up after the window is closed
+    m_pBatchBuildDialog->Bind(wxEVT_CLOSE_WINDOW, &CodeBlocksApp::OnCloseBatchBuildWindow, this);
+#endif // wxCHECK_VERSION
 
     if (m_ReBuild)
     {
@@ -1004,7 +1017,8 @@ int CodeBlocksApp::BatchJob()
         else if (m_HasWorkSpace)
             compiler->CleanWorkspace(m_BatchTarget);
     }
-
+#if wxCHECK_VERSION(3,0,0)
+#else
     // The batch build log might have been deleted in
     // CodeBlocksApp::OnBatchBuildDone().
     // If it has not, it's still compiling.
@@ -1024,7 +1038,7 @@ int CodeBlocksApp::BatchJob()
             m_pBatchBuildDialog = nullptr;
         }
     }
-
+#endif // wxCHECK_VERSION
     if (tbIcon)
     {
         tbIcon->RemoveIcon();
@@ -1033,6 +1047,25 @@ int CodeBlocksApp::BatchJob()
 
     return 0;
 }
+
+#if wxCHECK_VERSION(3,0,0)
+void CodeBlocksApp::OnCloseBatchBuildWindow(wxCloseEvent& evt)
+{
+    cbCompilerPlugin *compiler = Manager::Get()->GetPluginManager()->GetFirstCompiler();
+    if(compiler != nullptr && compiler->IsRunning())
+    {
+        if( cbMessageBox(_T("Build still running. Do you want stop the build process?"), appglobals::AppName, wxICON_QUESTION | wxYES_NO, m_pBatchBuildDialog) == wxID_YES )
+        {
+            evt.Veto();
+            compiler->KillProcess();
+        }
+    }
+    else
+    {
+        m_Frame->Close();
+    }
+}
+#endif // wxCHECK_VERSION
 
 void CodeBlocksApp::OnBatchBuildDone(CodeBlocksEvent& event)
 {
@@ -1059,6 +1092,16 @@ void CodeBlocksApp::OnBatchBuildDone(CodeBlocksEvent& event)
     else
         wxBell();
 
+#if wxCHECK_VERSION(3,0,0)
+        // Clean up happens in in the close handler of the window
+        // We can not close the window here, because the origin of this event
+        // is the compiler plugin and the plugin will write messages to the log window after this call
+        // If we delete it here this will lead to memory corruption.
+        // The solution is to queue the call to close the log window to the end
+        // of the event loop with CallAfter. So the compiler plugin can finish its
+        // work and we close the window afterwards.
+        CallAfter([this]() { m_pBatchBuildDialog->Close(); });
+#else
     if (m_pBatchBuildDialog && m_BatchWindowAutoClose)
     {
         if (m_pBatchBuildDialog->IsModal())
@@ -1069,6 +1112,8 @@ void CodeBlocksApp::OnBatchBuildDone(CodeBlocksEvent& event)
             m_pBatchBuildDialog = nullptr;
         }
     }
+#endif // wxCHECK_VERSION
+
 }
 
 void CodeBlocksApp::OnTBIconLeftDown(wxTaskBarIconEvent& event)
