@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
 	<object class="wxScrollingDialog" name="wxsBitmapIconEditorDlg">
-		<title>Image editor</title>
+		<title>Image picker</title>
 		<id_arg>0</id_arg>
 		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
 		<object class="wxBoxSizer" variable="BoxSizer1" member="no">
@@ -181,18 +181,18 @@
 							<default>1</default>
 							<handler function="OnButton1Click" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxButton" name="wxID_CANCEL" variable="Button2" member="yes">
 							<label>Cancel</label>
 						</object>
-						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL</flag>
+				<flag>wxTOP|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL</flag>
 				<border>5</border>
 			</object>
 		</object>
