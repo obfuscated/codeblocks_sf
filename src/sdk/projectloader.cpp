@@ -1613,6 +1613,42 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
     if (ProjectLoaderHooks::HasRegisteredHooks() && extnode)
         ProjectLoaderHooks::CallHooks(m_pProject, extnode, false);
 
+    // Sort by tag name and if tag names are equal use the original index of the element in the
+    // extensions node. Do this because we assume the code which has inserted them has done so in
+    // some sorted manner.
+    // Ideally there would be no duplicates.
+
+    struct Key
+    {
+        std::string tagName;
+        int index;
+
+        bool operator<(const Key &o) const
+        {
+            if (tagName == o.tagName)
+                return index < o.index;
+            return tagName < o.tagName;
+        }
+    };
+    std::map<Key, TiXmlNode*> sortedExtensions;
+    int index = 0;
+    for (TiXmlNode *child = extnode->FirstChild(); child; child = child->NextSibling(), ++index)
+    {
+        TiXmlElement *element = child->ToElement();
+        if (!element)
+            continue;
+
+        sortedExtensions.emplace(Key{element->Value(), index}, element->Clone());
+    }
+
+    // Clear the old node and place the elements in sorted order.
+    // We assume there are only element xml nodes, everything else would be lost.
+    extnode->Clear();
+    for (const std::map<Key, TiXmlNode*>::value_type &ext : sortedExtensions)
+    {
+        extnode->LinkEndChild(ext.second);
+    }
+
     return cbSaveTinyXMLDocument(&doc, filename);
 }
 
