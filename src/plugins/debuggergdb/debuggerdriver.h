@@ -25,6 +25,7 @@
 class DebuggerGDB;
 class Compiler;
 class ProjectBuildTarget;
+struct RemoteDebugging;
 
 WX_DEFINE_ARRAY(DebuggerCmd*, DebuggerCommands);
 
@@ -81,7 +82,7 @@ class DebuggerDriver
         /** Prepares the debugging process by setting up search dirs etc.
             @param isConsole If true, the debuggee is a console executable.
         */
-        virtual void Prepare(bool isConsole, int printElements) = 0;
+        virtual void Prepare(bool isConsole, int printElements, const RemoteDebugging &remoteDebugging) = 0;
 
         /** Begin the debugging process by launching a program. */
         virtual void Start(bool breakOnEntry) = 0;

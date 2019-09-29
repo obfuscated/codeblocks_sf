@@ -21,7 +21,7 @@ class GDB_driver : public DebuggerDriver
                                         const wxString &userArguments);
         virtual wxString GetCommandLine(const wxString& debugger, int pid, const wxString &userArguments);
         virtual void SetTarget(ProjectBuildTarget* target);
-        virtual void Prepare(bool isConsole, int printElements);
+        virtual void Prepare(bool isConsole, int printElements, const RemoteDebugging &remoteDebugging);
         virtual void Start(bool breakOnEntry);
         virtual void Stop();
 
@@ -82,9 +82,6 @@ class GDB_driver : public DebuggerDriver
         void DetectCygwinMount(void);
         void CorrectCygwinPath(wxString& path);
 
-        // remote debugging
-        RemoteDebugging* GetRemoteDebuggingInfo();
-
         bool m_CygwinPresent;
         wxString m_CygdrivePrefix;
 
@@ -113,8 +110,8 @@ class GDB_driver : public DebuggerDriver
         // for remote debugging usage (mainly)
         ProjectBuildTarget* m_pTarget;
 
-        // merged remote debugging (project-level + target-level)
-        RemoteDebugging m_MergedRDInfo;
+        // True if we're running remote debugging session.
+        bool m_isRemoteDebugging;
 
         int m_catchThrowIndex;
 

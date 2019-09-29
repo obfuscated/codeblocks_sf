@@ -38,8 +38,8 @@ DebuggerOptionsProjectDlg::DebuggerOptionsProjectDlg(wxWindow* parent, DebuggerG
     if (!wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlDebuggerProjectOptions")))
         return;
 
-    m_OldPaths = m_pDBG->GetSearchDirs(project);
-    m_CurrentRemoteDebugging = m_pDBG->GetRemoteDebuggingMap(project);
+    m_OldPaths = DebuggerGDB::ParseSearchDirs(*project);
+    m_CurrentRemoteDebugging = DebuggerGDB::ParseRemoteDebuggingMap(*project);
 
     wxListBox* control = XRCCTRL(*this, "lstSearchDirs", wxListBox);
     control->Clear();
@@ -318,6 +318,6 @@ void DebuggerOptionsProjectDlg::OnApply()
 
     SaveCurrentRemoteDebuggingRecord();
 
-    m_pDBG->GetSearchDirs(m_pProject) = m_OldPaths;
-    m_pDBG->GetRemoteDebuggingMap(m_pProject) = m_CurrentRemoteDebugging;
+    DebuggerGDB::SetSearchDirs(*m_pProject, m_OldPaths);
+    DebuggerGDB::SetRemoteDebuggingMap(*m_pProject, m_CurrentRemoteDebugging);
 }

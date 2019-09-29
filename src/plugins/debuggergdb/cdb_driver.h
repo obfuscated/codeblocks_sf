@@ -19,7 +19,7 @@ class CDB_driver : public DebuggerDriver
                                         const wxString &userArguments);
         virtual wxString GetCommandLine(const wxString& debugger, int pid, const wxString &userArguments);
         virtual void SetTarget(ProjectBuildTarget* target);
-        virtual void Prepare(bool isConsole, int printElements);
+        virtual void Prepare(bool isConsole, int printElements, const RemoteDebugging &remoteDebugging);
         virtual void Start(bool breakOnEntry);
         virtual void Stop();
 

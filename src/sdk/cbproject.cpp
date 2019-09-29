@@ -1767,6 +1767,11 @@ TiXmlNode* cbProject::GetExtensionsNode()
     return m_pExtensionsElement;
 }
 
+const TiXmlNode* cbProject::GetExtensionsNode() const
+{
+    return m_pExtensionsElement;
+}
+
 void cbProject::AddToExtensions(const wxString& stringDesc)
 {
     // sample stringDesc:

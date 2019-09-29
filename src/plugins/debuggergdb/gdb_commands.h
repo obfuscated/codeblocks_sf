@@ -1701,7 +1701,7 @@ class GdbCmd_RemoteBaud : public DebuggerCmd
 class GdbCmd_RemoteTarget : public DebuggerCmd
 {
     public:
-        GdbCmd_RemoteTarget(DebuggerDriver* driver, RemoteDebugging* rd)
+        GdbCmd_RemoteTarget(DebuggerDriver* driver, const RemoteDebugging *rd)
             : DebuggerCmd(driver)
         {
             const wxString targetRemote = rd->extendedRemote ? _T("target extended-remote ") : _T("target remote ");

@@ -21,7 +21,7 @@ struct RemoteDebugging
 		Serial
 	};
 
-	RemoteDebugging() : skipLDpath(false), extendedRemote(false) {}
+	RemoteDebugging() : connType(TCP), skipLDpath(false), extendedRemote(false) {}
 
 	bool IsOk() const
 	{

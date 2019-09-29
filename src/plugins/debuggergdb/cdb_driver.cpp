@@ -107,7 +107,8 @@ void CDB_driver::SetTarget(ProjectBuildTarget* target)
     m_Target = target;
 }
 
-void CDB_driver::Prepare(cb_unused bool isConsole, cb_unused int printElements)
+void CDB_driver::Prepare(cb_unused bool isConsole, cb_unused int printElements,
+                         cb_unused const RemoteDebugging &remoteDebugging)
 {
 	// The very first command won't get the right output back due to the spam on CDB launch.
 	// Throw in a dummy command to flush the output buffer.

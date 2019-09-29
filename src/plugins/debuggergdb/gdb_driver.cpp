@@ -129,7 +129,7 @@ void GDB_driver::SetTarget(ProjectBuildTarget* target)
     m_pTarget = target;
 }
 
-void GDB_driver::Prepare(bool isConsole, int printElements)
+void GDB_driver::Prepare(bool isConsole, int printElements, const RemoteDebugging &remoteDebugging)
 {
     // default initialization
 
@@ -187,80 +187,55 @@ void GDB_driver::Prepare(bool isConsole, int printElements)
     if (!m_Args.IsEmpty())
         QueueCommand(new DebuggerCmd(this, _T("set args ") + m_Args));
 
-    RemoteDebugging* rd = GetRemoteDebuggingInfo();
-
-    // send additional gdb commands before establishing remote connection
-    if (rd)
+    m_isRemoteDebugging = remoteDebugging.IsOk();
+    if (m_isRemoteDebugging)
     {
-        if (!rd->additionalCmdsBefore.IsEmpty())
+        // send additional gdb commands before establishing remote connection
+        if (!remoteDebugging.additionalCmdsBefore.IsEmpty())
         {
-            wxArrayString initCmds = GetArrayFromString(rd->additionalCmdsBefore, _T('\n'));
+            wxArrayString initCmds = GetArrayFromString(remoteDebugging.additionalCmdsBefore, _T('\n'));
             for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
             {
                 macrosManager->ReplaceMacros(initCmds[i]);
                 QueueCommand(new DebuggerCmd(this, initCmds[i]));
             }
         }
-        if (!rd->additionalShellCmdsBefore.IsEmpty())
+        if (!remoteDebugging.additionalShellCmdsBefore.IsEmpty())
         {
-            wxArrayString initCmds = GetArrayFromString(rd->additionalShellCmdsBefore, _T('\n'));
+            wxArrayString initCmds = GetArrayFromString(remoteDebugging.additionalShellCmdsBefore, _T('\n'));
             for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
             {
                 macrosManager->ReplaceMacros(initCmds[i]);
                 QueueCommand(new DebuggerCmd(this, _T("shell ") + initCmds[i]));
             }
         }
-    }
 
-    // if performing remote debugging, now is a good time to try and connect to the target :)
-    if (rd && rd->IsOk())
-    {
-        if (rd->connType == RemoteDebugging::Serial)
-            QueueCommand(new GdbCmd_RemoteBaud(this, rd->serialBaud));
-        QueueCommand(new GdbCmd_RemoteTarget(this, rd));
+        // if performing remote debugging, now is a good time to try and connect to the target :)
+        if (remoteDebugging.connType == RemoteDebugging::Serial)
+            QueueCommand(new GdbCmd_RemoteBaud(this, remoteDebugging.serialBaud));
+        QueueCommand(new GdbCmd_RemoteTarget(this, &remoteDebugging));
     }
 
     // run per-target additional commands (remote debugging)
     // moved after connection to remote target (if any)
-    if (rd)
+    if (!remoteDebugging.additionalCmds.IsEmpty())
     {
-        if (!rd->additionalCmds.IsEmpty())
+        wxArrayString initCmds = GetArrayFromString(remoteDebugging.additionalCmds, _T('\n'));
+        for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
         {
-            wxArrayString initCmds = GetArrayFromString(rd->additionalCmds, _T('\n'));
-            for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
-            {
-                macrosManager->ReplaceMacros(initCmds[i]);
-                QueueCommand(new DebuggerCmd(this, initCmds[i]));
-            }
-        }
-        if (!rd->additionalShellCmdsAfter.IsEmpty())
-        {
-            wxArrayString initCmds = GetArrayFromString(rd->additionalShellCmdsAfter, _T('\n'));
-            for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
-            {
-                macrosManager->ReplaceMacros(initCmds[i]);
-                QueueCommand(new DebuggerCmd(this, _T("shell ") + initCmds[i]));
-            }
+            macrosManager->ReplaceMacros(initCmds[i]);
+            QueueCommand(new DebuggerCmd(this, initCmds[i]));
         }
     }
-}
-
-// remote debugging
-RemoteDebugging* GDB_driver::GetRemoteDebuggingInfo()
-{
-//    if (!m_pTarget)
-//        return 0;
-
-    // first, project-level (straight copy)
-    m_MergedRDInfo = m_pDBG->GetRemoteDebuggingMap()[0];
-
-    // then merge with target settings
-    RemoteDebuggingMap::iterator it = m_pDBG->GetRemoteDebuggingMap().find(m_pTarget);
-    if (it != m_pDBG->GetRemoteDebuggingMap().end())
+    if (!remoteDebugging.additionalShellCmdsAfter.IsEmpty())
     {
-        m_MergedRDInfo.MergeWith(it->second);
+        wxArrayString initCmds = GetArrayFromString(remoteDebugging.additionalShellCmdsAfter, _T('\n'));
+        for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
+        {
+            macrosManager->ReplaceMacros(initCmds[i]);
+            QueueCommand(new DebuggerCmd(this, _T("shell ") + initCmds[i]));
+        }
     }
-    return &m_MergedRDInfo;
 }
 
 // Cygwin check code
@@ -375,9 +350,7 @@ void GDB_driver::CorrectCygwinPath(wxString& path)
 #ifdef __WXMSW__
 bool GDB_driver::UseDebugBreakProcess()
 {
-    RemoteDebugging* rd = GetRemoteDebuggingInfo();
-    bool remoteDebugging = rd && rd->IsOk();
-    return !remoteDebugging;
+    return !m_isRemoteDebugging;
 }
 #endif
 
@@ -401,23 +374,20 @@ void GDB_driver::Start(bool breakOnEntry)
         disassembly_dialog->Clear(cbStackFrame());
     }
 
+    m_BreakOnEntry = breakOnEntry && !m_isRemoteDebugging;
+
     // if performing remote debugging, use "continue" command
-    RemoteDebugging* rd = GetRemoteDebuggingInfo();
-    bool remoteDebugging = rd && rd->IsOk();
-
-    m_BreakOnEntry = breakOnEntry && !remoteDebugging;
-
     if (!m_pDBG->GetActiveConfigEx().GetFlag(DebuggerConfiguration::DoNotRun))
     {
-        m_ManualBreakOnEntry = !remoteDebugging;
+        m_ManualBreakOnEntry = !m_isRemoteDebugging;
         // start the process
         if (breakOnEntry)
-            QueueCommand(new GdbCmd_Start(this, remoteDebugging ? _T("continue") : _T("start")));
+            QueueCommand(new GdbCmd_Start(this, m_isRemoteDebugging ? _T("continue") : _T("start")));
         else
         {
             // if breakOnEntry is not set, we need to use 'run' to make gdb stop at a breakpoint at first instruction
             m_ManualBreakOnEntry=false;  // must be reset or gdb does not stop at first breakpoint
-            QueueCommand(new GdbCmd_Start(this, remoteDebugging ? _T("continue") : _T("run")));
+            QueueCommand(new GdbCmd_Start(this, m_isRemoteDebugging ? _T("continue") : _T("run")));
         }
         m_IsStarted = true;
     }
@@ -441,9 +411,7 @@ void GDB_driver::Continue()
     else
     {
         // if performing remote debugging, use "continue" command
-        RemoteDebugging* rd = GetRemoteDebuggingInfo();
-        bool remoteDebugging = rd && rd->IsOk();
-        if (remoteDebugging)
+        if (m_isRemoteDebugging)
             QueueCommand(new GdbCmd_Continue(this));
         else
             QueueCommand(new GdbCmd_Start(this, m_ManualBreakOnEntry ? wxT("start") : wxT("run")));

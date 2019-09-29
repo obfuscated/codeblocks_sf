@@ -656,6 +656,16 @@ class DLLIMPORT cbProject : public CompileTargetBase
           */
         virtual TiXmlNode* GetExtensionsNode();
 
+        /** Access the \<Extensions\> XML node of this project
+          *
+          * This function is for advanced users only. Use at your own risk
+          * (and respect other plugins authors work under this node).
+          *
+          * @return The \<Extensions\> XML node.
+          * @note This function will return NULL if the object is not created.
+          */
+        virtual const TiXmlNode* GetExtensionsNode() const;
+
         /** Convenience function (mainly for scripts) to add nodes/attributes
           * under the \<Extensions\> node.
           *

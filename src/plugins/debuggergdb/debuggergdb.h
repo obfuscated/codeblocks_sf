@@ -119,10 +119,11 @@ class DebuggerGDB : public cbDebuggerPlugin
 
         void OnConfigurationChange(bool isActive);
 
-        wxArrayString& GetSearchDirs(cbProject* prj);
-        RemoteDebuggingMap& GetRemoteDebuggingMap(cbProject* project = 0);
+        static wxArrayString ParseSearchDirs(const cbProject &project);
+        static void SetSearchDirs(cbProject &project, const wxArrayString &dirs);
 
-        void OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading);
+        static RemoteDebuggingMap ParseRemoteDebuggingMap(cbProject &project);
+        static void SetRemoteDebuggingMap(cbProject &project, const RemoteDebuggingMap &map);
 
         void OnValueTooltip(const wxString &token, const wxRect &evalRect);
         bool ShowValueTooltip(int style);
@@ -196,15 +197,6 @@ class DebuggerGDB : public cbDebuggerPlugin
         // extra dialogs
         cbProject* m_pProject; // keep the currently debugged project handy
         wxString m_ActiveBuildTarget;
-
-        // per-project debugger search-dirs
-        typedef std::map<cbProject*, wxArrayString> SearchDirsMap;
-        SearchDirsMap m_SearchDirs;
-
-        typedef std::map<cbProject*, RemoteDebuggingMap> ProjectRemoteDebuggingMap;
-        ProjectRemoteDebuggingMap m_RemoteDebugging;
-
-        int m_HookId; // project loader hook ID
 
         // Linux console support
         bool     m_bIsConsole;
