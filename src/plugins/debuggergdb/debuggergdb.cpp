@@ -442,9 +442,21 @@ void DebuggerGDB::SetRemoteDebuggingMap(cbProject &project, const RemoteDebuggin
 
     if (!rdMap.empty())
     {
+        typedef std::map<wxString, const RemoteDebugging*> MapTargetNameToRD;
+        MapTargetNameToRD mapTargetNameToRD;
+
         for (RemoteDebuggingMap::const_iterator it = rdMap.begin(); it != rdMap.end(); ++it)
         {
+            wxString targetName = (it->first ? it->first->GetTitle() : wxString());
             const RemoteDebugging& rd = it->second;
+            mapTargetNameToRD.emplace(targetName, &rd);
+        }
+
+        for (MapTargetNameToRD::const_iterator it = mapTargetNameToRD.begin();
+             it != mapTargetNameToRD.end();
+             ++it)
+        {
+            const RemoteDebugging& rd = *it->second;
 
             // if no different than defaults, skip it
             if (rd.serialPort.IsEmpty() && rd.serialBaud == wxT("115200")
@@ -458,8 +470,8 @@ void DebuggerGDB::SetRemoteDebuggingMap(cbProject &project, const RemoteDebuggin
             }
 
             TiXmlElement* rdnode = node->InsertEndChild(TiXmlElement("remote_debugging"))->ToElement();
-            if (it->first)
-                rdnode->SetAttribute("target", cbU2C(it->first->GetTitle()));
+            if (!it->first.empty())
+                rdnode->SetAttribute("target", cbU2C(it->first));
 
             TiXmlElement* tgtnode = rdnode->InsertEndChild(TiXmlElement("options"))->ToElement();
             tgtnode->SetAttribute("conn_type", (int)rd.connType);
