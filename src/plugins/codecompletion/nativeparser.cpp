@@ -38,8 +38,6 @@
 
 #include <cbstyledtextctrl.h>
 #include <compilercommandgenerator.h>
-#include <projectloader_hooks.h>
-#include <tinyxml.h>
 
 #include "nativeparser.h"
 #include "classbrowser.h"
@@ -208,10 +206,6 @@ NativeParser::NativeParser() :
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
     m_ParserPerWorkspace = cfg->ReadBool(_T("/parser_per_workspace"), false);
 
-    // hook to project loading procedure
-    ProjectLoaderHooks::HookFunctorBase* myhook = new ProjectLoaderHooks::HookFunctor<NativeParser>(this, &NativeParser::OnProjectLoadingHook);
-    m_HookId = ProjectLoaderHooks::RegisterHook(myhook);
-
     Connect(ParserCommon::idParserStart, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NativeParser::OnParserStart));
     Connect(ParserCommon::idParserEnd,   wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NativeParser::OnParserEnd));
     Connect(idTimerParsingOneByOne,      wxEVT_TIMER,                 wxTimerEventHandler(NativeParser::OnParsingOneByOneTimer));
@@ -222,7 +216,6 @@ NativeParser::~NativeParser()
     Disconnect(ParserCommon::idParserStart, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NativeParser::OnParserStart));
     Disconnect(ParserCommon::idParserEnd,   wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NativeParser::OnParserEnd));
     Disconnect(idTimerParsingOneByOne,      wxEVT_TIMER,                 wxTimerEventHandler(NativeParser::OnParsingOneByOneTimer));
-    ProjectLoaderHooks::UnregisterHook(m_HookId, true);
     RemoveClassBrowser();
     ClearParsers();
     Delete(m_TempParser);
@@ -946,14 +939,62 @@ int NativeParser::GetCallTips(wxArrayString& items, int& typedCommas, cbEditor* 
     return end;
 }
 
-wxArrayString& NativeParser::GetProjectSearchDirs(cbProject* project)
+wxArrayString NativeParser::ParseProjectSearchDirs(const cbProject &project)
 {
-    ProjectSearchDirsMap::iterator it;
-    it = m_ProjectSearchDirsMap.find(project);
-    if (it == m_ProjectSearchDirsMap.end())
-        it = m_ProjectSearchDirsMap.insert(m_ProjectSearchDirsMap.end(), std::make_pair(project, wxArrayString()));
 
-    return it->second;
+    const TiXmlNode *extensionNode = project.GetExtensionsNode();
+    if (!extensionNode)
+        return wxArrayString();
+    const TiXmlElement* elem = extensionNode->ToElement();
+    if (!elem)
+        return wxArrayString();
+
+    wxArrayString pdirs;
+    const TiXmlElement* CCConf = elem->FirstChildElement("code_completion");
+    if (CCConf)
+    {
+        const TiXmlElement* pathsElem = CCConf->FirstChildElement("search_path");
+        while (pathsElem)
+        {
+            if (pathsElem->Attribute("add"))
+            {
+                wxString dir = cbC2U(pathsElem->Attribute("add"));
+                if (pdirs.Index(dir) == wxNOT_FOUND)
+                    pdirs.Add(dir);
+            }
+
+            pathsElem = pathsElem->NextSiblingElement("search_path");
+        }
+    }
+    return pdirs;
+}
+
+void NativeParser::SetProjectSearchDirs(cbProject &project, const wxArrayString &dirs)
+{
+    TiXmlNode *extensionNode = project.GetExtensionsNode();
+    if (!extensionNode)
+        return;
+    TiXmlElement* elem = extensionNode->ToElement();
+    if (!elem)
+        return;
+
+    // since rev4332, the project keeps a copy of the <Extensions> element
+    // and re-uses it when saving the project (so to avoid losing entries in it
+    // if plugins that use that element are not loaded atm).
+    // so, instead of blindly inserting the element, we must first check it's
+    // not already there (and if it is, clear its contents)
+    TiXmlElement* node = elem->FirstChildElement("code_completion");
+    if (!node)
+        node = elem->InsertEndChild(TiXmlElement("code_completion"))->ToElement();
+    if (node)
+    {
+        node->Clear();
+        for (size_t i = 0; i < dirs.GetCount(); ++i)
+        {
+            TiXmlElement* path = node->InsertEndChild(TiXmlElement("search_path"))->ToElement();
+            if (path) path->SetAttribute("add", cbU2C(dirs[i]));
+        }
+    }
 }
 
 void NativeParser::CreateClassBrowser()
@@ -1064,7 +1105,9 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
         if (   !parser->Options().platformCheck
             || (parser->Options().platformCheck && project->SupportsCurrentPlatform()) )
         {
-            AddIncludeDirsToParser(GetProjectSearchDirs(project),
+            // Note: This parses xml data to get the search directories. It might be expensive if
+            //       the list of directories is too large.
+            AddIncludeDirsToParser(ParseProjectSearchDirs(*project),
                                    project->GetBasePath(), parser);
         }
     }
@@ -1226,55 +1269,6 @@ void NativeParser::SetCBViewMode(const BrowserViewMode& mode)
 {
     m_Parser->ClassBrowserOptions().showInheritance = (mode == bvmInheritance) ? true : false;
     UpdateClassBrowser();
-}
-
-void NativeParser::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading)
-{
-    if (loading)
-    {
-        // Hook called when loading project file.
-        wxArrayString& pdirs = GetProjectSearchDirs(project);
-
-        TiXmlElement* CCConf = elem->FirstChildElement("code_completion");
-        if (CCConf)
-        {
-            TiXmlElement* pathsElem = CCConf->FirstChildElement("search_path");
-            while (pathsElem)
-            {
-                if (pathsElem->Attribute("add"))
-                {
-                    wxString dir = cbC2U(pathsElem->Attribute("add"));
-                    if (pdirs.Index(dir) == wxNOT_FOUND)
-                        pdirs.Add(dir);
-                }
-
-                pathsElem = pathsElem->NextSiblingElement("search_path");
-            }
-        }
-    }
-    else
-    {
-        // Hook called when saving project file.
-        wxArrayString& pdirs = GetProjectSearchDirs(project);
-
-        // since rev4332, the project keeps a copy of the <Extensions> element
-        // and re-uses it when saving the project (so to avoid losing entries in it
-        // if plugins that use that element are not loaded atm).
-        // so, instead of blindly inserting the element, we must first check it's
-        // not already there (and if it is, clear its contents)
-        TiXmlElement* node = elem->FirstChildElement("code_completion");
-        if (!node)
-            node = elem->InsertEndChild(TiXmlElement("code_completion"))->ToElement();
-        if (node)
-        {
-            node->Clear();
-            for (size_t i = 0; i < pdirs.GetCount(); ++i)
-            {
-                TiXmlElement* path = node->InsertEndChild(TiXmlElement("search_path"))->ToElement();
-                if (path) path->SetAttribute("add", cbU2C(pdirs[i]));
-            }
-        }
-    }
 }
 
 // helper funcs

@@ -30,9 +30,6 @@ class ClassBrowser;
 class Compiler;
 class Token;
 
-
-typedef std::map<cbProject*, wxArrayString> ProjectSearchDirsMap;
-
 // TODO (ollydbg#1#), this class is dirty, I'm going to change its name like CursorLocation
 /** Search location combination, a pointer to cbStyledTextCtrl and a filename is enough */
 struct ccSearchData
@@ -230,7 +227,8 @@ public:
     int GetCallTips(wxArrayString& items, int& typedCommas, cbEditor* ed, int pos = wxNOT_FOUND);
 
     /** project search path is used for auto completion for #include <> */
-    wxArrayString& GetProjectSearchDirs(cbProject* project);
+    wxArrayString ParseProjectSearchDirs(const cbProject &project);
+    void SetProjectSearchDirs(cbProject &project, const wxArrayString &dirs);
 
     // The function below is used to manage symbols browser
     /** return active class browser pointer*/
@@ -280,14 +278,6 @@ protected:
 
 private:
     friend class CodeCompletion;
-
-    /** Read or Write project' CC options when a C::B project is loading or saving
-     * user can set those settings in Menu->Project->Properties->C/C++ parser options panel
-     * @param project which project we are handling
-     * @param elem parent node of the project xml file (cbp) containing addtinal information
-     * @param loading true if the project is loading
-     */
-    void OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading);
 
     /** Start an Artificial Intelligence search algorithm to gather all the matching tokens.
      * The actual AI is in FindAIMatches() below.
@@ -472,12 +462,6 @@ private:
     ClassBrowser*                m_ClassBrowser;
     /** if true, which means m_ClassBrowser is floating (not docked) */
     bool                         m_ClassBrowserIsFloating;
-
-    /** a map: project pointer -> C/C++ parser search paths for this project, this is the
-     * per-project code completion search-dirs.
-     */
-    ProjectSearchDirsMap         m_ProjectSearchDirsMap;
-    int                          m_HookId;    //!< project loader hook ID
 
     /// Stores image lists for different sizes. See GetImageList.
     typedef std::unordered_map<int, std::unique_ptr<wxImageList>> SizeToImageList;

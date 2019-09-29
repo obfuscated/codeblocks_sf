@@ -39,7 +39,7 @@ CCOptionsProjectDlg::CCOptionsProjectDlg(wxWindow* parent, cbProject* project, N
     m_Parser(&np->GetParser())
 {
     wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlProjectCCOptions"));
-    m_OldPaths = m_NativeParser->GetProjectSearchDirs(m_Project);
+    m_OldPaths = m_NativeParser->ParseProjectSearchDirs(*m_Project);
 
     wxListBox* control = XRCCTRL(*this, "lstPaths", wxListBox);
     control->Clear();
@@ -122,8 +122,8 @@ void CCOptionsProjectDlg::OnApply()
                 m_Parser->AddIncludeDir(newpaths[i]);
         }
 
-        wxArrayString& pdirs = m_NativeParser->GetProjectSearchDirs(m_Project);
-        pdirs = newpaths;
+        m_NativeParser->SetProjectSearchDirs(*m_Project, newpaths);
+        m_Project->SetModified(true);
 
         cbMessageBox(_("You have changed the C/C++ parser search paths for this project.\n"
                        "These paths will be taken into account for next parser runs.\n"
