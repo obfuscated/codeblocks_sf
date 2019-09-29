@@ -28,21 +28,10 @@ class cbProject;
 class EnvVars : public cbPlugin
 {
 public:
-  /// Ctor
-           EnvVars();
-  /// Dtor
-  virtual ~EnvVars();
-
-  wxString GetProjectEnvvarSet(cbProject* project)
-  { return m_ProjectSets[project]; }
-
-  void     SetProjectEnvvarSet(cbProject* project, const wxString& envvar_set);
+  static wxString ParseProjectEnvvarSet(const cbProject &project);
+  static void SaveProjectEnvvarSet(cbProject &project, const wxString& envvar_set);
 
 protected:
-  /// fires when a project is being loaded / saved
-  void     OnProjectLoadingHook(cbProject* project, TiXmlElement* elem,
-                                bool loading);
-
   /// fires when a project is being activated
   void     OnProjectActivated(CodeBlocksEvent& event);
 
@@ -89,12 +78,7 @@ private:
   { return false; }
 
   /// issues a warning if an activated project has a reference to an envvar set that does not exist
-  void     EnvvarSetWarning(const wxString& envvar_set);
-
-  typedef std::map<cbProject*, wxString> ProjectEnvvarMap;
-
-  int              m_EnvVarHookID; //!< project loader hook ID
-  ProjectEnvvarMap m_ProjectSets;  //!< preferred envvar sets for all projects
+  static void EnvvarSetWarning(const wxString& envvar_set);
 
   DECLARE_EVENT_TABLE()
 };

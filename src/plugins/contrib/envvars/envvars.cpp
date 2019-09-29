@@ -49,85 +49,51 @@ END_EVENT_TABLE()
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-EnvVars::EnvVars()
+wxString EnvVars::ParseProjectEnvvarSet(const cbProject &project)
 {
-  // hook to project loading procedure
-  ProjectLoaderHooks::HookFunctorBase* envvar_hook =
-    new ProjectLoaderHooks::HookFunctor<EnvVars>(this, &EnvVars::OnProjectLoadingHook);
+    const TiXmlNode *extNode = project.GetExtensionsNode();
+    if (!extNode)
+        return wxString();
+    const TiXmlElement* elem = extNode->ToElement();
+    if (!elem)
+        return wxString();
+    const TiXmlElement* node = elem->FirstChildElement("envvars");
+    if (!node)
+        return wxString();
 
-  m_EnvVarHookID = ProjectLoaderHooks::RegisterHook(envvar_hook);
-}// EnvVars
+    wxString result = cbC2U(node->Attribute("set"));
+    if (result.empty()) // no envvar set to apply setup
+        return wxString();
 
-// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+    if (!nsEnvVars::EnvvarSetExists(result))
+        EnvvarSetWarning(result);
+    return result;
+}
 
-EnvVars::~EnvVars()
+void EnvVars::SaveProjectEnvvarSet(cbProject &project, const wxString& envvar_set)
 {
-  ProjectLoaderHooks::UnregisterHook(m_EnvVarHookID, true);
-}// ~EnvVars
-
-// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
-void EnvVars::SetProjectEnvvarSet(cbProject* project, const wxString& envvar_set)
-{
-#if defined(TRACE_ENVVARS)
-  Manager::Get()->GetLogManager()->DebugLog(F(_T("SetProjectEnvvarSet")));
-#endif
-
-  m_ProjectSets[project] = envvar_set;
-  EV_DBGLOG(_T("EnvVars: Discarding envvars set '")+nsEnvVars::GetActiveSetName()+_T("'."));
-  nsEnvVars::EnvvarSetDiscard(wxEmptyString); // remove currently active envvars
-  if (envvar_set.IsEmpty())
-    EV_DBGLOG(_T("EnvVars: Setting up default envvars set."));
-  else
-    EV_DBGLOG(_T("EnvVars: Setting up envvars set '")+envvar_set+_T("' for activated project."));
-  nsEnvVars::EnvvarSetApply(envvar_set, true); // apply currently active envvar set for wxEmptyString
-}// SetProjectEnvvarSet
-
-// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
-void EnvVars::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem,
-                                   bool loading)
-{
-#if defined(TRACE_ENVVARS)
-  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnProjectLoadingHook")));
-#endif
-
-  if (loading)
-  {
-    TiXmlElement* node = elem->FirstChildElement("envvars");
-    if (node)
-    {
-      m_ProjectSets[project] = cbC2U(node->Attribute("set"));
-      if (m_ProjectSets[project].IsEmpty()) // no envvar set to apply setup
+    TiXmlNode *extNode = project.GetExtensionsNode();
+    if (!extNode)
         return;
-
-      if (!nsEnvVars::EnvvarSetExists(m_ProjectSets[project]))
-        EnvvarSetWarning(m_ProjectSets[project]);
-    }
-  }
-  else
-  {
-    // Hook called when saving project file.
-
-    // since rev4332, the project keeps a copy of the <Extensions> element
-    // and re-uses it when saving the project (so to avoid losing entries in it
-    // if plugins that use that element are not loaded atm).
-    // so, instead of blindly inserting the element, we must first check it's
-    // not already there (and if it is, clear its contents)
+    TiXmlElement* elem = extNode->ToElement();
+    if (!elem)
+        return;
     TiXmlElement* node = elem->FirstChildElement("envvars");
     if (!node)
-      node = elem->InsertEndChild(TiXmlElement("envvars"))->ToElement();
-    node->Clear();
-    if (!m_ProjectSets[project].IsEmpty())
-      node->SetAttribute("set", cbU2C(m_ProjectSets[project]));
-  }
-}// OnProjectLoadingHook
-
-// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+    {
+        if (!envvar_set.empty())
+            return;
+        node = elem->InsertEndChild(TiXmlElement("envvars"))->ToElement();
+    }
+    if (!envvar_set.empty())
+        node->SetAttribute("set", cbU2C(envvar_set));
+    else
+        elem->RemoveChild(node);
+}
 
 void EnvVars::DoProjectActivate(cbProject* project)
 {
-    wxString prj_envvar_set = m_ProjectSets[project];
+    const wxString prj_envvar_set = ParseProjectEnvvarSet(*project);
     if (prj_envvar_set.IsEmpty())  // There is no envvar set to apply...
       // Apply default envvar set (but only, if not already active)
       nsEnvVars::EnvvarSetApply(wxEmptyString, false);
@@ -177,14 +143,12 @@ void EnvVars::OnProjectClosed(CodeBlocksEvent& event)
 
   if (IsAttached())
   {
-    prj_envvar_set = m_ProjectSets[event.GetProject()];
+    prj_envvar_set = ParseProjectEnvvarSet(*event.GetProject());
 
     // If there is an envvar set connected to this project...
     if (!prj_envvar_set.IsEmpty())
       // ...make sure it's being discarded
       nsEnvVars::EnvvarSetDiscard(prj_envvar_set);
-
-    m_ProjectSets.erase(event.GetProject());
   }
 
   // Apply default envvar set (but only, if not already active)
