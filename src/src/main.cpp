@@ -1821,6 +1821,10 @@ void MainFrame::DoFixToolbarsLayout()
         }
     }
 
+    // This is needed in order to auto shrink the toolbars to fit the icons with as little space as
+    // possible.
+    m_LayoutManager.Update();
+
     for (size_t i = 0; i < panes.GetCount(); ++i)
     {
         wxAuiPaneInfo& info = panes[i];
@@ -1831,6 +1835,8 @@ void MainFrame::DoFixToolbarsLayout()
         }
     }
 
+    // If we don't do this toolbars would be empty during initial startup or after
+    // View -> Perspective -> Save current.
     m_LayoutManager.Update();
 }
 
