@@ -43,6 +43,7 @@ class DebuggerOptionsProjectDlg : public cbConfigurationPanel
         DebuggerGDB* m_pDBG;
         cbProject* m_pProject;
         wxArrayString m_OldPaths;
+        RemoteDebuggingMap m_OldRemoteDebugging;
         RemoteDebuggingMap m_CurrentRemoteDebugging;
         int m_LastTargetSel;
         DECLARE_EVENT_TABLE()

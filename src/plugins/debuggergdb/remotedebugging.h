@@ -65,6 +65,21 @@ struct RemoteDebugging
 			additionalShellCmdsBefore += other.additionalShellCmdsBefore;
 	}
 
+	bool operator == (const RemoteDebugging &rd) const
+	{
+	    return (connType == rd.connType
+            && serialPort == rd.serialPort
+            && serialBaud == rd.serialBaud
+            && ip == rd.ip
+            && ipPort == rd.ipPort
+            && additionalCmds == rd.additionalCmds
+            && additionalCmdsBefore == rd.additionalCmdsBefore
+            && additionalShellCmdsAfter == rd.additionalShellCmdsAfter
+            && additionalShellCmdsBefore == rd.additionalShellCmdsBefore
+            && skipLDpath == rd.skipLDpath
+            && extendedRemote == rd.extendedRemote);
+	}
+
 	ConnectionType connType;
 	wxString serialPort;
 	wxString serialBaud;

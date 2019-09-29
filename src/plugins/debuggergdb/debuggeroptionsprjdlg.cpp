@@ -39,7 +39,8 @@ DebuggerOptionsProjectDlg::DebuggerOptionsProjectDlg(wxWindow* parent, DebuggerG
         return;
 
     m_OldPaths = DebuggerGDB::ParseSearchDirs(*project);
-    m_CurrentRemoteDebugging = DebuggerGDB::ParseRemoteDebuggingMap(*project);
+    m_OldRemoteDebugging = DebuggerGDB::ParseRemoteDebuggingMap(*project);
+    m_CurrentRemoteDebugging = m_OldRemoteDebugging;
 
     wxListBox* control = XRCCTRL(*this, "lstSearchDirs", wxListBox);
     control->Clear();
@@ -310,14 +311,22 @@ void DebuggerOptionsProjectDlg::OnApply()
 {
     wxListBox* control = XRCCTRL(*this, "lstSearchDirs", wxListBox);
 
-    m_OldPaths.Clear();
+    wxArrayString  newPaths;
     for (int i = 0; i < (int)control->GetCount(); ++i)
     {
-        m_OldPaths.Add(control->GetString(i));
+        newPaths.Add(control->GetString(i));
     }
 
     SaveCurrentRemoteDebuggingRecord();
 
-    DebuggerGDB::SetSearchDirs(*m_pProject, m_OldPaths);
-    DebuggerGDB::SetRemoteDebuggingMap(*m_pProject, m_CurrentRemoteDebugging);
+    if (m_OldPaths != newPaths)
+    {
+        DebuggerGDB::SetSearchDirs(*m_pProject, newPaths);
+        m_pProject->SetModified(true);
+    }
+    if (m_OldRemoteDebugging != m_CurrentRemoteDebugging)
+    {
+        DebuggerGDB::SetRemoteDebuggingMap(*m_pProject, m_CurrentRemoteDebugging);
+        m_pProject->SetModified(true);
+    }
 }
