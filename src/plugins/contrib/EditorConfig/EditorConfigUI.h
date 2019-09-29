@@ -12,9 +12,9 @@ class wxSpinEvent;
 class wxStaticText;
 //*)
 
-class wxEvtHandler;
 
 class cbProject;
+class EditorConfig;
 
 #include "configurationpanel.h"
 
@@ -23,8 +23,8 @@ class cbProject;
 class EditorConfigUI : public cbConfigurationPanel
 {
 	public:
-
-		EditorConfigUI(wxWindow* parent, wxEvtHandler* eh, cbProject* prj, const TEditorSettings& es);
+		EditorConfigUI(wxWindow* parent, EditorConfig* plugin, cbProject* prj,
+                       const EditorSettings& es);
 		virtual ~EditorConfigUI();
 
 		//(*Declarations(EditorConfigUI)
@@ -50,8 +50,8 @@ class EditorConfigUI : public cbConfigurationPanel
 		static const long ID_CHO_EOL_MODE;
 		//*)
 
-    wxEvtHandler* m_NotifiedWindow;
-    cbProject*    m_Project;
+        EditorConfig* m_Plugin;
+        cbProject*    m_Project;
 
 	private:
 

@@ -60,7 +60,6 @@
 		</Compiler>
 		<Unit filename="EditorConfig.cpp" />
 		<Unit filename="EditorConfig.h" />
-		<Unit filename="EditorConfigCommon.cpp" />
 		<Unit filename="EditorConfigCommon.h" />
 		<Unit filename="EditorConfigUI.cpp" />
 		<Unit filename="EditorConfigUI.h" />

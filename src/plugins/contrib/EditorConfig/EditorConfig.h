@@ -7,10 +7,7 @@
 #ifndef WX_PRECOMP
 #endif
 
-#include <map>
-
 #include <cbplugin.h> // for cbPlugin
-#include <globals.h>  // for ModuleType
 
 #include "EditorConfigCommon.h"
 
@@ -42,28 +39,21 @@ protected:
     virtual void OnRelease(bool appShutDown);
     virtual void BuildMenu(wxMenuBar* /*menuBar*/);
 
-    void OnProjectLoadingHook(cbProject* prj, TiXmlElement* elem, bool loading);
-
     // Not used:
     virtual void BuildModuleMenu(const ModuleType, wxMenu*, const FileTreeData* = 0) { ; };
     virtual bool BuildToolBar(wxToolBar* /*toolBar*/)                                { return false; };
 
+public:
+    static EditorSettings ParseProjectSettings(const cbProject &project);
+    static void SetProjectSettings(cbProject &project, const EditorSettings &es);
 private:
-    typedef std::map<cbProject*, TEditorSettings> ProjectSettingsMap;
 
     void OnEditorActivated(CodeBlocksEvent& event);
-    void OnProjectSettingsChanged(wxCommandEvent& event);
 
     bool ApplyEditorSettings(EditorBase* eb);
 
     // Reload Editor Config menu item
     void OnReloadEditorConfig(wxCommandEvent& event);
-
-    ProjectSettingsMap m_ECSettings; //!< settings for currently active project
-    int                m_ECHookID;   //!< project loader hook ID
-	  bool               m_InitDone;   //!< flag, if initialisation was done and at least one project uses plugin
-
-    DECLARE_EVENT_TABLE()
 };
 
 #endif // EDITORCONFIG_H

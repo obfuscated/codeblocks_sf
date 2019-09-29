@@ -13,8 +13,10 @@
 #include <cbproject.h>
 #include <logmanager.h>
 #include <manager.h>
+#include <editorbase.h>
 
 #include "EditorConfigCommon.h"
+#include "EditorConfig.h"
 
 //(*IdInit(EditorConfigUI)
 const long EditorConfigUI::ID_CHK_ACTIVE = wxNewId();
@@ -30,8 +32,9 @@ BEGIN_EVENT_TABLE(EditorConfigUI, wxPanel)
     //*)
 END_EVENT_TABLE()
 
-EditorConfigUI::EditorConfigUI(wxWindow* parent, wxEvtHandler* eh, cbProject* prj, const TEditorSettings& es) :
-    m_NotifiedWindow(eh),
+EditorConfigUI::EditorConfigUI(wxWindow* parent, EditorConfig* plugin, cbProject* prj,
+                               const EditorSettings& es) :
+    m_Plugin(plugin),
     m_Project(prj)
 {
     //(*Initialize(EditorConfigUI)
@@ -86,7 +89,7 @@ EditorConfigUI::EditorConfigUI(wxWindow* parent, wxEvtHandler* eh, cbProject* pr
     flsMain->Fit(this);
     flsMain->SetSizeHints(this);
 
-    Connect(ID_CHK_ACTIVE,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(EditorConfigUI::OnActiveClick));
+    Connect(ID_CHK_ACTIVE,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&EditorConfigUI::OnActiveClick);
     //*)
 
     if (es.active)
@@ -115,7 +118,7 @@ void EditorConfigUI::OnActiveClick(wxCommandEvent& event)
 
 void EditorConfigUI::OnApply()
 {
-    TEditorSettings es;
+    EditorSettings es;
     es.active      = chkActive->IsChecked();
     es.use_tabs    = chkUseTabs->IsChecked();
     es.tab_indents = chkTabIndents->IsChecked();
@@ -126,16 +129,7 @@ void EditorConfigUI::OnApply()
     // #define wxSCI_EOL_CR 1
     // #define wxSCI_EOL_LF 2
 
-    EditorSettingsChangedEvent e(wxEVT_EDITOR_SETTINGS_CHANGED_EVENT, 0, es, m_Project);
-    if (m_NotifiedWindow)
-    {
-#if defined(TRACE_EC)
-        if (m_Project)
-            Manager::Get()->GetLogManager()->DebugLog(_T("EditorConfigUI::OnApply(PROJECT)"));
-        Manager::Get()->GetLogManager()->DebugLog(_T("EditorConfigUI::OnApply()"));
-#endif
-        m_NotifiedWindow->AddPendingEvent(e);
-    }
+    EditorConfig::SetProjectSettings(*m_Project, es);
 }
 
 void EditorConfigUI::DoActive(bool en)

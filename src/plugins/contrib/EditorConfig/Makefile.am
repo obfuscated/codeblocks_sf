@@ -12,8 +12,8 @@ libEditorConfig_la_LIBADD = ../../../sdk/libcodeblocks.la \
 			$(WX_LIBS) \
 			$(CB_TINYXML_LIBS)
 
-libEditorConfig_la_SOURCES = EditorConfigUI.cpp \
-			EditorConfigCommon.cpp \
+libEditorConfig_la_SOURCES = \
+			EditorConfigUI.cpp \
 			EditorConfig.cpp
 
 noinst_HEADERS = EditorConfig.h \

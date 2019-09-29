@@ -16,7 +16,6 @@
 #endif
 
 #include <cbstyledtextctrl.h>
-#include <projectloader_hooks.h>
 
 #include "EditorConfig.h"
 #include "EditorConfigUI.h"
@@ -28,19 +27,8 @@ namespace
     PluginRegistrant<EditorConfig> reg(_T("EditorConfig"));
 }
 
-BEGIN_EVENT_TABLE(EditorConfig, cbPlugin)
-    EVT_EDITOR_SETTINGS_CHANGED_EVENT(-1 /* all */, EditorConfig::OnProjectSettingsChanged)
-END_EVENT_TABLE()
-
 EditorConfig::EditorConfig()
 {
-
-    // hook to project loading procedure
-    ProjectLoaderHooks::HookFunctorBase* ec_hook =
-        new ProjectLoaderHooks::HookFunctor<EditorConfig>(this, &EditorConfig::OnProjectLoadingHook);
-
-    m_ECHookID = ProjectLoaderHooks::RegisterHook(ec_hook);
-    m_InitDone = false;
 }
 
 int EditorConfig::GetConfigurationGroup() const
@@ -50,33 +38,13 @@ int EditorConfig::GetConfigurationGroup() const
 
 cbConfigurationPanel* EditorConfig::GetProjectConfigurationPanel(wxWindow* parent, cbProject* prj)
 {
-  TEditorSettings es;
-  if (m_ECSettings.find(prj) == m_ECSettings.end())
-      es.active = false; // not to be used
-  else
-  {
-      es.active      = m_ECSettings[prj].active;
-      es.use_tabs    = m_ECSettings[prj].use_tabs;
-      es.tab_indents = m_ECSettings[prj].tab_indents;
-      es.tab_width   = m_ECSettings[prj].tab_width;
-      es.indent      = m_ECSettings[prj].indent;
-      es.eol_mode    = m_ECSettings[prj].eol_mode;
-  }
+    EditorSettings es = ParseProjectSettings(*prj);
 
-  // deleted by the caller
-#if defined(TRACE_EC)
-  if (prj)
-      Manager::Get()->GetLogManager()->DebugLog(_T("EditorConfig::GetProjectConfigurationPanel(PROJECT)"));
-  else
-      Manager::Get()->GetLogManager()->DebugLog(_T("EditorConfig::GetProjectConfigurationPanel(NULL)"));
-#endif
-  return (new EditorConfigUI(parent, this, prj, es));
+    return new EditorConfigUI(parent, this, prj, es);
 }
 
 void EditorConfig::OnAttach()
 {
-    m_InitDone = false;
-
     // register event
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_ACTIVATED,
         new cbEventFunctor<EditorConfig, CodeBlocksEvent>(this, &EditorConfig::OnEditorActivated));
@@ -84,36 +52,14 @@ void EditorConfig::OnAttach()
 
 void EditorConfig::OnRelease(bool /*appShutDown*/)
 {
-    if (m_InitDone)
-        ProjectLoaderHooks::UnregisterHook(m_ECHookID, true);
-
-    m_InitDone = false;
 }
 
 void EditorConfig::OnEditorActivated(CodeBlocksEvent& event)
 {
     event.Skip();
 
-    if (IsAttached() && m_InitDone)
+    if (IsAttached())
         ApplyEditorSettings(event.GetEditor());
-}
-
-void EditorConfig::OnProjectSettingsChanged(wxCommandEvent& event)
-{
-  TEditorSettings es  = (static_cast<EditorSettingsChangedEvent&>(event)).GetEditorSettings();
-  cbProject*      prj = (static_cast<EditorSettingsChangedEvent&>(event)).GetProject();
-
-#if defined(TRACE_EC)
-  Manager::Get()->GetLogManager()->DebugLog(_T("EditorConfig::OnProjectSettingsChanged()"));
-#endif
-
-  if (prj)
-  {
-#if defined(TRACE_EC)
-      Manager::Get()->GetLogManager()->DebugLog(_T("EditorConfig::OnProjectSettingsChanged(TRUE)"));
-#endif
-      m_ECSettings[prj] = es;
-  }
 }
 
 void EditorConfig::BuildMenu(wxMenuBar* menuBar)
@@ -132,76 +78,65 @@ void EditorConfig::BuildMenu(wxMenuBar* menuBar)
     Connect(idReload, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(EditorConfig::OnReloadEditorConfig));
 }
 
-void EditorConfig::OnProjectLoadingHook(cbProject* prj, TiXmlElement* elem, bool loading)
+EditorSettings EditorConfig::ParseProjectSettings(const cbProject &project)
 {
-    m_InitDone = true;
+    EditorSettings es;
+    const TiXmlNode *rootNode = project.GetExtensionsNode();
+    if (!rootNode)
+        return es;
+    const TiXmlElement* elem = rootNode->ToElement();
+    if (!elem)
+        return es;
 
-    if (!prj || !elem)
-        return; // ?! Should actually NOT happen...
-
-    if (loading)
+    const TiXmlElement* node = elem->FirstChildElement("editor_config");
+    if (node)
     {
-#if defined(TRACE_EC)
-        Manager::Get()->GetLogManager()->DebugLog(_T("EditorConfig::OnProjectLoadingHook(LOAD)"));
-#endif
+        int attr;
 
-        TiXmlElement* node = elem->FirstChildElement("editor_config");
-        if (node)
-        {
-            int             attr;
-            TEditorSettings es;
-
-            if (node->QueryIntAttribute("active",      &attr) == TIXML_SUCCESS)
-              es.active      = attr ? true : false;
-            if (node->QueryIntAttribute("use_tabs",    &attr) == TIXML_SUCCESS)
-              es.use_tabs    = attr ? true : false;
-            if (node->QueryIntAttribute("tab_indents", &attr) == TIXML_SUCCESS)
-              es.tab_indents = attr ? true : false;
-            if (node->QueryIntAttribute("tab_width",   &attr) == TIXML_SUCCESS)
-              es.tab_width   = attr;
-            if (node->QueryIntAttribute("indent",      &attr) == TIXML_SUCCESS)
-              es.indent      = attr;
-            if (node->QueryIntAttribute("eol_mode",    &attr) == TIXML_SUCCESS)
-              es.eol_mode    = attr;
-
-            m_ECSettings[prj] = es;
-#if defined(TRACE_EC)
-            Manager::Get()->GetLogManager()->DebugLog(_T("EditorConfig::OnProjectLoadingHook(LOADED)"));
-#endif
-        }
+        if (node->QueryIntAttribute("active", &attr) == TIXML_SUCCESS)
+            es.active = attr ? true : false;
+        if (node->QueryIntAttribute("use_tabs", &attr) == TIXML_SUCCESS)
+            es.use_tabs = attr ? true : false;
+        if (node->QueryIntAttribute("tab_indents", &attr) == TIXML_SUCCESS)
+            es.tab_indents = attr ? true : false;
+        if (node->QueryIntAttribute("tab_width", &attr) == TIXML_SUCCESS)
+            es.tab_width = attr;
+        if (node->QueryIntAttribute("indent", &attr) == TIXML_SUCCESS)
+            es.indent = attr;
+        if (node->QueryIntAttribute("eol_mode", &attr) == TIXML_SUCCESS)
+            es.eol_mode = attr;
     }
-    else if (m_ECSettings.find(prj) != m_ECSettings.end())
+    return es;
+}
+
+void EditorConfig::SetProjectSettings(cbProject &project, const EditorSettings &es)
+{
+    TiXmlNode *rootNode = project.GetExtensionsNode();
+    if (!rootNode)
+        return;
+    TiXmlElement* elem = rootNode->ToElement();
+    if (!elem)
+        return;
+
+    TiXmlElement* node = elem->FirstChildElement("editor_config");
+    if (!node && !es.active)
+        return; // nothing to do, do not insert a node if not needed
+
+    if ( node && !es.active)
     {
-#if defined(TRACE_EC)
-        Manager::Get()->GetLogManager()->DebugLog(_T("EditorConfig::OnProjectLoadingHook(SAVE)"));
-#endif
-
-        // Hook called when saving project file and this project is tracke
-
-        TiXmlElement* node = elem->FirstChildElement("editor_config");
-        if (!node && !m_ECSettings[prj].active)
-            return; // nothing to do, do not insert a node if not needed
-
-        if ( node && !m_ECSettings[prj].active)
-        {
-          // ToDo: Remove node and return?!
-        }
-
-        if (!node)
-            node = elem->InsertEndChild(TiXmlElement("editor_config"))->ToElement();
-
-        node->Clear();
-        node->SetAttribute("active",      m_ECSettings[prj].active      ? 1 : 0);
-        node->SetAttribute("use_tabs",    m_ECSettings[prj].use_tabs    ? 1 : 0);
-        node->SetAttribute("tab_indents", m_ECSettings[prj].tab_indents ? 1 : 0);
-        node->SetAttribute("tab_width",   m_ECSettings[prj].tab_width          );
-        node->SetAttribute("indent",      m_ECSettings[prj].indent             );
-        node->SetAttribute("eol_mode",    m_ECSettings[prj].eol_mode           );
-
-#if defined(TRACE_EC)
-        Manager::Get()->GetLogManager()->DebugLog(_T("EditorConfig::OnProjectLoadingHook(SAVED)"));
-#endif
+      // ToDo: Remove node and return?!
     }
+
+    if (!node)
+        node = elem->InsertEndChild(TiXmlElement("editor_config"))->ToElement();
+
+    node->Clear();
+    node->SetAttribute("active", (es.active ? 1 : 0));
+    node->SetAttribute("use_tabs", (es.use_tabs ? 1 : 0));
+    node->SetAttribute("tab_indents", (es.tab_indents ? 1 : 0));
+    node->SetAttribute("tab_width", es.tab_width);
+    node->SetAttribute("indent", es.indent);
+    node->SetAttribute("eol_mode", es.eol_mode);
 }
 
 void EditorConfig::OnReloadEditorConfig(wxCommandEvent& /*event*/)
@@ -239,32 +174,31 @@ bool EditorConfig::ApplyEditorSettings(EditorBase* eb)
     if (!prj)
         return true;
 
-    if (m_ECSettings.find(prj) == m_ECSettings.end())
-        return true;
+    const EditorSettings &es=ParseProjectSettings(*prj);
 
     // Check, if there are settings to be applied at all
-    if (!m_ECSettings[prj].active)
+    if (!es.active)
         return true;
 
 #if defined(TRACE_EC)
     Manager::Get()->GetLogManager()->DebugLog(_T("EditorConfig::ApplyEditorSettings(TRUE)"));
 #endif
 
-    control->SetUseTabs(m_ECSettings[prj].use_tabs);
-    control->SetTabIndents(m_ECSettings[prj].tab_indents);
-    if (m_ECSettings[prj].indent > 0)
-        control->SetIndent(m_ECSettings[prj].indent);
-    if (m_ECSettings[prj].tab_width > 0)
-        control->SetTabWidth(m_ECSettings[prj].tab_width);
-    if (m_ECSettings[prj].indent < 0) /* set indent to tab_width here */
+    control->SetUseTabs(es.use_tabs);
+    control->SetTabIndents(es.tab_indents);
+    if (es.indent > 0)
+        control->SetIndent(es.indent);
+    if (es.tab_width > 0)
+        control->SetTabWidth(es.tab_width);
+    if (es.indent < 0) /* set indent to tab_width here */
         control->SetIndent(control->GetTabWidth());
 
     // This works only if in sync with wxscintilla.h
-    if      (m_ECSettings[prj].eol_mode == wxSCI_EOL_CRLF)
+    if      (es.eol_mode == wxSCI_EOL_CRLF)
         control->SetEOLMode(wxSCI_EOL_CRLF);
-    else if (m_ECSettings[prj].eol_mode == wxSCI_EOL_CR)
+    else if (es.eol_mode == wxSCI_EOL_CR)
         control->SetEOLMode(wxSCI_EOL_CR);
-    else if (m_ECSettings[prj].eol_mode == wxSCI_EOL_LF)
+    else if (es.eol_mode == wxSCI_EOL_LF)
         control->SetEOLMode(wxSCI_EOL_LF);
     // else do nothing because its set to "use settings > editor"
 
