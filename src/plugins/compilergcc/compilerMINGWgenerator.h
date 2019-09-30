@@ -13,9 +13,9 @@ class CompilerMINGWGenerator : public CompilerCommandGenerator
 {
     public:
         CompilerMINGWGenerator();
-        virtual ~CompilerMINGWGenerator();
+        ~CompilerMINGWGenerator() override;
     protected:
-        virtual wxString SetupIncludeDirs(Compiler* compiler, ProjectBuildTarget* target);
+        wxString SetupIncludeDirs(Compiler* compiler, ProjectBuildTarget* target) override;
     private:
         wxString m_VerStr;
 };
