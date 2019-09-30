@@ -1637,6 +1637,9 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         TiXmlElement *element = child->ToElement();
         if (!element)
             continue;
+        // Skip empty elements, because we don't want to pollute the project file.
+        if (element->NoChildren() && element->FirstAttribute() == nullptr)
+            continue;
 
         sortedExtensions.emplace(Key{element->Value(), index}, element->Clone());
     }
