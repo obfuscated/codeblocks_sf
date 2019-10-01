@@ -6,10 +6,11 @@
  * License:   GPL
  **************************************************************/
 // This plugin emulates Linux GPM functions within the editors in linux and msWindows.
-// If selected text, paste selected text at current cursor position
+
+// If selected text, paste selected text at current cursor position (ala Linux)
 // If selected text, and user middle-clicks inside selection, copy to clipboard
-// If no selected text, paste clipboard data at cursor position
-// If selected text, and user switches editors, copy selection to clipboard
+// If shift key down, paste clipboard data at cursor position
+// If shift key down and selected text, paste text over selection
 
 #if defined(__GNUG__) && !defined(__APPLE__)
 	#pragma implementation "MouseSap.h"
@@ -35,13 +36,13 @@
 #include "cbstyledtextctrl.h"
 #include "MouseSap.h"
 
-#if defined(__WXGTK__)
-    // hack to avoid name-conflict between wxWidgets GSocket and the one defined
-    // in newer glib-headers
-    #define GSocket GLibSocket
-    #include "gtk/gtk.h"
-    #undef GSocket
-#endif
+//#if defined(__WXGTK__)
+//    // hack to avoid name-conflict between wxWidgets GSocket and the one defined
+//    // in newer glib-headers
+//    #define GSocket GLibSocket
+//    #include "gtk/gtk.h"
+//    #undef GSocket
+//#endif
 
 // Register the plugin
 namespace
@@ -548,6 +549,11 @@ MMSapEvents::~MMSapEvents()
 void MMSapEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
 // ----------------------------------------------------------------------------
 {
+    // For windows, user must enable MiddleMousePaste thru editor configuration
+    #if defined(__WXMSW__)
+    if (not Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/enable_middle_mouse_paste"), false))
+        {event.Skip(); return;}
+    #endif
 
     //remember event window pointer
     //-wxObject* pEvtObject = event.GetEventObject();
@@ -600,9 +606,10 @@ void MMSapEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
 void MMSapEvents::OnMiddleMouseDown(wxMouseEvent& event, cbStyledTextCtrl* ed)
 // ----------------------------------------------------------------------------
 {
-    // If selected text, paste selected text at current cursor position
+    // If selected text, paste selected text at current cursor position (ala Linux)
     // If selected text, and user middle-clicks inside selection, copy to clipboard
-    // If no selected text, paste clipboard data at cursor position
+    // If shift key down, paste clipboard data at cursor position
+    // If shift key down and selected text, paste text over selection
 
     int pos = ed->PositionFromPoint(wxPoint(event.GetX(), event.GetY()));
 
@@ -614,23 +621,30 @@ void MMSapEvents::OnMiddleMouseDown(wxMouseEvent& event, cbStyledTextCtrl* ed)
 
     const wxString selectedText = ed->GetSelectedText();
 
-    // If no current selection, or shift key is down, use paste from the clipboard
     bool shiftKeyState = ::wxGetKeyState(WXK_SHIFT);
 
-    if (  shiftKeyState || selectedText.IsEmpty() )
+    // If no current selection, and shift key is down, use paste from the clipboard
+    if (  shiftKeyState )
     {
         PasteFromClipboard( event, ed, shiftKeyState );
         return;
     }
 
     //if user middle-clicked inside the selection, copy to clipboard
-    if ( (pos >= start) && (pos <= end) )
+    if ( (not shiftKeyState) && (pos >= start) && (pos <= end) && (start != end))
     {
         #if defined(__WXGTK__)
-            gtk_clipboard_set_text(
-                gtk_clipboard_get(GDK_SELECTION_PRIMARY),
-                selectedText.mb_str(wxConvUTF8),
-                selectedText.Length() );
+//            gtk_clipboard_set_text(
+//                //-gtk_clipboard_get(GDK_SELECTION_PRIMARY),
+//                gtk_clipboard_get(GDK_SELECTION_CLIPBOARD),
+//                selectedText.mb_str(wxConvUTF8),
+//                selectedText.Length() );
+            wxTheClipboard->UsePrimarySelection(false);
+            if (wxTheClipboard->Open())
+            {
+                wxTheClipboard->AddData(new wxTextDataObject(selectedText));
+                wxTheClipboard->Close();
+            }
         #else //__WXMSW__
                 if (wxTheClipboard->Open())
                 {
@@ -683,9 +697,13 @@ void MMSapEvents::PasteFromClipboard( wxMouseEvent& event, cbStyledTextCtrl* ed,
     bool gotData = false;
     if (wxTheClipboard->Open())
     {
+        // If shiftKeyUp, paste marked data from primary clipboard (GDK_PRIMARY_PRIMARY)
+        // If shiftKeyDown, paste like ctrl-V (GDK_SELECTION_CLIPBOARD)
         wxTheClipboard->UsePrimarySelection(true);
-        gotData = wxTheClipboard->GetData(data);
+        gotData = wxTheClipboard->GetData(data); //try Primary
         wxTheClipboard->UsePrimarySelection(false);
+        if ( (not gotData) or (shiftKeyState) ) //(pecan 2019/09/25)
+            gotData = wxTheClipboard->GetData(data); //try non-primary
         wxTheClipboard->Close();
     }
     if (gotData)
@@ -743,10 +761,16 @@ void MMSapEvents::OnKillFocusEvent( wxFocusEvent& event )
             break;
 
         #if defined(__WXGTK__)
-            gtk_clipboard_set_text(
-                gtk_clipboard_get(GDK_SELECTION_PRIMARY),
-                selectedText.mb_str(wxConvUTF8),
-                selectedText.Length() );
+            //gtk_clipboard_set_text(
+            //    gtk_clipboard_get(GDK_SELECTION_PRIMARY),
+            //    selectedText.mb_str(wxConvUTF8),
+            //    selectedText.Length() );
+            wxTheClipboard->UsePrimarySelection(true);
+            if (wxTheClipboard->Open())
+            {
+                wxTheClipboard->AddData(new wxTextDataObject(selectedText));
+                wxTheClipboard->Close();
+            }
         #else //__WXMSW__ //testing
                 if (wxTheClipboard->Open())
                 {

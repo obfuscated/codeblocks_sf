@@ -35,7 +35,7 @@
 // ---------------------------------------------------------------------------
 
 //----------------------------------------
-#define VERSION "1.1.7 2009/11/8"
+#define VERSION "1.1.8 2019/10/1"
 //----------------------------------------
 
 #undef LOGGING
@@ -173,6 +173,9 @@ class MMSapEvents : public wxEvtHandler
 //          06) Shift-MiddleMouse will paste over marked area if cursor also in marked
 //              else insert pasted data.
 //          07) Change Paste() to SetTarget() for Linux
+//  Commit  1.1.8 2019/10/1
+//          Remove all direct calls to gtk (use wxWidgets only)
+//          use Editor config ReadBool(_T("/enable_middle_mouse_paste") to enable.
 //  ToDo
 // ----------------------------------------------------------------------------
 #endif // MouseSap_H
