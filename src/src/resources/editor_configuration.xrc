@@ -507,6 +507,12 @@
 																		<flag>wxALIGN_TOP</flag>
 																	</object>
 																	<object class="sizeritem">
+																		<object class="wxCheckBox" name="chkEnableMiddleMousePaste">
+																			<label>Enable marked text paste with middle mouse click (on Windows)</label>
+																		</object>
+																		<flag>wxALIGN_TOP</flag>
+																	</object>
+																	<object class="sizeritem">
 																		<object class="wxFlexGridSizer">
 																			<cols>2</cols>
 																			<rows>5</rows>
