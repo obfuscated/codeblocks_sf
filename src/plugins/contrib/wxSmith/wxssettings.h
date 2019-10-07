@@ -27,15 +27,15 @@
 #include <configurationpanel.h>
 
 //(*Headers(wxsSettings)
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/checkbox.h>
-#include <wx/spinctrl.h>
-#include <wx/radiobut.h>
-#include <wx/panel.h>
-#include <wx/choice.h>
 #include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/choice.h>
 #include <wx/combobox.h>
+#include <wx/panel.h>
+#include <wx/radiobut.h>
+#include <wx/sizer.h>
+#include <wx/spinctrl.h>
+#include <wx/stattext.h>
 //*)
 
 class wxsSettings: public cbConfigurationPanel
@@ -89,35 +89,35 @@ private:
     //*)
 
     //(*Declarations(wxsSettings)
-    wxRadioButton* m_NoneI18N_T;
-    wxCheckBox* m_SizeExpand;
-    wxCheckBox* m_BorderTop;
-    wxComboBox* m_DragAssistType;
-    wxCheckBox* m_RemovePrefix;
-    wxRadioButton* m_Icons32;
-    wxCheckBox* m_UniqueIDsOnly;
-    wxCheckBox* m_SizeShaped;
-    wxCheckBox* m_BorderBottom;
-    wxRadioButton* m_NoneI18NwxT;
-    wxChoice* m_BrowserPlacements;
-    wxCheckBox* m_BorderLeft;
-    wxCheckBox* m_Continous;
-    wxSpinCtrl* m_Border;
     wxBoxSizer* BoxSizer2;
+    wxButton* m_DragParentCol;
+    wxButton* m_DragTargetCol;
+    wxCheckBox* m_BorderBottom;
+    wxCheckBox* m_BorderDU;
+    wxCheckBox* m_BorderLeft;
+    wxCheckBox* m_BorderRight;
+    wxCheckBox* m_BorderTop;
+    wxCheckBox* m_Continous;
+    wxCheckBox* m_RemovePrefix;
+    wxCheckBox* m_SizeExpand;
+    wxCheckBox* m_SizeShaped;
+    wxCheckBox* m_UniqueIDsOnly;
+    wxCheckBox* m_UseGrid;
+    wxCheckBox* m_UseI18N;
+    wxChoice* m_BrowserPlacements;
+    wxChoice* m_Placement;
+    wxComboBox* m_DragAssistType;
+    wxFlexGridSizer* FlexGridSizer6;
+    wxRadioButton* m_Icons16;
+    wxRadioButton* m_Icons32;
+    wxRadioButton* m_NoneI18N;
+    wxRadioButton* m_NoneI18N_T;
+    wxRadioButton* m_NoneI18NwxT;
     wxRadioButton* m_TIcons16;
     wxRadioButton* m_TIcons32;
-    wxRadioButton* m_NoneI18N;
-    wxCheckBox* m_BorderDU;
-    wxCheckBox* m_UseI18N;
+    wxSpinCtrl* m_Border;
     wxSpinCtrl* m_GridSize;
-    wxChoice* m_Placement;
-    wxRadioButton* m_Icons16;
-    wxCheckBox* m_BorderRight;
-    wxFlexGridSizer* FlexGridSizer6;
-    wxButton* m_DragTargetCol;
     wxSpinCtrl* m_Proportion;
-    wxButton* m_DragParentCol;
-    wxCheckBox* m_UseGrid;
     //*)
 
     int m_InitialPlacement;

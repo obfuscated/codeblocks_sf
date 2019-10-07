@@ -427,6 +427,7 @@
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<option>1</option>
+										<size>0,0</size>
 									</object>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="wxID_ANY" variable="StaticText15" member="no">
@@ -439,6 +440,7 @@
 										<object class="wxRadioButton" name="ID_RADIOBUTTON5" variable="m_NoneI18N_T" member="yes">
 											<label>__T(&quot;&quot;)</label>
 											<selected>1</selected>
+											<style>wxRB_GROUP</style>
 										</object>
 										<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>

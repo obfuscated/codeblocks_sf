@@ -73,34 +73,34 @@ END_EVENT_TABLE()
 wxsSettings::wxsSettings(wxWindow* parent,cb_unused wxWindowID id)
 {
     //(*Initialize(wxsSettings)
-    wxStaticText* StaticText10;
-    wxBoxSizer* BoxSizer4;
-    wxStaticBoxSizer* StaticBoxSizer2;
-    wxStaticText* StaticText9;
-    wxFlexGridSizer* FlexGridSizer4;
-    wxStaticText* StaticText13;
-    wxStaticText* StaticText2;
-    wxStaticText* StaticText14;
-    wxStaticBoxSizer* StaticBoxSizer4;
-    wxFlexGridSizer* FlexGridSizer3;
-    wxStaticText* StaticText6;
-    wxFlexGridSizer* FlexGridSizer5;
-    wxStaticText* StaticText8;
-    wxStaticText* StaticText11;
-    wxFlexGridSizer* FlexGridSizer2;
-    wxStaticText* StaticText1;
-    wxStaticText* StaticText3;
-    wxFlexGridSizer* FlexGridSizer7;
-    wxStaticBoxSizer* StaticBoxSizer3;
-    wxStaticText* StaticText5;
-    wxStaticText* StaticText7;
     wxBoxSizer* BoxSizer1;
-    wxStaticText* StaticText15;
-    wxStaticText* StaticText12;
-    wxStaticBoxSizer* StaticBoxSizer1;
-    wxFlexGridSizer* FlexGridSizer1;
     wxBoxSizer* BoxSizer3;
+    wxBoxSizer* BoxSizer4;
+    wxFlexGridSizer* FlexGridSizer1;
+    wxFlexGridSizer* FlexGridSizer2;
+    wxFlexGridSizer* FlexGridSizer3;
+    wxFlexGridSizer* FlexGridSizer4;
+    wxFlexGridSizer* FlexGridSizer5;
+    wxFlexGridSizer* FlexGridSizer7;
+    wxStaticBoxSizer* StaticBoxSizer1;
+    wxStaticBoxSizer* StaticBoxSizer2;
+    wxStaticBoxSizer* StaticBoxSizer3;
+    wxStaticBoxSizer* StaticBoxSizer4;
+    wxStaticText* StaticText10;
+    wxStaticText* StaticText11;
+    wxStaticText* StaticText12;
+    wxStaticText* StaticText13;
+    wxStaticText* StaticText14;
+    wxStaticText* StaticText15;
+    wxStaticText* StaticText1;
+    wxStaticText* StaticText2;
+    wxStaticText* StaticText3;
     wxStaticText* StaticText4;
+    wxStaticText* StaticText5;
+    wxStaticText* StaticText6;
+    wxStaticText* StaticText7;
+    wxStaticText* StaticText8;
+    wxStaticText* StaticText9;
 
     Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
     FlexGridSizer6 = new wxFlexGridSizer(0, 1, 0, 0);
@@ -248,7 +248,7 @@ wxsSettings::wxsSettings(wxWindow* parent,cb_unused wxWindowID id)
     FlexGridSizer1->Add(0,0,1, wxEXPAND, 5);
     StaticText15 = new wxStaticText(this, wxID_ANY, _("Non-I18N string:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer1->Add(StaticText15, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-    m_NoneI18N_T = new wxRadioButton(this, ID_RADIOBUTTON5, _("_T(\"\")"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON5"));
+    m_NoneI18N_T = new wxRadioButton(this, ID_RADIOBUTTON5, _("_T(\"\")"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP, wxDefaultValidator, _T("ID_RADIOBUTTON5"));
     m_NoneI18N_T->SetValue(true);
     FlexGridSizer1->Add(m_NoneI18N_T, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     m_NoneI18NwxT = new wxRadioButton(this, ID_RADIOBUTTON6, _("wxT(\"\")"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON6"));
@@ -262,9 +262,9 @@ wxsSettings::wxsSettings(wxWindow* parent,cb_unused wxWindowID id)
     FlexGridSizer6->Fit(this);
     FlexGridSizer6->SetSizeHints(this);
 
-    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsSettings::OnDragTargetColClick));
-    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsSettings::OnDragParentColClick));
-    Connect(ID_CHECKBOX7,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsSettings::OnUseGridClick));
+    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsSettings::OnDragTargetColClick);
+    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsSettings::OnDragParentColClick);
+    Connect(ID_CHECKBOX7,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsSettings::OnUseGridClick);
     //*)
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("wxsmith"));
