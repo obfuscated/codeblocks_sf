@@ -49,9 +49,11 @@ END_EVENT_TABLE()
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-wxString EnvVars::ParseProjectEnvvarSet(const cbProject &project)
+wxString EnvVars::ParseProjectEnvvarSet(const cbProject *project)
 {
-    const TiXmlNode *extNode = project.GetExtensionsNode();
+    if (!project)
+        return wxString();
+    const TiXmlNode *extNode = project->GetExtensionsNode();
     if (!extNode)
         return wxString();
     const TiXmlElement* elem = extNode->ToElement();
@@ -93,7 +95,7 @@ void EnvVars::SaveProjectEnvvarSet(cbProject &project, const wxString& envvar_se
 
 void EnvVars::DoProjectActivate(cbProject* project)
 {
-    const wxString prj_envvar_set = ParseProjectEnvvarSet(*project);
+    const wxString prj_envvar_set = ParseProjectEnvvarSet(project);
     if (prj_envvar_set.IsEmpty())  // There is no envvar set to apply...
       // Apply default envvar set (but only, if not already active)
       nsEnvVars::EnvvarSetApply(wxEmptyString, false);
@@ -143,7 +145,7 @@ void EnvVars::OnProjectClosed(CodeBlocksEvent& event)
 
   if (IsAttached())
   {
-    prj_envvar_set = ParseProjectEnvvarSet(*event.GetProject());
+    prj_envvar_set = ParseProjectEnvvarSet(event.GetProject());
 
     // If there is an envvar set connected to this project...
     if (!prj_envvar_set.IsEmpty())

@@ -49,7 +49,7 @@ EnvVarsProjectOptionsDlg::EnvVarsProjectOptionsDlg(wxWindow* parent, EnvVars* pl
   wxCheckBox* checkbox_control = XRCCTRL(*this, "chkEnvvarSet", wxCheckBox);
   if (checkbox_control && choice_control->GetCount())
   {
-    wxString envvar_set = EnvVars::ParseProjectEnvvarSet(*project);
+    wxString envvar_set = EnvVars::ParseProjectEnvvarSet(project);
     if (envvar_set.IsEmpty())
     {
       checkbox_control->SetValue(false);
