@@ -35,6 +35,9 @@ namespace
         WXS_ST(wxDIRP_CHANGE_DIR)
         WXS_ST(wxDIRP_DIR_MUST_EXIST)
         WXS_ST(wxDIRP_USE_TEXTCTRL)
+#if wxCHECK_VERSION(3,0,0)
+        WXS_ST(wxDIRP_SMALL)
+#endif // wxCHECK_VERSION
     WXS_ST_END()
 
 
