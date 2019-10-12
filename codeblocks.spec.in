@@ -169,7 +169,6 @@ plugins. These are:
  * HexEditor
  * IncrementalSearch
  * Keyboard shortcuts configuration
- * CB koders
  * Library finder
  * MouseSap
  * NassiShneiderman
@@ -337,7 +336,6 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{plugindir}/libCccc.so
 %{plugindir}/libCppCheck.so
 %{plugindir}/libSmartIndent*.so
-%{plugindir}/libcb_koders.so
 %{plugindir}/libcodesnippets.so
 %{plugindir}/libcodestat.so
 %{plugindir}/libcopystrings.so
@@ -381,7 +379,6 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{pkgdatadir}/Cccc.zip
 %{pkgdatadir}/CppCheck.zip
 %{pkgdatadir}/SmartIndent*.zip
-%{pkgdatadir}/cb_koders.zip
 %{pkgdatadir}/codesnippets.zip
 %{pkgdatadir}/codestat.zip
 %{pkgdatadir}/copystrings.zip

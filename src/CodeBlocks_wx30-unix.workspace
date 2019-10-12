@@ -22,9 +22,6 @@
 			<Depends filename="CodeBlocks_wx30-unix.cbp" />
 		</Project>
 		<Project filename="plugins/contrib/byogames/byogames_wx30-unix.cbp" />
-		<Project filename="plugins/contrib/cb_koders/cb_koders_wx30-unix.cbp">
-			<Depends filename="CodeBlocks_wx30-unix.cbp" />
-		</Project>
 		<Project filename="plugins/contrib/Cccc/Cccc_wx30-unix.cbp">
 			<Depends filename="CodeBlocks_wx30-unix.cbp" />
 		</Project>
