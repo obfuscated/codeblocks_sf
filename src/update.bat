@@ -198,6 +198,12 @@ if exist "%CB_DEVEL_RESDIR%\lib_finder" (
     xcopy /D /y "%CB_DEVEL_RESDIR%\lib_finder\*.xml" "%CB_OUTPUT_RESDIR%\lib_finder" > nul
 )
 
+if exist "%CB_DEVEL_RESDIR%\SpellChecker" (
+    call:mkdirSilent "%CB_OUTPUT_RESDIR%\SpellChecker"
+    xcopy /D /y "%CB_DEVEL_RESDIR%\SpellChecker\*.xml" "%CB_OUTPUT_RESDIR%\SpellChecker" > nul
+    call:copyImageFiles "%CB_DEVEL_RESDIR%\SpellChecker" "%CB_OUTPUT_RESDIR%\SpellChecker"
+)
+
 REM misc. contrib plugin settings:
 echo Copying files of several contrib plugins settings
 xcopy /D /y "%CB_DEVEL_RESDIR%\images\settings\*.png" "%CB_OUTPUT_RESDIR%\images\settings" > nul

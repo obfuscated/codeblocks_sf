@@ -207,6 +207,11 @@ if [ -d "${CB_DEVEL_RESDIR}/lib_finder" ]; then
     mkdir -p ${CB_OUTPUT_RESDIR}/lib_finder
     cp -f ${CB_DEVEL_RESDIR}/lib_finder/*.xml ${CB_OUTPUT_RESDIR}/lib_finder > /dev/null
 fi
+if [ -d "${CB_DEVEL_RESDIR}/SpellChecker" ]; then
+    mkdir -p ${CB_OUTPUT_RESDIR}/SpellChecker
+    cp -f ${CB_DEVEL_RESDIR}/SpellChecker/*.xml ${CB_OUTPUT_RESDIR}/SpellChecker > /dev/null
+    copyImageFiles ${CB_DEVEL_RESDIR}/SpellChecker ${CB_OUTPUT_RESDIR}/SpellChecker
+fi
 
 # misc. contrib plugin settings:
 cp -f ${CB_DEVEL_RESDIR}/images/settings/*.png ${CB_OUTPUT_RESDIR}/images/settings > /dev/null
