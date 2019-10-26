@@ -91,12 +91,6 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
         void ConvertVersion_Pre_1_1();
         void ConvertLibraries(CompileTargetBase* object);
 
-        // convenience functions, used in Save()
-        TiXmlElement* AddElement(TiXmlElement* parent, const char* name, const char* attr = nullptr, const wxString& attribute = wxEmptyString);
-        TiXmlElement* AddElement(TiXmlElement* parent, const char* name, const char* attr, int attribute);
-        void AddArrayOfElements(TiXmlElement* parent, const char* name, const char* attr, const wxArrayString& array, bool isPath = false);
-        void SaveEnvironment(TiXmlElement* parent, CompileOptionsBase* base);
-
         // accepts a questionable compiler index and returns a valid compiler index
         // (popping up a selection dialog if needed)
         wxString GetValidCompilerID(const wxString& proposal, const wxString& scope);

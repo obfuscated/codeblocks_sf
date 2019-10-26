@@ -11,6 +11,24 @@
 
 WX_DECLARE_STRING_HASH_MAP(wxString, StringHash);
 
+/// Enum which specifies which executable from the toolchain executables would be used for linking
+/// the target.
+enum class LinkerExecutableOption : int32_t
+{
+    /// For C-only projects this is the same as CCompiler, for C++ or mixed projects this is the
+    /// same as CppCompiler.
+    AutoDetect = 0,
+    /// Use the C compiler executable.
+    CCompiler,
+    /// Use the C++ compiler executable.
+    CppCompiler,
+    /// Use the linker executable.
+    Linker,
+
+    /// Not a valid option, used for range checks.
+    Last
+};
+
 /**
   * This is a base class for all classes needing compilation parameters. It
   * offers functions to get/set the following:\n
@@ -48,6 +66,9 @@ class DLLIMPORT CompileOptionsBase
         virtual void AddLinkLib(const wxString& option);
         virtual void ReplaceLinkLib(const wxString& option, const wxString& new_option);
         virtual void RemoveLinkLib(const wxString& option);
+
+        virtual void SetLinkerExecutable(LinkerExecutableOption option);
+        virtual LinkerExecutableOption GetLinkerExecutable() const;
 
         virtual void SetCompilerOptions(const wxArrayString& compilerOpts);
         virtual const wxArrayString& GetCompilerOptions() const;
@@ -108,6 +129,7 @@ class DLLIMPORT CompileOptionsBase
         virtual const StringHash& GetAllVars() const;
     protected:
         int m_Platform;
+        LinkerExecutableOption m_LinkerExecutable;
         wxArrayString m_LinkerOptions;
         wxArrayString m_LinkLibs;
         wxArrayString m_CompilerOptions;

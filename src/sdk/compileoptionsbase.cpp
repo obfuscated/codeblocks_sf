@@ -20,6 +20,7 @@ namespace { static const bool s_case_sensitive = platform::windows ? false : tru
 
 CompileOptionsBase::CompileOptionsBase()
     : m_Platform(spAll),
+    m_LinkerExecutable(LinkerExecutableOption::AutoDetect),
     m_Modified(false),
     m_AlwaysRunPostCmds(false)
 {
@@ -574,4 +575,17 @@ const wxString& CompileOptionsBase::GetVar(const wxString& key) const
 const StringHash& CompileOptionsBase::GetAllVars() const
 {
     return m_Vars;
+}
+
+void CompileOptionsBase::SetLinkerExecutable(LinkerExecutableOption option)
+{
+    if (m_LinkerExecutable == option)
+        return;
+    m_LinkerExecutable = option;
+    SetModified(true);
+}
+
+LinkerExecutableOption CompileOptionsBase::GetLinkerExecutable() const
+{
+    return m_LinkerExecutable;
 }

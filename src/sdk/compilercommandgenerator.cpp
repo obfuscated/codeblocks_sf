@@ -271,9 +271,31 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
         }
     }
 
+    const LinkerExecutableOption linkerExeOption = (target
+                                                    ? target->GetLinkerExecutable()
+                                                    : LinkerExecutableOption::AutoDetect);
+
+    wxString linkerProgram;
+    switch (linkerExeOption)
+    {
+        case LinkerExecutableOption::CCompiler:
+            linkerProgram = compiler->GetPrograms().C;
+            break;
+
+        case LinkerExecutableOption::CppCompiler:
+            linkerProgram = compiler->GetPrograms().CPP;
+            break;
+
+        default:
+        case LinkerExecutableOption::AutoDetect:
+        case LinkerExecutableOption::Linker:
+            linkerProgram = compiler->GetPrograms().LD;
+            break;
+    }
+
     // check that we have valid compiler/linker program names (and are indeed needed by the macro)
     if (   (compilerStr.IsEmpty()                     && macro.Contains(_T("$compiler")))
-        || (compiler->GetPrograms().LD.IsEmpty()      && macro.Contains(_T("$linker")))
+        || (linkerProgram.IsEmpty()                   && macro.Contains(_T("$linker")))
         || (compiler->GetPrograms().LIB.IsEmpty()     && macro.Contains(_T("$lib_linker")))
         || (compiler->GetPrograms().WINDRES.IsEmpty() && macro.Contains(_T("$rescomp"))) )
     {
@@ -405,7 +427,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
     }
 
     macro.Replace(_T("$compiler"),      compilerStr);
-    macro.Replace(_T("$linker"),        compiler->GetPrograms().LD);
+    macro.Replace(_T("$linker"),        linkerProgram);
     macro.Replace(_T("$lib_linker"),    compiler->GetPrograms().LIB);
     macro.Replace(_T("$rescomp"),       compiler->GetPrograms().WINDRES);
     macro.Replace(_T("$options"),       cFlags);

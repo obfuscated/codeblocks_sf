@@ -364,6 +364,34 @@
 													<border>8</border>
 													<option>1</option>
 												</object>
+												<object class="sizeritem">
+													<object class="wxBoxSizer">
+														<object class="sizeritem">
+															<object class="wxStaticText" name="txtLinkerExe">
+																<label>Linker executable:</label>
+															</object>
+															<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+															<border>5</border>
+														</object>
+														<object class="sizeritem">
+															<object class="wxChoice" name="chLinkerExe">
+																<content>
+																	<item>Auto detect</item>
+																	<item>Use C compiler</item>
+																	<item>Use C++ compiler</item>
+																	<item>Use linker</item>
+																</content>
+																<selection>0</selection>
+																<help>This option controls which executable would be used for linking. Auto detect means that C++ compiler would be used for C++ projects and C compiler for C projects.</help>
+															</object>
+															<flag>wxALIGN_LEFT</flag>
+															<border>5</border>
+															<option>1</option>
+														</object>
+													</object>
+													<flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
+													<border>8</border>
+												</object>
 											</object>
 										</object>
 										<label>Linker settings</label>

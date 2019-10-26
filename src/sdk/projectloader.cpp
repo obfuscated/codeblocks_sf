@@ -786,6 +786,32 @@ void ProjectLoader::DoLinkerOptions(TiXmlElement* parentNode, ProjectBuildTarget
 
         child = child->NextSiblingElement("Add");
     }
+
+    child = node->FirstChildElement("LinkerExe");
+    if (child)
+    {
+        const wxString value = cbC2U(child->Attribute("value"));
+
+        wxString str[int(LinkerExecutableOption::Last) - 1] = {
+            wxT("CCompiler"),
+            wxT("CppCompiler"),
+            wxT("Linker")
+        };
+
+        int index;
+        for (index = 0; index < cbCountOf(str); ++index)
+        {
+            if (value == str[index])
+                break;
+        }
+
+        LinkerExecutableOption linkerExe = LinkerExecutableOption::AutoDetect;
+        if (index < cbCountOf(str))
+            linkerExe = LinkerExecutableOption(index + 1);
+
+        if (target)
+            target->SetLinkerExecutable(linkerExe);
+    }
 }
 
 void ProjectLoader::DoIncludesOptions(TiXmlElement* parentNode, ProjectBuildTarget* target)
@@ -1143,7 +1169,8 @@ void ProjectLoader::DoUnitOptions(const TiXmlElement* parentNode, ProjectFile* f
 }
 
 // convenience function, used in Save()
-TiXmlElement* ProjectLoader::AddElement(TiXmlElement* parent, const char* name, const char* attr, const wxString& attribute)
+static TiXmlElement* AddElement(TiXmlElement* parent, const char* name, const char* attr = nullptr,
+                                const wxString& attribute = wxEmptyString)
 {
     TiXmlElement elem(name);
 
@@ -1154,7 +1181,8 @@ TiXmlElement* ProjectLoader::AddElement(TiXmlElement* parent, const char* name, 
 }
 
 // convenience function, used in Save()
-TiXmlElement* ProjectLoader::AddElement(TiXmlElement* parent, const char* name, const char* attr, int attribute)
+static TiXmlElement* AddElement(TiXmlElement* parent, const char* name, const char* attr,
+                                int attribute)
 {
     TiXmlElement elem(name);
 
@@ -1165,7 +1193,8 @@ TiXmlElement* ProjectLoader::AddElement(TiXmlElement* parent, const char* name, 
 }
 
 // convenience function, used in Save()
-void ProjectLoader::AddArrayOfElements(TiXmlElement* parent, const char* name, const char* attr, const wxArrayString& array, bool isPath)
+static void AddArrayOfElements(TiXmlElement* parent, const char* name, const char* attr,
+                               const wxArrayString& array, bool isPath = false)
 {
     if (!array.GetCount())
         return;
@@ -1179,7 +1208,7 @@ void ProjectLoader::AddArrayOfElements(TiXmlElement* parent, const char* name, c
 }
 
 // convenience function, used in Save()
-void ProjectLoader::SaveEnvironment(TiXmlElement* parent, CompileOptionsBase* base)
+static void SaveEnvironment(TiXmlElement* parent, CompileOptionsBase* base)
 {
     if (!base)
         return;
@@ -1214,6 +1243,22 @@ bool ProjectLoader::Save(const wxString& filename, TiXmlElement* pExtensions)
         return true;
     }
     return false;
+}
+
+// convenience function, used in ExportTargetAsProject()
+static void SaveLinkerExecutable(TiXmlElement *linkerNode, const CompileOptionsBase &options)
+{
+    const LinkerExecutableOption linkerExe = options.GetLinkerExecutable();
+    if (linkerExe > LinkerExecutableOption::AutoDetect
+        && linkerExe < LinkerExecutableOption::Last)
+    {
+        wxString str[int(LinkerExecutableOption::Last) - 1] = {
+            wxT("CCompiler"),
+            wxT("CppCompiler"),
+            wxT("Linker")
+        };
+        AddElement(linkerNode, "LinkerExe", "value", str[int(linkerExe) - 1]);
+    }
 }
 
 bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxString& onlyTarget, TiXmlElement* pExtensions)
@@ -1434,6 +1479,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         AddArrayOfElements(node, "Add", "option",    target->GetLinkerOptions());
         AddArrayOfElements(node, "Add", "library",   target->GetLinkLibs(), true);
         AddArrayOfElements(node, "Add", "directory", target->GetLibDirs(), true);
+        SaveLinkerExecutable(node, *target);
         if (node->NoChildren())
             tgtnode->RemoveChild(node);
 
