@@ -581,8 +581,19 @@ void CompileOptionsBase::SetLinkerExecutable(LinkerExecutableOption option)
 {
     if (m_LinkerExecutable == option)
         return;
-    m_LinkerExecutable = option;
-    SetModified(true);
+
+    // We need to do this range check because this function could be called from scripting and there
+    // is no range checking done by the compiler.
+    if (option>= LinkerExecutableOption::First && option <= LinkerExecutableOption::Last)
+    {
+        m_LinkerExecutable = option;
+        SetModified(true);
+    }
+    else if (m_LinkerExecutable != LinkerExecutableOption::AutoDetect)
+    {
+        m_LinkerExecutable = LinkerExecutableOption::AutoDetect;
+        SetModified(true);
+    }
 }
 
 LinkerExecutableOption CompileOptionsBase::GetLinkerExecutable() const

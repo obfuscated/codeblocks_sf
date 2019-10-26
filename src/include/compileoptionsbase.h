@@ -25,8 +25,9 @@ enum class LinkerExecutableOption : int32_t
     /// Use the linker executable.
     Linker,
 
-    /// Not a valid option, used for range checks.
-    Last
+    /// Not valid options, used for range checks.
+    Last,
+    First = AutoDetect
 };
 
 /**

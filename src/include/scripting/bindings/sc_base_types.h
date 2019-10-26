@@ -56,7 +56,7 @@ using SqPlus::GetTypeName;
 #define DECLARE_ENUM_TYPE(T) \
 namespace SqPlus \
 { \
-    inline void Push(HSQUIRRELVM v,T value) { sq_pushinteger(v,value); } \
+    inline void Push(HSQUIRRELVM v,T value) { sq_pushinteger(v,SQInteger(value)); } \
     inline bool Match(TypeWrapper<T>, HSQUIRRELVM v, int idx) { return sq_gettype(v,idx) == OT_INTEGER; } \
     inline T Get(TypeWrapper<T>,HSQUIRRELVM v,int idx) { SQInteger i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return (T)i; } \
 }
@@ -67,6 +67,7 @@ DECLARE_ENUM_TYPE(PrintColourMode);
 DECLARE_ENUM_TYPE(OptionsRelation);
 DECLARE_ENUM_TYPE(OptionsRelationType);
 DECLARE_ENUM_TYPE(TargetType);
+DECLARE_ENUM_TYPE(LinkerExecutableOption);
 DECLARE_ENUM_TYPE(PCHMode);
 DECLARE_ENUM_TYPE(MakeCommand);
 DECLARE_ENUM_TYPE(TemplateOutputType);

@@ -847,6 +847,8 @@ namespace ScriptBindings
                 func(&CompileOptionsBase::SupportsCurrentPlatform, "SupportsCurrentPlatform").
                 func(&CompileOptionsBase::SetLinkerOptions, "SetLinkerOptions").
                 func(&CompileOptionsBase::SetLinkLibs, "SetLinkLibs").
+                func(&CompileOptionsBase::SetLinkerExecutable, "SetLinkerExecutable").
+                func(&CompileOptionsBase::GetLinkerExecutable, "GetLinkerExecutable").
                 func(&CompileOptionsBase::SetCompilerOptions, "SetCompilerOptions").
                 func(&CompileOptionsBase::SetResourceCompilerOptions, "SetResourceCompilerOptions").
                 func(&CompileOptionsBase::SetIncludeDirs, "SetIncludeDirs").
