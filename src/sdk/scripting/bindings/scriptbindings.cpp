@@ -936,7 +936,7 @@ namespace ScriptBindings
                 func(&CompileTargetBase::MakeCommandsModified, "MakeCommandsModified");
 
         SqPlus::SQClassDef<ProjectBuildTarget>("ProjectBuildTarget", "CompileTargetBase").
-                func(&ProjectBuildTarget::GetParentProject, "GetParentProject").
+                func<const cbProject* (ProjectBuildTarget::*)() const>(&ProjectBuildTarget::GetParentProject, "GetParentProject").
                 func(&ProjectBuildTarget::GetFullTitle, "GetFullTitle").
                 func(&ProjectBuildTarget::GetExternalDeps, "GetExternalDeps").
                 func(&ProjectBuildTarget::SetExternalDeps, "SetExternalDeps").
@@ -987,7 +987,7 @@ namespace ScriptBindings
                 func(&cbProject::SetActiveBuildTarget, "SetActiveBuildTarget").
                 func(&cbProject::GetActiveBuildTarget, "GetActiveBuildTarget").
                 func(&cbProject::SelectTarget, "SelectTarget").
-                func(&cbProject::GetCurrentlyCompilingTarget, "GetCurrentlyCompilingTarget").
+                func<const ProjectBuildTarget* (cbProject::*)() const>(&cbProject::GetCurrentlyCompilingTarget, "GetCurrentlyCompilingTarget").
                 func(&cbProject::SetCurrentlyCompilingTarget, "SetCurrentlyCompilingTarget").
                 func(&cbProject::GetModeForPCH, "GetModeForPCH").
                 func(&cbProject::SetModeForPCH, "SetModeForPCH").

@@ -35,6 +35,8 @@ class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
 
         /** @return The target's parent project. */
         virtual cbProject* GetParentProject();
+        /** @return The target's parent project. */
+        virtual const cbProject* GetParentProject() const;
         /** @return The full title, i.e. "projectname - targetname". */
         virtual wxString GetFullTitle() const;
 
@@ -84,7 +86,7 @@ class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
 
         /** Valid only for targets generating dynamic libraries (DLLs or SOs).
           * @return True if an import library will be created, false if not. */
-        virtual bool GetCreateStaticLib();
+        virtual bool GetCreateStaticLib() const;
 
         /** Set if an import library should be created.
           * Valid only for targets generating dynamic libraries (DLLs or SOs).

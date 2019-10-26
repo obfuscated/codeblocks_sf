@@ -18,8 +18,8 @@ class ProjectBuildTarget;
 class ProjectFile;
 class Compiler;
 
-typedef std::map<ProjectBuildTarget*, wxString> OptionsMap;
-typedef std::map<ProjectBuildTarget*, wxArrayString> SearchDirsMap;
+typedef std::map<const ProjectBuildTarget*, wxString> OptionsMap;
+typedef std::map<const ProjectBuildTarget*, wxArrayString> SearchDirsMap;
 
 /** Generate command-lines needed to produce a build.
   * This pre-generates everything when Init() is called.
@@ -38,8 +38,8 @@ class DLLIMPORT CompilerCommandGenerator
 
         /** Get the command line to compile/link the specific file. */
         virtual void GenerateCommandLine(wxString&          macro,
-                                         ProjectBuildTarget* target,
-                                         ProjectFile*        pf,
+                                         const ProjectBuildTarget* target,
+                                         const ProjectFile*  pf,
                                          const wxString&     file,
                                          const wxString&     object,
                                          const wxString&     flat_object,

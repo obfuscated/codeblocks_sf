@@ -1089,7 +1089,7 @@ void cbProject::RestoreTreeState(wxTreeCtrl* tree)
     ::RestoreTreeState(tree, m_ProjectNode, m_ExpandedNodes, m_SelectedNodes);
 }
 
-const wxString& cbProject::GetMakefile()
+const wxString& cbProject::GetMakefile() const
 {
     if (!m_Makefile.IsEmpty())
         return m_Makefile;
@@ -1500,7 +1500,20 @@ ProjectBuildTarget* cbProject::GetBuildTarget(int index)
     return nullptr;
 }
 
+const ProjectBuildTarget* cbProject::GetBuildTarget(int index) const
+{
+    if (index >= 0 && index < (int)m_Targets.GetCount())
+        return m_Targets[index];
+    return nullptr;
+}
+
 ProjectBuildTarget* cbProject::GetBuildTarget(const wxString& targetName)
+{
+    int idx = IndexOfBuildTargetName(targetName);
+    return GetBuildTarget(idx);
+}
+
+const ProjectBuildTarget* cbProject::GetBuildTarget(const wxString& targetName) const
 {
     int idx = IndexOfBuildTargetName(targetName);
     return GetBuildTarget(idx);

@@ -64,7 +64,7 @@ void MacrosManager::ReleaseMenu(cb_unused wxMenuBar* menuBar)
 {
 }
 
-wxString MacrosManager::ReplaceMacros(const wxString& buffer, ProjectBuildTarget* target)
+wxString MacrosManager::ReplaceMacros(const wxString& buffer, const ProjectBuildTarget* target)
 {
     wxString tmp(buffer);
     ReplaceMacros(tmp, target);
@@ -218,7 +218,7 @@ void ReadMacros(MacrosMap &macros, T *object)
 }
 } // namespace
 
-void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBuildTarget* target)
+void MacrosManager::RecalcVars(const cbProject* project, EditorBase* editor, const ProjectBuildTarget* target)
 {
     m_ActiveEditorFilename = wxEmptyString; // invalidate
     m_ActiveEditorLine     = -1;            // invalidate
@@ -297,7 +297,7 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
         m_ProjectTopDir   = UnixFilename(project->GetCommonTopLevelPath());
         m_Makefile        = UnixFilename(project->GetMakefile());
         m_ProjectFiles    = wxEmptyString;
-        for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
+        for (FilesList::const_iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
         {
             // quote filenames, if they contain spaces
             wxString out = UnixFilename(((ProjectFile*)*it)->relativeFilename);
@@ -326,7 +326,7 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
 
         for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
         {
-            ProjectBuildTarget* it_target = project->GetBuildTarget(i);
+            const ProjectBuildTarget* it_target = project->GetBuildTarget(i);
             if (!it_target)
                 continue;
             wxString title = it_target->GetTitle().Upper();
@@ -447,7 +447,7 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
     m_Macros[_T("DAYCOUNT")] = wxString::Format(_T("%d"), ts.GetDays());
 }
 
-void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, bool subrequest)
+void MacrosManager::ReplaceMacros(wxString& buffer, const ProjectBuildTarget* target, bool subrequest)
 {
     if (buffer.IsEmpty())
         return;
@@ -456,9 +456,9 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
     if ( buffer.find_first_of(delim) == wxString::npos )
         return;
 
-    cbProject* project = target
-                        ? target->GetParentProject()
-                        : Manager::Get()->GetProjectManager()->GetActiveProject();
+    const cbProject* project = target
+                             ? target->GetParentProject()
+                             : Manager::Get()->GetProjectManager()->GetActiveProject();
     EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
 
     if (!target)
@@ -628,7 +628,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
     }
 }
 
-wxString MacrosManager::EvalCondition(const wxString& in_cond, const wxString& true_clause, const wxString& false_clause, ProjectBuildTarget* target)
+wxString MacrosManager::EvalCondition(const wxString& in_cond, const wxString& true_clause, const wxString& false_clause, const ProjectBuildTarget* target)
 {
     enum condition_codes {EQ = 1, LT = 2, GT = 4, NE = 8};
 

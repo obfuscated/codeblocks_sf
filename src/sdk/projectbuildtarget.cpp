@@ -55,6 +55,11 @@ cbProject* ProjectBuildTarget::GetParentProject()
     return m_Project;
 }
 
+const cbProject* ProjectBuildTarget::GetParentProject() const
+{
+    return m_Project;
+}
+
 wxString ProjectBuildTarget::GetFullTitle() const
 {
     return m_Project->GetTitle() + _T(" - ") + GetTitle();
@@ -116,7 +121,7 @@ void ProjectBuildTarget::SetCreateDefFile(bool createIt)
     }
 }
 
-bool ProjectBuildTarget::GetCreateStaticLib()
+bool ProjectBuildTarget::GetCreateStaticLib() const
 {
     return m_CreateStaticLib;
 }

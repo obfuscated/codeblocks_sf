@@ -205,8 +205,8 @@ void CompilerCommandGenerator::Init(cbProject* project)
 }
 
 void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
-                                                   ProjectBuildTarget* target,
-                                                   ProjectFile*        pf,
+                                                   const ProjectBuildTarget* target,
+                                                   const ProjectFile*  pf,
                                                    const wxString&     file,
                                                    const wxString&     object,
                                                    const wxString&     flat_object,
