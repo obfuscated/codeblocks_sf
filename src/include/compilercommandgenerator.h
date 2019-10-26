@@ -36,14 +36,34 @@ class DLLIMPORT CompilerCommandGenerator
         /** Initialize for use with the specified @c project. */
         virtual void Init(cbProject* project);
 
+        struct Result
+        {
+            wxString *macro;
+            bool processedCppFile = false;
+
+            explicit Result(wxString *macro) : macro(macro) {}
+        };
+
+        struct Params
+        {
+            const ProjectBuildTarget* target = nullptr;
+            const ProjectFile* pf = nullptr;
+
+            wxString file;
+            wxString object;
+            wxString flatObject;
+            wxString deps;
+            bool hasCppFilesToLink = false;
+        };
+
         /** Get the command line to compile/link the specific file. */
-        virtual void GenerateCommandLine(wxString&          macro,
-                                         const ProjectBuildTarget* target,
-                                         const ProjectFile*  pf,
-                                         const wxString&     file,
-                                         const wxString&     object,
-                                         const wxString&     flat_object,
-                                         const wxString&     deps);
+        virtual void GenerateCommandLine(wxString& macro, const ProjectBuildTarget* target,
+                                         const ProjectFile* pf, const wxString& file,
+                                         const wxString& object, const wxString& flat_object,
+                                         const wxString& deps);
+
+        /** Get the command line to compile/link the specific file. */
+        virtual void GenerateCommandLine(Result &result, const Params &params);
 
         /** @brief Get the full include dirs used in the actual command line.
           *

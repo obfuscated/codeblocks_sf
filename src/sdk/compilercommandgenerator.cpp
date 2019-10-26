@@ -212,23 +212,41 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
                                                    const wxString&     flat_object,
                                                    const wxString&     deps)
 {
+    Params params;
+    params.target = target;
+    params.pf = pf;
+    params.file = file;
+    params.object = object;
+    params.flatObject = flat_object;
+    params.deps = deps;
+
+    Result result(&macro);
+    GenerateCommandLine(result, params);
+}
+
+void CompilerCommandGenerator::GenerateCommandLine(Result &result, const Params &params)
+{
+    cbAssert(result.macro);
 #ifdef command_line_generation
+    wxString logFile = (params.pf ? params.pf->file.GetFullPath() : params.file);
     Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[0]: macro='%s', file='%s', object='%s', flat_object='%s', deps='%s'."),
-                                                macro.wx_str(), file.wx_str(), object.wx_str(), flat_object.wx_str(), deps.wx_str()));
+                                                result.macro->wx_str(), logFile.wx_str(),
+                                                params.object.wx_str(), params.flatObject.wx_str(),
+                                                params.deps.wx_str()));
 #endif
 
-    if (target && !target->SupportsCurrentPlatform())
+    if (params.target && !params.target->SupportsCurrentPlatform())
     {
-        macro.Clear();
+        result.macro->Clear();
         return;
     }
 
-    Compiler* compiler = target
-                       ? CompilerFactory::GetCompiler(target->GetCompilerID())
+    Compiler* compiler = params.target
+                       ? CompilerFactory::GetCompiler(params.target->GetCompilerID())
                        : CompilerFactory::GetDefaultCompiler();
     if (!compiler)
     {
-        macro.Clear();
+        result.macro->Clear();
         return;
     }
 
@@ -240,25 +258,25 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
     };
     CompilerExe compExec = ceUnknown;
     wxString compilerStr;
-    if (pf)
+    if (params.pf)
     {
-        if      (pf->compilerVar.Matches(_T("CPP")))
+        if (params.pf->compilerVar.Matches(_T("CPP")))
         {
             compilerStr = compiler->GetPrograms().CPP;
             compExec = ceCPP;
         }
-        else if (pf->compilerVar.Matches(_T("CC")))
+        else if (params.pf->compilerVar.Matches(_T("CC")))
         {
             compilerStr = compiler->GetPrograms().C;
             compExec = ceC;
         }
-        else if (pf->compilerVar.Matches(_T("WINDRES")))
+        else if (params.pf->compilerVar.Matches(_T("WINDRES")))
             compilerStr = compiler->GetPrograms().WINDRES;
     }
     else
     {
         // filename might be quoted, so unquote it if needed or extension can be 'c"'
-        wxFileName fname( UnquoteStringIfNeeded(file) );
+        wxFileName fname(UnquoteStringIfNeeded(params.file));
         if (fname.GetExt().Lower().Matches(_T("c")))
         {
             compilerStr = compiler->GetPrograms().C;
@@ -271,8 +289,8 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
         }
     }
 
-    const LinkerExecutableOption linkerExeOption = (target
-                                                    ? target->GetLinkerExecutable()
+    const LinkerExecutableOption linkerExeOption = (params.target
+                                                    ? params.target->GetLinkerExecutable()
                                                     : LinkerExecutableOption::AutoDetect);
 
     wxString linkerProgram;
@@ -286,28 +304,46 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
             linkerProgram = compiler->GetPrograms().CPP;
             break;
 
-        default:
-        case LinkerExecutableOption::AutoDetect:
         case LinkerExecutableOption::Linker:
             linkerProgram = compiler->GetPrograms().LD;
+            break;
+
+        default:
+        case LinkerExecutableOption::AutoDetect:
+            // If the default linker program is set to one of the compiler executables,
+            // then we assume that we have a GCC/clang based compiler which has different
+            // executables for linking C and C++ projects.
+            // We want to select the correct executable based on project content.
+            // If the user has selected a different linker, we must obey and use it.
+            if (compiler->GetPrograms().CPP == compiler->GetPrograms().LD
+                || compiler->GetPrograms().C == compiler->GetPrograms().LD)
+            {
+                if (params.hasCppFilesToLink)
+                    linkerProgram = compiler->GetPrograms().CPP;
+                else
+                    linkerProgram = compiler->GetPrograms().C;
+            }
+            else
+                linkerProgram = compiler->GetPrograms().LD;
             break;
     }
 
     // check that we have valid compiler/linker program names (and are indeed needed by the macro)
-    if (   (compilerStr.IsEmpty()                     && macro.Contains(_T("$compiler")))
-        || (linkerProgram.IsEmpty()                   && macro.Contains(_T("$linker")))
-        || (compiler->GetPrograms().LIB.IsEmpty()     && macro.Contains(_T("$lib_linker")))
-        || (compiler->GetPrograms().WINDRES.IsEmpty() && macro.Contains(_T("$rescomp"))) )
+    if (   (compilerStr.IsEmpty()                     && result.macro->Contains(_T("$compiler")))
+        || (linkerProgram.IsEmpty()                   && result.macro->Contains(_T("$linker")))
+        || (compiler->GetPrograms().LIB.IsEmpty()     && result.macro->Contains(_T("$lib_linker")))
+        || (compiler->GetPrograms().WINDRES.IsEmpty() && result.macro->Contains(_T("$rescomp"))) )
     {
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine: Required compiler executable (%s) not found! Check the toolchain settings."), file.wx_str()));
-        macro.Clear();
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine: Required compiler executable (%s) not found! Check the toolchain settings."),
+                                                    params.file.wx_str()));
+        result.macro->Clear();
         return;
     }
 
     FixPathSeparators(compiler, compilerStr);
 
-    wxString tmpIncludes(m_Inc[target]);
-    wxString tmpResIncludes(m_RC[target]);
+    wxString tmpIncludes(m_Inc[params.target]);
+    wxString tmpResIncludes(m_RC[params.target]);
     if (Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/include_file_cwd"), false))
     {
         // Because C::B doesn't compile each file by running in the same directory with it,
@@ -316,7 +352,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
         //
         // So here we add the currently compiling file's directory to the includes
         // search dir so it works.
-        wxFileName fileCwd( UnquoteStringIfNeeded(file) );
+        wxFileName fileCwd(UnquoteStringIfNeeded(params.file));
         wxString fileInc = fileCwd.GetPath();
         FixPathSeparators(compiler, fileInc);
         if (!fileInc.IsEmpty()) // only if non-empty! (remember r1813 errors)
@@ -373,17 +409,21 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
 #endif
 
     wxString   tmp;
-    wxString   tmpFile       = file;
-    wxString   tmpDeps       = deps;
-    wxString   tmpObject     = object;
-    wxString   tmpFlatObject = flat_object;
+    wxString   tmpFile       = params.file;
+    wxString   tmpDeps       = params.deps;
+    wxString   tmpObject     = params.object;
+    wxString   tmpFlatObject = params.flatObject;
 
-    wxFileName tmpFname( UnquoteStringIfNeeded(tmpFile) );
+    wxFileName tmpFname(UnquoteStringIfNeeded(tmpFile));
     wxFileName tmpOutFname;
 
 #ifdef command_line_generation
     Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[2]: tmpFile='%s', tmpDeps='%s', tmpObject='%s', tmpFlatObject='%s',\ntmpFname.GetName='%s', tmpFname.GetPath='%s', tmpFname.GetExt='%s'."),
-                                                tmpFile.wx_str(), tmpDeps.wx_str(), tmpObject.wx_str(), tmpFlatObject.wx_str(), tmpFname.GetName().wx_str(), tmpFname.GetPath().wx_str(), tmpFname.GetExt().wx_str()));
+                                                tmpFile.wx_str(), tmpDeps.wx_str(),
+                                                tmpObject.wx_str(), tmpFlatObject.wx_str(),
+                                                tmpFname.GetName().wx_str(),
+                                                tmpFname.GetPath().wx_str(),
+                                                tmpFname.GetExt().wx_str()));
 #endif
 
     FixPathSeparators(compiler, tmpFile);
@@ -393,12 +433,13 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
 
 #ifdef command_line_generation
     Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[3]: tmpFile='%s', tmpDeps='%s', tmpObject='%s', tmpFlatObject='%s'."),
-                                                tmpFile.wx_str(), tmpDeps.wx_str(), tmpObject.wx_str(), tmpFlatObject.wx_str()));
+                                                tmpFile.wx_str(), tmpDeps.wx_str(),
+                                                tmpObject.wx_str(), tmpFlatObject.wx_str()));
     Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[4]: macro='%s'."),
-                                                macro.wx_str()));
+                                                result.macro->wx_str()));
 #endif
     // Special handling for compiler options to filter between C and C++ compilers
-    wxString cFlags = m_CFlags[target];
+    wxString cFlags = m_CFlags[params.target];
     wxArrayString remFlags;
     if (compExec == ceC)
         remFlags = GetArrayFromString(compiler->GetCPPOnlyFlags(), wxT(" "));
@@ -417,119 +458,129 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
     }
 
     wxString allObjectsQuoted(tmpObject);
-    if (!(allObjectsQuoted.IsEmpty() || m_LDAdd[target].IsEmpty()))
+    if (!(allObjectsQuoted.IsEmpty() || m_LDAdd[params.target].IsEmpty()))
         allObjectsQuoted += compiler->GetSwitches().objectSeparator;
-    allObjectsQuoted += m_LDAdd[target];
+    allObjectsQuoted += m_LDAdd[params.target];
     if (allObjectsQuoted.Find(_T('"')) != -1)
     {
         allObjectsQuoted.Replace(_T("\""), _T("\\\""));
         allObjectsQuoted = _T("\"") + allObjectsQuoted + _T("\"");
     }
 
-    macro.Replace(_T("$compiler"),      compilerStr);
-    macro.Replace(_T("$linker"),        linkerProgram);
-    macro.Replace(_T("$lib_linker"),    compiler->GetPrograms().LIB);
-    macro.Replace(_T("$rescomp"),       compiler->GetPrograms().WINDRES);
-    macro.Replace(_T("$options"),       cFlags);
-    macro.Replace(_T("$res_options"),   m_RCFlags[target]);
-    macro.Replace(_T("$link_options"),  m_LDFlags[target]);
-    macro.Replace(_T("$includes"),      tmpIncludes);
-    macro.Replace(_T("$res_includes"),  tmpResIncludes);
-    macro.Replace(_T("$libdirs"),       m_Lib[target]);
-    macro.Replace(_T("$libs"),          m_LDAdd[target]);
-    macro.Replace(_T("$file_basename"), tmpFname.GetName()); // old way - remove later
-    macro.Replace(_T("$file_name"),     tmpFname.GetName());
-    macro.Replace(_T("$file_dir"),      tmpFname.GetPath());
-    macro.Replace(_T("$file_ext"),      tmpFname.GetExt());
-    macro.Replace(_T("$file"),          tmpFile);
-    macro.Replace(_T("$dep_object"),    tmpDeps);
+    result.macro->Replace(_T("$compiler"),      compilerStr);
+    result.macro->Replace(_T("$linker"),        linkerProgram);
+    result.macro->Replace(_T("$lib_linker"),    compiler->GetPrograms().LIB);
+    result.macro->Replace(_T("$rescomp"),       compiler->GetPrograms().WINDRES);
+    result.macro->Replace(_T("$options"),       cFlags);
+    result.macro->Replace(_T("$res_options"),   m_RCFlags[params.target]);
+    result.macro->Replace(_T("$link_options"),  m_LDFlags[params.target]);
+    result.macro->Replace(_T("$includes"),      tmpIncludes);
+    result.macro->Replace(_T("$res_includes"),  tmpResIncludes);
+    result.macro->Replace(_T("$libdirs"),       m_Lib[params.target]);
+    result.macro->Replace(_T("$libs"),          m_LDAdd[params.target]);
+    result.macro->Replace(_T("$file_basename"), tmpFname.GetName()); // old way - remove later
+    result.macro->Replace(_T("$file_name"),     tmpFname.GetName());
+    result.macro->Replace(_T("$file_dir"),      tmpFname.GetPath());
+    result.macro->Replace(_T("$file_ext"),      tmpFname.GetExt());
+    result.macro->Replace(_T("$file"),          tmpFile);
+    result.macro->Replace(_T("$dep_object"),    tmpDeps);
 
 #ifdef command_line_generation
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[5]: macro='%s'."), macro.wx_str()));
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[5]: macro='%s'."),
+                                                result.macro->wx_str()));
 #endif
 
-    if (target)
+    if (params.target)
     {  // this one has to come before $object, otherwise $object would go first
        // leaving nothing to replace for this $objects_output_dir,
        // and after $options because $objects_output_dir may be in compiler flags ($options).
-        tmp = target->GetObjectOutput();
+        tmp = params.target->GetObjectOutput();
         FixPathSeparators(compiler, tmp);
-        macro.Replace(_T("$objects_output_dir"), tmp);
+        result.macro->Replace(_T("$objects_output_dir"), tmp);
     }
-    macro.Replace(_T("$object"),          tmpObject);
-    macro.Replace(_T("$resource_output"), tmpObject);
-    if (!target)
+    result.macro->Replace(_T("$object"),          tmpObject);
+    result.macro->Replace(_T("$resource_output"), tmpObject);
+    if (!params.target)
     {
         // single file compilation, probably
-        wxFileName fname( UnquoteStringIfNeeded(object) );
+        wxFileName fname(UnquoteStringIfNeeded(params.object));
         fname.SetExt(FileFilters::EXECUTABLE_EXT);
         wxString output = fname.GetFullPath();
         QuoteStringIfNeeded(output);
         FixPathSeparators(compiler, output);
-        macro.Replace(_T("$exe_output"), output);
+        result.macro->Replace(_T("$exe_output"), output);
         tmpOutFname.Assign(output);
     }
     else
     {
-        macro.Replace(_T("$exe_output"), m_Output[target]);
-        tmpOutFname.Assign(m_Output[target]);
+        result.macro->Replace(_T("$exe_output"), m_Output[params.target]);
+        tmpOutFname.Assign(m_Output[params.target]);
     }
-    macro.Replace(_T("$exe_name"),          tmpOutFname.GetName());
-    macro.Replace(_T("$exe_dir"),           tmpOutFname.GetPath());
-    macro.Replace(_T("$exe_ext"),           tmpOutFname.GetExt());
+    result.macro->Replace(_T("$exe_name"),          tmpOutFname.GetName());
+    result.macro->Replace(_T("$exe_dir"),           tmpOutFname.GetPath());
+    result.macro->Replace(_T("$exe_ext"),           tmpOutFname.GetExt());
 
-    macro.Replace(_T("$link_resobjects"),   tmpDeps);
-    macro.Replace(_T("$link_objects"),      tmpObject);
-    macro.Replace(_T("$link_flat_objects"), tmpFlatObject);
+    result.macro->Replace(_T("$link_resobjects"),   tmpDeps);
+    result.macro->Replace(_T("$link_objects"),      tmpObject);
+    result.macro->Replace(_T("$link_flat_objects"), tmpFlatObject);
     // the following were added to support the QUICK HACK in compiler plugin:
     // DirectCommands::GetTargetLinkCommands()
-    macro.Replace(_T("$+link_objects"),     tmpObject);
-    macro.Replace(_T("$-link_objects"),     tmpObject);
-    macro.Replace(_T("$-+link_objects"),    tmpObject);
-    macro.Replace(_T("$+-link_objects"),    tmpObject);
-    macro.Replace(_T("$all_link_objects_quoted"), allObjectsQuoted);
+    result.macro->Replace(_T("$+link_objects"),     tmpObject);
+    result.macro->Replace(_T("$-link_objects"),     tmpObject);
+    result.macro->Replace(_T("$-+link_objects"),    tmpObject);
+    result.macro->Replace(_T("$+-link_objects"),    tmpObject);
+    result.macro->Replace(_T("$all_link_objects_quoted"), allObjectsQuoted);
 
 #ifdef command_line_generation
     Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[6]: macro='%s', file='%s', object='%s', flat_object='%s', deps='%s'."),
-                                                macro.wx_str(), file.wx_str(), object.wx_str(), flat_object.wx_str(), deps.wx_str()));
+                                                result.macro->wx_str(), params.file.wx_str(),
+                                                params.object.wx_str(), params.flatObject.wx_str(),
+                                                params.deps.wx_str()));
 
     Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[7]: m_Output[target]='%s, m_StaticOutput[target]='%s', m_DefOutput[target]='%s'."),
-                                                m_Output[target].wx_str(), m_StaticOutput[target].wx_str(), m_DefOutput[target].wx_str()));
+                                                m_Output[params.target].wx_str(),
+                                                m_StaticOutput[params.target].wx_str(),
+                                                m_DefOutput[params.target].wx_str()));
 #endif
 
-    if (   target
-        && (   (target->GetTargetType() == ttStaticLib)
-            || (target->GetTargetType() == ttDynamicLib) ) )
+    if (params.target
+        && ((params.target->GetTargetType() == ttStaticLib)
+            || (params.target->GetTargetType() == ttDynamicLib) ) )
     {
-        if (   (target->GetTargetType() == ttStaticLib)
-            || (target->GetCreateStaticLib()) )
-            macro.Replace(_T("$static_output"), m_StaticOutput[target]);
+        if ((params.target->GetTargetType() == ttStaticLib)
+            || (params.target->GetCreateStaticLib()) )
+            result.macro->Replace(_T("$static_output"), m_StaticOutput[params.target]);
         else
         {
-            macro.Replace(_T("-Wl,--out-implib=$static_output"), _T("")); // special gcc case
-            macro.Replace(_T("$static_output"), _T(""));
+            result.macro->Replace(_T("-Wl,--out-implib=$static_output"), _T("")); // special gcc case
+            result.macro->Replace(_T("$static_output"), _T(""));
         }
 
-        if (target->GetCreateDefFile())
-            macro.Replace(_T("$def_output"), m_DefOutput[target]);
+        if (params.target->GetCreateDefFile())
+            result.macro->Replace(_T("$def_output"), m_DefOutput[params.target]);
         else
         {
-            macro.Replace(_T("-Wl,--output-def=$def_output"), _T("")); // special gcc case
-            macro.Replace(_T("$def_output"), _T(""));
+            result.macro->Replace(_T("-Wl,--output-def=$def_output"), _T("")); // special gcc case
+            result.macro->Replace(_T("$def_output"), _T(""));
         }
     }
 
 #ifdef command_line_generation
     Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[8]: macro='%s', file='%s', object='%s', flat_object='%s', deps='%s'."),
-                                                macro.wx_str(), file.wx_str(), object.wx_str(), flat_object.wx_str(), deps.wx_str()));
+                                                result.macro->wx_str(), params.file.wx_str(),
+                                                params.object.wx_str(), params.flatObject.wx_str(),
+                                                params.deps.wx_str()));
 #endif
 
     // finally, replace all macros in one go
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(macro, target);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(*result.macro, params.target);
 
 #ifdef command_line_generation
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[9]: macro='%s'."), macro.wx_str()));
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[9]: macro='%s'."),
+                                                result.macro->wx_str()));
 #endif
+
+    result.processedCppFile = (compExec == ceCPP);
 }
 
 /// Apply pre-build scripts for @c base.
