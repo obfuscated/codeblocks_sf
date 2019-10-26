@@ -19,20 +19,23 @@
 						<object class="wxBoxSizer">
 							<orient>wxVERTICAL</orient>
 							<object class="sizeritem">
-								<object class="wxListCtrl" name="lstPlugins">
-									<size>595,255</size>
-									<style>wxLC_REPORT</style>
+								<object class="wxSplitterWindow" name="ID_SPLITTERWINDOW1">
+									<minpanesize>10</minpanesize>
+									<style>wxSP_3D|wxSP_3DSASH</style>
+									<object class="wxListCtrl" name="lstPlugins">
+										<pos>-16,-95</pos>
+										<size>595,255</size>
+										<style>wxLC_REPORT</style>
+									</object>
+									<object class="wxHtmlWindow" name="htmlInfo">
+										<pos>310,96</pos>
+										<size>595,163</size>
+										<style>wxBORDER_SIMPLE</style>
+									</object>
 								</object>
-								<flag>wxEXPAND</flag>
-								<option>1</option>
-							</object>
-							<object class="sizeritem">
-								<object class="wxHtmlWindow" name="htmlInfo">
-									<size>595,163</size>
-									<style>wxSIMPLE_BORDER</style>
-								</object>
-								<flag>wxTOP|wxBOTTOM|wxEXPAND</flag>
+								<flag>wxALL|wxEXPAND</flag>
 								<border>5</border>
+								<option>1</option>
 							</object>
 							<object class="sizeritem">
 								<object class="wxStaticBoxSizer">
