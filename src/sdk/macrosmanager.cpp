@@ -332,9 +332,11 @@ void MacrosManager::RecalcVars(const cbProject* project, EditorBase* editor, con
             wxString title = it_target->GetTitle().Upper();
             while (title.Replace(_T(" "), _T("_")))
                 ; // replace spaces with underscores (what about other invalid chars?)
-            m_Macros[title + _T("_OUTPUT_FILE")]     = UnixFilename(it_target->GetOutputFilename());
+
+            const wxString outputName = it_target->GetOutputFilename();
+            m_Macros[title + _T("_OUTPUT_FILE")]     = UnixFilename(outputName);
             m_Macros[title + _T("_OUTPUT_DIR")]      = UnixFilename(it_target->GetBasePath());
-            m_Macros[title + _T("_OUTPUT_BASENAME")] = wxFileName(it_target->GetOutputFilename()).GetName();
+            m_Macros[title + _T("_OUTPUT_BASENAME")] = wxFileName(outputName).GetName();
             m_Macros[title + _T("_PARAMETERS")]      = it_target->GetExecutionParameters();
         }
         m_LastProject = project;
@@ -360,12 +362,13 @@ void MacrosManager::RecalcVars(const cbProject* project, EditorBase* editor, con
     }
     else if ( (target != m_LastTarget) or (target->GetTitle() != m_TargetName) )
     {
-        wxFileName tod(target->GetOutputFilename());
+        const wxString outputName = target->GetOutputFilename();
+        const wxFileName tod(outputName);
         m_TargetOutputDir      = UnixFilename(tod.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
         m_TargetName           = UnixFilename(target->GetTitle());
-        m_TargetOutputBaseName = wxFileName(target->GetOutputFilename()).GetName();
-        m_TargetOutputFilename = wxFileName(target->GetOutputFilename()).GetFullName();
-        m_TargetFilename       = UnixFilename(target->GetOutputFilename());
+        m_TargetOutputBaseName = tod.GetName();
+        m_TargetOutputFilename = tod.GetFullName();
+        m_TargetFilename       = UnixFilename(outputName);
         m_LastTarget           = target;
     }
 
