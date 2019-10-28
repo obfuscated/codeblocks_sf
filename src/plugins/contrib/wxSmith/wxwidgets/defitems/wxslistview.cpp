@@ -26,7 +26,7 @@ namespace
 {
     wxsRegisterItem<wxsListView> Reg(_T("ListView"),wxsTWidget,_T("Standard"),220);
 
-    WXS_ST_BEGIN(wxsListViewStyles,_T(""))
+    WXS_ST_BEGIN(wxsListViewStyles,_T("wxLC_LIST"))
         WXS_ST_CATEGORY("wxListView")
         WXS_ST(wxLC_LIST);
         WXS_ST(wxLC_REPORT)
