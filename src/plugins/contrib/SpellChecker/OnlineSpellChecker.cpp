@@ -103,31 +103,13 @@ void OnlineSpellChecker::OnEditorChangeTextRange(cbEditor* ctrl, int start, int 
         // find recheck range start:
         if (start > 0)
             start--;
-        while (start > 0)
-        {
-            EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
-            if (!colour_set)
-                break;
 
-            wxString lang = colour_set->GetLanguageName(ctrl->GetLanguage() );
-            wxChar   ch   = stc->GetCharAt(start - 1);
-            bool isEscape     = SpellCheckHelper::IsEscapeSequenceStart(ch, lang, stc->GetStyleAt(start-1));
-            bool isWhiteSpace = SpellCheckHelper::IsWhiteSpace(ch);
-            if (!isEscape && isWhiteSpace)
-                break;
-
-            start--;
-        }
-
-        // find recheck range end:
-        while (end < stc->GetLength())
-        {
-            wxChar ch = stc->GetCharAt(end);
-            // TODO: Breaks with Umlauts / Russian characters (Unicode in general) here
-            if ( SpellCheckHelper::IsWhiteSpace(ch) )
-                break;
-            end++;
-        }
+        // Find the start of the first word in the text range [start,stop]
+        start = stc->WordStartPosition(start, true);
+        if (start < 0)
+            return;     // we could not find word start
+        // Find the end of the last word in the text range [start,stop]
+        end = stc->WordEndPosition(end, true);
 
         if (   m_invalidatedRangesStart.GetCount() == 0
                 || m_invalidatedRangesStart.Last()     != start
@@ -216,45 +198,26 @@ void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl) const
             // remove styling:
             stc->IndicatorClearRange(start, end - start);
 
-            int wordstart = start;
-            int wordend = wordstart;
-            for( int pos = wordstart ;  pos < end ; )
+            for ( int pos = start ;  pos < end ; pos++)
             {
                 EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
                 if (!colour_set)
                     break;
                 wxString lang = colour_set->GetLanguageName(ctrl->GetLanguage() );
-                wxChar ch = stc->GetCharAt(pos);
-                // treat chars which don't have the correct style as whitespace:
-                bool isEscape     = SpellCheckHelper::IsEscapeSequenceStart(ch, lang, stc->GetStyleAt(pos));
-                bool isWhiteSpace = SpellCheckHelper::IsWhiteSpace(ch);
-                if (isEscape || isWhiteSpace || !m_pSpellHelper->HasStyleToBeChecked(lang, stc->GetStyleAt(pos)))
-                {
-                    if (wordstart != wordend)
-                        DissectWordAndCheck(stc, wordstart, wordend);
 
-                    pos++;
-                    if (isEscape)
-                        pos++;
+                int wordstart = stc->WordStartPosition(pos, true);
+                if (wordstart < 0)
+                    continue;   // No valid word start found
 
-                    wordstart = pos;
-                    wordend   = pos;
-                }
-                else
+                int wordend = stc->WordEndPosition(wordstart, true);
+                if ( wordend > 0 &&             // Word end has to be > 0 to be valid (< 0 -> invalid pos, == 0 -> only 1 character)
+                     wordend != wordstart &&    // We do not check single letters...
+                     m_pSpellHelper->HasStyleToBeChecked(lang, stc->GetStyleAt(wordstart)) )
                 {
-                    pos++;
-                    wordend = pos;
+                    DissectWordAndCheck(stc, wordstart, wordend);
+                    pos = wordend;
                 }
-            }
-            if (wordstart != wordend)
-            {
-                EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
-                if (colour_set)
-                {
-                    wxString lang = colour_set->GetLanguageName(ctrl->GetLanguage() );
-                    if ( m_pSpellHelper->HasStyleToBeChecked(lang, stc->GetStyleAt(wordstart))  )
-                        DissectWordAndCheck(stc, wordstart, wordend);
-                }
+
             }
         }
     }

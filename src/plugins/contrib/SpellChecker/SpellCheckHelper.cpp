@@ -39,12 +39,6 @@ SpellCheckHelper::~SpellCheckHelper()
     //dtor
 }
 
-bool SpellCheckHelper::IsWhiteSpace(const wxChar &ch)
-{
-    // Support words like doesn't: ch!='\''
-    return wxIsspace(ch) || (wxIspunct(ch) && ch!='\'') || wxIsdigit(ch);
-}
-
 void SpellCheckHelper::LoadConfiguration()
 {
     //TiXmlDocument doc("OnlineSpellChecking.xml");

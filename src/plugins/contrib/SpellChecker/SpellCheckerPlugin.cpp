@@ -338,52 +338,29 @@ void SpellCheckerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, cb
     }
 
     int pos = stc->GetCurrentPos();
-    //stc->GetIndicatorValue();
+
     m_wordstart = -1;
     m_wordend = -1;
     m_suggestions.Empty();
+
+    //Manager::Get()->GetLogManager()->Log( wxString::Format(_T("SpellChecker indicator: %d"), pos) );
     int wordstart, wordend;
-    //Manager::Get()->GetLogManager()->Log( wxString::Format(_T("SpellChecker indicator: %d"), indic) );
     if ( !stc->GetSelectedText().IsEmpty() )
     {
         // take only the first word from the selection
-        wordstart = stc->GetSelectionStart();
-        while ( wordstart < stc->GetLength() )
-        {
-            wxChar ch = stc->GetCharAt(wordstart);
-            if ( !m_pSpellHelper->IsWhiteSpace( ch ))
-                break;
-            //else if ((ch >= _T('A') && ch <= _T('Z'))
-            wordstart++;
-        }
+        wordstart = stc->WordStartPosition(stc->GetSelectionStart(), true);
     }
     else if ( stc->IndicatorValueAt( m_pOnlineChecker->GetIndicator(), pos) )
     {
-
-        wordstart = pos;
-        while ( wordstart > 1 )
-        {
-            wxChar ch = stc->GetCharAt(wordstart-1);
-            if ( m_pSpellHelper->IsWhiteSpace( ch ) )
-                break;
-            else if ( ch >= _T('A') && ch <= _T('Z') )
-            {
-                wordstart--;
-                break;
-            }
-            wordstart--;
-        }
+        wordstart = stc->WordStartPosition(pos, true);
     }
     else
         return;
-    wordend = wordstart;
-    while ( wordend < stc->GetLength()-1 )
-    {
-        wxChar ch = stc->GetCharAt(++wordend);
-        if ( (ch >= _T('A') && ch <= _T('Z')) || m_pSpellHelper->IsWhiteSpace( ch ) )
-            break;
-    }
 
+    if (wordstart < 0)
+        return; // Word start not found
+
+    wordend = stc->WordEndPosition(wordstart, true);
     wxString misspelledWord;
     if ( wordend - wordstart > 0 && wordend != -1)
         misspelledWord = stc->GetTextRange(wordstart, wordend);
@@ -460,19 +437,15 @@ void SpellCheckerPlugin::OnThesaurus(cb_unused wxCommandEvent &event)
 
 
     // take only the first word from the selection
-    int selstart = stc->GetSelectionStart();
-    while ( selstart < stc->GetLength() )
-    {
-        if ( !m_pSpellHelper->IsWhiteSpace( stc->GetCharAt(selstart) ))
-            break;
-        selstart++;
-    }
-    int selend = selstart;
-    while ( selend < stc->GetLength() )
-    {
-        if ( m_pSpellHelper->IsWhiteSpace( stc->GetCharAt(++selend) ) )
-            break;
-    }
+    int selpos = stc->GetSelectionStart();
+    int selstart = stc->WordStartPosition(selpos, true);
+
+    if (selstart < 0)
+        return; // No valid word start found...
+
+    int selend = stc->WordEndPosition(selstart, true);
+    if (selend < 0)
+        return; // No valid word end found...
 
     wxString word = stc->GetTextRange(selstart, selend);
     if ( word.IsEmpty() )
@@ -513,30 +486,13 @@ void SpellCheckerPlugin::OnCamelCase(cb_unused wxCommandEvent &event)
         return;
 
     // take only the first word from the selection
-    int selstart = stc->GetSelectionStart();
-    while (selstart < stc->GetLength())
-    {
-        if ( !m_pSpellHelper->IsWhiteSpace(stc->GetCharAt(selstart)) )
-            break;
-        ++selstart;
-    }
-    // and scan back for the actual word start
-    while (selstart > 0)
-    {
-        if ( m_pSpellHelper->IsWhiteSpace(stc->GetCharAt(selstart - 1)) )
-            break;
-        --selstart;
-    }
-    if (selstart > stc->GetSelectionEnd())
+    int selpos = stc->GetSelectionStart();
+    int selstart = stc->WordStartPosition(selpos, true);
+    if (selstart > stc->GetSelectionEnd() || selstart < 0)
         return;
-    int selend = selstart;
-    while (selend < stc->GetLength())
-    {
-        if ( m_pSpellHelper->IsWhiteSpace(stc->GetCharAt(++selend)) )
-            break;
-    }
+    int selend = stc->WordEndPosition(selstart, true);
 
-    if (selend - selstart < 4) // too small
+    if (selend <= 0 || selend - selstart < 4) // too small
         return;
     else if (selend - selstart > GetWordStartsLimit) // max limit (DoGetWordStarts() is recursive, so watch out)
         selend = selstart + GetWordStartsLimit;
@@ -790,22 +746,17 @@ void SpellCheckerPlugin::OnEditorTooltip(CodeBlocksEvent& event)
     }
 
     wxString tip;
-    int wordstart = pos, wordend = pos;
-    while (wordstart)
-    {
-        if ( m_pSpellHelper->IsWhiteSpace( stc->GetCharAt(wordstart - 1) ) )
-            break;
-        --wordstart;
-    }
-    while ( wordend < stc->GetLength() )
-    {
-        if ( m_pSpellHelper->IsWhiteSpace( stc->GetCharAt(++wordend) ) )
-            break;
-    }
+    int wordstart = stc->WordStartPosition(pos, true);
+
+    if (wordstart < 0)
+        return; // No valid word start found
+
+    int wordend = stc->WordEndPosition(wordstart, true);
     int tipWidth = 0;
-    if (   m_sccfg->GetEnableSpellTooltips()
-            && m_pSpellChecker->IsInitialized()
-            && stc->IndicatorValueAt(m_pOnlineChecker->GetIndicator(), pos))
+    if ( wordend > 0 &&
+         m_sccfg->GetEnableSpellTooltips() &&
+         m_pSpellChecker->IsInitialized() &&
+         stc->IndicatorValueAt(m_pOnlineChecker->GetIndicator(), pos))
     {
         // indicator is on -> check if we can find a suggestion
         wxString misspelledWord = stc->GetTextRange(wordstart, wordend);
