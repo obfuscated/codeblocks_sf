@@ -20,8 +20,11 @@ call:copyImageFiles rc "%CB_DEVEL_RESDIR%\SpellChecker"
 set CB_OUTPUT_DIR=output%1
 set CB_OUTPUT_RESDIR=..\..\..\%CB_OUTPUT_DIR%\share\CodeBlocks
 
-xcopy /D /Y "%CB_DEVEL_RESDIR%\SpellChecker\*" "%CB_OUTPUT_RESDIR%\SpellChecker"
-xcopy /D /Y *.png "%CB_OUTPUT_RESDIR%\images\settings"
+call:mkdirSilent "%CB_OUTPUT_RESDIR%\SpellChecker"
+call:mkdirSilent "%CB_OUTPUT_RESDIR%\images\settings"
+
+xcopy /D /Y "%CB_DEVEL_RESDIR%\SpellChecker\*" "%CB_OUTPUT_RESDIR%\SpellChecker\"
+xcopy /D /Y *.png "%CB_OUTPUT_RESDIR%\images\settings\"
 
 ::--------------------------------------------------------
 ::-- Function section starts below here
