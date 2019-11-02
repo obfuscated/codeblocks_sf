@@ -21,9 +21,9 @@ class ModPoller : public cbPlugin
         ModPoller(){};
         virtual ~ModPoller(){};
 
-        virtual void BuildMenu(wxMenuBar* menuBar){}
-        virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0){}
-        virtual bool BuildToolBar(wxToolBar* toolBar){ return false; }
+        virtual void BuildMenu(cb_unused wxMenuBar* menuBar){}
+        virtual void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0){}
+        virtual bool BuildToolBar(cb_unused wxToolBar* toolBar){ return false; }
 
     protected:
 
@@ -31,12 +31,12 @@ class ModPoller : public cbPlugin
         {
             Manager::Get()->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<ModPoller, CodeBlocksEvent>(this, &ModPoller::OnEditorActivated));
         }
-        void OnEditorActivated(CodeBlocksEvent& event)
+        void OnEditorActivated(cb_unused CodeBlocksEvent& event)
         {
             EditorManager::Get()->CheckForExternallyModifiedFiles();
         }
 
-        virtual void OnRelease(bool appShutDown){};
+        virtual void OnRelease(cb_unused bool appShutDown){};
 };
 
 #endif

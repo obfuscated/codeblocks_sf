@@ -24,9 +24,9 @@ class TidyCmt : public cbPlugin
         TidyCmt(){};
         virtual ~TidyCmt(){};
 
-        virtual void BuildMenu(wxMenuBar* menuBar){}
-        virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0){}
-        virtual bool BuildToolBar(wxToolBar* toolBar){ return false; }
+        virtual void BuildMenu(cb_unused wxMenuBar* menuBar){}
+        virtual void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0){}
+        virtual bool BuildToolBar(cb_unused wxToolBar* toolBar){ return false; }
 
     private:
 
@@ -34,7 +34,7 @@ class TidyCmt : public cbPlugin
 
         void OnSave(CodeBlocksEvent& event);
 
-        virtual void OnRelease(bool appShutDown){};
+        virtual void OnRelease(cb_unused bool appShutDown){};
 };
 
 #endif // header guard

@@ -25,7 +25,7 @@ class HeaderGuard : public cbPlugin
         HeaderGuard(){};
         virtual ~HeaderGuard(){};
 
-        virtual void BuildMenu(wxMenuBar* menuBar){}
+        virtual void BuildMenu(cb_unused wxMenuBar* menuBar){}
         virtual void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0){}
         virtual bool BuildToolBar(cb_unused wxToolBar* toolBar){ return false; }
 

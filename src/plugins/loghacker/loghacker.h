@@ -24,11 +24,11 @@ class LogHacker : public cbPlugin
         virtual int GetConfigurationGroup() const { return cgUnknown; }
 
         virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
-        virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project){ return 0; }
+        virtual cbConfigurationPanel* GetProjectConfigurationPanel(cb_unused wxWindow* parent, cb_unused cbProject* project){ return 0; }
 
-        virtual void BuildMenu(wxMenuBar* menuBar){}
-        virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0){}
-        virtual bool BuildToolBar(wxToolBar* toolBar){ return false; }
+        virtual void BuildMenu(cb_unused wxMenuBar* menuBar){}
+        virtual void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0){}
+        virtual bool BuildToolBar(cb_unused wxToolBar* toolBar){ return false; }
 
     private:
         virtual void OnAttach();

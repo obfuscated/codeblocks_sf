@@ -48,7 +48,8 @@ void HeaderGuard::OnSave(CodeBlocksEvent& event)
 	unsigned int s1 = 257, s2 = 123, b = 9737333, c = 174440041;
 	for(unsigned int i = 0; i < n.length(); ++i)
 	{
-		b = (b*33) + (s1 += n[i]);
+		wxUniCharRef n_i = n[i];
+		b = (b*33) + (s1 += n_i.GetValue());
 		(c *= 47) += s2;
 		s2 += s1;
 	}
