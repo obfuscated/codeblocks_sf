@@ -66,6 +66,15 @@ namespace appglobals
     const wxString AppBuildTimestamp     = (  wxString(wxT(__DATE__)) + wxT(", ")
                                             + wxT(__TIME__) + wxT(" - wx")
                                             + wxString(wxT(wxVERSION_NUM_DOT_STRING))
+#if defined (__GNUC__)
+                                            + _T(" - gcc ") + (wxString() << __GNUC__)
+                                            + _T(".")       + (wxString() << __GNUC_MINOR__)
+                                            + _T(".")       + (wxString() << __GNUC_PATCHLEVEL__)
+#elif defined (__clang__)
+                                            + _T(" - clang ")  + (wxString() << __clang_major__)
+                                            + _T(".")          + (wxString() << __clang_minor__)
+                                            + _T(".")          + (wxString() << __clang_patchlevel__)
+#endif
                                             + wxT(" (") + AppPlatform + wxT(", ")
                                             + AppWXAnsiUnicode + wxT(")") + bit_type );
 
