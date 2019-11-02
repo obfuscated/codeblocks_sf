@@ -27,6 +27,7 @@
 #include "wx/pdfgradient.h"
 #include "wx/pdfgraphics.h"
 #include "wx/pdfshape.h"
+#include "wx/pdftemplate.h"
 #include "wx/pdfutility.h"
 
 wxPdfExtGState::wxPdfExtGState(double lineAlpha, double fillAlpha, wxPdfBlendMode blendMode)
@@ -70,6 +71,10 @@ wxPdfDocument::SetAlpha(double lineAlpha, double fillAlpha, wxPdfBlendMode blend
   if (n != m_currentExtGState)
   {
     SetAlphaState(n);
+    if (m_inTemplate)
+    {
+      (*(m_currentTemplate->m_extGStates))[n] = (*m_extGStates)[n];
+    }
   }
 
   return n;
@@ -80,6 +85,7 @@ wxPdfDocument::SetAlphaState(int alphaState)
 {
   if (alphaState > 0 && (size_t) alphaState <= (*m_extGStates).size())
   {
+    m_currentExtGState = alphaState;
     OutAscii(wxString::Format(wxS("/GS%d gs"), alphaState));
   }
 }
