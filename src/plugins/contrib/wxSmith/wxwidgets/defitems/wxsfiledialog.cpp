@@ -39,6 +39,9 @@ namespace
         WXS_ST(wxFD_MULTIPLE)
         WXS_ST(wxFD_CHANGE_DIR)
         WXS_ST(wxFD_PREVIEW)
+#if wxCHECK_VERSION(3,1,3)
+        WXS_ST(wxFD_SHOW_HIDDEN)
+#endif // wxCHECK_VERSION
         WXS_ST_DEFAULTS()
     WXS_ST_END()
 }
