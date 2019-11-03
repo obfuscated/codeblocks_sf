@@ -46,6 +46,8 @@ class UsrConfigPanel : public cbConfigurationPanel
     int                 m_mode;
 
     void CreateGlobalAccel(wxCmd* pCmd);
+    bool VerifyGlobalAccel(MenuItemData* pMenuItemData);
+
     // any class wishing to process wxWindows events must use this macro
     DECLARE_EVENT_TABLE()
 };

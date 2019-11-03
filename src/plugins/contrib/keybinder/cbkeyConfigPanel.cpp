@@ -148,6 +148,8 @@ void UsrConfigPanel::GetKeyConfigPanelPhaseII(wxMenuBar* pMenuBar, UsrConfigPane
 
         if (parentMenu.empty()) //Empty parent menu means a <global> accelerator
         {
+            if (not VerifyGlobalAccel(&itemData) ) //(2019/9/18)
+                continue;
             if (not desc.StartsWith(_T("<global>")) )
                 desc.Prepend(_T("<global>"));
             // Hold global commands until later
@@ -342,4 +344,40 @@ void UsrConfigPanel::CreateGlobalAccel(wxCmd* pCmd)
         itemData.action     = _T("<global>") + pCmd->GetDescription();    //Help description
         itemData.parentMenu = _T("");                                     //globals have no parent
         m_cachedGlobalAccelMap.insert(std::make_pair(itemData.resourceID, itemData));
+}
+// ----------------------------------------------------------------------------
+bool UsrConfigPanel::VerifyGlobalAccel(MenuItemData* pMenuItemData) //(2019/9/18)
+// ----------------------------------------------------------------------------
+{
+    // Verify a global accelerator ie., return false if it's not in the menu entries
+
+    wxString resourceID = pMenuItemData->resourceID;        // string menu id
+    long intResourceID;   resourceID.ToLong(&intResourceID);// int menu id
+    wxString accel      = pMenuItemData->accel;      //text representation of accelerator
+    wxString action     = pMenuItemData->action;     //Help description
+    wxString parentMenu = pMenuItemData->parentMenu; //globals have no parent
+
+    wxMenuBar* pMnuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
+    if (parentMenu.Length())
+        return false; //globals do not have a parent menu
+    wxMenuItem* pMnuItem = pMnuBar->FindItem(intResourceID);
+
+    if (pMnuBar->FindItem(intResourceID) )
+    {
+        // The following gets undefined linker error
+        //-wxAcceleratorEntry* pMnuAccelEntry = pMnuItem->GetAccelFromString(pMnuItem->GetItemLabel());
+        //-if (not pMnuAccelEntry)
+        //-    return false;
+
+        // If menu item does not already have an accel, this shouldnt be a global
+        wxString mnuItemAccelString = pMnuItem->GetItemLabel().AfterFirst(_T('\t'));
+        if (mnuItemAccelString.empty())
+            return false;
+        // if this menu item already has this global it has already been assigned.
+        if (mnuItemAccelString.Lower() == accel.Lower() )
+            return false; //menu item is same as global item, then don't need it.
+
+        return true;
+    }
+    return false;
 }

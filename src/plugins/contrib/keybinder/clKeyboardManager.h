@@ -171,11 +171,12 @@ public:
      */
     void RestoreDefaults();
 
-    bool ReadFileContent(const wxFileName& fn, wxString& data, const wxMBConv& conv = wxConvUTF8);           //(ICC 2019/04/3)
+    bool ReadFileContent(const wxFileName& fn, wxString& data, const wxMBConv& conv = wxConvUTF8);           //(2019/04/3)
     bool WriteFileContent(const wxFileName& fn, const wxString& content, const wxMBConv& conv = wxConvUTF8); //(2019/04/3)
 
     wxString KeyCodeToString(int keyCode);              //(2019/02/25)
     wxString NumpadKeyCodeToString(int keyCode);        //(2019/02/25)
+    void     DumpAccelerators(size_t tableCount, wxAcceleratorEntry* pEntries, wxFrame* pFrame); //(2019/10/27)
 
     private:
         DECLARE_EVENT_TABLE()

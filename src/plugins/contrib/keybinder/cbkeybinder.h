@@ -31,7 +31,7 @@
 // Modified Keybinder for CodeBlocks KeyBnder v2.0
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "2.0.07 2019/07/2"
+#define VERSION "2.0.08 2019/10/16"
 // -----------------------------------
 class wxKeyConfigPanel;
 class wxKeyProfileArray;
@@ -669,5 +669,8 @@ class cbKeyBinder : public cbPlugin
 //          2.0.07 2019/07/2
 //              Setting new accel in Linux will not work unless also set in global acceleratorTable
 //              Use ancient "cbKeyBinder10.ini" standalone when no <personality>.cbKeyBinder10.ini exists
+//          2.0.08 2019/10/16
+//              Remove duplicate key bindings displayed in config panel
+//              Sort key binding by parent menu before stowing into .conf file
 //
 // ----------------------------------------------------------------------------

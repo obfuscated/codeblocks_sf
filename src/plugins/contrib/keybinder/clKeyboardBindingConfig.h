@@ -29,6 +29,7 @@ public:
 
     clKeyboardBindingConfig& Load();
     clKeyboardBindingConfig& Save();
+    bool SortBindings( std::vector<MenuItemDataMap_t::iterator>& sortedIters);
 
     bool Exists() const {
         wxFileName fn(ConfigManager::GetConfigFolder(), _T("cbKeyBinder20.conf"));

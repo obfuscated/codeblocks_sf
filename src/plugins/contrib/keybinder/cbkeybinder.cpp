@@ -371,6 +371,11 @@ void cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event)
     m_AppStartupDone = true;
     m_KeyBinderRefreshRequested = false;
 
+    #if not defined(LOGGING) //remove menu scan file when not debugging //(2019/10/28)
+        wxString scanFile = wxFileName::GetTempDir() +_T("\\keyOldFmtMnuScan.ini");
+        if (wxFileExists(scanFile) )
+            wxRemoveFile(scanFile);
+    #endif
     return;
 }
 // ----------------------------------------------------------------------------
@@ -420,6 +425,10 @@ wxString cbKeyBinder::GetPluginVersion()
 bool cbKeyBinder::CreateKeyBindDefaultFile(bool refresh)
 // ----------------------------------------------------------------------------
 {
+    // FIXME (ph#): Do we really need to used the old KeyBinder scan to create the new
+    // default keybindings or can we just use the routines like clKeyboardManager::DoUpdateMenu()
+    // to create the menuMap directly. //(pecan 2019/10/28)
+
     // Create %temp%\<profile>.keyMnuAccels.conf default accelerators by:
     // 1) Scan the menu structure to create keyOldFmtMnuScan.ini as a comparison base.
     // 2) if no %appdata%\<personality>.cbKeyBinder20.conf, try to merge old plugins' cbKeyBinder10.ini file
@@ -476,7 +485,7 @@ bool cbKeyBinder::CreateKeyBindDefaultFile(bool refresh)
     // Use KeyBinder menu walker to create old format .ini file of menu structure
     // ----------------------------------------------------------------------------
     // old format ...\tempDir\keyOldFmtMnuScan.ini will be converted to new codelite format keyMnuAccels.conf file
-    // we need this older format to compare against cbKeyBinder10.ini file to convert old user key bindings
+    // we need this older format to compare against cbKeyBinder10.ini file to convert/preserve old user key bindings
     if (not fnTempOldFmtMnuScan.FileExists())
     {
         // start the menu walker process

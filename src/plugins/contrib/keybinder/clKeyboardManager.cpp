@@ -22,20 +22,77 @@
 #include <wx/tokenzr.h>
 #include <wx/log.h>
 #include <wx/ffile.h>   //(2019/04/3)
+#include <wx/textfile.h>    //( 2019/10/26)
 
 #include "manager.h"
 #include "personalitymanager.h"
 #include "annoyingdialog.h" //(2019/04/27)
 
-#include "debugging.h" //(ICC 2019/05/3)
+#include "debugging.h" //(2019/05/3)
 #include "clKeyboardManager.h"
 #include "clKeyboardBindingConfig.h"
 
+namespace{
+    wxString sep = wxFileName::GetPathSeparator();
+    int frameKnt = 0;
+}
     //-int wxEVT_INIT_DONE = XRCID("wxEVT_INIT_DONE");
 
 BEGIN_EVENT_TABLE( clKeyboardManager, wxEvtHandler )
     //-EVT_MENU( wxEVT_INIT_DONE, clKeyboardManager::OnStartupCompleted )
 END_EVENT_TABLE()
+
+// ----------------------------------------------------------------------------
+void clKeyboardShortcut::Clear()
+// ----------------------------------------------------------------------------
+{
+    m_ctrl = false;
+    m_alt = false;
+    m_shift = false;
+    m_keyCode.Clear();
+}
+// ----------------------------------------------------------------------------
+wxString clKeyboardShortcut::ToString() const
+// ----------------------------------------------------------------------------
+{
+    // An accelerator must contain a key code
+    if(m_keyCode.IsEmpty()) {
+        return _T("");
+    }
+
+    wxString str;
+    if(m_ctrl) {
+        str << _T("Ctrl-");
+    }
+    if(m_alt) {
+        str << _T("Alt-");
+    }
+    if(m_shift) {
+        str << _T("Shift-");
+    }
+    str << m_keyCode;
+    return str;
+}
+// ----------------------------------------------------------------------------
+void clKeyboardShortcut::FromString(const wxString& accelString)
+// ----------------------------------------------------------------------------
+{
+    Clear();
+    wxArrayString tokens = ::wxStringTokenize(accelString, _T("-+"), wxTOKEN_STRTOK);
+    for(size_t i = 0; i < tokens.GetCount(); ++i) {
+        wxString token = tokens.Item(i);
+        token.MakeLower();
+        if(token == _T("shift")) {
+            m_shift = true;
+        } else if(token == _T("alt")) {
+            m_alt = true;
+        } else if(token == _T("ctrl")) {
+            m_ctrl = true;
+        } else {
+            m_keyCode = tokens.Item(i);
+        }
+    }
+}
 
 // ----------------------------------------------------------------------------
 clKeyboardManager::clKeyboardManager()
@@ -184,7 +241,12 @@ void clKeyboardManager::DoUpdateMenu(wxMenu* menu, MenuItemDataIntMap_t& accels,
             // remove the matches entry from the accels map
             accels.erase(where);
         }
-        //(2019/06/29) Linux: set accels in global table, else linux menu accels wont work
+
+        //(2019/06/29) Linux: set menu accels in global table, else linux menu accels wont work.
+        // If menu item with accelerator within the label,
+        // create accelerator corresponding to the specified string, return NULL if
+        // string couldn't be parsed or a pointer to be deleted by the caller.
+        // Otherwise, parse out flags and keycodes following the '/t' in the menu item label
         wxAcceleratorEntry* a = wxAcceleratorEntry::Create(item->GetItemLabel());
         if(a)
         {
@@ -208,10 +270,16 @@ void clKeyboardManager::DoUpdateFrame(wxFrame* frame, MenuItemDataIntMap_t& acce
         wxMenu* menu = menuBar->GetMenu(i);
         DoUpdateMenu(menu, accels, table);
     }
-
+    // table will now have all menu accels that contained menu label accelerators
+    // accel will be missing all accels found in the menu system, but retaining global accels
+    #if defined(LOGGING) //debug accelerator counts
+        size_t tableKnt = table.size();
+        size_t accelsKnt = accels.size();
+    #endif // defined LOGING
     if(!table.empty() || !accels.empty()) {
         wxAcceleratorEntry* entries = new wxAcceleratorEntry[table.size() + accels.size()];
-        // append the globals
+
+        // append to table, the globals retained in the accel table (not found as menu items)
         for(MenuItemDataIntMap_t::iterator iter = accels.begin(); iter != accels.end(); ++iter) {
             wxString dummyText;
             dummyText << iter->second.action << _T("\t") << iter->second.accel;
@@ -226,13 +294,20 @@ void clKeyboardManager::DoUpdateFrame(wxFrame* frame, MenuItemDataIntMap_t& acce
             }
         }
 
+        // move global accel entries from table to wxAcceleratorTable array
         for(size_t i = 0; i < table.size(); ++i) {
             entries[i] = table.at(i);
         }
 
+        #if defined(LOGGING)
+        DumpAccelerators(table.size(), entries, frame); //(2019/10/27)
+        #endif
+
+        // Set the wxAcceleratorTable for this frame
         wxAcceleratorTable acceleTable(table.size(), entries);
         frame->SetAcceleratorTable(acceleTable);
         wxDELETEA(entries);
+
     }
 }
 // ----------------------------------------------------------------------------
@@ -372,7 +447,7 @@ void clKeyboardManager::Initialize(bool isRefreshRequest)
     std::for_each(defaultEntries.begin(), defaultEntries.end(), [&](const MenuItemDataMap_t::value_type& vdflt)
     {
         //-wxString vtValue = vdflt.first;         //The menu id number
-        if(m_menuTable.count(vdflt.first) == 0) {  //searches map for like shortcut string
+        if(m_menuTable.count(vdflt.first) == 0) {  //searches map for like shortcut id
             m_menuTable.insert(vdflt);
         }
         // ----------------------------------------------------------------------------
@@ -405,7 +480,6 @@ void clKeyboardManager::Initialize(bool isRefreshRequest)
     // And apply the changes
     Update();
 }
-
 // ----------------------------------------------------------------------------
 void clKeyboardManager::GetAllAccelerators(MenuItemDataMap_t& accels) const
 // ----------------------------------------------------------------------------
@@ -725,15 +799,6 @@ MenuItemDataMap_t clKeyboardManager::DoLoadDefaultAccelerators()
     return entries;
 }
 // ----------------------------------------------------------------------------
-void clKeyboardShortcut::Clear()
-// ----------------------------------------------------------------------------
-{
-    m_ctrl = false;
-    m_alt = false;
-    m_shift = false;
-    m_keyCode.Clear();
-}
-// ----------------------------------------------------------------------------
 wxString clKeyboardManager::KeyCodeToString(int keyCode) //(2019/02/25)
 // ----------------------------------------------------------------------------
 {
@@ -1008,44 +1073,38 @@ bool clKeyboardManager::ReadFileContent(const wxFileName& fn, wxString& data, co
     return file.ReadAll(&data, conv);
 }
 // ----------------------------------------------------------------------------
-void clKeyboardShortcut::FromString(const wxString& accelString)
+void clKeyboardManager::DumpAccelerators(size_t tableCount, wxAcceleratorEntry* pEntries, wxFrame* pFrame)
 // ----------------------------------------------------------------------------
 {
-    Clear();
-    wxArrayString tokens = ::wxStringTokenize(accelString, _T("-+"), wxTOKEN_STRTOK);
-    for(size_t i = 0; i < tokens.GetCount(); ++i) {
-        wxString token = tokens.Item(i);
-        token.MakeLower();
-        if(token == _T("shift")) {
-            m_shift = true;
-        } else if(token == _T("alt")) {
-            m_alt = true;
-        } else if(token == _T("ctrl")) {
-            m_ctrl = true;
-        } else {
-            m_keyCode = tokens.Item(i);
-        }
-    }
-}
-// ----------------------------------------------------------------------------
-wxString clKeyboardShortcut::ToString() const
-// ----------------------------------------------------------------------------
-{
-    // An accelerator must contain a key code
-    if(m_keyCode.IsEmpty()) {
-        return _T("");
-    }
 
-    wxString str;
-    if(m_ctrl) {
-        str << _T("Ctrl-");
+    if (0 == tableCount) return;
+
+    wxString tmpDir = wxFileName::GetTempDir();
+    wxString txtFilename = tmpDir +sep +_T("KBGlobalsFrame_") + wxString::Format(_T("%d"),++frameKnt) + _T(".txt");
+    if (wxFileExists(txtFilename))
+        wxRemoveFile(txtFilename);
+    wxTextFile txtAccels(txtFilename);
+    txtAccels.Create();
+    txtAccels.AddLine(pFrame->GetTitle());
+
+    for (size_t ii = 0; ii < tableCount; ++ii)
+    {
+        //int flags;
+        //int keyCode;
+        //int command;
+        wxString strCommand;
+        wxString txtLine = wxString::Format(_T("accelEntry[%d] flags[%d] code[%d] id[%d]"),
+                        int(ii),
+                        pEntries[ii].GetFlags(),
+                        pEntries[ii].GetKeyCode(),
+                        pEntries[ii].GetCommand()    //numeric id
+                      );
+
+        strCommand = pEntries[ii].ToString();
+        txtLine += _T(" ") + strCommand;
+        txtAccels.AddLine(txtLine);
     }
-    if(m_alt) {
-        str << _T("Alt-");
-    }
-    if(m_shift) {
-        str << _T("Shift-");
-    }
-    str << m_keyCode;
-    return str;
+    txtAccels.Write();
+    txtAccels.Close();
+
 }
