@@ -215,11 +215,8 @@ namespace platform
     //
     // cb_unused               No warning will be raised if the parameter is not used.
     //                         Use this if you want to convey that you are aware of a parameter but you are intentionally not using it.
-    //
-    // POISON(message)         If you touch this, you'll die. The message tells you why.
-    //                         ALSO: It will break the build, so nobody else must die.
 
-    #if defined(__GNUC__) && ((100 * __GNUC__ + 10 * __GNUC_MINOR__ + __GNUC_PATCHLEVEL__) >= 332)
+    #if defined(__GNUC__)
         const int gcc = Version<__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__>::eval;
         #define cb_pure_function       __attribute__ ((__pure__,  __nothrow__))
         #define cb_const_function      __attribute__ ((__const__, __nothrow__))
@@ -227,12 +224,6 @@ namespace platform
         #define cb_must_consume_result __attribute__ ((__warn_unused_result__))
         #define cb_deprecated_function __attribute__ ((__deprecated__))
         #define cb_unused              __attribute__ ((__unused__))
-
-        #if((100 * __GNUC__ + 10 *__GNUC_MINOR__ + __GNUC_PATCHLEVEL__) >= 436)
-            #define POISON(message) __attribute__((__error__(#message))
-        #else
-            #define POISON(message)
-        #endif
     #else
         const int gcc = 0;
         #define cb_pure_function

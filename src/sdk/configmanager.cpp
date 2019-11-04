@@ -281,29 +281,28 @@ void CfgMgrBldr::SwitchTo(const wxString& fileName)
     doc->ClearError();
 
     wxString info;
-#ifndef __GNUC__
-    info.Printf(_T( " application info:\n"
+    info.Printf(_T(" application info:\n"
                     "\t svn_revision:\t%u\n"
-                    "\t build_date:\t%s, %s "), ConfigManager::GetRevisionNumber(), wxT(__DATE__), wxT(__TIME__));
-#else
-    info.Printf(_T( " application info:\n"
-                    "\t svn_revision:\t%u\n"
-                    "\t build_date:\t%s, %s\n"
-                    "\t gcc_version:\t%d.%d.%d "), ConfigManager::GetRevisionNumber(), wxT(__DATE__), wxT(__TIME__),
-                __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+                    "\t build_date:\t%s, %s\n"), ConfigManager::GetRevisionNumber(), wxT(__DATE__), wxT(__TIME__));
+#if defined(__clang__)
+    info += wxString::Format(wxT("\t compiler_version:\tclang %d.%d.%d\n"), __clang_major__,
+                             __clang_minor__, __clang_patchlevel__);
+#elif defined(__GNUC__)
+    info += wxString::Format(wxT("\t compiler_version:\tgcc %d.%d.%d\n"), __GNUC__, __GNUC_MINOR__,
+                             __GNUC_PATCHLEVEL__);
 #endif
 
     if (platform::windows)
-        info.append(_T("\n\t Windows "));
-    if (platform::Linux)
-        info.append(_T("\n\t Linux "));
-    if (platform::macosx)
-        info.append(_T("\n\t Mac OS X "));
-    if (platform::Unix)
-        info.append(_T("\n\t Unix "));
+        info.append(_T("\t Windows "));
+    else if (platform::Linux)
+        info.append(_T("\t Linux "));
+    else if (platform::macosx)
+        info.append(_T("\t Mac OS X "));
+    else if (platform::Unix)
+        info.append(_T("\t Unix "));
 
-    info.append(platform::unicode ? _T("Unicode ") : _T("ANSI "));
-
+    info.append(platform::unicode ? _T("Unicode") : _T("ANSI"));
+    info.append(wxT("\n"));
     TiXmlComment c;
     c.SetValue((const char*) info.mb_str());
 

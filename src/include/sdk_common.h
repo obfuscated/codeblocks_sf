@@ -9,19 +9,6 @@
 //This file should be included only by sdk.h and sdk_precomp.h
 //It includes all the common and necessary header files for precompilation.
 
-/*
- * Enable backwards-compatibility for gcc 3.3 and lower.
- * Although the compiler does not support precompiled headers, the build might still use them.
- * We might significantly reduce the compile time for old compilers, by undefining CB_PRECOMP and thus
- * not including every header file twice.
- * This also allows us to reliably shortcut some includes for compilers that *do* support precompilation.
- */
-#if defined(__GNUC__) && !defined(__APPLE__)
-    #if ( (__GNUC__ < 3) || ( (__GNUC__ == 3) && (__GNUC_MINOR__ < 4) ) )
-        #undef CB_PRECOMP
-    #endif
-#endif // __GNUC__ && !__APPLE__
-
 #if defined(NOPCH)
     #undef CB_PRECOMP
 #endif // NOPCH
