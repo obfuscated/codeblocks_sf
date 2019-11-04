@@ -366,6 +366,8 @@ void cbProject::ClearAllProperties()
 
 void cbProject::Open()
 {
+    wxStopWatch timer;
+
     m_Loaded = false;
     m_ProjectFilesMap.clear();
     Delete(m_pExtensionsElement);
@@ -417,6 +419,11 @@ void cbProject::Open()
             m_LastModified = fname.GetModificationTime();
         }
     }
+
+    long time = timer.Time();
+    if (time >= 100)
+        Manager::Get()->GetLogManager()->Log(F(wxT("cbProject::Open took: %.3f seconds."),
+                                               time / 1000.0f));
 } // end of Open
 
 void cbProject::CalculateCommonTopLevelPath()

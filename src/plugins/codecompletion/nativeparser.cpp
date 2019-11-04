@@ -1085,6 +1085,7 @@ void NativeParser::UpdateClassBrowser()
 
 bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
 {
+    wxStopWatch timer;
     if (!parser)
         return false;
 
@@ -1148,6 +1149,10 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
 
     TRACE(_T("NativeParser::DoFullParsing: Leave"));
 
+    long time = timer.Time();
+    if (time >= 50)
+        Manager::Get()->GetLogManager()->Log(F(wxT("NativeParser::DoFullParsing took: %.3f seconds."),
+                                               time / 1000.0f));
     return true;
 }
 
