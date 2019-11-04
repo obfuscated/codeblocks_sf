@@ -41,10 +41,9 @@ Compiler* CompilerFactory::GetCompiler(size_t index)
 
 Compiler* CompilerFactory::GetCompiler(const wxString& id)
 {
-    const wxString lid = id.Lower();
     for (size_t i = 0; i < Compilers.GetCount(); ++i)
     {
-        if (Compilers[i]->GetID().IsSameAs(lid))
+        if (Compilers[i]->GetID().IsSameAs(id, false))
             return Compilers[i];
     }
     // try again using previous id format
@@ -52,7 +51,7 @@ Compiler* CompilerFactory::GetCompiler(const wxString& id)
     {
         wxString oldId = Compilers[i]->GetID();
         oldId.Replace(wxT("-"), wxEmptyString);
-        if (oldId.IsSameAs(lid))
+        if (oldId.IsSameAs(id, false))
             return Compilers[i];
     }
     return nullptr;
