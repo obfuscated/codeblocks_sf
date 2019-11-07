@@ -206,10 +206,10 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, const RecentItemsList &project
                    appglobals::AppActualVersionVerb.c_str(), ConfigManager::GetSvnDate().c_str());
 
 #if defined(__clang__)
-    revInfo += wxString::Format(wxT("clang %d.%d.%d"), __clang_major__, __clang_minor__,
+    revInfo += wxString::Format(wxT("clang %d.%d.%d "), __clang_major__, __clang_minor__,
                                 __clang_patchlevel__);
 #elif defined(__GNUC__)
-    revInfo += wxString::Format(_T("gcc %d.%d.%d"), __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+    revInfo += wxString::Format(_T("gcc %d.%d.%d "), __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
 #endif
     revInfo += wxString::Format(wxT("%s/%s - %d bit"), appglobals::AppPlatform.c_str(),
                                 appglobals::AppWXAnsiUnicode.c_str(), bit_type);
