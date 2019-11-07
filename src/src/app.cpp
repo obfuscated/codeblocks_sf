@@ -731,7 +731,10 @@ bool CodeBlocksApp::OnInit()
 #if wxCHECK_VERSION(3, 0, 0)
         {
             const double scalingFactor = frame->GetContentScaleFactor();
-            Manager::Get()->GetLogManager()->Log(wxString::Format(wxT("Initial scaling factor is %.3f"), scalingFactor));
+            const double actualScalingFactor = cbGetActualContentScaleFactor(*frame);
+            LogManager *log = Manager::Get()->GetLogManager();
+            log->Log(wxString::Format(wxT("Initial scaling factor is %.3f (actual: %.3f)"),
+                                      scalingFactor, actualScalingFactor));
         }
 #endif // wxCHECK_VERSION(3, 0, 0)
 
