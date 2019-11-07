@@ -179,8 +179,13 @@ void VirtualBuildTargetsDlg::OnRemoveClick(cb_unused wxCommandEvent& event)
         return;
     }
     m_pProject->RemoveVirtualBuildTarget(lstAliases->GetStringSelection());
-    lstAliases->Delete(lstAliases->GetSelection());
-    lstAliases->SetSelection(0);
+    int selection = lstAliases->GetSelection();
+    lstAliases->Delete(selection);
+    // Select the item after the deleted one. If there is none, select the previous item
+    // -1 is a valid value, meaning no selection
+    if (selection == int(lstAliases->GetCount()))
+        --selection;
+    lstAliases->SetSelection(selection);
     CheckTargets();
 }
 
