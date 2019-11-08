@@ -27,7 +27,6 @@ echo "creating contrib .pot files"
 find ../plugins/contrib/AutoVersioning            | grep -P "(\.cpp|\.h)$" | xargs xgettext --keyword=_ -o autoversioning.pot
 find ../plugins/contrib/BrowseTracker             | grep -P "(\.cpp|\.h)$" | xargs xgettext --keyword=_ -o browsetracker.pot
 find ../plugins/contrib/byogames                  | grep -P "(\.cpp|\.h)$" | xargs xgettext --keyword=_ -o byogames.pot
-find ../plugins/contrib/cb_koders                 | grep -P "(\.cpp|\.h)$" | xargs xgettext --keyword=_ -o cb_koders.pot
 find ../plugins/contrib/codesnippets              | grep -P "(\.cpp|\.h)$" | xargs xgettext --keyword=_ -o codesnippets.pot
 find ../plugins/contrib/codestat                  | grep -P "(\.cpp|\.h)$" | xargs xgettext --keyword=_ -o codestat.pot
 find ../plugins/contrib/copystrings               | grep -P "(\.cpp|\.h)$" | xargs xgettext --keyword=_ -o copystrings.pot

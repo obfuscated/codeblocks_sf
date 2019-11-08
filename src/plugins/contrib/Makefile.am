@@ -10,10 +10,6 @@ if BUILD_BYOGAMES
 MAYBE_BYOGAMES=byogames appdata
 endif
 
-if BUILD_CBKODERS
-MAYBE_CBKODERS=cb_koders appdata
-endif
-
 if BUILD_CODESNIPPETS
 MAYBE_CODESNIPPETS=codesnippets appdata
 endif
@@ -161,7 +157,6 @@ endif
 SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_BROWSETRACKER) \
 		$(MAYBE_BYOGAMES) \
-		$(MAYBE_CBKODERS) \
 		$(MAYBE_CCCC) \
 		$(MAYBE_CODESNIPPETS) \
 		$(MAYBE_CODESTAT) \
@@ -203,7 +198,6 @@ DIST_SUBDIRS = appdata \
 		AutoVersioning \
 		BrowseTracker \
 		byogames \
-		cb_koders \
 		Cccc \
 		codesnippets \
 		codestat \

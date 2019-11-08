@@ -17,7 +17,6 @@
 		<Project filename="plugins\contrib\AutoVersioning\AutoVersioning_wx31.cbp" />
 		<Project filename="plugins\contrib\BrowseTracker\BrowseTracker_wx31.cbp" />
 		<Project filename="plugins\contrib\byogames\byogames_wx31.cbp" />
-		<Project filename="plugins\contrib\cb_koders\cb_koders_wx31.cbp" />
 		<Project filename="plugins\contrib\Cccc\Cccc_wx31.cbp" />
 		<Project filename="plugins\contrib\codesnippets\codesnippets_wx31.cbp" />
 		<Project filename="plugins\contrib\codestat\codestat_wx31.cbp" />

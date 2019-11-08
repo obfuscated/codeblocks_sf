@@ -334,7 +334,6 @@ AC_DEFUN([BUILD_CONTRIB_NONE], [
 	AM_CONDITIONAL([BUILD_AUTOVERSIONING], [false])
 	AM_CONDITIONAL([BUILD_BROWSETRACKER], [false])
 	AM_CONDITIONAL([BUILD_BYOGAMES], [false])
-	AM_CONDITIONAL([BUILD_CBKODERS], [false])
 	AM_CONDITIONAL([BUILD_CODESNIPPETS], [false])
 	AM_CONDITIONAL([BUILD_CODESTAT], [false])
 	AM_CONDITIONAL([BUILD_COPYSTRINGS], [false])
@@ -377,7 +376,6 @@ AC_DEFUN([BUILD_CONTRIB_ALL], [
 	AM_CONDITIONAL([BUILD_AUTOVERSIONING], [true])
 	AM_CONDITIONAL([BUILD_BROWSETRACKER], [true])
 	AM_CONDITIONAL([BUILD_BYOGAMES], [true])
-	AM_CONDITIONAL([BUILD_CBKODERS], [true])
 	AM_CONDITIONAL([BUILD_CODESNIPPETS], [true])
 	AM_CONDITIONAL([BUILD_CODESTAT], [true])
 	AM_CONDITIONAL([BUILD_COPYSTRINGS], [true])
@@ -427,7 +425,7 @@ AC_ARG_WITH(contrib-plugins,
   [                        "all,-help" or "yes,-help" compiles all contrib plugins except the help plugin ]
   [                        "none", "no", "--without-contrib-plugins" or skipping the parameter at all, ]
   [                        compiles none of the contrib-plugins ]
-  [                        Plugin names are: AutoVersioning, BrowseTracker, byogames, Cccc, CppCheck, cbkoders, codesnippets, ]
+  [                        Plugin names are: AutoVersioning, BrowseTracker, byogames, Cccc, CppCheck, codesnippets, ]
   [                        		     codestat, copystrings, Cscope, DoxyBlocks, dragscroll, EditorConfig, EditorTweaks, envvars, exporter, ]
   [                        		     FileManager, headerfixup, help, hexeditor, incsearch, keybinder, libfinder, MouseSap, ]
   [                        		     NassiShneiderman, ProjectOptionsManipulator, profiler, regex, ReopenEditor, rndgen, smartindent, spellchecker, ]
@@ -449,9 +447,6 @@ do
 		;;
 	byogames)
 		AM_CONDITIONAL([BUILD_BYOGAMES], [true])
-		;;
-	cbkoders)
-		AM_CONDITIONAL([BUILD_CBKODERS], [true])
 		;;
 	codesnippets)
 		AM_CONDITIONAL([BUILD_CODESNIPPETS], [true])
@@ -569,9 +564,6 @@ do
 		;;
 	-byogames)
 		AM_CONDITIONAL([BUILD_BYOGAMES], [false])
-		;;
-	-cbkoders)
-		AM_CONDITIONAL([BUILD_CBKODERS], [false])
 		;;
 	-codesnippets)
 		AM_CONDITIONAL([BUILD_CODESNIPPETS], [false])
@@ -695,7 +687,6 @@ AC_MSG_RESULT($plugins)
 AC_SUBST(BUILD_AUTOVERSIONING)
 AC_SUBST(BUILD_BROWSETRACKER)
 AC_SUBST(BUILD_BYOGAMES)
-AC_SUBST(BUILD_CBKODERS)
 AC_SUBST(BUILD_CCCC)
 AC_SUBST(BUILD_CODESNIPPETS)
 AC_SUBST(BUILD_CODESTAT)

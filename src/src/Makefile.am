@@ -119,6 +119,4 @@ man_MANS = codeblocks.1
 
 EXTRA_DIST = associations.cpp \
 			associations.h \
-			ipc.h \
-			ipc.cpp \
 			$(man_MANS)

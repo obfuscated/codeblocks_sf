@@ -23,7 +23,6 @@
 			<Depends filename="CodeBlocks-unix.cbp" />
 		</Project>
 		<Project filename="plugins/contrib/byogames/byogames-unix.cbp" />
-		<Project filename="plugins/contrib/cb_koders/cb_koders-unix.cbp" />
 		<Project filename="plugins/contrib/Cccc/Cccc-unix.cbp">
 			<Depends filename="CodeBlocks-unix.cbp" />
 		</Project>

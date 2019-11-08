@@ -269,7 +269,6 @@ fi
 %{pkgdatadir}/ToolsPlus.zip
 %{pkgdatadir}/Valgrind.zip
 %{pkgdatadir}/byogames.zip
-%{pkgdatadir}/cb_koders.zip
 %{pkgdatadir}/codesnippets.zip
 %{pkgdatadir}/codestat.zip
 %{pkgdatadir}/copystrings.zip
@@ -313,7 +312,6 @@ fi
 %{plugindir}/libToolsPlus.so
 %{plugindir}/libValgrind.so
 %{plugindir}/libbyogames.so
-%{plugindir}/libcb_koders.so
 %{plugindir}/libcodesnippets.so
 %{plugindir}/libcodestat.so
 %{plugindir}/libcopystrings.so
