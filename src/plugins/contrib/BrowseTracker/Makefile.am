@@ -28,7 +28,6 @@ noinst_HEADERS =  	BrowseTracker.h \
 			Version.h \
 			wx_pch.h \
 			BrowseMarks.h \
-			BrowseXpms.h \
 			BrowseTrackerDefs.h \
 			BrowseTrackerConfPanel.h \
 			BrowseTrackerLayout.h \
