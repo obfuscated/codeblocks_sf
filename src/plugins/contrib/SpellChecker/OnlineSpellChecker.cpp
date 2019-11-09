@@ -198,13 +198,15 @@ void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl) const
             // remove styling:
             stc->IndicatorClearRange(start, end - start);
 
+            EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+            if (!colour_set)
+                break;
+            const wxString lang = colour_set->GetLanguageName(ctrl->GetLanguage() );
+
+            int oldWordStart = 0;
+            int posToAdd = 0;
             for ( int pos = start ;  pos < end ; pos++)
             {
-                EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
-                if (!colour_set)
-                    break;
-                wxString lang = colour_set->GetLanguageName(ctrl->GetLanguage() );
-
                 int wordstart = stc->WordStartPosition(pos, true);
                 if (wordstart < 0)
                     continue;   // No valid word start found
@@ -215,7 +217,27 @@ void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl) const
                      m_pSpellHelper->HasStyleToBeChecked(lang, stc->GetStyleAt(wordstart)) )
                 {
                     DissectWordAndCheck(stc, wordstart, wordend);
-                    pos = wordend;
+                }
+
+                pos = wordend;
+                // wordend can point to a position before pos, so this can
+                // lead to an infinite loop. For example the combination
+                //  "\r\n"
+                // pos points to '\n' wordstart is then '\r' and wordend
+                // is also '\r'. So wordend points to a position prior
+                // to pos. To advance anyway we check if we have moved
+                // from the last iteration. If not we jump pos with increasing steps
+                // ahead. This will make sure we go advance the hickup,
+                // also if there are multiple bytes.
+                if(oldWordStart == wordstart)
+                {
+                    posToAdd++;
+                    pos += posToAdd;
+                }
+                else
+                {
+                    posToAdd = 0;
+                    oldWordStart = wordstart;
                 }
 
             }
