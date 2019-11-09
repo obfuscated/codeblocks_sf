@@ -750,7 +750,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 /* NOTE (mandrav#1#): Calling GetFileByFilename() twice, is costly.
     Instead of searching for duplicate files when entering here,
     we 'll search before exiting.
-    The rationale is that by then, we 'll have the relative filename
+    The rationale is that by then, we'll have the relative filename
     in our own representation and this will make everything quicker
     (check GetFileByFilename implementation to understand why)...
 */
@@ -893,13 +893,18 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE, projectBasePath);
 
     const wxString &fullFilename = realpath(fname.GetFullPath());
-    pf->file              = fullFilename;
-    pf->relativeFilename  = UnixFilename(local_filename);
+    pf->file = fullFilename;
+
+    // Make sure the relativeFilename is really relative to the project file.
+    // This is a bit slower but a bit more correct.
+    fname.MakeRelativeTo(projectBasePath);
+    const wxString &fixedRelativePath = fname.GetFullPath();
+    pf->relativeFilename = UnixFilename(fixedRelativePath);
 
     // now check if we have already added this file
     // if we have, return the existing file, but add the specified target
     ProjectFile* existing = GetFileByFilename(pf->relativeFilename, true, true);
-    if (existing == pf)
+    if (existing)
     {
         delete pf;
         if (targetIndex >= 0 && targetIndex < (int)m_Targets.GetCount())
