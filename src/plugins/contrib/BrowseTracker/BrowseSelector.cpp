@@ -24,10 +24,6 @@
 #include <wx/image.h>
 #include <wx/dcclient.h>
 
-// Popup dialog xpm
-extern unsigned char signpost_alpha[];
-extern const char *signpost_xpm[];
-
 #include <wx/sizer.h>
 #include <wx/dcmemory.h>
 #include <wx/font.h>
@@ -44,7 +40,6 @@ extern const char *signpost_xpm[];
 #include "Version.h"
 #include "BrowseTrackerDefs.h"
 
-#include "BrowseXpms.h"
 wxBitmap BrowseSelector::m_bmp;
 namespace
 {
@@ -121,6 +116,7 @@ void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, boo
     m_listBox = new wxListBox(this, wxID_ANY, wxDefaultPosition, wxSize(400, 150), 0, NULL, flags);
 
     static int panelHeight = 0;
+    static int imageSize = 0;
     if (panelHeight == 0)
     {
         wxMemoryDC mem_dc;
@@ -130,18 +126,17 @@ void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, boo
         mem_dc.SelectObject(bmp);
 
         wxFont font(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-        font.SetWeight(wxFONTWEIGHT_BOLD);
+        font.SetWeight( wxFONTWEIGHT_BOLD );
         mem_dc.SetFont(font);
         int w;
         mem_dc.GetTextExtent(wxT("Tp"), &w, &panelHeight);
-        panelHeight += 4; // Place a spacer of 2 pixels
+
+        imageSize = cbFindMinSize16to64(panelHeight);
+        panelHeight = imageSize + 4; // Place a spacer of 2 pixels
 
         font.SetWeight(wxFONTWEIGHT_NORMAL);
         mem_dc.SetFont(font);
 
-        // Out signpost bitmap is 24 pixels
-        if (panelHeight < 24)
-            panelHeight = 24;
     }
 
     m_panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(800, panelHeight));
@@ -180,9 +175,10 @@ void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, boo
     // Create the bitmap, only once
     if (!m_bmp.Ok())
     {
-        wxImage img(signpost_xpm);
-        img.SetAlpha(signpost_alpha, true);
-        m_bmp = wxBitmap(img);
+        const wxString filename = ConfigManager::GetDataFolder()
+                                + wxString::Format(wxT("/BrowseTracker.zip#zip:images/%dx%d/signpost.png"),
+                                                   imageSize, imageSize);
+        m_bmp = cbLoadBitmapScaled(filename, wxBITMAP_TYPE_PNG, cbGetContentScaleFactor(*this));
     }
     m_listBox->SetFocus();
 }
