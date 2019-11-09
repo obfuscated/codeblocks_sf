@@ -1156,15 +1156,6 @@ void ProjectLoader::DoUnitOptions(const TiXmlElement* parentNode, ProjectFile* f
         {
             file->AddBuildTarget(m_pProject->GetBuildTarget(i)->GetTitle());
         }
-
-        // use same targets for generated files
-        for (size_t n = 0; n < file->generatedFiles.size(); ++n)
-        {
-            for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
-            {
-                file->generatedFiles[n]->AddBuildTarget(m_pProject->GetBuildTarget(i)->GetTitle());
-            }
-        }
     }
 }
 
