@@ -1,0 +1,22 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler>
+<CodeBlocks_compiler name="GNU GCC Compiler for PowerPC EABI"
+                     id="powerpc-eabi"
+                     weight="71">
+    <Path type="master">
+        <Search envVar="PATH"
+                for="C"/>
+        <if platform="windows">
+            <Search registry="HKEY_LOCAL_MACHINE\SOFTWARE\Sysprogs\GNUToolchains"
+                    value="SysGCC-powerpc-eabi-4.6.3"/>
+			<Search path="%ProgramFiles%\Woodward\DevelopmentTools\Toolchains\GCC\powerpc-eabi\4_6_0"/>
+			<Search path="C:\PEMicro\PKGPPCNEXUSSTARTER\gnu"/>
+			<Search path="C:SysGCC\powerpc-eabi"/>
+			<Search path="%ProgramFiles%\ronetix\powerpc-eabi"/>
+            <Fallback path="%ProgramFiles%\ronetix\powerpc-eabi"/>
+        </if>
+        <else>
+            <Fallback path="/usr/local/powerpc-eabi"/>
+        </else>
+    </Path>
+</CodeBlocks_compiler>

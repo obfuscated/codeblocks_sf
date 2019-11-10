@@ -1,0 +1,5 @@
+BZip wxWidgets streams written by Ryan Norton wrote streams for bzip.
+
+http://sourceforge.net/projects/wxprojects
+
+Oddly, gcc (and MinGW) require that bzipstream be compiled WITHOUT optimization.  Otherwise some needed inline functions are not exported which causes linking errors with other applications attempting to use the wxBZipInputStream.

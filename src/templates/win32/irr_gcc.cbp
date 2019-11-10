@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="Irrlicht Project"/>
+		<Build>
+			<Target title="default">
+				<Option output="Irrlicht.exe"/>
+				<Option working_dir="$(IRR_BASE)\bin\Win32-gcc"/>
+				<Option type="1"/>
+				<Compiler>
+					<Add option="-O3"/>
+				</Compiler>
+			</Target>
+			<Environment>
+				<Variable name="IRR_BASE" value="C:\Irrlicht"/>
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="-W"/>
+			<Add directory="$(IRR_BASE)\include"/>
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(IRR_BASE)\include"/>
+		</ResourceCompiler>
+		<Linker>
+			<Add library="irrlicht"/>
+			<Add directory="$(IRR_BASE)\lib\Win32-gcc"/>
+		</Linker>
+	</Project>
+</CodeBlocks_project_file>

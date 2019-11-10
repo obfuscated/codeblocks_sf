@@ -1,0 +1,471 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <Program name="C"         value="wcl386.exe"/>
+    <Program name="CPP"       value="wcl386.exe"/>
+    <Program name="LD"        value="wlink.exe"/>
+    <Program name="LIB"       value="wlib.exe"/>
+    <Program name="WINDRES"   value="wrc.exe"/>
+    <Program name="MAKE"      value="wmake.exe"/>
+
+    <Switch name="includeDirs"             value="-i"/>
+    <Switch name="libDirs"                 value="LIBP "/>
+    <Switch name="linkLibs"                value=""/>
+    <Switch name="defines"                 value="-d"/>
+    <Switch name="genericSwitch"           value="-"/>
+    <Switch name="objectExtension"         value="obj"/>
+    <Switch name="needDependencies"        value="false"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value=""/>
+    <Switch name="libExtension"            value="lib"/>
+    <Switch name="linkerNeedsLibPrefix"    value="false"/>
+    <Switch name="linkerNeedsLibExtension" value="true"/>
+    <Switch name="objectSeparator"         value=","/>
+
+    <Option name="treat source files as C code"
+            option="-cc"/>
+    <Option name="treat source files as C++ code"
+            option="-cc++"/>
+    <Option name="ignore the WCL386 environment variable"
+            option="-y"/>
+
+    <Category name="Processor options">
+        <Option name="386 register calling conventions"
+                option="-3r"
+                supersedes="-4r -5r -6r"/>
+        <Option name="386 stack calling conventions"
+                option="-3s"
+                supersedes="-4s -5s -6s"/>
+        <Option name="486 register calling conventions"
+                option="-4r"
+                supersedes="-3r -5r -6r"/>
+        <Option name="486 stack calling conventions"
+                option="-4s"
+                supersedes="-3s -5s -6s"/>
+        <Option name="Pentium register calling conventions"
+                option="-5r"
+                supersedes="-3r -4r -6r"/>
+        <Option name="Pentium stack calling conventions"
+                option="-5s"
+                supersedes="-3s -4s -6s"/>
+        <Option name="Pentium Pro register call conventions"
+                option="-6r"
+                supersedes="-3r -4r -5r"/>
+        <Option name="Pentium Pro stack call conventions"
+                option="-6s"
+                supersedes="-3s -4s -5s"/>
+    </Category>
+
+    <Category name="Floating-point processor options">
+        <Option name="calls to floating-point library"
+                option="-fpc"/>
+        <Option name="enable Pentium FDIV check"
+                option="-fpd"/>
+        <Option name="inline 80x87 with emulation"
+                option="-fpi"/>
+        <Option name="inline 80x87"
+                option="-fpi87"/>
+        <Option name="use old floating-point conventions"
+                option="-fpr"/>
+        <Option name="generate 287 floating-point code"
+                option="-fp2"/>
+        <Option name="generate 387 floating-point code"
+                option="-fp3"/>
+        <Option name="optimize floating-point for Pentium"
+                option="-fp5"/>
+        <Option name="optimize floating-point for Pentium Pro"
+                option="-fp6"/>
+    </Category>
+
+    <Category name="Executable type options"
+              exclusive="true">
+        <Option name="compile and link for DOS"
+                option="-bcl=dos"/>
+        <Option name="compile and link for Linux"
+                option="-bcl=linux"/>
+        <Option name="compile and link for NT (includes Win32)"
+                option="-bcl=nt"/>
+        <Option name="compile and link for OS/2"
+                option="-bcl=os2"/>
+        <Option name="compile and link for QNX"
+                option="-bcl=qnx"/>
+        <Option name="compile and link for Windows"
+                option="-bcl=windows"/>
+    </Category>
+
+    <Category name="Object type options"
+              exclusive="true">
+        <Option name="compile for DOS"
+                option="-bt=dos"/>
+        <Option name="compile for Linux"
+                option="-bt=linux"/>
+        <Option name="compile for NetWare"
+                option="-bt=netware"/>
+        <Option name="compile for NetWare 5 and later"
+                option="-bt=netware5"/>
+        <Option name="compile for NT (includes Win32)"
+                option="-bt=nt"/>
+        <Option name="compile for OS/2"
+                option="-bt=os2"/>
+        <Option name="compile for QNX"
+                option="-bt=qnx"/>
+        <Option name="compile for Windows"
+                option="-bt=windows"/>
+    </Category>
+
+    <Category name="Compiler options">
+        <Option name="generate browsing information"
+                option="-db"/>
+        <Option name="set error limit number (set ERROR_LIMIT in custom variables)"
+                option="-e=$(ERROR_LIMIT)"/>
+        <Option name="call epilogue hook routine"
+                option="-ee"/>
+        <Option name="full paths in messages"
+                option="-ef"/>
+        <Option name="force enums to be type int"
+                option="-ei"/>
+        <Option name="minimum base type for enum is int"
+                option="-em"/>
+        <Option name="emit routine names in the code"
+                option="-en"/>
+        <Option name="call prologue hook routine"
+                option="-ep"/>
+        <Option name="call prologue hook routine with n bytes of stack (set PROLOGUE_STACK in custom variables)"
+                option="-ep=$(PROLOGUE_STACK)"/>
+        <Option name="do not display error messages"
+                option="-eq"/>
+        <Option name="P5 profiling"
+                option="-et"/>
+        <Option name="generate PharLap EZ-OMF object"
+                option="-ez"/>
+        <Option name="generate pre-compiled header (set PCH_FILE in custom variables)"
+                option="-fh=$(PCH_FILE)"/>
+        <Option name="generate pre-compiled header (Quiet) (set PCH_FILE in custom variables)"
+                option="-fhq=$(PCH_FILE)"/>
+        <Option name="(C++) only read PCH"
+                option="-fhr"/>
+        <Option name="(C++) only write PCH"
+                option="-fhw"/>
+        <Option name="(C++) don't count PCH warnings"
+                option="-fhwe"/>
+        <Option name="force include of file (define FORCE_INCLUDE in custom variables)"
+                option="-fi=$(FORCE_INCLUDE)"/>
+        <Option name="set error file name (define ERROR_FILE in custom variables)"
+                option="-fr=$(ERROR_FILE)"/>
+        <Option name="(C++) check for 8.3 file names"
+                option="-ft"/>
+        <Option name="(C++) no check for 8.3 file names"
+                option="-fx"/>
+        <Option name="set code group name (define CODEGROUP in custom variables)"
+                option="-g=$(CODEGROUP)"/>
+        <Option name="change char default to signed"
+                option="-j"/>
+        <Option name="set CODE class name (define CODECLASS in custom variables)"
+                option="-nc=$(CODECLASS)"/>
+        <Option name="set data segment name (define DATANAME in custom variables)"
+                option="-nd=$(DATANAME)"/>
+        <Option name="set module name (define MODULENAME in custom variables)"
+                option="-nm=$(MODULENAME)"/>
+        <Option name="set text segment name (define TEXTNAME in custom variables)"
+                option="-nt=$(TEXTNAME)"/>
+        <Option name="save/restore segregs across calls"
+                option="-r"/>
+        <Option name="promote function args/rets to int"
+                option="-ri"/>
+        <Option name="remove stack overflow checks"
+                option="-s"/>
+        <Option name="generate calls to grow the stack"
+                option="-sg"/>
+        <Option name="touch stack through SS first"
+                option="-st"/>
+        <Option name="output func declarations to .def"
+                option="-v"/>
+        <Option name="VC++ compat: alloca allowed in arg lists"
+                option="-vcap"/>
+        <Option name="(C++) enable RTTI"
+                option="-xr"/>
+        <Option name="disable language extensions (ANSI/ISO compliance)"
+                option="-za"/>
+        <Option name="enable language extensions"
+                option="-ze"/>
+        <Option name="place strings in CODE segment"
+                option="-zc"/>
+        <Option name="DS not pegged to DGROUP"
+                option="-zdf"/>
+        <Option name="DS pegged to DGROUP"
+                option="-zdp"/>
+        <Option name="load DS directly from DGROUP"
+                option="-zdl"/>
+        <Option name="Allow code-generator to use FS"
+                option="-zff"/>
+        <Option name="Do not allow code-generator to use FS"
+                option="-zfp"/>
+        <Option name="Allow code-generator to use GS"
+                option="-zgf"/>
+        <Option name="Do not allow code-generator to use GS"
+                option="-zgp"/>
+        <Option name="Allow arithmetic on void derived type"
+                option="-zev"/>
+        <Option name="function prototype using base type"
+                option="-zg"/>
+        <Option name="Double byte chars in strings (Japanese DBCS)"
+                option="-zk0"/>
+        <Option name="Double byte chars in strings (Japanese DBCS - translate to Unicode)"
+                option="-zk0u"/>
+        <Option name="Double byte chars in strings (Trad Chinese or Taiwanese DBCS)"
+                option="-zk1"/>
+        <Option name="Double byte chars in strings (Korean Hangeul) DBCS)"
+                option="-zk2"/>
+        <Option name="Double byte chars in strings (Use current code page)"
+                option="-zkl"/>
+        <Option name="Translate characters to Unicode (specify UNI_CP in custom variables)"
+                option="-zku=$(UNI_CP)"/>
+        <Option name="remove default library information"
+                option="-zl"/>
+        <Option name="remove file dependency information"
+                option="-zld"/>
+        <Option name="place functions in separate segments"
+                option="-zm"/>
+        <Option name="(C++) zm with near calls allowed"
+                option="-zmf"/>
+        <Option name="struct packing align 1 byte"
+                option="-zp1"/>
+        <Option name="struct packing align 2 byte"
+                option="-zp2"/>
+        <Option name="struct packing align 4 byte"
+                option="-zp4"/>
+        <Option name="struct packing align 8 byte"
+                option="-zp8"/>
+        <Option name="struct packing align 16 byte"
+                option="-zp16"/>
+        <Option name="warning when padding a struct"
+                option="-zpw"/>
+        <Option name="operate quietly"
+                option="-zq"/>
+        <Option name="check syntax only"
+                option="-zs"/>
+        <Option name="set data threshold (set DATA_THRESHOLD in custom variables)"
+                option="-zt=$(DATA_THRESHOLD)"/>
+        <Option name="Do not assume SS contains DGROUP"
+                option="-zu"/>
+        <Option name="(C++) enable virt. fun. removal opt"
+                option="-zv"/>
+        <Option name="generate code for MS Windows"
+                option="-zw"/>
+        <Option name="remove @size from __stdcall func."
+                option="-zz"/>
+    </Category>
+
+    <Category name="Memory model options"
+              exclusive="true">
+        <Option name="memory model flat"
+                option="-mf"/>
+        <Option name="memory model small"
+                option="-ms"/>
+        <Option name="memory model medium"
+                option="-mm"/>
+        <Option name="memory model compact"
+                option="-mc"/>
+        <Option name="memory model large"
+                option="-ml"/>
+        <Option name="memory model huge"
+                option="-mh"/>
+    </Category>
+
+    <Category name="Warning options">
+        <Option name="set warning level to 0 (suppress warnings)"
+                option="-w=0"
+                supersedes="-w=1 -w=2 -w=3 -wx"/>
+        <Option name="set warning level to 1"
+                option="-w=1"
+                supersedes="-w=0 -w=2 -w=3 -wx"/>
+        <Option name="set warning level to 2"
+                option="-w=2"
+                supersedes="-w=0 -w=1 -w=3 -wx"/>
+        <Option name="set warning level to 3"
+                option="-w=3"
+                supersedes="-w=0 -w=1 -w=2 -wx"/>
+        <Option name="disable warning message (define DIS_WARN in custom variables)"
+                option="-wcd=$(DIS_WARN)"/>
+        <Option name="enable warning message (define ENA_WARN in custom variables)"
+                option="-wce=$(ENA_WARN)"/>
+        <Option name="treat all warnings as errors"
+                option="-we"/>
+        <Option name="set warning level to max"
+                option="-wx"
+                supersedes="-w=0 -w=1 -w=2 -w=3"/>
+    </Category>
+
+    <Category name="Debugging options">
+        <Option name="no debugging information"
+                option="-d0"
+                exclusive="true"/>
+        <Option name="line number debugging information"
+                option="-d1"/>
+        <Option name="(C) line number debugging information plus typing information for global symbols and local structs and arrays"
+                option="-d1+"/>
+        <Option name="full symbolic debugging information"
+                option="-d2"/>
+        <Option name="(C++) d2 and debug inlines; emit inlines as external out-of-line functions"
+                option="-d2i"/>
+        <Option name="(C++) d2 and debug inlines; emit inlines as static out-of-line functions"
+                option="-d2s"/>
+        <Option name="(C++) d2 but without type names"
+                option="-d2t"/>
+        <Option name="full symbolic debugging with unreferenced type names"
+                option="-d3"/>
+        <Option name="(C++) d3 plus debug inlines; emit inlines as external out-of-line functions"
+                option="-d3i"/>
+        <Option name="(C++) d3 plus debug inlines; emit inlines as static out-of-line functions"
+                option="-d3s"/>
+        <Option name="codeview debug format"
+                option="-hc"
+                supersedes="-hd -hw"/>
+        <Option name="dwarf debug format"
+                option="-hd"
+                supersedes="-hc -hw"/>
+        <Option name="watcom debug format"
+                option="-hw"
+                supersedes="-hc -hd"/>
+    </Category>
+
+    <Category name="Optimization options">
+        <Option name="relax alias checking"
+                option="-oa"/>
+        <Option name="branch prediction"
+                option="-ob"/>
+        <Option name="disable call/ret optimization"
+                option="-oc"/>
+        <Option name="disable optimizations"
+                option="-od"/>
+        <Option name="expand functions inline (specify INLINE_NUM in custom variables)"
+                option="-oe=$(INLINE_NUM)"/>
+        <Option name="generate traceable stack frames"
+                option="-of"/>
+        <Option name="always generate traceable stack frames"
+                option="-of+"/>
+        <Option name="enable repeated optimizations"
+                option="-oh"/>
+        <Option name="inline intrinsic functions"
+                option="-oi"/>
+        <Option name="(C++) oi with max inlining depth"
+                option="-oi+"/>
+        <Option name="control flow entry/exit sequence"
+                option="-ok"/>
+        <Option name="perform loop optimizations"
+                option="-ol"/>
+        <Option name="ol with loop unrolling"
+                option="-ol+"/>
+        <Option name="generate inline math functions"
+                option="-om"/>
+        <Option name="numerically unstable floating-point"
+                option="-on"/>
+        <Option name="continue compile when low on memory"
+                option="-oo"/>
+        <Option name="improve floating-point consistency"
+                option="-op"/>
+        <Option name="re-order instructions to avoid stalls"
+                option="-or"/>
+        <Option name="optimize for space"
+                option="-os"/>
+        <Option name="optimize for time"
+                option="-ot"/>
+        <Option name="ensure unique addresses for functions"
+                option="-ou"/>
+        <Option name="maximum optimization (-obmiler -s)"
+                option="-ox"/>
+    </Category>
+
+    <Category name="C++ exception handling options">
+        <Option name="no exception handling"
+                option="-xd"/>
+        <Option name="no exception handling: space"
+                option="-xds"/>
+        <Option name="exception handling: balanced"
+                option="-xs"/>
+        <Option name="exception handling: space"
+                option="-xss"/>
+        <Option name="exception handling: time"
+                option="-xst"/>
+    </Category>
+
+    <Category name="Preprocessor options">
+        <Option name="number of spaces in tab stop (set TAB_STOP in custom variables)"
+                option="-t=$(TAB_STOP)"/>
+        <Option name="preprocess source file"
+                option="-p"/>
+        <Option name="preprocess source file (preserve comments)"
+                option="-pc"/>
+        <Option name="preprocess source file (insert #line directives)"
+                option="-pl"/>
+        <Option name="(C++) preprocess file (encrypt identifiers)"
+                option="-pe"/>
+    </Category>
+
+    <Category name="Linker options">
+        <Option name="build Dynamic link library"
+                option="-bd"/>
+        <Option name="build Multi-thread application"
+                option="-bm"/>
+        <Option name="build with dll run-time library"
+                option="-br"/>
+        <Option name="build default Windowing application"
+                option="-bw"/>
+        <Option name="write directives"
+                option="-fd"/>
+        <Option name="write directives (define DIRECTIVE_FILE in custom variables)"
+                option="-fd=$(DIRECTIVE_FILE)"/>
+        <Option name="generate map file"
+                option="-fm"/>
+        <Option name="generate map file (define MAP_FILE in custom variables)"
+                option="-fm=$(MAP_FILE)"/>
+        <Option name="set stack size (define STACK_SIZE in custom variables)"
+                option="-k$(STACK_SIZE)"/>
+        <Option name="link for the specified OS (define TARGET_OS in custom variables)"
+                option="-l=$(TARGET_OS)"/>
+        <Option name="make names case sensitive"
+                option="-x"/>
+        <Option name="additional directive file (specify LINK_DIRECTIVES in custom variables)"
+                option="@$(LINK_VARIABLES)"/>
+    </Category>
+
+    <Command name="CompileObject"
+             value="$compiler -q -c $options $includes -fo=$object $file"/>
+    <Command name="CompileResource"
+             value="$rescomp -q -r -fo=$resource_output $res_includes $file"/>
+    <Command name="LinkExe"
+             value="$linker option quiet $link_options $libdirs $link_objects name $exe_output $libs $link_resobjects"/>
+    <Command name="LinkConsoleExe"
+             value="$linker option quiet $link_options $libdirs $link_objects name $exe_output $libs $link_resobjects"/>
+    <Command name="LinkDynamic"
+             value="$linker option quiet $link_options $libdirs name $exe_output $libs $link_objects"/>
+    <Command name="LinkStatic"
+             value="$lib_linker -q $static_output $link_objects"/>
+    <Command name="LinkNative"
+             value="$linker option quiet $link_options $libdirs $link_objects name $exe_output $libs $link_resobjects"/>
+    <Common name="cmds"/>
+
+    <RegEx name="Note"
+           type="warning"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+)\(([0-9]+)\): Note! (.+)]]>
+    </RegEx>
+    <RegEx name="Compiler error"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+)\(([0-9]+)\): Error! (.+)]]>
+    </RegEx>
+    <RegEx name="Compiler warning"
+           type="warning"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+)\(([0-9]+)\): Warning! (.+)]]>
+    </RegEx>
+</CodeBlocks_compiler_options>

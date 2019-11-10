@@ -1,0 +1,222 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// OpenCV project wizard
+//
+////////////////////////////////////////////////////////////////////////////////
+
+// globals (Windows platform only)
+// This is the value string/macro be set as the initial value
+// for the AddGenericSelectPathPage page when selecting the OpenCV root folder
+OpenCVPathDefault    <- _T("$(#cv)");
+OpenCVPath <- _T("");
+// default paths
+OpenCVPathDefaultInc <- _T("$(#cv.include)");
+OpenCVPathDefaultLib <- _T("$(#cv.lib)");
+OpenCVPathDefaultBin <- _T("$(#cv.bin)");
+// If there are already saved in configure file, read them, otherwise, use default values
+OpenCVPathInc <- GetConfigManager().Read(_T("/opencv_project_wizard/options/inc"), OpenCVPathDefaultInc);
+OpenCVPathLib <- GetConfigManager().Read(_T("/opencv_project_wizard/options/lib"), OpenCVPathDefaultLib);
+OpenCVPathBin <- GetConfigManager().Read(_T("/opencv_project_wizard/options/bin"), OpenCVPathDefaultBin);
+// OpenCV version
+MajorVersion    <- GetConfigManager().Read(_T("/opencv_project_wizard/versions/major"), 2);
+MinorVersion    <- GetConfigManager().Read(_T("/opencv_project_wizard/versions/minor"), 4);
+RevisionVersion <- GetConfigManager().Read(_T("/opencv_project_wizard/versions/revision"), 4);
+//For OpenCV 2.4.4, this string is "244"
+VersionString   <- _T("")
+
+function BeginWizard()
+{
+    local intro_msg = _T("Welcome to the new OpenCV project wizard!\n\n" +
+                         "This wizard will guide you to create a new project\n" +
+                         "using the OpenCV C++ library.\n\n" +
+                         "When you 're ready to proceed, please click \"Next\"...");
+
+    local opencv_path_descr = _T("Please select the location of OpenCV library on your computer.\n" +
+                              "This is the top-level folder where OpenCV was installed (unpacked).\n" +
+                              "To help you, this folder must contain the subfolders\n" +
+                              "\"include\" and \"lib\".");
+
+    Wizard.AddInfoPage(_T("OpenCVIntro"), intro_msg);
+
+    // select the directory where you place the new project files
+    Wizard.AddProjectPathPage();
+
+    // Note, here OpenCVPathDefault is just "$(#cv)"
+    // Get the values (major, minor, and revision number), and construct a version string
+    if (PLATFORM == PLATFORM_MSW)
+    {
+        Wizard.AddGenericSelectPathPage(_T("OpenCVPath"), opencv_path_descr, _T("Please select OpenCV's location:"), OpenCVPathDefault);
+        Wizard.AddPage(_T("VersionSelection"));
+    }
+
+    // default setting for debug/release options
+    Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// OpenCV's path page
+////////////////////////////////////////////////////////////////////////////////
+
+function OnLeave_OpenCVPath(fwd)
+{
+    if (fwd)
+    {
+        // txtFolder is the text control in GenericSelectPathPage
+        local dir         = Wizard.GetTextControlValue(_T("txtFolder"));
+        local dir_nomacro = VerifyDirectory(dir); //expand macros
+
+        if (dir_nomacro.IsEmpty())
+            return false;
+
+        OpenCVPath = dir; // Remember the original selection.
+        LogDebug(dir);
+        LogDebug(dir_nomacro);
+
+    }
+    return true;
+}
+
+
+// Select the OpenCV version, because different OpenCV have different library names
+function OnEnter_VersionSelection(forward)
+{
+    // we only care to initialize if going forward
+    if (forward)
+    {
+        if (PLATFORM == PLATFORM_MSW)
+        {
+           Wizard.SetSpinControlValue(_T("ID_SPINCTRL1"), MajorVersion);
+           Wizard.SetSpinControlValue(_T("ID_SPINCTRL2"), MinorVersion);
+           Wizard.SetSpinControlValue(_T("ID_SPINCTRL3"), RevisionVersion);
+           Wizard.SetTextControlValue(_T("ID_TEXTCTRL1"), OpenCVPathInc);
+           Wizard.SetTextControlValue(_T("ID_TEXTCTRL2"), OpenCVPathLib);
+           Wizard.SetTextControlValue(_T("ID_TEXTCTRL3"), OpenCVPathBin);
+        }
+     }
+     return true;
+}
+function OnLeave_VersionSelection(fwd)
+{
+    if (fwd)
+    {
+        local Major = Wizard.GetSpinControlValue(_T("ID_SPINCTRL1"));
+        local Minor = Wizard.GetSpinControlValue(_T("ID_SPINCTRL2"));
+        local Revision = Wizard.GetSpinControlValue(_T("ID_SPINCTRL3"));
+        VersionString = _T(""); // set to empty string, then append three version numbers
+        VersionString += Major;
+        VersionString += Minor;
+        VersionString += Revision;
+        OpenCVPathInc = Wizard.GetTextControlValue(_T("ID_TEXTCTRL1"));
+        OpenCVPathLib = Wizard.GetTextControlValue(_T("ID_TEXTCTRL2"));
+        OpenCVPathBin = Wizard.GetTextControlValue(_T("ID_TEXTCTRL3"));
+
+        // check whether include file exist
+        local inc_nomacro = ReplaceMacros(OpenCVPathInc, true);
+        local test_inc_file = inc_nomacro + _T("\\opencv2\\opencv.hpp");
+        if (!IO.FileExists(test_inc_file))
+        {
+            ShowError(_T("The include path you entered seems invalid: File ")
+                       + test_inc_file + _T(" not found"));
+            return false;
+        }
+
+        // check whether lib file exist
+        local lib_nomacro = ReplaceMacros(OpenCVPathLib, true);
+        // first we check whether a release OpenCV library exists, which could have the name libopencv_core244.dll.a
+        // if we can't find a release version of OpenCV library, check a debug version exists, which
+        // may have the name libopencv_core244d.dll.a
+        local test_release_lib_file = lib_nomacro + _T("\\libopencv_core") + VersionString + _T(".dll.a");
+        local test_debug_lib_file = lib_nomacro + _T("\\libopencv_core") + VersionString + _T("d.dll.a");
+        if (IO.FileExists(test_release_lib_file))
+        {
+            ; // find release version of OpenCV library
+        }
+        else if (IO.FileExists(test_debug_lib_file))
+        {
+            VersionString = VersionString + _T("d"); //find debug version of OpenCV library
+        }
+        else
+        {
+            ShowError(_T("The lib path you entered seems invalid: File ")
+                       + test_release_lib_file + _T(" or ") + test_debug_lib_file + _T(" not found"));
+            return false;
+        }
+
+        // save them in the configure file
+        GetConfigManager().Write(_T("/opencv_project_wizard/options/inc"), OpenCVPathInc);
+        GetConfigManager().Write(_T("/opencv_project_wizard/options/lib"), OpenCVPathLib);
+        GetConfigManager().Write(_T("/opencv_project_wizard/options/bin"), OpenCVPathBin);
+        GetConfigManager().Write(_T("/opencv_project_wizard/versions/major"), Major);
+        GetConfigManager().Write(_T("/opencv_project_wizard/versions/minor"), Minor);
+        GetConfigManager().Write(_T("/opencv_project_wizard/versions/revision"), Revision);
+    }
+    return true;
+}
+
+// return the files this project contains
+function GetFilesDir()
+{
+     return _T("opencv/files");
+}
+
+// setup the already created project
+function SetupProject(project)
+{
+    if (PLATFORM == PLATFORM_MSW)
+    {
+        // set project options
+        project.AddIncludeDir(OpenCVPathInc);
+        project.AddLibDir(OpenCVPathLib);
+
+        // This folder contains Dll files, when C::B start an App, it will
+        // automatically add the LibDir to PATH variable, so those Dll files
+        // can be find by the App.
+        project.AddLibDir(OpenCVPathBin);
+
+        project.SetVar(_T("CV_VERSION"), VersionString, false);
+        // add link libraries (basically, three libraries)
+        // For example, "opencv_core244.dll"
+        local prefix = _T("opencv_")
+        project.AddLinkLib(prefix + _T("imgproc") + _T("$(CV_VERSION).dll"));
+        project.AddLinkLib(prefix + _T("core")  + _T("$(CV_VERSION).dll"));
+        project.AddLinkLib(prefix + _T("highgui") + _T("$(CV_VERSION).dll"));
+    }
+    else // PLATFORM != PLATFORM_MSW
+    {
+        // opencv-config based: things are ultra-simple :)
+        project.AddCompilerOption(_T("`opencv-config --cxxflags`"));
+        project.AddLinkerOption(_T("`opencv-config --ldstaticflags`"));
+    }
+
+
+    // Debug
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttConsoleOnly); // ttConsoleOnly: console for debugging
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        if (Wizard.GetCompilerID().Matches(_T("gcc")))
+        {
+            // enable generation of debugging symbols for target
+            // Note: DebugSymbolsOn() won't work because -Wall produces far too many warnings
+            target.AddCompilerOption(_T("-g"));
+        }
+    }
+
+    // Release
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttExecutable); // ttExecutable: no console
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        if (Wizard.GetCompilerID().Matches(_T("gcc")))
+        {
+            // enable optimizations for target.
+            // Note: OptimizationsOn() won't work because of -I-!
+            target.AddCompilerOption(_T("-O2"));
+            target.AddCompilerOption(_T("-s"));
+        }
+    }
+
+    return true;
+}

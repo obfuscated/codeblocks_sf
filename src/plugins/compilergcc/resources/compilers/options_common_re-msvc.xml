@@ -1,0 +1,55 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <RegEx name="Compiler info"
+           type="info"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$!~[:alnum:]&_:+/\.-]+)\(([0-9]+)\)[ \t]*:[ \t]([Nn]ote:[ \t].*)]]>
+    </RegEx>
+    <RegEx name="Compiler info (2)"
+           type="info"
+           msg="2"
+           file="1">
+        <![CDATA[([][{}() \t#%$!~[:alnum:]&_:+/\.-]+)[ \t]*:[ \t]([Nn]ote:[ \t].*)]]>
+    </RegEx>
+    <RegEx name="Compiler warning"
+           type="warning"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$!~[:alnum:]&_:+/\.-]+)\(([0-9]+)\)[ \t]*:[ \t]([Ww]arning[ \t].*)]]>
+    </RegEx>
+    <RegEx name="Compiler warning (2)"
+           type="warning"
+           msg="2"
+           file="1">
+        <![CDATA[([][{}() \t#%$!~[:alnum:]&_:+/\.-]+)[ \t]*:[ \t]([Ww]arning[ \t].*)]]>
+    </RegEx>
+    <RegEx name="Compiler error"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$!~[:alnum:]&_:+/\.-]+)\(([0-9]+)\)[ \t]*:[ \t](.*[Ee]rror[ \t].*)]]>
+    </RegEx>
+    <RegEx name="Linker warning"
+           type="warning"
+           msg="2"
+           file="1">
+        <![CDATA[([][{}() \t#%$!~[:alnum:]&_:+/\.-]+)[ \t]+:[ \t]+(.*warning LNK[0-9]+.*)]]>
+    </RegEx>
+    <RegEx name="Linker warning (2)"
+           type="warning"
+           msg="1;4;2"
+           file="3">
+        <![CDATA[warning C4[0-9]+: (.+) (in ['"]([^'"]+)['"] and ['"][^'"]+['"])(: .*)]]>
+    </RegEx>
+    <RegEx name="Linker error"
+           type="error"
+           msg="2"
+           file="1">
+        <![CDATA[([][{}() \t#%$!~[:alnum:]&_:+/\.-]+)[ \t]+:[ \t]+(.*error LNK[0-9]+.*)]]>
+    </RegEx>
+</CodeBlocks_compiler_options>

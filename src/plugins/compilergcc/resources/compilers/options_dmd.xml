@@ -1,0 +1,145 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <if platform="windows">
+        <Program name="C"         value="dmd.exe"/>
+        <Program name="CPP"       value="dmd.exe"/>
+        <Program name="LD"        value="dmd.exe"/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="lib.exe"/>
+        <Program name="WINDRES"   value="rcc.exe"/>
+        <Program name="MAKE"      value="make.exe"/>
+
+        <Switch name="includeDirs"             value="-I"/>
+        <Switch name="libDirs"                 value=""/>
+        <Switch name="linkLibs"                value=""/>
+        <Switch name="defines"                 value="-version="/>
+        <Switch name="genericSwitch"           value="-"/>
+        <Switch name="objectExtension"         value="obj"/>
+        <Switch name="needDependencies"        value="false"/>
+        <Switch name="forceCompilerUseQuotes"  value="false"/>
+        <Switch name="forceLinkerUseQuotes"    value="true"/>
+        <Switch name="logging"                 value="default"/>
+        <Switch name="libPrefix"               value=""/>
+        <Switch name="libExtension"            value="lib"/>
+        <Switch name="linkerNeedsLibPrefix"    value="false"/>
+        <Switch name="linkerNeedsLibExtension" value="true"/>
+
+        <Command name="CompileResource"
+                 value="$rescomp -o$resource_output $res_options $res_includes $file -32 -r"/>
+        <Command name="LinkExe"
+                 value="$linker $exe_output $link_options $link_objects $link_resobjects $libs"/>
+        <Command name="LinkConsoleExe"
+                 value="$linker $exe_output $link_options $link_objects $link_resobjects $libs"/>
+        <Command name="LinkNative"
+                 value="$linker $exe_output $link_options $link_objects $link_resobjects $libs"/>
+    </if>
+    <else>
+        <Program name="C"         value="dmd"/>
+        <Program name="CPP"       value="dmd"/>
+        <Program name="LD"        value="dmd"/>
+        <Program name="DBGconfig" value="gdb_debugger:Default"/>
+        <Program name="LIB"       value="ar"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make"/>
+
+        <Switch name="includeDirs"             value="-I"/>
+        <Switch name="libDirs"                 value="-L-L"/>
+        <Switch name="linkLibs"                value="-L-l"/>
+        <Switch name="defines"                 value="-version="/>
+        <Switch name="genericSwitch"           value="-"/>
+        <Switch name="objectExtension"         value="o"/>
+        <Switch name="needDependencies"        value="false"/>
+        <Switch name="forceCompilerUseQuotes"  value="false"/>
+        <Switch name="forceLinkerUseQuotes"    value="false"/>
+        <Switch name="logging"                 value="default"/>
+        <Switch name="libPrefix"               value="lib"/>
+        <Switch name="libExtension"            value="a"/>
+        <Switch name="linkerNeedsLibPrefix"    value="false"/>
+        <Switch name="linkerNeedsLibExtension" value="false"/>
+
+        <Command name="CompileResource"
+                 value=""/>
+        <Command name="LinkExe"
+                 value="$linker -of$exe_output $link_options $link_objects $libs"/>
+        <Command name="LinkConsoleExe"
+                 value="$linker -of$exe_output $link_options $link_objects $libs"/>
+        <Command name="LinkNative"
+                 value="$linker -of$exe_output $link_options $link_objects $libs"/>
+    </else>
+    <Command name="CompileObject"
+             value="$compiler $options $includes -c $file -of$object"/>
+    <Command name="LinkDynamic"
+             value="$linker $exe_output $link_options $link_objects $libs $link_resobjects"/>
+    <Command name="LinkStatic"
+             value="$lib_linker $link_options $static_output $link_objects"/>
+
+    <Category name="D Features">
+        <Option name="instrument for code coverage analysis"
+                option="-cov"/>
+        <Option name="generate documentation from source"
+                option="-D"/>
+        <Option name="allow deprecated features"
+                option="-d"/>
+        <Option name="suppress generation of object file"
+                option="-o-"/>
+        <Option name="do not strip path from .d source files for object files"
+                option="-op"/>
+    </Category>
+
+    <Category name="Debugging">
+        <Option name="compile in debug code"
+                option="-debug"
+                supersedes="-release"/>
+        <Option name="add symbolic debug info"
+                option="-g"
+                supersedes="-release"/>
+        <Option name="profile the runtime performance of the generated code"
+                option="-profile"/>
+        <Option name="compile in unittest code, also turns on asserts"
+                option="-unittest"/>
+    </Category>
+
+    <Category name="Others">
+        <Option name="generate D interface file"
+                option="-H"/>
+        <Option name="suppress non-essential compiler messages"
+                option="-quiet"
+                supersedes="-v"/>
+        <Option name="verbose"
+                option="-v"
+                supersedes="-quiet"/>
+        <Option name="enable warnings"
+                option="-w"/>
+    </Category>
+
+    <Category name="Optimize">
+        <Option name="optimize"
+                option="-O"/>
+        <Option name="inline expand functions"
+                option="-inline"/>
+        <Option name="compile release version, which means not generating code for contracts and asserts"
+                option="-release"
+                supersedes="-debug -g"/>
+    </Category>
+
+    <RegEx name="Compiler warning"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[warning - ([][{}() \t#%$~[:alnum:]&_:+/\.-]+)\(([0-9]+)\):[ \t](.*)]]>
+    </RegEx>
+    <RegEx name="Compiler error"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+)\(([0-9]+)\):[ \t](.*)]]>
+    </RegEx>
+    <RegEx name="Linker error"
+           type="error"
+           msg="2">
+        <![CDATA[Error ([0-9]+):[\s]*(.*)]]>
+    </RegEx>
+</CodeBlocks_compiler_options>

@@ -1,0 +1,241 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <!-- Compiler is Windows-only (or possibly Linux under Wine) -->
+    <Program name="C"         value="C51.exe"/>
+    <Program name="CPP"       value="C51.exe"/>
+    <Program name="LD"        value="BL51.exe"/>
+    <Program name="DBGconfig" value=""/>
+    <Program name="LIB"       value="LIB51.exe"/>
+    <Program name="WINDRES"   value=""/>
+    <Program name="MAKE"      value="make.exe"/>
+
+    <Switch name="includeDirs"             value="INCDIR("/>
+    <Switch name="libDirs"                 value=""/>
+    <Switch name="linkLibs"                value=""/>
+    <Switch name="defines"                 value="DEFINE("/>
+    <Switch name="genericSwitch"           value=""/>
+    <Switch name="objectExtension"         value="obj"/>
+    <Switch name="needDependencies"        value="true"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value="lib"/>
+    <Switch name="libExtension"            value="lib"/>
+    <Switch name="linkerNeedsLibPrefix"    value="true"/>
+    <Switch name="linkerNeedsLibExtension" value="true"/>
+    <Switch name="linkerNeedsPathResolved" value="true"/>
+    <Switch name="includeDirSeparator"     value=";"/>
+    <Switch name="objectSeparator"         value=","/>
+    <Switch name="statusSuccess"           value="1"/>
+
+    <!-- Summary of Keil Cx51 options: http://www.keil.com/support/man/docs/c51/c51_cm_dirlist.htm -->
+
+    <Category name="Memory Model"
+              exclusive="true">
+        <Option name="SMALL memory model."
+                option="SMALL"/>
+        <Option name="COMPACT memory model."
+                option="COMPACT"/>
+        <Option name="LARGE memory model."
+                option="LARGE"/>
+    </Category>
+
+    <Category name="ROM Memory Model"
+              exclusive="true">
+        <Option name="ROM SMALL memory model."
+                option="ROM(SMALL)"/>
+        <Option name="ROM COMPACT memory model."
+                option="ROM(COMPACT)"/>
+        <Option name="ROM LARGE memory model."
+                option="ROM(LARGE)"/>
+        <Option name="DS390 ROM D512K memory model."
+                option="ROM(D512K)"/>
+        <Option name="DS390 ROM D16M memory model."
+                option="ROM(D16M)"/>
+    </Category>
+
+    <Option name="Enable source browser information"
+            option="BROWSE"/>
+    <Option name="Include debugging information in the object file"
+            option="DEBUG"/>
+    <Option name="Extended debugging information"
+            option="OBJECTEXTEND"/>
+    <Option name="Exclude build information from the object file"
+            option="NOAMAKE"/>
+    <Option name="Strict ANSI C Compliance"
+            option="NOEXTEND"/>
+
+    <Category name="Warning Level"
+              exclusive="true">
+        <Option name="Disable Warnings"
+                option="WARNINGLEVEL(0)"/>
+        <Option name="Enable only Warnings which may generate incorrect code"
+                option="WARNINGLEVEL(1)"/>
+        <Option name="Enable Warnings"
+                option="WARNINGLEVEL(2)"/>
+    </Category>
+
+    <Category name="Listing">
+        <Option name="[LIST] Include generated assembly in the listing file"
+                option="CODE"/>
+        <Option name="[LIST] Include conditional source lines skipped by the preprocessor in the listing file"
+                option="COND"/>
+        <Option name="[LIST] Insert a form feed character into the listing file"
+                option="EJECT"/>
+        <Option name="[LIST] Adds contents of include files into the listing file"
+                option="LISTINCLUDE"/>
+        <Option name="[LIST] Produces a preprocessor listing file with expanded macros"
+                option="PREPRINT"/>
+        <Option name="[LIST] Includes a symbol list in the listing file"
+                option="SYMBOLS"/>
+    </Category>
+
+    <Category name="Optimization Level"
+              exclusive="true">
+        <Option name="Optimize for size level 0"
+                option="OPTIMIZE(0,SIZE)"/>
+        <Option name="Optimize for speed level 0"
+                option="OPTIMIZE(0,SPEED)"/>
+        <Option name="Optimize for size level 1"
+                option="OPTIMIZE(1,SIZE)"/>
+        <Option name="Optimize for speed level 1"
+                option="OPTIMIZE(1,SPEED)"/>
+        <Option name="Optimize for size level 2"
+                option="OPTIMIZE(2,SIZE)"/>
+        <Option name="Optimize for speed level 2"
+                option="OPTIMIZE(2,SPEED)"/>
+        <Option name="Optimize for size level 3"
+                option="OPTIMIZE(3,SIZE)"/>
+        <Option name="Optimize for speed level 3"
+                option="OPTIMIZE(3,SPEED)"/>
+        <Option name="Optimize for size level 4"
+                option="OPTIMIZE(4,SIZE)"/>
+        <Option name="Optimize for speed level 4"
+                option="OPTIMIZE(4,SPEED)"/>
+        <Option name="Optimize for size level 5"
+                option="OPTIMIZE(5,SIZE)"/>
+        <Option name="Optimize for speed level 5"
+                option="OPTIMIZE(5,SPEED)"/>
+        <Option name="Optimize for size level 6"
+                option="OPTIMIZE(6,SIZE)"/>
+        <Option name="Optimize for speed level 6"
+                option="OPTIMIZE(6,SPEED)"/>
+        <Option name="Optimize for size level 7"
+                option="OPTIMIZE(7,SIZE)"/>
+        <Option name="Optimize for speed level 7"
+                option="OPTIMIZE(7,SPEED)"/>
+        <Option name="Optimize for size level 8"
+                option="OPTIMIZE(8,SIZE)"/>
+        <Option name="Optimize for speed level 8"
+                option="OPTIMIZE(8,SPEED)"/>
+        <Option name="Optimize for size level 9"
+                option="OPTIMIZE(9,SIZE)"/>
+        <Option name="Optimize for speed level 9"
+                option="OPTIMIZE(9,SPEED)"/>
+        <Option name="Optimize for size level 10"
+                option="OPTIMIZE(10,SIZE)"/>
+        <Option name="Optimize for speed level 10"
+                option="OPTIMIZE(10,SPEED)"/>
+        <Option name="Optimize for size level 11"
+                option="OPTIMIZE(11,SIZE)"/>
+        <Option name="Optimize for speed level 11"
+                option="OPTIMIZE(11,SPEED)"/>
+    </Category>
+
+    <Category name="CPU architecture">
+        <Option name="[CPU] Enable absolute register (ARn) addressing"
+                option="AREGS"/>
+        <Option name="[CPU] Issue a warning when only 16-bit offset calculations are performed for far addresses"
+                option="FARWARNING"/>
+        <Option name="[CPU] Disable generation of MOV dir,dir instruction with two SFR registers"
+                option="FIXXC800"/>
+        <Option name="[CPU] Enable ANSI integer promotion rules"
+                option="INTPROMOTE"/>
+        <Option name="[CPU] Enable support for additional hardware features of the Infineon 80C517 and compatible devices"
+                option="MOD517"/>
+        <Option name="[CPU] Enable dual data pointer support for the Atmel 82x8252 and compatible devices"
+                option="MODA2"/>
+        <Option name="[CPU] Enable dual data pointer support for the Analog Devices Microconverters (ADuC B2 devices)"
+                option="MODAB2"/>
+        <Option name="[CPU] Enable arithmetic accelerator support for the Dallas 80C390, 80C400, and 5240"
+                option="MODDA"/>
+        <Option name="[CPU] Enable dual data pointer support for the Dallas 320, 520, 530, 550, and compatible devices"
+                option="MODDP2"/>
+        <Option name="[CPU] Enable dual data pointer support for Philips and Atmel devices"
+                option="MODP2"/>
+        <Option name="[CPU] Disable generation of interrupt vectors"
+                option="NOINTVECTOR"/>
+        <Option name="[CPU] Disable passing parameter in registers"
+                option="NOREGPARMS"/>
+        <Option name="[CPU] Generate code for programs that use only one register bank"
+                option="ONEREGBANK"/>
+        <Option name="[CPU] Allocate storage for variables in the order in which they are declared"
+                option="ORDER"/>
+        <Option name="[CPU] Generate interrupt vectors for Cypress PSoC devices"
+                option="PSOC"/>
+    </Category>
+
+    <Category name="Reentrant Stack"
+              exclusive="true">
+        <Option name="[CPU] Use the COMPACT model reentrant stack for return addresses"
+                option="RET_PSTK"/>
+        <Option name="[CPU] Use the LARGE model reentrant stack for return addresses"
+                option="RET_XSTK"/>
+    </Category>
+
+    <Category name="Implicit String Constant Placement"
+              exclusive="true">
+        <Option name="[CPU] Locate implicit string constants in code memory"
+                option="STRING(CODE)"/>
+        <Option name="[CPU] Locate implicit string constants in xdata memory"
+                option="STRING(XDATA)"/>
+        <Option name="[CPU] Locate implicit string constants in far memory"
+                option="STRING(FAR)"/>
+    </Category>
+
+    <Option name="[CPU] Enable far memory type variables"
+            option="VARBANKING"
+            category="CPU architecture"/>
+    <Option name="[CPU] Assume const xdata variables are stored in ROM"
+            option="XCROM"
+            category="CPU architecture"/>
+
+    <Command name="CompileObject"
+             value="$compiler $file OBJECT($object) $options $includes"/>
+    <Command name="LinkExe"
+             value="$linker $all_link_objects_quoted TO $exe_output $link_options"/>
+    <Command name="LinkConsoleExe"
+             value="$linker $all_link_objects_quoted TO $exe_output $link_options"/>
+    <Command name="LinkStatic"
+             value="$linker $all_link_objects_quoted TO $exe_output $link_options"/>
+    <Command name="LinkNative"
+             value="$linker $all_link_objects_quoted TO $exe_output $link_options"/>
+
+    <Common name="cmds"/>
+
+    <RegEx name="Compiler warning"
+           type="warning"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[\\*\\*\\*[ \t]+WARNING[ \t]+C[0-9]+[ \t]+IN[ \t]+LINE[ \t]+([0-9]+)[ \t]+OF[ \t]+([][{}() \t#%$~[:alnum:]&_:+/\\.-]+)[ \t]*:[ \t]*(.*)]]>
+    </RegEx>
+    <RegEx name="Compiler error"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[\\*\\*\\*[ \t]+ERROR[ \t]+C[0-9]+[ \t]+IN[ \t]+LINE[ \t]+([0-9]+)[ \t]+OF[ \t]+([][{}() \t#%$~[:alnum:]&_:+/\\.-]+)[ \t]*:[ \t]*(.*)]]>
+    </RegEx>
+    <RegEx name="Linker warning"
+           type="warning"
+           msg="1">
+        <![CDATA[\\*\\*\\*[ \t]+WARNING[ \t]+L[0-9]+[ \t]*:[ \t]*(.*)]]>
+    </RegEx>
+    <RegEx name="Linker error"
+           type="error"
+           msg="1">
+        <![CDATA[\\*\\*\\*[ \t]+ERROR[ \t]+L[0-9]+[ \t]*:[ \t]*(.*)]]>
+    </RegEx>
+</CodeBlocks_compiler_options>

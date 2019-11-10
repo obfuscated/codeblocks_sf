@@ -1,0 +1,27 @@
+/* XPM */
+static const char *wxstateled16_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"16 16 5 1",
+"  c #F0F0F0",
+"o c #FFFFFF",
+"O c #F8F8F8",
+". c #C0C0C0",
+"X c #00FF00",
+/* pixels */
+"      ....      ",
+"    ........    ",
+"   ..........   ",
+"   ....XX....   ",
+"  ...XXoXXX.OO  ",
+"  ..XoooXXXXOO  ",
+" ...XooXXXXXOOO ",
+" ..XooXXXXXXXOO ",
+" ..XXXXXXXXXXOO ",
+" ...XXXXXXXXOOO ",
+"  ..XXXXXXXXOO  ",
+"  ..OXXXXXXOOO  ",
+"   OOOOXXOOOO   ",
+"   OOOOOOOOOO   ",
+"    OOOOOOOO    ",
+"      OOOO      "
+};

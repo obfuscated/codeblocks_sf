@@ -1,0 +1,15 @@
+/* The main startup script */
+
+int main()
+{
+	Log("Running startup script");
+
+	// you could set the shortcuts used for the menus
+	// e.g.:
+	// SetAcceleratorFor("File|Open", "Ctrl-Alt-O");
+	
+	int i = 5;
+	wxString s = "Hello world";
+
+	return 0;
+}

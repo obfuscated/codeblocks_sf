@@ -1,0 +1,658 @@
+/*
+    cbp2make : Makefile generation tool for the Code::Blocks IDE
+    Copyright (C) 2010-2013 Mirai Computing (mirai.computing@gmail.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/*!
+  \file depsearch.h
+  \brief Unit dependency information gathering.
+*/
+
+/*!
+  \file depsearch.cpp
+  \brief Unit dependency information gathering.
+*/
+
+/*!
+  \class CDependencyRecord
+  \brief Dependency record for a single build unit.
+
+  Contains a list of units (pointers to other CDependencyRecord objects) that
+  this unit depends on and a list of cross-references to this unit. This class
+  is used by CDependencyInfo to store information about every single build unit.
+*/
+
+/*!
+  \var CDependencyRecord::m_Name
+  \brief File name of the build unit.
+*/
+
+/*!
+  \var CDependencyRecord::m_Hash
+  \brief String hash of the unit name CDependencyRecord::m_Name.
+*/
+
+/*!
+  \var CDependencyRecord::m_Dependencies
+  \brief List of units that this unit depends on.
+*/
+
+/*!
+  \var CDependencyRecord::m_CrossReferences
+  \brief List of units that depend on this unit.
+*/
+
+/*!
+  \var CDependencyRecord::m_DependenciesComplete
+  \brief Indicates that the list of dependencies is fully gathered.
+*/
+
+/*!
+  \var CDependencyRecord::m_CrossReferencesComplete
+  \brief Indicates that the list of cross-references is fully gathered.
+*/
+
+/*!
+  \var CDependencyRecord::m_Marker
+  \brief Indicates that this unit was already walked through by a dependency
+  unwinding process to avoid infinite loops.
+*/
+
+/* !
+  \var CDependencyRecord::
+  \brief .
+*/
+
+/*!
+  \fn CDependencyRecord::GetName(void) const
+  \brief Returns the file name of the build unit.
+
+  \return name of the build unit.
+*/
+
+/*!
+  \fn CDependencyRecord::SetName(const CString& Name)
+  \brief Changes the file name of the build unit.
+*/
+
+/*!
+  \fn CDependencyRecord::Hash(void) const
+  \brief Returns string hash for the file name.
+*/
+
+/*!
+  \fn CDependencyRecord::DependenciesCount(void) const
+  \brief Returns the number of unit denpendencies.
+  \return denpendencies count.
+*/
+
+/*!
+  \fn CDependencyRecord::Dependency(const size_t Index) const
+  \brief Returns dependency record with number \a Index.
+  \param Index number of a dependency.
+
+  \return dependency record.
+*/
+
+/*!
+  \fn CDependencyRecord::AddDependency(const CDependencyRecord *Record)
+  \brief Adds new dependency for this build unit.
+  \param Record dependency record of another build unit.
+
+  Adding a dependency means telling that this build unit depends on another
+  build unit.
+*/
+
+/*!
+  \fn CDependencyRecord::CrossReferencesCount(void) const
+  \brief Returns the number of cross references to this unit.
+
+  \return cross references count.
+*/
+
+/*!
+  \fn CDependencyRecord::CrossReference(const size_t Index) const
+  \brief Returns cross reference with number \a Index.
+  \param Index number of a cross reference.
+
+  \return cross reference.
+*/
+
+/*!
+  \fn CDependencyRecord::AddCrossReference(const CDependencyRecord *Record)
+  \brief Adds new cross reference for this build unit.
+  \param Record dependency record of another build unit.
+
+  Adding a cross reference means telling that another build unit depends on
+  this build unit.
+*/
+
+/*!
+  \fn CDependencyRecord::DependenciesComplete(void)
+  \brief Indicates that the list of dependencies is fully gathered.
+  \return reference to CDependencyRecord::m_DependenciesComplete.
+*/
+
+/*!
+  \fn CDependencyRecord::CrossReferencesComplete(void)
+  \brief Indicates that the list of cross-references is fully gathered.
+  \return reference to CDependencyRecord::m_CrossReferencesComplete.
+*/
+
+/*!
+  \fn CDependencyRecord::Marker(void)
+  \brief Indicates that this unit was already walked through by a dependency
+  unwinding process to avoid infinite loops.
+  \return reference to CDependencyRecord::m_Marker.
+*/
+
+/*!
+  \fn CDependencyRecord::Clear(void)
+  \brief Resets a dependency record to the initial state.
+*/
+
+/*!
+  \fn CDependencyRecord::Show(void)
+  \brief Prints the build unit dependecy record contents to the standard output.
+*/
+
+/*!
+  \fn CDependencyRecord::CDependencyRecord(void)
+  \brief Creates dependency record.
+*/
+
+/*!
+  \fn CDependencyRecord::~CDependencyRecord(void)
+  \brief Destroys dependency record.
+*/
+
+/* !
+  \fn CDependencyRecord::
+  \brief .
+  \param .
+
+  \return .
+*/
+
+/*!
+  \class CDependencyInfo
+  \brief Dependency information for build units in a project.
+
+  Stores a database of build unit dependencies and cross references, searches
+  and unwinds dependncies of a particular unit, writes makefile rules for unit
+  dependencies. Generally speaking, CDependencyInfo tracks only dependencies
+  between abstract names (strings), it doesn't really care whether those names
+  are real file names or build units or not. The only exception to that is
+  providing platform information to a dependency search filter like
+  CIncludeSearchFilter and its descendants for building compatible file paths.
+*/
+
+/*!
+  \var CDependencyInfo::m_Platform
+  \brief Platform/OS type, generally used for creating compatible file paths.
+*/
+
+/*!
+  \var CDependencyInfo::m_Records
+  \brief Database of build unit dependencies.
+*/
+
+/* !
+  \var CDependencyInfo::
+  \brief .
+*/
+
+/*!
+  \fn CDependencyInfo::ResetMarkers(void)
+  \brief Clears CDependencyRecord::m_Marker for all records in CDependencyInfo::m_Records.
+
+  This function should be called before unwinding a new dependency.
+*/
+
+/*!
+  \fn CDependencyInfo::DependenciesCount(CDependencyRecord *Record)
+  \brief Returns the number of dependencies for a build unit pointed by \a Record.
+  \param Record dependency record of a build unit.
+
+  \return dependencies count.
+*/
+
+/*!
+  \fn CDependencyInfo::Dependencies(CDependencyRecord *Record)
+  \brief Returns the list of file names of build units that a build unit pointed
+  by \a Record depends on.
+  \param Record dependency record of a build unit.
+
+  \return list of file names.
+*/
+
+/*!
+  \fn CDependencyInfo::CrossReferencesCount(CDependencyRecord *Record)
+  \brief Returns the number of cross references for a build unit pointed by \a Record.
+  \param Record dependency record of a build unit.
+
+  \return cross references count.
+*/
+
+/*!
+  \fn CDependencyInfo::CrossReferences(CDependencyRecord *Record)
+  \brief Returns the list of file names of build units that depend on a build
+  unit pointed by \a Record.
+  \param Record dependency record of a build unit.
+
+  \return list of file names.
+*/
+
+/*!
+  \fn CDependencyInfo::Platform(void)
+  \brief Platform/OS type, generally used for creating compatible file paths.
+  \return reference to CDependencyInfo::m_Platform.
+*/
+
+/*!
+  \fn CDependencyInfo::Clear(void)
+  \brief Resets the unit dependency database to the initial state.
+*/
+
+/*!
+  \fn CDependencyInfo::Show(void)
+  \brief Print dependency information for all of build units to the standard output.
+*/
+
+/*!
+  \fn CDependencyInfo::OneLineReport(const size_t Index, const bool Deps, const bool XRefs)
+  \brief Returns a short string representation of dependency information.
+  \param Index number a dependency record.
+  \param Deps enables output of dependencies.
+  \param XRefs enables output of cross references.
+  \return string representation of dependency information.
+*/
+
+/*!
+  \fn CDependencyInfo::RecordsCount(void) const
+  \brief Returns the number of dependency records.
+  \return dependency records count.
+*/
+
+/*!
+  \fn CDependencyInfo::Name(const size_t Index) const
+  \brief Returns name of a build unit with dependency record number \a Index.
+  \param Index number of a dependency record.
+  \return name of the build unit.
+*/
+
+/*!
+  \fn CDependencyInfo::DirectDependenciesCount(const size_t Index) const
+  \brief Counts direct dependencies of a build unit with dependency record
+  number \a Index.
+  \param Index number of a dependency record.
+
+  \return dependencies count.
+*/
+
+/*!
+  \fn CDependencyInfo::IndirectDependenciesCount(const size_t Index)
+  \brief Counts only indirect dependencies of a build unit with number \a Index.
+  \param Index number of a build unit.
+  \return dependencies count.
+
+  Indirect dependencies are dependencies of all build units that selected build
+  unit with number \a Index depends on excluding these units.
+*/
+
+/*!
+  \fn CDependencyInfo::AllDependenciesCount(const size_t Index)
+  \brief Returns the total count of dependencies of a build unit with dependency
+  record number \a Index.
+  \param Index number of a dependency record.
+  \return sum of direct and indirect dependencies.
+*/
+
+/*!
+  \fn CDependencyInfo::DirectDependencies(const size_t Index) const
+  \brief Returns a list of build unit names that a build unit with dependency
+  record number \a Index depends on directly.
+  \param Index number of a dependency record.
+  \return list of build unit names.
+*/
+
+/*!
+  \fn CDependencyInfo::IndirectDependencies(const size_t Index)
+  \brief Returns a list of build unit names that a build unit with dependency
+  record number \a Index depends on indirectly.
+  \param Index number of a dependency record.
+  \return list of build unit names.
+*/
+
+/*!
+  \fn CDependencyInfo::AllDependencies(const size_t Index)
+  \brief Returns a complete list of build unit names that a build unit with
+  dependency record number \a Index depends on directly or indirectly.
+  \param Index number of a dependency record.
+  \return list of build unit names.
+*/
+
+/*!
+  \fn CDependencyInfo::DirectCrossReferencesCount(const size_t Index) const
+  \brief Counts direct cross references to a build unit with dependency record
+  number \a Index.
+  \param Index number of a build unit.
+  \return cross references count.
+*/
+
+/*!
+  \fn CDependencyInfo::IndirectCrossReferencesCount(const size_t Index)
+  \brief Counts indirect cross references to a build unit with dependency record
+  number \a Index.
+  \param Index number of a dependency record.
+  \return cross references count.
+*/
+
+/*!
+  \fn CDependencyInfo::AllCrossReferencesCount(const size_t Index)
+  \brief Returns the total count of cross references of a build unit with
+  dependency record number \a Index.
+  \param Index number of a dependency record.
+  \return cross references count.
+*/
+
+/*!
+  \fn CDependencyInfo::DirectCrossReferences(const size_t Index) const
+  \brief Returns a list of build unit names that directly depend on a build
+  unit with dependency record number \a Index.
+  \param Index number of a dependency record.
+  \return list of build unit names.
+*/
+
+/*!
+  \fn CDependencyInfo::IndirectCrossReferences(const size_t Index)
+  \brief Returns a list of build unit names that indirectly depend on a
+  build unit with dependency record number \a Index.
+  \param Index number of a dependency record.
+  \return list of build unit names.
+*/
+
+/*!
+  \fn CDependencyInfo::AllCrossReferences(const size_t Index)
+  \brief Returns a complete list of build unit names that depend on a build
+  unit with dependency record number \a Index either directly or indirectly.
+  \param Index number of a dependency record.
+  \return list of build unit names.
+*/
+
+/*!
+  \fn CDependencyInfo::AreDependenciesComplete(const size_t Index)
+  \brief Verifies if a dependency list for a build unit with dependency record
+  number \a Index is marked as complete.
+  \param Index number of a dependency record.
+  \return \a true if a dependency list is complete, \a false otherwise.
+*/
+
+/*!
+  \fn CDependencyInfo::AreCrossReferencesComplete(const size_t Index)
+  \brief Verifies if a cross reference list for a build unit with dependency
+  record number \a Index is marked as complete.
+  \param Index number of a dependency record.
+  \return \a true if a cross rference list is complete, \a false otherwise.
+*/
+
+/*!
+  \fn CDependencyInfo::SetDependenciesComplete(const size_t Index, const bool State = true)
+  \brief Marks a dependency list for a build unit with dependency record number
+  \a Index as complete.
+  \param Index number of a dependency record.
+  \param State state of completeness.
+*/
+
+/*!
+  \fn CDependencyInfo::SetCrossReferencesComplete(const size_t Index, const bool State = true)
+  \brief Marks a cross reference list for a build unit with number \a Index as complete.
+  \param Index number of a build unit.
+  \param State state of completeness.
+*/
+
+/*!
+  \fn CDependencyInfo::FindRecord(const CString& Name)
+  \brief Performs dependency record lookup by a build unit name.
+  \param Name name of a build unit.
+  \return number (index) of the corresponding dependency record or -1 if no
+  dependency record for the \a Name build unit is found.
+*/
+
+/*!
+  \fn CDependencyInfo::AddRecord(const CString& Name)
+  \brief Adds a new dependency record for the \a Name build unit.
+  \param Name name of a build unit.
+  \return number (index) of the new dependency record.
+*/
+
+/*!
+  \fn CDependencyInfo::AddDependency(const size_t Index, const CString& DependencyName)
+  \brief Adds the \a DependencyName build unit to a dependency record  with
+  number \a Index.
+  \param Index number of a dependency record of a build unit.
+  \param DependencyName name of another build unit.
+  \return true, if \a Index is a valid number of a dependency record, \a false
+  otherwise.
+*/
+
+/*!
+  \fn CDependencyInfo::AddDependency(const CString& Name, const CString& DependencyName)
+  \brief Adds the \a DependencyName build unit to a dependency record of the
+  \a Name build unit.
+  \param Name name of a build unit.
+  \param DependencyName name of another build unit.
+  \return number of a dependency record of the \a Name build unit.
+*/
+
+/*!
+  \fn CDependencyInfo::MakeRules(CMakefile& Makefile, const int Section, const bool Multiline)
+  \brief Generates makefile rules for build unit dependencies.
+  \param Makefile a makefile object.
+  \param Section number of makefile section.
+  \param Multiline allows multi-line rules.
+*/
+
+/*!
+  \fn CDependencyInfo::CDependencyInfo(void)
+  \brief Creates build unit dependency database.
+*/
+
+/*!
+  \fn CDependencyInfo::~CDependencyInfo(void)
+  \brief Destroys build unit dependency database.
+*/
+
+/* !
+  \fn CDependencyInfo::
+  \brief .
+  \param .
+
+  \return .
+*/
+
+/*!
+  \class CIncludeSearchFilter
+  \brief Declares interface for gathering build unit dependencies from project
+  files into build unit dependency database.
+*/
+
+/*!
+  \var CIncludeSearchFilter::m_IncludeDirectories
+  \brief a list of directories to look for build units.
+*/
+
+/*!
+  \var CIncludeSearchFilter::m_DefinedMacros
+  \brief a list of preprocessor's macro defnitions.
+*/
+
+/* !
+  \var CIncludeSearchFilter::
+  \brief .
+*/
+
+/*!
+  \fn CIncludeSearchFilter::Clear(void)
+  \brief Resets the filter to the initial state.
+*/
+
+/*!
+  \fn CIncludeSearchFilter::Show(void)
+  \brief Prints filter settings to standard output.
+*/
+
+/*!
+  \fn CIncludeSearchFilter::Assign(const CIncludeSearchFilter& Filter)
+  \brief Copies filter settings from another filter.
+  \param Filter another filter.
+*/
+
+/*!
+  \deprecated Use CIncludeSearchFilter::Execute(const CString& FileName, CDependencyInfo& Dependencies).
+  \fn CIncludeSearchFilter::Execute(const CString& FileName, CStringList& Includes)
+  \brief Gathers dependencies to \a Includes string list starting from \a FileName
+  file.
+  \param FileName a build unit name.
+  \param Includes a list of build unit names.
+  \return \a true if dependencies were gather from at least one (starting) file,
+  \a false otherwise.
+*/
+
+/*!
+  \fn CIncludeSearchFilter::Execute(const CString& FileName, CDependencyInfo& Dependencies)
+  \brief Gathers dependencies to \a Dependencies database starting from \a FileName
+  file.
+  \param FileName a build unit name.
+  \param Dependencies a build unit dependency database.
+  \return \a true if dependencies were gather from at least one (starting) file,
+  \a false otherwise.
+*/
+
+/*!
+  \fn CIncludeSearchFilter::AddIncludeDirectory(const CString& Path)
+  \brief Adds \a Path path to the list of unit lookup directories.
+  \param Path a directory path.
+*/
+
+/*!
+  \fn CIncludeSearchFilter::AddIncludeDirectories(const CStringList& Paths)
+  \brief Adds \a Paths list of paths to the list of unit lookup directories.
+  \param Paths a list of directories.
+*/
+
+/*!
+  \fn CIncludeSearchFilter::AddMacroDefiniton(const CString& Macro)
+  \brief Adds \a Macro macro to the list of macros.
+  \param Macro name of a macro definition.
+*/
+
+/*!
+  \fn CIncludeSearchFilter::AddMacroDefinitons(const CStringList& Macros)
+  \brief Adds \a Macros macros to the list of macros.
+  \param Macros a list of names of macro definitions.
+*/
+
+/*!
+  \fn CIncludeSearchFilter::ResolveIncludePath(const CString& IncludeName)
+  \brief Resolves a build unit file name into complete file path.
+  \param IncludeName a build unit file name.
+  \return file path to the build unit if it is successfully found or an empty
+  string if it can't be found.
+*/
+
+/*!
+  \fn CIncludeSearchFilter::CIncludeSearchFilter(void)
+  \brief Creates dependency search filter.
+*/
+
+/*!
+  \fn CIncludeSearchFilter::CIncludeSearchFilter(const CIncludeSearchFilter& Filter)
+  \brief Copies dependency search filter from another filter.
+  \param Filter another dependency search filter.
+*/
+
+/*!
+  \fn CIncludeSearchFilter::~CIncludeSearchFilter(void)
+  \brief Destroys dependency search filter.
+*/
+
+/* !
+  \fn CIncludeSearchFilter::
+  \brief .
+  \param .
+
+  \return .
+*/
+
+/*!
+  \class CCppIncludeSearchFilter
+  \brief Gathers build unit dependencies from C/C++ source files withing project
+  into build unit dependency database.
+*/
+
+/* !
+  \var CCppIncludeSearchFilter::
+  \brief .
+*/
+
+/*!
+  \fn CCppIncludeSearchFilter::Assign(const CCppIncludeSearchFilter& Filter)
+  \brief Copies filter settings from another filter.
+  \param Filter another filter.
+*/
+
+/* !
+  \fn CCppIncludeSearchFilter::Execute(const CString& FileName, CStringList& Includes)
+  \brief .
+  \param .
+
+  \return .
+*/
+
+/* !
+  \fn CCppIncludeSearchFilter::Execute(const CString& FileName, CDependencyInfo& Dependencies)
+  \brief .
+  \param .
+
+  \return .
+*/
+
+/*!
+  \fn CCppIncludeSearchFilter::CCppIncludeSearchFilter(void)
+  \brief Creates dependency search filter.
+*/
+
+/*!
+  \fn CCppIncludeSearchFilter::CCppIncludeSearchFilter(const CCppIncludeSearchFilter& Filter)
+  \brief Copies dependency search filter from another filter.
+  \param Filter another dependency search filter.
+*/
+
+/*!
+  \fn CCppIncludeSearchFilter::~CCppIncludeSearchFilter(void)
+  \brief Destroys dependency search filter.
+*/
+
+/* !
+  \fn CCppIncludeSearchFilter::
+  \brief .
+  \param .
+
+  \return .
+*/
+
+//------------------------------------------------------------------------------

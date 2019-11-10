@@ -1,0 +1,44 @@
+What follows is a description of the steps required to install a compiler for use in Code::Blocks.
+
+Unix platforms
+----------------
+Code::Blocks comes with pre-configured settings for the GNU GCC compiler & GDB debugger. Just make sure they are installed. This depends on your distribution, but virtually all wide-spread distributions today include them by default.
+
+Windows platform
+----------------
+Code::Blocks does not come with a compiler nor a debugger. It is left up to you to decide which compiler you want to use.
+At this moment, Code::Blocks natively supports the following compilers:
+
+	* GNU GCC compiler & GDB debugger
+	* Microsoft Visual C++ Free Toolkit 2003
+	* Borland C++ Compiler 5.5
+
+When you launch Code::Blocks for the first time, it will scan the system for the above compilers (it takes virtually no time). After this scan completes, Code::Blocks will have been configured for the found compiler(s). Code::Blocks will also be configured even for compilers that were not found (default installation settings will be used for each of those compilers).
+
+For more info on how to download and install each of the above compilers, please read on.
+
+
+Downloading the GNU GCC compiler & GDB debugger
+-----------------------------------------------
+Go to "http://www.mingw.org/download.shtml" and download the file named MinGW-x.y.z.exe, where x, y and z are version numbers. At the time of this writing, this file is MinGW-3.1.0-1.exe.
+This setup file contains everything needed to compile and debug windows programs.
+
+
+Downloading the Microsoft Visual C++ Free Toolkit 2003
+------------------------------------------------------
+Go to "http://msdn.microsoft.com/visualc/vctoolkit2003" and click on the link labeled "Download the Visual C++ Toolkit 2003". This will download the setup file.
+
+
+Downloading the Borland C++ Compiler 5.5
+----------------------------------------
+NOTE: At some point, by following the steps described below, you will be asked to register with Borland and fill out a survey. Registration is free.
+
+Go to "http://www.borland.com/products/downloads/download_cbuilder.html#" and click on the link labeled "Compiler". After you accept the license agreement, you will be provided with download links to the setup file.
+
+
+Compiler-neutral setup steps
+----------------------------
+Now that you have downloaded the setup file, launch the installation by double-clicking on the setup file. The actual installation process is really simple. Just press "Next" all the way and you 're done.
+
+If you installed the compiler on a directory other than its default, launch Code::Blocks. If it is the first time you launch it, the compiler will be auto-detected. If not, go to "Settings/Configure plugins/Compiler", select the compiler you installed, switch to the "Programs" tab and press "Auto-detect". If you get a message saying that the compiler was auto-detected, congratulations! If not, then press the button with the three dots next to the "Auto-detect" button and select the installation directory of your compiler manually.
+

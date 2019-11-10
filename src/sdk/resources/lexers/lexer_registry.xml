@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+		<Lexer name="Windows registry file"
+				index="115"
+				filemasks="*.reg">
+				<Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+				<Style name="Comment"
+						index="1"
+						fg="160,160,160"/>
+				<Style name="Value name"
+						index="2"
+						fg="190,0,190"/>
+				<Style name="String"
+						index="3"
+						fg="0,0,255"/>
+				<Style name="Hex digit"
+						index="4"
+						fg="127,11,12"/>
+				<Style name="Value type"
+						index="5"
+						fg="0,0,127"
+            bold="1"/>
+				<Style name="Added key"
+						index="6"
+						fg="83,1,85"/>
+				<Style name="Removed key"
+						index="7"
+						fg="255,0,0"/>
+				<Style name="Escaped characters in strings"
+						index="8"
+						fg="125,129,135"/>
+				<Style name="GUID in key path"
+						index="9"
+						fg="123,95,21"/>
+				<Style name="GUID in string"
+						index="10"
+						fg="123,95,21"/>
+				<Style name="Parameter"
+						index="11"
+						fg="11,101,97"/>
+				<Style name="Operators"
+						index="12"
+						bold="1"/>
+				<Style name="Selection"
+						index="-99"
+						bg="192,192,192"/>
+				<Style name="Active line"
+						index="-98"
+						bg="255,255,160"/>
+				<Keywords>
+								<Set index="0"
+                				value="HKCR HKCU HKLM"/>
+				</Keywords>
+				<SampleCode value="lexer_registry.sample"
+						error_line="17"/>
+                <LanguageAttributes
+                    LineComment=";"
+                    DoxygenLineComment=""
+                    StreamCommentStart=""
+                    StreamCommentEnd=""
+                    DoxygenStreamCommentStart=""
+                    DoxygenStreamCommentEnd=""
+                    BoxCommentStart=""
+                    BoxCommentMid=""
+                    BoxCommentEnd=""
+                    CaseSensitive="0"
+                    LexerCommentStyles="1"
+                    LexerCharacterStyles=""
+                    LexerStringStyles="2,3,8,10,11"/>
+		</Lexer>
+</CodeBlocks_lexer_properties>

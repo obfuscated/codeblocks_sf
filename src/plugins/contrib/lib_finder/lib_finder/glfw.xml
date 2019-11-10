@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<library name="GL Framework" short_code="glfw" category="Graphics.3d">
+
+    <settings>
+        <header file="gl/glfw.h" />
+    </settings>
+    <!--
+        By default pkg-config should be automatically invoked when
+        global_var is equal to pkg-config name of library.
+        If the name does not mismatch or if there are few versions
+        of the library in pkg-config which we would like to provide
+        under one name of global_var, we can use following
+        construction which does bind code::blocks' library name with
+        the one in pkg-config
+    -->
+    <config description="OpenGL Framework (pkg-config)">
+        <pkgconfig name="libglfw"/>
+    </config>
+
+    <config>
+        <!-- Windows platform configurations -->
+
+        <filters>
+            <platform name="win"/>
+            <file name="include/GL/glfw.h"/>
+        </filters>
+        <settings>
+            <path lib="$(BASE_DIR)/lib/win32"/>
+            <add lib="opengl"/>
+            <add lib="glu32"/>
+            <add lib="kernel32"/>
+            <add lib="user32"/>
+            <add lib="gdi32"/>
+        </settings>
+
+        <config description="OpenGL Framework (Windows DLL)">
+            <filters>
+                <file name="lib/win32/libglfwdll.a"/>
+            </filters>
+            <settings>
+                <add lib="glfwdll"/>
+            </settings>
+        </config>
+
+        <config description="OpenGL Framework (Windows, static library)">
+            <filters>
+                <file name="lib/win32/libglfw.a"/>
+            </filters>
+            <settings>
+                <add lib="glfw"/>
+            </settings>
+        </config>
+
+    </config>
+
+</library>

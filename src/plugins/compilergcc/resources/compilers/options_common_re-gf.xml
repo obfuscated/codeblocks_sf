@@ -1,0 +1,95 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <RegEx name="Preprocessor warning"
+           type="warning"
+           msg="4"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):([0-9]+):[ \t]([Ww]arning:[ \t].*)]]>
+    </RegEx>
+    <RegEx name="Preprocessor error"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):[0-9]+:[ \t](.*)]]>
+    </RegEx>
+    <RegEx name="Compiler warning"
+           type="warning"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):[ \t]([Ww]arning:[ \t].*)]]>
+    </RegEx>
+    <RegEx name="Compiler error (2)"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):[ \t](.*)]]>
+    </RegEx>
+    <RegEx name="Compiler error (3)"
+           type="error"
+           msg="1">
+        <![CDATA[.*(error:[ \t]*unrecognized.*)]]>
+    </RegEx>
+    <RegEx name="Linker warning"
+           type="warning"
+           msg="2"
+           file="1">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):\(\.text\+[0-9a-fA-FxX]+\):[ \t]([Ww]arning:[ \t].*)]]>
+    </RegEx>
+    <RegEx name="Linker error"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):[0-9]+:[ \t](.*)]]>
+    </RegEx>
+    <RegEx name="Linker error (2)"
+           type="error"
+           msg="2"
+           file="1">
+        <![CDATA[[][{}() \t#%$~[:alnum:]&_:+/\.-]+\(.text\+[0-9A-Za-z]+\):([ \tA-Za-z0-9_:+/\.-]+):[ \t](.*)]]>
+    </RegEx>
+    <RegEx name="Linker error (3)"
+           type="error"
+           msg="2"
+           file="1">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):\(\.text\+[0-9a-fA-FxX]+\):(.*)]]>
+    </RegEx>
+    <RegEx name="Linker error (lib not found)"
+           type="error"
+           msg="2"
+           file="1">
+        <![CDATA[.*(ld.*):[ \t](cannot find.*)]]>
+    </RegEx>
+    <RegEx name="Linker error (cannot open output file)"
+           type="error"
+           msg="2;3"
+           file="1">
+        <![CDATA[.*(ld.*):[ \t](cannot open output file.*):[ \t](.*)]]>
+    </RegEx>
+    <RegEx name="Undefined reference"
+           type="error"
+           msg="2"
+           file="1">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):[ \t](undefined reference.*)]]>
+    </RegEx>
+    <RegEx name="General warning"
+           type="warning"
+           msg="1">
+        <![CDATA[([Ww]arning:[ \t].*)]]>
+    </RegEx>
+    <RegEx name="Auto-import info"
+           type="info"
+           msg="1">
+        <![CDATA[([Ii]nfo:[ \t].*)\(auto-import\)]]>
+    </RegEx>
+    <RegEx name="Error"
+           type="error"
+           msg="1">
+        <![CDATA[[ \t]*(Error:.*)]]>
+    </RegEx>
+</CodeBlocks_compiler_options>

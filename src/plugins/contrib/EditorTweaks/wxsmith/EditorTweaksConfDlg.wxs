@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<resource_extra>
+		<object root="1" />
+		<object name="ID_SPINCTRL1" class="wxSpinCtrl" variable="SpinCtrl1" member="yes" />
+	</resource_extra>
+</wxsmith>

@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxPanel" name="HexEditPanel">
+		<size>79,51</size>
+		<extra_code>&#x0A;--- End of comment which prevents calling Create() --&#x0A;*/&#x0A;&#x0A;</extra_code>
+		<id_arg>0</id_arg>
+		<object class="wxBoxSizer" variable="BoxSizer1" member="yes">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="BoxSizer3" member="yes">
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT1" variable="m_Status" member="yes">
+							<label></label>
+						</object>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON10" variable="Button6" member="yes">
+							<label>Goto</label>
+							<style>wxBU_EXACTFIT</style>
+							<handler function="OnButton6Click" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON9" variable="Button5" member="yes">
+							<label>Search</label>
+							<style>wxBU_EXACTFIT</style>
+							<handler function="OnButton5Click" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticLine" name="ID_STATICLINE2" variable="StaticLine2" member="yes">
+							<style>wxLI_VERTICAL</style>
+						</object>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON7" variable="m_ColsModeBtn" member="yes">
+							<label>Cols</label>
+							<style>wxBU_EXACTFIT</style>
+							<handler function="Onm_ColsModeClick" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON4" variable="m_DigitBits" member="yes">
+							<label>Hex</label>
+							<style>wxBU_EXACTFIT</style>
+							<handler function="OnButton4Click" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON6" variable="m_BlockSize" member="yes">
+							<label>1B</label>
+							<style>wxBU_EXACTFIT</style>
+							<handler function="Onm_BlockSizeClick" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON5" variable="m_Endianess" member="yes">
+							<label>BE</label>
+							<style>wxBU_EXACTFIT</style>
+							<handler function="Onm_EndianessClick" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticLine" name="ID_STATICLINE1" variable="StaticLine1" member="yes">
+							<style>wxLI_VERTICAL</style>
+						</object>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON1" variable="Button1" member="yes">
+							<label>Calc</label>
+							<style>wxBU_EXACTFIT</style>
+							<handler function="OnButton1Click" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON8" variable="Button4" member="yes">
+							<label>Test</label>
+							<style>wxBU_EXACTFIT</style>
+							<handler function="OnButton4Click1" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="ID_CHECKBOX1" variable="CheckBox1" member="yes">
+							<label>Value preview</label>
+							<checked>1</checked>
+							<handler function="OnCheckBox1Click" entry="EVT_CHECKBOX" />
+						</object>
+						<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="BoxSizer2" member="yes">
+					<object class="sizeritem">
+						<object class="wxPanel" name="ID_PANEL1" variable="m_DrawArea" member="yes">
+							<style>wxWANTS_CHARS|wxFULL_REPAINT_ON_RESIZE</style>
+							<handler function="OnContentPaint" entry="EVT_PAINT" />
+							<handler function="OnDrawAreaEraseBackground" entry="EVT_ERASE_BACKGROUND" />
+							<handler function="OnSpecialKeyDown" entry="EVT_KEY_DOWN" />
+							<handler function="OnDrawAreaKeyDown" entry="EVT_CHAR" />
+							<handler function="OnDrawAreaLeftDown" entry="EVT_LEFT_DOWN" />
+							<handler function="OnDrawAreaLeftUp" entry="EVT_LEFT_UP" />
+							<handler function="OnDrawAreaMouseMove" entry="EVT_MOTION" />
+							<handler function="OnDrawAreaLeftUp" entry="EVT_LEAVE_WINDOW" />
+							<handler function="OnContentMouseWheel" entry="EVT_MOUSEWHEEL" />
+						</object>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxScrollBar" name="ID_SCROLLBAR1" variable="m_ContentScroll" member="yes">
+							<thumbsize>1</thumbsize>
+							<range>1</range>
+							<pagesize>1</pagesize>
+							<style>wxSB_VERTICAL</style>
+							<handler function="OnContentScroll" entry="EVT_COMMAND_SCROLL_TOP" />
+							<handler function="OnContentScroll" entry="EVT_COMMAND_SCROLL_BOTTOM" />
+							<handler function="OnContentScroll" entry="EVT_COMMAND_SCROLL_LINEUP" />
+							<handler function="OnContentScroll" entry="EVT_COMMAND_SCROLL_LINEDOWN" />
+							<handler function="OnContentScroll" entry="EVT_COMMAND_SCROLL_PAGEUP" />
+							<handler function="OnContentScroll" entry="EVT_COMMAND_SCROLL_PAGEDOWN" />
+							<handler function="OnContentScroll" entry="EVT_COMMAND_SCROLL_THUMBTRACK" />
+							<handler function="OnContentScroll" entry="EVT_COMMAND_SCROLL_THUMBRELEASE" />
+							<handler function="OnContentScroll" entry="EVT_COMMAND_SCROLL_CHANGED" />
+						</object>
+						<flag>wxEXPAND</flag>
+					</object>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="PreviewSizer" member="yes">
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxFlexGridSizer" variable="FlexGridSizer1" member="yes">
+							<cols>8</cols>
+							<vgap>5</vgap>
+							<hgap>5</hgap>
+							<growablecols>1,4,7</growablecols>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText1" member="yes">
+									<label>Byte:</label>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT3" variable="m_ByteVal" member="yes">
+									<label>-9999999999</label>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="spacer">
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+								<size>5,5</size>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT4" variable="StaticText3" member="yes">
+									<label>Word:</label>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT5" variable="m_WordVal" member="yes">
+									<label>-9999999999</label>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="spacer">
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+								<size>5,5</size>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT6" variable="StaticText2" member="yes">
+									<label>Dword:</label>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT7" variable="m_DwordVal" member="yes">
+									<label>-9999999999</label>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT8" variable="StaticText4" member="yes">
+									<label>Float:</label>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT9" variable="m_FloatVal" member="yes">
+									<label>-9999999999</label>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="spacer">
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+								<size>5,5</size>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT10" variable="StaticText6" member="yes">
+									<label>Double:</label>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT11" variable="m_DoubleVal" member="yes">
+									<label>-9999999999</label>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="spacer">
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+								<size>5,5</size>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT12" variable="StaticText8" member="yes">
+									<label>L-Double:</label>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT13" variable="m_LDoubleVal" member="yes">
+									<label>-9999999999</label>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer" variable="BoxSizer4" member="yes">
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT14" variable="StaticText5" member="yes">
+									<label>Expression:</label>
+								</object>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="m_Expression" member="yes">
+									<value>byte[ @ ]</value>
+									<style>wxTE_PROCESS_ENTER</style>
+									<handler function="Onm_ExpressionText" entry="EVT_TEXT" />
+									<handler function="OnExpressionTextEnter" entry="EVT_TEXT_ENTER" />
+								</object>
+								<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="ID_BUTTON3" variable="Button3" member="yes">
+									<label>v</label>
+									<style>wxBU_EXACTFIT</style>
+									<handler function="OnButton3Click1" entry="EVT_BUTTON" />
+								</object>
+								<flag>wxRIGHT|wxEXPAND</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="ID_BUTTON2" variable="Button2" member="yes">
+									<label>?</label>
+									<style>wxBU_EXACTFIT</style>
+									<handler function="OnButton2Click" entry="EVT_BUTTON" />
+								</object>
+								<flag>wxRIGHT|wxEXPAND</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT15" variable="m_ExpressionVal" member="yes">
+									<label>-9999999999</label>
+								</object>
+								<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxEXPAND</flag>
+				<border>5</border>
+			</object>
+		</object>
+		<object class="wxTimer" name="ID_TIMER1" variable="ReparseTimer" member="yes">
+			<handler function="OnReparseTimerTrigger" entry="EVT_TIMER" />
+		</object>
+		<object class="wxMenu" variable="m_BaseMenu" member="yes">
+			<object class="wxMenuItem" name="ID_MENUITEM2" variable="MenuItem2" member="yes">
+				<label>Bin</label>
+				<handler function="OnSetBaseBin" entry="EVT_MENU" />
+			</object>
+			<object class="wxMenuItem" name="ID_MENUITEM1" variable="MenuItem1" member="yes">
+				<label>Hex</label>
+				<handler function="OnSetBaseHex" entry="EVT_MENU" />
+			</object>
+		</object>
+		<object class="wxMenu" variable="m_EndianessMenu" member="yes">
+			<object class="wxMenuItem" name="ID_MENUITEM3" variable="MenuItem3" member="yes">
+				<label>Big Endian</label>
+				<handler function="OnSetEndianessBig" entry="EVT_MENU" />
+			</object>
+			<object class="wxMenuItem" name="ID_MENUITEM4" variable="MenuItem4" member="yes">
+				<label>Little Endian</label>
+				<handler function="OnSetEndianessLittle" entry="EVT_MENU" />
+			</object>
+		</object>
+		<object class="wxMenu" variable="m_BlockSizeMenu" member="yes">
+			<object class="wxMenuItem" name="ID_MENUITEM5" variable="MenuItem5" member="yes">
+				<label>1 Byte</label>
+				<handler function="OnSetBlockSize1" entry="EVT_MENU" />
+			</object>
+			<object class="wxMenuItem" name="ID_MENUITEM6" variable="MenuItem6" member="yes">
+				<label>2 Bytes</label>
+				<handler function="OnSetBlockSize2" entry="EVT_MENU" />
+			</object>
+			<object class="wxMenuItem" name="ID_MENUITEM7" variable="MenuItem7" member="yes">
+				<label>4 Bytes</label>
+				<handler function="OnSetBlockSize4" entry="EVT_MENU" />
+			</object>
+			<object class="wxMenuItem" name="ID_MENUITEM8" variable="MenuItem8" member="yes">
+				<label>8 Bytes</label>
+				<handler function="OnSetBlockSize8" entry="EVT_MENU" />
+			</object>
+		</object>
+		<object class="wxMenu" variable="m_ColsModeMenu" member="yes">
+			<object class="wxMenuItem" name="ID_MENUITEM9" variable="MenuItem9" member="yes">
+				<label>Any</label>
+				<handler function="OnSetColsMul1" entry="EVT_MENU" />
+			</object>
+			<object class="wxMenu" name="ID_MENUITEM10" variable="MenuItem10" member="yes">
+				<label>Exactly</label>
+				<object class="wxMenuItem" name="ID_MENUITEM11" variable="MenuItem11" member="yes">
+					<label>1</label>
+					<handler function="OnSetColsValue1" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM12" variable="MenuItem12" member="yes">
+					<label>2</label>
+					<handler function="OnSetColsValue2" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM13" variable="MenuItem13" member="yes">
+					<label>3</label>
+					<handler function="OnSetColsValue3" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM14" variable="MenuItem14" member="yes">
+					<label>4</label>
+					<handler function="OnSetColsValue4" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM15" variable="MenuItem15" member="yes">
+					<label>5</label>
+					<handler function="OnSetColsValue5" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM16" variable="MenuItem16" member="yes">
+					<label>6</label>
+					<handler function="OnSetColsValue6" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM17" variable="MenuItem17" member="yes">
+					<label>7</label>
+					<handler function="OnSetColsValue7" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM18" variable="MenuItem18" member="yes">
+					<label>8</label>
+					<handler function="OnSetColsValue8" entry="EVT_MENU" />
+				</object>
+				<object class="separator" />
+				<object class="wxMenuItem" name="ID_MENUITEM32" variable="MenuItem32" member="yes">
+					<label>Other</label>
+					<handler function="OnSetColsValueOther" entry="EVT_MENU" />
+				</object>
+			</object>
+			<object class="wxMenu" name="ID_MENUITEM19" variable="MenuItem19" member="yes">
+				<label>Multiple of</label>
+				<object class="wxMenuItem" name="ID_MENUITEM20" variable="MenuItem20" member="yes">
+					<label>2</label>
+					<handler function="OnSetColsMul2" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM21" variable="MenuItem21" member="yes">
+					<label>3</label>
+					<handler function="OnSetColsMul3" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM22" variable="MenuItem22" member="yes">
+					<label>4</label>
+					<handler function="OnSetColsMul4" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM23" variable="MenuItem23" member="yes">
+					<label>5</label>
+					<handler function="OnSetColsMul5" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM24" variable="MenuItem24" member="yes">
+					<label>6</label>
+					<handler function="OnSetColsMul6" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM25" variable="MenuItem25" member="yes">
+					<label>7</label>
+					<handler function="OnSetColsMul7" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM26" variable="MenuItem26" member="yes">
+					<label>8</label>
+					<handler function="OnSetColsMul8" entry="EVT_MENU" />
+				</object>
+				<object class="separator" />
+				<object class="wxMenuItem" name="ID_MENUITEM27" variable="MenuItem27" member="yes">
+					<label>Other</label>
+					<handler function="OnSetColsMulOther" entry="EVT_MENU" />
+				</object>
+			</object>
+			<object class="wxMenu" name="ID_MENUITEM28" variable="MenuItem28" member="yes">
+				<label>Power of</label>
+				<object class="wxMenuItem" name="ID_MENUITEM29" variable="MenuItem29" member="yes">
+					<label>2</label>
+					<handler function="OnSetColsPower2" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM30" variable="MenuItem30" member="yes">
+					<label>4</label>
+					<handler function="OnSetColsPower4" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM31" variable="MenuItem31" member="yes">
+					<label>8</label>
+					<handler function="OnSetColsPower8" entry="EVT_MENU" />
+				</object>
+				<object class="separator" />
+				<object class="wxMenuItem" name="ID_MENUITEM33" variable="MenuItem33" member="yes">
+					<label>Other</label>
+					<handler function="OnSetColsPowerOther" entry="EVT_MENU" />
+				</object>
+			</object>
+		</object>
+	</object>
+</wxsmith>

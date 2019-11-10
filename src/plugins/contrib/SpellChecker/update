@@ -1,0 +1,39 @@
+#! /bin/sh
+#
+# This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+# http://www.gnu.org/licenses/gpl-3.0.html
+#
+# Copyright: 2011 Jens Lody
+#
+# $Revision: 10020 $
+# $Id: update 10020 2014-10-30 07:40:00Z mortenmacfly $
+# $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/contrib/SpellChecker/update $
+#
+
+mkdir -p "../../../devel/share/codeblocks/SpellChecker"
+mkdir -p "../../../output/share/codeblocks/SpellChecker"
+cp *.png "../../../devel/share/codeblocks/images/settings/"
+cp *.png "../../../output/share/codeblocks/images/settings/"
+cp OnlineSpellChecking.xml  "../../../devel/share/codeblocks/SpellChecker/"
+cp OnlineSpellChecking.xml  "../../../output/share/codeblocks/SpellChecker/"
+
+copyImageFiles() {
+    from=$1
+    to=$2
+    echo "Copy ${from} to ${to}"
+
+    # This is done this stupid/convoluted way, because dash/posix doesn't have arrays!
+    dirs="16x16 20x20 24x24 28x28 32x32 40x40 48x48 56x56 64x64"
+    echo "$dirs" | tr ' ' '\n' | while read dir; do
+        echo "  Copy ${from}/${dir} to ${to}/${dir}"
+
+        mkdir -p ${to}/${dir}
+        cp -f ${from}/${dir}/*.png ${to}/${dir} > /dev/null
+    done
+}
+
+copyImageFiles rc ../../../devel/share/codeblocks/SpellChecker
+copyImageFiles rc ../../../output/share/codeblocks/SpellChecker
+
+exit 0
+

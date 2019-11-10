@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="SQL" index="7" filemasks="*.sql">
+                <Style name="Default" index="0" fg="26,26,26" bg="255,255,255" bold="0" italics="0" underlined="0"/>
+                <Style name="Comment" index="1" fg="0,127,0"/>
+                <Style name="Line Comment" index="2" fg="0,127,0"/>
+                <Style name="Doc Comment" index="3" fg="127,127,127"/>
+                <Style name="Number" index="4" fg="0,127,127"/>
+                <Style name="Keyword" index="5" fg="0,0,127" bold="1"/>
+                <Style name="Double Quoted String" index="6" fg="127,0,127"/>
+                <Style name="Single Quoted String" index="7" fg="127,0,127"/>
+                <Style name="Operator" index="10" bold="1"/>
+                <Style name="Identifier" index="11"/>
+                <Keywords>
+            	    <!-- Keywords -->
+            	    <Set index="0" value="absolute action add admin after aggregate     alias all allocate alter and any are array as asc    assertion at authorization    before begin binary bit blob boolean both breadth by    call cascade cascaded case cast catalog char character    check class clob close collate collation column commit    completion connect connection constraint constraints    constructor continue corresponding create cross cube current    current_date current_path current_role current_time current_timestamp    current_user cursor cycle    data date day deallocate dec decimal declare default    deferrable deferred delete depth deref desc describe descriptor    destroy destructor deterministic dictionary diagnostics disconnect    distinct domain double drop dynamic    each else end end-exec equals escape every except    exception exec execute external    false fetch first float for foreign found from free full    function    general get global go goto grant group grouping    having host hour    identity if ignore immediate in indicator initialize initially    inner inout input insert int integer intersect interval    into is isolation iterate    join    key    language large last lateral leading left less level like    limit local localtime localtimestamp locator    map match minute modifies modify module month    names national natural nchar nclob new next no none    not null numeric    object of off old on only open operation option    or order ordinality out outer output    pad parameter parameters partial path postfix precision prefix    preorder prepare preserve primary    prior privileges procedure public    read reads real recursive ref references referencing relative    restrict result return returns revoke right    role rollback rollup routine row rows    savepoint schema scroll scope search second section select    sequence session session_user set sets size smallint some| space    specific specifictype sql sqlexception sqlstate sqlwarning start    state statement static structure system_user    table temporary terminate than then time timestamp    timezone_hour timezone_minute to trailing transaction translation    treat trigger true    under union unique unknown    unnest update usage user using    value values varchar variable varying view    when whenever where with without work write    year    zone"/>
+		    <Set index="1" value=""/>
+                </Keywords>
+                <SampleCode value="lexer_sql.sample"/>
+            <LanguageAttributes
+                    LineComment="--"
+                    StreamCommentStart=""
+                    StreamCommentEnd=""
+                    BoxCommentStart=""
+                    BoxCommentMid=""
+                    BoxCommentEnd=""/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

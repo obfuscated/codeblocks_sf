@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_template_file>
+<CodeBlocks_template_file>
+		<Template name="FLTK" title="Fluid Application" category="GUI" bitmap="fltk.png">
+		<Notice value="This template expects FLTK and Fluid "
+				isWarning="1"/>
+		<FileSet name="s" title="Default">
+			<File source="fluid-main.cpp" destination="main.cpp"/>
+			<File source="fluid-main_ui.cxx" destination="main_ui.cxx"/>
+			<File source="fluid-main_ui.h" destination="main_ui.h"/>
+			<File source="main_ui.fl" destination="main_ui.fl"/>
+		</FileSet>
+		<Option name="FLTK Application">
+			<Project file="fluid.cbp"/>
+		</Option>
+	</Template>
+</CodeBlocks_template_file>

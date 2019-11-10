@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="10" release="0" />
+    <Plugin name="CodeStat">
+        <Value title="Code statistics" />
+        <Value version="0.5" />
+        <Value description="A simple plugin for counting code, comments and empty lines of a project." />
+        <Value author="Zlika" />
+        <Value authorEmail="" />
+        <Value authorWebsite="" />
+        <Value thanksTo="All the Code::Blocks team!" />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

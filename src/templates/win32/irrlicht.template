@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_template_file>
+<CodeBlocks_template_file>
+	<Template name="Irrlicht" title="Irrlicht Project" category="2D/3D Graphics" bitmap="irrlicht.png">
+		<Notice value="This template expects Irrlicht to be located at C:\Irrlicht.
+						If this is not the case, you will have to update the relevant 
+						custom variable accordingly.
+						
+						To do this, click on &quot;Project->Build options->Custom variables&quot;"
+				isWarning="1"/>
+		<FileSet name="s" title="Default">
+			<File source="irr_main.cpp" destination="main.cpp"/>
+		</FileSet>
+		<Option name="Free VisualC++ Toolkit 2003 project">
+			<Project file="irr_vctk.cbp" useDefaultCompiler="0"/>
+		</Option>
+		<Option name="GCC project">
+			<Project file="irr_gcc.cbp" useDefaultCompiler="0"/>
+		</Option>
+	</Template>
+</CodeBlocks_template_file>

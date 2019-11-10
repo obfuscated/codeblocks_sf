@@ -1,0 +1,285 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+		<Lexer name="OpenGL Shading Language"
+				index="3"
+				filemasks="*.vert,*.frag,*.glsl">
+				<Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+				<Style name="Comment (normal)"
+						index="1,2"
+						fg="160,160,160"/>
+				<Style name="Comment (documentation)"
+						index="3,15"
+						fg="128,128,255"
+						bold="1"/>
+				<Style name="Comment keyword (documentation)"
+						index="17"
+						fg="0,128,128"/>
+				<Style name="Comment keyword error (documentation)"
+						index="18"
+						fg="128,0,0"/>
+				<Style name="Number"
+						index="4"
+						fg="240,0,240"/>
+				<Style name="Keyword or built-in variable"
+						index="5"
+						fg="0,0,160"
+						bold="1"/>
+				<Style name="GLSL standard library function"
+						index="16"
+						fg="0,200,0"
+						bold="1"/>
+				<Style name="GLSL predefined constant"
+						index="19"
+						fg="128,0,128"/>
+				<Style name="Preprocessor"
+						index="9"
+						fg="0,160,0"/>
+				<Style name="Operator"
+						index="10"
+						fg="255,0,0"/>
+				<Style name="Breakpoint line"
+						index="-2"
+						bg="255,160,160"/>
+				<Style name="Debugger active line"
+						index="-3"
+						bg="160,160,255"/>
+				<Style name="Compiler error line"
+						index="-4"
+						bg="255,128,0"/>
+				<Keywords>
+						<Language index="0" value="
+void bool int uint float double atomic_uint
+vec2 vec3 vec4 dvec2 dvec3 dvec4 bvec2 bvec3 bvec4
+ivec2 ivec3 ivec4 uvec2 uvec3 uvec4
+mat2 mat3 mat4 dmat2 dmat3 dmat4
+mat2x2 mat2x3 mat2x4 dmat2x2 dmat2x3 dmat2x4
+mat3x2 mat3x3 mat3x4 dmat3x2 dmat3x3 dmat3x4
+mat4x2 mat4x3 mat4x4 dmat4x2 dmat4x3 dmat4x4
+const uniform buffer attribute varying
+in out inout
+centroid sample patch smooth flat noperspective
+precision highp mediump lowp
+invariant precise
+coherent volatile restrict readonly writeonly
+
+sampler1D sampler2D sampler3D image1D image2D image3D
+samplerCube imageCube sampler2DRect image2DRect
+sampler1DArray sampler2DArray image1DArray image2DArray
+samplerBuffer imageBuffer
+sampler2DMS image2DMS sampler2DMSArray image2DMSArray
+samplerCubeArray imageCubeArray
+sampler1DShadow sampler2DShadow sampler2DRectShadow 
+sampler1DArrayShadow sampler2DArrayShadow samplerCubeShadow samplerCubeArrayShadow
+isampler1D isampler2D isampler3D iimage1D iimage2D iimage3D
+isamplerCube iimageCube isampler2DRect iimage2DRect
+isampler1DArray isampler2DArray iimage1DArray iimage2DArray
+isamplerBuffer iimageBuffer
+isampler2DMS iimage2DMS isampler2DMSArray iimage2DMSArray
+isamplerCubeArray iimageCubeArray
+usampler1D usampler2D usampler3D uimage1D uimage2D uimage3D
+usamplerCube uimageCube usampler2DRect uimage2DRect
+usampler1DArray usampler2DArray uimage1DArray uimage2DArray
+usamplerBuffer uimageBuffer
+usampler2DMS uimage2DMS usampler2DMSArray uimage2DMSArray
+usamplerCubeArray uimageCubeArray
+
+layout
+shared packed std140 std430
+row_major column_major
+binding offset align location component index
+point_mode points lines isolines line_strip triangles triangle_strip quads
+triangles_adjacency lines_adjacency
+equal_spacing fractional_even_spacing fractional_odd_spacing
+invocations cw ccw
+origin_upper_left pixel_center_integer
+early_fragment_tests
+local_size_x local_size_y local_size_z
+xfb_buffer xfb_stride xfb_offset
+vertices max_vertices stream
+depth_any depth_greater depth_less depth_unchanged
+
+subroutine
+break continue do for while
+if else true false switch case default
+discard return
+struct
+
+common partition active
+asm
+class union enum typedef template this
+resource goto
+inline noinline public static extern external interface
+long short half fixed unsigned superp
+input output
+hvec2 hvec3 hvec4 fvec2 fvec3 fvec4
+sampler3DRect
+filter
+sizeof cast
+namespace using
+						"/>
+
+						<User index="1" value="
+ftransform radians degrees
+sin cos tan asin acos atan sinh cosh tanh asinh acosh atanh
+pow exp exp2 log log2 sqrt inversesqrt
+abs sign floor trunc round roundEven ceil fract mod modf min max mix
+clamp step smoothstep
+isnan isinf
+floatBitsToInt floatBitsToUint intBitsToFloat uintBitsToFloat
+fma frexp ldexp
+
+packUnorm2x16 packUnorm4x8 packSnorm2x16 packSnorm4x8 packDouble2x32
+unpackUnorm2x16 unpackUnorm4x8 unpackSnorm2x16 unpackSnorm4x8 unpackDouble2x32
+packHalf2x16 unpackHalf2x16
+
+length distance dot cross normalize faceforward reflect refract
+matrixCompMult outerProduct transpose determinant inverse
+lessThan lessThanEqual greaterThan greaterThanEqual equal notEqual any all not
+
+uaddCarry usubBorrow umulExtended imulExtended 
+bitfieldExtract bitfieldReverse bitfieldInsert bitCount findLSB findMSB
+
+atomicCounter atomicCounterIncrement atomicCounterDecrement
+atomicAdd atomicAnd atomicOr atomicXor atomicExchange atomicCompSwap atomicMin atomicMax
+imageAtomicAdd imageAtomicAnd imageAtomicOr imageAtomicXor
+imageAtomicExchange imageAtomicCompSwap imageAtomicMin imageAtomicMax
+imageSize imageSamples imageLoad imageStore
+
+dFdx dFdy dFdxFine dFdyFine dFdxCoarse dFdyCoarse fwidth fwidthFine fwidthCoarse
+interpolateAtCentroid interpolateAtSample interpolateAtOffset
+
+noise1 noise2 noise3 noise4
+
+EmitStreamVertex EndStreamPrimitive EmitVertex EndPrimitive
+
+barrier memoryBarrier groupMemoryBarrier
+memoryBarrierAtomicCounter memoryBarrierShared memoryBarrierBuffer memoryBarrierImage
+allInvocation allInvocationsEqual
+
+textureSize textureQueryLod textureQueryLevels textureSamples
+texture textureProj textureLod textureOffset texelFetch texelFetchOffset
+textureProjOffset textureLodOffset textureProjLod textureProjLodOffset
+textureGrad textureGradOffset textureProjGrad textureProjGradOffset
+textureGather textureGatherOffset textureGatherOffsets
+
+texture1D texture1DProj texture1DLod texture1DProjLod
+texture2D texture2DProj texture2DLod texture2DProjLod
+texture3D texture3DProj texture3DLod texture3DProjLod
+textureCube textureCubeLod
+shadow1D shadow1DProj shadow1DLod shadow1DProjLod
+shadow2D shadow2DProj shadow2DLod shadow2DProjLod
+
+gl_in gl_out
+gl_VertexID gl_InstanceID
+gl_PerVertex gl_Position gl_PointSize gl_ClipDistance gl_CullDistance
+
+gl_TessLevelOuter gl_TessLevelInner
+gl_PatchVerticesIn gl_PrimitiveID gl_TessCoord
+gl_PrimitiveIDIn gl_InvocationID gl_Layer gl_ViewportIndex
+
+gl_FragColor gl_FragCoord gl_FrontFacing gl_PointCoord gl_FragDepth gl_FragData
+gl_SampleID gl_SamplePosition gl_SampleMaskIn gl_SampleMask
+
+gl_NumWorkGroups gl_WorkGroupSize gl_LocalGroupSize gl_WorkGroupID
+gl_LocalInvocationID gl_GlobalInvocationID gl_LocalInvocationIndex
+
+gl_Color gl_SecondaryColor gl_Normal gl_Vertex gl_FogCoord
+gl_MultiTexCoord0 gl_MultiTexCoord1 gl_MultiTexCoord2 gl_MultiTexCoord3
+gl_MultiTexCoord4 gl_MultiTexCoord5 gl_MultiTexCoord6 gl_MultiTexCoord7
+gl_ClipVertex gl_ClipPlane
+gl_FrontColor gl_BackColor gl_FrontSecondaryColor gl_BackSecondaryColor
+gl_TexCoord gl_FogFragCoord
+
+gl_ModelViewMatrix gl_ModelViewProjectionMatrix gl_ProjectionMatrix gl_TextureMatrix
+gl_ModelViewMatrixInverse gl_ModelViewProjectionMatrixInverse
+gl_ProjectionMatrixInverse gl_TextureMatrixInverse
+gl_ModelViewMatrixTranspose gl_ModelViewProjectionMatrixTranspose
+gl_ProjectionMatrixTranspose gl_TextureMatrixTranspose
+gl_ModelViewMatrixInverseTranspose gl_ModelViewProjectionMatrixInverseTranspose
+gl_ProjectionMatrixInverseTranspose gl_TextureMatrixInverseTranspose
+gl_NormalMatrix gl_NormalScale
+gl_DepthRangeParameters gl_DepthRange
+gl_FogParameters gl_Fog
+gl_LightSourceParameters gl_LightSource gl_LightModelParameters gl_LightModel
+gl_LightModelProducts gl_FrontLightModelProduct gl_BackLightModelProduct
+gl_FrontLightProduct gl_BackLightProduct
+gl_MaterialParameters gl_FrontMaterial gl_BackMaterial
+gl_PointParameters gl_Point gl_TextureEnvColor
+gl_EyePlaneS gl_EyePlaneT gl_EyePlaneR gl_EyePlaneQ
+gl_ObjectPlaneS gl_ObjectPlaneT gl_ObjectPlaneR gl_ObjectPlaneQ
+                        			"/>
+
+						<Documentation index="2" value="
+a addindex addtogroup anchor arg attention
+author b brief bug c class code date def defgroup deprecated dontinclude
+e em endcode endhtmlonly endif endlatexonly endlink endverbatim enum example exception
+f$ f[ f] file fn hideinitializer htmlinclude htmlonly
+if image include ingroup internal invariant interface latexonly li line link
+mainpage name namespace nosubgrouping note overload
+p page par param post pre ref relates remarks return retval
+sa section see showinitializer since skip skipline struct subsection
+test throw todo typedef union until
+var verbatim verbinclude version warning weakgroup $ @ \ &amp; &lt; &gt; # { }
+						"/>
+
+						<Set index="3" value="
+gl_MaxComputeWorkGroupCount gl_MaxComputeWorkGroupSize
+gl_MaxComputeUniformComponents gl_MaxComputeTextureImageUnits gl_MaxComputeImageUniforms 
+gl_MaxComputeAtomicCounters gl_MaxComputeAtomicCounterBuffers
+gl_MaxVertexAttribs gl_MaxVertexUniformComponents
+gl_MaxVaryingFloats gl_MaxVaryingComponents
+gl_MaxVertexOutputComponents gl_MaxGeometryInputComponents gl_MaxGeometryOutputComponents
+gl_MaxFragmentInputComponents gl_MaxFragmentUniformComponents
+gl_MaxVertexTextureImageUnits gl_MaxCombinedTextureImageUnits gl_MaxTextureImageUnits
+gl_MaxImageUnits gl_MaxImageSamples gl_MaxVertexImageUniforms
+gl_MaxTessControlImageUniforms gl_MaxTessEvaluationImageUniforms
+gl_MaxGeometryImageUniforms gl_MaxFragmentImageUniforms gl_MaxCombinedImageUniforms
+gl_MaxDrawBuffers gl_MaxClipDistances gl_MaxLights
+gl_MaxGeometryTextureImageUnits gl_MaxGeometryOutputVertices
+gl_MaxGeometryTotalOutputComponents
+gl_MaxGeometryUniformComponents gl_MaxGeometryVaryingComponents
+gl_MaxTessControlInputComponents gl_MaxTessControlOutputComponents
+gl_MaxTessControlTextureImageUnits gl_MaxTessControlUniformComponents
+gl_MaxTessControlTotalOutputComponents
+gl_MaxTessEvaluationInputComponents gl_MaxTessEvaluationOutputComponents
+gl_MaxTessEvaluationTextureImageUnits gl_MaxTessEvaluationUniformComponents
+gl_MaxTessPatchComponents gl_MaxPatchVertices gl_MaxTessGenLevel gl_MaxViewports
+gl_MaxVertexUniformVectors gl_MaxFragmentUniformVectors gl_MaxVaryingVectors
+gl_MaxVertexAtomicCounters gl_MaxTessControlAtomicCounters gl_MaxTessEvaluationAtomicCounters
+gl_MaxGeometryAtomicCounters gl_MaxFragmentAtomicCounters gl_MaxCombinedAtomicCounters
+gl_MaxAtomicCounterBindings gl_MaxVertexAtomicCounterBuffers
+gl_MaxTessControlAtomicCounterBuffers gl_MaxTessEvaluationAtomicCounterBuffers
+gl_MaxGeometryAtomicCounterBuffers gl_MaxFragmentAtomicCounterBuffers
+gl_MaxCombinedAtomicCounterBuffers gl_MaxAtomicCounterBufferSize
+gl_MinProgramTexelOffset gl_MaxProgramTexelOffset
+gl_MaxTransformFeedbackBuffers gl_MaxTransformFeedbackInterleavedComponents
+gl_MaxCullDistances gl_MaxCombinedClipAndCullDistances gl_MaxClipPlanes gl_MaxSamples
+gl_MaxVertexImageUniforms gl_MaxFragmentImageUniforms gl_MaxComputeImageUniforms
+gl_MaxCombinedImageUniforms gl_MaxCombinedShaderOutputResources
+gl_MaxTextureUnits gl_MaxTextureCoords
+						"/>
+				</Keywords>
+
+				<SampleCode value="lexer_glsl.sample"
+					error_line="27"/>
+                <LanguageAttributes
+                    LineComment="//"
+                    StreamCommentStart="/*"
+                    StreamCommentEnd="*/"
+                    BoxCommentStart="/* "
+                    BoxCommentMid=" * "
+                    BoxCommentEnd=" */"
+                    CaseSensitive="1"
+                    LexerCommentStyles="1,2,3,15,17,18,23,65,66,67,79,81,82,87"
+                    LexerCharacterStyles="7,71"
+                    LexerStringStyles="6,12,70,76"
+                    LexerPreprocessorStyles="9,73"/>
+		</Lexer>
+</CodeBlocks_lexer_properties>

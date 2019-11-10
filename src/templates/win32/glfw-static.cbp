@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+    <FileVersion major="1" minor="2" />
+    <Project>
+        <Option title="GLFW Application" />
+        <Option pch_mode="0" />
+        <Option compiler="0" />
+        <Build>
+            <Target title="default">
+                <Option output="glfw.exe" />
+                <Option type="0" />
+                <Option compiler="0" />
+                <Option includeInTargetAll="1" />
+                <Option projectResourceIncludeDirsRelation="0" />
+            </Target>
+        </Build>
+        <Compiler>
+            <Add directory="$(#glfw.include)" />
+        </Compiler>
+        <Linker>
+            <Add library="glfw" />
+            <Add library="opengl32" />
+            <Add library="glu32" />
+            <Add library="user32" />
+            <Add library="kernel32" />
+            <Add library="gdi32" />
+            <Add directory="$(#glfw.lib)" />
+        </Linker>
+    </Project>
+</CodeBlocks_project_file>

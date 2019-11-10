@@ -1,0 +1,332 @@
+/*
+    cbp2make : Makefile generation tool for the Code::Blocks IDE
+    Copyright (C) 2010-2013 Mirai Computing (mirai.computing@gmail.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/*!
+  \file toolchains.h
+  \brief Toolchain description.
+*/
+
+/*!
+  \file toolchains.cpp
+  \brief Toolchain description.
+*/
+
+/*!
+  \class CToolChain
+  \brief Toolchain description.
+
+  Contains properties of a toolchain (a set of build tools).
+*/
+
+/*!
+  \var CToolChain::m_OS_Type
+  \brief Platform (operating system) to which this toolchain belongs.
+*/
+
+/*!
+  \var CToolChain::m_Alias
+  \brief Name (alias) of the toolchain.
+
+  Alias identifies the toolchain and primarily used for toolchain lookup.
+*/
+
+/*!
+  \var CToolChain::m_C_Compiler
+  \brief Name of C compiler.
+*/
+
+/*!
+  \var CToolChain::m_Cpp_Compiler
+  \brief Name of C++ compiler.
+*/
+
+/*!
+  \var CToolChain::m_F77_Compiler
+  \brief Name of Fortran77 compiler.
+*/
+
+/*!
+  \var CToolChain::m_F9x_Compiler
+  \brief Name of Fortran90/95 compiler.
+*/
+
+/*!
+  \var CToolChain::m_Dynamic_Linker
+  \brief Name of dynamic library linker.
+*/
+
+/*!
+  \var CToolChain::m_Static_Linker
+  \brief Name of static library linker.
+*/
+
+/*!
+  \var CToolChain::m_Ranlib_Tool
+  \brief Name of RANLIB tool for processing static libraries.
+*/
+
+/*!
+  \var CToolChain::m_Windres_Tool
+  \brief Name of WINDRES resource compiler.
+*/
+
+/*!
+  \var CToolChain::m_Make_Tool
+  \brief Name of MAKE build tool.
+*/
+
+/* !
+  \var CToolChain::
+  \brief .
+*/
+
+/*!
+  \fn CToolChain::OS(void)
+  \brief Platform (operating system) to which this toolchain belongs.
+  \return reference to CToolChain::m_OS_Type.
+*/
+
+/*!
+  \fn CToolChain::Alias(void)
+  \brief Name (alias) of the toolchain.
+  \return reference to CToolChain::m_Alias.
+*/
+
+/*!
+  \fn CToolChain::C_Compiler(void)
+  \brief Name of C compiler.
+  \return reference to CToolChain::m_C_Compiler.
+*/
+
+/*!
+  \fn CToolChain::Cpp_Compiler(void)
+  \brief Name of C++ compiler.
+  \return reference to CToolChain::m_Cpp_Compiler.
+*/
+
+/*!
+  \fn CToolChain::F77_Compiler(void)
+  \brief Name of Fortran77 compiler.
+  \return reference to CToolChain::m_F77_Compiler.
+*/
+
+/*!
+  \fn CToolChain::F9x_Compiler(void)
+  \brief Name of Fortran90/95 compiler.
+  \return reference to CToolChain::m_F9x_Compiler.
+*/
+
+/*!
+  \fn CToolChain::Dynamic_Linker(void)
+  \brief Name of dynamic library linker.
+  \return reference to CToolChain::m_Dynamic_Linker.
+*/
+
+/*!
+  \fn CToolChain::Static_Linker(void)
+  \brief Name of static library linker.
+  \return reference to CToolChain::m_Static_Linker.
+*/
+
+/*!
+  \fn CToolChain::Ranlib_Tool(void)
+  \brief Name of RANLIB tool for processing static libraries.
+  \return reference to CToolChain::m_Ranlib_Tool.
+*/
+
+/*!
+  \fn CToolChain::Windres_Tool(void)
+  \brief Name of WINDRES resource compiler.
+  \return reference to CToolChain::m_Windres_Tool.
+*/
+
+/*!
+  \fn CToolChain::Make_Tool(void)
+  \brief Name of MAKE build tool.
+  \return reference to CToolChain::m_Make_Tool.
+*/
+
+/*!
+  \fn CToolChain::Clear(void)
+  \brief Resets the toolchain to the initial state.
+*/
+
+/*!
+  \fn CToolChain::Default(const CPlatform::OS_Type OS)
+  \brief Initializes the toolchain with default properties for platform \a OS.
+  \param OS platform (operating system) identifier.
+*/
+
+/*!
+  \fn CToolChain::Read(const TiXmlElement *ToolChainRoot)
+  \brief Reads the toolchain settings from an XML document.
+  \param ToolChainRoot an element of XML document.
+*/
+
+/*!
+  \fn CToolChain::Write(TiXmlElement *ToolChainRoot)
+  \brief Writes the toolchain settings to an XML document.
+  \param ToolChainRoot an element of XML document.
+*/
+
+/*!
+  \fn CToolChain::Show(void)
+  \brief Prints the toolchain contents to standard output..
+*/
+
+/*!
+  \fn CToolChain::CToolChain(void)
+  \brief Creates toolchain.
+*/
+
+/*!
+  \fn CToolChain::~CToolChain(void)
+  \brief Destroys toolchain.
+*/
+
+/* !
+  \fn CToolChain::
+  \brief .
+*/
+
+/*!
+  \class CToolChainSet
+  \brief Manages a set of toolchains.
+*/
+
+/*!
+  \var CToolChainSet::m_ToolChains
+  \brief List of toolchains.
+
+  Contains pointers to CToolChain objects and owns them
+  (i.e. objects sould be destroyed before the list is cleared).
+*/
+
+/*!
+  \var CToolChainSet::m_Locked
+  \brief Indicates that the set of toolchains cannot be modified.
+
+  This property should be set by CToolChainSet::Lock(void) to prevent accidental
+  modification and unset by CToolChainSet::Unlock(void) to release the lock.
+*/
+
+/* !
+  \var CToolChainSet::
+  \brief .
+*/
+
+/*!
+  \fn CToolChainSet::Lock(void)
+  \brief Locks the set of toolchains to prevent accidental modification.
+*/
+
+/*!
+  \fn CToolChainSet::Unlock(void)
+  \brief Unlocks the set of toolchains to allow modifications.
+*/
+
+/*!
+  \fn CToolChainSet::Clear(void)
+  \brief Resets the set of toolchains to the initial state.
+*/
+
+/*!
+  \fn CToolChainSet::GetCount(void) const
+  \brief Returns the number of toolchains in the set.
+  \return number of toolchains in the set.
+*/
+
+/*!
+  \fn CToolChainSet::ToolChain(const CPlatform::OS_Type OS, const size_t Index) const
+  \brief Returns toolchain with number \a Index for \a OS platform.
+  \param Index toolchain number.
+  \param OS platform type.
+  \return pointer to CToolChain.
+
+  Returns \a NULL if a toolchain with number \a Index does not exist.
+*/
+
+/*!
+  \fn CToolChainSet::Find(const CString& Alias, const CPlatform::OS_Type OS)
+  \brief Searches toolchain with alias \a Alias for platform \a OS.
+  \param Alias toolchain name (alias).
+  \param OS platform (operating system) identifier.
+  \return pointer to CToolChain.
+
+  Returns \a NULL if no toolchain is found.
+*/
+
+/*!
+  \fn CToolChainSet::AddDefault(void)
+  \brief Initializes the default set of GNU toolchains for all known platforms.
+*/
+
+/*!
+  \fn CToolChainSet::Add(const CString& Alias, const CPlatform::OS_Type OS)
+  \brief Creates new toolchain with alias \a Alias for platform \a OS.
+  \param Alias toolchain name (alias).
+  \param OS platform (operating system) identifier.
+  \return pointer to CToolChain.
+
+  If the desired toolchain already exists, new toolchain is not created.
+*/
+
+/*!
+  \fn CToolChainSet::Remove(const CString& Alias, const CPlatform::OS_Type OS)
+  \brief Destroys a toolchain with alias \a Alias for platform \a OS.
+  \param Alias toolchain name (alias).
+  \param OS platform (operating system) identifier.
+  \return .
+*/
+
+/*!
+  \fn CToolChainSet::Read(const TiXmlElement *ConfigRoot)
+  \brief Reads the set of toolchains from an XML document.
+  \param ConfigRoot an element of XML document.
+*/
+
+/*!
+  \fn CToolChainSet::Write(TiXmlElement *ConfigRoot)
+  \brief Writes the set of toolchains to an XML document.
+  \param ConfigRoot an element of XML document.
+*/
+
+/*!
+  \fn CToolChainSet::Show(void)
+  \brief Prints contents of all toolchains to standard output.
+*/
+
+/*!
+  \fn CToolChainSet::CToolChain(const CPlatform::OS_Type OS, const CString& Alias)
+  \brief Creates set of toolchains.
+  \param OS platform (operating system) to which this toolchain belongs.
+  \param Alias name (alias) of the toolchain.
+*/
+
+/*!
+  \fn CToolChainSet::~CToolChainSet(void)
+  \brief Destroys set of toolchains.
+*/
+
+/* !
+  \fn CToolChainSet::
+  \brief .
+  \return .
+*/
+
+//------------------------------------------------------------------------------

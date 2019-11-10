@@ -1,0 +1,10 @@
+<CodeBlocks_template_file>
+	<Template name="sdl2app" title="SDL2 Application" category="2D/3D Graphics" bitmap="sdl2.png">
+		<FileSet name="c++" title="Default">
+			<File source="sdl2-main.cpp" destination="main.cpp"/>
+		</FileSet>
+		<Option name="SDL2 Application">
+			<Project file="sdl2app.cbp"/>
+		</Option>
+	</Template>
+</CodeBlocks_template_file>

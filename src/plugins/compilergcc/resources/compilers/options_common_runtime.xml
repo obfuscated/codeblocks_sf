@@ -1,0 +1,19 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <Category name="Runtime"
+              exclusive="true">
+        <Option name="Single-threaded Runtime Library"
+                option="/ML"/>
+        <Option name="Single-threaded Debug Runtime Library"
+                option="/MLd"/>
+        <Option name="Multi-threaded Runtime Library"
+                option="/MT"/>
+        <Option name="Multi-threaded Debug Runtime Library"
+                option="/MTd"/>
+        <Option name="Multi-threaded DLL Runtime Library"
+                option="/MD"/>
+        <Option name="Multi-threaded DLL Debug Runtime Library"
+                option="/MDd"/>
+    </Category>
+</CodeBlocks_compiler_options>

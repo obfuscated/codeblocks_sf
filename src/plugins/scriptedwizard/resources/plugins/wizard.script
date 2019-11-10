@@ -1,0 +1,564 @@
+// table to hold all settings for this wizard
+PluginSettings <- {
+    Type = 0 // cbToolPlugin
+
+    Name = _T("")
+    Title = _T("")
+    Version = _T("")
+    Description = _T("")
+    Author = _T("")
+    Email = _T("")
+    Website = _T("")
+    ThanksTo = _T("")
+
+    HasConfig = false
+    HasMenu = false
+    HasModuleMenu = false
+    HasToolbar = false
+}
+WxVersion <- 0; //0 - wx 2.8, 1 -  wx 3.0, 2 -  wx 3.1
+
+// -----------------------------------------------------------------------------
+// init wizard
+function BeginWizard()
+{
+    local wiz_type = Wizard.GetWizardType();
+
+    local intro_msg = _T("Welcome to the new Code::Blocks plugin wizard!\n" +
+                         "This wizard will guide you to create a new Code::Blocks plugin.\n\n");
+    if (PLATFORM == PLATFORM_MSW)
+    {
+        intro_msg += _T("\nVERY IMPORTANT NOTE:\n\n" +
+                        "Code::Blocks is built with the GNU GCC compiler and links to\n" +
+                        "the monolithic unicode wxWidgets DLL.\n" +
+                        "This means that you must have exactly this setup to be able to\n" +
+                        "build the generated plugin.\n" +
+                        "You must also have defined two global variables:\n" +
+                        "   1. $(#cb) pointing to Code::Blocks base dir (where CodeBlocks.cbp is)\n" +
+                        "   2. $(#wx) pointing to wxWidgets base directory\n\n\n");
+    }
+    intro_msg += _T("When you 're ready to proceed, please click \"Next\"...");
+
+    Wizard.AddInfoPage(_T("PluginIntro"), intro_msg);
+    Wizard.AddProjectPathPage();
+    Wizard.AddPage(_T("PluginOptions"));
+    Wizard.AddPage(_T("PluginInfo"));
+    local options = _T("wxWidgets 2.8.x;wxWidgets 3.0.x;wxWidgets 3.1.x");
+    if (PLATFORM != PLATFORM_MSW)
+        options += _T(";system default");
+
+    // Select wxwidgets version.
+    local wxVersionMsg = _T("Please select the wxWidgets version you want to use for the default configuration.");
+    Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"), wxVersionMsg, options, WxVersion);
+    Wizard.AddCompilerPage(_T(""), _T("gcc*"), true, false);
+}
+
+// -----------------------------------------------------------------------------
+// entering plugin options page
+function OnEnter_PluginOptions(fwd)
+{
+    // update options state
+    OnClick_cmbPluginType();
+}
+
+// -----------------------------------------------------------------------------
+// enable/disable available options based on selected plugin type
+function OnClick_cmbPluginType()
+{
+    PluginSettings.Type = Wizard.GetComboboxSelection(_T("cmbPluginType"));
+
+    local isTool = PluginSettings.Type == 1;
+    local isMime = PluginSettings.Type == 2;
+    local isWizard = PluginSettings.Type == 3;
+    Wizard.EnableWindow(_T("chkHasConfig"), !isWizard);
+    Wizard.EnableWindow(_T("chkHasMenu"), !isTool && !isMime && !isWizard);
+    Wizard.EnableWindow(_T("chkHasModuleMenu"), !isTool && !isMime && !isWizard);
+    Wizard.EnableWindow(_T("chkHasToolbar"), !isTool && !isMime && !isWizard);
+}
+
+// -----------------------------------------------------------------------------
+// leaving plugin options page, validate entered values
+function OnLeave_PluginOptions(fwd)
+{
+    if (fwd)
+    {
+        // read text values entered
+        PluginSettings.Name = Wizard.GetTextControlValue(_T("txtPluginName"));
+        PluginSettings.Type = Wizard.GetComboboxSelection(_T("cmbPluginType"));
+        PluginSettings.HasConfig = Wizard.IsCheckboxChecked(_T("chkHasConfig"));
+        PluginSettings.HasMenu = Wizard.IsCheckboxChecked(_T("chkHasMenu"));
+        PluginSettings.HasModuleMenu = Wizard.IsCheckboxChecked(_T("chkHasModuleMenu"));
+        PluginSettings.HasToolbar = Wizard.IsCheckboxChecked(_T("chkHasToolbar"));
+
+        // check that essentials were filled in
+        if (PluginSettings.Name.IsEmpty())
+        {
+            ShowWarning(_T("You have to enter the plugin's name before you can proceed..."));
+            return false;
+        }
+    }
+    return true;
+}
+
+// -----------------------------------------------------------------------------
+// entering plugin info page, set some default values
+function OnEnter_PluginInfo(fwd)
+{
+    if (fwd)
+    {
+        // set the title same as the project title
+        if (Wizard.GetTextControlValue(_T("txtTitle")).IsEmpty())
+            Wizard.SetTextControlValue(_T("txtTitle"), Wizard.GetProjectTitle());
+        if (Wizard.GetTextControlValue(_T("txtVersion")).IsEmpty())
+            Wizard.SetTextControlValue(_T("txtVersion"), _T("0.1"));
+
+        // load config
+        Wizard.SetTextControlValue(_T("txtAuthor"), GetConfigManager().Read(_T("/cb_plugin_wizard/author"), _T("")));
+        Wizard.SetTextControlValue(_T("txtEmail"), GetConfigManager().Read(_T("/cb_plugin_wizard/email"), _T("")));
+        Wizard.SetTextControlValue(_T("txtWebsite"), GetConfigManager().Read(_T("/cb_plugin_wizard/website"), _T("")));
+    }
+}
+
+// -----------------------------------------------------------------------------
+// leaving plugin info page, validate entered values
+function OnLeave_PluginInfo(fwd)
+{
+    if (fwd)
+    {
+        // read text values entered
+        PluginSettings.Title = Wizard.GetTextControlValue(_T("txtTitle"));
+        PluginSettings.Version = Wizard.GetTextControlValue(_T("txtVersion"));
+        PluginSettings.Description = Wizard.GetTextControlValue(_T("txtDescription"));
+        PluginSettings.Author = Wizard.GetTextControlValue(_T("txtAuthor"));
+        PluginSettings.Email = Wizard.GetTextControlValue(_T("txtEmail"));
+        PluginSettings.Website = Wizard.GetTextControlValue(_T("txtWebsite"));
+        PluginSettings.ThanksTo = Wizard.GetTextControlValue(_T("txtThanksTo"));
+
+        // check that essentials were filled in
+        if (PluginSettings.Name.IsEmpty() ||
+            PluginSettings.Version.IsEmpty())
+        {
+            ShowWarning(_T("You have to fill the Title and Version fields before you can proceed..."));
+            return false;
+        }
+        PluginSettings.Name = GetFixedProjectName(PluginSettings.Name);
+    }
+
+    // save config
+    GetConfigManager().Write(_T("/cb_plugin_wizard/author"), PluginSettings.Author);
+    GetConfigManager().Write(_T("/cb_plugin_wizard/email"), PluginSettings.Email);
+    GetConfigManager().Write(_T("/cb_plugin_wizard/website"), PluginSettings.Website);
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// wxWidgets' version page
+////////////////////////////////////////////////////////////////////////////////
+
+function OnEnter_wxVersionPage(fwd)
+{
+    if (fwd)
+    {
+        WxVersion = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+    }
+    return true;
+}
+
+function OnLeave_wxVersionPage(fwd)
+{
+    if (fwd)
+    {
+        WxVersion = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+    }
+    return true;
+}
+
+// -----------------------------------------------------------------------------
+// each time, return a string of the form "filename.ext;contents"
+// you can change the return string based on <file_index>
+// return an empty string to denote that no more files are to be generated
+function GetGeneratedFile(file_index)
+{
+    switch (file_index)
+    {
+        // header file
+        case 0: return PluginSettings.Name + DOT_EXT_H + _T(";") + GenerateHeader();
+        // source file
+        case 1: return PluginSettings.Name + DOT_EXT_CPP + _T(";") + GenerateSource();
+        // manifest
+        case 2: return _T("manifest") + DOT_EXT_XML + _T(";") + GenerateManifest();
+    }
+    return _T(""); // no more generated files
+}
+
+// Return the path to the devel folder based on the wx version we are targeting
+function GetBaseDevelPath(version)
+{
+    if (PLATFORM == PLATFORM_MSW)
+    {
+        if (version == 0)
+            return _T("$(#cb)\\devel");
+        else if (version == 1 || version == 2)
+            return _T("$(#cb)\\devel30");
+    }
+    else
+    {
+        if (version == 0)
+            return _T("$(#cb)/devel");
+        else if (version == 1 || version == 2 || version == 3)
+            return _T("$(#cb)/devel30");
+    };
+}
+
+// -----------------------------------------------------------------------------
+// Setup the project options.
+// We create three targets:
+// * make_cbplugin:
+//   This target creates a .cbplugin archive that can be distributed and installed in codeblocks via the plugin
+//   manager. Uses the selected wx version.
+// * to_codeblocks_wx28 and to_codeblocks_wx30:
+//   These targets copy the binary output and the resources directly to the "devel" and "devel30" sub folder of your
+//   codeblocks development folder provided by the $(#cb) global variable. This allows to debug the plugin easily.
+//   If the debugging process is started, codeblocks starts gdb with "$(#cb)/devel/codeblocks" as host application
+//   with the "debug" personality to create some kind of isolation from the working environment.
+function SetupProject(project)
+{
+    SetupProjectBuildOptions(project);
+
+    // Create the "default" target
+    local target = project.GetBuildTarget(_T("default"));
+    if (IsNull(target))
+        target = project.AddBuildTarget(_T("default"));
+
+    SetupTarget(target, true, WxVersion);
+
+    // Create plugin distribution file.
+    target.AddCommandsAfterBuild(_T("zip -j9 ") + PluginSettings.Name + _T(".cbplugin ") +
+                                target.GetOutputFilename() + _T(" ") +
+                                PluginSettings.Name + _T(".zip"));
+
+    // Create the "to_codeblocks_wx28" target
+    local target28 = project.GetBuildTarget(_T("to_codeblocks_wx28"));
+    if (IsNull(target28))
+        target28 = project.AddBuildTarget(_T("to_codeblocks_wx28"));
+    SetupTarget(target28, false, 0);
+
+    // Create the "to_codeblocks_wx30" target
+    local target30 = project.GetBuildTarget(_T("to_codeblocks_wx30"));
+    if (IsNull(target30))
+        target30 = project.AddBuildTarget(_T("to_codeblocks_wx30"));
+    SetupTarget(target30, false, 1);
+
+    // Add files to the wx28 and wx30 targets, they are not added for some reason.
+    for (local i = 0; i < project.GetFilesCount(); i++)
+        project.GetFile(i).AddBuildTarget(target28.GetTitle());
+    for (local i = 0; i < project.GetFilesCount(); i++)
+        project.GetFile(i).AddBuildTarget(target30.GetTitle());
+
+    // Merge all targets in a single virtual target, so the user can rebuild everything at once.
+    local virtualTargets = wxArrayString();
+    virtualTargets.Add(target.GetTitle(), 1);
+    virtualTargets.Add(target28.GetTitle(), 1);
+    virtualTargets.Add(target30.GetTitle(), 1);
+    project.DefineVirtualBuildTarget(_T("All"), virtualTargets);
+
+    return true;
+}
+
+function SetupProjectBuildOptions(project)
+{
+   if (PLATFORM == PLATFORM_MSW)
+    {
+        project.AddCompilerOption(_T("-DBUILDING_PLUGIN"));
+        project.AddCompilerOption(_T("-DHAVE_W32API_H"));
+        project.AddCompilerOption(_T("-D__WXMSW__"));
+        project.AddCompilerOption(_T("-DWXUSINGDLL"));
+        project.AddCompilerOption(_T("-DcbDEBUG"));
+        project.AddCompilerOption(_T("-DCB_PRECOMP"));
+        project.AddCompilerOption(_T("-DWX_PRECOMP"));
+        project.AddCompilerOption(_T("-DwxUSE_UNICODE"));
+        project.AddCompilerOption(_T("-pipe"));
+        project.AddCompilerOption(_T("-mthreads"));
+        project.AddCompilerOption(_T("-fmessage-length=0"));
+        project.AddCompilerOption(_T("-fexceptions"));
+        project.AddCompilerOption(_T("-Winvalid-pch"));
+        project.AddCompilerOption(_T("-std=gnu++11"));
+
+        project.AddLinkerOption(_T("-mthreads"));
+
+        project.AddIncludeDir(_T("$(#cb)\\include"));
+        project.AddIncludeDir(_T("$(#cb)\\sdk\\wxscintilla\\include"));
+        project.AddIncludeDir(_T("$(#cb)\\include\\tinyxml"));
+
+    }
+    else
+    {
+        project.AddCompilerOption(_T("-std=c++11"));
+        project.AddCompilerOption(_T("-fPIC"));
+        project.AddLinkerOption(_T("-Wl,--no-undefined"));
+    }
+}
+
+// Setup all target common parameters for the targets
+function SetupTarget(target, isSystemWide, targetWxVersion)
+{
+    if (IsNull(target))
+        return false;
+
+    target.SetTargetType(ttDynamicLib);
+    target.SetOutputFilename(PluginSettings.Name);
+    target.SetCreateDefFile(false);
+    target.SetCreateStaticLib(false);
+    target.SetObjectOutput(_T(".objs/") + target.GetTitle());
+
+    if (PLATFORM == PLATFORM_MSW)
+    {
+        target.SetHostApplication(GetBaseDevelPath(targetWxVersion) + _T("\\codeblocks") + DOT_EXT_EXECUTABLE);
+
+        if (targetWxVersion == 0)
+        {
+            target.AddIncludeDir(_T("$(#wx.include)"));
+            target.AddIncludeDir(_T("$(#wx.lib)\\gcc_dll\\mswu"));
+
+            target.AddLinkLib(_T("wxmsw28u"));
+            target.AddLibDir(_T("$(#wx.lib)\\gcc_dll"));
+        }
+        else if (targetWxVersion == 1)
+        {
+            target.AddIncludeDir(_T("$(#wx30.include)"));
+            target.AddIncludeDir(_T("$(#wx30.lib)\\gcc_dll\\mswu"));
+
+            target.AddLinkLib(_T("wxmsw30u"));
+            target.AddLibDir(_T("$(#wx30.lib)\\gcc_dll"));
+        }
+        else if (targetWxVersion == 2)
+        {
+            target.AddIncludeDir(_T("$(#wx31.include)"));
+            target.AddIncludeDir(_T("$(#wx31.lib)\\gcc_dll\\mswu"));
+
+            target.AddLinkLib(_T("wxmsw31u"));
+            target.AddLibDir(_T("$(#wx31.lib)\\gcc_dll"));
+        }
+
+        target.AddLibDir(GetBaseDevelPath(targetWxVersion));
+        target.AddLinkLib(_T("codeblocks"));
+    }
+    else
+    {
+        if (isSystemWide)
+        {
+            target.AddCompilerOption(_T("`pkg-config --cflags codeblocks`"));
+            target.AddLinkerOption(_T("`pkg-config --libs codeblocks`"));
+        }
+        else
+        {
+            local develPath = GetBaseDevelPath(targetWxVersion);
+            target.SetHostApplication(develPath + _T("/codeblocks") + DOT_EXT_EXECUTABLE);
+            target.AddLibDir(develPath);
+            target.SetWorkingDir(develPath);
+
+            target.AddLinkLib(_T("codeblocks"));
+            target.AddIncludeDir(_T("$(#cb)/include"));
+            target.AddIncludeDir(_T("$(#cb)/sdk/wxscintilla/include"));
+            target.AddIncludeDir(_T("$(#cb)/include/tinyxml"));
+        }
+
+        local WxVersionFlag;
+        if (targetWxVersion == 0)
+            WxVersionFlag = _T(" --version=2.8");
+        else if (targetWxVersion == 1)
+            WxVersionFlag = _T(" --version=3.0");
+        else if (targetWxVersion == 2)
+            WxVersionFlag = _T(" --version=3.1");
+        else if (targetWxVersion == 3)
+            WxVersionFlag = _T("");
+        target.AddCompilerOption(_T("`wx-config --cflags ") + WxVersionFlag + _T("`"));
+        target.AddLinkerOption(_T("`wx-config --libs ") + WxVersionFlag + _T("`"));
+    }
+
+    local zipFilePath;
+    if (isSystemWide)
+        zipFilePath = PluginSettings.Name + _T(".zip");
+    else
+    {
+        // "to_codeblocks" has to copy multiple files to the $(#cb)\devel folder. This is a platform specific process
+        local basePath = GetBaseDevelPath(targetWxVersion) + _T("/share/codeblocks/");
+        zipFilePath = basePath + PluginSettings.Name + _T(".zip");
+
+        target.SetOutputFilename(basePath + _T("plugins/") + PluginSettings.Name);
+
+        local executionParameters = _T("--debug-log --multiple-instance --no-splash-screen --verbose -p debug");
+        if (PLATFORM == PLATFORM_MSW)
+            executionParameters += _T(" --no-dde --no-check-associations ");
+        else
+            executionParameters += _T(" --no-ipc ");
+
+        target.SetExecutionParameters(executionParameters);
+    }
+
+    target.AddCommandsAfterBuild(_T("zip -j9 ") + zipFilePath + _T(" manifest") + DOT_EXT_XML);
+    target.SetAlwaysRunPostBuildSteps (true)
+    DebugSymbolsOn(target, Wizard.GetCompilerID());
+
+    return true;
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// locally defined functions below
+//
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+// -----------------------------------------------------------------------------
+// return the header contents string
+function GenerateHeader()
+{
+    local path = Wizard.FindTemplateFile(GetTemplateFile(DOT_EXT_H));
+    local buffer = IO.ReadFileContents(path);
+
+    // create header guard word
+    local guard = PluginSettings.Name + DOT_EXT_H + _T("_INCLUDED");
+    guard.MakeUpper();
+    guard.Replace(_T(" "), _T("_"));
+    guard.Replace(_T("."), _T("_"));
+    buffer.Replace(_T("[GUARD_WORD]"), guard);
+
+    return SubstituteMacros(buffer);
+}
+
+// -----------------------------------------------------------------------------
+// return the implementation contents string
+function GenerateSource()
+{
+    local path = Wizard.FindTemplateFile(GetTemplateFile(DOT_EXT_CPP));
+    local buffer = IO.ReadFileContents(path);
+
+    return SubstituteMacros(buffer);
+}
+
+// -----------------------------------------------------------------------------
+// return the manifest contents string
+function GenerateManifest()
+{
+    local path = Wizard.FindTemplateFile(_T("plugins/templates/manifest_template.xml"));
+    local buffer = IO.ReadFileContents(path);
+
+    return SubstituteMacros(buffer);
+}
+
+// -----------------------------------------------------------------------------
+// return the template's filename, appending <dot_ext> as an extension (must include the dot)
+function GetTemplateFile(dot_ext)
+{
+    local template_file = _T("");
+    switch (PluginSettings.Type)
+    {
+        // generic plugin
+        case 0: template_file = _T("plugins/templates/generic_template") + dot_ext; break;
+        // tool plugin
+        case 1: template_file = _T("plugins/templates/tool_template") + dot_ext; break;
+        // mime plugin
+        case 2: template_file = _T("plugins/templates/mime_template") + dot_ext; break;
+        // wizard plugin
+        case 3: template_file = _T("plugins/templates/wizard_template") + dot_ext; break;
+
+        default: break; // error
+    }
+    return template_file;
+}
+
+// -----------------------------------------------------------------------------
+// substitute all plugin macros in <buffer>
+function SubstituteMacros(buffer)
+{
+    // handle [IF] / [ENDIF] pairs
+    buffer = HandleDirective(buffer, _T("HAS_CONFIGURE"), PluginSettings.HasConfig);
+    buffer = HandleDirective(buffer, _T("HAS_MENU"), PluginSettings.HasMenu);
+    buffer = HandleDirective(buffer, _T("HAS_MODULE_MENU"), PluginSettings.HasModuleMenu);
+    buffer = HandleDirective(buffer, _T("HAS_TOOLBAR"), PluginSettings.HasToolbar);
+    buffer = HandleDirective(buffer, _T("NEED_EVENTS"), PluginSettings.HasMenu ||
+                                                        PluginSettings.HasModuleMenu ||
+                                                        PluginSettings.HasToolbar);
+
+    // macros substitution
+    buffer.Replace(_T("[PLUGIN_SDK_VERSION_MAJOR]"), _T("") + PLUGIN_SDK_VERSION_MAJOR);
+    buffer.Replace(_T("[PLUGIN_SDK_VERSION_MINOR]"), _T("") + PLUGIN_SDK_VERSION_MINOR);
+    buffer.Replace(_T("[PLUGIN_SDK_VERSION_RELEASE]"), _T("") + PLUGIN_SDK_VERSION_RELEASE);
+    buffer.Replace(_T("[PLUGIN_NAME]"), PluginSettings.Name);
+    buffer.Replace(_T("[PLUGIN_TITLE]"), PluginSettings.Title);
+    buffer.Replace(_T("[PLUGIN_VERSION]"), PluginSettings.Version);
+    buffer.Replace(_T("[PLUGIN_DESCRIPTION]"), PluginSettings.Description);
+    buffer.Replace(_T("[PROJECT_NAME]"), Wizard.GetProjectName());
+    buffer.Replace(_T("[AUTHOR_NAME]"), PluginSettings.Author);
+    buffer.Replace(_T("[AUTHOR_EMAIL]"), PluginSettings.Email);
+    buffer.Replace(_T("[AUTHOR_WWW]"), PluginSettings.Website);
+    buffer.Replace(_T("[THANKS_TO]"), PluginSettings.ThanksTo);
+    buffer.Replace(_T("[HEADER_FILENAME]"), PluginSettings.Name + DOT_EXT_H);
+    buffer.Replace(_T("[NOW]"), ReplaceMacros(_T("$(TODAY)"), false));
+
+    return buffer;
+}
+
+// -----------------------------------------------------------------------------
+// if <enabled> is true, removes the [IF <directive>] and [ENDIF <directive>]
+// macros.
+// if <enabled> is false, removes everything enclosed by the [IF <directive>]
+// and [ENDIF <directive>] macros (including them).
+function HandleDirective(buffer, directive, enabled)
+{
+    local dir_if = _T("[IF ") + directive + _T("]");
+    local dir_endif = _T("[ENDIF ") + directive + _T("]");
+
+    local findStart = buffer.Find(dir_if);
+    if (findStart == -1)
+        return buffer;
+
+    local findEnd = buffer.Find(dir_endif);
+    if (findEnd == -1 || findEnd <= findStart)
+        return buffer;
+
+    // look for [ELSE]
+    local block = buffer.Mid(findStart, findEnd - findStart);
+    local findElse = block.Find(_T("[ELSE]")); // findElse is in "local scope", i.e. offset from findStart
+
+    if (!enabled)
+    {
+        if (findElse == -1)
+        {
+            // remove whole section
+            buffer.Remove(findStart, (findEnd - findStart) + dir_endif.Length());
+        }
+        else
+        {
+            // remove [ENDIF]
+            buffer.Remove(findEnd, dir_endif.Length());
+            // remove from [IF] to [ELSE] (including)
+            buffer.Remove(findStart, findElse + 6); // 6 is the [ELSE] size
+        }
+    }
+    else
+    {
+        if (findElse == -1)
+        {
+            // just remove the directives
+            // we must remove the [ENDIF] first because if we removed the [IF] it would
+            // render the findEnd index invalid!
+            buffer.Remove(findEnd, dir_endif.Length());
+            buffer.Remove(findStart, dir_if.Length());
+        }
+        else
+        {
+            // remove from [ELSE] to [ENDIF]
+            local start = findStart + findElse;
+            buffer.Remove(start, (findEnd - start) + dir_endif.Length());
+            // remove from [IF]
+            buffer.Remove(findStart, dir_if.Length());
+        }
+    }
+
+    return buffer;
+}

@@ -1,0 +1,99 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <if platform="windows">
+        <Program name="C"         value="zpu-elf-gcc.exe"/>
+        <Program name="CPP"       value="zpu-elf-g++.exe"/>
+        <Program name="LD"        value="zpu-elf-g++.exe"/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="zpu-elf-ar.exe"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make.exe"/>
+    </if>
+    <else>
+        <Program name="C"         value="zpu-elf-gcc"/>
+        <Program name="CPP"       value="zpu-elf-g++"/>
+        <Program name="LD"        value="zpu-elf-g++"/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="zpu-elf-ar"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make"/>
+    </else>
+
+    <Switch name="includeDirs"             value="-I"/>
+    <Switch name="libDirs"                 value="-L"/>
+    <Switch name="linkLibs"                value="-l"/>
+    <Switch name="defines"                 value="-D"/>
+    <Switch name="genericSwitch"           value="-"/>
+    <Switch name="objectExtension"         value="o"/>
+    <Switch name="needDependencies"        value="true"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value="lib"/>
+    <Switch name="libExtension"            value="a"/>
+    <Switch name="linkerNeedsLibPrefix"    value="false"/>
+    <Switch name="linkerNeedsLibExtension" value="false"/>
+
+    <Option name="Produce debugging symbols"
+            option="-g"
+            category="Debugging"
+            checkAgainst="-O -O1 -O2 -O3 -Os"
+            checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."
+            supersedes="-s"/>
+    <if platform="windows">
+        <Option name="Profile code when executed"
+                option="-pg"
+                category="Profiling"
+                additionalLibs="-pg -lgmon"
+                supersedes="-s"/>
+    </if>
+    <else>
+        <Option name="Profile code when executed"
+                option="-pg"
+                category="Profiling"
+                additionalLibs="-pg"
+                supersedes="-s"/>
+    </else>
+
+    <Common name="warnings"/>
+
+    <Common name="optimization"/>
+    <Option name="Don't keep the frame pointer in a register for functions that don't need one"
+            option="-fomit-frame-pointer"
+            category="Optimization"
+            checkAgainst="-g -ggdb"
+            checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."/>
+
+    <Category name="ZPU CPU architecture specific">
+        <Option name="ZPU phi memory layout"
+                option="-phi"/>
+        <Option name="ZPU zeta memory layout"
+                option="-zeta"/>
+        <Option name="ZPU abel memory layout"
+                option="-abel"/>
+    </Category>
+
+    <Command name="CompileObject"
+             value="$compiler $options $includes -c $file -o $object"/>
+    <Command name="GenDependencies"
+             value="$compiler -MM $options -MF $dep_object -MT $object $includes $file"/>
+    <Command name="LinkConsoleExe"
+             value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+    <if platform="windows">
+        <Command name="LinkExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs -mwindows"/>
+    </if>
+    <else>
+        <Command name="LinkExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+        <Command name="LinkDynamic"
+                 value="$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+    </else>
+
+    <Common name="cmds"/>
+
+    <Common name="re"/>
+
+    <Common name="sort"/>
+</CodeBlocks_compiler_options>

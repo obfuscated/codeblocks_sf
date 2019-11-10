@@ -1,0 +1,81 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Code::Blocks new project wizard script
+//
+// Project: Fortran Application
+// Author:  Wang Qiyu
+//
+//
+////////////////////////////////////////////////////////////////////////////////
+
+function BeginWizard()
+{
+    local intro_msg = _T("Welcome to the new Fortran project wizard!\n" +
+                        "This wizard will guide you to create a new Fortran project.\n\n" +
+                        "When you 're ready to proceed, please click \"Next\"...");
+
+    // intro
+    Wizard.AddInfoPage(_T("EmptyProjectIntro"), intro_msg);
+    // select project name and path
+    Wizard.AddProjectPathPage();
+    // select compiler and configurations
+    // args:
+    //  1) string: which compiler ID will be pre-selected (empty means default)
+    //  2) string: semi-colon separated list of allowed compiler ids. Use _T("*") for all. * and ? wildcards allowed.
+    //  3) boolean: if false, the compiler selection will be disabled
+    //  4) boolean: if false, the config targets will be disabled
+    Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+}
+
+// return the files this project contains
+function GetFilesDir()
+{
+    local result = _T("fortran/lib/files");
+    return result;
+}
+
+function SetupProject(project)
+{
+    // Debug build target
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+    {
+        WarningsOn(target, Wizard.GetCompilerID());
+        SetupTarget(target, true);
+    }
+
+    // Release build target
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+    {
+        WarningsOn(target, Wizard.GetCompilerID());
+        SetupTarget(target, false);
+    }
+
+    return true;
+}
+
+function SetupTarget(target, is_debug)
+{
+    if (IsNull(target))
+        return false;
+
+    target.SetTargetType(ttStaticLib);
+
+    if (is_debug)
+    {
+        // enable debugging symbols for this target
+        // DebugSymbolsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + target.SuggestOutputFilename());
+    }
+    else
+    {
+        // enable optimizations for this target
+        // OptimizationsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
+        OptimizationsOn(target, Wizard.GetCompilerID());
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + target.SuggestOutputFilename());
+    }
+
+    return true;
+}

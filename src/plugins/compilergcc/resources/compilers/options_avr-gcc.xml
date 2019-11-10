@@ -1,0 +1,302 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <if platform="windows">
+        <Program name="C"         value="avr-gcc.exe"/>
+        <Program name="CPP"       value="avr-g++.exe"/>
+        <Program name="LD"        value="avr-g++.exe"/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="avr-ar.exe"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make.exe"/>
+    </if>
+    <else>
+        <Program name="C"         value="avr-gcc"/>
+        <Program name="CPP"       value="avr-g++"/>
+        <Program name="LD"        value="avr-g++"/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="avr-ar"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make"/>
+    </else>
+
+    <Switch name="includeDirs"             value="-I"/>
+    <Switch name="libDirs"                 value="-L"/>
+    <Switch name="linkLibs"                value="-l"/>
+    <Switch name="defines"                 value="-D"/>
+    <Switch name="genericSwitch"           value="-"/>
+    <Switch name="objectExtension"         value="o"/>
+    <Switch name="needDependencies"        value="true"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value="lib"/>
+    <Switch name="libExtension"            value="a"/>
+    <Switch name="linkerNeedsLibPrefix"    value="false"/>
+    <Switch name="linkerNeedsLibExtension" value="false"/>
+
+    <Option name="Produce debugging symbols"
+            option="-g"
+            category="Debugging"
+            checkAgainst="-O -O1 -O2 -O3 -Os"
+            checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."
+            supersedes="-s"/>
+    <if platform="windows">
+        <Option name="Profile code when executed"
+                option="-pg"
+                category="Profiling"
+                additionalLibs="-pg -lgmon"
+                supersedes="-s"/>
+    </if>
+    <else>
+        <Option name="Profile code when executed"
+                option="-pg"
+                category="Profiling"
+                additionalLibs="-pg"
+                supersedes="-s"/>
+    </else>
+
+    <Common name="warnings"/>
+
+    <Common name="optimization"/>
+    <Option name="Don't keep the frame pointer in a register for functions that don't need one"
+            option="-fomit-frame-pointer"
+            category="Optimization"
+            checkAgainst="-g -ggdb"
+            checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."/>
+
+    <Category name="AVR CPU architecture derivatives"
+              exclusive="true">
+        <Option name="AVR 1 architecture (only assembler)"
+                option="-mmcu=avr1"/>
+        <Option name="AT90S1200 (only assembler)"
+                option="-mmcu=at90s1200"/>
+        <Option name="ATtiny11 (only assembler)"
+                option="-mmcu=attiny11"/>
+        <Option name="ATtiny12 (only assembler)"
+                option="-mmcu=attiny12"/>
+        <Option name="ATtiny15 (only assembler)"
+                option="-mmcu=attiny15"/>
+        <Option name="ATtiny28 (only assembler)"
+                option="-mmcu=attiny28"/>
+        <Option name="AVR 2 archtecture"
+                option="-mmcu=avr2"/>
+        <Option name="AT90S2313"
+                option="-mmcu=at90s2313"/>
+        <Option name="AT90S2323"
+                option="-mmcu=at90s2323"/>
+        <Option name="AT90S2333"
+                option="-mmcu=at90s2333"/>
+        <Option name="AT90S2343"
+                option="-mmcu=at90s2343"/>
+        <Option name="ATtiny22"
+                option="-mmcu=attiny22"/>
+        <Option name="ATtiny26"
+                option="-mmcu=attiny26"/>
+        <Option name="AT90S4414"
+                option="-mmcu=at90s4414"/>
+        <Option name="AT90S4433"
+                option="-mmcu=at90s4433"/>
+        <Option name="AT90S4434"
+                option="-mmcu=at90s4434"/>
+        <Option name="AT90S8515"
+                option="-mmcu=at90s8515"/>
+        <Option name="AT90C8534"
+                option="-mmcu=at90c8534"/>
+        <Option name="AT90s8535"
+                option="-mmcu=at90s8535"/>
+        <Option name="AVR 2.5 architecture"
+                option="-mmcu=avr25"/>
+        <Option name="ATtiny13"
+                option="-mmcu=attiny13"/>
+        <Option name="ATtiny2313"
+                option="-mmcu=attiny2313"/>
+        <Option name="ATtiny24"
+                option="-mmcu=attiny24"/>
+        <Option name="ATtiny44"
+                option="-mmcu=attiny44"/>
+        <Option name="ATtiny84"
+                option="-mmcu=attiny84"/>
+        <Option name="ATtiny25"
+                option="-mmcu=attiny25"/>
+        <Option name="ATtiny45"
+                option="-mmcu=attiny45"/>
+        <Option name="ATtiny85"
+                option="-mmcu=attiny85"/>
+        <Option name="ATtiny261"
+                option="-mmcu=attiny261"/>
+        <Option name="ATtiny461"
+                option="-mmcu=attiny461"/>
+        <Option name="ATtiny861"
+                option="-mmcu=attiny861"/>
+        <Option name="AT86RF401"
+                option="-mmcu=at86rf401"/>
+        <Option name="AVR 3 architecture"
+                option="-mmcu=avr3"/>
+        <Option name="ATmega103"
+                option="-mmcu=atmega103"/>
+        <Option name="ATmega603"
+                option="-mmcu=atmega603"/>
+        <Option name="AT43USB320"
+                option="-mmcu=at43usb320"/>
+        <Option name="AT43USB355"
+                option="-mmcu=at43usb355"/>
+        <Option name="AT76C711"
+                option="-mmcu=at76c711"/>
+        <Option name="AVR 4 architecture"
+                option="-mmcu=avr4"/>
+        <Option name="ATmega8"
+                option="-mmcu=atmega8"/>
+        <Option name="ATmega48"
+                option="-mmcu=atmega48"/>
+        <Option name="ATmega88"
+                option="-mmcu=atmega88"/>
+        <Option name="ATmega8515"
+                option="-mmcu=atmega8515"/>
+        <Option name="ATmega8535"
+                option="-mmcu=atmega8535"/>
+        <Option name="ATmega8HVA"
+                option="-mmcu=atmega8hva"/>
+        <Option name="AT90PWM1"
+                option="-mmcu=at90pwm1"/>
+        <Option name="AT90PWM2"
+                option="-mmcu=at90pwm2"/>
+        <Option name="AT90PWM3"
+                option="-mmcu=at90pwm3"/>
+        <Option name="AVR 5 architecture"
+                option="-mmcu=avr5"/>
+        <Option name="ATmega16"
+                option="-mmcu=atmega16"/>
+        <Option name="ATmega161"
+                option="-mmcu=atmega161"/>
+        <Option name="ATmega163"
+                option="-mmcu=atmega163"/>
+        <Option name="ATmega164P"
+                option="-mmcu=atmega164p"/>
+        <Option name="ATmega165"
+                option="-mmcu=atmega165"/>
+        <Option name="ATmega165P"
+                option="-mmcu=atmega165p"/>
+        <Option name="ATmega168"
+                option="-mmcu=atmega168"/>
+        <Option name="ATmega169"
+                option="-mmcu=atmega169"/>
+        <Option name="ATmega169P"
+                option="-mmcu=atmega169p"/>
+        <Option name="ATmega32"
+                option="-mmcu=atmega32"/>
+        <Option name="ATmega323"
+                option="-mmcu=atmega323"/>
+        <Option name="ATmega324P"
+                option="-mmcu=atmega324p"/>
+        <Option name="ATmega325"
+                option="-mmcu=atmega325"/>
+        <Option name="ATmega325P"
+                option="-mmcu=atmega325p"/>
+        <Option name="ATmega3250"
+                option="-mmcu=atmega3250"/>
+        <Option name="ATmega3250P"
+                option="-mmcu=atmega3250p"/>
+        <Option name="ATmega329"
+                option="-mmcu=atmega329"/>
+        <Option name="ATmega329P"
+                option="-mmcu=atmega329p"/>
+        <Option name="ATmega3290"
+                option="-mmcu=atmega3290"/>
+        <Option name="ATmega3290P"
+                option="-mmcu=atmega3290p"/>
+        <Option name="ATmega406"
+                option="-mmcu=atmega406"/>
+        <Option name="ATmega64"
+                option="-mmcu=atmega64"/>
+        <Option name="ATmega640"
+                option="-mmcu=atmega640"/>
+        <Option name="ATmega644"
+                option="-mmcu=atmega644"/>
+        <Option name="ATmega644P"
+                option="-mmcu=atmega644p"/>
+        <Option name="ATmega645"
+                option="-mmcu=atmega645"/>
+        <Option name="ATmega6450"
+                option="-mmcu=atmega6450"/>
+        <Option name="ATmega649"
+                option="-mmcu=atmega649"/>
+        <Option name="ATmega6490"
+                option="-mmcu=atmega6490"/>
+        <Option name="ATmega128"
+                option="-mmcu=atmega128"/>
+        <Option name="ATmega1280"
+                option="-mmcu=atmega1280"/>
+        <Option name="ATmega1281"
+                option="-mmcu=atmega1281"/>
+        <Option name="ATmega16HVA"
+                option="-mmcu=atmega16hva"/>
+        <Option name="AT90CAN32"
+                option="-mmcu=at90can32"/>
+        <Option name="AT90CAN64"
+                option="-mmcu=at90can64"/>
+        <Option name="AT90CAN128"
+                option="-mmcu=at90can128"/>
+        <Option name="AT90USB82"
+                option="-mmcu=at90usb82"/>
+        <Option name="AT90USB162"
+                option="-mmcu=at90usb162"/>
+        <Option name="AT90USB646"
+                option="-mmcu=at90usb646"/>
+        <Option name="AT90USB647"
+                option="-mmcu=at90usb647"/>
+        <Option name="AT90USB1286"
+                option="-mmcu=at90usb1286"/>
+        <Option name="AT90USB1287"
+                option="-mmcu=at90usb1287"/>
+        <Option name="AT94K"
+                option="-mmcu=at94k"/>
+    </Category>
+
+    <Category name="AVR CPU architecture specific">
+        <Option name="Output instruction sizes to the asm file"
+                option="-msize"/>
+        <Option name="Initial stack address"
+                option="-minit-stack=N"/>
+        <Option name="Disable interrupts"
+                option="-mno-interrupts"/>
+        <Option name="Expand functions prologues/epilogues"
+                option="-mcall-prologues"/>
+        <Option name="Disable tablejump instructions"
+                option="-mno-tablejump"/>
+        <Option name="8 bits stack pointer"
+                option="-mtiny-stack"/>
+        <Option name="int as 8 bit integer"
+                option="-mint8"/>
+    </Category>
+
+    <Command name="CompileObject"
+             value="$compiler $options $includes -c $file -o $object"/>
+    <Command name="GenDependencies"
+             value="$compiler -MM $options -MF $dep_object -MT $object $includes $file"/>
+    <Command name="CompileResource"
+             value="$rescomp $res_includes $res_options -J rc -O coff -i $file -o $resource_output"/>
+    <Command name="LinkConsoleExe"
+             value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+    <if platform="windows">
+        <Command name="LinkExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs -mwindows"/>
+        <Command name="LinkDynamic"
+                 value="$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output -Wl,--dll $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+    </if>
+    <else>
+        <Command name="LinkExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+        <Command name="LinkDynamic"
+                 value="$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+    </else>
+    <Command name="LinkStatic"
+             value="$lib_linker -r -s $static_output $link_objects"/>
+    <Command name="LinkNative"
+             value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+    <Common name="cmds"/>
+
+    <Common name="re"/>
+
+    <Common name="sort"/>
+</CodeBlocks_compiler_options>

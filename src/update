@@ -1,0 +1,279 @@
+#!/bin/sh
+
+# MSYSTEM is defined when cross-compilig with MinGW/MSYS
+if [ "x$MSYSTEM" != "x" ] ; then
+  echo Updating MinGW32/cross version.
+  EXEEXT=".exe"
+  LIBEXT="dll"
+else
+  uname_str=$(uname)
+  if [ "$uname_str" = "Darwin" ] ; then
+    echo Updating Mac / Darwin version.
+    EXEEXT=""
+    LIBEXT="dylib"
+  else
+    echo Updating Linux version.
+    EXEEXT=""
+    LIBEXT="so"
+  fi
+fi
+
+copyImageFiles() {
+    from=$1
+    to=$2
+    echo "Copy ${from} to ${to}"
+
+    # This is done this stupid/convoluted way, because dash/posix doesn't have arrays!
+    dirs="16x16 20x20 24x24 28x28 32x32 40x40 48x48 56x56 64x64"
+    echo "$dirs" | tr ' ' '\n' | while read dir; do
+        echo "  Copy ${from}/${dir} to ${to}/${dir}"
+
+        mkdir -p ${to}/${dir}
+        cp -f ${from}/${dir}/*.png ${to}/${dir} > /dev/null
+    done
+}
+
+echo Creating output directory tree
+
+CB_DEVEL=devel$1
+CB_OUTPUT=output$1
+CB_DEVEL_RESDIR=$CB_DEVEL/share/codeblocks
+CB_OUTPUT_RESDIR=$CB_OUTPUT/share/codeblocks
+
+mkdir -p ${CB_DEVEL_RESDIR}/compilers
+mkdir -p ${CB_DEVEL_RESDIR}/lexers
+mkdir -p ${CB_DEVEL_RESDIR}/images/settings
+mkdir -p ${CB_DEVEL_RESDIR}/plugins
+mkdir -p ${CB_DEVEL_RESDIR}/templates
+mkdir -p ${CB_DEVEL_RESDIR}/templates/wizard
+mkdir -p ${CB_DEVEL_RESDIR}/scripts/tests
+
+mkdir -p ${CB_OUTPUT_RESDIR}/compilers
+mkdir -p ${CB_OUTPUT_RESDIR}/lexers
+mkdir -p ${CB_OUTPUT_RESDIR}/images/settings
+mkdir -p ${CB_OUTPUT_RESDIR}/plugins
+mkdir -p ${CB_OUTPUT_RESDIR}/templates
+mkdir -p ${CB_OUTPUT_RESDIR}/templates/wizard
+mkdir -p ${CB_OUTPUT_RESDIR}/scripts/tests
+
+ZIPCMD="zip"
+echo Compressing core UI resources
+${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/resources.zip src/resources/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/manager_resources.zip sdk/resources/*.xrc sdk/resources/images/*.png > /dev/null
+${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/start_here.zip src/resources/start_here/* > /dev/null
+echo Compressing plugins UI resources
+${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/Astyle.zip plugins/astyle/resources/manifest.xml plugins/astyle/resources/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/autosave.zip plugins/autosave/manifest.xml plugins/autosave/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/classwizard.zip plugins/classwizard/resources/manifest.xml plugins/classwizard/resources/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/codecompletion.zip plugins/codecompletion/resources/manifest.xml plugins/codecompletion/resources/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/compiler.zip plugins/compilergcc/resources/manifest.xml plugins/compilergcc/resources/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/debugger.zip plugins/debuggergdb/resources/manifest.xml plugins/debuggergdb/resources/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/defaultmimehandler.zip plugins/defaultmimehandler/resources/manifest.xml plugins/defaultmimehandler/resources/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/occurrenceshighlighting.zip plugins/occurrenceshighlighting/resources/*.xrc plugins/occurrenceshighlighting/resources/manifest.xml > /dev/null
+${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/openfileslist.zip plugins/openfileslist/manifest.xml > /dev/null
+${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/projectsimporter.zip plugins/projectsimporter/resources/*.xrc plugins/projectsimporter/resources/manifest.xml > /dev/null
+${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/scriptedwizard.zip plugins/scriptedwizard/resources/manifest.xml > /dev/null
+${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/todo.zip plugins/todo/resources/manifest.xml plugins/todo/resources/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${CB_DEVEL_RESDIR}/abbreviations.zip plugins/abbreviations/resources/manifest.xml plugins/abbreviations/resources/*.xrc > /dev/null
+echo Packing core UI bitmaps
+cd src/resources
+${ZIPCMD} -0 -qu ../../${CB_DEVEL_RESDIR}/resources.zip \
+    images/*.png \
+    images/16x16/*.png \
+    images/20x20/*.png \
+    images/24x24/*.png \
+    images/28x28/*.png \
+    images/32x32/*.png \
+    images/40x40/*.png \
+    images/48x48/*.png \
+    images/56x56/*.png \
+    images/64x64/*.png \
+    images/tree/16x16/*.png \
+    images/tree/20x20/*.png \
+    images/tree/24x24/*.png \
+    images/tree/28x28/*.png \
+    images/tree/32x32/*.png \
+    images/tree/40x40/*.png \
+    images/tree/48x48/*.png \
+    images/tree/56x56/*.png \
+    images/tree/64x64/*.png \
+    images/infopane/16x16/*.png \
+    images/infopane/20x20/*.png \
+    images/infopane/24x24/*.png \
+    images/infopane/28x28/*.png \
+    images/infopane/32x32/*.png \
+    images/infopane/40x40/*.png \
+    images/infopane/48x48/*.png \
+    images/infopane/56x56/*.png \
+    images/infopane/64x64/*.png \
+    > /dev/null
+cd ../../sdk/resources
+${ZIPCMD} -0 -qu ../../${CB_DEVEL_RESDIR}/manager_resources.zip \
+    images/*.png \
+    images/8x8/*.png \
+    images/10x10/*.png \
+    images/12x12/*.png \
+    images/16x16/*.png \
+    images/20x20/*.png \
+    images/24x24/*.png \
+    images/28x28/*.png \
+    images/32x32/*.png \
+    images/40x40/*.png \
+    images/48x48/*.png \
+    images/56x56/*.png \
+    images/64x64/*.png \
+    > /dev/null
+echo Packing plugins UI bitmaps
+cd ../../plugins/compilergcc/resources
+${ZIPCMD} -0 -qu ../../../${CB_DEVEL_RESDIR}/compiler.zip \
+    images/16x16/*.png \
+    images/20x20/*.png \
+    images/24x24/*.png \
+    images/28x28/*.png \
+    images/32x32/*.png \
+    images/40x40/*.png \
+    images/48x48/*.png \
+    images/56x56/*.png \
+    images/64x64/*.png \
+    > /dev/null
+cd ../../../plugins/codecompletion/resources
+${ZIPCMD} -0 -qu ../../../${CB_DEVEL_RESDIR}/codecompletion.zip \
+    images/16x16/*.png \
+    images/20x20/*.png \
+    images/24x24/*.png \
+    images/28x28/*.png \
+    images/32x32/*.png \
+    images/40x40/*.png \
+    images/48x48/*.png \
+    images/56x56/*.png \
+    images/64x64/*.png \
+    > /dev/null
+cd ../../../plugins/abbreviations/resources
+${ZIPCMD} -0 -qu ../../../${CB_DEVEL_RESDIR}/abbreviations.zip \
+    images/16x16/*.png \
+    images/20x20/*.png \
+    images/24x24/*.png \
+    images/28x28/*.png \
+    images/32x32/*.png \
+    images/40x40/*.png \
+    images/48x48/*.png \
+    images/56x56/*.png \
+    images/64x64/*.png \
+    > /dev/null
+cd ../../..
+
+echo Copying files
+# Create an exclude pattern file
+echo .svn > excludes.txt
+echo Makefile >> excludes.txt
+echo Makefile.am >> excludes.txt
+echo Makefile.in >> excludes.txt
+
+cp -f sdk/resources/lexers/lexer_* ${CB_DEVEL_RESDIR}/lexers > /dev/null
+cp -f src/resources/images/*.png ${CB_DEVEL_RESDIR}/images > /dev/null
+cp -f src/resources/images/settings/*.png ${CB_DEVEL_RESDIR}/images/settings > /dev/null
+cp -f plugins/compilergcc/resources/compilers/*.xml ${CB_DEVEL_RESDIR}/compilers > /dev/null
+rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ ${CB_DEVEL_RESDIR}/templates/wizard > /dev/null
+rsync -au --exclude-from=excludes.txt templates/common/ ${CB_DEVEL_RESDIR}/templates > /dev/null
+rsync -au --exclude-from=excludes.txt templates/unix/ ${CB_DEVEL_RESDIR}/templates > /dev/null
+cp -f scripts/*.script ${CB_DEVEL_RESDIR}/scripts > /dev/null
+cp -f scripts/tests/*.script ${CB_DEVEL_RESDIR}/scripts/tests > /dev/null
+
+cp -f ${CB_DEVEL_RESDIR}/*.zip ${CB_OUTPUT_RESDIR} > /dev/null
+cp -f sdk/resources/lexers/lexer_* ${CB_OUTPUT_RESDIR}/lexers > /dev/null
+cp -f src/resources/images/*.png ${CB_OUTPUT_RESDIR}/images > /dev/null
+cp -f src/resources/images/settings/*.png ${CB_OUTPUT_RESDIR}/images/settings > /dev/null
+cp -f plugins/compilergcc/resources/compilers/*.xml ${CB_OUTPUT_RESDIR}/compilers > /dev/null
+rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ ${CB_OUTPUT_RESDIR}/templates/wizard > /dev/null
+rsync -au --exclude-from=excludes.txt templates/common/ ${CB_OUTPUT_RESDIR}/templates > /dev/null
+rsync -au --exclude-from=excludes.txt templates/unix/ ${CB_OUTPUT_RESDIR}/templates > /dev/null
+cp -f scripts/*.script ${CB_OUTPUT_RESDIR}/scripts > /dev/null
+cp -f scripts/tests/*.script ${CB_OUTPUT_RESDIR}/scripts/tests > /dev/null
+
+rm excludes.txt
+
+# several contrib plugins
+if [ -d "${CB_DEVEL_RESDIR}/images/codesnippets" ]; then
+    mkdir -p ${CB_OUTPUT_RESDIR}/images/codesnippets
+    cp -f ${CB_DEVEL_RESDIR}/images/codesnippets/*.png ${CB_OUTPUT_RESDIR}/images/codesnippets > /dev/null
+fi
+
+if [ -d "${CB_DEVEL_RESDIR}/images/wxsmith" ]; then
+    mkdir -p ${CB_OUTPUT_RESDIR}/images/wxsmith
+    cp -f ${CB_DEVEL_RESDIR}/images/wxsmith/*.png ${CB_OUTPUT_RESDIR}/images/wxsmith > /dev/null
+fi
+
+if [ -d "${CB_DEVEL_RESDIR}/lib_finder" ]; then
+    mkdir -p ${CB_OUTPUT_RESDIR}/lib_finder
+    cp -f ${CB_DEVEL_RESDIR}/lib_finder/*.xml ${CB_OUTPUT_RESDIR}/lib_finder > /dev/null
+fi
+if [ -d "${CB_DEVEL_RESDIR}/SpellChecker" ]; then
+    mkdir -p ${CB_OUTPUT_RESDIR}/SpellChecker
+    cp -f ${CB_DEVEL_RESDIR}/SpellChecker/*.xml ${CB_OUTPUT_RESDIR}/SpellChecker > /dev/null
+    copyImageFiles ${CB_DEVEL_RESDIR}/SpellChecker ${CB_OUTPUT_RESDIR}/SpellChecker
+fi
+
+# misc. contrib plugin settings:
+cp -f ${CB_DEVEL_RESDIR}/images/settings/*.png ${CB_OUTPUT_RESDIR}/images/settings > /dev/null
+
+#=============================================
+#=============================================
+#=============================================
+#=============================================
+
+cp -f tips.txt ${CB_DEVEL_RESDIR} > /dev/null
+
+cp -f tips.txt ${CB_OUTPUT_RESDIR} > /dev/null
+cp -f ${CB_DEVEL}/cb_console_runner${EXEEXT} ${CB_OUTPUT} > /dev/null
+cp -f ${CB_DEVEL}/codeblocks${EXEEXT} ${CB_OUTPUT} > /dev/null
+
+if [ -f "${CB_DEVEL}/cb_share_config${EXEEXT}" ]
+then
+  cp -f ${CB_DEVEL}/cb_share_config${EXEEXT} ${CB_OUTPUT} > /dev/null
+fi
+if [ -f "${CB_DEVEL}/cbp2make${EXEEXT}" ]
+then
+  cp -f ${CB_DEVEL}/cbp2make${EXEEXT} ${CB_OUTPUT} > /dev/null
+fi
+if [ -f "${CB_DEVEL}/codesnippets${EXEEXT}" ]
+then
+  cp -f ${CB_DEVEL}/codesnippets${EXEEXT} ${CB_OUTPUT} > /dev/null
+fi
+
+cp -f ${CB_DEVEL}/*.${LIBEXT} ${CB_OUTPUT} > /dev/null
+cp -f ${CB_DEVEL}/lib*.a ${CB_OUTPUT} > /dev/null
+cp -f ${CB_DEVEL_RESDIR}/plugins/*.${LIBEXT} ${CB_OUTPUT_RESDIR}/plugins > /dev/null
+
+echo Stripping debug info from output tree
+strip ${CB_OUTPUT}/codeblocks${EXEEXT} > /dev/null
+if [ -f "${CB_OUTPUT}/cb_share_config${EXEEXT}" ]
+then
+  strip ${CB_OUTPUT}/cb_share_config${EXEEXT} > /dev/null
+fi
+if [ -f "${CB_OUTPUT}/cbp2make${EXEEXT}" ]
+then
+  strip ${CB_OUTPUT}/cbp2make${EXEEXT} > /dev/null
+fi
+strip ${CB_OUTPUT}/cb_console_runner${EXEEXT} > /dev/null
+if [ -f "${CB_OUTPUT}/codesnippets${EXEEXT}" ]
+then
+  strip ${CB_OUTPUT}/codesnippets${EXEEXT} > /dev/null
+fi
+strip ${CB_OUTPUT}/*.${LIBEXT} > /dev/null
+strip ${CB_OUTPUT_RESDIR}/plugins/*.${LIBEXT} > /dev/null
+
+if [ "x$MSYSTEM" = "x" ] ; then
+  echo Creating launch-scripts
+  echo "#!/bin/sh" > ${CB_OUTPUT}/run.sh
+  echo 'APP_DIR=`dirname "$0"`' >> ${CB_OUTPUT}/run.sh
+  echo 'APP_DIR=`( cd "$APP_DIR" && pwd )`' >> ${CB_OUTPUT}/run.sh
+  echo "export LD_LIBRARY_PATH=\$APP_DIR:\$LD_LIBRARY_PATH" >> ${CB_OUTPUT}/run.sh
+  echo "\$APP_DIR/codeblocks \$@" >> ${CB_OUTPUT}/run.sh
+  chmod +x ${CB_OUTPUT}/run.sh
+  echo "#!/bin/sh" > ${CB_DEVEL}/run.sh
+  echo 'APP_DIR=`dirname "$0"`' >> ${CB_DEVEL}/run.sh
+  echo 'APP_DIR=`( cd "$APP_DIR" && pwd )`' >> ${CB_DEVEL}/run.sh
+  echo "export LD_LIBRARY_PATH=\$APP_DIR:\$LD_LIBRARY_PATH" >> ${CB_DEVEL}/run.sh
+  echo "\$APP_DIR/codeblocks \$@" >> ${CB_DEVEL}/run.sh
+  chmod +x ${CB_DEVEL}/run.sh
+fi

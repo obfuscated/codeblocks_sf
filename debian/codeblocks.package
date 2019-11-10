@@ -1,0 +1,2 @@
+?package(libcodeblocks0):needs="X11" section="Apps/Programming"\
+  title="codeblocks" icon="/usr/share/pixmaps/codeblocks.png" command="/usr/bin/codeblocks"

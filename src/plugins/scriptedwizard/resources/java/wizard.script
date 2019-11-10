@@ -1,0 +1,51 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Code::Blocks new project wizard script
+//
+// Project: Java application
+// Author:  Wilson Foo Yu Kang (derived from D application by Yiannis Mandravellos)
+//
+////////////////////////////////////////////////////////////////////////////////
+
+function BeginWizard()
+{
+    // this is the text that will appear in the start (intro) page
+    local intro_msg = _T("Welcome to the new Java application wizard!\n" +
+                        "This wizard will guide you to create a new Java application.\n\n" +
+                        "When you 're ready to proceed, please click \"Next\"...");
+
+    // add builtin pages
+    Wizard.AddInfoPage(_T("JavaIntro"), intro_msg); // intro
+    Wizard.AddProjectPathPage(); // select project name and path
+    Wizard.AddCompilerPage(_T("sun_java_compiler"), _T("*"), true, true); // select compiler and configurations
+    // nothing more needs to be done here
+}
+
+function GetFilesDir()
+{
+    return _T("java/files");
+}
+
+function SetupProject(project)
+{
+
+    // Debug build target
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttConsoleOnly);
+	target.SetTargetFilenameGenerationPolicy(tgfpNone,tgfpNone);
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + _T(".jar"));
+    }
+
+    // Release build target
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttConsoleOnly);
+	target.SetTargetFilenameGenerationPolicy(tgfpNone,tgfpNone);
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + _T(".jar"));
+    }
+
+    return true;
+}

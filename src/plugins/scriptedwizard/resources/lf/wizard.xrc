@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxPanel" name="LfOptions">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="StaticWelcome">
+					<label>Please select Lightfeather&apos;s options.&#x0A;&#x0A;Note that your choices here must match those that were&#x0A;used to build Lightfeather...</label>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer">
+					<label>Options</label>
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkCG">
+							<label>NVidia CG support</label>
+							<checked>1</checked>
+						</object>
+						<flag>wxTOP|wxLEFT|wxALIGN_LEFT</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkNG">
+							<label>NGPlant support</label>
+							<checked>1</checked>
+						</object>
+						<flag>wxTOP|wxLEFT|wxALIGN_LEFT</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkNet">
+							<label>Networking support</label>
+						</object>
+						<flag>wxTOP|wxLEFT|wxALIGN_LEFT</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkWx">
+							<label>wxWidgets render-window</label>
+						</object>
+						<flag>wxTOP|wxLEFT|wxALIGN_LEFT</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticLine" name="ID_STATICLINE1">
+							<size>10,-1</size>
+						</object>
+						<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkLocalConfig">
+							<label>Use localconfig.h</label>
+						</object>
+						<flag>wxTOP|wxBOTTOM|wxLEFT|wxALIGN_LEFT</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
+</resource>

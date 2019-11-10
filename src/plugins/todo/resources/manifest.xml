@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<CodeBlocks_plugin_manifest_file>
+  <SdkVersion major="1"
+              minor="10"
+              release="0" />
+  <Plugin name="ToDoList">
+    <Value title="Todo List" />
+    <Value version="0.2" />
+    <Value description="Code::Blocks Todo List plugin" />
+    <Value author="Yiannis An. Mandravellos" />
+    <Value authorEmail="info@codeblocks.org" />
+    <Value authorWebsite="http://www.codeblocks.org" />
+    <Value thanksTo="" />
+    <Value license="GPL" />
+  </Plugin>
+</CodeBlocks_plugin_manifest_file>

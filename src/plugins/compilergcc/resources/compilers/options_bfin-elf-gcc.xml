@@ -1,0 +1,214 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <if platform="windows">
+        <Program name="C"         value="bfin-elf-gcc.exe"/>
+        <Program name="CPP"       value="bfin-elf-g++.exe"/>
+        <Program name="LD"        value="bfin-elf-g++.exe"/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="bfin-elf-ar.exe"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make.exe"/>
+    </if>
+    <else>
+        <Program name="C"         value="bfin-elf-gcc"/>
+        <Program name="CPP"       value="bfin-elf-g++"/>
+        <Program name="LD"        value="bfin-elf-g++"/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="bfin-elf-ar"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make"/>
+    </else>
+
+    <Switch name="includeDirs"             value="-I"/>
+    <Switch name="libDirs"                 value="-L"/>
+    <Switch name="linkLibs"                value="-l"/>
+    <Switch name="defines"                 value="-D"/>
+    <Switch name="genericSwitch"           value="-"/>
+    <Switch name="objectExtension"         value="o"/>
+    <Switch name="needDependencies"        value="true"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value="lib"/>
+    <Switch name="libExtension"            value="a"/>
+    <Switch name="linkerNeedsLibPrefix"    value="false"/>
+    <Switch name="linkerNeedsLibExtension" value="false"/>
+
+    <Option name="Produce debugging symbols"
+            option="-g"
+            category="Debugging"
+            checkAgainst="-O -O1 -O2 -O3 -Os"
+            checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."
+            supersedes="-s"/>
+    <if platform="windows">
+        <Option name="Profile code when executed"
+                option="-pg"
+                category="Profiling"
+                additionalLibs="-pg -lgmon"
+                supersedes="-s"/>
+    </if>
+    <else>
+        <Option name="Profile code when executed"
+                option="-pg"
+                category="Profiling"
+                additionalLibs="-pg"
+                supersedes="-s"/>
+    </else>
+
+    
+    <Common name="warnings"/>
+    <Category name="Warnings">
+        <Option name="Enable Effective-C++ warnings (thanks Scott Meyers)"
+                option="-Weffc++"/>
+        <Option name="Warn whenever a switch statement does not have a default case"
+                option="-Wswitch-default"/>
+        <Option name="Warn whenever a switch statement has an index of enumerated type and lacks a case for one or more of the named codes of that enumeration"
+                option="-Wswitch-enum"/>
+        <Option name="Warn if a user supplied include directory does not exist"
+                option="-Wmissing-include-dirs"/>
+        <Option name="Warn if a global function is defined without a previous declaration"
+                option="-Wmissing-declarations"/>
+        <Option name="Warn if the compiler detects that code will never be executed"
+                option="-Wunreachable-code"/>
+        <Option name="Warn if a function can not be inlined and it was declared as inline"
+                option="-Winline"/>
+        <Option name="Warn if floating point values are used in equality comparisons"
+                option="-Wfloat-equal"/>
+        <Option name="Warn if an undefined identifier is evaluated in an '#if' directive"
+                option="-Wundef"/>
+        <Option name="Warn whenever a pointer is cast such that the required alignment of the target is increased"
+                option="-Wcast-align"/>
+        <Option name="Warn if anything is declared more than once in the same scope"
+                option="-Wredundant-decls"/>
+        <Option name="Warn about unitialized variables which are initialized with themselves"
+                option="-Winit-self"/>
+        <Option name="Warn whenever a local variable shadows another local variable, parameter or global variable or whenever a built-in function is shadowed"
+                option="-Wshadow"/>
+        <Option name="Warn if a class has virtual functions but no virtual destructor"
+                option="-Wnon-virtual-dtor"/>
+    </Category>
+
+
+    <Common name="optimization"/>
+    <Option name="Don't keep the frame pointer in a register for functions that don't need one"
+            option="-fomit-frame-pointer"
+            category="Optimization"
+            checkAgainst="-g -ggdb"
+            checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."/>
+
+    <Category name="Blackfin CPU architecture specific">
+        <Option name="Specifies that the program will be run on the simulator."
+                option="-msim"/>
+        <Option name="Don't keep the frame pointer in a register for leaf functions."
+                option="-momit-leaf-frame-pointer"/>
+        <Option name="When enabled, the compiler ensures that the generated code does not contain speculative loads after jump instructions."
+                option="-mspecld-anomaly"
+				supersedes="-mno-specld-anomaly"/>
+        <Option name="Don't generate extra code to prevent speculative loads from occurring."
+                option="-mno-specld-anomaly"
+				supersedes="-mspecld-anomaly"/>
+        <Option name="When enabled, the compiler ensures that the generated code does not contain CSYNC or SSYNC instructions too soon after conditional branches."
+                option="-mcsync-anomaly"
+				supersedes="-mno-csync-anomaly"/>
+        <Option name="Don't generate extra code to prevent CSYNC or SSYNC instructions from occurring too soon after a conditional branch."
+                option="-mno-csync-anomaly"
+				supersedes="mcsync-anomaly"/>
+        <Option name="When enabled, the compiler is free to take advantage of the knowledge that the entire program fits into the low 64k of memory."
+                option="-mlow-64k"
+				supersedes="-mno-low-64k"/>
+        <Option name="Assume that the program is arbitrarily large. This is the default."
+                option="-mno-low-64k"
+				supersedes="-mlow-64k"/>
+        <Option name="Generate code that allows the data segment to be located in a different area of memory from the text segment."
+                option="-msep-data"
+				supersedes="-mno-sep-data"/>
+        <Option name="Generate code that assumes that the data segment follows the text segment."
+                option="-mno-sep-data"
+				supersedes="-msep-data"/>
+        <Option name="Let te compiler generate long calls (>24 bit)"
+                option="-mlong-calls"
+				supersedes="-mno-long-calls"/>
+        <Option name=" Tells the compiler to perform function calls by first loading the address of the function into a register and then performing a subroutine call on this register."
+                option="-mno-long-calls"
+				supersedes="-mlong-calls"/>
+        <Option name="Build a standalone application for multicore Blackfin processors."
+                option="-mmulticore"/>
+        <Option name="Build a standalone application for Core A of BF561 when using the one-application-per-core programming model."
+                option="-mcorea"
+				supersedes="-mcoreb"/>
+        <Option name="Build a standalone application for Core B of BF561 when using the one-application-per-core programming model."
+                option="-mcoreb"
+				supersedes="-mcorea"/>
+        <Option name="Build a standalone application for SDRAM."
+                option="-msdram"/>
+        <Option name="Assume that ICPLBs are enabled at run time."
+                option="-micplb"/>
+    </Category>
+
+	
+	
+    <Category name="Blackfin CPU architecture derivatives"
+              exclusive="true">
+        <Option name="Blackfin 512 processor" option="-mcpu=bf512"/>
+        <Option name="Blackfin 514 processor" option="-mcpu=bf514"/>
+        <Option name="Blackfin 516 processor" option="-mcpu=bf516"/>
+        <Option name="Blackfin 518 processor" option="-mcpu=bf518"/>
+        <Option name="Blackfin 522 processor" option="-mcpu=bf522"/>
+        <Option name="Blackfin 523 processor" option="-mcpu=bf523"/>
+        <Option name="Blackfin 524 processor" option="-mcpu=bf524"/>
+        <Option name="Blackfin 525 processor" option="-mcpu=bf525"/>
+        <Option name="Blackfin 526 processor" option="-mcpu=bf526"/>
+        <Option name="Blackfin 527 processor" option="-mcpu=bf527"/>
+        <Option name="Blackfin 531 processor" option="-mcpu=bf531"/>
+        <Option name="Blackfin 532 processor" option="-mcpu=bf532"/>
+        <Option name="Blackfin 533 processor" option="-mcpu=bf533"/>
+        <Option name="Blackfin 534 processor" option="-mcpu=bf534"/>
+        <Option name="Blackfin 536 processor" option="-mcpu=bf536"/>
+        <Option name="Blackfin 537 processor" option="-mcpu=bf537"/>
+        <Option name="Blackfin 538 processor" option="-mcpu=bf538"/>
+        <Option name="Blackfin 539 processor" option="-mcpu=bf539"/>
+        <Option name="Blackfin 542 processor" option="-mcpu=bf542"/>
+        <Option name="Blackfin 544 processor" option="-mcpu=bf544"/>
+        <Option name="Blackfin 547 processor" option="-mcpu=bf547"/>
+        <Option name="Blackfin 548 processor" option="-mcpu=bf548"/>
+        <Option name="Blackfin 549 processor" option="-mcpu=bf549"/>
+        <Option name="Blackfin 542m processor" option="-mcpu=bf542m"/>
+        <Option name="Blackfin 544m processor" option="-mcpu=bf544m"/>
+        <Option name="Blackfin 547m processor" option="-mcpu=bf547m"/>
+        <Option name="Blackfin 548m processor" option="-mcpu=bf548m"/>
+        <Option name="Blackfin 549m processor" option="-mcpu=bf549m"/>
+        <Option name="Blackfin 561 processor" option="-mcpu=bf561"/>
+        <Option name="Blackfin 592 processor" option="-mcpu=bf592"/>
+    </Category>
+	
+    <Command name="CompileObject"
+             value="$compiler $options $includes -c $file -o $object"/>
+    <Command name="GenDependencies"
+             value="$compiler -MM $options -MF $dep_object -MT $object $includes $file"/>
+    <Command name="CompileResource"
+             value="$rescomp -i $file -J rc -o $resource_output -O coff $res_includes"/>
+    <Command name="LinkConsoleExe"
+             value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+    <if platform="windows">
+        <Command name="LinkExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs -mwindows"/>
+        <Command name="LinkDynamic"
+                 value="$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output -Wl,--dll $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+    </if>
+    <else>
+        <Command name="LinkExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+        <Command name="LinkDynamic"
+                 value="$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+    </else>
+    <Command name="LinkStatic"
+             value="$lib_linker -r -s $static_output $link_objects"/>
+    <Command name="LinkNative"
+             value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+    <Common name="cmds"/>
+
+    <Common name="re"/>
+
+    <Common name="sort"/>
+</CodeBlocks_compiler_options>

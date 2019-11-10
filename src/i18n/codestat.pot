@@ -1,0 +1,118 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-18 18:38+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../plugins/contrib/codestat/codestat.cpp:37
+msgid "Code Statistics"
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestat.cpp:38
+msgid "0.5"
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestat.cpp:39
+msgid ""
+"A simple plugin for counting code, comments and empty lines of a project."
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestat.cpp:40
+msgid "Zlika"
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestat.cpp:43
+msgid "All the Code::Blocks team!"
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestat.cpp:96
+msgid ""
+"You need to open a project\n"
+"before using the plugin!"
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestat.cpp:97
+#: ../plugins/contrib/codestat/codestatconfig.cpp:186
+msgid "Error"
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestatconfig.cpp:38
+msgid "dlgCodeStatConfig"
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestatconfig.cpp:165
+msgid "Enter name of the new language:"
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestatconfig.cpp:165
+msgid "New language"
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestatconfig.cpp:186
+msgid "Language list is full!"
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestatconfig.h:42
+msgid "Code statistics settings"
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestatexec.cpp:47
+#: ../plugins/contrib/codestat/codestatexec.cpp:149
+msgid "Warning"
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestatexec.cpp:66
+msgid "Code Statistics plugin"
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestatexec.cpp:66
+msgid "Parsing project files. Please wait..."
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestatexec.cpp:103
+#: ../plugins/contrib/codestat/codestatexec.cpp:105
+#: ../plugins/contrib/codestat/codestatexec.cpp:107
+#: ../plugins/contrib/codestat/codestatexec.cpp:110
+#: ../plugins/contrib/codestat/codestatexec.cpp:112
+#: ../plugins/contrib/codestat/codestatexec.cpp:114
+#: ../plugins/contrib/codestat/codestatexec.cpp:116
+#: ../plugins/contrib/codestat/codestatexec.cpp:118
+#, possible-c-format
+msgid "%ld"
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestatexec.cpp:127
+#, possible-c-format
+msgid "%3d%% Code only"
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestatexec.cpp:133
+#, possible-c-format
+msgid "%3d%% Code + Comment"
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestatexec.cpp:139
+#, possible-c-format
+msgid "%3d%% Comments"
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestatexec.cpp:145
+#, possible-c-format
+msgid "%3d%% Empty"
+msgstr ""
+
+#: ../plugins/contrib/codestat/codestatexec.cpp:149
+msgid "The project is empty!"
+msgstr ""

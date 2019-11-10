@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="Google Protocol Buffer"
+                index="3"
+                filemasks="*.proto">
+                <Style name="Default"
+                        index="0,11"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <Style name="Default (inactive)"
+                        index="64,72,75"
+                        fg="200,200,200"/>
+                <Style name="Comment (normal)"
+                        index="1,23,65,87"
+                        fg="160,160,160"/>
+                <Style name="Comment line (normal)"
+                        index="2,66"
+                        fg="190,190,230"/>
+                <Style name="Comment (documentation)"
+                        index="3,24,67,88"
+                        fg="128,128,255"
+                        bold="1"/>
+                <Style name="Comment line (documentation)"
+                        index="15,79"
+                        fg="128,128,255"
+                        bold="1"/>
+                <Style name="Comment keyword (documentation)"
+                        index="17,81"
+                        fg="0,128,128"/>
+                <Style name="Comment keyword error (documentation)"
+                        index="18,82"
+                        fg="128,0,0"/>
+                <Style name="Number"
+                        index="4"
+                        fg="240,0,240"/>
+                <Style name="Number (inactive)"
+                        index="68"
+                        fg="240,200,240"/>
+                <Style name="Keyword"
+                        index="5"
+                        fg="0,0,160"
+                        bold="1"/>
+                <Style name="Keyword (inactive)"
+                        index="69"
+                        fg="135,135,200"
+                        bold="1"/>
+                <Style name="User keyword"
+                        index="16"
+                        fg="0,160,0"
+                        bold="1"/>
+                <Style name="User keyword (inactive)"
+                        index="80"
+                        fg="154,200,154"
+                        bold="1"/>
+                <Style name="Global classes and typedefs"
+                        index="19"
+                        fg="190,0,190"
+                        bold="1"/>
+                <Style name="Global classes and typedefs (inactive)"
+                        index="83"
+                        fg="190,137,190"
+                        bold="1"/>
+                <Style name="String"
+                        index="6,12,20"
+                        fg="0,0,255"/>
+                <Style name="String (inactive)"
+                        index="70,76"
+                        fg="190,190,255"/>
+                <Style name="Character"
+                        index="7"
+                        fg="224,160,0"/>
+                <Style name="Character (inactive)"
+                        index="71"
+                        fg="224,206,159"/>
+                <Style name="UUID"
+                        index="8"
+                        fg="0,0,0"/>
+                <Style name="Preprocessor"
+                        index="9"
+                        fg="0,160,0"/>
+                <Style name="Preprocessor (inactive)"
+                        index="73"
+                        fg="132,160,132"/>
+                <Style name="Operator"
+                        index="10"
+                        fg="255,0,0"/>
+                <Style name="Operator (inactive)"
+                        index="74"
+                        fg="255,200,200"/>
+                <Style name="Breakpoint line"
+                        index="-2"
+                        bg="255,160,160"/>
+                <Style name="Debugger active line"
+                        index="-3"
+                        bg="160,160,255"/>
+                <Style name="Compiler error line"
+                        index="-4"
+                        bg="255,128,0"/>
+                <Style name="wxSmith-generated code"
+                        index="50"
+                        fg="64,64,128"
+                        italics="1"/>
+                <Style name="wxSmith-generated code (inactive)"
+                        index="114"
+                        fg="133,133,172"
+                        italics="1"/>
+                <Keywords>
+                        <!-- Primary keywords and identifiers -->
+                        <Set index="0"
+                            value="message enum required optional repeated option default packed true false import extend extensions package service returns"/>
+                        <!-- and and_eq bitand bitor compl not not_eq or or_eq xor xor_eq -->
+                        <!-- Secondary keywords and identifiers -->
+                        <Set index="1"
+                            value="double float int32 int64 uint32 uint64 sint32 sint64 fixed32 fixed64 sfixed32 sfixed64 bool string bytes"/>
+                        
+     
+                </Keywords>
+                <LanguageAttributes
+                    LineComment="//"
+                    DoxygenLineComment="///"
+                    StreamCommentStart="/*"
+                    StreamCommentEnd="*/"
+                    DoxygenStreamCommentStart="/**"
+                    DoxygenStreamCommentEnd="*/"
+                    CaseSensitive="1"
+                    LexerCommentStyles="1,2,3,15,17,18,23,65,66,67,79,81,82,87"
+                    LexerCharacterStyles="7,71"
+                    LexerStringStyles="6,12,70,76"
+                    LexerPreprocessorStyles="9,73"/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

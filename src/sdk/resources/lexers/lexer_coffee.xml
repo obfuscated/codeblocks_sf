@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="CoffeeScript"
+               index="102"
+               filemasks="*.coffee">
+                <Style name="Default"
+                       index="0,11"
+                       fg="0,0,0"
+                       bg="255,255,255"
+                       bold="0"
+                       italics="0"
+                       underlined="0"/>
+                <Style name="Comment"
+                       index="1,22"
+                       fg="160,160,160"/>
+                <Style name="Comment line"
+                       index="2,24"
+                       fg="190,190,230"/>
+                <Style name="Comment (documentation)"
+                       index="3,15"
+                       fg="128,128,255"
+                       bold="1"/>
+                <Style name="Comment keyword (documentation)"
+                       index="17"
+                       fg="0,128,128"/>
+                <Style name="Comment keyword error (documentation)"
+                       index="18"
+                       fg="128,0,0"/>
+                <Style name="Number"
+                       index="4"
+                       fg="240,0,240"/>
+                <Style name="Primary keyword"
+                       index="5"
+                       fg="0,0,160"
+                       bold="1"/>
+                <Style name="Secondary keyword"
+                       index="16"
+                       fg="0,160,0"
+                       bold="1"/>
+                <Style name="Global classes and functions"
+                       index="19"
+                       fg="190,0,190"
+                       bold="1"/>
+                <Style name="String"
+                       index="6,7,12"
+                       fg="0,0,255"/>
+                <Style name="UUID"
+                       index="8"
+                       fg="0,0,0"
+                       italics="1"/>
+                <Style name="Operator"
+                       index="10"
+                       fg="255,0,0"/>
+                <Style name="Verbatim"
+                       index="13"
+                       fg="0,160,0"/>
+                <Style name="RegEx"
+                       index="14,23"
+                       fg="0,160,0"
+                       bold="1"/>
+
+                <Style name="Breakpoint line"
+                       index="-2"
+                       bg="255,160,160"/>
+                <Style name="Debugger active line"
+                       index="-3"
+                       bg="160,160,255"/>
+                <Style name="Compiler error line"
+                       index="-4"
+                       bg="255,128,0"/>
+                <Keywords>
+                        <!-- Primary keywords and identifiers -->
+                        <Set index="0"
+                             value="and break by catch constructor continue delete do else finally for if in is isnt
+                                    loop not of or return super switch then throw try typeof unless until when
+                                    where while
+
+                                    class extends instanceof new"/>
+                        <!-- Secondary keywords and identifiers -->
+                        <Set index="1"
+                             value="false Infinity NaN no null off on true undefined yes"/>
+                        <!-- Documentation comment keywords -->
+                        <Set index="2"
+                             value=""/>
+                        <!-- Global classes and functions -->
+                        <Set index="3"
+                             value="Array Boolean clearInterval clearTimeout console Date decodeURI
+                                    decodeURIComponent encodeURI encodeURIComponent escape eval Function isFinite
+                                    isNaN JSON Math Number Object parseFloat parseInt RegExp setInterval setTimeout
+                                    String unescape
+
+                                    alert document history location navigator prompt screen window
+
+                                    exports GLOBAL process require"/>
+                </Keywords>
+                <SampleCode value="lexer_coffee.sample"
+                            breakpoint_line="20"
+                            debug_line="22"
+                            error_line="23"/>
+                <LanguageAttributes
+                    LineComment="#"
+                    DoxygenLineComment=""
+                    StreamCommentStart="###"
+                    StreamCommentEnd="###"
+                    DoxygenStreamCommentStart="/**"
+                    DoxygenStreamCommentEnd="*/"
+                    BoxCommentStart="### "
+                    BoxCommentMid="#   "
+                    BoxCommentEnd="###"
+                    CaseSensitive="1"
+                    LexerCommentStyles="1,2,3,15,17,18,22,24"
+                    LexerCharacterStyles=""
+                    LexerStringStyles="6,7,12"
+                    LexerPreprocessorStyles=""/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

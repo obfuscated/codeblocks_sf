@@ -1,0 +1,224 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Matlab S-Function project wizard
+//
+////////////////////////////////////////////////////////////////////////////////
+
+// globals
+MatlabPath <- _T("");
+
+function BeginWizard()
+{
+  local intro_msg = _T("Welcome to the new Matlab C-S-Function project wizard!\n\n" +
+                       "This wizard will guide you to create a new project\n" +
+                       "creating a Matlab C-S-Function using the GCC\n" +
+                       "or Matlab LCC compiler.\n\n" +
+                       "For GCC you must have converted the Matlab DLL's into\n" +
+                       "GCC compatible libraries using the DLLTOOL before.\n" +
+                       "On Windows, this wizard expects the GCC libraries at the location:\n" +
+                       "[MATLAB]/extern/lib/win32/gcc\n\n" +
+                       "When you're ready to proceed, please click \"Next\"...");
+
+  local matlabpath_descr = _T("Please select the location of Matlab on your computer.\n" +
+                              "This is the top-level folder where Matlab was installed.");
+
+  Wizard.AddInfoPage(_T("MatlabCSFIntro"), intro_msg); // intro
+  Wizard.AddProjectPathPage();
+  Wizard.AddCompilerPage(_T(""), _T("gcc;lcc"), true, false); // compiler selection but no path selection
+  Wizard.AddGenericSelectPathPage(_T("MatlabPath"), matlabpath_descr, _T("Please select Matlab's location:"), _T("$(#matlab)"));
+  Wizard.AddPage(_T("MatlabHint"));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Matlab's path page
+////////////////////////////////////////////////////////////////////////////////
+
+function OnLeave_MatlabPath(fwd)
+{
+  if (fwd)
+  {
+    local dir         = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
+    local dir_nomacro = ReplaceMacros(dir, true);
+    if (!IO.DirectoryExists(dir_nomacro))
+    {
+      ShowError(_T("Please select a valid path to Matlab..."));
+      return false;
+    }
+    // Verify Matlab extern includes
+    if (!IO.DirectoryExists(dir_nomacro + _T("/extern/include")))
+    {
+      ShowError(_T("The Matlab path you entered seems valid, but this wizard\n" +
+                   "can't locate the Matlab extern include path in the sub-directory /extern/include"));
+      return false;
+    }
+    // Verify Matlab extern tmwtypes.h (Simulink types)
+    if (!IO.FileExists(dir_nomacro + _T("/extern/include/tmwtypes.h")))
+    {
+      ShowError(_T("The Matlab extern path seems valid, but this wizard\n" +
+                   "can't locate the Matlab twmtypes.h in it."));
+      return false;
+    }
+    // Verify Simulink includes
+    if (!IO.DirectoryExists(dir_nomacro + _T("/simulink/include")))
+    {
+      ShowError(_T("The Matlab path you entered seems valid, but this wizard\n" +
+                   "can't locate the Simulink include path in the sub-directory\n"
+                   "/simulink/include"));
+      return false;
+    }
+    // Verify Matlab extern tmwtypes.h (Simulink types)
+    if (!IO.FileExists(dir_nomacro + _T("/simulink/include/simstruc.h")))
+    {
+      ShowError(_T("The Matlab-Simulink include path seems valid, but this wizard\n" +
+                   "can't locate the Matlab simstruc.h in it."));
+      return false;
+    }
+
+    if (Wizard.GetCompilerID().Matches(_T("lcc")))
+    {
+      // Verify LCC includes
+      if (!IO.DirectoryExists(dir_nomacro + _T("/sys/lcc/include")))
+      {
+        ShowError(_T("The Matlab path you entered seems valid, but this wizard\n" +
+                     "can't locate the LCC include path in the sub-directory\n" +
+                     "/sys/lcc/include"));
+        return false;
+      }
+      if (PLATFORM == PLATFORM_MSW)
+      {
+        // Verify LCC libraries
+        if (!IO.DirectoryExists(dir_nomacro + _T("/extern/lib/win32/lcc")))
+        {
+          ShowError(_T("The Matlab path you entered seems valid, but this wizard\n" +
+                       "can't locate the LCC library path in the sub-directory\n" +
+                       "/extern/lib/win32/lcc"));
+          return false;
+        }
+      }
+    }
+    else if (Wizard.GetCompilerID().Matches(_T("gcc")))
+    {
+      if (PLATFORM == PLATFORM_MSW)
+      {
+        // Verify GCC libraries
+        if (!IO.DirectoryExists(dir_nomacro + _T("/extern/lib/win32/gcc")))
+        {
+          ShowError(_T("The Matlab path you entered seems valid, but this wizard\n" +
+                       "can't locate the GCC library path in the sub-directory\n" +
+                       "/extern/lib/win32/gcc"));
+          return false;
+        }
+      }
+    }
+
+    MatlabPath = dir;
+  }
+  return true;
+}
+
+// return the files this project contains
+function GetFilesDir()
+{
+  local result = _T("matlab_csf/files");
+  if (Wizard.GetCompilerID().Matches(_T("lcc")))
+    result += _T(";matlab_csf/lccstub");
+
+  return result;
+}
+
+// setup the already created project
+function SetupProject(project)
+{
+  // enable compiler warnings (project-wide)
+  if (Wizard.GetCompilerID().Matches(_T("lcc")))
+  {
+    if (!CompilerFactory.IsValidCompilerID(_T("lcc")))
+    {
+      ShowError(_T("The wizard has detected that your version of Code::Blocks does not\n" +
+                   "support the LCC compiler which is required for this project.\n" +
+                   "The wizard cannot continue. Please update Code::Blocks."));
+      return false;
+    }
+
+    // set project options for LCC
+    project.SetModeForPCH(pchSourceDir);
+    project.AddCompilerOption(_T("-Zp8"));              // 8 byte alignment
+    project.AddCompilerOption(_T("-noregistrylookup")); // do not query the registry for libpath
+
+    project.AddLinkerOption(_T("-s"));
+    project.AddLinkerOption(_T("-tmpdir \".\""));
+    if (PLATFORM == PLATFORM_MSW)
+    {
+      project.AddLinkerOption(_T("-libpath ") + MatlabPath + _T("\\extern\\lib\\win32\\lcc"));
+      project.AddLinkerOption(MatlabPath + _T("\\extern\\lib\\win32\\lcc\\mexFunction.def"));
+    }
+  }
+  else if (Wizard.GetCompilerID().Matches(_T("gcc")))
+  {
+    // set project options for GCC
+    project.SetModeForPCH(pchSourceDir);
+    project.AddCompilerOption(_T("-malign-double"));    // 8 byte alignment
+    project.AddCompilerOption(_T("-fno-exceptions"));   // exception free code
+
+    project.AddLinkerOption(_T("-shared"));
+    project.AddLinkerOption(_T("-Wl,--out-implib=sfuntmpl")+DOT_EXT_STATICLIB);
+    if (PLATFORM == PLATFORM_MSW)
+    {
+      project.AddLibDir(MatlabPath + _T("/extern/lib/win32/gcc"));
+    }
+  }
+  else
+  {
+    ShowError(_T("The selected compiler is not compatible with Matlab.\n" +
+                 "The wizard cannot continue."));
+    return false;
+  }
+
+  // set common project options (the same for both compilers)
+  project.AddCompilerOption(_T("-DNDEBUG"));
+  project.AddCompilerOption(_T("-DMATLAB_MEX_FILE"));
+
+  project.AddIncludeDir(MatlabPath + _T("\\extern\\include"));
+  project.AddIncludeDir(MatlabPath + _T("\\simulink\\include"));
+
+  project.AddLinkLib(_T("libmx"));
+  project.AddLinkLib(_T("libmex"));
+  project.AddLinkLib(_T("libmatlb"));
+  project.AddLinkLib(_T("libmat"));
+
+  // Debug
+  local target = project.GetBuildTarget(Wizard.GetDebugName());
+  if (!IsNull(target))
+  {
+    target.SetTargetType(ttDynamicLib);
+    // the s-function DLL must have the same name as the file/function
+    target.SetOutputFilename(_T("sfuntmpl") + DOT_EXT_DYNAMICLIB);
+    target.SetWorkingDir(_T("."));
+
+    if (Wizard.GetCompilerID().Matches(_T("lcc")))
+    {
+      // It only works that way because the LCC resource compiler does not
+      // support creating it's "object files" (*.res) in any sub-directory
+      target.SetObjectOutput(_T(".")); //
+    }
+  }
+
+  // Release
+  target = project.GetBuildTarget(Wizard.GetReleaseName());
+  if (!IsNull(target))
+  {
+    target.SetTargetType(ttDynamicLib);
+    // the s-function DLL must have the same name as the file/function
+    target.SetOutputFilename(_T("sfuntmpl") + DOT_EXT_DYNAMICLIB);
+    target.SetWorkingDir(_T("."));
+
+    if (Wizard.GetCompilerID().Matches(_T("lcc")))
+    {
+      // It only works that way because the LCC resource compiler does not
+      // support creating it's "object files" (*.res) in any sub-directory
+      target.SetObjectOutput(_T(".")); //
+    }
+  }
+
+  return true;
+}

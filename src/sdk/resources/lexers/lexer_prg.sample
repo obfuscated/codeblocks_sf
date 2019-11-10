@@ -1,0 +1,39 @@
+#include "myinclude.h"
+FUNCTION mydate
+    Return {15/08/2005} // Somehow the lexer doesnt recognize this date format - needs fix
+ENDFUNC
+
+FUNCTION ErrorHandler(X_Error,X_Program,X_Line,X_Cancel)
+LOCAL X_ErrorMsg,X_CodeLineMsg
+
+WAIT CLEAR
+
+DO CASE
+	CASE X_Error==2005 .or. X_Error==1705
+		X_Resp=MessageBox("Can't use data file."+Chr(13)+;
+			"Program terminated.",0+16,"Error")  // 5-Retry and cancel, 0 - Accept
+*		IF X_Resp==4  // Retry -> Gives error: Mismatched PushJmp/PopJmp call
+*			Retry
+*		ENDIF
+	OTHERWISE
+		X_ErrorMsg=Message()+Chr(13)+Chr(13)+;
+		           "# Error: "+Ltrim(Str(X_Error))+Chr(13)+;
+		           "Program: "+X_Program
+		X_CodeLineMsg=Message(1)
+		IF Between(X_Line,1,10000) And !X_CodeLineMsg="..."
+			X_ErrorMsg=X_ErrorMsg+Chr(13)+;
+			       "Líne: "+Alltrim(Str(X_Line))
+			IF !Empty(X_CodeLineMsg)
+				X_ErrorMsg=X_ErrorMsg+Chr(13)+Chr(13)+X_CodeLineMsg
+			ENDIF
+		ENDIF
+
+		MessageBox(X_ErrorMsg,16,"Error")  // OK/Icon=STOP SIGN/"Error"
+ENDCASE
+
+IF X_Cancel // Used before GoApp.Show
+   Finish()
+   Cancel
+ENDIF
+
+Return to Master

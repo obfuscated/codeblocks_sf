@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <!-- The filemasks attribute is empty, because we don't want this file to match anything, we
+            handle this specially.
+        -->
+        <Lexer name="Plain text files"
+                index="1"
+                filemasks="">
+                <Style name="Default"
+                        index="0,11"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <Style name="Default (inactive)"
+                        index="64,72,75"
+                        fg="200,200,200"/>
+                <SampleCode value="lexer_cpp.sample"/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

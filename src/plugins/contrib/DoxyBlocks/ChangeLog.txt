@@ -1,0 +1,257 @@
+06 February 2011
+   released version 1.7.655 of DoxyBlocks
+
+     Change log:
+        -Fixed: Hard coded doxygen directory name.
+        -Updated: Directory creation code.
+
+02 February 2011
+   released version 1.6.613 of DoxyBlocks
+
+     Change log:
+        -Updated: doxygen support to v1.7.3.
+
+12 July 2010
+   released version 1.6.606 of DoxyBlocks
+
+     Change log:
+        -Fixed: Fixed some additional inclusions and other minor factors for contrib inclusion.
+
+05 July 2010
+   released version 1.6.596 of DoxyBlocks
+
+     Change log:
+        -Fixed: Bugs that caused DoxyBlocks to crash when importing a Visual Studio solution.
+        -Added: Feature that allows you to load a saved template instead of the default settings, if no saved settings exist when loading a project. Requested by Codeur.
+        -Updated: Doxyfile output to doxygen 1.7.1.
+        -New: Prevented doxygen parse errors when using WXUNUSED() by adding it to doxygen's pre-processor settings.
+        -Updated: The document directory functionality to allow the use of directories other than "doxygen" as the root folder.
+        -Cleaned: The documentation to parse as cleanly as possible with all warnings enabled.
+        -Updated: Doxywizard's icon.
+
+19 May 2010
+   released version 1.5.511 of DoxyBlocks
+
+     Change log:
+        -Fixed: Unix build files.
+        -Removed: Debug statement that was inadvertently left behind.
+
+17 May 2010
+   released version 1.5.508 of DoxyBlocks
+
+     Change log:
+        -Fixed: Fixed a crash that occurred when saving settings from the system configuration dialogue when no project was open. Reported by danselmi.
+        -Fixed: Template menu items not disabled with the others.
+
+21 April 2010
+   released version 1.5.502 of DoxyBlocks
+
+     Change log:
+        -Added: Functionality to better process the function return string and the keywords "static" and "inline".
+        -Added: Functionality to process ** in parameters and return values.
+
+02 April 2010
+   released version 1.5.454 of DoxyBlocks
+
+     Change log:
+        -Updated: Function args including const should now be parsed correctly.
+
+01 April 2010
+   released version 1.5.440 of DoxyBlocks
+
+     Change log:
+        -Added: Virtual target "All", for consistency.
+        -Updated: Menu text so that only the first word is capitalised, as per the existing convention.
+        -Added: New functionality to save and load a configuration template. Requested by Codeur.
+
+28 March 2010
+   released version 1.4.366 of DoxyBlocks
+
+     Change log:
+        -Added: Information about macro expansion to the config. panel path tooltips.
+        -Cleaned: Removed the .cbplugin creation command from both Windows and Unix projects.
+        -Added: You can now click the URL displayed in the log window to view the HTML docs.
+        -Updated: Changed the config Get functions to be constant.
+
+27 March 2010
+   released version 1.3.312 of DoxyBlocks
+
+     Change log:
+        -Fixed: Bug that prevented the output directory being created if a sub-directory was used and didn't already exist.
+        -Fixed: Bug in prefs loading code that prevented global prefs from being loaded for a project which hadn't previously used DoxyBlocks.
+        -Updated: The generated doxyfile couldn't be run directly by doxygen due to the way that relative paths were created. Changed how DoxyBlocks creates and runs the doxyfile so that it can be run directly by other agents.
+
+27 March 2010
+   released version 1.3.289 of DoxyBlocks
+
+     Change log:
+        -Fixed: I have changed my setup and the project to run with the paths expected by C::B. Hopefully this will solve the failures to run experienced by .cbplugin users and bring it into line with other contrib projects.
+
+22 March 2010
+   released version 1.3.236 of DoxyBlocks
+
+     Change log:
+        -Added: Configuration of EXTRACT_PRIVATE and EXTRACT_STATIC. Requested by ptDev.
+        -Updated: Changed the generated doxyfile to doxygen 1.6.3.
+        -Updated: For consistency, changed HTML_TIMESTAMP default to YES.
+        -Updated: For consistency, changed EXTRACT_LOCAL_METHODS default to NO.
+        -Added: Macro expansion in path prefs so that you can use things like "$(CODEBLOCKS)" in paths. Requested by Codeur.
+
+22 March 2010
+   released version 1.2.223 of DoxyBlocks
+
+     Change log:
+        -Fixed: Bug in the config. panel that caused the OUTPUT_DIRECTORY label to be obscured on Linux.
+
+20 March 2010
+   released version 1.2.221 of DoxyBlocks
+
+     Change log:
+        -Fixed: Finally got it to run on Linux with Jens' help by integrating with contrib plug-ins and building from there.
+        -Updated: Changed my fix from 1.2.218 to Jens' version as it's more efficient.
+
+20 March 2010
+   released version 1.2.218 of DoxyBlocks
+
+     Change log:
+        -Fixed: Nasty bug that caused C::B to crash if no editors were open when DoxyBlocks functions were used.
+
+19 March 2010
+   released version 1.2.213 of DoxyBlocks
+
+     Change log:
+        -Cleaned: General cleanup, added to and corrected some documentation errors, added credits, removed junk, updated .po.
+
+19 March 2010
+   released version 1.2.204 of DoxyBlocks
+
+     Change log:
+        -Added: The ability to create separate output directories for projects that live in the same directory.
+        -Added: Missing warning when trying to run HTML Help and it's not found.
+
+18 March 2010
+   released version 1.2.138 of DoxyBlocks
+
+     Change log:
+        -Fixed: The menu activation code was still not right. I think I now have the right combination of events to make things happen correctly.
+
+17 March 2010
+   released version 1.1.123 of DoxyBlocks
+
+     Change log:
+        -Added: I forgot to disable the menu if there are no editors open at startup. That's now done.
+
+16 March 2010
+   released version 1.1.111 of DoxyBlocks
+
+     Change log:
+        -Updated: Made a matching HTML Help icon.
+        -Added: Block comments can now handle more than one return value keyword.
+        -Added: The toolbar is now disabled if there are no projects open on startup.
+        -Updated: Changed the log output when doxygen is running slightly.
+
+16 March 2010
+   released version 1.1.79 of DoxyBlocks
+
+     Change log:
+        -Added: The toolbar and menu are now disabled when all projects are closed and re-enabled when a project is opened.
+        -Fixed: The wxSmith block was being lost from the .cbp when saving during project closure. Reworked how config is saved.
+
+11 March 2010
+   released version 1.0.14 of DoxyBlocks
+
+     Change log:
+        -Added: Precompiled headers for faster compilation.
+        -Fixed: I somehow lost the wxSmith block from the project file.
+        -Added: The ability to run a CHM on any OS, given the appropriate viewer. Windows still uses the OS viewer by default.
+        -Added: Jens' automake files and added the missing files.
+        -Updated: Improved and added to the documentation.
+
+09 March 2010
+   released version 1.0.1 of DoxyBlocks
+
+     Change log:
+        -Fixed: Bug that slipped through preventing loading of some prefs.
+
+09 March 2010
+   released version 1.0.0 of DoxyBlocks
+
+     Change log:
+        -Added: Disable comment toolbar buttons and menu items when there are no editors open.
+        -Added: Changed the config system to use the project file and load and save at project open and close.
+        -Fixed: Bug in config. panel that allowed dependent warning checkboxes to be active when the master warnings one wasn't.
+
+06 March 2010
+   released version 0.7.669 of DoxyBlocks
+
+     Change log:
+        -Added: The block comment sample now updates to reflect the selection when "Use @ In Tags" selection is changed.
+        -Cleaned: Improved some text generation to simplify localisation strings.
+        -Added: Some missing documentation.
+        -Updated: Improved return value checking when running doxygen. Thanks to private_joker.
+        -Updated: Quoted the doxyfile path when running doxywizard to avoid doxywizard crash if the path contain spaces. Thanks to private_joker.
+
+05 March 2010
+   released version 0.7.636 of DoxyBlocks
+
+     Change log:
+        -Added: Added the ability to use the AutoVersion plug-in's version string as doxygen's project number value.
+        -Fixed: The function parser was creating comments with the parameter type and name in the wrong order.
+        -Fixed: Bug in regex pattern matching that allowed multiple matches.
+        -Added: Inserted comments blocks are now indented to match the code that they're commenting.
+
+03 March 2010
+   released version 0.5.457 of DoxyBlocks
+
+     Change log:
+        -Added: BusyInfo when running doxygen.
+        -Added: Ability to run HTML after compilation.
+        -Added: Ability to run HTML in the internal viewer.
+        -Updated: Header blocks for all files.
+        -Added: Now parses the selected line when inserting block comments and pre-fills the \param and \return values.
+        -Added: Option to use "@" in comments rather than "\".
+
+27 February 2010
+   released version 0.3.287 of DoxyBlocks
+
+     Change log:
+        -Fixed: DOT_PATH was written twice due to some extraneous code.
+        -Added: New menu which mirrors toolbar functionality.
+        -Added: Context-sensitive menu.
+        -Added: Translation catalogue.
+        -Cleaned: Some general code tidying.
+        -Added: Resource file and Windows version info.
+        -Fixed: Reworked the prefs dialogue so that it doesn't increase the size of the existing editor prefs window.
+
+25 February 2010
+   released version 0.2.178 of DoxyBlocks
+
+     Change log:
+        -Updated: Documentation.
+
+25 February 2010
+   released version 0.2.177 of DoxyBlocks
+
+     Change log:
+        -Fixed: Prefs dlg order and improved the layout slightly.
+        -Added: Warning checkbox toggles other warnings which I forgot to add before.
+        -Updated: The entire project to run from \src\plugins\contrib\. Hopefully that will solve some problems.
+
+22 February 2010
+   released version 0.2.172 of DoxyBlocks
+
+     Change log:
+        -Fixed: Bug that stopped the "Run CHM" pref from working.
+        -Fixed: Bug that stopped the "Project Number" pref from working.
+
+22 February 2010
+   released version 0.2.170 of DoxyBlocks
+
+     Change log:
+        -Added: The ability to run the HTML and CHM from the toolbar.
+        -Fixed: Bug that caused a crash when using the plugin without a project open.
+        -Added: Doxyfile default prefs configuration.
+        -Added: Access to configuration from toolbar.
+        -Added: Ability to overwrite doxyfile either silently or after prompt.
+        -Added: Option to control whether CHM is run after compilation.
+

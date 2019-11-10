@@ -1,0 +1,60 @@
+cmake_minimum_required(VERSION 2.8)
+project(AnApp)
+
+if(CMAKE_BUILD_TYPE STREQUAL "")
+    set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: None (CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel." FORCE)
+endif()
+
+set(CMAKE_DEBUG_POSTFIX "_d")
+set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/dist")
+
+# Find Boost
+set(Boost_USE_STATIC_LIBS TRUE)
+if(MINGW)
+    # this is probably a bug in CMake: the boost find module tries to look for
+    # boost libraries with name libboost_*, but CMake already prefixes library
+    # search names with "lib". This is the workaround.
+    set(CMAKE_FIND_LIBRARY_PREFIXES ${CMAKE_FIND_LIBRARY_PREFIXES} "")
+endif()
+set(Boost_ADDITIONAL_VERSIONS "1.49" "1.49.0" "1.48" "1.48.0" "1.47" "1.47.0" "1.46.1" "1.46" "1.46.0")
+find_package(Boost COMPONENTS thread date_time QUIET)
+if(NOT Boost_FOUND)
+    # Try again with the other type of libs
+    set(Boost_USE_STATIC_LIBS FALSE)
+    find_package(Boost COMPONENTS thread date_time QUIET)
+endif()
+find_package(Boost QUIET)
+include_directories(${Boost_INCLUDE_DIR})
+add_definitions(-DBOOST_ALL_NO_LIB)
+
+set(HDRS
+    ./BaseApplication.h
+    ./MainApplication.h
+)
+set(SRCS
+    ./BaseApplication.cpp
+    ./MainApplication.cpp
+)
+
+include_directories(${Boost_INCLUDE_DIRS})
+add_executable(AnApp ${HDRS} ${SRCS})
+set_target_properties(AnApp PROPERTIES DEBUG_POSTFIX _d)
+target_link_libraries(AnApp ${Boost_LIBRARIES})
+
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin)
+install(TARGETS AnApp
+    RUNTIME DESTINATION bin
+    CONFIGURATIONS All
+)
+if(WIN32 AND NOT Boost_USE_STATIC_LIBS)
+    install(FILES ${Boost_DATE_TIME_LIBRARY_RELEASE}
+        ${Boost_THREAD_LIBRARY_RELEASE}
+        DESTINATION bin
+        CONFIGURATIONS Release RelWithDebInfo
+    )
+    install(FILES ${Boost_DATE_TIME_LIBRARY_DEBUG}
+        ${Boost_THREAD_LIBRARY_DEBUG}
+        DESTINATION bin
+        CONFIGURATIONS Debug
+    )
+endif(WIN32)

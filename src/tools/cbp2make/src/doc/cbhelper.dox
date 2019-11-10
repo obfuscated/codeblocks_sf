@@ -1,0 +1,66 @@
+/*
+    cbp2make : Makefile generation tool for the Code::Blocks IDE
+    Copyright (C) 2010-2013 Mirai Computing (mirai.computing@gmail.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/*!
+  \file cbhelper.h
+  \brief Auxiliary functions for strings processing.
+*/
+
+/*!
+  \file cbhelper.cpp
+  \brief Auxiliary functions for strings processing.
+*/
+
+/*!
+  \fn ShowStringList(const CString& Title, const CString& LinePrefix, const CStringList& StringList)
+  \brief Prints titled string list to standard output.
+  \param Title title of the string list.
+
+  \param LinePrefix prefix string pritned at the beginning of each line.
+
+  \param StringList list of strings to display.
+
+*/
+
+/*!
+  \fn MakefileFriendly(const CString& AString)
+  \brief Makes a makefile compatible identifier string from the given string.
+  \param AString an identifier name.
+
+  Custom strings may contain characters that are not allowed inside makefile,
+  therefore these characters are replaced with allowed characters (underscore, etc).
+*/
+
+/*!
+  \fn XMLFriendly(const CString& AString)
+  \brief Makes an XML compatible identifier string from the given string.
+  \param AString an identifier name.
+
+  Custom strings may contain characters that are not allowed for XML tags,
+  therefore these characters are replaced with allowed characters (underscore, etc).
+*/
+
+/*!
+  \fn FlatFileName(const CString& FileName)
+  \brief Converts given file path to another file name without path delimiters.
+  \param FileName a file name possibly containing path to a file.
+
+  Example: "path/to/file/source.o" will be converted to "path_to_file_source.o"
+*/
+
+//------------------------------------------------------------------------------

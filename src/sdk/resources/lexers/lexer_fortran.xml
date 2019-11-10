@@ -1,0 +1,170 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+		<Lexer name="Fortran"
+				index="36"
+				filemasks="*.f90,*.f95,*.f2k,*.f03,*.f08">
+				<Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+				<Style name="Comment"
+						index="1"
+						fg="160,160,160"/>
+				<Style name="Number"
+						index="2"
+						fg="240,0,240"/>
+				<Style name="Identifier"
+						index="7"
+						fg="0,0,0"/>
+				<Style name="Keyword"
+						index="8"
+						fg="0,0,160"
+						bold="1"/>
+				<Style name="User keyword"
+						index="9,10"
+						fg="0,160,0"
+						bold="1"/>
+				<Style name="String"
+						index="3,4,5"
+						fg="0,0,255"/>
+				<Style name="Label"
+						index="13"
+						fg="0,0,255"/>
+				<Style name="Continuation"
+						index="14"
+						fg="0,0,255"/>
+				<Style name="Preprocessor"
+						index="11"
+						fg="0,160,0"/>
+				<Style name="Operator"
+						index="6,12"
+						fg="255,0,0"/>
+				<Style name="Breakpoint line"
+						index="-2"
+						bg="255,160,160"/>
+				<Style name="Debugger active line"
+						index="-3"
+						bg="160,160,255"/>
+				<Style name="Compiler error line"
+						index="-4"
+						bg="255,128,0"/>
+				<Keywords>
+                        <!-- Primary keywords and identifiers-->
+                        <Set index="0"
+                            value="access action advance allocatable allocate 
+apostrophe assign assignment associate asynchronous backspace 
+bind blank blockdata call case character class close common 
+complex contains continue cycle data deallocate decimal delim 
+default dimension direct do dowhile double doubleprecision else 
+elseif elsewhere encoding end endassociate endblockdata enddo 
+endfile endforall endfunction endif endinterface endmodule endprocedure endprogram 
+endselect endsubroutine endtype endwhere entry eor equivalence 
+err errmsg exist exit external final file flush fmt forall form format 
+formatted function go goto id if implicit in include inout 
+integer inquire intent interface intrinsic iomsg iolength 
+iostat kind len logical module named namelist nextrec nml 
+none nullify number only open opened operator optional out pad 
+parameter pass nopass pause pending pointer pos position precision 
+print private program protected public quote read readwrite 
+real rec recl recursive result return rewind save select 
+selectcase selecttype sequential stat status stop stream 
+subroutine target then to type unformatted unit use value 
+volatile wait where while write procedure elemental pure sequence
+
+import is
+null new_line  block abstract delegate static reference round deferred
+decorate extends generic non_overridable enum endenum enumerator typealias
+submodule endsubmodule concurrent contiguous re im endblock non_intrinsic
+codimension contiguous impure critical endcritical lock unlock error sync
+all memory images fail image event post change team endteam
+"/>
+                        <!-- Intrinsic and Extended Functions-->
+                        <Set index="1"
+                            value="abs achar acos acosd adjustl adjustr 
+aimag aimax0 aimin0 aint ajmax0 ajmin0 akmax0 akmin0 all allocated alog 
+alog10 amax0 amax1 amin0 amin1 amod anint any asin asind associated 
+atan atan2 atan2d atand bitest bitl bitlr bitrl bjtest bit_size bktest break 
+btest cabs ccos cdabs cdcos cdexp cdlog cdsin cdsqrt ceiling cexp char 
+clog cmplx conjg cos cosd cosh count cpu_time cshift csin csqrt dabs 
+dacos dacosd dasin dasind datan datan2 datan2d datand date 
+date_and_time dble dcmplx dconjg dcos dcosd dcosh dcotan ddim dexp 
+dfloat dflotk dfloti dflotj digits dim dimag dint dlog dlog10 dmax1 dmin1 
+dmod dnint dot_product dprod dreal dsign dsin dsind dsinh dsqrt dtan dtand 
+dtanh eoshift epsilon errsns exp exponent float floati floatj floatk floor fraction 
+free huge iabs iachar iand ibclr ibits ibset ichar idate idim idint idnint ieor ifix 
+iiabs iiand iibclr iibits iibset iidim iidint iidnnt iieor iifix iint iior iiqint iiqnnt iishft 
+iishftc iisign ilen imax0 imax1 imin0 imin1 imod index inint inot int int1 int2 int4 
+int8 iqint iqnint ior ishft ishftc isign isnan izext jiand jibclr jibits jibset jidim jidint 
+jidnnt jieor jifix jint jior jiqint jiqnnt jishft jishftc jisign jmax0 jmax1 jmin0 jmin1 
+jmod jnint jnot jzext kiabs kiand kibclr kibits kibset kidim kidint kidnnt kieor kifix 
+kind kint kior kishft kishftc kisign kmax0 kmax1 kmin0 kmin1 kmod knint knot kzext 
+lbound leadz len len_trim lenlge lge lgt lle llt log log10 logical lshift malloc matmul 
+max max0 max1 maxexponent maxloc maxval merge min min0 min1 minexponent minloc 
+minval mod modulo mvbits nearest nint not nworkers number_of_processors pack popcnt 
+poppar precision present product radix random random_number random_seed range real 
+repeat reshape rrspacing rshift scale scan secnds selected_int_kind 
+selected_real_kind set_exponent shape sign sin sind sinh size sizeof sngl snglq spacing 
+spread sqrt sum system_clock tan tand tanh tiny transfer transpose trim ubound unpack verify 
+
+command_argument_count get_command get_command_argument get_environment_variable
+is_iostat_end is_iostat_eor move_alloc extends_type_of same_type_as selected_char_kind
+
+acosh asinh atanh c_sizeof bessel_j0 bessel_j1 bessel_jn bessel_y0 bessel_y1 bessel_yn erf hypot log_gamma trailz
+gamma bge bgt ble blt dshiftl dshiftr maskl maskr shifta shiftl shiftr merge_bits iall iany iparity
+storage_size parity norm2 erfc erfc_scaled execute_command_line findloc ucobound lcobound 
+num_images this_image image_index atomic_define atomic_ref rank is_contiguous
+atomic_add atomic_and atomic_cas atomic_fetch_add atomic_fetch_and atomic_fetch_or
+atomic_fetch_xor atomic_or atomic_xor get_team co_broadcast co_max co_min co_reduce
+co_sum event_query failed_images image_status stopped_images team_number
+
+"/>
+                        <!-- Non Standard, Extended and User-Defined -->
+                        <Set index="2"
+                            value="cdabs cdcos cdexp cdlog cdsin cdsqrt cotan cotand 
+dcmplx dconjg dcotan dcotand decode dimag dll_export dll_import doublecomplex dreal 
+dvchk encode find flen getcharqq getcl getdat gettim hfix ibchng 
+identifier imag int1 int2 int4 int8 int16 int32 int64 intc intrup invalop iostat_msg isha ishc ishl jfix 
+lacfar locking locnear map nargs nbreak ndperr ndpexc offset ovefl peekcharqq precfill 
+prompt qabs qacos qacosd qasin qasind qatan qatand qatan2 qcmplx qconjg qcos qcosd 
+qcosh qdim qexp qext qextd qfloat qimag qlog qlog10 qmax1 qmin1 qmod qreal qsign qsin 
+qsind qsinh qsqrt qtan qtand qtanh ran rand randu real32 real64 real128 rewrite segment setdat settim system 
+timer undfl union val virtual volatile zabs zcos zexp zlog zsin zsqrt
+character_kinds integer_kinds logical_kinds real_kinds
+               c_associated c_f_pointer c_f_procpointer c_funloc c_loc
+c_int c_short c_long c_long_long c_signed_char c_size_t c_int8_t c_int16_t c_int32_t c_int64_t c_int128_t
+c_int_least8_t c_int_least16_t c_int_least32_t c_int_least64_t c_int_least128_t c_int_fast8_t c_int_fast16_t
+c_int_fast32_t c_int_fast64_t c_int_fast128_t c_intmax_t c_intptr_t c_float c_double c_long_double c_float_complex
+c_double_complex c_long_double_complex c_bool c_char c_ptr
+c_funptr c_null_funptr c_null_ptr c_new_line c_null_char c_alert c_backspace c_form_feed c_carriage_return 
+c_horizontal_tab c_vertical_tab
+atomic_int_kind atomic_logical_kind compiler_options compiler_version iostat_inquire_internal_unit lock_type
+stat_locked stat_locked_other_image stat_stopped_image stat_unlocked
+character_storage_size error_unit file_storage_size input_unit iostat_end iostat_eor
+numeric_storage_size output_unit initial_team parent_team stat_failed_image
+stat_unlocked_failed_image team_type event_type"/>
+				</Keywords>
+				<SampleCode value="lexer_fortran.sample"
+						breakpoint_line="20"
+						debug_line="22"
+						error_line="23"/>
+                <LanguageAttributes
+                    LineComment="!"
+                    DoxygenLineComment="!>"
+                    StreamCommentStart=""
+                    StreamCommentEnd=""
+                    DoxygenStreamCommentStart=""
+                    DoxygenStreamCommentEnd=""
+                    BoxCommentStart=""
+                    BoxCommentMid=""
+                    BoxCommentEnd=""
+                    CaseSensitive="0"
+                    LexerCommentStyles="1"
+                    LexerCharacterStyles=""
+                    LexerStringStyles="3,4,5"
+                    LexerPreprocessorStyles="11"/>
+		</Lexer>
+</CodeBlocks_lexer_properties>

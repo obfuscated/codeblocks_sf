@@ -1,0 +1,23 @@
+
+"bubble sort"
+
+bubbleSort: cmpFun
+	"Implementing Bubble sort with Smalltalk"
+	| i j tmp funResult |
+	i := self size.
+	[i > 0]
+		whileTrue: [j := 1.
+			[j <= i]
+				whileTrue: [funResult := cmpFun
+								value: (self at: i)
+								value: (self at: j).
+					funResult
+						ifTrue: [tmp := self at: i.
+							self
+								at: i
+								put: (self at: j).
+							self at: j put: tmp].
+					j := j + 1].
+			i := i - 1]
+
+missing comment sign "

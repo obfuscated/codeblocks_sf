@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+                      "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<?php
+/*
+ * This is a PHP multi-line comment.
+ * This is a PHP multi-line comment.
+ */
+
+function myfunction($a = 'hello', $b = 5, $c = "something")
+{
+  // PHP Single line comment
+  for($i = 0; $i < 5; $i++)
+  {
+    echo $a, " $b <br />",$c,'<br />';
+    ?>
+    <p>This is inside a PHP loop!</p>
+<?php
+  }
+}
+?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+  <head>
+    <title>HTML Example</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+<body>
+<script type="text/javascript">
+<!--
+function myfunc()
+{
+  var i;
+  for(i = 0;i < 5; i++)
+  {
+    alert('This is an annoying message!');
+  }
+
+}
+  myfunc();
+-->
+</script>
+    <div id="wrapper">
+      <div id="header">
+        &nbsp;
+      </div>
+      <!-- end #header -->
+      <div id="navigation">
+        &nbsp;
+      </div>
+      <!-- end #navigation -->
+      <div id="content">
+        <p>
+          Loreum ipsum.
+        </p>
+      </div>
+      <!-- end #content -->
+      <div id="footer">
+        <p>
+          &copy; 2006 Code::Blocks.
+        </p>
+      </div>
+      <!-- end #footer -->
+      <bad />
+    </div>
+  </body>
+</html>

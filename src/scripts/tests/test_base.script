@@ -1,0 +1,221 @@
+
+
+//local made_tests = 0;
+//local passed_tests = 0;
+//local failed_tests = 0;
+////local sa = wxStopWatch();
+//local global_made_tests = 0;
+//local global_passed_tests = 0;
+//local global_failed_tests = 0;
+
+made_tests <- 0;
+passed_tests <- 0;
+failed_tests <- 0;
+global_made_tests <- 0;
+global_passed_tests <- 0;
+global_failed_tests <- 0;
+
+class script_test_base
+{
+    function Run()
+    {
+
+    }
+
+    function error(message)
+    {
+        ::print("[ERROR] "+ message );
+    }
+
+    function format_output(name, result)
+    {
+        local name_length = name.len();
+        local needed_tabs = 0;
+        local free_space = 20 - name_length;
+        if(free_space < 0)
+        {
+            free_space = 50 - name_length;
+        }
+        if(free_space < 0)
+            free_space = 4;
+
+        needed_tabs = free_space; //% 8;
+        local output = "Test: " + name;
+        local i = 0;
+        for(;i<needed_tabs;i++)
+        {
+            output += " ";
+        }
+        output += result;
+        return output;
+    }
+
+    function passed(name)
+    {
+        //sa.Pause();
+        ::passed_tests++;
+        ::global_passed_tests++;
+        ::print(format_output(name,"PASSED")+ "\n");
+        //sa.Resume();
+    }
+
+    function made_passed(name)
+    {
+        ::global_made_tests++;
+        passed(name);
+    }
+
+    function failed(name,message)
+    {
+        //sa.Pause();
+        ::failed_tests++;
+        ::global_failed_tests++;
+        error(format_output(name,"FAILED " + message +"\n"));//(got " + to_test + " needed "+result+") \n"));
+        //sa.Resume();
+    }
+
+    function made_failed(name,message)
+    {
+        ::global_made_tests++;
+        failed(name,message);
+    }
+
+    function clear_test_result()
+    {
+        ::made_tests = 0;
+        ::passed_tests = 0;
+        ::failed_tests = 0;
+        //sa.Start(0);
+    }
+
+    function clear_global_test_results()
+    {
+        ::global_made_tests = 0;
+        ::global_passed_tests = 0;
+        ::global_failed_tests = 0;
+    }
+
+    function print_global_test_result()
+    {
+        //sa.Pause();
+        ::print("\n");
+        ::print("Global executed tests: " + ::global_made_tests + "\n");
+        ::print("Global passed tests:   " + ::global_passed_tests + "\n");
+        ::print("Global failed tests:   " + ::global_failed_tests + "\n");
+        //::print("Time elapsed:   " + sa.Time() + "ms ("+ sa.TimeInMicro()+"us)\n");
+
+    }
+
+    function print_test_result()
+    {
+        //sa.Pause();
+        ::print("\n");
+        ::print("Executed tests: " + ::made_tests + "\n");
+        ::print("passed tests:   " + ::passed_tests + "\n");
+        ::print("failed tests:   " + ::failed_tests + "\n");
+        //::print("Time elapsed:   " + sa.Time() + "ms ("+ sa.TimeInMicro()+"us)\n");
+
+    }
+
+    function test_equal(name,to_test,result)
+    {
+        ::made_tests++;
+        ::global_made_tests++;
+        if(to_test == result)
+        {
+            passed(name);
+            return true;
+        }
+        else
+        {
+            failed(name,"(got " + to_test + " needed "+result+")");
+        }
+        return false;
+    }
+
+    function test_true(name,to_test)
+    {
+        ::made_tests++;
+        ::global_made_tests++;
+        if(to_test)
+        {
+            passed(name);
+            return true;
+        }
+        else
+        {
+            failed(name,"(got " + to_test + " needed true)");
+        }
+        return false;
+    }
+
+    function test_false(name,to_test)
+    {
+        ::made_tests++;
+        ::global_made_tests++;
+        if(!to_test)
+        {
+            passed(name);
+            return true;
+        }
+        else
+        {
+
+            failed(name,"(got " + to_test + " needed false)");
+        }
+        return false;
+    }
+
+    function test_type(name,to_test,type)
+    {
+        ::made_tests++;
+        ::global_made_tests++;
+        if(typeof to_test == typeof type)
+        {
+            passed(name);
+            return true;
+        }
+        else
+        {
+            failed(name,"(got " + typeof to_test + " needed " + typeof type + ")");
+        }
+        return false;
+    }
+
+    /*function test_string(name,to_test,result)
+    {
+        ::print("hall");
+        ::made_tests++;
+        if(to_test.tostring() == result.tostring())
+        {
+            ::passed_tests++;
+            ::print("Test: "+name+"\t\t:PASSED\n");
+        } else {
+            ::failed_tests++;
+            ::error("Test: "+name+"\t\t:FAILED\n");
+        }
+    }*/
+
+    function test_string(name,to_test,result)
+    {
+        ::made_tests++;
+        ::global_made_tests++;
+        // some workaround for some wired errors, this has to be tracked down
+        local tmp_string = to_test + " ";
+        local i = 0;
+        result += " ";
+        for(i=0; i < tmp_string.len() && i < result.len();i++)
+        {
+            if(tmp_string[i] != result[i])
+            {
+
+                failed(name, "(got \"" + to_test + "\" needed \"" + result + "\")");
+                return false;
+            }
+        }
+
+        passed(name);
+        return true;
+    }
+
+};

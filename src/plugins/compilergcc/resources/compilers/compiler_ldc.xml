@@ -1,0 +1,24 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler>
+<CodeBlocks_compiler name="LLVM D Compiler"
+                     id="ldc"
+                     weight="80">
+    <Path type="master">
+        <Search envVar="PATH"
+                for="C"/>
+        <if platform="windows">
+            <Fallback path="C:\ldc"/>
+        </if>
+        <else>
+            <Search path="/usr/local/bin"
+                    for="C"/>
+            <Fallback path="/usr"/>
+        </else>
+    </Path>
+    <Path type="include">
+        <Add><master/><separator/>import</Add>
+    </Path>
+    <Path type="lib">
+        <Add><master/><separator/>lib</Add>
+    </Path>
+</CodeBlocks_compiler>

@@ -1,0 +1,33 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler>
+<CodeBlocks_compiler name="GNU GCC Compiler for LM32"
+                     id="lm32-gcc"
+                     weight="60">
+    <Path type="master">
+        <Search envVar="PATH"
+                for="C"/>
+        <if platform="windows">
+            <Search path="C:\lm32-elf-gcc*"/>
+            <Fallback path="C:\lm32-elf-gcc"/>
+        </if>
+        <else>
+            <Fallback path="/usr"/>
+        </else>
+    </Path>
+    <if platform="windows">
+        <Path type="include">
+            <Add><master/>\lm32-elf\include</Add>
+        </Path>
+        <Path type="lib">
+            <Add><master/>\lm32-elf\lib</Add>
+        </Path>
+    </if>
+    <else>
+        <Path type="include">
+            <Add><master/>/include</Add>
+        </Path>
+        <Path type="lib">
+            <Add><master/>/lib</Add>
+        </Path>
+    </else>
+</CodeBlocks_compiler>

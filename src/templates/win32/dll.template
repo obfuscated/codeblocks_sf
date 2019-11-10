@@ -1,0 +1,10 @@
+<CodeBlocks_template_file>
+	<Template name="dll" title="Dynamic Link Library" category="Libraries" bitmap="dll.png">
+		<FileSet name="c" title="C source">
+			<File source="dll-main.cpp" destination="main.c"/>
+		</FileSet>
+		<Option name="DLL Sample">
+			<Project file="dll.cbp"/>
+		</Option>
+	</Template>
+</CodeBlocks_template_file>

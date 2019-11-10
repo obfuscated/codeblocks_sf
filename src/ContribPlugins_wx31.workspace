@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="All contrib plugins wx3.1.x">
+		<Project filename="tools\Addr2LineUI\Addr2LineUI_wx31.cbp" />
+		<Project filename="tools\cb_share_config\cb_share_config_wx31.cbp" />
+		<Project filename="tools\CBLauncher\CbLauncher_wx31.cbp" />
+		<Project filename="tools\cbp2make\cbp2make_wx31.cbp" />
+		<Project filename="plugins\contrib\wxContribItems\wxContribItems_wx31.cbp" />
+		<Project filename="plugins\contrib\wxSmith\wxSmith_wx31.cbp" />
+		<Project filename="plugins\contrib\wxSmithContribItems\wxSmithContribItems_wx31.cbp">
+			<Depends filename="plugins\contrib\lib_finder\lib_finder_wx31.cbp" />
+			<Depends filename="plugins\contrib\wxSmith\wxSmith_wx31.cbp" />
+		</Project>
+		<Project filename="plugins\contrib\wxSmithAui\wxSmithAui_wx31.cbp">
+			<Depends filename="plugins\contrib\wxSmith\wxSmith_wx31.cbp" />
+		</Project>
+		<Project filename="plugins\contrib\AutoVersioning\AutoVersioning_wx31.cbp" />
+		<Project filename="plugins\contrib\BrowseTracker\BrowseTracker_wx31.cbp" />
+		<Project filename="plugins\contrib\byogames\byogames_wx31.cbp" />
+		<Project filename="plugins\contrib\cb_koders\cb_koders_wx31.cbp" />
+		<Project filename="plugins\contrib\Cccc\Cccc_wx31.cbp" />
+		<Project filename="plugins\contrib\codesnippets\codesnippets_wx31.cbp" />
+		<Project filename="plugins\contrib\codestat\codestat_wx31.cbp" />
+		<Project filename="plugins\contrib\copystrings\copystrings_wx31.cbp" />
+		<Project filename="plugins\contrib\CppCheck\CppCheck_wx31.cbp" />
+		<Project filename="plugins\contrib\Cscope\Cscope_wx31.cbp" />
+		<Project filename="plugins\contrib\devpak_plugin\DevPakPlugin_wx31.cbp" />
+		<Project filename="plugins\contrib\DoxyBlocks\DoxyBlocks_wx31.cbp" />
+		<Project filename="plugins\contrib\dragscroll\DragScroll_wx31.cbp" />
+		<Project filename="plugins\contrib\EditorConfig\EditorConfig_wx31.cbp" />
+		<Project filename="plugins\contrib\EditorTweaks\EditorTweaks_wx31.cbp" />
+		<Project filename="plugins\contrib\envvars\envvars_wx31.cbp" />
+		<Project filename="plugins\contrib\FileManager\FileManager_wx31.cbp" />
+		<Project filename="plugins\contrib\FortranProject\FortranProject_cbsvn_wx31.cbp" />
+		<Project filename="plugins\contrib\headerfixup\headerfixup_wx31.cbp" />
+		<Project filename="plugins\contrib\help_plugin\help-plugin_wx31.cbp" />
+		<Project filename="plugins\contrib\HexEditor\HexEditor_wx31.cbp" />
+		<Project filename="plugins\contrib\IncrementalSearch\IncrementalSearch_wx31.cbp" />
+		<Project filename="plugins\contrib\keybinder\keybinder_wx31.cbp" />
+		<Project filename="plugins\contrib\lib_finder\lib_finder_wx31.cbp">
+			<Depends filename="plugins\contrib\wxContribItems\wxContribItems_wx31.cbp" />
+		</Project>
+		<Project filename="plugins\contrib\MouseSap\MouseSap_wx31.cbp" />
+		<Project filename="plugins\contrib\NassiShneiderman\NassiShneiderman_wx31.cbp" />
+		<Project filename="plugins\contrib\profiler\cbprofiler_wx31.cbp" />
+		<Project filename="plugins\contrib\ProjectOptionsManipulator\ProjectOptionsManipulator_wx31.cbp" />
+		<Project filename="plugins\contrib\regex_testbed\RegExTestbed_wx31.cbp" />
+		<Project filename="plugins\contrib\ReopenEditor\ReopenEditor_wx31.cbp" />
+		<Project filename="plugins\contrib\rndgen\rndgen_wx31.cbp" />
+		<Project filename="plugins\contrib\SmartIndent\SmartIndent_wx31.cbp" />
+		<Project filename="plugins\contrib\source_exporter\Exporter_wx31.cbp" />
+		<Project filename="plugins\contrib\SpellChecker\SpellChecker_wx31.cbp" />
+		<Project filename="plugins\contrib\symtab\symtab_wx31.cbp" />
+		<Project filename="plugins\contrib\ThreadSearch\ThreadSearch_wx31.cbp">
+			<Depends filename="plugins\contrib\wxContribItems\wxContribItems_wx31.cbp" />
+		</Project>
+		<Project filename="plugins\contrib\ToolsPlus\ToolsPlus_wx31.cbp" />
+	</Workspace>
+</CodeBlocks_workspace_file>

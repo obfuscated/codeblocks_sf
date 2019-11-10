@@ -1,0 +1,2 @@
+#include <windows.h>
+launcher_icon  ICON  icons\launcher.ico

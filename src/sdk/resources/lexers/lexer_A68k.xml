@@ -1,0 +1,379 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+		<Lexer name="Motorola 68k"
+		       index="100"
+		       filemasks="*.asm">
+                            <Style  name="Default"
+                                    index="0"
+                                    fg="0,0,0"
+                                    bg="255,255,255"
+                                    bold="0"
+                                    italics="0"
+                                    underlined="0"/>
+                            <Style  name="Comment"
+                                    index="1"
+                                    fg="0,128,0"
+                                    italics="1"/>
+                            <Style  name="CPU instruction"
+                                    index="7"
+                                    fg="0,0,255"/>
+                            <Style  name="Extended instruction"
+                                    index="8"
+                                    fg="0,0,255"
+                                    italics="1"/>
+                            <Style  name="Identifier"
+                                    index="14"
+                                    fg="0,0,0"/>
+                            <Style  name="Decimal number"
+                                    index="2"
+                                    fg="192,64,0"/>
+                            <Style  name="Binary number"
+                                    index="3"
+                                    fg="128,64,64"/>
+                            <Style  name="Hexadecimal number"
+                                    index="4"
+                                    fg="128,0,0"/>
+                            <Style  name="Operator"
+                                    index="6"
+                                    fg="0,0,0"
+                                    bold="1"/>
+                            <Style  name="String (single quote)"
+                                    index="5"
+                                    fg="64,128,64"/>
+                            <Style  name="String (double quote)"
+                                    index="13"
+                                    fg="32,64,32"/>
+                            <Style  name="Register"
+                                    index="9"
+                                    fg="255,0,0"/>
+                            <Style  name="Directive"
+                                    index="10"
+                                    fg="0,0,64"
+                                    bold="1"/>
+                            <Style  name="Label"
+                                    index="12"
+                                    fg="64,0,0"
+                                    bold="1"/>
+                            <Style  name="Macro/equ declaration"
+                                    index="15"
+                                    fg="64,0,0"
+                                    italics="1"/>
+                            <Style  name="Macro argument"
+                                    index="11"
+                                    fg="255,0,128"
+                                    italics="1"/>
+                            <Style  name="Current word in comments"
+                                    index="16"
+                                    fg="128,0,255"/>
+                            <Style  name="Special words in comments"
+                                    index="17"
+                                    fg="255,0,0"
+                                    bg="255,160,64"
+                                    bold="1"/>
+                            <Style  name="Doxygen keywords"
+                                    index="18"
+                                    fg="0,128,128"/>
+
+				<LanguageAttributes	LineComment=";"
+							CaseSensitive="0"/>
+				<Keywords>
+					<!-- Instructions -->
+					<Set index="0" value="abcd abcd.b
+								add.b add.w add.l
+								adda.w adda.l
+								addi.b addi.w addi.l
+								addq.b addq.w addq.l
+								addx.b addx.w addx.l
+								and.b and.w and.l
+								andi.b andi.w andi.l
+								asl.b asl.w asl.l
+								asr.b asr.w asr.l
+								bcc bcc.s bcc.w
+								bcs bcs.s bcs.w
+								beq beq.s beq.w
+								bge bge.s bge.w
+								bgt bgt.s bgt.w
+								bhi bhi.s bhi.w
+								ble ble.s ble.w
+								bls bls.s bls.w
+								blt blt.s blt.w
+								bmi bmi.s bmi.w
+								bne bne.s bne.w
+								bpl bpl.s bpl.w
+								bvc bvc.s bvc.w
+								bvs bvs.s bvs.w
+								bchg bchg.b bchg.l
+								bclr bclr.b bclr.l
+								bra.s bra.w
+								bset bset.b btst.l
+								bsr bsr.s bsr.w
+								btst btst.b btst.l
+								chk chk.w
+								clr.b clr.w clr.l
+								cmp.b cmp.w cmp.l
+								cmpa.w cmpa.l
+								cmpi.b cmpi.w cmpi.l
+								cmpm.b cmpm.w cmpm.l
+								dbcc dbcc.w
+								dbcs dbcs.w
+								dbeq dbeq.s
+								dbf dbf.w
+								dbge dbge.w
+								dbgt dbgt.w
+								dbhi dbhi.w
+								dble dble.w
+								dbls dbls.w
+								dblt dblt.w
+								dbmi dbmi.w
+								dbne dbne.w
+								dbpl dbpl.w
+								dbt dbt.w
+								dbvc dbvc.w
+								dbvs dbvs.w
+								dbra dbra.w
+								divs divs.w
+								divu divu.w
+								eor.b eor.w eor.l
+								eori.b eori.w eori.l
+								exg exg.l
+								ext.w ext.l
+								illegal
+								jmp
+								jsr
+								lea lea.l
+								link
+								lsl.b lsl.w lsl.l
+								lsr.b lsr.w lsr.l
+								move.b move.w move.l
+								movea.w movea.l
+								movem.w movem.l
+								movep.w movep.l
+								moveq moveq.l
+								muls muls.w
+								mulu mulu.w
+								nbcd nbcd.b
+								neg.b neg.w neg.l
+								negx.b negx.w negx.l
+								nop
+								not.b not.w not.l
+								or.b or.w or.l
+								ori.b ori.w ori.l
+								pea pea.l
+								reset
+								rol.b rol.w rol.l
+								ror.b ror.w ror.l
+								roxl.b roxl.w roxl.l
+								roxr.b roxr.w roxr.l
+								rte
+								rtr
+								rts
+								sbcd sbcd.b
+								scc scc.b
+								scs scs.b
+								seq seq.b
+								sf sf.b
+								sge sge.b
+								sgt sgt.b
+								shi shi.b
+								sle sle.b
+								sls sls.b
+								slt slt.b
+								smi smi.b
+								sne sne.b
+								spl spl.b
+								st st.b
+								svc svc.b
+								svs svs.b
+								stop
+								sub.b sub.w sub.l
+								suba.w suba.l
+								subi.b subi.w subi.l
+								subq.b subq.w subq.l
+								subx.b subx.w subx.l
+								swap swap.w
+								tas tas.b
+								trap
+								trapv
+								tst.b tst.w tst.l
+								unlk"/>
+
+					<!-- Registers -->
+					<Set index="1" value="a0 a0.w a0.l
+								a1 a1.w a1.l
+								a2 a2.w a2.l
+								a3 a3.w a3.l
+								a4 a4.w a4.l
+								a5 a5.w a5.l
+								a6 a6.w a6.l
+								a7 a7.w a7.l
+								d0 d0.w d0.l
+								d1 d1.w d1.l
+								d2 d2.w d2.l
+								d3 d3.w d3.l
+								d4 d4.w d4.l
+								d5 d5.w d5.l
+								d6 d6.w d6.l
+								d7 d7.w d7.l
+								sr ccr pc usp ssp sp fp"/>
+
+					<!-- Directives -->
+					<Set index="2" value="include incbin even cnop xdef xref public section bss cseg dseg end
+								dc.b dc.w dc.l ds.b ds.w ds.l dcb.b dcb.w dcb.l macro endm equ equr
+								set ifeq endc ifne ifge ifgt ifle iflt ifc ifnc ifd ifnd near far
+								org rorg nolist list page spc ttl idnt"/>
+
+					<!-- Extended instructions -->
+					<Set index="3" value="jbsr jra jhi jls jcc jne jeq jvc jvs jpl jmi jge jlt jgt jle"/>
+
+                                        <!-- Special words -->
+                                        <Set index="4" value="BUG DEBUG FIX FIXME HACK TODO WORKAROUND XXX"/>
+
+                                        <!-- Doxygen keywords -->
+                                        <Set index="5" value="\a
+                                                                \addindex
+                                                                \addtogroup
+                                                                \anchor
+                                                                \arg
+                                                                \attention
+                                                                \author
+                                                                \authors
+                                                                \b
+                                                                \brief
+                                                                \bug
+                                                                \c
+                                                                \callgraph
+                                                                \callergraph
+                                                                \category
+                                                                \class
+                                                                \code
+                                                                \cond
+                                                                \copybrief
+                                                                \copydetails
+                                                                \copydoc
+                                                                \date
+                                                                \def
+                                                                \defgroup
+                                                                \deprecated
+                                                                \details
+                                                                \dir
+                                                                \dontinclude
+                                                                \dot
+                                                                \dotfile
+                                                                \mscfile
+                                                                \e
+                                                                \else
+                                                                \elseif
+                                                                \em
+                                                                \endcode
+                                                                \endcond
+                                                                \enddot
+                                                                \endhtmlonly
+                                                                \endif
+                                                                \endinternal
+                                                                \endlatexonly
+                                                                \endlink
+                                                                \endmanonly
+                                                                \endmsc
+                                                                \endrtfonly
+                                                                \endverbatim
+                                                                \endxmlonly
+                                                                \enum
+                                                                \example
+                                                                \exception
+                                                                \extends
+                                                                \f$
+                                                                \f[
+                                                                \f]
+                                                                \f{
+                                                                \f}
+                                                                \file
+                                                                \fn
+                                                                \headerfile
+                                                                \hideinitializer
+                                                                \htmlinclude
+                                                                \htmlonly
+                                                                \if
+                                                                \ifnot
+                                                                \image
+                                                                \implements
+                                                                \include
+                                                                \includelineno
+                                                                \ingroup
+                                                                \internal
+                                                                \invariant
+                                                                \interface
+                                                                \latexonly
+                                                                \li
+                                                                \line
+                                                                \link
+                                                                \mainpage
+                                                                \manonly
+                                                                \memberof
+                                                                \msc
+                                                                \n
+                                                                \name
+                                                                \namespace
+                                                                \nosubgrouping
+                                                                \note
+                                                                \overload
+                                                                \p
+                                                                \package
+                                                                \page
+                                                                \par
+                                                                \paragraph
+                                                                \param
+                                                                \post
+                                                                \pre
+                                                                \private
+                                                                \privatesection
+                                                                \property
+                                                                \protected
+                                                                \protectedsection
+                                                                \protocol
+                                                                \public
+                                                                \publicsection
+                                                                \ref
+                                                                \related
+                                                                \relates
+                                                                \relatedalso
+                                                                \relatesalso
+                                                                \remark
+                                                                \remarks
+                                                                \return
+                                                                \returns
+                                                                \retval
+                                                                \rtfonly
+                                                                \sa
+                                                                \section
+                                                                \see
+                                                                \short
+                                                                \showinitializer
+                                                                \since
+                                                                \skip
+                                                                \skipline
+                                                                \struct
+                                                                \subpage
+                                                                \subsection
+                                                                \subsubsection
+                                                                \test
+                                                                \throw
+                                                                \throws
+                                                                \todo
+                                                                \tparam
+                                                                \typedef
+                                                                \union
+                                                                \until
+                                                                \var
+                                                                \verbatim
+                                                                \verbinclude
+                                                                \version
+                                                                \warning
+                                                                \weakgroup
+                                                                \xmlonly
+                                                                \xrefitem"/>
+
+				</Keywords>
+				<SampleCode value="lexer_A68k.sample"/>
+		</Lexer>
+</CodeBlocks_lexer_properties>

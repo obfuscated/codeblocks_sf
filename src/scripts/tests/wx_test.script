@@ -1,0 +1,370 @@
+
+::Include(_("test_base.script"));
+
+class wxTest extends script_test_base
+{
+    function Run()
+    {
+        test_test();
+        test_wxstring();
+        test_wxstring_unicode();
+        test_wxcolor();
+        test_wxarray_string();
+        test_wxfilename();
+        test_wxpoint();
+        test_wxsize();
+        test_dialogs();
+        print_global_test_result();
+    }
+
+    function test_test()
+    {
+        ::print("======= Test Test environment BEGINN ======= \n");
+        clear_test_result();
+        ::print(" this is intended to fail: \n");
+        test_string("test_string","hallo","nope");
+        print_test_result();
+        ::print("======= Test Test environment END ======= \n");
+    }
+
+    function test_wxstring()
+    {
+        ::print("======= Test wx String BEGINN ======= \n");
+        clear_test_result();
+
+        local string = _T("Hallo");
+        if(test_string("tostring",string,"Hallo") == true)
+            made_passed("constructor(SQchar)");
+        else
+            made_failed("constructor(SQchar)","see previous result");
+
+
+        test_false("IsEmpty",string.IsEmpty());
+        test_equal("Length",string.Length(),5);
+        test_equal("length",string.length(),5);
+        test_equal("len",string.len(),5);
+        test_equal("size",string.size(),5);
+        test_string("Lower",string.Lower(),"hallo");
+        string.LowerCase();
+        test_string("LowerCase",string,"hallo");
+        test_string("MakeLower",string.MakeLower(),"hallo");
+        test_string("Upper",string.Upper(),"HALLO");
+        string.UpperCase();
+        test_string("UpperCase",string,"HALLO");
+        test_string("MakeUpper",string.MakeUpper(),"HALLO");
+        string = _T("Hallo");
+        test_string("Mid",string.Mid(2,2),"ll");
+        test_string("Remove",string.Remove(2,string.len()-2),"Ha");
+        string = _T("Hallo");
+        test_string("RemoveLast",string.RemoveLast(2),"Hal");
+        string = _T("Hallo");
+        test_equal("Replace ret",string.Replace(_("ll"),_("xx")),1);
+        test_string("Replace value",string,"Haxxo");
+        string = _T("Hallo");
+        test_string("AfterFirst",string.AfterFirst(_T("l")),"lo");
+        string = _T("Hallo");
+        //test_string("AfterFirst const",string.AfterFirst('l'),"lo");
+        //string = _T("Hallo");
+        test_string("AfterLast",string.AfterLast(_T("l")),"o");
+        string = _T("Hallo");
+        //test_string("AfterLast const",string.AfterLast('l'),"o");
+        //string = _T("Hallo");
+        test_string("BeforeFirst",string.BeforeFirst(_T("l")),"Ha");
+        string = _T("Hallo");
+        test_string("BeforeLast",string.BeforeLast(_T("l")),"Hal");
+        string = _T("Hallo");
+        test_string("Right",string.Right(2),"lo");
+        string = _T("Hallo");
+        test_true("Matches",string.Matches(_T("Ha*o")));
+        string = _T("long_string_to_test_replace");
+        //test_string("insert",string.insert(4,_T("_new")),"long_new_string_to_test_replace" );
+        //test_string("replace(start, len,string)",string.replace(5,3,_T("old")),"long_old_string_to_test_replace");
+        //test_string("replace(start, len,string,start2,len2)",string.replace(5,3,_T("old_new_string"),4,3),"long_new_string_to_test_replace");
+        //string = _T("42");
+        //local ret_val = string.ToInt(10);
+        //if(!ret_val.success)
+        //    made_failed("ToInt","it was no success");
+        //test_equal("ToInt",ret_val.value,42);
+        //string = _T("42.42");
+        //ret_val = string.ToDouble();
+        //if(!ret_val.success)
+        //    made_failed("ToDouble","it was no success");
+        //test_equal("ToDouble",ret_val.value,42.42);
+
+        local hasException = false;
+        try
+        {
+            // This is expected to throw an exception.
+            local nullstr;
+            local res = _T("SomeString") + nullstr;
+        }
+        catch(e)
+        {
+            passed("ConcatNull");
+            hasException = true;
+        }
+        if (!hasException)
+            failed("ConcatNull");
+
+        print_test_result();
+        ::print("======= Test wx String END ======= \n");
+    }
+
+    function test_wxstring_unicode()
+    {
+        clear_test_result();
+        ::print("======= Test wx String unicode BEGINN ======= \n");
+        ::print("test string: !5Aa ЉЩщӃ ウインカリ\n");
+        made_failed("This implementation doesn't support UNICODE","not implemented, as you can see on the wrong test string (it has to show Cyrillic  and ?Japanese? symbols")
+
+
+ //       local string = _T("!5Aa ЉЩщӃ ウインカリ");
+ //       if(test_string("tostring",string,"!5Aa ЉЩщӃ ウインカリ") == true)
+ //           made_passed("constructor(SQchar)");
+ //       else
+ //           made_failed("constructor(SQchar)","see previous result");
+ //
+ //       local string2 = _T(string);
+ //       if(test_string("tostring",string2,"!5Aa ЉЩщӃ ウインカリ") == true)
+ //           made_passed("constructor(_T)");
+ //       else
+ //           made_failed("constructor(_T)","see previous result");
+ //
+ //       string2 = _T(42);
+ //       if(test_string("tostring",string2,"42") == true)
+ //           made_passed("constructor(42)");
+ //       else
+ //           made_failed("constructor(42)","see previous result");
+ //
+ //       string2 = _T(42.42);
+ //       if(test_string("tostring",string2,"42.42") == true)
+ //           made_passed("constructor(42.42)");
+ //       else
+ //           made_failed("constructor(42.42)","see previous result");
+ //
+ //       test_false("IsEmpty",string.IsEmpty());
+ //       test_equal("Length",string.Length(),15);
+ //       test_equal("length",string.length(),15);
+ //       test_equal("len",string.len(),15);
+ //       test_equal("size",string.size(),15);
+ //       /*test_string("Lower",string.Lower(),"hallo");
+ //       string.LowerCase();
+ //       test_string("LowerCase",string,"hallo");
+ //       test_string("MakeLower",string.MakeLower(),"hallo");
+ //       test_string("Upper",string.Upper(),"HALLO");
+ //       string.UpperCase();
+ //       test_string("UpperCase",string,"HALLO");
+ //       test_string("MakeUpper",string.MakeUpper(),"HALLO");
+ //       string = _T("Hallo");
+ //       test_string("Mid",string.Mid(2,2),"ll");
+ //       test_string("Remove",string.Remove(2,string.len()-2),"Ha");*/
+ //       string = _T("!5Aa ЉЩщӃ ウインカリ");
+ //       test_string("RemoveLast",string.RemoveLast(2),"!5Aa ЉЩщӃ ウイン");
+ //       string = _T("!5Aa ЉЩщӃ ウインカリ");
+ //       test_equal("Replace ret",string.Replace(_("Љ"),_("ウ")),1);
+ //       test_string("Replace value",string,"!5Aa ウЩщӃ ウインカリ");
+ //       string = _T("!5Aa ЉЩщӃ ウインカリ");
+ //       test_string("AfterFirst",string.AfterFirst("ウ"),"インカリ");
+ //       string = _T("!5Aa ЉЩщӃ ウインカリ");
+ //       test_string("AfterFirst const",string.AfterFirst('5'),"Aa ЉЩщӃ ウインカリ");
+ //       string = _T("!5Aa ЉЩщӃ ウインカリ");
+ //       test_string("AfterLast",string.AfterLast("щ"),"Ӄ ウインカリ");
+ //
+ //
+        print_test_result();
+        ::print("======= Test wx String unicode END ======= \n");
+    }
+
+    function test_wxcolor()
+    {
+        ::print("======= Test wx Color BEGINN ======= \n");
+        clear_test_result();
+        local color = wxColour();
+        color.Set(52,53,54,255);
+        test_string("Set",color,"[r=52, g=53, b=54]");
+        test_string("tostring",color,"[r=52, g=53, b=54]");
+        test_equal("Red",color.Red(),52);
+        test_equal("Green",color.Green(),53);
+        test_equal("Blue",color.Blue(),54);
+        test_true("IsOK",color.IsOk());
+
+        print_test_result();
+        ::print("======= Test wx Color END  ======= \n");
+    }
+
+    function test_wxarray_string()
+    {
+        ::print("======= Test wxArrayString BEGINN ======= \n");
+        clear_test_result();
+        local array;
+        try
+        {
+            array = wxArrayString();
+        } catch  (err)
+        {
+            made_failed("constructor"," ");
+            return;
+        }
+        made_passed("constructor");
+
+
+        array.Add(_T("String1"),1);
+        array.Add(_T("String2"),2);
+        test_equal("Add",array.Add(_T("String3"),1),3);
+        test_equal("GetCount",array.GetCount(),4);
+        test_equal("Index(\"String1\")", array.Index(_T("String1")),0);
+        test_equal("Index(\"String10\")", array.Index(_T("String10")),-1);
+        test_equal("Index(\"string1\",true,false)", array.Index(_T("string10"),true,false),-1);
+        test_equal("Index(\"string1\",false,false)", array.Index(_T("string1"),false),0);
+        test_equal("Index(\"string2\",false,false)", array.Index(_T("string2"),false,false),1);
+        test_equal("Index(\"string2\",false,true)", array.Index(_T("string2"),false,true),2);
+        test_string("Item", array.Item(2),_T("String2"));
+
+        // Test if modifying the result of Item doesn't change the value in the array.
+        local itemValue = array.Item(2);
+        itemValue = _T("String2 modified");
+        test_string("Item after modify", array.Item(2),_T("String2"));
+
+        // Test SetItem.
+        array.SetItem(2, _T("String2 modified"));
+        test_string("SetItem", array.Item(2),_T("String2 modified"));
+
+        array.Clear();
+        test_equal("Clear",array.GetCount(),0);
+
+        print_test_result();
+        ::print("======= Test wxArrayString END  ======= \n");
+    }
+
+    function test_wxfilename()
+    {
+               ::print("======= Test wxFileName BEGINN ======= \n");
+        clear_test_result();
+        local filename;
+        try
+        {
+            filename = wxFileName();
+        } catch  (err)
+        {
+            made_failed("constructor"," ");
+            return;
+        }
+        made_passed("constructor");
+
+        local path;
+        if(::PLATFORM == ::PLATFORM_MSW )
+        {
+            path = _T("\\share\\codeblocks\\");
+        }
+        else if(::PLATFORM == ::PLATFORM_GTK)
+        {
+            path = _T("share/codeblocks/");
+        }
+        else
+        {
+            made_failed("Assign","Your operating system is not supported in this test script. Please add a test case. Thank you.");
+            return;
+        }
+        ::print("Use path: " + path + "\n");
+        filename.Assign(path,::wxPATH_NATIVE);
+        test_string("tostring",filename,path);
+        test_string("Assign",filename,path);
+        test_equal("GetDirCount",filename.GetDirCount(),2);
+        test_equal("GetDirs",filename.GetDirs().GetCount(),2);
+
+        filename.Clear();
+        test_string("Clear",filename,"");
+        filename.AssignCwd(_T(" "));
+        ::print("Test: AssignCwd = " + filename + " \n");
+        made_passed("AssignCwd ????");
+        filename.Clear();
+        filename.AssignHomeDir();
+        ::print("Test: AssignHomeDir = " + filename +" \n");
+        made_passed("AssignHomeDir ????");
+        filename.Clear();
+        filename.Assign(path + _T("tips.txt"),::wxPATH_NATIVE);
+        test_string("GetExt",filename.GetExt(),"txt");
+        test_string("GetFullName",filename.GetFullName(),"tips.txt");
+        test_string("GetFullPath",filename.GetFullPath(::wxPATH_NATIVE), path + "tips.txt");
+        ::print("Test: GetLongPath = " + filename.GetLongPath() +" \n");
+        made_passed("GetLongPath ????");
+        test_string("GetName",filename.GetName(),"tips");
+        ::print("Test: GetPath = " + filename.GetPath(0,::wxPATH_NATIVE) + " \n");
+        made_passed("GetPath ????");
+        ::print("Test: GetShortPath = " + filename.GetShortPath() + " \n");
+        made_passed("GetShortPath ????");
+        ::print("Test: GetVolume = " + filename.GetVolume() + " \n");
+        made_passed("GetVolume ????");
+        test_true("HasExt",filename.HasExt());
+        test_true("HasName",filename.HasName());
+        if(::PLATFORM != ::PLATFORM_MSW)
+            test_false("HasVolume",filename.HasVolume());
+        else
+            test_true("HasVolume",filename.HasVolume());
+
+        test_false("IsAbsolute",filename.IsAbsolute(::wxPATH_NATIVE));
+        test_true("IsOk",filename.IsOk());
+        test_true("IsRelative",filename.IsRelative(::wxPATH_NATIVE));
+        test_false("IsDir",filename.IsDir());
+
+        print_test_result();
+        ::print("======= Test wxFileName END  ======= \n");
+    }
+
+    function test_wxpoint()
+    {
+        ::print("======= Test wxPoint BEGINN ======= \n");
+        clear_test_result();
+
+        local point1 = wxPoint();
+        local point2 = wxPoint();
+        local point3 = wxPoint();
+        point1.x = 10;
+        point1.y = 10;
+        point2.x = 10;
+        point2.y = 10;
+        point3.x = 10;
+        point3.y = 5;
+        made_failed("compare doesn't seem to work","error: \"comparsion between 'instance' and 'instance'\" ")
+        //test_false("compare",point1 > point2);
+        //test_true("compare",point1 > point3);
+        //test_true("Cmp",point1._cmp(point2));
+        //test_false("Cmp",point1._cmp(point3));
+        test_string("_tostring",point1,"[10,10]");
+
+        print_test_result();
+        ::print("======= Test wxPoint END  ======= \n");
+    }
+
+    function test_wxsize()
+    {
+        ::print("======= Test wxSize BEGINN ======= \n");
+        clear_test_result();
+
+        local point1 = wxSize();
+        local point2 = wxSize();
+        local point3 = wxSize();
+        point1.Set(10,10);
+        point2.Set(10,10);
+        point3.Set(10,5);
+
+        test_string("_tostring",point1,"[10,10]");
+        //test_true("Cmp",point1.Cmp(point2));
+        //test_false("Cmp",point1.Cmp(point3));
+        test_equal("GetWidth",point3.GetWidth(),10);
+        test_equal("GetHeight",point3.GetHeight(),5);
+        point3.SetWidth(23);
+        point3.SetHeight(66);
+        test_equal("SetWidth",point3.GetWidth(),23);
+        test_equal("SetHeight",point3.GetHeight(),66);
+
+
+        print_test_result();
+        ::print("======= Test wxSize END  ======= \n");
+    }
+
+    function test_dialogs()
+    {
+
+    }
+};

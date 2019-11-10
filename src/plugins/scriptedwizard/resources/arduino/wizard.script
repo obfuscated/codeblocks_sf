@@ -1,0 +1,342 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Code::Blocks new project wizard script
+//
+// Project: Arduino project
+// Author:  Stanley Huang <stanleyhuangyc@gmail.com>
+//
+////////////////////////////////////////////////////////////////////////////////
+
+// Global Vars
+AvrUpload <- false;
+AvrPort <- ""
+AvrLss <- false;         // produce extended list file from ELF output?
+AvrMap <- false;         // produce Symbol Map file from ELF output?
+AvrExtMem <- false;      // Locate .data in on-board SRAM, or external SRAM
+AvrExtMemAddr <- ""      // The external memory address
+BoardIndex <- 0;
+Board <- _T("");
+BaudRate <- _T("57600");
+Variant <- _T("standard");
+Libs <- _T("");
+
+function BeginWizard()
+{
+    local wiz_type = Wizard.GetWizardType();
+
+    if (wiz_type == wizProject)
+    {
+        local intro_msg = _T(" Welcome to the Arduino Project Wizard\n\n" +
+                             "This wizard will guide you to create a new Arduino project.\nIf you want to be able to upload the built binary to your board,\nbe sure to choose a correct serial port which your board is connected on.\n\n" +
+                             "When you 're ready to proceed, please click \"Next\"\n\n" +
+                             "This wizard is created by Stanley Huang.\nFor updates, please visit http://www.arduinodev.com/codeblocks\nFor suggestions and bug reports, please send to\n<stanleyhuangyc@gmail.com>");
+
+        Wizard.AddInfoPage(_T("Intro"), intro_msg);
+        Wizard.AddPage(_T("processorChoice"));
+        Wizard.AddProjectPathPage();
+        Wizard.AddCompilerPage(_T("GNU AVR GCC Compiler"), _T("avr*"), true, true);
+    }
+    else
+        print(wiz_type);
+}
+
+function GetFilesDir()
+{
+    local result = _T("arduino/files");
+    return result;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Processor choice page
+////////////////////////////////////////////////////////////////////////////////
+
+
+function OnLeave_processorChoice(fwd)
+{
+    if (fwd)
+    {
+
+	BoardIndex = Wizard.GetComboboxSelection(_T("comboboxBoard"));
+	Board = Wizard.GetComboboxStringSelection(_T("comboboxBoard"));
+	AvrUpload = Wizard.IsCheckboxChecked(_T("checkboxUpload"));
+	AvrPort = Wizard.GetComboboxStringSelection(_T("uploadPort"));
+	AvrMap = Wizard.IsCheckboxChecked(_T("checkboxMap"));
+	AvrLss = Wizard.IsCheckboxChecked(_T("checkboxLss"));
+
+	if (IsNull(AvrPort)) {
+		AvrPort = Wizard.GetTextControlValue(_T("uploadPort"));
+		if (IsNull(AvrPort)) {
+			AvrUpload = false;
+		}
+	}
+
+    }
+    return true;
+}
+
+function AddSourceFile(project, targetName, filename)
+{
+	local file;
+	file = project.AddFile(targetName, filename, true, true, 50);
+	file.AddBuildTarget(targetName);
+	file.compile = true;
+	file.link = true;
+}
+
+function AddCoreSourceCode(project, targetName)
+{
+	AddSourceFile(project, targetName, _T("cores/WString.cpp"));
+	AddSourceFile(project, targetName, _T("cores/WMath.cpp"));
+	AddSourceFile(project, targetName, _T("cores/wiring.c"));
+	AddSourceFile(project, targetName, _T("cores/wiring_digital.c"));
+	AddSourceFile(project, targetName, _T("cores/wiring_analog.c"));
+	AddSourceFile(project, targetName, _T("cores/wiring_pulse.c"));
+	AddSourceFile(project, targetName, _T("cores/wiring_shift.c"));
+	AddSourceFile(project, targetName, _T("cores/HID.cpp"));
+	AddSourceFile(project, targetName, _T("cores/HardwareSerial.cpp"));
+	AddSourceFile(project, targetName, _T("cores/new.cpp"));
+	AddSourceFile(project, targetName, _T("cores/Print.cpp"));
+	AddSourceFile(project, targetName, _T("cores/Stream.cpp"));
+	AddSourceFile(project, targetName, _T("cores/Tone.cpp"));
+	AddSourceFile(project, targetName, _T("cores/USBCore.cpp"));
+	AddSourceFile(project, targetName, _T("cores/WInterrupts.c"));
+	AddSourceFile(project, targetName, _T("cores/CDC.cpp"));
+	AddSourceFile(project, targetName, _T("cores/IPAddress.cpp"));
+	AddSourceFile(project, targetName, _T("cores/main.cpp"));
+	AddSourceFile(project, targetName, _T("libraries/libraries.cpp"));
+	AddSourceFile(project, targetName, _T("sketch.cpp"));
+}
+
+function CreateTarget(project, targetName, processor, variant, baudrate, boardIndex)
+{
+	local target = project.AddBuildTarget(targetName);
+	// Linker options
+	local lo_map = ::wxString();
+	local lo_extmem = ::wxString();
+
+	// Post Build steps
+	local pb_avrsize = ::wxString();
+	local pb_eephex = ::wxString();
+	local pb_hex = ::wxString();
+	local pb_eepbin = ::wxString();
+	local pb_bin = ::wxString();
+	local pb_lss = ::wxString();
+	local build_core1 = ::wxString();
+	local build_core2 = ::wxString();
+	local optimized = false;
+		
+	if (!IsNull(target))
+	{
+		// Post build commands
+		pb_eephex = _T("avr-objcopy --no-change-warnings -j .eeprom --change-section-lma .eeprom=0 -O ihex $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).eep.hex");
+		pb_hex = _T("avr-objcopy -O ihex -R .eeprom -R .eesafe $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).hex");
+		pb_eepbin = _T("avr-objcopy --no-change-warnings -j .eeprom --change-section-lma .eeprom=0 -O binary $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).eep.bin");
+		pb_bin = _T("avr-objcopy -O binary -R .eeprom -R .eesafe $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).bin");
+
+
+		if ( PLATFORM == PLATFORM_MSW )
+		    pb_lss = _T("cmd /c \"avr-objdump -h -S $(TARGET_OUTPUT_FILE) > $(TARGET_OUTPUT_FILE).lss\"");
+		else
+		    pb_lss = _T("avr-objdump -h -S $(TARGET_OUTPUT_FILE) > $(TARGET_OUTPUT_FILE).lss");
+
+		// avr-size is compiled with patches under winavr to produce a fancy output
+		// which displays the percentage of memory used by the application for the
+		// target mcu. However, this option is not available under standard binutils
+		// avr-size.
+		if (PLATFORM_MSW == PLATFORM)
+		    pb_avrsize = _T("avr-size --mcu=$(MCU) --format=avr $(TARGET_OUTPUT_FILE)");
+		else
+		    pb_avrsize = _T("avr-size $(TARGET_OUTPUT_FILE)");
+
+		// Setup the linker options
+		lo_map = _T("-Wl,-Map=$(TARGET_OUTPUT_FILE).map,--cref");
+
+		// Get external memory start address
+		lo_extmem = _T("-Wl,--section-start=.data=") + AvrExtMemAddr;
+
+		    // Project compiler options
+		target.AddCompilerOption(_T("-mmcu=$(MCU)"));
+
+		if (processor.Matches(_T("atmega1280"))) {
+					target.AddCompilerOption(_T("-D__AVR_ATmega1280__"));
+					optimized = true;
+		} else if (processor.Matches(_T("atmega2560"))) {
+					target.AddCompilerOption(_T("-D__AVR_ATmega2560__"));
+					optimized = true;
+		} else if (processor.Matches(_T("atmega168"))) {
+					target.AddCompilerOption(_T("-D__AVR_ATmega168__"));
+		} else if (processor.Matches(_T("atmega32u4"))) {
+					target.AddCompilerOption(_T("-D__AVR_ATmega32U4__"));
+					if (targetName.Matches(_T("Arduino Leonardo"))) {
+							target.AddCompilerOption(_T("-DUSB_VID=0x2341"));
+							target.AddCompilerOption(_T("-DUSB_PID=0x8036"));
+					} else if (targetName.Matches(_T("Arduino Esplora"))) {
+							target.AddCompilerOption(_T("-DUSB_VID=0x2341"));
+							target.AddCompilerOption(_T("-DUSB_PID=0x8037"));
+					} else if (targetName.Matches(_T("Arduino Micro"))) {
+							target.AddCompilerOption(_T("-DUSB_VID=0x2341"));
+							target.AddCompilerOption(_T("-DUSB_PID=0x803C"));
+					}
+		} else {
+					target.AddCompilerOption(_T("-D__AVR_ATmega328P__"));
+		}
+
+		target.AddIncludeDir(_T("$(ARDUINO_DIR)/hardware/arduino/cores/arduino"));
+		target.AddIncludeDir(_T("$(ARDUINO_DIR)/libraries"));
+		target.AddIncludeDir(_T("$(ARDUINO_DIR)/hardware/arduino/variants/" + variant));
+
+		// Project linker options
+		target.AddLinkerOption(_T("-mmcu=$(MCU)"));
+
+		if (AvrMap)
+		    target.AddLinkerOption(lo_map);
+
+		if (AvrExtMem)
+		    target.AddLinkerOption(lo_extmem);
+
+		// Project post-build steps
+		target.AddCommandsAfterBuild(pb_hex);
+		target.AddCommandsAfterBuild(pb_eephex);
+		target.AddCommandsAfterBuild(pb_avrsize);
+
+		if ( AvrLss )
+		    target.AddCommandsAfterBuild(pb_lss);
+		    
+		target.AddLinkerOption(_T("-s"));
+
+		OptimizationsOn(target, Wizard.GetCompilerID());
+		target.SetTargetType(ttConsoleOnly);
+		target.SetTargetFilenameGenerationPolicy(tgfpPlatformDefault, tgfpNone);
+		target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + _T(".elf"));
+
+		target.SetVar(_T("BOARD"), targetName, false);
+		target.SetVar(_T("BOARD_INDEX"), boardIndex, false);
+		target.SetVar(_T("MCU"), processor, false);
+		target.SetVar(_T("UPLOAD_BAUDRATE"), baudrate, false);
+		target.SetVar(_T("UPLOAD_PORT"), AvrPort, false);
+		target.SetVar(_T("ARDUINO_DIR"), _T("$(APP_PATH)/arduino"), false);
+
+		if (optimized)
+		{
+			target.RemoveCompilerOption(_T("-Os"));
+			target.AddCompilerOption(_T("-O2"));
+		} else {
+			target.AddCompilerOption(_T("-Os"));
+		}
+
+		if (AvrUpload)
+		{
+			if (processor.Matches(_T("atmega32u4"))) {
+				target.AddCommandsAfterBuild(_T("\"$(TARGET_COMPILER_DIR)ArduinoUploader\" ${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}.elf.hex ${BOARD_INDEX} ${UPLOAD_PORT}"));
+			} else {
+				if (PLATFORM_MSW == PLATFORM)
+					target.AddCommandsAfterBuild(_T("avrdude -V -C \"$(TARGET_COMPILER_DIR)bin/avrdude.conf\" -p${MCU} -carduino -P\\\\.\\${UPLOAD_PORT} -b${UPLOAD_BAUDRATE} -D -Uflash:w:${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}.elf.hex:i"));
+				else
+					target.AddCommandsAfterBuild(_T("avrdude -V -C /etc/avrdude.conf -p${MCU} -carduino -P${UPLOAD_PORT} -b${UPLOAD_BAUDRATE} -D -Uflash:w:${TARGET_OUTPUT_DIR}${TARGET_OUTPUT_BASENAME}.elf.hex:i"));
+			}
+		}
+		AddCoreSourceCode(project, targetName);
+			
+	}
+        
+
+}
+
+function SetSimTarget(project, target)
+{
+	target.AddIncludeDir(_T("$(ARDUINO_DIR)/arduino/cores"));
+	target.AddIncludeDir(_T("$(ARDUINO_DIR)/arduino/variants/standard"));
+	target.AddIncludeDir(_T("$(ARDUINO_DIR)/include"));
+	target.AddCompilerOption(_T("-DARDUSIM"));
+	target.AddCompilerOption(_T("-DENABLE_API_NAME"));
+	target.AddCompilerOption(_T("-D__AVR_ATmega328P__"));
+	target.SetVar(_T("ARDUINO_DIR"), _T("$(APP_PATH)/ardusim"), false);
+	target.SetTargetType(ttConsoleOnly);
+	target.SetTargetFilenameGenerationPolicy(tgfpPlatformDefault, tgfpNone);
+    //target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + _T(".exe"));
+	target.SetCompilerID(_T("GCC"));
+}
+
+function SetupProject(project)
+{
+	project.AddCompilerOption(_T("-DF_CPU=16000000L"));
+	project.AddCompilerOption(_T("-DARDUINO=103"));
+	project.AddCompilerOption(_T("-fno-exceptions"));
+	project.AddCompilerOption(_T("-ffunction-sections"));
+	project.AddCompilerOption(_T("-fdata-sections"));
+	project.AddCompilerOption(_T("-x c++"));
+	project.AddCompilerOption(_T("-s"));
+	project.AddLinkerOption(_T("-Wl,--gc-sections"));
+	
+	project.AddIncludeDir(_T("."));
+	project.AddIncludeDir(_T("$(ARDUINO_DIR)/libraries/EEPROM"));
+	project.AddIncludeDir(_T("$(ARDUINO_DIR)/libraries/Ethernet"));
+	project.AddIncludeDir(_T("$(ARDUINO_DIR)/libraries/Firmata"));
+	project.AddIncludeDir(_T("$(ARDUINO_DIR)/libraries/Flash"));
+	project.AddIncludeDir(_T("$(ARDUINO_DIR)/libraries/LCD4884"));
+	project.AddIncludeDir(_T("$(ARDUINO_DIR)/libraries/LCD4Bit_mod"));
+	project.AddIncludeDir(_T("$(ARDUINO_DIR)/libraries/LiquidCrystal"));
+	project.AddIncludeDir(_T("$(ARDUINO_DIR)/libraries/OBD"));
+	project.AddIncludeDir(_T("$(ARDUINO_DIR)/libraries/SD"));
+	project.AddIncludeDir(_T("$(ARDUINO_DIR)/libraries/SD/utility"));
+	project.AddIncludeDir(_T("$(ARDUINO_DIR)/libraries/Servo"));
+	project.AddIncludeDir(_T("$(ARDUINO_DIR)/libraries/SevenSegment"));
+	project.AddIncludeDir(_T("$(ARDUINO_DIR)/libraries/SoftwareSerial"));
+	project.AddIncludeDir(_T("$(ARDUINO_DIR)/libraries/SPI"));
+	project.AddIncludeDir(_T("$(ARDUINO_DIR)/libraries/Stepper"));
+	project.AddIncludeDir(_T("$(ARDUINO_DIR)/libraries/TinyGPS"));
+	project.AddIncludeDir(_T("$(ARDUINO_DIR)/libraries/Wire"));
+	project.AddIncludeDir(_T("$(ARDUINO_DIR)/libraries/Wire/utility"));
+	
+	project.AddCompilerOption(_T("-DUSE_EEPROM=0"));
+	project.AddCompilerOption(_T("-DUSE_ETHERNET=0"));
+	project.AddCompilerOption(_T("-DUSE_FIRMATA=0"));
+	project.AddCompilerOption(_T("-DUSE_LCD=0"));
+	project.AddCompilerOption(_T("-DUSE_LCD4884=0"));
+	project.AddCompilerOption(_T("-DUSE_OBD=0"));
+	project.AddCompilerOption(_T("-DUSE_SD=0"));
+	project.AddCompilerOption(_T("-DUSE_SERVO=0"));
+	project.AddCompilerOption(_T("-DUSE_SOFTSERIAL=0"));
+	project.AddCompilerOption(_T("-DUSE_SPI=0"));
+	project.AddCompilerOption(_T("-DUSE_STEPPER=0"));
+	project.AddCompilerOption(_T("-DUSE_TINYGPS=0"));
+	project.AddCompilerOption(_T("-DUSE_WIRE=0"));
+	
+	WarningsOn(project, Wizard.GetCompilerID());
+	
+	CreateTarget(project, _T("Arduino Uno"), _T("atmega328p"), _T("standard"), _T("115200"), _T("1"));
+	CreateTarget(project, _T("Arduino Leonardo"), _T("atmega32u4"), _T("leonardo"), _T("57600"), _T("2"));
+	CreateTarget(project, _T("Arduino Esplora"), _T("atmega32u4"), _T("leonardo"), _T("57600"), _T("3"));
+	CreateTarget(project, _T("Arduino Micro"), _T("atmega32u4"), _T("micro"), _T("57600"), _T("4"));
+	CreateTarget(project, _T("Arduino Duemilanove (328)"), _T("atmega328p"), _T("standard"), _T("57600"), _T("5"));
+	CreateTarget(project, _T("Arduino Duemilanove (168)"), _T("atmega168"), _T("standard"), _T("19200"), _T("6"));
+	CreateTarget(project, _T("Arduino Nano (328)"), _T("atmega328p"), _T("eightanaloginputs"), _T("57600"), _T("7"));
+	CreateTarget(project, _T("Arduino Nano (168)"), _T("atmega168"), _T("eightanaloginputs"), _T("19200"), _T("8"));
+	CreateTarget(project, _T("Arduino Mini (328)"), _T("atmega328p"), _T("eightanaloginputs"), _T("57600"), _T("9"));
+	CreateTarget(project, _T("Arduino Mini (168)"), _T("atmega168"), _T("eightanaloginputs"), _T("19200"), _T("10"));
+	CreateTarget(project, _T("Arduino Pro Mini (328)"), _T("atmega328p"), _T("standard"), _T("57600"), _T("11"));
+	CreateTarget(project, _T("Arduino Pro Mini (168)"), _T("atmega168"), _T("standard"), _T("19200"), _T("12"));
+	CreateTarget(project, _T("Arduino Mega 2560/ADK"), _T("atmega2560"), _T("mega"), _T("57600"), _T("13"));
+	CreateTarget(project, _T("Arduino Mega 1280"), _T("atmega1280"), _T("mega"), _T("57600"), _T("14"));
+	CreateTarget(project, _T("Arduino Mega 8"), _T("atmega8"), _T("standard"), _T("19200"), _T("15"));
+	
+	// Debug build target
+	local target = project.GetBuildTarget(Wizard.GetDebugName());
+	if (!IsNull(target))
+	{
+	    DebugSymbolsOn(target, Wizard.GetCompilerID());
+			SetSimTarget(project, target);
+	}
+	
+	// Release build target
+	target = project.GetBuildTarget(Wizard.GetReleaseName());
+	if (!IsNull(target))
+	{
+	    OptimizationsOn(target, Wizard.GetCompilerID());
+			SetSimTarget(project, target);
+	}
+	project.RenameBuildTarget(0, _T("Simulator - Debug"));
+	project.RenameBuildTarget(1, _T("Simulator - Release"));
+	
+	return true;
+}

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler>
+<CodeBlocks_compiler name="LLVM Clang Compiler"
+                     id="clang"
+                     weight="52">
+    <Path type="master">
+        <Search envVar="PATH"
+                for="C"/>
+        <if platform="windows">
+            <Search path="%ProgramFiles%\LLVM"
+                    for="C"/>
+            <Fallback path="C:\MinGW"/>
+        </if>
+        <else>
+            <Fallback path="/usr"/>
+        </else>
+    </Path>
+</CodeBlocks_compiler>

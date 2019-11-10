@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+    <Lexer name="YAML"
+        index="48"
+        filemasks="*.yml">
+        <Style name="Default"
+               index="0"
+               fg="0,0,0"
+               bg="255,255,255"
+               bold="0"
+               italics="0"
+               underlined="0"/>
+        <Style name="Comment"
+               index="1"
+               fg="160,160,160"/>
+        <Style name="Identifier"
+               index="2"
+               fg="0,0,160"
+               bold="1"/>
+        <Style name="Keyword"
+               index="3"
+               fg="0,0,160"
+               bold="1"/>
+        <Style name="Number"
+               index="4"
+               fg="240,0,240"/>
+        <Style name="Reference"
+               index="5"
+               fg="55,240,0"/>
+        <Style name="Document"
+               index="6"
+               fg="255,132,0"/>
+        <Style name="Text"
+               index="7"
+               fg="0,0,255"/>
+        <Style name="Error"
+               index="8"
+               fg="255,255,255"
+               bg="222,2,0"/>
+        <Style name="Operator"
+               index="9"
+               fg="240,0,240"/>
+
+        <SampleCode value="lexer_yaml.sample"/>
+        <LanguageAttributes
+            LineComment="#"
+            StreamCommentStart=""
+            StreamCommentEnd=""
+            BoxCommentStart=""
+            BoxCommentMid=""
+            BoxCommentEnd=""
+            CaseSensitive="1"
+            LexerCommentStyles="1"
+            LexerCharacterStyles=""
+            LexerStringStyles=""
+            LexerPreprocessorStyles=""/>
+    </Lexer>
+</CodeBlocks_lexer_properties>

@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="Intel HEX"
+                index="118"
+                filemasks="*.hex,*.ihex">
+                <!--#define SCE_HEX_DEFAULT 0-->
+                <Style name="Default"
+                        index="0"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <!--#define SCE_HEX_RECSTART 1-->
+                <Style name="Record start code"
+                        index="1"
+                        bg="255,255,204"/>
+
+                <!--#define SCE_HEX_BYTECOUNT 4-->
+                <Style name="Byte count field"
+                        index="4"
+                        bg="102,255,204"/>
+                <!--#define SCE_HEX_BYTECOUNT_WRONG 5-->
+                <Style name="Byte count field wrong"
+                        index="5"
+                        fg="255,0,0"
+                        bg="102,255,204"/>
+
+                <!--#define SCE_HEX_NOADDRESS 6-->
+                <!--#define SCE_HEX_DATAADDRESS 7-->
+                <Style name="Address field"
+                        index="6,7"
+                        bg="204,204,255"/>
+                <!--#define SCE_HEX_ADDRESSFIELD_UNKNOWN 10-->
+                <Style name="Unknown address field"
+                        index="10"
+                        fg="255,0,0"
+                        bg="204,204,255"/>
+
+                <!--#define SCE_HEX_RECTYPE 2-->
+                <Style name="Record type"
+                        index="2"
+                        bg="153,153,255"/>
+                <!--#define SCE_HEX_RECTYPE_UNKNOWN 3-->
+                <Style name="Record type"
+                        index="3"
+                        fg="255,0,0"
+                        bg="153,153,255"/>
+
+                <!--#define SCE_HEX_DATA_ODD 12-->
+                <!--#define SCE_HEX_DATA_EVEN 13-->
+                <!--#define SCE_HEX_DATA_EMPTY 15-->
+                <!--#define SCE_HEX_EXTENDEDADDRESS 11-->
+                <!--#define SCE_HEX_STARTADDRESS 9-->
+                <Style name="Data field"
+                        index="12,13,15,11,9"
+                        bg="153,255,255"/>
+                <!--#define SCE_HEX_DATA_UNKNOWN 14-->
+                <Style name="Data field unknown"
+                        index="14"
+                        fg="255,0,0"
+                        bg="153,255,255"/>
+
+                <!--#define SCE_HEX_CHECKSUM 16-->
+                <Style name="Checksum field"
+                        index="16"
+                        bg="255,153,153"/>
+                <!--#define SCE_HEX_CHECKSUM_WRONG 17-->
+                <Style name="Checksum field wrong"
+                        index="17"
+                        fg="255,0,0"
+                        bg="255,153,153"/>
+
+                <!--#define SCE_HEX_GARBAGE 18-->
+                <Style name="Garbage data"
+                        index="18"
+                        fg="255,0,0"/>
+
+                <SampleCode value="lexer_ihex.sample"/>
+                <LanguageAttributes
+                    LineComment=""
+                    StreamCommentStart=""
+                    StreamCommentEnd=""
+                    BoxCommentStart=""
+                    BoxCommentMid=""
+                    BoxCommentEnd=""
+                    CaseSensitive=""
+                    LexerCommentStyles=""
+                    LexerCharacterStyles=""
+                    LexerStringStyles=""
+                    LexerPreprocessorStyles=""/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

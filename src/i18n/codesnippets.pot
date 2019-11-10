@@ -1,0 +1,79 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-18 18:38+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../plugins/contrib/codesnippets/codesnippets.cpp:50
+#: ../plugins/contrib/codesnippets/codesnippets.cpp:82
+#: ../plugins/contrib/codesnippets/codesnippets.cpp:125
+#: ../plugins/contrib/codesnippets/codesnippets.cpp:130
+msgid "Code snippets"
+msgstr ""
+
+#: ../plugins/contrib/codesnippets/codesnippets.cpp:115
+msgid "View"
+msgstr ""
+
+#: ../plugins/contrib/codesnippets/codesnippets.cpp:125
+#: ../plugins/contrib/codesnippets/codesnippets.cpp:130
+msgid "Toggle displaying the code snippets."
+msgstr ""
+
+#: ../plugins/contrib/codesnippets/codesnippetswindow.cpp:114
+msgid "Clear"
+msgstr ""
+
+#: ../plugins/contrib/codesnippets/codesnippetswindow.cpp:147
+#: ../plugins/contrib/codesnippets/codesnippetswindow.cpp:162
+msgid "All snippets"
+msgstr ""
+
+#: ../plugins/contrib/codesnippets/codesnippetswindow.cpp:200
+#: ../plugins/contrib/codesnippets/codesnippetswindow.cpp:208
+msgid "Add code snippet"
+msgstr ""
+
+#: ../plugins/contrib/codesnippets/codesnippetswindow.cpp:201
+#: ../plugins/contrib/codesnippets/codesnippetswindow.cpp:209
+msgid "Add subcategory"
+msgstr ""
+
+#: ../plugins/contrib/codesnippets/codesnippetswindow.cpp:203
+msgid "Import from file..."
+msgstr ""
+
+#: ../plugins/contrib/codesnippets/codesnippetswindow.cpp:204
+msgid "Export to XML..."
+msgstr ""
+
+#: ../plugins/contrib/codesnippets/codesnippetswindow.cpp:211
+#: ../plugins/contrib/codesnippets/codesnippetswindow.cpp:217
+msgid "Remove"
+msgstr ""
+
+#: ../plugins/contrib/codesnippets/codesnippetswindow.cpp:215
+msgid "Apply"
+msgstr ""
+
+#: ../plugins/contrib/codesnippets/codesnippetswindow.cpp:241
+msgid "New category"
+msgstr ""
+
+#: ../plugins/contrib/codesnippets/codesnippetswindow.cpp:296
+#: ../plugins/contrib/codesnippets/codesnippetswindow.cpp:600
+#: ../plugins/contrib/codesnippets/codesnippetswindow.cpp:605
+msgid "New snippet"
+msgstr ""

@@ -1,0 +1,27 @@
+**
+* Sample Fortran (77) preview code
+* This is a block comment
+**
+C
+      !  main foo
+      program foo
+C
+      implicit none
+C
+C     variable declarations
+C
+      integer          i
+      integer          number
+      double precision total
+C
+C     program code
+C
+      i = 1;
+C
+      do             ! a breakpoint is set
+          write(*,*) 'Counting endless...'
+          number = i ! active line (during debugging)
+          total += i ! error line
+      enddo
+C
+      end
