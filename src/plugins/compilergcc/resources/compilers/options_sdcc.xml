@@ -42,21 +42,29 @@
     <Option name="Make char signed by default"
             option="--fsigned-char"/>
     <Option name="Make all functions reentrant"
-            option="--stack-auto"/>
+            option="--stack-auto"
+            checkAgainst="-mstm8 -mz80 -mz180 -mez80_z80 -mr2k -mtlcs90 -mgbz80"
+            checkMessage="stm8 and the z80-related backends always generate reentrant code; --stack-auto is redundant."/>
     <Option name="Be verbose"
             option="--verbose"/>
     <Option name="Generate extra profiling information"
             option="--profile"/>
     <Option name="Callee will always save registers used"
             option="--all-callee-saves"/>
-    <Option name="Leave out the frame pointer"
-            option="--fomit-frame-pointer"/>
+    <Option name="Never use a frame pointer"
+            option="--fomit-frame-pointer"
+            supersedes="--fno-omit-frame-pointer"/>
+    <Option name="Always use a frame pointer"
+            option="--fno-omit-frame-pointer"
+            supersedes="--fomit-frame-pointer"
+            checkAgainst="-mpdk13 -mpdk14 -mpdk15"
+            checkMessage="Padauk backends do not support a frame pointer; --fno-omit-frame-pointer will be ignored."/>
 
     <Category name="Language"
               exclusive="true">
-        <Option name="ISO C11 with SDCC extensions"
+        <Option name="ISO C11 / ISO C17 / ISO C18 with SDCC extensions"
                 option="--std-sdcc11"/>
-        <Option name="ISO C11"
+        <Option name="ISO C11 / ISO C17 / ISO C18"
                 option="--std-c11"/>
         <Option name="ISO C99 with SDCC extensions"
                 option="--std-sdcc99"/>
@@ -101,22 +109,30 @@
                 option="-mz80"/>
         <Option name="[CPU] Zilog Z180"
                 option="-mz180"/>
+        <Option name="[CPU] Zilog eZ80 in Z80 mode"
+                option="-mez80_z80"/>
         <Option name="[CPU] Rabbit 2000/3000"
                 option="-mr2k"/>
         <Option name="[CPU] Toshiba TLCS-90"
-                option="-mz180"/>
+                option="-mtlcs90"/>
         <Option name="[CPU] GameBoy Z80"
                 option="-mgbz80"/>
         <Option name="[CPU] STMicroelectronics STM8"
                 option="-mstm8"/>
-        <Option name="[CPU] Microchip PIC 14-bit (p16f84, etc. WIP)"
+        <Option name="[CPU] Padauk 13-bit (experimental)"
+                option="-mpdk13"/>
+        <Option name="[CPU] Padauk 14-bit"
+                option="-mpdk14"/>
+        <Option name="[CPU] Padauk 15-bit"
+                option="-mpdk15"/>
+        <Option name="[CPU] Microchip PIC 14-bit (p16f84, etc. experimental)"
                 option="-mpic14"/>
-        <Option name="[CPU] Microchip PIC 16-bit (p18f452, etc. WIP)"
+        <Option name="[CPU] Microchip PIC 16-bit (p18f452, etc. experimantal)"
                 option="-mpic16"/>
     </Category>
 
     <Category name="MCS51 Options">
-        <Option name="[MCS51] Large model programs (default is Small)"
+        <Option name="[MCS51] Large model programs (default is small)"
                 option="--model-large"/>
         <Option name="[MCS51] Use a pseudo stack in the first 256 bytes in the external ram"
                 option="--xstack"/>
@@ -135,9 +151,14 @@
                 option="--use-accelerator"/>
     </Category>
 
-    <Category name="Z80/Z180/Rabbit/TLCS-90/GBZ80 Options">
+    <Category name="Z80/Z180/eZ80/Rabbit/TLCS-90/GBZ80 Options">
         <Option name="[Z80] When linking, skip the standard crt0.rel object file"
                 option="--no-std-crt0"/>
+    </Category>
+
+    <Category name="STM8 Options">
+        <Option name="[STM8] Large model programs (default is medium)"
+                option="--model-large"/>
     </Category>
 
     <Category name="PIC Options">
