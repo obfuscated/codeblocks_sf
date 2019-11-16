@@ -314,8 +314,8 @@ CCManager::CCManager() :
         }
         // insert after Edit->Complete code
         edMenu->Insert(insertPos,     idShowTooltip,     _("Show tooltip\tShift-Alt-Space"));
-        edMenu->Insert(insertPos + 1, idCallTipNext,     _("Next call tip\tCtrl-N"));
-        edMenu->Insert(insertPos + 2, idCallTipPrevious, _("Previous call tip\tCtrl-P"));
+        edMenu->Insert(insertPos + 1, idCallTipNext,     _("Next call tip"));
+        edMenu->Insert(insertPos + 2, idCallTipPrevious, _("Previous call tip"));
     }
     mainFrame->Connect(idShowTooltip,     wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CCManager::OnMenuSelect), nullptr, this);
     mainFrame->Connect(idCallTipNext,     wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CCManager::OnMenuSelect), nullptr, this);
