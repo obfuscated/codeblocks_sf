@@ -113,7 +113,6 @@
 															<object class="wxTextCtrl" name="txtExecutionDir">
 																<enabled>0</enabled>
 															</object>
-															<flag>wxALIGN_LEFT</flag>
 															<border>2</border>
 															<option>1</option>
 														</object>
