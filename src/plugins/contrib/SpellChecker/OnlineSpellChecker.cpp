@@ -178,6 +178,8 @@ void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl) const
 
     // Manager::Get()->GetLogManager()->Log(wxT("OSC: update regions"));
 
+    int curspos = stc->GetCurrentPos();
+
     for (int i = 0; i < (int)m_invalidatedRangesStart.GetCount(); i++)
     {
         int start = m_invalidatedRangesStart[i];
@@ -203,8 +205,6 @@ void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl) const
                 break;
             const wxString lang = colour_set->GetLanguageName(ctrl->GetLanguage() );
 
-            int oldWordStart = 0;
-            int posToAdd = 0;
             for ( int pos = start ;  pos < end ; pos++)
             {
                 int wordstart = stc->WordStartPosition(pos, true);
@@ -213,33 +213,21 @@ void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl) const
 
                 int wordend = stc->WordEndPosition(wordstart, true);
                 if ( wordend > 0 &&             // Word end has to be > 0 to be valid (< 0 -> invalid pos, == 0 -> only 1 character)
+                     wordend != curspos &&      // If the cursor is at the end of the current word, the user is currently editing this word, so we skip it
                      wordend != wordstart &&    // We do not check single letters...
                      m_pSpellHelper->HasStyleToBeChecked(lang, stc->GetStyleAt(wordstart)) )
                 {
                     DissectWordAndCheck(stc, wordstart, wordend);
                 }
-
-                pos = wordend;
                 // wordend can point to a position before pos, so this can
                 // lead to an infinite loop. For example the combination
                 //  "\r\n"
                 // pos points to '\n' wordstart is then '\r' and wordend
                 // is also '\r'. So wordend points to a position prior
                 // to pos. To advance anyway we check if we have moved
-                // from the last iteration. If not we jump pos with increasing steps
-                // ahead. This will make sure we go advance the hickup,
-                // also if there are multiple bytes.
-                if(oldWordStart == wordstart)
-                {
-                    posToAdd++;
-                    pos += posToAdd;
-                }
-                else
-                {
-                    posToAdd = 0;
-                    oldWordStart = wordstart;
-                }
-
+                // from the last iteration.
+                if(wordend > pos)
+                    pos = wordend;
             }
         }
     }
