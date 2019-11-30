@@ -22,18 +22,20 @@
 ThreadSearchLoggerTree::ThreadSearchLoggerTree(ThreadSearchView& threadSearchView,
                                                ThreadSearch& threadSearchPlugin,
                                                InsertIndexManager::eFileSorting fileSorting,
-                                               wxPanel* pParent,
-                                               long id)
-                       : ThreadSearchLoggerBase(threadSearchView, threadSearchPlugin, fileSorting)
-                       , m_pTreeLog(NULL)
-                       , m_FirstItemProcessed(false)
+                                               wxWindow* pParent,
+                                               long id) :
+    ThreadSearchLoggerBase(pParent, threadSearchView, threadSearchPlugin, fileSorting),
+    m_pTreeLog(NULL),
+    m_FirstItemProcessed(false)
 {
-    m_pTreeLog = new wxTreeCtrl(pParent, id, wxDefaultPosition, wxSize(1,1), wxTR_HAS_BUTTONS|wxTR_LINES_AT_ROOT|wxTR_FULL_ROW_HIGHLIGHT|wxTR_HIDE_ROOT|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
+    m_pTreeLog = new wxTreeCtrl(this, id, wxDefaultPosition, wxSize(1,1), wxTR_HAS_BUTTONS|wxTR_LINES_AT_ROOT|wxTR_FULL_ROW_HIGHLIGHT|wxTR_HIDE_ROOT|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
     m_pTreeLog->SetMinSize(wxSize(100, 100));
     m_FilesParentId = m_pTreeLog->AddRoot(wxEmptyString);
 
+    SetupSizer(m_pTreeLog);
+
     // Events are managed dynamically to be able to stop/start management when required.
-    ConnectEvents(pParent);
+    ConnectEvents(this);
 }
 
 

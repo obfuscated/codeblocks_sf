@@ -14,8 +14,9 @@
 
 #include "InsertIndexManager.h"
 
+#include <wx/panel.h>
+
 class wxWindow;
-class wxPanel;
 class wxPoint;
 class wxEvtHandler;
 
@@ -25,7 +26,7 @@ class ThreadSearchEvent;
 class ThreadSearchFindData;
 
 
-class ThreadSearchLoggerBase
+class ThreadSearchLoggerBase : public wxPanel
 {
 public:
     enum eLoggerTypes
@@ -34,19 +35,13 @@ public:
         TypeTree
     };
 
-    /** BuildThreadSearchLoggerBase
-      * Builds a ThreadSearchLoggerList or a ThreadSearchLoggerTree pointer depending on loggerType.
+    /** Builds a ThreadSearchLoggerList or a ThreadSearchLoggerTree pointer depending on loggerType.
       * @return ThreadSearchLoggerBase*
       */
-    static ThreadSearchLoggerBase* BuildThreadSearchLoggerBase(ThreadSearchView& threadSearchView,
-                                                               ThreadSearch&     threadSearchPlugin,
-                                                               eLoggerTypes      loggerType,
-                                                               InsertIndexManager::eFileSorting fileSorting,
-                                                               wxPanel* pParent,
-                                                               long id);
-
-    /** Destructor. */
-    virtual ~ThreadSearchLoggerBase() {}
+    static ThreadSearchLoggerBase* Build(ThreadSearchView &threadSearchView,
+                                         ThreadSearch& threadSearchPlugin, eLoggerTypes loggerType,
+                                         InsertIndexManager::eFileSorting fileSorting,
+                                         wxWindow* pParent, long id);
 
     eLoggerTypes virtual GetLoggerType() = 0;
 
@@ -65,7 +60,7 @@ public:
     virtual void OnSearchBegin(const ThreadSearchFindData& findData) = 0;
 
     /** Called on search end */
-    virtual void OnSearchEnd() {};
+    virtual void OnSearchEnd() {}
 
     /** Returns logger window. */
     virtual wxWindow* GetWindow() = 0;
@@ -74,14 +69,11 @@ public:
     virtual void      SetFocus()  = 0;
 
 protected:
-    /** Constructor. */
-    ThreadSearchLoggerBase(ThreadSearchView& threadSearchView,
-                           ThreadSearch&                    threadSearchPlugin,
-                           InsertIndexManager::eFileSorting fileSorting)
-                           : m_ThreadSearchView  (threadSearchView)
-                           , m_ThreadSearchPlugin(threadSearchPlugin)
-                           , m_IndexManager(fileSorting)
-    {}
+    ThreadSearchLoggerBase(wxWindow *parent, ThreadSearchView &threadSearchView,
+                           ThreadSearch &threadSearchPlugin,
+                           InsertIndexManager::eFileSorting fileSorting);
+
+    void SetupSizer(wxWindow *control);
 
     /** Dynamic events connection. */
     virtual void ConnectEvents(wxEvtHandler* pEvtHandler) = 0;

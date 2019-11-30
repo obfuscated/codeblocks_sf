@@ -29,12 +29,12 @@ class ThreadSearchEvent;
 
 // MessageLog inheritance is necessary to be able to
 // add logger to Messages notebook.
-class ThreadSearchLoggerTree : public wxEvtHandler, public ThreadSearchLoggerBase
+class ThreadSearchLoggerTree : public ThreadSearchLoggerBase
 {
 public:
     /** Constructor. */
     ThreadSearchLoggerTree(ThreadSearchView& threadSearchView, ThreadSearch& threadSearchPlugin,
-                            InsertIndexManager::eFileSorting fileSorting, wxPanel* pParent, long id);
+                            InsertIndexManager::eFileSorting fileSorting, wxWindow* pParent, long id);
 
     /** Destructor. */
     virtual ~ThreadSearchLoggerTree();

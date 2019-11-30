@@ -64,7 +64,6 @@ ThreadSearchView::ThreadSearchView(ThreadSearch& threadSearchPlugin)
 
     // begin wxGlade: ThreadSearchView::ThreadSearchView
     m_pSplitter = new wxSplitterWindow(this, -1, wxDefaultPosition, wxSize(1,1), wxSP_3D|wxSP_BORDER|wxSP_PERMIT_UNSPLIT);
-    m_pPnlListLog = new wxPanel(m_pSplitter, -1, wxDefaultPosition, wxSize(1,1));
     m_pPnlPreview = new wxPanel(m_pSplitter, -1, wxDefaultPosition, wxSize(1,1));
     m_pSizerSearchDirItems_staticbox = new wxStaticBox(this, -1, _("Directory parameters"));
     const wxString m_pCboSearchExpr_choices[] = {
@@ -91,11 +90,10 @@ ThreadSearchView::ThreadSearchView(ThreadSearch& threadSearchPlugin)
                                             wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
     m_pPnlDirParams = new DirectoryParamsPanel(&threadSearchPlugin.GetFindData(), this, -1);
     m_pSearchPreview = new cbStyledTextCtrl(m_pPnlPreview, wxID_ANY, wxDefaultPosition, wxSize(1,1));
-    m_pLogger = ThreadSearchLoggerBase::BuildThreadSearchLoggerBase(*this, m_ThreadSearchPlugin,
-                                                                    m_ThreadSearchPlugin.GetLoggerType(),
-                                                                    m_ThreadSearchPlugin.GetFileSorting(),
-                                                                    m_pPnlListLog,
-                                                                    controlIDs.Get(ControlIDs::idWndLogger));
+    m_pLogger = ThreadSearchLoggerBase::Build(*this, m_ThreadSearchPlugin,
+                                              m_ThreadSearchPlugin.GetLoggerType(),
+                                              m_ThreadSearchPlugin.GetFileSorting(), m_pSplitter,
+                                              controlIDs.Get(ControlIDs::idWndLogger));
 
     set_properties();
     do_layout();
@@ -416,7 +414,6 @@ void ThreadSearchView::do_layout()
     // begin wxGlade: ThreadSearchView::do_layout
     wxBoxSizer* m_pSizerTop = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* m_pSizerSplitter = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* m_pSizerListLog = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* m_pSizerSearchPreview = new wxBoxSizer(wxHORIZONTAL);
     m_pSizerSearchDirItems = new wxStaticBoxSizer(m_pSizerSearchDirItems_staticbox, wxHORIZONTAL);
     m_pSizerSearchItems = new wxBoxSizer(wxHORIZONTAL);
@@ -434,10 +431,7 @@ void ThreadSearchView::do_layout()
     m_pSizerSearchPreview->Add(m_pSearchPreview, 1, wxEXPAND|wxADJUST_MINSIZE, 0);
     m_pPnlPreview->SetAutoLayout(true);
     m_pPnlPreview->SetSizer(m_pSizerSearchPreview);
-    m_pSizerListLog->Add(m_pLogger->GetWindow(), 1, wxEXPAND|wxFIXED_MINSIZE, 0);
-    m_pPnlListLog->SetAutoLayout(true);
-    m_pPnlListLog->SetSizer(m_pSizerListLog);
-    m_pSplitter->SplitVertically(m_pPnlPreview, m_pPnlListLog);
+    m_pSplitter->SplitVertically(m_pPnlPreview, m_pLogger);
     m_pSizerSplitter->Add(m_pSplitter, 1, wxEXPAND|wxADJUST_MINSIZE, 0);
     m_pSizerTop->Add(m_pSizerSplitter, 1, wxEXPAND, 0);
     SetAutoLayout(true);
@@ -1047,11 +1041,11 @@ void ThreadSearchView::ApplySplitterSettings(bool showCodePreview, long splitter
             if ( m_pSplitter->IsSplit() == true ) m_pSplitter->Unsplit();
             if ( splitterMode == wxSPLIT_HORIZONTAL )
     {
-                m_pSplitter->SplitHorizontally(m_pPnlListLog, m_pPnlPreview);
+                m_pSplitter->SplitHorizontally(m_pLogger, m_pPnlPreview);
             }
             else
         {
-            m_pSplitter->SplitVertically(m_pPnlPreview, m_pPnlListLog);
+            m_pSplitter->SplitVertically(m_pPnlPreview, m_pLogger);
         }
     }
     }
@@ -1069,16 +1063,16 @@ void ThreadSearchView::SetLoggerType(ThreadSearchLoggerBase::eLoggerTypes lgrTyp
 {
     if ( lgrType != m_pLogger->GetLoggerType() )
     {
-        delete m_pLogger;
-        m_pLogger = ThreadSearchLoggerBase::BuildThreadSearchLoggerBase(*this
-                                                                       , m_ThreadSearchPlugin
-                                                                       , lgrType
-                                                                       , m_ThreadSearchPlugin.GetFileSorting()
-                                                                       , m_pPnlListLog
-                                                                       , controlIDs.Get(ControlIDs::idWndLogger));
-        m_pPnlListLog->GetSizer()->Add(m_pLogger->GetWindow(), 1, wxEXPAND|wxFIXED_MINSIZE, 0);
-        wxSizer* pTopSizer = m_pPnlListLog->GetSizer();
-        pTopSizer->Layout();
+        ThreadSearchLoggerBase *oldLogger = m_pLogger;
+        m_pLogger = ThreadSearchLoggerBase::Build(*this, m_ThreadSearchPlugin, lgrType,
+                                                  m_ThreadSearchPlugin.GetFileSorting(),
+                                                  m_pSplitter,
+                                                  controlIDs.Get(ControlIDs::idWndLogger));
+
+        if (m_pSplitter->ReplaceWindow(oldLogger, m_pLogger))
+        {
+            delete oldLogger;
+        }
     }
 }
 

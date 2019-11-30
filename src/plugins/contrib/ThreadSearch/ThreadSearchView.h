@@ -193,7 +193,6 @@ protected:
     cbStyledTextCtrl* m_pSearchPreview;
     wxPanel* m_pPnlPreview;
     ThreadSearchLoggerBase* m_pLogger;
-    wxPanel* m_pPnlListLog;
     wxSplitterWindow* m_pSplitter;
     // end wxGlade
     wxStaticBoxSizer* m_pSizerSearchDirItems;

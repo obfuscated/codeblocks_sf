@@ -29,24 +29,26 @@
 ThreadSearchLoggerList::ThreadSearchLoggerList(ThreadSearchView& threadSearchView,
                                                ThreadSearch& threadSearchPlugin,
                                                InsertIndexManager::eFileSorting fileSorting,
-                                               wxPanel* pParent,
-                                               long id)
-                       : ThreadSearchLoggerBase(threadSearchView, threadSearchPlugin, fileSorting),
-                       m_IndexOffset(0),
-                       m_SortColumn(-1),
-                       m_Ascending(true)
+                                               wxWindow* pParent,
+                                               long id) :
+    ThreadSearchLoggerBase(pParent, threadSearchView, threadSearchPlugin, fileSorting),
+    m_IndexOffset(0),
+    m_SortColumn(-1),
+    m_Ascending(true)
 {
-    m_pListLog = new wxListCtrl(pParent, id, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_SINGLE_SEL|wxSUNKEN_BORDER);
+    m_pListLog = new wxListCtrl(this, id, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_SINGLE_SEL|wxSUNKEN_BORDER);
     m_pListLog->SetMinSize(wxSize(100,100));
 
     int size = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/log_font_size"), platform::macosx ? 10 : 8);
     wxFont default_font(size, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     m_pListLog->SetFont(default_font);
 
+    SetupSizer(m_pListLog);
+
     SetListColumns();
 
     // Events are managed dynamically to be able to stop/start management when required.
-    ConnectEvents(pParent);
+    ConnectEvents(this);
 }
 
 
