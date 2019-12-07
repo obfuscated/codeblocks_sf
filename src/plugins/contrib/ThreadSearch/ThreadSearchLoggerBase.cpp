@@ -64,12 +64,12 @@ void ThreadSearchLoggerBase::Update()
 }
 
 
-void ThreadSearchLoggerBase::ShowMenu(const wxPoint& point)
+void ThreadSearchLoggerBase::ShowMenu(const wxPoint& point, bool hasSelection)
 {
     bool enable = !m_ThreadSearchView.IsSearchRunning();
     wxMenu menu(_(""));
     wxMenuItem* menuItem = menu.Append(controlIDs.Get(ControlIDs::idMenuCtxDeleteItem), _("&Delete item"));
-    menuItem->Enable(enable);
+    menuItem->Enable(enable && hasSelection);
     menuItem = menu.Append(controlIDs.Get(ControlIDs::idMenuCtxDeleteAllItems), _("Delete &all items"));
     menuItem->Enable(enable);
     GetWindow()->PopupMenu(&menu, point);

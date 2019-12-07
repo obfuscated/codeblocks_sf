@@ -283,6 +283,7 @@ void ThreadSearchLoggerList::ConnectEvents(wxEvtHandler* pEvtHandler)
 {
     // Dynamic event connections.
     int id = m_pListLog->GetId();
+
     pEvtHandler->Connect(id, wxEVT_COMMAND_LIST_ITEM_SELECTED,
                         (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
                         &ThreadSearchLoggerList::OnLoggerListClick, NULL, static_cast<wxEvtHandler*>(this));
@@ -341,26 +342,30 @@ void ThreadSearchLoggerList::DisconnectEvents(wxEvtHandler* pEvtHandler)
 
 void ThreadSearchLoggerList::OnLoggerListContextualMenu(wxContextMenuEvent& event)
 {
+    if (m_pListLog->GetItemCount() == 0)
+        return;
     wxPoint point = event.GetPosition();
+    bool hasSelection = false;
 
     // If from keyboard
-    if ( (point.x == -1) && (point.y == -1) )
+    if ((point.x == -1) && (point.y == -1))
     {
         wxSize size = m_pListLog->GetSize();
         point.x = size.x / 2;
         point.y = size.y / 2;
+        if (m_pListLog->GetSelectedItemCount() > 0)
+            hasSelection = true;
     }
     else
     {
         point = m_pListLog->ScreenToClient(point);
         long tmp;
         int flags;
-        if ( m_pListLog->HitTest(point, flags, &tmp) == wxNOT_FOUND )
-        {
-            return;
-        }
+        if (m_pListLog->HitTest(point, flags, &tmp) != wxNOT_FOUND)
+            hasSelection = true;
     }
-    ShowMenu(point);
+    ShowMenu(point, hasSelection);
+    // No event skipping, otherwise, Message notebook contextual menu pops up
 }
 
 
