@@ -16,6 +16,10 @@
 		<Project filename="plugins/contrib/wxSmithAui/wxSmithAui_wx31.cbp">
 			<Depends filename="plugins/contrib/wxSmith/wxSmith_wx31.cbp" />
 		</Project>
+		<Project filename="plugins/headerguard/headerguard_wx31.cbp" />
+		<Project filename="plugins/loghacker/loghacker_wx31.cbp" />
+		<Project filename="plugins/ModPoller/ModPoller_wx31.cbp" />
+		<Project filename="plugins/tidycmt/tidycmt_wx31.cbp" />
 		<Project filename="plugins/contrib/AutoVersioning/AutoVersioning_wx31.cbp" />
 		<Project filename="plugins/contrib/BrowseTracker/BrowseTracker_wx31.cbp" />
 		<Project filename="plugins/contrib/byogames/byogames_wx31.cbp" />
