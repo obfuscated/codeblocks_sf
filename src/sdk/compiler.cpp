@@ -20,14 +20,15 @@
     #include "compilerfactory.h"
 
     #include <wx/intl.h>
+    #include <wx/process.h>
     #include <wx/regex.h>
+    #include <wx/txtstrm.h>
 #endif
 
 #include "compilercommandgenerator.h"
 #include <wx/arrimpl.cpp>
 #include <wx/filefn.h>
 #include <wx/xml/xml.h>
-
 
 // static
 wxArrayString Compiler::m_CompilerIDs; // map to guarantee unique IDs
@@ -1229,18 +1230,7 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
 
         long ret = -1;
         if ( !cmd[0].IsEmpty() ) // should never be empty
-        {
-            int flags = wxEXEC_SYNC;
-            #if wxCHECK_VERSION(3, 0, 0)
-                // Stop event-loop while wxExecute runs, to avoid a deadlock on startup,
-                // that occurs from time to time on wx3
-                flags |= wxEXEC_NOEVENTS;
-            #else
-                flags |= wxEXEC_NODISABLE;
-            #endif
-            wxLogNull logNo; // do not warn if execution fails
-            ret = wxExecute(GetStringFromArray(cmd, wxT(" "), false), cmd, flags);
-        }
+            ret = Execute(GetStringFromArray(cmd, wxT(" "), false), cmd);
 
         if (ret != 0) // execution failed
             val = (node->GetAttribute(wxT("default"), wxEmptyString) == wxT("true"));
@@ -1284,3 +1274,93 @@ wxString Compiler::GetExecName(const wxString& name)
         ret = m_Programs.MAKE;
     return ret;
 }
+
+#ifdef __WXMSW__
+
+// In MSW calling wxExecute in synchronous mode while the main window is not visible makes
+// the system show a C::B icon in the taskbar. When this is made repeatedly (as in compiler
+// loading) the result is a stream of flashing icons.
+// However, wxExecute in asynchronous mode does not do this. The caveat is that we must wait
+// in a loop for the end of the task and extract the command output in a separate step.
+
+// This auxiliary class is needed for detecting the end of the task and retrieving the ouput.
+// OnTerminate() will be called when the task ends with the return code of the task, and then
+// the task output can be retrieved (as a stream).
+
+class ExecProcess : public wxProcess
+{
+    public:
+          ExecProcess(cb_unused wxEvtHandler *parent = NULL, cb_unused int id = -1)
+          {
+              m_status = 0;
+          }
+
+          long GetStatus() const {return m_status;}
+          wxSemaphore &GetSemaphore() {return m_semaphore;}
+          void OnTerminate(cb_unused int pid, int status)
+          {
+              m_status = status;
+              m_semaphore.Post();
+          }
+
+    protected:
+          long m_status;
+          wxSemaphore m_semaphore;
+};
+
+// Emulates wxExecute() in synchronous mode using asynchronous mode
+
+long Compiler::Execute(const wxString &cmd, wxArrayString &output)
+{
+    wxLogNull logNo; // do not warn if execution fails
+
+    output.Clear();
+
+    ExecProcess process;
+    process.Redirect(); // capture task input/output streams
+
+    // wxExecute in asynchronous mode returns 0 if execution failed.
+    // Return -1 emulating the behaviour of wxExecute in synchronous mode
+    if ( !wxExecute(cmd, wxEXEC_ASYNC, &process) )
+        return -1;
+
+    // Wait for the end of the task
+    for (;;)
+    {
+        Manager::Yield(); // needed for semaphore update
+        if (process.GetSemaphore().WaitTimeout(25) == wxSEMA_NO_ERROR)
+            break;
+    }
+
+    // Loads the wxArrayString with the task output (returned in a wxInputStream)
+    wxInputStream *inputStream = process.GetInputStream();
+    wxTextInputStream text(*inputStream);
+#if wxCHECK_VERSION(3, 0, 0)
+    while (!text.GetInputStream().Eof())
+#else
+    while (!inputStream->Eof())
+#endif
+    {
+        output.Add(text.ReadLine());
+    }
+
+    // Return task exit code emulating the behaviour of wxExecute in synchronous mode
+    return process.GetStatus();
+}
+
+#else // __WXMSW__
+
+long Compiler::Execute(const wxString &cmd, wxArrayString &output)
+{
+    wxLogNull logNo; // do not warn if execution fails
+    int flags = wxEXEC_SYNC;
+    #if wxCHECK_VERSION(3, 0, 0)
+        // Stop event-loop while wxExecute runs, to avoid a deadlock on startup,
+        // that occurs from time to time on wx3
+        flags |= wxEXEC_NOEVENTS;
+    #else
+        flags |= wxEXEC_NODISABLE;
+    #endif
+    return wxExecute(cmd, output, flags);
+}
+#endif // __WXMSW__

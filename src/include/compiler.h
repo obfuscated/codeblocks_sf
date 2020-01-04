@@ -100,12 +100,12 @@ struct RegExStruct
     }
     RegExStruct& operator=(const RegExStruct &obj)
     {
-        desc=obj.desc;
-        lt=obj.lt;
-        regex=obj.regex;
-        regexCompiled=false;
-        filename=obj.filename;
-        line=obj.line;
+        desc          = obj.desc;
+        lt            = obj.lt;
+        regex         = obj.regex;
+        regexCompiled = false;
+        filename      = obj.filename;
+        line          = obj.line;
         memcpy(msg, obj.msg, sizeof(msg));
 
         return *this;
@@ -403,6 +403,9 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 
         // keeps a copy of current settings (works only the first time it's called)
         void MirrorCurrentSettings();
+
+        // execute without creating taskbar icon
+        long Execute(const wxString& cmd, wxArrayString& output);
 
         // set the following members in your class
         wxString            m_Name;

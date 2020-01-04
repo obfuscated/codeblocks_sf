@@ -173,7 +173,7 @@ void CompilerMINGW::SetVersionString()
 {
 //    Manager::Get()->GetLogManager()->DebugLog(_T("Compiler detection for compiler ID: '") + GetID() + _T("' (parent ID= '") + GetParentID() + _T("')"));
 
-    wxArrayString output, errors;
+    wxArrayString output;
     wxString sep = wxFileName::GetPathSeparator();
     wxString master_path = m_MasterPath;
     wxString compiler_exe = m_Programs.C;
@@ -223,16 +223,7 @@ void CompilerMINGW::SetVersionString()
 
 //    Manager::Get()->GetLogManager()->DebugLog(_T("Compiler version detection: Issuing command: ") + gcc_command);
 
-    int flags = wxEXEC_SYNC;
-#if wxCHECK_VERSION(3, 0, 0)
-    // Stop event-loop while wxExecute runs, to avoid a deadlock on startup,
-    // that occurs from time to time on wx3
-    flags |= wxEXEC_NOEVENTS;
-#else
-    flags |= wxEXEC_NODISABLE;
-#endif
-    long result = wxExecute(gcc_command + _T(" --version"), output, errors, flags );
-    if(result != 0)
+    if ( Execute(gcc_command + _T(" --version"), output) != 0 )
     {
 //        Manager::Get()->GetLogManager()->DebugLog(_T("Compiler version detection: Error executing command."));
     }
