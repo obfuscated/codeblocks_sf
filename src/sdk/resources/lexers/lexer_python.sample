@@ -11,6 +11,11 @@ month_names = ['Januari', 'Februari', 'Maart',      # These are the
 if len(sys.argv)!=2:
     print '''Usage: This is a 'Code::Blocks' Example'''
     print "This String goes to EOL
+    var = 5
+    print (f'Single quote f-string {var}')
+    print (f"Double quote f-string {var}")
+    print (f'''Triple single quote f-string {var}''')
+    print (f"""Triple double quote f-string {var}""")
     sys.exit(0)
 
 class ClassName:
