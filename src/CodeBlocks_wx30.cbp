@@ -127,12 +127,6 @@
 					<Add directory="include/scripting/bindings" />
 					<Add directory="include/scripting/include" />
 					<Add directory="include/scripting/sqplus" />
-					<Add directory="include/mozilla_chardet" />
-					<Add directory="include/mozilla_chardet/mfbt" />
-					<Add directory="include/mozilla_chardet/nsprpub/pr/include" />
-					<Add directory="include/mozilla_chardet/xpcom" />
-					<Add directory="include/mozilla_chardet/xpcom/base" />
-					<Add directory="include/mozilla_chardet/xpcom/glue" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
@@ -170,12 +164,6 @@
 					<Add directory="include" />
 					<Add directory="include/scripting/include" />
 					<Add directory="include/scripting/sqplus" />
-					<Add directory="include/mozilla_chardet" />
-					<Add directory="include/mozilla_chardet/mfbt" />
-					<Add directory="include/mozilla_chardet/nsprpub/pr/include" />
-					<Add directory="include/mozilla_chardet/xpcom" />
-					<Add directory="include/mozilla_chardet/xpcom/base" />
-					<Add directory="include/mozilla_chardet/xpcom/glue" />
 					<Add directory="exchndl/win32/include" />
 				</Compiler>
 				<Linker>
@@ -402,12 +390,6 @@
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add option="-DCC_NO_COLLAPSE_ITEM" />
 					<Add directory="include" />
-					<Add directory="include/mozilla_chardet" />
-					<Add directory="include/mozilla_chardet/mfbt" />
-					<Add directory="include/mozilla_chardet/nsprpub/pr/include" />
-					<Add directory="include/mozilla_chardet/xpcom" />
-					<Add directory="include/mozilla_chardet/xpcom/base" />
-					<Add directory="include/mozilla_chardet/xpcom/glue" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
@@ -558,12 +540,6 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="include" />
-					<Add directory="include/mozilla_chardet" />
-					<Add directory="include/mozilla_chardet/mfbt" />
-					<Add directory="include/mozilla_chardet/nsprpub/pr/include" />
-					<Add directory="include/mozilla_chardet/xpcom" />
-					<Add directory="include/mozilla_chardet/xpcom/base" />
-					<Add directory="include/mozilla_chardet/xpcom/glue" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
@@ -626,12 +602,6 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="include" />
-					<Add directory="include/mozilla_chardet" />
-					<Add directory="include/mozilla_chardet/mfbt" />
-					<Add directory="include/mozilla_chardet/nsprpub/pr/include" />
-					<Add directory="include/mozilla_chardet/xpcom" />
-					<Add directory="include/mozilla_chardet/xpcom/base" />
-					<Add directory="include/mozilla_chardet/xpcom/glue" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
@@ -937,129 +907,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/misctreeitemdata.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/CharDistribution.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/JpCntx.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Alignment.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Assertions.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Attributes.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Compiler.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Likely.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/mozilla/NullPtr.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/mozilla/TypedEnum.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Types.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Util.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsBig5Prober.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsCharSetProber.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsCodingStateMachine.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsEUCJPProber.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsEUCKRProber.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsEUCTWProber.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsEscCharsetProber.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsGB2312Prober.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsHebrewProber.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsLatin1Prober.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsMBCSGroupProber.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsPkgInt.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsSBCSGroupProber.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsSBCharSetProber.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsSJISProber.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsUTF8Prober.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsUniversalDetector.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_darwin.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_linux.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_openbsd.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_win95.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_winnt.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prmem.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prtypes.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/xpcom/base/ErrorList.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/xpcom/base/nsError.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/xpcom/base/nscore.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/xpcom/glue/nsDebug.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/xpcom/glue/nsMemory.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/multiselectdlg.h">
@@ -2657,6 +2504,129 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/menuitemsmanager.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/CharDistribution.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/JpCntx.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/mfbt/mozilla/Alignment.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/mfbt/mozilla/Assertions.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/mfbt/mozilla/Attributes.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/mfbt/mozilla/Compiler.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/mfbt/mozilla/Likely.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/mfbt/mozilla/NullPtr.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/mfbt/mozilla/TypedEnum.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/mfbt/mozilla/Types.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/mfbt/mozilla/Util.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsBig5Prober.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsCharSetProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsCodingStateMachine.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsEUCJPProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsEUCKRProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsEUCTWProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsEscCharsetProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsGB2312Prober.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsHebrewProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsLatin1Prober.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsMBCSGroupProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsPkgInt.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsSBCSGroupProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsSBCharSetProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsSJISProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsUTF8Prober.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsUniversalDetector.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsprpub/pr/include/prcpucfg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsprpub/pr/include/prcpucfg_darwin.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsprpub/pr/include/prcpucfg_linux.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsprpub/pr/include/prcpucfg_openbsd.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsprpub/pr/include/prcpucfg_win95.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsprpub/pr/include/prcpucfg_winnt.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsprpub/pr/include/prmem.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/nsprpub/pr/include/prtypes.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/xpcom/base/ErrorList.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/xpcom/base/nsError.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/xpcom/base/nscore.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/xpcom/glue/nsDebug.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/include/xpcom/glue/nsMemory.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/mozilla_chardet/src/Big5Freq.tab">

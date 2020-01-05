@@ -50,12 +50,6 @@
 			<Add directory="../../../include" />
 			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
-			<Add directory="../../../include/mozilla_chardet" />
-			<Add directory="../../../include/mozilla_chardet/mfbt" />
-			<Add directory="../../../include/mozilla_chardet/nsprpub/pr/include" />
-			<Add directory="../../../include/mozilla_chardet/xpcom" />
-			<Add directory="../../../include/mozilla_chardet/xpcom/base" />
-			<Add directory="../../../include/mozilla_chardet/xpcom/glue" />
 			<Add directory="$(#WX30_64.include)" />
 			<Add directory="$(#WX30_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 		</Compiler>
