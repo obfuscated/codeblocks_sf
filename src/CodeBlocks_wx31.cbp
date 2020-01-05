@@ -127,6 +127,12 @@
 					<Add directory="include/scripting/bindings" />
 					<Add directory="include/scripting/include" />
 					<Add directory="include/scripting/sqplus" />
+					<Add directory="sdk/mozilla_chardet/include" />
+					<Add directory="sdk/mozilla_chardet/include/mfbt" />
+					<Add directory="sdk/mozilla_chardet/include/nsprpub/pr/include" />
+					<Add directory="sdk/mozilla_chardet/include/xpcom" />
+					<Add directory="sdk/mozilla_chardet/include/xpcom/base" />
+					<Add directory="sdk/mozilla_chardet/include/xpcom/glue" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
