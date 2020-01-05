@@ -843,7 +843,6 @@ RECURSIVE              = YES
 EXCLUDE                = ./sdk/wxpropgrid/ \
                          ./sdk/wxscintilla/ \
                          ./sdk/mozilla_chardet/ \
-                         ./include/mozilla_chardet/ \
                          ./include/scripting/include/ \
                          ./include/scripting/sqplus/ \
                          ./include/scripting/sqstdlib/ \

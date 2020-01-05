@@ -32,47 +32,61 @@
  *  using the Mozilla universal char detector.
  * ---------------------------------------------- */
 
-EncodingDetector::EncodingDetector(const wxString& filename, bool useLog) :
-    nsUniversalDetector(NS_FILTER_ALL),
-    m_IsOK(false),
-    m_UseBOM(false),
-    m_UseLog(useLog),
-    m_BOMSizeInBytes(0),
-    m_ConvStr(wxEmptyString)
+class EncodingDetector::Data : public nsUniversalDetector
 {
-    m_Encoding = wxLocale::GetSystemEncoding();
-    m_IsOK = DetectEncoding(filename);
+    public:
+        Data(bool useLog) :
+            nsUniversalDetector(NS_FILTER_ALL),
+            m_IsOK(false),
+            m_UseBOM(false),
+            m_UseLog(useLog),
+            m_BOMSizeInBytes(0),
+            m_ConvStr(wxEmptyString)
+        {
+            m_Encoding = wxLocale::GetSystemEncoding();
+        }
+
+        /** @return True if succeeded, false if not (e.g. file didn't exist). */
+        bool DetectEncoding(const wxString& filename, bool convert_to_wxstring = true);
+        bool DetectEncoding(const wxByte* buffer, size_t size, bool convert_to_wxstring = true);
+        bool DetectEncodingEx(const wxByte* buffer, size_t len);
+        void Report(const char* aCharset) override;
+
+        bool           m_IsOK;
+        bool           m_UseBOM;
+        bool           m_UseLog;
+        int            m_BOMSizeInBytes;
+        wxFontEncoding m_Encoding;
+
+        bool ConvertToWxString(const wxByte* buffer, size_t size);
+
+        wxString m_MozillaResult;
+        wxString m_ConvStr;
+};
+
+EncodingDetector::EncodingDetector(const wxString& filename, bool useLog) :
+    m_data(new Data(useLog))
+{
+    m_data->m_IsOK = m_data->DetectEncoding(filename);
 }
 
 EncodingDetector::EncodingDetector(LoaderBase* fileLdr, bool useLog) :
-    nsUniversalDetector(NS_FILTER_ALL),
-    m_IsOK(false),
-    m_UseBOM(false),
-    m_UseLog(useLog),
-    m_BOMSizeInBytes(0),
-    m_ConvStr(wxEmptyString)
+    m_data(new Data(useLog))
 {
-    m_Encoding = wxLocale::GetSystemEncoding();
-    m_IsOK = DetectEncoding((wxByte*)fileLdr->GetData(), fileLdr->GetLength());
+    m_data->m_IsOK = m_data->DetectEncoding((wxByte*)fileLdr->GetData(), fileLdr->GetLength());
 }
 
 EncodingDetector::EncodingDetector(const wxByte* buffer, size_t size, bool useLog) :
-    nsUniversalDetector(NS_FILTER_ALL),
-    m_IsOK(false),
-    m_UseBOM(false),
-    m_UseLog(useLog),
-    m_BOMSizeInBytes(0),
-    m_ConvStr(wxEmptyString)
+    m_data(new Data(useLog))
 {
-    m_Encoding = wxLocale::GetSystemEncoding();
-    m_IsOK = DetectEncoding(buffer, size);
+    m_data->m_IsOK = m_data->DetectEncoding(buffer, size);
 }
 
 EncodingDetector::~EncodingDetector()
 {
 }
 
-void EncodingDetector::Report(const char *aCharset)
+void EncodingDetector::Data::Report(const char *aCharset)
 {
     m_MozillaResult = cbC2U(aCharset);
 
@@ -87,30 +101,30 @@ void EncodingDetector::Report(const char *aCharset)
 
 bool EncodingDetector::IsOK() const
 {
-    return m_IsOK;
+    return m_data->m_IsOK;
 }
 
 bool EncodingDetector::UsesBOM() const
 {
-    return m_UseBOM;
+    return m_data->m_UseBOM;
 }
 
 int EncodingDetector::GetBOMSizeInBytes() const
 {
-    return m_BOMSizeInBytes;
+    return m_data->m_BOMSizeInBytes;
 }
 
 wxFontEncoding EncodingDetector::GetFontEncoding() const
 {
-    return m_Encoding;
+    return m_data->m_Encoding;
 }
 
 wxString EncodingDetector::GetWxStr() const
 {
-    return m_ConvStr;
+    return m_data->m_ConvStr;
 }
 
-bool EncodingDetector::DetectEncoding(const wxString& filename, bool convert_to_wxstring)
+bool EncodingDetector::Data::DetectEncoding(const wxString& filename, bool convert_to_wxstring)
 {
     wxFile file(filename);
     if (!file.IsOpened())
@@ -144,7 +158,7 @@ bool EncodingDetector::DetectEncoding(const wxString& filename, bool convert_to_
     return result;
 }
 
-bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool convert_to_wxstring)
+bool EncodingDetector::Data::DetectEncoding(const wxByte* buffer, size_t size, bool convert_to_wxstring)
 {
     ConfigManager* cfgMgr = Manager::Get()->GetConfigManager(_T("editor"));
     wxString encname = cfgMgr->Read(_T("/default_encoding"));
@@ -253,7 +267,7 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool co
 //        and:  https://github.com/etexteditor/e/blob/master/src/Utf.cpp
 // Copyright (c) 2009, Alexander Stigsen, e-texteditor.com (All rights reserved)
 // http://www.e-texteditor.com/
-bool EncodingDetector::DetectEncodingEx(const wxByte* buffer, size_t size)
+bool EncodingDetector::Data::DetectEncodingEx(const wxByte* buffer, size_t size)
 {
     if (!buffer || size == 0) return false;
 
@@ -428,7 +442,7 @@ inline wxString makeStringNoNull(const wxWCharBuffer &wideBuff)
     return result;
 }
 
-bool EncodingDetector::ConvertToWxString(const wxByte* buffer, size_t size)
+bool EncodingDetector::Data::ConvertToWxString(const wxByte* buffer, size_t size)
 {
     LogManager* logmgr = Manager::Get()->GetLogManager();
     wxString    logmsg;

@@ -5,13 +5,7 @@ AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		$(WX_X11_CFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
-		-I$(top_srcdir)/src/plugins/contrib/codesnippets \
-		-I$(top_srcdir)/src/include/mozilla_chardet \
-		-I$(top_srcdir)/src/include/mozilla_chardet/mfbt \
-		-I$(top_srcdir)/src/include/mozilla_chardet/nsprpub/pr/include \
-		-I$(top_srcdir)/src/include/mozilla_chardet/xpcom \
-		-I$(top_srcdir)/src/include/mozilla_chardet/xpcom/base \
-		-I$(top_srcdir)/src/include/mozilla_chardet/xpcom/glue
+		-I$(top_srcdir)/src/plugins/contrib/codesnippets
 
 pluginlibdir = $(pkglibdir)/plugins
 

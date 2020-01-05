@@ -8,13 +8,13 @@ AM_CPPFLAGS = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
 			 $(WXPROPGRID_INCLUDE) \
 			-I$(top_srcdir)/src/include/scripting/bindings \
- 			-I$(top_srcdir)/src/include/scripting/sqplus \
- 			-I$(top_srcdir)/src/include/mozilla_chardet \
- 			-I$(top_srcdir)/src/include/mozilla_chardet/mfbt \
- 			-I$(top_srcdir)/src/include/mozilla_chardet/nsprpub/pr/include \
- 			-I$(top_srcdir)/src/include/mozilla_chardet/xpcom \
- 			-I$(top_srcdir)/src/include/mozilla_chardet/xpcom/base \
- 			-I$(top_srcdir)/src/include/mozilla_chardet/xpcom/glue
+			-I$(top_srcdir)/src/include/scripting/sqplus \
+			-I$(top_srcdir)/src/sdk/mozilla_chardet/include \
+			-I$(top_srcdir)/src/sdk/mozilla_chardet/include/mfbt \
+			-I$(top_srcdir)/src/sdk/mozilla_chardet/include/nsprpub/pr/include \
+			-I$(top_srcdir)/src/sdk/mozilla_chardet/include/xpcom \
+			-I$(top_srcdir)/src/sdk/mozilla_chardet/include/xpcom/base \
+			-I$(top_srcdir)/src/sdk/mozilla_chardet/include/xpcom/glue
 
 lib_LTLIBRARIES = libcodeblocks.la
 
@@ -143,8 +143,50 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						mozilla_chardet/src/nsUniversalDetector.cpp \
 						mozilla_chardet/src/nsUTF8Prober.cpp
 
-EXTRA_DIST =  	mozilla_chardet/src/Big5Freq.tab \
-		mozilla_chardet/src/EUCKRFreq.tab \
-		mozilla_chardet/src/EUCTWFreq.tab \
-		mozilla_chardet/src/GB2312Freq.tab \
-		mozilla_chardet/src/JISFreq.tab
+EXTRA_DIST = \
+	mozilla_chardet/include/CharDistribution.h \
+	mozilla_chardet/include/JpCntx.h \
+	mozilla_chardet/include/nsBig5Prober.h \
+	mozilla_chardet/include/nsCharSetProber.h \
+	mozilla_chardet/include/nsCodingStateMachine.h \
+	mozilla_chardet/include/nsEscCharsetProber.h \
+	mozilla_chardet/include/nsEUCJPProber.h \
+	mozilla_chardet/include/nsEUCKRProber.h \
+	mozilla_chardet/include/nsEUCTWProber.h \
+	mozilla_chardet/include/nsGB2312Prober.h \
+	mozilla_chardet/include/nsHebrewProber.h \
+	mozilla_chardet/include/nsLatin1Prober.h \
+	mozilla_chardet/include/nsMBCSGroupProber.h \
+	mozilla_chardet/include/nsPkgInt.h \
+	mozilla_chardet/include/nsSBCharSetProber.h \
+	mozilla_chardet/include/nsSBCSGroupProber.h \
+	mozilla_chardet/include/nsSJISProber.h \
+	mozilla_chardet/include/nsUniversalDetector.h \
+	mozilla_chardet/include/nsUTF8Prober.h \
+	mozilla_chardet/include/mfbt/mozilla/Alignment.h \
+	mozilla_chardet/include/mfbt/mozilla/Assertions.h \
+	mozilla_chardet/include/mfbt/mozilla/Attributes.h \
+	mozilla_chardet/include/mfbt/mozilla/Compiler.h \
+	mozilla_chardet/include/mfbt/mozilla/Likely.h \
+	mozilla_chardet/include/mfbt/mozilla/NullPtr.h \
+	mozilla_chardet/include/mfbt/mozilla/TypedEnum.h \
+	mozilla_chardet/include/mfbt/mozilla/Types.h \
+	mozilla_chardet/include/mfbt/mozilla/Util.h \
+	mozilla_chardet/include/nsprpub/pr/include/prcpucfg.h \
+	mozilla_chardet/include/nsprpub/pr/include/prcpucfg_darwin.h \
+	mozilla_chardet/include/nsprpub/pr/include/prcpucfg_linux.h \
+	mozilla_chardet/include/nsprpub/pr/include/prcpucfg_openbsd.h \
+	mozilla_chardet/include/nsprpub/pr/include/prcpucfg_win95.h \
+	mozilla_chardet/include/nsprpub/pr/include/prcpucfg_winnt.h \
+	mozilla_chardet/include/nsprpub/pr/include/prmem.h \
+	mozilla_chardet/include/nsprpub/pr/include/prtypes.h \
+	mozilla_chardet/include/xpcom/base/ErrorList.h \
+	mozilla_chardet/include/xpcom/base/nscore.h \
+	mozilla_chardet/include/xpcom/base/nsError.h \
+	mozilla_chardet/include/xpcom/glue/nsDebug.h \
+	mozilla_chardet/include/xpcom/glue/nsMemory.h \
+	mozilla_chardet/src/Big5Freq.tab \
+	mozilla_chardet/src/EUCKRFreq.tab \
+	mozilla_chardet/src/EUCTWFreq.tab \
+	mozilla_chardet/src/GB2312Freq.tab \
+	mozilla_chardet/src/JISFreq.tab
