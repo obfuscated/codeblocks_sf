@@ -6,7 +6,6 @@
 #ifndef ENCODINGDETECTOR_H
 #define ENCODINGDETECTOR_H
 
-#include <memory>
 #include "settings.h"
 #include "filemanager.h"
 #include <wx/fontmap.h>
@@ -16,7 +15,6 @@ class wxString;
 /** Try to detect the encoding of a file on disk. */
 class DLLIMPORT EncodingDetector
 {
-        class Data;
     public:
         EncodingDetector(const wxString& filename, bool useLog=true);
         EncodingDetector(LoaderBase* fileLdr, bool useLog=true);
@@ -34,8 +32,11 @@ class DLLIMPORT EncodingDetector
         wxFontEncoding GetFontEncoding() const;
         wxString GetWxStr() const;
     private:
-        std::unique_ptr<Data> m_data;
-
+        wxString m_ConvStr;
+        wxFontEncoding m_Encoding;
+        int m_BOMSizeInBytes;
+        bool m_IsOK;
+        bool m_UseBOM;
 };
 
 #endif // ENCODINGDETECTOR_H
