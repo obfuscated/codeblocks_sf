@@ -60,7 +60,7 @@ class EncodingDetectorImpl : public nsUniversalDetector
         }
 
         /** @return True if succeeded, false if not (e.g. file didn't exist). */
-        bool DetectEncoding(const wxString& filename, bool convert_to_wxstring)
+        bool DetectEncoding(const wxString& filename)
         {
             wxFile file(filename);
             if (!file.IsOpened())
@@ -87,14 +87,14 @@ class EncodingDetectorImpl : public nsUniversalDetector
             size_t readBytes = file.Read((void*)buffer, size);
             bool result = false;
             if (readBytes > 0)
-                result = DetectEncoding(buffer, size, convert_to_wxstring);
+                result = DetectEncoding(buffer, size);
 
             file.Close();
             free(buffer);
             return result;
         }
 
-        bool DetectEncoding(const wxByte* buffer, size_t size, bool convert_to_wxstring)
+        bool DetectEncoding(const wxByte* buffer, size_t size)
         {
             ConfigManager* cfgMgr = Manager::Get()->GetConfigManager(_T("editor"));
             wxString encname = cfgMgr->Read(_T("/default_encoding"));
@@ -193,7 +193,7 @@ class EncodingDetectorImpl : public nsUniversalDetector
                 Manager::Get()->GetLogManager()->DebugLog(msg);
             }
 
-            if (convert_to_wxstring && !ConvertToWxString(buffer, size) && m_UseLog)
+            if (!ConvertToWxString(buffer, size) && m_UseLog)
                 Manager::Get()->GetLogManager()->DebugLog(_T("Something seriously went wrong while converting file content to wxString!"));
 
             return true;
@@ -556,7 +556,7 @@ class EncodingDetectorImpl : public nsUniversalDetector
 EncodingDetector::EncodingDetector(const wxString& filename, bool useLog)
 {
     EncodingDetectorImpl detector(useLog);
-    m_IsOK = detector.DetectEncoding(filename, true);
+    m_IsOK = detector.DetectEncoding(filename);
     m_ConvStr = detector.m_ConvStr;
     m_Encoding = detector.m_Encoding;
     m_BOMSizeInBytes = detector.m_BOMSizeInBytes;
