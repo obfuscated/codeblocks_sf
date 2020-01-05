@@ -56,6 +56,13 @@
 #endif
 
 #if wxCHECK_VERSION(3, 1, 0) && defined(__WXMSW__) && !defined(HAVE_DIRECTWRITE_TECHNOLOGY)
+    // You need a build of wxWidgets with enabled Direct2D rendering support.
+    // Unfortunately wxWidgets doesn't enable this by default when using non-Visual studio
+    // compilers, so you have to enable it manually. To do so you have to edit the file
+    // <wxWidgets-root>/include/wx/msw/setup.h.
+    // Change "#define wxUSE_GRAPHICS_DIRECT2D 0" to "#define wxUSE_GRAPHICS_DIRECT2D wxUSE_GRAPHICS_CONTEXT".
+    // If you're rebuilding wxWidgets you might also have to edit the file
+    // <wxWidgets-root>/lib/gcc_dll/mswu/wx/setup.h.
     #error "You need to have Direct2D capable wxWidget build to build Code::Blocks. We want to support fonts with ligatures!!!"
 #endif // wxCHECK_VERSION(3, 1, 0) && defined(__WXMSW__) && !defined(HAVE_DIRECTWRITE_TECHNOLOGY)
 
