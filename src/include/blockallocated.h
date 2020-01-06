@@ -123,7 +123,7 @@ public:
 
     inline void operator delete(void *ptr)
     {
-        if(ptr == 0) // C++ standard requires this
+        if (ptr == 0) // C++ standard requires this
             return;
         allocator.Delete(ptr);
     };
