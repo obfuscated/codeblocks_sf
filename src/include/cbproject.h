@@ -448,11 +448,6 @@ class DLLIMPORT cbProject : public CompileTargetBase
           */
         void SetGlobs(const std::vector<Glob>& globs);
 
-        /** Add a glob to the project, this are directory paths do retrieve files from to be added to the project, the path can be searched recursively
-          * @param glob the globs to add to the project.
-          */
-        void AddGlob(const Glob& glob);
-
         /** Retrieve the current globs from the project
           * @return globs the globs to add to the project.
           */
