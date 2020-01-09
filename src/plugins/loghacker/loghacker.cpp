@@ -97,7 +97,7 @@ void CfgPanel::Create(wxWindow* parent)
     wxArrayString loggerStrings = LogManager::Get()->ListAvailable();
     loggerStrings.Insert(_T("<application default>"), 0);
 
-    wxFlexGridSizer* flex = new wxFlexGridSizer(2, 2, 0, 0);
+    wxFlexGridSizer* flex = new wxFlexGridSizer(3, 2, 0, 0);
     flex->AddGrowableRow(1);
     flex->AddGrowableCol(0);
     flex->AddGrowableCol(1);
