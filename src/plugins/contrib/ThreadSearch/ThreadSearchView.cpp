@@ -851,6 +851,16 @@ void ThreadSearchView::OnTmrListCtrlUpdate(wxTimerEvent& /*event*/)
 
             m_pLogger->OnSearchEnd();
 
+            {
+                // Clear the search string, so the user can type a new one.
+                // This makes using middle-click paste on linux a lot more usable.
+                m_pCboSearchExpr->SetValue(wxString());
+                const long id = controlIDs.Get(ControlIDs::idCboSearchExpr);
+                wxComboBox* pToolBarCombo = static_cast<wxComboBox*>(m_pToolBar->FindControl(id));
+                if (pToolBarCombo)
+                    pToolBarCombo->SetValue(wxString());
+            }
+
             // Restores label and enables all search params graphical widgets.
             UpdateSearchButtons(true, search);
             EnableControls(true);
