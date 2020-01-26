@@ -11,6 +11,7 @@
 #include "sdk.h"
 #include <wx/bitmap.h>
 #include <wx/bmpbuttn.h>
+#include <wx/display.h>
 #include <wx/statline.h>
 #ifndef CB_PRECOMP
     #include <wx/combobox.h>
@@ -370,7 +371,9 @@ void ThreadSearchView::set_properties()
 
     // begin wxGlade: ThreadSearchView::set_properties
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
-    m_pCboSearchExpr->SetMinSize(wxSize(180, -1));
+
+    SetWindowMinMaxSize(*m_pCboSearchExpr, 80, 180);
+
     m_pBtnSearch->SetToolTip(_("Search in files"));
     m_pBtnSearch->SetBitmapDisabled(cbLoadBitmapScaled(prefix + wxT("findfdisabled.png"),
                                                        wxBITMAP_TYPE_PNG, scaleFactor));
@@ -1004,6 +1007,15 @@ wxString GetImagePrefix(bool toolbar, wxWindow *window)
         return ConfigManager::GetDataFolder()
             + wxString::Format(wxT("/ThreadSearch.zip#zip:images/%dx%d/"), size, size);
     }
+}
+
+void SetWindowMinMaxSize(wxWindow &window, int numChars, int minSize)
+{
+    window.SetMinSize(wxSize(minSize, -1));
+
+    const wxString s(wxT('W'), numChars);
+    const wxSize textSize = window.GetTextExtent(s);
+    window.SetMaxSize(wxSize(std::max(minSize, textSize.x), -1));
 }
 
 void ThreadSearchView::ShowSearchControls(bool show)

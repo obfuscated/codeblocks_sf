@@ -26,6 +26,7 @@
 #endif
 
 #include "DirectoryParamsPanel.h"
+#include "ThreadSearchCommon.h"
 #include "ThreadSearchControlIds.h"
 #include "ThreadSearchFindData.h"
 
@@ -65,11 +66,14 @@ DirectoryParamsPanel::DirectoryParamsPanel(ThreadSearchFindData *findData, wxWin
     // begin wxGlade: DirectoryParamsPanel::DirectoryParamsPanel
     m_pSearchDirPath = new wxComboBox(this, controlIDs.Get(ControlIDs::idSearchDirPath), wxEmptyString,
                                       wxDefaultPosition, wxDefaultSize, 0, choices, wxCB_DROPDOWN|wxTE_PROCESS_ENTER);
+    SetWindowMinMaxSize(*m_pSearchDirPath, 80, 180);
+
     m_pBtnSelectDir = new wxButton(this, controlIDs.Get(ControlIDs::idBtnDirSelectClick), _("..."));
     m_pChkSearchDirRecursively = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkSearchDirRecurse), _("Recurse"));
     m_pChkSearchDirHiddenFiles = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkSearchDirHidden), _("Hidden"));
     m_pMask = new wxComboBox(this, controlIDs.Get(ControlIDs::idSearchMask), findData->GetSearchMask(),
                              wxDefaultPosition, wxDefaultSize, 0, choices, wxCB_DROPDOWN|wxTE_PROCESS_ENTER);
+    SetWindowMinMaxSize(*m_pMask, 30, 180);
 
     set_properties();
     do_layout();
