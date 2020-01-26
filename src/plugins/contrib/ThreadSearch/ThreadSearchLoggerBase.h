@@ -82,7 +82,7 @@ protected:
     virtual void DisconnectEvents(wxEvtHandler* pEvtHandler) = 0;
 
     /** Displays contextual menu. */
-    void ShowMenu(const wxPoint& point, bool hasSelection);
+    void ShowMenu(const wxPoint& point, bool hasSelection, bool hasItems);
 
     ThreadSearchView& m_ThreadSearchView;
     ThreadSearch&     m_ThreadSearchPlugin;
