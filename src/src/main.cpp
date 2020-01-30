@@ -631,7 +631,8 @@ MainFrame::MainFrame(wxWindow* parent)
 
     LoadWindowSize();
     ScanForPlugins();
-    CreateToolbars();
+    if (!Manager::IsBatchBuild())
+        CreateToolbars();
 
     Manager::Get()->GetCCManager();
 
