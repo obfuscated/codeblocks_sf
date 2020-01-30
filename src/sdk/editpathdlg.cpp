@@ -23,6 +23,7 @@
 #endif
 
 #include "editpathdlg.h"
+#include <wx/display.h>
 #include <wx/filedlg.h>
 #include <wx/msgdlg.h>
 
@@ -48,7 +49,9 @@ EditPathDlg::EditPathDlg(wxWindow* parent,
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditPath"),_T("wxScrollingDialog"));
     XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
 
-    XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(path);
+    wxTextCtrl *txtPath = XRCCTRL(*this, "txtPath", wxTextCtrl);
+
+    txtPath->SetValue(path);
     XRCCTRL(*this, "dlgEditPath", wxScrollingDialog)->SetTitle(title);
 
     if (!wantDir) {
@@ -63,11 +66,17 @@ EditPathDlg::EditPathDlg(wxWindow* parent,
     m_Filter = filter;
     m_AskMakeRelative = true;
     m_ShowCreateDirButton = false;
-    XRCCTRL(*this, "txtPath", wxTextCtrl)->SetFocus();
+    txtPath->SetFocus();
 
-    // Limit vertical resizing.
-    SetMinSize(wxSize(400, GetMinHeight()));
+    // Limit vertical resizing, because we don't want to have empty space at the bottom of the
+    // dialog. We also want to limit the min width, so the text control could accommodate common
+    // paths.
+    int expectedTextWidth;
+    txtPath->GetTextExtent(wxString(wxT('W'), 60), &expectedTextWidth, nullptr);
+    SetMinSize(wxSize(expectedTextWidth, GetMinHeight()));
     SetMaxSize(wxSize(-1, GetMinHeight()));
+
+    Fit();
 }
 
 EditPathDlg::~EditPathDlg()
