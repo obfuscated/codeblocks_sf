@@ -135,9 +135,8 @@ int FindMenuDuplicateItems(wxMenu* pMenu, wxString& rStr, int& rCount)
 // ----------------------------------------------------------------------------
 wxString GetFullMenuPath(int id)
 // ----------------------------------------------------------------------------
-{//(2007/6/13)
-
-    // fetch the full menu path from via a menu id
+{
+    // fetch the full menu path from menu structure via a menu id
     // It will look like "File\\Open\\Recent Files"
     // or "" on failure
 

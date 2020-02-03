@@ -62,7 +62,7 @@ namespace
     #if wxVERSION_NUMBER < 3000
     int wxEVT_LISTBOOK_PAGE_CHANGED = wxEVT_COMMAND_LISTBOOK_PAGE_CHANGED; //wx2.8
     #endif // wxVERSION_NUMBER
-    int idKeyBinderRefresh = XRCID("idKeyBinderRefresh"); //(pecan 2019/04/26)
+    int idKeyBinderRefresh = XRCID("idKeyBinderRefresh");
     wxString sep = wxFileName::GetPathSeparator();
     inline bool wxFound(int result){return result != wxNOT_FOUND;}
 };
@@ -391,7 +391,7 @@ void cbKeyBinder::OnAppStartShutdown(CodeBlocksEvent& event)
     #endif
 }
 // ----------------------------------------------------------------------------
-void cbKeyBinder::OnKeyBinderRefreshRequested(wxCommandEvent& event)    //(pecan 2019/04/26)
+void cbKeyBinder::OnKeyBinderRefreshRequested(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
     // a process has issued: wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, XRCID("idKeyBinderRefresh"))
@@ -427,7 +427,7 @@ bool cbKeyBinder::CreateKeyBindDefaultFile(bool refresh)
 {
     // FIXME (ph#): Do we really need to used the old KeyBinder scan to create the new
     // default keybindings or can we just use the routines like clKeyboardManager::DoUpdateMenu()
-    // to create the menuMap directly. //(pecan 2019/10/28)
+    // to create the menuMap directly.
 
     // Create %temp%\<profile>.keyMnuAccels.conf default accelerators by:
     // 1) Scan the menu structure to create keyOldFmtMnuScan.ini as a comparison base.
