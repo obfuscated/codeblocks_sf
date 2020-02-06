@@ -35,7 +35,7 @@ public:
       * @param Line : the text line to match.
       * @return true if line matches search text.
       */
-    virtual bool MatchLine(wxString line);
+    virtual bool MatchLine(const wxString &line);
 
     /** Return true if object is OK.
       * @return true if object is Ok, ie usable.

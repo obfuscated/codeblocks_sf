@@ -22,13 +22,19 @@ TextFileSearcherText::TextFileSearcherText(const wxString& searchText, bool matc
 }
 
 
-bool TextFileSearcherText::MatchLine(wxString line)
+bool TextFileSearcherText::MatchLine(const wxString &originalLine)
 {
+    wxString line;
     bool match = false;
     if ( m_MatchCase == false )
     {
-        line.LowerCase();
+        line = originalLine.Lower();
     }
+    else
+    {
+        line = originalLine;
+    }
+
     int pos = line.Find(m_SearchText.c_str());
     int nextPos;
     while ( (match == false) && (pos >= 0) )
