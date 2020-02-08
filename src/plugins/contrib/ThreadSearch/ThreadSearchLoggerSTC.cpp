@@ -115,7 +115,7 @@ void ThreadSearchLoggerSTC::OnThreadSearchEvent(const ThreadSearchEvent& event)
     m_stc->Freeze();
     m_stc->SetReadOnly(false);
 
-    AppendStyledText(STCStyles::File, wxString::Format(wxT("%s (%d matches)\n"), filename.wx_str(),
+    AppendStyledText(STCStyles::File, wxString::Format(_("%s (%d matches)\n"), filename.wx_str(),
                                                        words.size() / 2));
 
     // The only reason it is constructed here is to preserve the allocated space between loop
@@ -173,8 +173,42 @@ void ThreadSearchLoggerSTC::OnSearchBegin(const ThreadSearchFindData& findData)
 
     m_startLine = std::max(0, m_stc->LineFromPosition(m_stc->GetLength()) - 1);
 
+    // Create the string depicting selected options.
+    wxString optionMessage;
+    if (findData.GetMatchCase())
+        optionMessage += _("match case");
+    if (findData.GetMatchWord())
+    {
+        if (!optionMessage.empty())
+            optionMessage += wxT(", ");
+        optionMessage += _("match word");
+    }
+    if (findData.GetStartWord())
+    {
+        if (!optionMessage.empty())
+            optionMessage += wxT(", ");
+        optionMessage += _("start word");
+    }
+    if (findData.GetRegEx())
+    {
+        if (!optionMessage.empty())
+            optionMessage += wxT(", ");
+        optionMessage += _("regular expression");
+    }
+
+    // Add initial banner for the current search.
+    wxString message;
+    if (optionMessage.empty())
+        message = wxString::Format(_("=> Searching for '%s'\n"), findData.GetFindText().wx_str());
+    else
+    {
+        message = wxString::Format(_("=> Searching for '%s' (%s)\n"),
+                                   findData.GetFindText().wx_str(),
+                                   optionMessage.wx_str());
+    }
+
     m_stc->SetReadOnly(false);
-    m_stc->AppendText(wxT("=> Searching for ") + findData.GetFindText() + wxT('\n'));
+    m_stc->AppendText(message);
     m_stc->SetReadOnly(true);
 
     m_stc->SetFirstVisibleLine(m_startLine);
@@ -183,7 +217,7 @@ void ThreadSearchLoggerSTC::OnSearchBegin(const ThreadSearchFindData& findData)
 void ThreadSearchLoggerSTC::OnSearchEnd()
 {
     m_stc->SetReadOnly(false);
-    m_stc->AppendText(wxString::Format(wxT("=> Finished! Found: %d in %d files\n\n\n"), m_totalCount,
+    m_stc->AppendText(wxString::Format(_("=> Finished! Found: %d in %d files\n\n\n"), m_totalCount,
                                        m_fileCount));
     m_stc->SetReadOnly(true);
 
