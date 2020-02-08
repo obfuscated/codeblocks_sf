@@ -109,10 +109,14 @@ void ThreadSearchLoggerSTC::OnThreadSearchEvent(const ThreadSearchEvent& event)
     const wxString &filename = event.GetString();
     const std::vector<int> &matchedPositions = event.GetMatchedPositions();
 
+    ++m_fileCount;
+    m_totalCount += words.size() / 2;
+
     m_stc->Freeze();
     m_stc->SetReadOnly(false);
 
-    AppendStyledText(STCStyles::File, filename + wxT("\n"));
+    AppendStyledText(STCStyles::File, wxString::Format(wxT("%s (%d matches)\n"), filename.wx_str(),
+                                                       words.size() / 2));
 
     // The only reason it is constructed here is to preserve the allocated space between loop
     // iterations.
@@ -164,6 +168,9 @@ void ThreadSearchLoggerSTC::Clear()
 
 void ThreadSearchLoggerSTC::OnSearchBegin(const ThreadSearchFindData& findData)
 {
+    m_fileCount = 0;
+    m_totalCount = 0;
+
     m_stc->SetReadOnly(false);
     m_stc->AppendText(wxT("=> Searching for ") + findData.GetFindText() + wxT('\n'));
     m_stc->SetReadOnly(true);
@@ -172,7 +179,8 @@ void ThreadSearchLoggerSTC::OnSearchBegin(const ThreadSearchFindData& findData)
 void ThreadSearchLoggerSTC::OnSearchEnd()
 {
     m_stc->SetReadOnly(false);
-    m_stc->AppendText(wxT("=> Searching finished!\n"));
+    m_stc->AppendText(wxString::Format(wxT("=> Finished! Found: %d in %d files\n"), m_totalCount,
+                                       m_fileCount));
     m_stc->SetReadOnly(true);
 }
 
