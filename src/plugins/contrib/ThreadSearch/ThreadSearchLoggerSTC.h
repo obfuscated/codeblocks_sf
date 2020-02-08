@@ -30,6 +30,7 @@ private:
     wxScintilla *m_stc;
     int m_fileCount;
     int m_totalCount;
+    int m_startLine;
 };
 
 #endif // CB_THREADSEARCH_LOGGER_STC_H
