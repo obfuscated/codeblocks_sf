@@ -51,19 +51,34 @@ bool TextFileSearcherRegEx::MatchLine(std::vector<int> *outMatchedPositions, con
     if (!m_RegEx.IsValid())
         return false;
 
-    const bool match = m_RegEx.Matches(line);
+    const wxChar *lineBuffer = line.wx_str();
+    const bool match = m_RegEx.Matches(lineBuffer, 0, line.length());
     if (!match)
         return false;
 
+    const std::vector<int>::size_type countIdx = outMatchedPositions->size();
+    outMatchedPositions->push_back(0);
+
+    int count = 0;
+
     size_t start, length;
-    if (m_RegEx.GetMatch(&start, &length))
+
+    // GetMatch returns the values relative to the start of the string, so for the second and later
+    // matches we need to know the position of the string relative to the full string.
+    int offset = 0;
+    while (m_RegEx.GetMatch(&start, &length))
     {
-        outMatchedPositions->push_back(1);
-        outMatchedPositions->push_back(start);
+        count++;
+        outMatchedPositions->push_back(start + offset);
         outMatchedPositions->push_back(length);
+
+        offset += start + length;
+
+        if (!m_RegEx.Matches(lineBuffer + offset, 0, line.length() - offset))
+            break;
     }
-    else
-        outMatchedPositions->push_back(0);
+
+    (*outMatchedPositions)[countIdx] = count;
     return true;
 }
 
