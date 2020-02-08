@@ -248,14 +248,16 @@ wxDirTraverseResult ThreadSearchThread::OnFile(const wxString& fileName)
 void ThreadSearchThread::FindInFile(const wxString& path)
 {
     m_LineTextArray.Empty();
+    m_MatchedPositions.clear();
 
-    switch ( m_pTextFileSearcher->FindInFile(path, m_LineTextArray) )
+    switch ( m_pTextFileSearcher->FindInFile(path, m_LineTextArray, m_MatchedPositions) )
     {
         case TextFileSearcher::idStringFound:
         {
             ThreadSearchEvent event(wxEVT_THREAD_SEARCH, -1);
             event.SetString(path);
             event.SetLineTextArray(m_LineTextArray);
+            event.SetMatchedPositions(m_MatchedPositions);
 
             // Using wxPostEvent, we avoid multi-threaded memory violation.
             m_pThreadSearchView->PostThreadSearchEvent(event);

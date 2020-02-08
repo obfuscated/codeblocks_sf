@@ -46,17 +46,26 @@ TextFileSearcherRegEx::TextFileSearcherRegEx(const wxString& searchText, bool ma
     m_RegEx.Compile(pattern, flags);
 }
 
-
-bool TextFileSearcherRegEx::MatchLine(const wxString &line)
+bool TextFileSearcherRegEx::MatchLine(std::vector<int> *outMatchedPositions, const wxString &line)
 {
-    bool match = false;
-    if ( m_RegEx.IsValid() )
-    {
-        match = m_RegEx.Matches(line.c_str());
-    }
-    return match;
-}
+    if (!m_RegEx.IsValid())
+        return false;
 
+    const bool match = m_RegEx.Matches(line);
+    if (!match)
+        return false;
+
+    size_t start, length;
+    if (m_RegEx.GetMatch(&start, &length))
+    {
+        outMatchedPositions->push_back(1);
+        outMatchedPositions->push_back(start);
+        outMatchedPositions->push_back(length);
+    }
+    else
+        outMatchedPositions->push_back(0);
+    return true;
+}
 
 bool TextFileSearcherRegEx::IsOk(wxString* pErrorMessage)
 {

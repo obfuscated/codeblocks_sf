@@ -26,8 +26,9 @@ ThreadSearchEvent::ThreadSearchEvent(wxEventType commandType, int id)
 }
 
 
-ThreadSearchEvent::ThreadSearchEvent(const ThreadSearchEvent& Event)
-                  :wxCommandEvent(Event)
+ThreadSearchEvent::ThreadSearchEvent(const ThreadSearchEvent& Event) :
+    wxCommandEvent(Event),
+    m_MatchedPositions(Event.m_MatchedPositions)
 {
     // code copied from class CodeBlocksThreadEvent in SDK
     // make sure our string member (which uses COW, aka refcounting) is not

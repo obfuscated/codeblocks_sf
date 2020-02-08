@@ -105,6 +105,7 @@ private:
     wxDirTraverseResult  m_DefaultDirResult;  // Used to recurse or not in directory search
     wxArrayString        m_LineTextArray;     // Array containing one file search results.
                                               // Succession of 'line number' and line of text
+    std::vector<int> m_MatchedPositions;
     wxArrayString        m_Masks;             // Used in directory search to filter file paths.
     wxSortedArrayString  m_FilePaths;         // Array containing all file paths that will be
                                               // searched in.

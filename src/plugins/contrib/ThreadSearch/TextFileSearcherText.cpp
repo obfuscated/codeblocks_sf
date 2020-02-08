@@ -22,10 +22,10 @@ TextFileSearcherText::TextFileSearcherText(const wxString& searchText, bool matc
 }
 
 
-bool TextFileSearcherText::MatchLine(const wxString &originalLine)
+bool TextFileSearcherText::MatchLine(std::vector<int> *outMatchedPositions,
+                                     const wxString &originalLine)
 {
     wxString line;
-    bool match = false;
     if ( m_MatchCase == false )
     {
         line = originalLine.Lower();
@@ -34,6 +34,8 @@ bool TextFileSearcherText::MatchLine(const wxString &originalLine)
     {
         line = originalLine;
     }
+
+    bool match = false;
 
     int pos = line.Find(m_SearchText.c_str());
     int nextPos;
@@ -73,6 +75,9 @@ bool TextFileSearcherText::MatchLine(const wxString &originalLine)
             pos = -1;
         }
     }
+
+    if (match)
+        outMatchedPositions->push_back(0);
 
     return match;
 }

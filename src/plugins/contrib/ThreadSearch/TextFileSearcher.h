@@ -15,6 +15,7 @@
 
 #include <wx/string.h>
 #include <wx/textfile.h>
+#include <vector>
 
 class TextFileSearcher
 {
@@ -48,7 +49,7 @@ public:
       * @param line : the text line to match.
       * @return true if line matches search text.
       */
-    virtual bool MatchLine(const wxString &line) = 0;
+    virtual bool MatchLine(std::vector<int> *outMatchedPositions, const wxString &line) = 0;
 
     /** Return true if object is OK.
       * Exists to test validity of the object, mainly for reg ex syntax errors.
@@ -66,7 +67,8 @@ public:
       * @return true if success (error can only come from bad reg ex or file open
       * failure).
       */
-    eFileSearcherReturn FindInFile(const wxString& filePath, wxArrayString &foundLines);
+    eFileSearcherReturn FindInFile(const wxString& filePath, wxArrayString &foundLines,
+                                   std::vector<int> &matchedPositions);
 
 protected:
     /** Constructor. */
