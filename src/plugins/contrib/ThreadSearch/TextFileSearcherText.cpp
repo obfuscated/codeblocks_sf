@@ -35,50 +35,60 @@ bool TextFileSearcherText::MatchLine(std::vector<int> *outMatchedPositions,
         line = originalLine;
     }
 
-    bool match = false;
+    wxString::size_type start = 0;
+    int count = 0;
 
-    int pos = line.Find(m_SearchText.c_str());
-    int nextPos;
-    while ( (match == false) && (pos >= 0) )
+    const std::vector<int>::size_type countIdx = outMatchedPositions->size();
+
+    do
     {
-        char c = ' '; // c is either the preceeding char or a virtual char
-                      // that matches systematically the required conditions
-        match = true; // pos > 0 => expr found => Matches. Let's test start word
-                      // and whole words conditions.
-        if ( (m_MatchWordBegin == true) || (m_MatchWord == true) )
+        // "TestTest Test"
+        // start word [0;4], [9;4]
+        // match word [9;4]
+        // none [0;4] [4;4] [9;4]
+
+        wxString::size_type pos = line.find(m_SearchText, start);
+        if (pos == wxString::npos)
+            break;
+
+        if ((m_MatchWordBegin || m_MatchWord) && pos > 0)
         {
-            if ( pos > 0 )
+            // Try to see if this is the start of the word.
+            const char prevChar = line.GetChar(pos - 1);
+            if (isalnum(prevChar) || prevChar == '_')
             {
-                c = line.GetChar(pos - 1);
+                start++;
+                continue;
             }
-            //match = (__iscsym(c) == 0);
-            match = !(isalnum(c) || ( c == '_' ));
         }
 
-        if ( (match == true) && (m_MatchWord == true) )
+        if (m_MatchWord && (pos + m_SearchText.length() < line.length()))
         {
-            c = ' ';
-            if ( (pos + m_SearchText.Length()) < line.Length() )
+            // Try to see if this is the end of the word.
+            const char nextChar = line.GetChar(pos + m_SearchText.length());
+            if (isalnum(nextChar) || nextChar == '_')
             {
-                c = line.GetChar(pos + m_SearchText.Length());
+                start++;
+                continue;
             }
-            match = !(isalnum(c) || ( c == '_' ));
         }
 
-        nextPos = line.Mid(pos+1).Find(m_SearchText.c_str());
-        if ( nextPos >= 0 )
-        {
-            pos += nextPos + 1;
-        }
-        else
-        {
-            pos = -1;
-        }
+        // We have a match add positions for it.
+        if (count == 0)
+            outMatchedPositions->push_back(0);
+        ++count;
+        outMatchedPositions->push_back(pos);
+        outMatchedPositions->push_back(m_SearchText.length());
+
+        start = pos + m_SearchText.length();
+    } while (1);
+
+    if (count > 0)
+    {
+        (*outMatchedPositions)[countIdx] = count;
+        return true;
     }
-
-    if (match)
-        outMatchedPositions->push_back(0);
-
-    return match;
+    else
+        return false;
 }
 
