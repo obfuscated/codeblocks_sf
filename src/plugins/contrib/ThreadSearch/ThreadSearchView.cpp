@@ -160,6 +160,7 @@ BEGIN_EVENT_TABLE(ThreadSearchView, wxPanel)
     EVT_MENU(controlIDs.Get(ControlIDs::idOptionRegEx), ThreadSearchView::OnQuickOptions)
     EVT_MENU(controlIDs.Get(ControlIDs::idOptionResetAll), ThreadSearchView::OnQuickOptions)
 
+    EVT_UPDATE_UI(controlIDs.Get(ControlIDs::idBtnSearch), ThreadSearchView::OnQuickOptionsUpdateUI)
     EVT_UPDATE_UI(controlIDs.Get(ControlIDs::idOptionWholeWord), ThreadSearchView::OnQuickOptionsUpdateUI)
     EVT_UPDATE_UI(controlIDs.Get(ControlIDs::idOptionStartWord), ThreadSearchView::OnQuickOptionsUpdateUI)
     EVT_UPDATE_UI(controlIDs.Get(ControlIDs::idOptionMatchCase), ThreadSearchView::OnQuickOptionsUpdateUI)
@@ -191,8 +192,12 @@ void ThreadSearchView::OnCboSearchExprEnter(wxCommandEvent &/*event*/)
     // Event handler used when user clicks on enter after typing
     // in combo box text control.
     // Runs a multi threaded search.
+
+    const wxString &value = m_pCboSearchExpr->GetValue();
+    if (value.empty())
+        return;
     ThreadSearchFindData findData = m_ThreadSearchPlugin.GetFindData();
-    findData.SetFindText(m_pCboSearchExpr->GetValue());
+    findData.SetFindText(value);
     ThreadedSearch(findData);
 }
 
@@ -333,7 +338,12 @@ void ThreadSearchView::UpdateOptionsButtonImage(const ThreadSearchFindData &find
 void ThreadSearchView::OnQuickOptionsUpdateUI(wxUpdateUIEvent &event)
 {
     ThreadSearchFindData &findData = m_ThreadSearchPlugin.GetFindData();
-    if (event.GetId() == controlIDs.Get(ControlIDs::idOptionWholeWord))
+    if (event.GetId() == controlIDs.Get(ControlIDs::idBtnSearch))
+    {
+        const bool hasValue = !m_pCboSearchExpr->GetValue().empty();
+        event.Enable(hasValue);
+    }
+    else if (event.GetId() == controlIDs.Get(ControlIDs::idOptionWholeWord))
         event.Check(findData.GetMatchWord());
     else if (event.GetId() == controlIDs.Get(ControlIDs::idOptionStartWord))
         event.Check(findData.GetStartWord());

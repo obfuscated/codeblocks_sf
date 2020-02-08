@@ -85,6 +85,7 @@ BEGIN_EVENT_TABLE(ThreadSearch, cbPlugin)
     EVT_MENU      (idMenuEditPaste,          ThreadSearch::OnMnuEditPaste)
     EVT_TOOL      (controlIDs.Get(ControlIDs::idBtnOptions),             ThreadSearch::OnBtnOptionsClick)
     EVT_TOOL      (controlIDs.Get(ControlIDs::idBtnSearch),              ThreadSearch::OnBtnSearchClick)
+    EVT_UPDATE_UI (controlIDs.Get(ControlIDs::idBtnSearch),              ThreadSearch::OnUpdateUIBtnSearch)
     EVT_TEXT_ENTER(controlIDs.Get(ControlIDs::idCboSearchExpr),          ThreadSearch::OnCboSearchExprEnter)
     EVT_TEXT      (controlIDs.Get(ControlIDs::idCboSearchExpr),          ThreadSearch::OnCboSearchExprEnter)
     EVT_TEXT_ENTER(controlIDs.Get(ControlIDs::idSearchDirPath),       ThreadSearch::OnCboSearchExprEnter)
@@ -668,6 +669,16 @@ void ThreadSearch::OnBtnSearchClick(wxCommandEvent &event)
     }
 }
 
+void ThreadSearch::OnUpdateUIBtnSearch(wxUpdateUIEvent &event)
+{
+    if (!m_pToolbar)
+        return;
+    const long id = controlIDs.Get(ControlIDs::idCboSearchExpr);
+    wxComboBox* comboBox = static_cast<wxComboBox*>(m_pToolbar->FindControl(id));
+    if (comboBox)
+        event.Enable(!comboBox->GetValue().empty());
+}
+
 void ThreadSearch::RunThreadSearch(const wxString& text, bool isCtxSearch/*=false*/)
 {
     if ( !IsAttached() )
@@ -697,7 +708,9 @@ void ThreadSearch::RunThreadSearch(const wxString& text, bool isCtxSearch/*=fals
 
 void ThreadSearch::OnCboSearchExprEnter(wxCommandEvent &event)
 {
-    if ( !IsAttached() )
+    if (!IsAttached())
+        return;
+    if (event.GetEventType() != wxEVT_COMMAND_TEXT_ENTER)
         return;
 
     // Event handler used when user clicks on enter after typing
@@ -706,8 +719,10 @@ void ThreadSearch::OnCboSearchExprEnter(wxCommandEvent &event)
     const long id = controlIDs.Get(ControlIDs::idCboSearchExpr);
     wxComboBox* pCboBox = static_cast<wxComboBox*>(m_pToolbar->FindControl(id));
     wxASSERT(pCboBox != NULL);
-    if ( event.GetEventType() == wxEVT_COMMAND_TEXT_ENTER )
-        RunThreadSearch(pCboBox->GetValue());
+
+    const wxString &value = pCboBox->GetValue();
+    if (!value.empty())
+        RunThreadSearch(value);
 }
 
 
