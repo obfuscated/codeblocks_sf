@@ -14,6 +14,7 @@
 #include "ThreadSearchEvent.h"
 #include "ThreadSearchFindData.h"
 #include "ThreadSearchLoggerSTC.h"
+#include "ThreadSearchView.h"
 
 namespace
 {
@@ -24,6 +25,14 @@ enum STCStyles : int
     LineNo,
     Text,
     TextMatching
+};
+
+enum STCFoldLevels : int
+{
+    Search = wxSCI_FOLDLEVELBASE,
+    Messages,
+    Files = Messages,
+    ResultLines
 };
 
 const int C_FOLDING_MARGIN = 0;
@@ -242,7 +251,7 @@ void ThreadSearchLoggerSTC::OnSearchBegin(const ThreadSearchFindData& findData)
     m_stc->AppendText(message);
     m_stc->SetReadOnly(true);
 
-    m_stc->SetFoldLevel(m_startLine, wxSCI_FOLDLEVELBASE | wxSCI_FOLDLEVELHEADERFLAG);
+    m_stc->SetFoldLevel(m_startLine, STCFoldLevels::Search | wxSCI_FOLDLEVELHEADERFLAG);
     m_stc->SetFirstVisibleLine(m_startLine);
 }
 
@@ -257,8 +266,8 @@ void ThreadSearchLoggerSTC::OnSearchEnd()
     m_stc->AppendText(message);
     m_stc->SetReadOnly(true);
 
-    m_stc->SetFoldLevel(line + 0, wxSCI_FOLDLEVELBASE + 1);
-    m_stc->SetFoldLevel(line + 1, wxSCI_FOLDLEVELBASE + 1);
+    m_stc->SetFoldLevel(line + 0, STCFoldLevels::Messages);
+    m_stc->SetFoldLevel(line + 1, STCFoldLevels::Messages);
 
     m_stc->SetFirstVisibleLine(m_startLine);
 }
@@ -282,9 +291,9 @@ void ThreadSearchLoggerSTC::AppendStyledText(int style, const wxString &text)
 
     int foldLevel = -1;
     if (style == STCStyles::File)
-        foldLevel = (wxSCI_FOLDLEVELBASE + 1) | wxSCI_FOLDLEVELHEADERFLAG;
+        foldLevel = STCFoldLevels::Files | wxSCI_FOLDLEVELHEADERFLAG;
     else if (style == STCStyles::LineNo)
-        foldLevel = (wxSCI_FOLDLEVELBASE + 2);
+        foldLevel = STCFoldLevels::ResultLines;
 
     if (foldLevel != -1)
     {
@@ -297,8 +306,15 @@ void ThreadSearchLoggerSTC::ConnectEvents()
 {
     const wxWindowID stcId = m_stc->GetId();
 
+    // Handle folding
     Connect(stcId, wxEVT_SCI_MARGINCLICK,
             wxScintillaEventHandler(ThreadSearchLoggerSTC::OnMarginClick));
+
+    // Handle clicking/selection change events
+    Connect(stcId, wxEVT_SCI_UPDATEUI,
+            wxScintillaEventHandler(ThreadSearchLoggerSTC::OnSTCUpdateUI));
+    Connect(stcId, wxEVT_SCI_DOUBLECLICK,
+            wxScintillaEventHandler(ThreadSearchLoggerSTC::OnDoubleClick));
 }
 
 void ThreadSearchLoggerSTC::DisconnectEvents()
@@ -307,6 +323,90 @@ void ThreadSearchLoggerSTC::DisconnectEvents()
 
     Disconnect(stcId, wxEVT_SCI_MARGINCLICK,
                wxScintillaEventHandler(ThreadSearchLoggerSTC::OnMarginClick));
+
+    Disconnect(stcId, wxEVT_SCI_UPDATEUI,
+            wxScintillaEventHandler(ThreadSearchLoggerSTC::OnSTCUpdateUI));
+    Disconnect(stcId, wxEVT_SCI_DOUBLECLICK,
+               wxScintillaEventHandler(ThreadSearchLoggerSTC::OnDoubleClick));
+}
+
+static bool FindResultInfoForLine(wxString *outFilepath, int *outLineInFile, wxScintilla *stc, int stcLine)
+{
+    // We use the fold level to determine what is the kind of line. If the line is for a result
+    // line, we know that its fold parent is the line with the file name.
+    const int foldLevel = stc->GetFoldLevel(stcLine) & wxSCI_FOLDLEVELNUMBERMASK;
+    if (foldLevel != STCFoldLevels::ResultLines)
+        return false;
+
+    const int parentFoldLine = stc->GetFoldParent(stcLine);
+    if (parentFoldLine == -1)
+        return false; // This is probably an error and cannot happen!
+
+    const int parentFoldLevel = stc->GetFoldLevel(parentFoldLine) & wxSCI_FOLDLEVELNUMBERMASK;
+    if (parentFoldLevel != STCFoldLevels::Files)
+        return false;
+
+    // We know both the lines for the result and the file path, so we can extract our information.
+    {
+        // Extract the line number
+        const wxString &lineData = stc->GetLine(stcLine);
+        wxString::size_type colonPos = lineData.find(wxT(':'));
+        if (colonPos == wxString::npos)
+            return false;
+
+        long value;
+        wxString lineStr = lineData.substr(0, colonPos);
+        lineStr.Trim();
+        if (!lineStr.ToLong(&value))
+            return false;
+        *outLineInFile = value;
+    }
+
+    {
+        // Extract the file path
+        const wxString &filepathData = stc->GetLine(parentFoldLine);
+        wxString::size_type lastOpenBracketPos = filepathData.rfind(wxT('('));
+        if (lastOpenBracketPos == wxString::npos)
+            return false;
+
+        *outFilepath = filepathData.substr(0, lastOpenBracketPos - 1);
+    }
+
+    return true;
+}
+
+void ThreadSearchLoggerSTC::OnSTCUpdateUI(wxScintillaEvent &event)
+{
+    if ((event.GetUpdated() & wxSCI_UPDATE_SELECTION) == 0)
+    {
+        event.Skip();
+        return;
+    }
+
+    const int stcLine = m_stc->GetCurrentLine();
+
+    wxString filepath;
+    int line;
+
+    if (FindResultInfoForLine(&filepath, &line, m_stc, stcLine))
+    {
+        m_ThreadSearchView.OnLoggerClick(filepath, line);
+    }
+
+    event.Skip();
+}
+
+void ThreadSearchLoggerSTC::OnDoubleClick(wxScintillaEvent &event)
+{
+    wxString filepath;
+    int line;
+
+    if (FindResultInfoForLine(&filepath, &line, m_stc, event.GetLine()))
+    {
+        m_ThreadSearchView.OnLoggerDoubleClick(filepath, line);
+    }
+
+    event.Skip();
 }
 
 void ThreadSearchLoggerSTC::OnMarginClick(wxScintillaEvent &event)
