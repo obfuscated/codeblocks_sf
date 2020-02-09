@@ -68,7 +68,7 @@ public:
 
     /** Clicked in the header of the list control */
     void OnColumnClick(wxListEvent& event);
-protected:
+private:
     /** SetListColumns
       * The SimpleListLog constructor does not set the provided columns on Linux.
       * It is necessary to set columns after the ThreadSearchLoggerList constructor.
@@ -94,10 +94,10 @@ protected:
     bool IsLineResultLine(long index = -1);
 
     /** Dynamic events connection. */
-    virtual void ConnectEvents(wxEvtHandler* pEvtHandler);
+    void ConnectEvents(wxEvtHandler* pEvtHandler);
 
     /** Dynamic events disconnection. */
-    virtual void DisconnectEvents(wxEvtHandler* pEvtHandler);
+    void DisconnectEvents(wxEvtHandler* pEvtHandler);
 
     /** Contextual menu event handler */
     void OnLoggerListContextualMenu(wxContextMenuEvent& event);

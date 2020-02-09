@@ -65,7 +65,7 @@ public:
     /** Double click event handler */
     void OnLoggerTreeDoubleClick(wxTreeEvent& event);
 
-protected:
+private:
     /** GetFileLineFromTreeEvent
       * Return the file path at index from the list control using dir and file columns.
       * @param event    : list control event
@@ -81,10 +81,10 @@ protected:
     bool hasResultLineForTreeItem(wxTreeItemId treeItemId);
 
     /** Dynamic events connection. */
-    virtual void ConnectEvents(wxEvtHandler* pEvtHandler);
+    void ConnectEvents(wxEvtHandler* pEvtHandler);
 
     /** Dynamic events disconnection. */
-    virtual void DisconnectEvents(wxEvtHandler* pEvtHandler);
+    void DisconnectEvents(wxEvtHandler* pEvtHandler);
 
     /** Contextual menu event handler */
     void OnLoggerTreeContextualMenu(wxTreeEvent& event);

@@ -29,8 +29,8 @@ public:
     void SetFocus() override;
 
 private:
-    void ConnectEvents(wxEvtHandler* pEvtHandler) override;
-    void DisconnectEvents(wxEvtHandler* pEvtHandler) override;
+    void ConnectEvents();
+    void DisconnectEvents();
 
     void OnMarginClick(wxScintillaEvent &event);
 

@@ -89,12 +89,12 @@ ThreadSearchLoggerSTC::ThreadSearchLoggerSTC(ThreadSearchView& threadSearchView,
 
     SetupSizer(m_stc);
 
-    ConnectEvents(this);
+    ConnectEvents();
 }
 
 ThreadSearchLoggerSTC::~ThreadSearchLoggerSTC()
 {
-    DisconnectEvents(this);
+    DisconnectEvents();
 }
 
 void ThreadSearchLoggerSTC::RegisterColours()
@@ -293,7 +293,7 @@ void ThreadSearchLoggerSTC::AppendStyledText(int style, const wxString &text)
     }
 }
 
-void ThreadSearchLoggerSTC::ConnectEvents(wxEvtHandler* pEvtHandler)
+void ThreadSearchLoggerSTC::ConnectEvents()
 {
     const wxWindowID stcId = m_stc->GetId();
 
@@ -301,7 +301,7 @@ void ThreadSearchLoggerSTC::ConnectEvents(wxEvtHandler* pEvtHandler)
             wxScintillaEventHandler(ThreadSearchLoggerSTC::OnMarginClick));
 }
 
-void ThreadSearchLoggerSTC::DisconnectEvents(wxEvtHandler* pEvtHandler)
+void ThreadSearchLoggerSTC::DisconnectEvents()
 {
     const wxWindowID stcId = m_stc->GetId();
 
