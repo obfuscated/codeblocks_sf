@@ -12,6 +12,7 @@
 #include "editor_utils.h"
 
 #include "ThreadSearch.h"
+#include "ThreadSearchControlIds.h"
 #include "ThreadSearchEvent.h"
 #include "ThreadSearchFindData.h"
 #include "ThreadSearchLoggerSTC.h"
@@ -52,6 +53,7 @@ ThreadSearchLoggerSTC::ThreadSearchLoggerSTC(ThreadSearchView& threadSearchView,
     m_stc->SetCaretLineBackground(colours->GetColour(wxT("thread_search_selected_line_back")));
     m_stc->SetCaretWidth(0);
     m_stc->SetReadOnly(true);
+    m_stc->UsePopUp(false);
 
     // Setup folding
     {
@@ -325,35 +327,105 @@ void ThreadSearchLoggerSTC::ConnectEvents()
             wxScintillaEventHandler(ThreadSearchLoggerSTC::OnSTCUpdateUI));
     Connect(stcId, wxEVT_SCI_DOUBLECLICK,
             wxScintillaEventHandler(ThreadSearchLoggerSTC::OnDoubleClick));
+
+    // Context menu
+    Connect(stcId, wxEVT_CONTEXT_MENU,
+            wxContextMenuEventHandler(ThreadSearchLoggerSTC::OnContextMenu));
+
+    Connect(controlIDs.Get(ControlIDs::idMenuCtxCopy), wxEVT_COMMAND_MENU_SELECTED,
+            wxCommandEventHandler(ThreadSearchLoggerSTC::OnMenuCopy));
+    Connect(controlIDs.Get(ControlIDs::idMenuCtxCopySelection), wxEVT_COMMAND_MENU_SELECTED,
+            wxCommandEventHandler(ThreadSearchLoggerSTC::OnMenuCopySelection));
+    Connect(controlIDs.Get(ControlIDs::idMenuCtxCollapseSearch), wxEVT_COMMAND_MENU_SELECTED,
+            wxCommandEventHandler(ThreadSearchLoggerSTC::OnMenuCollapseSearch));
+    Connect(controlIDs.Get(ControlIDs::idMenuCtxCollapseFile), wxEVT_COMMAND_MENU_SELECTED,
+            wxCommandEventHandler(ThreadSearchLoggerSTC::OnMenuCollapseFile));
+    Connect(controlIDs.Get(ControlIDs::idMenuCtxCollapseAll), wxEVT_COMMAND_MENU_SELECTED,
+            wxCommandEventHandler(ThreadSearchLoggerSTC::OnMenuCollapseAll));
+    Connect(controlIDs.Get(ControlIDs::idMenuCtxDeleteItem), wxEVT_COMMAND_MENU_SELECTED,
+            wxCommandEventHandler(ThreadSearchLoggerSTC::OnMenuDelete));
+    Connect(controlIDs.Get(ControlIDs::idMenuCtxDeleteAllItems), wxEVT_COMMAND_MENU_SELECTED,
+            wxCommandEventHandler(ThreadSearchLoggerSTC::OnMenuDeleteAll));
 }
 
 void ThreadSearchLoggerSTC::DisconnectEvents()
 {
     const wxWindowID stcId = m_stc->GetId();
 
+    // Handle folding
     Disconnect(stcId, wxEVT_SCI_MARGINCLICK,
                wxScintillaEventHandler(ThreadSearchLoggerSTC::OnMarginClick));
 
+    // Handle clicking/selection change events
     Disconnect(stcId, wxEVT_SCI_UPDATEUI,
             wxScintillaEventHandler(ThreadSearchLoggerSTC::OnSTCUpdateUI));
     Disconnect(stcId, wxEVT_SCI_DOUBLECLICK,
                wxScintillaEventHandler(ThreadSearchLoggerSTC::OnDoubleClick));
+
+    // Context menu
+    Disconnect(stcId, wxEVT_CONTEXT_MENU,
+               wxContextMenuEventHandler(ThreadSearchLoggerSTC::OnContextMenu));
+
+    Disconnect(controlIDs.Get(ControlIDs::idMenuCtxCopy), wxEVT_COMMAND_MENU_SELECTED,
+               wxCommandEventHandler(ThreadSearchLoggerSTC::OnMenuCopy));
+    Disconnect(controlIDs.Get(ControlIDs::idMenuCtxCopySelection), wxEVT_COMMAND_MENU_SELECTED,
+               wxCommandEventHandler(ThreadSearchLoggerSTC::OnMenuCopySelection));
+    Disconnect(controlIDs.Get(ControlIDs::idMenuCtxCollapseSearch), wxEVT_COMMAND_MENU_SELECTED,
+               wxCommandEventHandler(ThreadSearchLoggerSTC::OnMenuCollapseSearch));
+    Disconnect(controlIDs.Get(ControlIDs::idMenuCtxCollapseFile), wxEVT_COMMAND_MENU_SELECTED,
+               wxCommandEventHandler(ThreadSearchLoggerSTC::OnMenuCollapseFile));
+    Disconnect(controlIDs.Get(ControlIDs::idMenuCtxCollapseAll), wxEVT_COMMAND_MENU_SELECTED,
+               wxCommandEventHandler(ThreadSearchLoggerSTC::OnMenuCollapseAll));
+    Disconnect(controlIDs.Get(ControlIDs::idMenuCtxDeleteItem), wxEVT_COMMAND_MENU_SELECTED,
+               wxCommandEventHandler(ThreadSearchLoggerSTC::OnMenuDelete));
+    Disconnect(controlIDs.Get(ControlIDs::idMenuCtxDeleteAllItems), wxEVT_COMMAND_MENU_SELECTED,
+               wxCommandEventHandler(ThreadSearchLoggerSTC::OnMenuDeleteAll));
 }
 
-static bool FindResultInfoForLine(wxString *outFilepath, int *outLineInFile, wxScintilla *stc, int stcLine)
+static bool FindFileLineFromLine(int *outLine, wxScintilla *stc, int inLine)
 {
     // We use the fold level to determine what is the kind of line. If the line is for a result
     // line, we know that its fold parent is the line with the file name.
-    const int foldLevel = stc->GetFoldLevel(stcLine) & wxSCI_FOLDLEVELNUMBERMASK;
+    const int foldLevel = stc->GetFoldLevel(inLine) & wxSCI_FOLDLEVELNUMBERMASK;
     if (foldLevel != STCFoldLevels::ResultLines)
         return false;
 
-    const int parentFoldLine = stc->GetFoldParent(stcLine);
+    const int parentFoldLine = stc->GetFoldParent(inLine);
     if (parentFoldLine == -1)
         return false; // This is probably an error and cannot happen!
 
     const int parentFoldLevel = stc->GetFoldLevel(parentFoldLine) & wxSCI_FOLDLEVELNUMBERMASK;
     if (parentFoldLevel != STCFoldLevels::Files)
+        return false;
+
+    *outLine = parentFoldLine;
+    return true;
+}
+
+static bool FindSearchLineFromLine(int *outLine, wxScintilla *stc, int inLine)
+{
+    int line = inLine;
+
+    for(;;)
+    {
+        const int foldLevel = stc->GetFoldLevel(line) & wxSCI_FOLDLEVELNUMBERMASK;
+        if (foldLevel == STCFoldLevels::Search)
+        {
+            *outLine = line;
+            return true;
+        }
+
+        const int parentFoldLine = stc->GetFoldParent(line);
+        if (parentFoldLine == -1)
+            return false;
+        line = parentFoldLine;
+    }
+}
+
+static bool FindResultInfoForLine(wxString *outFilepath, int *outLineInFile, wxScintilla *stc, int stcLine)
+{
+    int parentFoldLine;
+    if (!FindFileLineFromLine(&parentFoldLine, stc, stcLine))
         return false;
 
     // We know both the lines for the result and the file path, so we can extract our information.
@@ -431,4 +503,132 @@ void ThreadSearchLoggerSTC::OnMarginClick(wxScintillaEvent &event)
             break;
         }
     }
+}
+
+void ThreadSearchLoggerSTC::OnContextMenu(wxContextMenuEvent &event)
+{
+    wxMenu menu;
+    menu.Append(controlIDs.Get(ControlIDs::idMenuCtxCopy), _("Copy contents to clipboard"));
+    menu.Append(controlIDs.Get(ControlIDs::idMenuCtxCopySelection), _("Copy selection to clipboard"));
+    menu.AppendSeparator();
+    menu.Append(controlIDs.Get(ControlIDs::idMenuCtxCollapseFile), _("Collapse file"));
+    menu.Append(controlIDs.Get(ControlIDs::idMenuCtxCollapseSearch), _("Collapse search"));
+    menu.Append(controlIDs.Get(ControlIDs::idMenuCtxCollapseAll), _("Collapse all"));
+    menu.AppendSeparator();
+    menu.Append(controlIDs.Get(ControlIDs::idMenuCtxDeleteItem), _("Delete search"));
+    menu.Append(controlIDs.Get(ControlIDs::idMenuCtxDeleteAllItems), _("Delete all"));
+
+    // display menu
+    wxPoint clientpos;
+    wxPoint position = event.GetPosition();
+    if (position==wxDefaultPosition) // "context menu" key
+    {
+        // obtain the caret point (on the screen) as we assume
+        // that the user wants to work with the keyboard
+        clientpos = m_stc->PointFromPosition(m_stc->GetCurrentPos());
+    }
+    else
+    {
+        clientpos = m_stc->ScreenToClient(position);
+    }
+
+    PopupMenu(&menu, clientpos);
+}
+
+void ThreadSearchLoggerSTC::OnMenuCopy(cb_unused wxCommandEvent &event)
+{
+    m_stc->CopyRange(0, m_stc->GetLength());
+}
+
+void ThreadSearchLoggerSTC::OnMenuCopySelection(cb_unused wxCommandEvent &event)
+{
+    m_stc->CopyAllowLine();
+}
+
+void ThreadSearchLoggerSTC::OnMenuCollapseFile(cb_unused wxCommandEvent &event)
+{
+    const int stcLine = m_stc->GetCurrentLine();
+    int fileLine;
+    if (FindFileLineFromLine(&fileLine, m_stc, stcLine))
+    {
+        m_stc->FoldLine(fileLine, wxSCI_FOLDACTION_CONTRACT);
+    }
+}
+
+void ThreadSearchLoggerSTC::OnMenuCollapseSearch(cb_unused wxCommandEvent &event)
+{
+    const int stcLine = m_stc->GetCurrentLine();
+    int searchLine;
+    if (FindSearchLineFromLine(&searchLine, m_stc, stcLine))
+    {
+        // Collapse the found search line.
+        m_stc->FoldLine(searchLine, wxSCI_FOLDACTION_CONTRACT);
+
+        // Collapse all lines to the next search line.
+        const int count = m_stc->GetLineCount();
+        for (int line = searchLine + 1; line < count; ++line)
+        {
+            const int level = m_stc->GetFoldLevel(line);
+            if ((level & wxSCI_FOLDLEVELNUMBERMASK) == STCFoldLevels::Search)
+                break;
+
+            if ((level & wxSCI_FOLDLEVELHEADERFLAG) != 0)
+            {
+                m_stc->FoldLine(line, wxSCI_FOLDACTION_CONTRACT);
+            }
+        }
+
+        m_stc->SetFirstVisibleLine(searchLine);
+    }
+}
+
+void ThreadSearchLoggerSTC::OnMenuCollapseAll(cb_unused wxCommandEvent &event)
+{
+    const int count = m_stc->GetLineCount();
+    for (int line = 0; line < count; ++line)
+    {
+        const int level = m_stc->GetFoldLevel(line);
+        if ((level & wxSCI_FOLDLEVELHEADERFLAG) != 0)
+        {
+            m_stc->FoldLine(line, wxSCI_FOLDACTION_CONTRACT);
+        }
+    }
+}
+
+void ThreadSearchLoggerSTC::OnMenuDelete(cb_unused wxCommandEvent &event)
+{
+    const int stcLine = m_stc->GetCurrentLine();
+    int startLine;
+    if (FindSearchLineFromLine(&startLine, m_stc, stcLine))
+    {
+        int endLine = -1;
+        const int count = m_stc->GetLineCount();
+        for (int line = startLine + 1; line < count; ++line)
+        {
+            const int level = m_stc->GetFoldLevel(line);
+            if ((level & wxSCI_FOLDLEVELNUMBERMASK) == STCFoldLevels::Search)
+            {
+                endLine = line;
+                break;
+            }
+        }
+
+        if (endLine != -1)
+        {
+            const int startPosition = m_stc->PositionFromLine(startLine);
+            const int endPosition = m_stc->PositionFromLine(endLine);
+
+            // We have the range for the search, so delete the whole text for it.
+            m_stc->SetReadOnly(false);
+            m_stc->Remove(startPosition, endPosition);
+            m_stc->SetReadOnly(true);
+        }
+    }
+}
+
+void ThreadSearchLoggerSTC::OnMenuDeleteAll(cb_unused wxCommandEvent &event)
+{
+    m_stc->SetReadOnly(false);
+    m_stc->ClearAll();
+    m_stc->SetReadOnly(true);
 }
