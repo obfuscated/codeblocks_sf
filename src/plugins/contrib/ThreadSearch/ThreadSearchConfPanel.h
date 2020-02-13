@@ -69,7 +69,6 @@ private:
 
 protected:
     // begin wxGlade: ThreadSearchConfPanel::attributes
-    wxStaticBox* SizerThreadSearchLayout_staticbox;
     wxStaticBox* SizerListControlOptions_staticbox;
     wxStaticBox* SizerThreadSearchLayoutGlobal_staticbox;
     wxStaticBox* SizerThreadSearchOptions_staticbox;
@@ -91,6 +90,9 @@ protected:
     wxCheckBox* m_pChkDisplayLogHeaders;
     wxCheckBox* m_pChkDrawLogLines;
     wxCheckBox* m_pChkAutosizeLogColumns;
+    wxNotebook *m_Notebook;
+    wxPanel *m_PageGeneral;
+    wxPanel *m_PageLayout;
     wxRadioBox* m_pRadPanelManagement;
     wxRadioBox* m_pRadLoggerType;
     wxRadioBox* m_pRadSplitterWndMode;
