@@ -1362,6 +1362,8 @@ static void SetEditorTechnology(cbStyledTextCtrl *control, ConfigManager *config
         control->SetFontQuality(wxSCI_EFF_QUALITY_LCD_OPTIMIZED);
         break;
     }
+#else
+    (void)config;
 #endif // defined(__WXMSW__) && wxCHECK_VERSION(3, 1, 0)
 }
 
