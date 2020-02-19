@@ -29,7 +29,7 @@ namespace
 
 
     WXS_EV_BEGIN(wxsTimePickerCtrlEvents)
-        WXS_EVI(EVT_DATE_CHANGED,wxEVT_DATE_CHANGED,wxDateEvent,Changed)
+        WXS_EVI(EVT_TIME_CHANGED,wxEVT_TIME_CHANGED,wxDateEvent,Changed)
     WXS_EV_END()
 }
 
