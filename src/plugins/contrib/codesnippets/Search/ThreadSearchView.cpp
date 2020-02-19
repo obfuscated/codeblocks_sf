@@ -1117,7 +1117,7 @@ void ThreadSearchView::SetMarkerStyle(int marker, int markerType, wxColor fore, 
 
 void ThreadSearchView::UnderlineFoldedLines(bool underline)
 {
-    m_pSearchPreview->SetFoldFlags(underline? 16 : 0);
+    m_pSearchPreview->SetFoldFlags(underline? wxSCI_FOLDFLAG_LINEAFTER_CONTRACTED : 0);
 }
 
 

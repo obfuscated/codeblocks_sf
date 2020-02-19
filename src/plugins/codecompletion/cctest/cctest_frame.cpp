@@ -454,7 +454,7 @@ void CCTestFrame::InitControl()
     m_Control->SetProperty(wxT("fold.compact"),      wxT("0"));
     m_Control->SetProperty(wxT("fold.preprocessor"), wxT("1"));
 
-    m_Control->SetFoldFlags(16);
+    m_Control->SetFoldFlags(wxSCI_FOLDFLAG_LINEAFTER_CONTRACTED);
     m_Control->SetMarginType(C_FOLDING_MARGIN, wxSCI_MARGIN_SYMBOL);
     m_Control->SetMarginWidth(C_FOLDING_MARGIN, 16);
     // use "|" here or we might break plugins that use the margin (none at the moment)

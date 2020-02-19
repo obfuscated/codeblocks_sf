@@ -1074,9 +1074,9 @@ void cbEditor::SetMarkerStyle(int marker, int markerType, wxColor fore, wxColor 
 
 void cbEditor::UnderlineFoldedLines(bool underline)
 {
-    m_pControl->SetFoldFlags(underline ? 16 : 0);
+    m_pControl->SetFoldFlags(underline ? wxSCI_FOLDFLAG_LINEAFTER_CONTRACTED : 0);
     if (m_pControl2)
-        m_pControl2->SetFoldFlags(underline ? 16 : 0);
+        m_pControl2->SetFoldFlags(underline ? wxSCI_FOLDFLAG_LINEAFTER_CONTRACTED : 0);
 }
 
 cbStyledTextCtrl* cbEditor::CreateEditor()
@@ -1682,7 +1682,7 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
         control->SetProperty(_T("fold.compact"),      _T("0"));
         control->SetProperty(_T("fold.preprocessor"), mgr->ReadBool(_T("/folding/fold_preprocessor"), false) ? _T("1") : _T("0"));
 
-        control->SetFoldFlags(16);
+        control->SetFoldFlags(wxSCI_FOLDFLAG_LINEAFTER_CONTRACTED);
         control->SetMarginType(C_FOLDING_MARGIN, wxSCI_MARGIN_SYMBOL);
         control->SetMarginWidth(C_FOLDING_MARGIN, foldingMarginBaseWidth);
         // use "|" here or we might break plugins that use the margin (none at the moment)
