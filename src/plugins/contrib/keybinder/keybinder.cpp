@@ -2408,7 +2408,8 @@ void wxKeyConfigPanel::OnAssignKey(wxCommandEvent &)
     {  //got null sel
         wxString cmdStr = GetSelCmdStr();
         int actualMnuId = wxFindMenuItem(Manager::Get()->GetAppFrame()->GetMenuBar(), cmdStr);
-        wxString msg = wxString::Format(_T("KeyBinding error in OnAssignKey()\nid[%d] label[%s]\n"), actualMnuId, cmdStr);
+        wxString msg = wxString::Format(_T("KeyBinding error in OnAssignKey()\nid[%d] label[%s]\n"),
+                                        actualMnuId, cmdStr.wx_str());
         wxLogDebug(msg);
         wxMessageBox(msg);
         return;
