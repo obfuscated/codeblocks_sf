@@ -249,7 +249,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     XRCCTRL(*this, "choLayoutToToggle", wxChoice)->Enable(en);
 
     bool i18n = cfg->ReadBool(_T("/locale/enable"), false);
-        XRCCTRL(*this, "chkI18N", wxCheckBox)->SetValue(i18n);
+    XRCCTRL(*this, "chkI18N", wxCheckBox)->SetValue(i18n);
 
     wxString locPath = ConfigManager::GetDataFolder() + _T("/locale");
     if ( wxDirExists(locPath) )
