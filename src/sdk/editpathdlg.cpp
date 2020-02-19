@@ -51,7 +51,6 @@ EditPathDlg::EditPathDlg(wxWindow* parent,
 
     wxTextCtrl *txtPath = XRCCTRL(*this, "txtPath", wxTextCtrl);
 
-    txtPath->SetValue(path);
     XRCCTRL(*this, "dlgEditPath", wxScrollingDialog)->SetTitle(title);
 
     if (!wantDir) {
@@ -66,7 +65,6 @@ EditPathDlg::EditPathDlg(wxWindow* parent,
     m_Filter = filter;
     m_AskMakeRelative = true;
     m_ShowCreateDirButton = false;
-    txtPath->SetFocus();
 
     // Limit vertical resizing, because we don't want to have empty space at the bottom of the
     // dialog. We also want to limit the min width, so the text control could accommodate common
@@ -75,8 +73,10 @@ EditPathDlg::EditPathDlg(wxWindow* parent,
     txtPath->GetTextExtent(wxString(wxT('W'), 60), &expectedTextWidth, nullptr);
     SetMinSize(wxSize(expectedTextWidth, GetMinHeight()));
     SetMaxSize(wxSize(-1, GetMinHeight()));
-
     Fit();
+
+    txtPath->SetValue(path);
+    txtPath->SetFocus();
 }
 
 EditPathDlg::~EditPathDlg()
