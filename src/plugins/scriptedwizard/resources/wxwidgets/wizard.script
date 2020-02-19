@@ -54,6 +54,12 @@ multi_thread_dynamic <- true; //Default to Multi-thread. For MSVC only.
 
 function BeginWizard()
 {
+    local wxpath_msg = _T("Please select the location of wxWidgets on your computer.\n" +
+                          "This is the top-level folder where wxWidgets was unpacked.\n" +
+                          "To help you, this folder must contain the subfolders\n" +
+                          "\"include\" and \"lib\".\n\n" +
+                          "You can also use a global variable, p.e. $(#wx31)\n");
+
     WizType = Wizard.GetWizardType();
 
     if (WizType == wizProject)
@@ -62,11 +68,6 @@ function BeginWizard()
                             "This wizard will guide you to create a new project using\n" +
                             "the wxWidgets cross-platform GUI library.\n\n" +
                             "When you 're ready to proceed, please click \"Next\"...");
-
-        local wxpath_msg = _T("Please select the location of wxWidgets on your computer.\n" +
-                                "This is the top-level folder where wxWidgets was unpacked.\n" +
-                                "To help you, this folder must contain the subfolders\n" +
-                                "\"include\" and \"lib\".");
 
         Wizard.AddInfoPage(_T("WxIntro"), intro_msg);
         Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"),
@@ -78,6 +79,7 @@ function BeginWizard()
         Wizard.AddPage(_T("WxGuiSelect"));
         if (PLATFORM == PLATFORM_MSW)
             Wizard.AddGenericSelectPathPage(_T("WxPath"), wxpath_msg, _T("wxWidgets' location:"), _T("$(#wx)"));
+
         // we need the compiler selection before wx settings, because we 'll have
         // to validate the settings. To do this we must know the compiler beforehand...
         Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
@@ -97,11 +99,6 @@ function BeginWizard()
                             "This wizard will guide you to create a new target\n" +
                             "When you 're ready to proceed, please click \"Next\"...");
 
-        local wxpath_msg = _T("Please select the location of wxWidgets on your computer.\n" +
-                                "This is the top-level folder where wxWidgets was unpacked.\n" +
-                                "To help you, this folder must contain the subfolders\n" +
-                                "\"include\" and \"lib\".");
-
         Wizard.AddInfoPage(_T("WxIntro"), intro_msg);
         Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"),
                                               _T("Please select the wxWidgets version you want to use."),
@@ -109,6 +106,7 @@ function BeginWizard()
                                               WxVersion); // select wxwidgets version
         if (PLATFORM == PLATFORM_MSW)
             Wizard.AddGenericSelectPathPage(_T("WxPath"), wxpath_msg, _T("wxWidgets' location:"), _T("$(#wx)"));
+
         // we need the compiler selection before wx settings, because we 'll have
         // to validate the settings. To do this we must know the compiler beforehand...
         Wizard.AddBuildTargetPage(_T(""), false, true, _T(""), _T("*"), true);
