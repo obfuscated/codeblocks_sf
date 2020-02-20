@@ -31,6 +31,9 @@ Preparations for a release:
     [C::B]\src\sdk.doxy
     [C::B]\src\plugins\codecompletion\codecompletion.doxy
 
+5.1.) Add a release entry in the debian change log, so the generated packages could
+    have the proper version numbers.
+
 6.) Create nightlies based on that branch and fix bugs in that branch
     (No new features!)
     Make sure to merge from trunk or into trunk, if needed.
