@@ -27,6 +27,7 @@
 class wxWindow;
 class wxRadioBox;
 class wxCheckBox;
+class wxColourPickerCtrl;
 class wxStaticBox;
 class wxCommandEvent;
 
@@ -73,6 +74,10 @@ protected:
     wxStaticBox* SizerThreadSearchLayoutGlobal_staticbox;
     wxStaticBox* SizerThreadSearchOptions_staticbox;
     wxStaticBox* SizerSearchIn_staticbox;
+    wxStaticBox *STCColours_staticbox;
+    constexpr static int STCColoursCount = 5;
+    wxStaticText *m_STCColoursLabels[STCColoursCount];
+    wxColourPickerCtrl *m_STCColourPickers[STCColoursCount*2];
     SearchInPanel* m_pPnlSearchIn;
     DirectoryParamsPanel* m_pPnlDirParams;
     wxCheckBox* m_pChkWholeWord;

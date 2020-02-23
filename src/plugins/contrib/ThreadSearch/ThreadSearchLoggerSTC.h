@@ -19,6 +19,7 @@ public:
     ~ThreadSearchLoggerSTC();
 
     static void RegisterColours();
+    void SetupStyles();
 
     eLoggerTypes GetLoggerType() override;
     void OnThreadSearchEvent(const ThreadSearchEvent& event) override;
