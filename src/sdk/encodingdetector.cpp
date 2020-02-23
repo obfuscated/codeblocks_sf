@@ -147,7 +147,8 @@ bool EncodingDetector::DetectEncoding(const wxString& filename, bool convert_to_
 bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool convert_to_wxstring)
 {
     ConfigManager* cfgMgr = Manager::Get()->GetConfigManager(_T("editor"));
-    wxString encname = cfgMgr->Read(_T("/default_encoding"));
+    const wxString &encname = cfgMgr->Read(_T("/default_encoding"),
+                                           wxLocale::GetSystemEncodingName());
 
     if (cfgMgr->ReadInt(_T("/default_encoding/use_option"), 0) == 1)
     {

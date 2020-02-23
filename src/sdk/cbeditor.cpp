@@ -1090,7 +1090,7 @@ cbStyledTextCtrl* cbEditor::CreateEditor()
     control->UsePopUp(false);
 
     ConfigManager *config = Manager::Get()->GetConfigManager(_T("editor"));
-    wxString encodingName = config->Read(_T("/default_encoding"), wxEmptyString);
+    wxString encodingName = config->Read(_T("/default_encoding"), wxLocale::GetSystemEncodingName());
     m_pData->m_encoding = wxFontMapper::GetEncodingFromName(encodingName);
     if (m_pData->m_encoding == wxFONTENCODING_MAX && encodingName == wxT("default"))
         m_pData->m_encoding = wxFont::GetDefaultEncoding();
