@@ -24,12 +24,13 @@
 #include "configurationpanel.h"
 
 
-class wxWindow;
-class wxRadioBox;
 class wxCheckBox;
 class wxColourPickerCtrl;
-class wxStaticBox;
 class wxCommandEvent;
+class wxNotebook;
+class wxRadioBox;
+class wxStaticBox;
+class wxWindow;
 
 class ThreadSearch;
 class SearchInPanel;
