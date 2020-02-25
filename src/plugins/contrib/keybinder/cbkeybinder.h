@@ -31,7 +31,7 @@
 // Modified Keybinder for CodeBlocks KeyBnder v2.0
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "2.0.09 2020/01/31"
+#define VERSION "2.0.10 2020/02/25"
 // -----------------------------------
 class wxKeyConfigPanel;
 class wxKeyProfileArray;
@@ -97,6 +97,13 @@ class cbKeyBinder : public cbPlugin
         wxArrayString GetArrayFromStrings(const wxString& text, const wxString& separator, bool trimSpaces);
         int           FindLineInFileContaining(wxTextFile& txtFile, wxString& pattern);
 
+        wxString GetTempOldFmtMnuScanFilename()
+        {
+            wxFileName fnTempOldFmtMnuScan(wxStandardPaths::Get().GetTempDir(), _T("keyOldFmtMnuScan.ini"));
+            wxString pid_string = wxString::Format(_T("_%lu"), wxGetProcessId());
+            fnTempOldFmtMnuScan.SetName(fnTempOldFmtMnuScan.GetName() + pid_string);
+            return fnTempOldFmtMnuScan.GetFullPath();
+        }
 
         wxWindow*       pcbWindow;              //main app window
         wxListbook*     m_pConfigListbook;      // CBs Configuration panel wxListbook
@@ -674,5 +681,9 @@ class cbKeyBinder : public cbPlugin
 //              Sort key binding by parent menu before stowing into .conf file
 //          2.0.09 2020/01/31
 //              Special treatement for text "Code::Blocks" in menu label
-//
+// ----------------------------------------------------------------------------
+//  Commit 2.0.10 2020/02/25
+//          Add "_pid#" to temporary filenames to avoid conflicts with linux permissions
+//          eg. createing files with root, then running as a user.
+
 // ----------------------------------------------------------------------------
