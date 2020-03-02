@@ -177,6 +177,9 @@ public:
     wxString KeyCodeToString(int keyCode);              //(2019/02/25)
     wxString NumpadKeyCodeToString(int keyCode);        //(2019/02/25)
     void     DumpAccelerators(size_t tableCount, wxAcceleratorEntry* pEntries, wxFrame* pFrame); //(2019/10/27)
+    void     LogAccelerators(MenuItemDataMap_t& menuTable, wxString title);
+
+    MenuItemData* FindMenuTableEntryFor(MenuItemDataMap_t& hashTable, MenuItemData* pMenuMapItem);
 
     wxString GetTempKeyMnuAccelsFilename() //(2020/02/25)
     {
