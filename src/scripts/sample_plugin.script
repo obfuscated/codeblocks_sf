@@ -44,14 +44,14 @@ class TestPlugin extends cbScriptPlugin
 
 		return entries;
 	}
-	
+
 	// optional to support ExecutePlugin(pluginNameString)
 	function Execute()
     {
         ::ShowMessage(_T("Ho-ho was here ;)"));
         return 0;
     }
-    
+
     // optional calback for menubar items clicking
 	function OnMenuClicked(index)
 	{

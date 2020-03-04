@@ -19,7 +19,7 @@ class MakeDistPlugin extends cbScriptPlugin
 {
 	// default to creating a zip file
 	Cmd = _T("zip -9 \"$ARCHIVE.zip\" $FILES_LIST");
-	
+
 	// examples of other commands:
 	//
 	// tar.gz:
@@ -27,7 +27,7 @@ class MakeDistPlugin extends cbScriptPlugin
 	//
 	// tar.bz2:
 	// Cmd = _T("tar cjf  \"$ARCHIVE.tar.bz2\" $FILES_LIST");
-	
+
 	constructor()
 	{
 		info.name = _T("MakeDistPlugin");
@@ -43,7 +43,7 @@ class MakeDistPlugin extends cbScriptPlugin
 		entries.Add(_T("Project/7:Create package for distribution"), 1);
 		return entries;
 	}
-	
+
     // calback for menubar items clicking
 	function OnMenuClicked(index)
 	{
@@ -61,7 +61,7 @@ class MakeDistPlugin extends cbScriptPlugin
         	ShowError(_T("No project is open!"));
         	return -1;
         }
-        
+
         // if there is more then one project in the workspace the current working dir is the one of the last loaded project,
         // so we have to set it explicitely to make the zip-command find the files
         IO.SetCwd(prj.GetCommonTopLevelPath());
@@ -69,7 +69,7 @@ class MakeDistPlugin extends cbScriptPlugin
         // good, now let's get the project's filename
         local prj_fname = wxFileName();
         prj_fname.Assign(prj.GetFilename(), ::wxPATH_NATIVE);
-        
+
         // now let's build a string containing all the project files.
         // to be on the safe side, we will quote them all so spaces
         // and other special chars don't break the actual packaging
@@ -82,17 +82,17 @@ class MakeDistPlugin extends cbScriptPlugin
         	if (!IsNull(prj_file))
 				file_list += _T("\"") + prj_file.relativeFilename + _T("\" ");
         }
-        
+
         // also include the project file :)
         file_list += _T("\"") + prj_fname.GetFullName() + _T("\"");
-        
+
         // all that's left is to replace the variables in the command
 		// we have to copy Cmd into cmd or both are two names for the same instance and the placeholders get overwritten
 		local cmd = wxString();
 		cmd += Cmd;
         cmd.Replace(_T("$ARCHIVE"), prj_fname.GetName());
         cmd.Replace(_T("$FILES_LIST"), file_list);
-        
+
         // and, of course, launch it :)
         //ShowMessage(cmd);
         local result = IO.Execute(cmd);
@@ -100,7 +100,7 @@ class MakeDistPlugin extends cbScriptPlugin
 			ShowInfo(_T("All done!"));
 		else
 			ShowWarning(_T("Failed. Make sure the ZIP program is installed and somewhere in the path..."));
-        
+
         return result;
     }
 }

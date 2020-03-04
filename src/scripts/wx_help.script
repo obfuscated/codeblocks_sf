@@ -17,7 +17,7 @@ function SearchHelp(keyword)
     local wx_version = _T("2.8")
     // on windows, adjust this for your wx installation
     local wx_doc_folder = _T("/usr/share/doc")
-    
+
     if (PLATFORM == PLATFORM_GTK)
 		wx_doc_folder += _T("/wx") + wx_version + _T("-doc")
 
@@ -37,7 +37,7 @@ function SearchHelp(keyword)
     	ShowWarning(msg);
     	return;
     }
-    
+
     local prefix = _T("wx") + wx_version + _T("-manual_")
 
     // replace "contents" with "classref" below to default to alphabetical class list
