@@ -460,7 +460,7 @@ void MacrosManager::RecalcVars(const cbProject* project, EditorBase* editor, con
  * \return wxString The string between parentheses or wxEmptyString if an error occurred
  *
  */
-wxString extractStringBetweenParentheses(const wxString& input, size_t& pos, const wxChar& openSymbol, const wxChar& closeSymbol)
+wxString ExtractStringBetweenParentheses(const wxString& input, size_t& pos, const wxChar& openSymbol, const wxChar& closeSymbol)
 {
 
     if (pos == wxString::npos || pos >= input.size())
@@ -527,9 +527,9 @@ wxString extractStringBetweenParentheses(const wxString& input, size_t& pos, con
 wxString ParseIfCondition(const wxString& input, size_t& pos, wxString& condition, wxString& trueCode, wxString& falseCode)
 {
     const size_t start = pos;
-    condition = extractStringBetweenParentheses(input, pos, '(', ')');
-    trueCode  = extractStringBetweenParentheses(input, pos, '{', '}');
-    falseCode = extractStringBetweenParentheses(input, pos, '{', '}');
+    condition = ExtractStringBetweenParentheses(input, pos, '(', ')');
+    trueCode  = ExtractStringBetweenParentheses(input, pos, '{', '}');
+    falseCode = ExtractStringBetweenParentheses(input, pos, '{', '}');
     const size_t end = pos;
     const wxString ret = input.substr(start, end);
     return ret;
