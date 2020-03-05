@@ -10,6 +10,7 @@
 
 // Script plugins must extend cbScriptPlugin
 
+Include(_("sdk_test.script"));
 Include(_("wx_test.script"));
 
 class Scripting_TestPlugin extends cbScriptPlugin
@@ -28,7 +29,8 @@ class Scripting_TestPlugin extends cbScriptPlugin
     function GetMenu()
     {
         local entries = ::wxArrayString();
-        entries.Add(_T("Plugins/Test Scripting/Test Scripting"), 1);
+        entries.Add(_T("Plugins/Test Scripting/Test wx"), 1);
+        entries.Add(_T("Plugins/Test Scripting/Test sdk"), 1);
         return entries;
     }
 
@@ -42,7 +44,7 @@ class Scripting_TestPlugin extends cbScriptPlugin
     function Execute()
     {
         ::ShowMessage(_T("Start the test"));
-        StartTest();
+        StartWxTest();
         return 0;
     }
 
@@ -51,8 +53,13 @@ class Scripting_TestPlugin extends cbScriptPlugin
     {
         if (index == 0)
         {
-            ::ShowMessage(_T("Start the Test"));
-            StartTest();
+            ::ShowMessage(_T("Start the wx Test"));
+            StartWxTest();
+        }
+        else if (index == 1)
+        {
+            ::ShowMessage(_T("Start the sdk Test"));
+            StartSDKTest();
         }
 
     }
@@ -62,12 +69,25 @@ class Scripting_TestPlugin extends cbScriptPlugin
     {
 
     }
-
+    
     function StartTest()
+    {
+        StartSDKTest();
+        StartWxTest();
+    }
+
+    function StartWxTest()
     {
         local wx = wxTest();
         wx.clear_global_test_results();
         wx.Run();
+    }
+    
+    function StartSDKTest()
+    {
+        local sdk = sdkTest();
+        sdk.clear_global_test_results();
+        sdk.Run();
     }
 }
 

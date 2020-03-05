@@ -5,6 +5,7 @@ class wxTest extends script_test_base
 {
     function Run()
     {
+        clear_global_test_results()
         test_test();
         test_wxstring();
         test_wxstring_unicode();
