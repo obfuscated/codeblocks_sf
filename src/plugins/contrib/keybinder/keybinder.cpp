@@ -2067,6 +2067,12 @@ void wxKeyConfigPanel::UpdateDesc()
 
         // an invalid command is selected ? clear this field...
         m_pDescLabel->SetLabel(wxT(""));
+        if (IsUsingTreeCtrl())
+        {
+            wxTreeItemId selection = m_pCommandsTree->GetSelection();
+            if (selection and (not m_pCommandsTree->ItemHasChildren(selection)) )
+                m_pDescLabel->SetLabel(wxT("GetSelCmd() failed for this tree item.")); //(pecan 2020/02/27)
+        }
     }
 }
 

@@ -932,7 +932,7 @@ bool cbKeyBinder::MergeAcceleratorTable(wxTextFile& textOutFile)
             vFlags += _T("Alt-");
         if (globalAccels[ii].GetFlags() & wxACCEL_SHIFT)
             vFlags += _T("Shift-");
-        LOGIT( _T("accelEntry[%d]flags[%s]code[%s],id[%d]"),
+        LOGIT( _T("global accelEntry[%d]flags[%s]code[%s],id[%d]"),
                     ii,
                     vFlags.wx_str(),
                     m_pKBMgr->KeyCodeToString(globalAccels[ii].GetKeyCode()).wx_str(),
