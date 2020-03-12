@@ -341,9 +341,7 @@ void clKeyboardManager::Initialize(bool isRefreshRequest)
         // ConfigManager::GetConfigFolder() is the right way to do it for CodeBlocks.
 
         // Old accererator setting are in %appdata%
-        wxFileName fnOldSettings(wxStandardPaths::Get().GetTempDir(), _T("keyMnuAccels.conf"));
-        wxString personality = Manager::Get()->GetPersonalityManager()->GetPersonality();
-        fnOldSettings.SetName(personality + _T(".") + fnOldSettings.GetName());
+        wxFileName fnOldSettings(clKeyboardManager::Get()->GetTempKeyMnuAccelsFilename()); //(2020/02/25)
 
         wxFileName fnFileToLoad;
         bool canDeleteOldSettings(false);
@@ -699,13 +697,16 @@ void clKeyboardManager::AddGlobalAccelerator(const wxString& resourceID,
 void clKeyboardManager::RestoreDefaults()
 // ----------------------------------------------------------------------------
 {
+    // FIXME (ph#): RestoreDefaults needs to be supported
     wxASSERT_MSG(0, wxT("RestoreDefaults not supported yet !"));
     return ;
 
     // Decide which file we want to load, take the user settings file first
-    wxFileName fnOldSettings(wxStandardPaths::Get().GetTempDir(), _T("keyMnuAccels.conf"));
+    // FIXME (ph#): This file was deleted at end of OnAppStartupDone()
+    //-wxFileName fnOldSettings(wxStandardPaths::Get().GetTempDir(), _T("keyMnuAccels.conf"));
     wxString personality = Manager::Get()->GetPersonalityManager()->GetPersonality();
-    fnOldSettings.SetName(personality + _T(".") + fnOldSettings.GetName());
+    //-fnOldSettings.SetName(personality + _T(".") + fnOldSettings.GetName());
+    wxFileName fnOldSettings(clKeyboardManager::Get()->GetTempKeyMnuAccelsFilename()); //(2020/02/25)
 
     wxFileName fnNewSettings(ConfigManager::GetConfigFolder(), _T("cbKeyBinder20.conf"));
     fnNewSettings.SetName(personality + _T(".") + fnNewSettings.GetName());
@@ -772,9 +773,7 @@ MenuItemDataMap_t clKeyboardManager::DoLoadDefaultAccelerators()
 // ----------------------------------------------------------------------------
 {
     MenuItemDataMap_t entries;
-    wxFileName fnDefaultOldSettings(wxStandardPaths::Get().GetTempDir(), _T("keyMnuAccels.conf"));
-    wxString personality = Manager::Get()->GetPersonalityManager()->GetPersonality();
-    fnDefaultOldSettings.SetName(personality + _T(".") + fnDefaultOldSettings.GetName());
+    wxFileName fnDefaultOldSettings(clKeyboardManager::Get()->GetTempKeyMnuAccelsFilename()); //(2020/02/25)
 
     if(fnDefaultOldSettings.FileExists())
     {
