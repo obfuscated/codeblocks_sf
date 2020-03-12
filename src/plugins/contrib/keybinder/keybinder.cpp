@@ -1964,7 +1964,9 @@ wxControl *wxKeyConfigPanel::GetMainCtrl() const
     return m_pCommandsList;
 }
 
+// ----------------------------------------------------------------------------
 wxString wxKeyConfigPanel::GetSelCmdStr() const
+// ----------------------------------------------------------------------------
 {
     wxTreeItemId id = GetSelCmdId();
 
@@ -2404,10 +2406,11 @@ void wxKeyConfigPanel::OnAssignKey(wxCommandEvent &)
     wxCmd *sel = GetSelCmd();
     if (not sel)
     {  //got null sel
-        wxLogDebug(wxT("KeyBinder:GetSelCmd() error in OnAssignKey()"));
-        //wxMessageBox(wxT("KeyBinding file corrupted. Please delete it.")); //+v0.4
-        wxMessageBox(_("KeyBinding file corrupted. Please delete\n")
-            );//-+ *pKeyConfigFilename); //(2019/03/1)
+        wxString cmdStr = GetSelCmdStr();
+        int actualMnuId = wxFindMenuItem(Manager::Get()->GetAppFrame()->GetMenuBar(), cmdStr);
+        wxString msg = wxString::Format(_T("KeyBinding error in OnAssignKey()\nid[%d] label[%s]\n"), actualMnuId, cmdStr);
+        wxLogDebug(msg);
+        wxMessageBox(msg);
         return;
     }
 
@@ -2422,7 +2425,7 @@ void wxKeyConfigPanel::OnAssignKey(wxCommandEvent &)
 
     // if the key bind was owned by other commands,
     // remove it from the old commands...
-    wxCmd *p = 0;                                                   //pecan 2006/4/10
+    wxCmd *p = 0;
     while ((p = m_kBinder.GetCmdBindTo(m_pKeyField->GetValue()) ))
     {
         // another command already owns this key bind...

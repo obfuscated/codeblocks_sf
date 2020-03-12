@@ -31,7 +31,7 @@
 // Modified Keybinder for CodeBlocks KeyBnder v2.0
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "2.0.08 2019/10/16"
+#define VERSION "2.0.09 2020/01/31"
 // -----------------------------------
 class wxKeyConfigPanel;
 class wxKeyProfileArray;
@@ -57,7 +57,7 @@ class cbKeyBinder : public cbPlugin
 		bool BuildToolBar(wxToolBar* toolBar);
 		void OnAttach();                    // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown);   // fires when the plugin is released from the application
-        void OnKeyBinderRefreshRequested(wxCommandEvent& event); //(pecan 2019/04/26)
+        void OnKeyBinderRefreshRequested(wxCommandEvent& event);
 
       #ifdef LOGGING
         // allocate wxLogWindow when debugging
@@ -93,7 +93,7 @@ class cbKeyBinder : public cbPlugin
         wxString FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
         wxString GetPluginVersion();
 
-        wxString GetStringsFromArray(const wxArrayString& array, const wxString& separator, bool SeparatorAtEnd);
+        wxString      GetStringsFromArray(const wxArrayString& array, const wxString& separator, bool SeparatorAtEnd);
         wxArrayString GetArrayFromStrings(const wxString& text, const wxString& separator, bool trimSpaces);
         int           FindLineInFileContaining(wxTextFile& txtFile, wxString& pattern);
 
@@ -107,8 +107,8 @@ class cbKeyBinder : public cbPlugin
         int             m_mode;
         bool            m_AppStartupDone;
         UsrConfigPanel* m_pUsrConfigPanel;
-        bool            m_KeyBinderRefreshRequested;        //(pecan 2019/04/26)
-        wxString        m_cbExeTimeStampstr;                //(pecan 2019/04/29)
+        bool            m_KeyBinderRefreshRequested;
+        wxString        m_cbExeTimeStampstr;
 
         clKeyboardManager* m_pKBMgr;
 
@@ -672,5 +672,7 @@ class cbKeyBinder : public cbPlugin
 //          2.0.08 2019/10/16
 //              Remove duplicate key bindings displayed in config panel
 //              Sort key binding by parent menu before stowing into .conf file
+//          2.0.09 2020/01/31
+//              Special treatement for text "Code::Blocks" in menu label
 //
 // ----------------------------------------------------------------------------

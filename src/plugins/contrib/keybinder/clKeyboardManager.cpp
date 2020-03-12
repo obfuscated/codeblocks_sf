@@ -421,7 +421,7 @@ void clKeyboardManager::Initialize(bool isRefreshRequest)
             mapIter = m_menuTable.erase(mapIter);
             goto mnuContinue;
         }
-        else //remove the found map item if its label doesn't match menu structure label//(pecan 2019/05/18)
+        else //remove the found map item if its label doesn't match menu structure label
         {   // Have matching map resoureID and menu structure resourceID (ie., menuItemID)
             MenuItemDataMap_t::iterator mnuIter = defaultEntries.find(mapIter->first);
             if (mnuIter == defaultEntries.end())
@@ -577,7 +577,6 @@ MenuItemDataMap_t::iterator clKeyboardManager::ExistsALikeAccel(MenuItemDataMap_
 
     MenuItemDataMap_t& accels = srcMap;
     if (srcMapIter == accels.end()) return accels.end();
-    //-if (srcMapIter->second.parentMenu.empty() ) return accels.end(); //skip global accelerators //(pecan 2019/05/5)-
 
     const wxString srcAccel = srcMapIter->second.accel;
     if(srcAccel.IsEmpty()) return accels.end();
@@ -639,11 +638,15 @@ void clKeyboardManager::CheckForDuplicateAccels(MenuItemDataMap_t& accelMap) con
             srcMenuLabel.Replace(_T("\t"), _T(" "));
             srcMenuLabel.Replace(_T("&"), _T(""));
             srcMenuLabel.Replace(_T("::"), _T("/"));
+            if (srcMenuLabel.Contains(_T("Code/Blocks")) ) //special case of "Code::Blocks" text in menu title
+                srcMenuLabel.Replace(_T("Code/Blocks"), _T("Code::Blocks"));
 
             wxString foundMenuLabel = foundIter->second.parentMenu;
             foundMenuLabel.Replace(_T("\t"), _T(" "));
             foundMenuLabel.Replace(_T("&"), _T(""));
             foundMenuLabel.Replace(_T("::"), _T("/"));
+            if (foundMenuLabel.Contains(_T("Code/Blocks")) ) //special case of "Code::Blocks" text in menu title
+                foundMenuLabel.Replace(_T("Code/Blocks"), _T("Code::Blocks"));
 
             long srcMenuID; srcIter->first.ToLong(&srcMenuID);
             long foundMenuID; foundIter->first.ToLong(&foundMenuID);
@@ -783,13 +786,12 @@ MenuItemDataMap_t clKeyboardManager::DoLoadDefaultAccelerators()
         for(size_t i = 0; i < lines.GetCount(); ++i)
         {
             wxArrayString parts = ::wxStringTokenize(lines.Item(i), _T("|"), wxTOKEN_RET_EMPTY);
-            //-if(parts.GetCount() < 3) continue; //(pecan 2019/04/27)
             if(parts.GetCount() < 2) continue;
             MenuItemData binding;
             binding.resourceID = parts.Item(0);
             binding.parentMenu = parts.Item(1);
-            if (parts.GetCount() > 2)               //(pecan 2019/04/27)
-            binding.action = parts.Item(2);
+            if (parts.GetCount() > 2)
+                binding.action = parts.Item(2);
             if(parts.GetCount() == 4) {
                 binding.accel = parts.Item(3);
             }

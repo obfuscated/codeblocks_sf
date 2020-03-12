@@ -160,6 +160,8 @@ void UsrConfigPanel::GetKeyConfigPanelPhaseII(wxMenuBar* pMenuBar, UsrConfigPane
         wxString mnuPath = parentMenu.BeforeFirst(_T('|'));
         mnuPath = GetFullMenuPath(resourceID);
         mnuPath.Replace(_T("::"), _T("\\"));
+        if (mnuPath.Contains(_T("Code\\Blocks")) ) //special case of "Code::Blocks" text in menu title
+            mnuPath.Replace(_T("Code\\Blocks"), _T("Code::Blocks"));
         mnuPath.Trim(true);
 
         wxCmd* pCmd =  nullptr;
@@ -186,6 +188,8 @@ void UsrConfigPanel::GetKeyConfigPanelPhaseII(wxMenuBar* pMenuBar, UsrConfigPane
         {
             wxString mnuPath = GetFullMenuPath(resourceID);
             mnuPath.Replace(_T("::"), _T("\\"));
+            if (mnuPath.Contains(_T("Code\\Blocks")) ) //special case of "Code::Blocks" text in menu title
+                mnuPath.Replace(_T("Code\\Blocks"), _T("Code::Blocks"));
             mnuPath.Trim(true);
 
             pCmd = wxCmd::CreateNew(mnuPath, wxMENUCMD_TYPE, resourceID, updateMenuStructure);
