@@ -46,5 +46,5 @@ endif
 clean-local:
 	rm -f $(top_srcdir)/debian/codeblocks-headers.install
 
-appdatadir = $(datarootdir)/appdata
+appdatadir = $(datarootdir)/metainfo
 dist_appdata_DATA = $(top_srcdir)/codeblocks.appdata.xml
