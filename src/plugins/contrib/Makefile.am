@@ -252,10 +252,27 @@ EXTRA_DIST += $(srcdir)/FortranProject/*.h \
 		$(srcdir)/FortranProject/*.xml \
 		$(srcdir)/FortranProject/*.cbp \
 		$(srcdir)/FortranProject/update* \
-		$(srcdir)/FortranProject/images/*.png \
 		$(srcdir)/FortranProject/images/16x16/*.png \
-		$(srcdir)/FortranProject/images/fortranproject/*.png \
+		$(srcdir)/FortranProject/images/20x20/*.png \
+		$(srcdir)/FortranProject/images/24x24/*.png \
+		$(srcdir)/FortranProject/images/28x28/*.png \
+		$(srcdir)/FortranProject/images/32x32/*.png \
+		$(srcdir)/FortranProject/images/40x40/*.png \
+		$(srcdir)/FortranProject/images/48x48/*.png \
+		$(srcdir)/FortranProject/images/56x56/*.png \
+		$(srcdir)/FortranProject/images/64x64/*.png \
+		$(srcdir)/FortranProject/images/fortranproject/16x16/*.png \
+		$(srcdir)/FortranProject/images/fortranproject/20x20/*.png \
+		$(srcdir)/FortranProject/images/fortranproject/24x24/*.png \
+		$(srcdir)/FortranProject/images/fortranproject/28x28/*.png \
+		$(srcdir)/FortranProject/images/fortranproject/32x32/*.png \
+		$(srcdir)/FortranProject/images/fortranproject/40x40/*.png \
+		$(srcdir)/FortranProject/images/fortranproject/48x48/*.png \
+		$(srcdir)/FortranProject/images/fortranproject/56x56/*.png \
+		$(srcdir)/FortranProject/images/fortranproject/64x64/*.png \
 		$(srcdir)/FortranProject/images/fortranproject/*.f90 \
+		$(srcdir)/FortranProject/images/fortranproject/*.py \
+		$(srcdir)/FortranProject/images/fortranproject/*.dem \
 		$(srcdir)/FortranProject/resources/*.xrc
 endif
 
