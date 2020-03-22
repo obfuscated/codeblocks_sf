@@ -125,7 +125,7 @@ make %{?_smp_mflags}
 %make_install
 
 %if 0%{?fedora}
-appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.{appdata,metainfo}.xml
+appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/metainfo/*.{appdata,metainfo}.xml
 %endif
 desktop-file-validate	%{buildroot}/%{_datadir}/applications/codeblocks.desktop
 
@@ -191,7 +191,7 @@ fi
 %{plugindir}/libscriptedwizard.so
 %{plugindir}/libtodo.so
 
-%{_datadir}/appdata/%{name}.appdata.xml
+%{_datadir}/metainfo/%{name}.appdata.xml
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/48x48/mimetypes/*.png
 %{_datadir}/mime/packages/%{name}.xml
@@ -336,7 +336,7 @@ fi
 %{plugindir}/libNassiShneiderman.so
 %{plugindir}/libSpellChecker.so
 %{plugindir}/libSmartIndent*.so
-%{_datadir}/appdata/%{name}-contrib.metainfo.xml
+%{_datadir}/metainfo/%{name}-contrib.metainfo.xml
 
 
 %changelog
