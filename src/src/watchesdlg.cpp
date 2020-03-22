@@ -103,8 +103,7 @@ public:
                                   cb_unused const wxPoint& pos,
                                   cb_unused const wxSize& sz) const override
     {
-        wxPGWindowList const list;
-        return list;
+        return wxPGWindowList(nullptr, nullptr);
     }
     void UpdateControl(cb_unused wxPGProperty* property, cb_unused wxWindow* ctrl) const override {}
     bool OnEvent(cb_unused wxPropertyGrid* propgrid, cb_unused wxPGProperty* property,
