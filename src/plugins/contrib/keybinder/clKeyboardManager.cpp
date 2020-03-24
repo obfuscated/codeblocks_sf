@@ -273,8 +273,8 @@ void clKeyboardManager::DoUpdateFrame(wxFrame* frame, MenuItemDataIntMap_t& acce
     // table will now have all menu accels that contained menu label accelerators
     // accel will be missing all accels found in the menu system, but retaining global accels
     #if defined(LOGGING) //debug accelerator counts
-        size_t tableKnt = table.size();
-        size_t accelsKnt = accels.size();
+        size_t tableKnt = table.size(); wxUnusedVar(tableKnt);
+        size_t accelsKnt = accels.size(); wxUnusedVar(accelsKnt);
     #endif // defined LOGING
     if(!table.empty() || !accels.empty()) {
         wxAcceleratorEntry* entries = new wxAcceleratorEntry[table.size() + accels.size()];
@@ -405,13 +405,13 @@ void clKeyboardManager::Initialize(bool isRefreshRequest)
     MenuItemDataMap_t defaultEntries = DoLoadDefaultAccelerators();
 
     // ----------------------------------------------------------------------------
-    // Remove any map items nolonger matching the current menu structure
+    // Remove/Replace any map items nolonger matching the current menu structure
     // ----------------------------------------------------------------------------
         for (MenuItemDataMap_t::iterator mapIter = m_menuTable.begin(); mapIter != m_menuTable.end(); ++mapIter)
     {
         mnuContinue:
         if (mapIter == m_menuTable.end()) break;
-        //search menu structure map for map menuId
+        //search menu structure map for menuId from .conf file
         if ( defaultEntries.count(mapIter->first) == 0)
         {   // menuID nolonger exists
             #if defined(LOGGING)
@@ -420,7 +420,29 @@ void clKeyboardManager::Initialize(bool isRefreshRequest)
                 wxString mapMnuID = mapIter->first;
                 LOGIT( _T("Removing ID mismatch[%s][%s][%s]"), mapMnuID.wx_str(), mapParent.wx_str(), mapAccel.wx_str());
             #endif
+            // if a menu exists with this menuPath (parent menu) get its actual menu id //(2020/03/23)
+            // look for matching parentMenu from menuTable (.conf) and change its id to the actual menu tree id.
+            MenuItemData* pMenuItemData = &(mapIter->second);
+            if (mapIter->second.parentMenu.Length()) //parent menu must not be blank (global accelerator)
+            {
+                MenuItemData* pDftTableEntry = FindMenuPathEntryFor(defaultEntries, pMenuItemData);
+                // if the menu tree accel != .conf accel, this must be a user defined accel, set user accel into tree menu item,
+                // else just remove it, it'll be replaced by the actual tree menu later
+                if (pDftTableEntry and (mapIter->second.accel != pDftTableEntry->accel))
+                {
+                    #if defined(LOGGING)
+                        wxString dftAccel =  pDftTableEntry->accel;
+                        wxString dftParent = pDftTableEntry->parentMenu;
+                        wxString dftMnuID =  pDftTableEntry->resourceID;
+                        LOGIT( _T("Replacing badID[%s] With[%s][%s][%s]"), mapMnuID.wx_str(), dftMnuID.wx_str(), dftParent.wx_str(), mapAccel.wx_str());
+                    #endif
+                    pDftTableEntry->accel = mapIter->second.accel; //set users defined accel
+                    m_menuTable.insert(std::make_pair(pDftTableEntry->resourceID,*pDftTableEntry));
+                }
+            }
+            // remove the entry with the bad menu id
             mapIter = m_menuTable.erase(mapIter);
+
             goto mnuContinue;
         }
         else // Have amatching map resoureID and menu structure resourceID (ie., menuItemID)
@@ -1187,6 +1209,19 @@ MenuItemData* clKeyboardManager::FindMenuTableEntryFor(MenuItemDataMap_t& hashTa
     {
         if ( (mapIter->second.resourceID == pMenuMapItem->resourceID)
             and (mapIter->second.parentMenu == pMenuMapItem->parentMenu) )
+            return  &(mapIter->second);
+    }
+    return nullptr;
+}
+// ----------------------------------------------------------------------------
+MenuItemData* clKeyboardManager::FindMenuPathEntryFor(MenuItemDataMap_t& hashTable, MenuItemData* pMenuMapItem)
+// ----------------------------------------------------------------------------
+{
+    for (MenuItemDataMap_t::iterator mapIter = hashTable.begin(); mapIter != hashTable.end(); ++mapIter)
+    {
+        //if ( (mapIter->second.resourceID == pMenuMapItem->resourceID)
+        //    and (mapIter->second.parentMenu == pMenuMapItem->parentMenu) )
+        if ( (mapIter->second.parentMenu == pMenuMapItem->parentMenu) )
             return  &(mapIter->second);
     }
     return nullptr;
