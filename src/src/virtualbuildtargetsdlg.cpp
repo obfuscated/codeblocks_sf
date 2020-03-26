@@ -146,7 +146,7 @@ void VirtualBuildTargetsDlg::OnEditClick(cb_unused wxCommandEvent& event)
 {
     wxString targetName = cbGetTextFromUser(_("Enter the new virtual build target name:"),
                                             _("Edit virtual build target"),
-                                            lstAliases->GetStringSelection());
+                                            lstAliases->GetStringSelection(), this);
 
     // is name unchanged, or user cancelled?
     if (targetName.IsEmpty() || targetName == lstAliases->GetStringSelection())

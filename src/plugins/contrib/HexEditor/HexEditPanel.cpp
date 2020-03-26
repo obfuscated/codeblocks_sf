@@ -1426,7 +1426,8 @@ void HexEditPanel::ProcessGoto()
               " * Hexadecimal ( 1AB, 0x1AB, 1ABh )\n"
               " * Offset from current ( +100, -100, +0x1AB )"),
             _("Goto offset"),
-            str );
+            str,
+            this);
 
         if ( str.IsEmpty() ) return;
         str.Trim( true ).Trim( false );

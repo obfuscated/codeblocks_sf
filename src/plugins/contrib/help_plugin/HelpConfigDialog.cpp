@@ -177,7 +177,8 @@ void HelpConfigDialog::Add(wxCommandEvent &/*event*/)
 {
   wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
   UpdateEntry(lst->GetSelection());
-  wxString text = cbGetTextFromUser(_("Please enter new help file title:"), _("Add title"));
+  wxString text = cbGetTextFromUser(_("Please enter new help file title:"), _("Add title"),
+                                    wxString(), this);
 
   if (!text.IsEmpty())
   {
@@ -220,7 +221,8 @@ void HelpConfigDialog::Rename(wxCommandEvent &/*event*/)
 {
   wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
   wxString orig = lst->GetString(lst->GetSelection());
-  wxString text = cbGetTextFromUser(_("Rename this help file title:"), _("Rename title"), orig);
+  wxString text = cbGetTextFromUser(_("Rename this help file title:"), _("Rename title"), orig,
+                                    this);
 
   if (!text.IsEmpty())
   {

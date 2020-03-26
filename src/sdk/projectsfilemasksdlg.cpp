@@ -87,7 +87,7 @@ void ProjectsFileMasksDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
 void ProjectsFileMasksDlg::OnAdd(cb_unused wxCommandEvent& event)
 {
     wxString groupName = cbGetTextFromUser(_("Enter the new group name:"),
-                                            _("New group"));
+                                            _("New group"), wxString(), this);
     if (groupName.IsEmpty())
         return;
     m_FileGroupsAndMasksCopy.AddGroup(groupName);
@@ -103,7 +103,7 @@ void ProjectsFileMasksDlg::OnEdit(cb_unused wxCommandEvent& event)
     wxListBox* pList = XRCCTRL(*this, "lstCategories", wxListBox);
     wxString oldName = pList->GetStringSelection();
     wxString groupName = cbGetTextFromUser(_("Rename the group:"),
-                                            _("Edit group"), oldName);
+                                            _("Edit group"), oldName, this);
     if (!groupName.IsEmpty() && groupName != oldName)
     {
         m_FileGroupsAndMasksCopy.RenameGroup(pList->GetSelection(), groupName);

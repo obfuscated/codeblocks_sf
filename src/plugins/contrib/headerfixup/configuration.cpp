@@ -246,7 +246,8 @@ void Configuration::OnApply()
 
 void Configuration::OnBtnAddGroupClick(wxCommandEvent& /*event*/)
 {
-  wxString GroupName = ::cbGetTextFromUser(_("Enter name for new group"));
+  wxString GroupName = ::cbGetTextFromUser(_("Enter name for new group"), _("Header Fixup"),
+                                           wxString(), this);
   if ( GroupName.IsEmpty() )
     return;
 
@@ -298,7 +299,8 @@ void Configuration::OnRenameGroup(wxCommandEvent& /*event*/)
   if ( GroupName.IsEmpty() )
     return;
 
-  GroupName = ::cbGetTextFromUser(_("Enter new group name"),_("Change group name"),GroupName);
+  GroupName = ::cbGetTextFromUser(_("Enter new group name"), _("Change group name"), GroupName,
+                                  this);
   if ( GroupName.IsEmpty() )
     return;
 
@@ -354,13 +356,14 @@ void Configuration::OnGroupsSelect(wxCommandEvent& /*event*/)
 
 void Configuration::OnBtnAddIdentifierClick(wxCommandEvent& /*event*/)
 {
-  wxString Identifier = ::cbGetTextFromUser(_("Enter new identifier"));
+  wxString Identifier = ::cbGetTextFromUser(_("Enter new identifier"), _("Header Fixup"),
+                                            wxString(), this);
   if ( Identifier.IsEmpty() )
     return;
 
   if ( m_Identifiers->FindString(Identifier) != wxNOT_FOUND )
   {
-    cbMessageBox(_("Such identifier already exists."),_T("Header Fixup"));
+    cbMessageBox(_("Such identifier already exists."),_("Header Fixup"), wxOK, this);
     return;
   }
 
@@ -378,7 +381,7 @@ void Configuration::OnBtnAddIdentifierClick(wxCommandEvent& /*event*/)
 
 void Configuration::OnBtnDeleteIdentifierClick(wxCommandEvent& /*event*/)
 {
-  if ( cbMessageBox(_("Are you sure?"),_("Deleting identifier"),wxYES|wxNO) != wxID_YES )
+  if ( cbMessageBox(_("Are you sure?"),_("Deleting identifier"),wxYES|wxNO, this) != wxID_YES )
     return;
 
   wxString Identifier = m_Identifiers->GetStringSelection();
@@ -403,14 +406,15 @@ void Configuration::OnChangeIdentifier(wxCommandEvent& /*event*/)
   if ( Identifier.IsEmpty() )
     return;
 
-  Identifier = ::cbGetTextFromUser(_("Enter new identifier"),_("Change identifier"),Identifier);
+  Identifier = ::cbGetTextFromUser(_("Enter new identifier"), _("Change identifier"), Identifier,
+                                   this);
   if ( Identifier.IsEmpty() )
     return;
 
   int Index = m_Identifiers->FindString(Identifier);
   if ( Index != wxNOT_FOUND && Index != m_Identifiers->GetSelection() )
   {
-    cbMessageBox(_("Such identifier already exists."),_T("Header Fixup"));
+    cbMessageBox(_("Such identifier already exists."),_T("Header Fixup"), wxOK, this);
     return;
   }
 

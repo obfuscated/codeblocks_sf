@@ -294,7 +294,7 @@ void EnvVarsConfigDlg::OnCreateSetClick(wxCommandEvent& WXUNUSED(event))
     return;
 
   wxString set = cbGetTextFromUser(_("Enter (lower case) name for new environment variables set:"),
-                                   _("Input Set"), nsEnvVars::EnvVarsDefault);
+                                   _("Input Set"), nsEnvVars::EnvVarsDefault, this);
   if (set.IsEmpty() || (!VerifySetUnique(choSet, set)))
     return;
 
@@ -331,7 +331,7 @@ void EnvVarsConfigDlg::OnCloneSetClick(wxCommandEvent& WXUNUSED(event))
     return;
 
   wxString set = cbGetTextFromUser(_("Enter (lower case) name for cloned environment variables set:"),
-                                   _("Input Set"), nsEnvVars::EnvVarsDefault);
+                                   _("Input Set"), nsEnvVars::EnvVarsDefault, this);
   if (set.IsEmpty() || (!VerifySetUnique(choSet, set)))
     return;
 

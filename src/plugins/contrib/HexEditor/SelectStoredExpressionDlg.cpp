@@ -190,7 +190,8 @@ void SelectStoredExpressionDlg::AddingExpression( const wxString& defaultName, c
     wxString name = defaultName;
     for (;;)
     {
-        name = cbGetTextFromUser( _("Enter name for this expression"), _("New stored expression"), name );
+        name = cbGetTextFromUser(_("Enter name for this expression"), _("New stored expression"),
+                                 name, this);
 
         if ( name.IsEmpty() )
         {
@@ -219,10 +220,8 @@ void SelectStoredExpressionDlg::AddingExpression( const wxString& defaultName, c
         }
     }
 
-    wxString value = cbGetTextFromUser(
-        _("Enter expression"),
-        _("New stored expression"),
-        defaultExpression );
+    wxString value = cbGetTextFromUser(_("Enter expression"), _("New stored expression"),
+                                       defaultExpression, this);
 
     if ( value.IsEmpty() )
     {
@@ -301,10 +300,8 @@ void SelectStoredExpressionDlg::OnButton3Click(wxCommandEvent& /*event*/)
     ListData* data = GetSelection();
     if ( !data ) return;
 
-    wxString value = cbGetTextFromUser(
-        _("Enter new expression"),
-        _("Modifying expression"),
-        data->GetValue() );
+    wxString value = cbGetTextFromUser(_("Enter new expression"), _("Modifying expression"),
+                                       data->GetValue(), this);
 
     wxString name = data->GetKey();
 
