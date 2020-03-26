@@ -118,7 +118,7 @@ void VirtualBuildTargetsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
 void VirtualBuildTargetsDlg::OnAddClick(cb_unused wxCommandEvent& event)
 {
     wxString targetName = cbGetTextFromUser(_("Enter the new virtual build target name:"),
-                                            _("New virtual build target"));
+                                            _("New virtual build target"), wxString(), this);
     if (targetName.IsEmpty())
         return;
 
