@@ -3281,19 +3281,21 @@ void CompilerGCC::OnProjectCompilerOptions(cb_unused wxCommandEvent& event)
         // 'configure' selected target, if other than 'All'
         ProjectBuildTarget* target = 0;
         cbProject *currentProject = ftd->GetProject();
-        if (currentProject == m_pProject)
+        if (m_RealTargetIndex != -1)
         {
-            if (m_RealTargetIndex != -1)
-                target = m_pProject->GetBuildTarget(m_RealTargetIndex);
-        }
-        else if (m_RealTargetIndex != -1 && m_pProject)
-        {
-            // If the users wants to change the options for the non-active project,
-            // we try to find a target with the same name as the currently selected
-            // target in the active project (if the target is not 'All').
-            ProjectBuildTarget *activeTarget = m_pProject->GetBuildTarget(m_RealTargetIndex);
-            if (activeTarget)
-                target = currentProject->GetBuildTarget(activeTarget->GetTitle());
+            const wxString &targetName = m_Targets[m_RealTargetIndex];
+            if (currentProject == m_pProject)
+            {
+                target = m_pProject->GetBuildTarget(targetName);
+            }
+            else
+            {
+                // If the users wants to change the options for the non-active project,
+                // we try to find a target with the same name as the currently selected
+                // target in the active project (if the target is not 'All').
+                if (!targetName.empty())
+                    target = currentProject->GetBuildTarget(targetName);
+            }
         }
         Configure(currentProject, target, Manager::Get()->GetAppWindow());
     }
