@@ -62,6 +62,10 @@ void ThreadSearchViewManagerLayout::RemoveViewFromManager()
 
         m_IsManaged = false;
         m_IsShown   = false;
+
+        // We need to delete this to make it behave like the notebook.
+        delete m_pThreadSearchView;
+        m_pThreadSearchView = nullptr;
     }
 }
 
