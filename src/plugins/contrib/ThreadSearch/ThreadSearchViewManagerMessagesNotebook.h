@@ -17,17 +17,17 @@
 
 #include "ThreadSearchViewManagerBase.h"
 
+class wxBitmap;
 class wxWindow;
 class ThreadSearchView;
 class ThreadSearchLogger;
-
 
 class ThreadSearchViewManagerMessagesNotebook : public ThreadSearchViewManagerBase
 {
 public:
     /** Constructor. */
     ThreadSearchViewManagerMessagesNotebook(ThreadSearchView* pThreadSearchView)
-        : ThreadSearchViewManagerBase(pThreadSearchView)
+        : ThreadSearchViewManagerBase(pThreadSearchView), m_Bitmap(nullptr)
     {}
 
     /** Destructor. */
@@ -62,6 +62,8 @@ public:
     bool IsViewShown();
 
     virtual void Raise();
+private:
+    wxBitmap *m_Bitmap;
 };
 
 #endif // THREAD_SEARCH_VIEW_MANAGER_MESSAGES_NOTEBOOK_H
