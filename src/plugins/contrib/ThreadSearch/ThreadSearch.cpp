@@ -910,13 +910,12 @@ void ThreadSearch::SetManagerType(ThreadSearchViewManagerBase::eManagerTypes mgr
     // Is type different from current one ?
     if ( mgrType != m_pViewManager->GetManagerType() )
     {
-        // Get show state and destroy current view manager.
-        bool show(true);
+        // Destroy current view manager.
         if ( m_pViewManager != NULL )
         {
-            show = m_pViewManager->IsViewShown();
             m_pViewManager->RemoveViewFromManager();
             delete m_pViewManager;
+            m_pViewManager = nullptr;
         }
 
         CreateView(mgrType, true);
