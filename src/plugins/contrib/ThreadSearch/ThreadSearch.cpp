@@ -216,24 +216,24 @@ void ThreadSearch::OnRelease(bool /*appShutDown*/)
     // --------------------------------------------------------------
     // Carefull! This routine can be entered consecutive times
     // --------------------------------------------------------------
-    if ( m_OnReleased ) return;
+    if (m_OnReleased)
+        return;
     m_OnReleased = true;
 
     // Removes Thread search menu item from the View menu
     RemoveMenuItems();
 
-    m_pToolbar = 0;
+    m_pToolbar = nullptr;
 
-    if ( m_pThreadSearchView != 0 )
+    if (m_pThreadSearchView != nullptr)
     {
         m_pViewManager->RemoveViewFromManager();
         m_pThreadSearchView = nullptr;
     }
 
     delete m_pViewManager;
-    m_pViewManager = 0;
+    m_pViewManager = nullptr;
 }
-
 
 void ThreadSearch::OnThreadSearchViewDestruction()
 {
@@ -252,7 +252,7 @@ void ThreadSearch::OnThreadSearchViewDestruction()
                m_pThreadSearchView->GetSearchMasksHistory());
 
     // Reset of the pointer as view is being deleted
-    m_pThreadSearchView = NULL;
+    m_pThreadSearchView = nullptr;
 }
 
 void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
@@ -510,16 +510,17 @@ void ThreadSearch::LoadConfig(int& sashPosition,
         m_SplitterMode = wxSPLIT_HORIZONTAL;
     }
 
-    int managerType              = pCfg->ReadInt(wxT("/ViewManagerType"),        ThreadSearchViewManagerBase::TypeMessagesNotebook);
-    mgrType                      = ThreadSearchViewManagerBase::TypeMessagesNotebook;
-    if ( managerType == ThreadSearchViewManagerBase::TypeLayout )
+    const int managerType = pCfg->ReadInt(wxT("/ViewManagerType"),
+                                          ThreadSearchViewManagerBase::TypeMessagesNotebook);
+    mgrType = ThreadSearchViewManagerBase::TypeMessagesNotebook;
+    if (managerType == ThreadSearchViewManagerBase::TypeLayout)
     {
         mgrType = ThreadSearchViewManagerBase::TypeLayout;
     }
 
-    int loggerType               = pCfg->ReadInt(wxT("/LoggerType"),             ThreadSearchLoggerBase::TypeList);
-    m_LoggerType                 = ThreadSearchLoggerBase::TypeList;
-    if ( loggerType == ThreadSearchLoggerBase::TypeTree )
+    int loggerType = pCfg->ReadInt(wxT("/LoggerType"), ThreadSearchLoggerBase::TypeList);
+    m_LoggerType = ThreadSearchLoggerBase::TypeList;
+    if (loggerType == ThreadSearchLoggerBase::TypeTree)
     {
         m_LoggerType = ThreadSearchLoggerBase::TypeTree;
     }
@@ -908,10 +909,10 @@ void ThreadSearch::OnMnuEditPaste(wxCommandEvent& event)
 void ThreadSearch::SetManagerType(ThreadSearchViewManagerBase::eManagerTypes mgrType)
 {
     // Is type different from current one ?
-    if ( mgrType != m_pViewManager->GetManagerType() )
+    if (mgrType != m_pViewManager->GetManagerType())
     {
         // Destroy current view manager.
-        if ( m_pViewManager != NULL )
+        if (m_pViewManager != nullptr)
         {
             m_pViewManager->RemoveViewFromManager();
             delete m_pViewManager;
