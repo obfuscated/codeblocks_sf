@@ -31,8 +31,14 @@ Preparations for a release:
     [C::B]\src\sdk.doxy
     [C::B]\src\plugins\codecompletion\codecompletion.doxy
 
-5.1.) Add a release entry in the debian change log, so the generated packages could
+5.1.) Make sure the SVN_REVISION entry in revision.m4 includes only the versio number
+    and no svn revisions (contrary to what the name implies). This is required for
+    proper work of make dist
+
+5.2.) Add a release entry in the debian change log, so the generated packages could
     have the proper version numbers.
+
+5.3.) Remove .svn.%{_svnrev} from the verison variables in the .spec.in files.
 
 6.) Create nightlies based on that branch and fix bugs in that branch
     (No new features!)
