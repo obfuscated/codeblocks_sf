@@ -325,7 +325,8 @@ void ThreadSearch::RemoveMenuItems()
         wxMenu* viewMenu = menuBar->GetMenu(idx);
         if ( viewMenu != 0 )
         {
-            viewMenu->Remove(controlIDs.Get(ControlIDs::idMenuViewThreadSearch));
+            wxMenuItem *item = viewMenu->Remove(controlIDs.Get(ControlIDs::idMenuViewThreadSearch));
+            delete item;
         }
     }
 
@@ -335,7 +336,8 @@ void ThreadSearch::RemoveMenuItems()
         wxMenu* searchMenu = menuBar->GetMenu(idx);
         if ( searchMenu != 0 )
         {
-            searchMenu->Remove(controlIDs.Get(ControlIDs::idMenuSearchThreadSearch));
+            wxMenuItem *item = searchMenu->Remove(controlIDs.Get(ControlIDs::idMenuSearchThreadSearch));
+            delete item;
         }
     }
 }
