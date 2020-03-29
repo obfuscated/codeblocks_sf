@@ -1,0 +1,19 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler>
+<CodeBlocks_compiler name="Digital Mars Compiler"
+                     id="dmc"
+                     weight="24"
+                     platform="windows">
+    <Path type="master">
+        <Search envVar="PATH"
+                for="C"/>
+        <Fallback path="C:\dm"/>
+    </Path>
+    <Path type="include">
+        <Add><master/>\stlport\stlport</Add>
+        <Add><master/>\include</Add>
+    </Path>
+    <Path type="lib">
+        <Add><master/>\lib</Add>
+    </Path>
+</CodeBlocks_compiler>

@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="Objective C"
+                index="3"
+                filemasks="*.mm">
+                <Style name="Default"
+                        index="0,11"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <Style name="Default (inactive)"
+                        index="64,72,75"
+                        fg="200,200,200"/>
+                <Style name="Comment (normal)"
+                        index="1,23,65,87"
+                        fg="160,160,160"/>
+                <Style name="Comment line (normal)"
+                        index="2,66"
+                        fg="190,190,230"/>
+                <Style name="Comment (documentation)"
+                        index="3,67"
+                        fg="128,128,255"
+                        bold="1"/>
+                <Style name="Comment line (documentation)"
+                        index="15,79"
+                        fg="128,128,255"
+                        bold="1"/>
+                <Style name="Comment keyword (documentation)"
+                        index="17,81"
+                        fg="0,128,128"/>
+                <Style name="Comment keyword error (documentation)"
+                        index="18,82"
+                        fg="128,0,0"/>
+                <Style name="Number"
+                        index="4"
+                        fg="240,0,240"/>
+                <Style name="Number (inactive)"
+                        index="68"
+                        fg="240,200,240"/>
+                <Style name="Keyword"
+                        index="5"
+                        fg="0,0,160"
+                        bold="1"/>
+                <Style name="Keyword (inactive)"
+                        index="69"
+                        fg="135,135,200"
+                        bold="1"/>
+                <Style name="User keyword"
+                        index="16"
+                        fg="0,160,0"
+                        bold="1"/>
+                <Style name="User keyword (inactive)"
+                        index="80"
+                        fg="154,200,154"
+                        bold="1"/>
+                <Style name="Global classes and typedefs"
+                        index="19"
+                        fg="190,0,190"
+                        bold="1"/>
+                <Style name="Global classes and typedefs (inactive)"
+                        index="83"
+                        fg="190,137,190"
+                        bold="1"/>
+                <Style name="String"
+                        index="6,12"
+                        fg="0,0,255"/>
+                <Style name="String (inactive)"
+                        index="70,76"
+                        fg="190,190,255"/>
+                <Style name="Character"
+                        index="7"
+                        fg="224,160,0"/>
+                <Style name="Character (inactive)"
+                        index="71"
+                        fg="224,206,159"/>
+                <Style name="UUID"
+                        index="8"
+                        fg="0,0,0"/>
+                <Style name="Preprocessor"
+                        index="9"
+                        fg="0,160,0"/>
+                <Style name="Preprocessor (inactive)"
+                        index="73"
+                        fg="132,160,132"/>
+                <Style name="Operator"
+                        index="10"
+                        fg="255,0,0"/>
+                <Style name="Operator (inactive)"
+                        index="74"
+                        fg="255,200,200"/>
+                <Style name="Breakpoint line"
+                        index="-2"
+                        bg="255,160,160"/>
+                <Style name="Debugger active line"
+                        index="-3"
+                        bg="160,160,255"/>
+                <Style name="Compiler error line"
+                        index="-4"
+                        bg="255,128,0"/>
+                <Keywords>
+                        <!-- Primary keywords and identifiers -->
+                        <Set index="0"
+                            value="#import @catch @class @defs @encode @end @finally @implementation @interface @private @property @protected
+                                   @protocol @public @selector @synthesize @try id SEL IMP BOOL nil YES NO and and_eq asm auto bitand bitor
+                                   bool break case catch char class compl const const_cast continue default delete do double dynamic_cast else
+                                   enum explicit export extern false float for friend goto if inline int long mutable namespace new not not_eq
+                                   operator or or_eq private protected public register reinterpret_cast return self short signed sizeof static
+                                   static_cast struct switch template this throw true try typedef typeid typename union unsigned using virtual
+                                   void volatile wchar_t whilexor xor_eq alignas alignof char16_t char32_t constexpr decltype noexcept nullptr
+                                   static_assert thread_local"/>
+                        <!-- Secondary keywords and identifiers -->
+                        <Set index="1"
+                            value="NSAffineTransform NSArchiver NSArray NSAssertionHandler NSAttributedString NSAutoreleasePool NSBlockOperation
+                                   NSBundle NSCache NSCachedURLResponse NSCalendar NSCharacterSet NSClassDescription NSCloneCommand NSCloseCommand
+                                   NSCoder NSComparisonPredicate NSCompoundPredicate NSCondition NSConditionLock NSConnection NSCountCommand
+                                   NSCountedSet NSCreateCommand NSData NSDataDetector NSDate NSDateComponents NSDateFormatter NSDecimalNumber
+                                   NSDecimalNumberHandler NSDeleteCommand NSDictionary NSDirectoryEnumerator NSDistantObject NSDistantObjectRequest
+                                   NSDistributedLock NSDistributedNotificationCenter NSEnumerator NSError NSException NSExistsCommand NSExpression
+                                   NSFileCoordinator NSFileHandle NSFileManager NSFileVersion NSFileWrapper NSFormatter NSGarbageCollector
+                                   NSGetCommand NSHashTable NSHost NSHTTPCookie NSHTTPCookieStorage NSHTTPURLResponse NSIndexPath NSIndexSet
+                                   NSIndexSpecifier NSInputStream NSInvocation NSInvocationOperation NSKeyedArchiver NSKeyedUnarchiver
+                                   NSLinguisticTagger NSLocale NSLock NSLogicalTest NSMachBootstrapServer NSMachPort NSMapTable NSMessagePort
+                                   NSMessagePortNameServer NSMetadataItem NSMetadataQuery NSMetadataQueryAttributeValueTuple
+                                   NSMetadataQueryResultGroup NSMethodSignature NSMiddleSpecifier NSMoveCommand NSMutableArray
+                                   NSMutableAttributedString NSMutableCharacterSet NSMutableData NSMutableDictionary NSMutableIndexSet
+                                   NSMutableOrderedSet NSMutableSet NSMutableString NSMutableURLRequest NSNameSpecifier NSNetService
+                                   NSNetServiceBrowser NSNotification NSNotificationCenter NSNotificationQueue NSNull NSNumber NSNumberFormatter
+                                   NSObject NSOperation NSOperationQueue NSOrderedSet NSOrthography NSOutputStream NSPipe NSPointerArray
+                                   NSPointerFunctions NSPort NSPortCoder NSPortMessage NSPortNameServer NSPositionalSpecifier NSPredicate
+                                   NSProcessInfo NSPropertyListSerialization NSPropertySpecifier NSProtocolChecker NSProxy NSQuitCommand
+                                   NSRandomSpecifier NSRangeSpecifier NSRecursiveLock NSRegularExpression NSRelativeSpecifier NSRunLoop NSScanner
+                                   NSScriptClassDescription NSScriptCoercionHandler NSScriptCommand NSScriptCommandDescription
+                                   NSScriptExecutionContext NSScriptObjectSpecifier NSScriptSuiteRegistry NSScriptWhoseTest NSSet NSSetCommand
+                                   NSSocketPort NSSocketPortNameServer NSSortDescriptor NSSpecifierTest NSSpellServer NSStream NSString NSTask
+                                   NSTextCheckingResult NSThread NSTimer NSTimeZone NSUbiquitousKeyValueStore NSUnarchiver NSUndoManager
+                                   NSUniqueIDSpecifier NSURL NSURLAuthenticationChallenge NSURLCache NSURLConnection NSURLCredential
+                                   NSURLCredentialStorage NSURLDownload NSURLHandle NSURLProtectionSpace NSURLProtocol NSURLRequest NSURLResponse
+                                   NSUserAppleScriptTask NSUserAutomatorTask NSUserDefaults NSUserNotification NSUserNotificationCenter
+                                   NSUserScriptTask NSUserUnixTask NSUUID NSValue NSValueTransformer NSWhoseSpecifier NSXMLDocument NSXMLDTD
+                                   NSXMLDTDNode NSXMLElement NSXMLNode NSXMLParser NSXPCConnection NSXPCInterface NSXPCListener NSXPCListenerEndpoint
+                                   NSCoding NSComparisonMethods NSConnectionDelegate NSCopying NSDecimalNumberBehaviors NSErrorRecoveryAttempting
+                                   NSFastEnumeration NSFileManagerDelegate NSFilePresenter NSKeyedArchiverDelegate NSKeyedUnarchiverDelegate
+                                   NSKeyValueCoding NSKeyValueObserving NSLocking NSMachPortDelegate NSMetadataQueryDelegate NSMutableCopying
+                                   NSNetServiceBrowserDelegate NSNetServiceDelegate NSObject NSPortDelegate NSScriptingComparisonMethods
+                                   NSScriptKeyValueCoding NSScriptObjectSpecifiers  SSecureCoding NSSpellServerDelegate NSStreamDelegate
+                                   NSURLAuthenticationChallengeSender NSURLConnectionDataDelegate NSURLConnectionDelegate NSURLConnectionDelegate
+                                   NSURLHandleClient NSURLProtocolClient NSUserNotificationCenterDelegate NSXMLParserDelegate NSXPCListenerDelegate"/>
+                        <!-- Documentation comment keywords -->
+                        <Set index="2"
+                            value="a addindex addtogroup anchor arg attention author b brief bug c callgraph callergraph category class code cond
+                                   copybrief copydetails copydoc date def defgroup deprecated details dir  dontinclude dot dotfile e else elseif
+                                   em endcode endcond enddot endhtmlonly endif endlatexonly endlink endmanonly endmsc endverbatim endxmlonly  enum
+                                   example exception extends  file fn headerfile hideinitializer htmlinclude htmlonly if ifnot image implements
+                                   include includelineno ingroup internal invariant interface  latexonly li line link mainpage manonly memberof msc
+                                   n name namespace nosubgrouping note overload p package page par paragraph param post pre private privatesection
+                                   property protected  protectedsection protocol public publicsection ref relates relatesalso remarks return retval
+                                   sa section see showinitializer since skip skipline struct subpage  subsection subsubsection test throw todo tparam
+                                   typedef union until var verbatim verbinclude version warning weakgroup xmlonly xrefitem"/>
+                        <Set index="3"
+                            value="NSComperator NSComparisonResult NSDecimal NSHashEnumerator NSHashTable NSHashTableCallBacks NSHashTableOptions
+                                   NSInteger NSMapEnumerator  NSMapTable NSMapTableKeyCallBack NSMapTableOptions NSMapTableValueCallBacks NSPoint
+                                   NSPointArray NSPointPointer NSRange NSRangePointer NSRect NSRectArray NSRectPointer NSSize NSSizeArray NSSizePointer
+                                   NSSocketNativeHandle NSStringEncoding NSSwappedDouble NSSwappedFloat NSTimeInterval NSUncaughtExceptionHandler
+                                   NSUInteger NSZone"/>
+                </Keywords>
+                <SampleCode value="lexer_objc.sample"
+                        breakpoint_line="19"
+                        debug_line="20"
+                        error_line="21"/>
+                <LanguageAttributes
+                    LineComment="//"
+                    DoxygenLineComment="///"
+                    StreamCommentStart="/*"
+                    StreamCommentEnd="*/"
+                    DoxygenStreamCommentStart="/**"
+                    DoxygenStreamCommentEnd="*/"
+                    BoxCommentStart="/* "
+                    BoxCommentMid=" * "
+                    BoxCommentEnd=" */"
+                    CaseSensitive="1"
+                    LexerCommentStyles="1,2,3,15,17,18,23,65,66,67,79,81,82,87"
+                    LexerCharacterStyles="7,71"
+                    LexerStringStyles="6,12,70,76"
+                    LexerPreprocessorStyles="9,73"/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

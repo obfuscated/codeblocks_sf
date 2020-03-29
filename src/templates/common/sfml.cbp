@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="SFML Application"/>
+		<Option makefile="Makefile"/>
+		<Option makefile_is_custom="0"/>
+		<Option compiler="0"/>
+		<Build>
+			<Target title="default">
+				<Option output="SFML"/>
+				<Option working_dir="."/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="1"/>
+				<Option compiler="0"/>
+				<Option projectResourceIncludeDirsRelation="1"/>
+			</Target>
+		</Build>
+		<Compiler>
+			<!--<Add option="`pkg-config sfml --cflags`"/>-->
+		</Compiler>
+		<Linker>
+			<Add library="sfml-audio"/>
+			<Add library="sfml-graphics"/>
+			<Add library="sfml-network"/>
+			<Add library="sfml-system"/>
+			<Add library="sfml-window"/>
+			<!--<Add option="`pkg-config sfml --libs`"/>-->
+		</Linker>
+	</Project>
+</CodeBlocks_project_file>

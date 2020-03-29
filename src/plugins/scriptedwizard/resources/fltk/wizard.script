@@ -1,0 +1,170 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// FLTK project wizard
+//
+////////////////////////////////////////////////////////////////////////////////
+
+// globals (windows only)
+FltkPathDefault    <- _T("$(#fl)");
+FltkPathDefaultInc <- _T("$(#fl.include)");
+FltkPathDefaultLib <- _T("$(#fl.lib)");
+FltkPath <- _T("");
+
+FLTKQuickProject <- true;
+
+function BeginWizard()
+{
+    local intro_msg = _T("Welcome to the new FLTK project wizard!\n\n" +
+                         "This wizard will guide you to create a new project\n" +
+                         "using the FLTK GUI C++ library.\n\n" +
+                         "When you 're ready to proceed, please click \"Next\"...");
+
+    local fltkpath_descr = _T("Please select the location of FLTK on your computer.\n" +
+                              "This is the top-level folder where FLTK was installed (unpacked).\n" +
+                              "To help you, this folder must contain the subfolders\n" +
+                              "\"include\" and \"lib\".");
+
+    // "select fltk project to generate" text
+    local fltkprjtype_descr = _T("Please select the type of project to generate.");
+    local fltkprj_choices = _T("Simple main() example;FLUID-based project");
+
+    Wizard.AddInfoPage(_T("FltkIntro"), intro_msg);
+    Wizard.AddProjectPathPage();
+    if (PLATFORM == PLATFORM_MSW)
+        Wizard.AddGenericSelectPathPage(_T("FltkPath"), fltkpath_descr, _T("Please select FLTK's location:"), FltkPathDefault);
+    Wizard.AddGenericSingleChoiceListPage(_T("FLTKPrjType"), fltkprjtype_descr, fltkprj_choices, 0);
+    Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// FLTK's path page
+////////////////////////////////////////////////////////////////////////////////
+
+function OnLeave_FltkPath(fwd)
+{
+    if (fwd)
+    {
+        local dir         = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
+        local dir_nomacro = VerifyDirectory(dir);
+
+        if (dir_nomacro.IsEmpty())
+            return false;
+
+        // verify include dependencies
+        local dir_nomacro_inc = GetCompilerIncludeDir(dir, FltkPathDefault, FltkPathDefaultInc);
+        if (dir_nomacro_inc.IsEmpty())
+            return false;
+        if (!VerifyFile(dir_nomacro_inc + wxFILE_SEP_PATH + _T("FL"), _T("Fl.h"), _T("FLTK's include"))) return false;
+
+        // verify library dependencies
+        local dir_nomacro_lib = GetCompilerLibDir(dir, FltkPathDefault, FltkPathDefaultLib);
+        if (dir_nomacro_lib.IsEmpty())
+            return false;
+        if (!VerifyLibFile(dir_nomacro_lib, _T("fltk"), _T("FLTK's"))) return false;
+
+
+        FltkPath = dir; // Remember the original selection.
+
+        local is_macro = _T("");
+
+        // try to resolve the include directory as macro
+        is_macro = GetCompilerIncludeMacro(dir, FltkPathDefault, FltkPathDefaultInc);
+        if (is_macro.IsEmpty())
+        {
+            // not possible -> use the real inc path we had computed instead
+            FltkPathDefaultInc = dir_nomacro_inc;
+        }
+
+        // try to resolve the library directory as macro
+        is_macro = GetCompilerLibMacro(dir, FltkPathDefault, FltkPathDefaultLib);
+        if (is_macro.IsEmpty())
+        {
+            // not possible -> use the real lib path we had computed instead
+            FltkPathDefaultLib = dir_nomacro_lib;
+        }
+    }
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Project type to create
+////////////////////////////////////////////////////////////////////////////////
+
+function OnLeave_FLTKPrjType(fwd)
+{
+    if (fwd)
+    {
+        FLTKQuickProject = Wizard.GetListboxSelection(_T("GenericChoiceList")) == 0;
+    }
+    return true;
+}
+
+// return the files this project contains
+function GetFilesDir()
+{
+    if (FLTKQuickProject)
+        return _T("fltk/files");
+    return _T("fltk/fluid");
+}
+
+// setup the already created project
+function SetupProject(project)
+{
+    if (PLATFORM == PLATFORM_MSW)
+    {
+        // set project options
+        project.AddIncludeDir(FltkPathDefaultInc);
+        project.AddLibDir(FltkPathDefaultLib);
+
+        // add link libraries
+        project.AddLinkLib(_T("fltk"));
+        project.AddLinkLib(_T("ole32"));
+        project.AddLinkLib(_T("uuid"));
+        project.AddLinkLib(_T("comctl32"));
+        project.AddLinkLib(_T("wsock32"));
+        project.AddLinkLib(_T("m"));
+        project.AddLinkLib(_T("gdi32"));
+        project.AddLinkLib(_T("user32"));
+        project.AddLinkLib(_T("kernel32"));
+
+        project.AddCompilerOption(_T("-DWIN32"))
+        project.AddCompilerOption(_T("-mms-bitfields"))
+    }
+    else // PLATFORM != PLATFORM_MSW
+    {
+        // fltk-config based: things are ultra-simple :)
+        project.AddCompilerOption(_T("`fltk-config --cxxflags`"));
+        project.AddLinkerOption(_T("`fltk-config --ldstaticflags`"));
+    }
+
+    // Debug
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttConsoleOnly); // ttConsoleOnly: console for debugging
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        if (Wizard.GetCompilerID().Matches(_T("gcc")))
+        {
+            // enable generation of debugging symbols for target
+            // Note: DebugSymbolsOn() won't work because -Wall produces far too many warnings
+            target.AddCompilerOption(_T("-g"));
+        }
+    }
+
+    // Release
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttExecutable); // ttExecutable: no console
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        if (Wizard.GetCompilerID().Matches(_T("gcc")))
+        {
+            // enable optimizations for target.
+            // Note: OptimizationsOn() won't work because of -I-!
+            target.AddCompilerOption(_T("-O2"));
+            target.AddCompilerOption(_T("-s"));
+        }
+    }
+
+    return true;
+}

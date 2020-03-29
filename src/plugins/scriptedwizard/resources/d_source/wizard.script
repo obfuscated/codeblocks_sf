@@ -1,0 +1,98 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Code::Blocks new file wizard script
+//
+// Project: PL/D source file
+// Author:  Austin Hastings
+//
+// License: GPL v3.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+New_file_path <- _T( "newFile.d" );
+
+function BeginWizard()
+{
+	local intro_msg =
+		_T("Welcome to the new PL/D source file wizard.\n"
+		+ "This wizard will guide you to create a new D source file.\n\n"
+		+ "When you 're ready to proceed, please click \"Next\"..."
+	);
+
+	local active_file = GetEditorManager().GetActiveEditor().GetFilename();
+	local path = active_file.BeforeLast( wxFILE_SEP_PATH.GetChar( 0 ) );
+
+	if( path.length() != 0 ) {
+		New_file_path = path
+			+ wxFILE_SEP_PATH
+			+ _T( "newFile.d" );
+	}
+
+	// Add welcome page.
+	Wizard.AddInfoPage( _T("DFileIntro"), intro_msg);
+	// Add file path page
+	Wizard.AddFilePathPage( false );
+}
+
+function OnEnter_FilePathPage( is_forward ) {
+	if( is_forward ) {
+		Wizard.SetFilePathSelectionFilter( _T("D sources (*.d; *.di)|*.d;*.di") );
+		Wizard.SetTextControlValue( _T( "ID_TEXTCTRL1" ), New_file_path );
+	}
+}
+
+function CreateFiles() {
+	local ed    = GetEditorManager();
+
+	if (IsNull(ed)) {
+
+		ShowError(_T("The wizard could not locate the editor manager."));
+	}
+
+	local fname = Wizard.GetFileName();
+	local ed_new = ed.New(fname);
+
+	if (IsNull(ed_new)) {
+
+		ShowError(_T("The wizard could not create a new file.\n"
+			+ "Maybe the target folder is write-protected?"));
+	}
+	else { // succeeded -> add file to project if needed
+		if( ed_new.GetText().IsEmpty() ) {
+			local shortname = ed_new.GetShortName();
+			local basename = shortname.BeforeFirst( '.' );
+
+			local default_text = _T( "// $Id: $\n"
+			+ "/**\n"
+			+ "\\file @SHORTNAME@\n"
+			+ "*/\n"
+			+ "/*\n"
+			+ "Copyright 2010 Austin Hastings. All rights reserved.\n"
+			+ "\n"
+			+ "This program is free software: you can redistribute it and/or modify it under\n"
+			+ "the terms of the GNU General Public License as published by the Free Software\n"
+			+ "Foundation, either version 3 of the License, or (at your option) any later version.\n"
+			+ "\n"
+			+ "This program is distributed in the hope that it will be useful, but without any\n"
+			+ "warranty; without even the implied warranty of merchantability or fitness for a\n"
+			+ "particular purpose. see the GNU General Public License for more details.\n"
+			+ "\n"
+			+ "You should have received a copy of the GNU General Public License along with\n"
+			+ "this program. If not, see <http://www.gnu.org/licenses/>.\n"
+			+ "*/\n"
+			+ "module @BASENAME@;\n"
+			+ "\n");
+
+			default_text.Replace( _T("@SHORTNAME@"), shortname );
+			default_text.Replace( _T("@BASENAME@"), basename );
+			ed_new.SetText( default_text );
+		}
+
+		if (Wizard.GetFileAddToProject()) {
+
+			AddFileToTargets(Wizard, fname);
+		}
+	}
+
+	return fname;
+}

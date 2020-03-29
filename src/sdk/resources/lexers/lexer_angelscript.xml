@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+		<Lexer name="AngelScript"
+				index="3"
+				filemasks="*.as">
+				<Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+				<Style name="Comment (normal)"
+						index="1,2"
+						fg="160,160,160"/>
+				<Style name="Comment (documentation)"
+						index="3,15"
+						fg="128,128,255"
+						bold="1"/>
+				<Style name="Comment keyword (documentation)"
+						index="17"
+						fg="0,128,128"/>
+				<Style name="Comment keyword error (documentation)"
+						index="18"
+						fg="128,0,0"/>
+				<Style name="Number"
+						index="4"
+						fg="240,0,240"/>
+				<Style name="Keyword"
+						index="5"
+						fg="0,0,160"
+						bold="1"/>
+				<Style name="User keyword"
+						index="16"
+						fg="0,160,0"
+						bold="1"/>
+				<Style name="String"
+						index="6,12"
+						fg="0,0,255"/>
+				<Style name="Character"
+						index="7"
+						fg="224,160,0"/>
+				<Style name="UUID"
+						index="8"
+						fg="0,0,0"/>
+				<Style name="Preprocessor"
+						index="9"
+						fg="0,160,0"/>
+				<Style name="Operator"
+						index="10"
+						fg="255,0,0"/>
+				<Keywords>
+						<Language index="0"
+								value="and bits bits8 bits16 bits32 bool break case const continue default
+								do double else false float for if import in inout int int8 int16 int32 not
+								null or out return struct switch true uint uint8 uint16 uint32 void while xor"/>
+						<Documentation index="2"
+								value="a addindex addtogroup anchor arg attention
+								author b brief bug c class code date def defgroup deprecated dontinclude
+								e em endcode endhtmlonly endif endlatexonly endlink endverbatim enum example exception
+								f$ f[ f] file fn hideinitializer htmlinclude htmlonly
+								if image include ingroup internal invariant interface latexonly li line link
+								mainpage name namespace nosubgrouping note overload
+								p page par param post pre ref relates remarks return retval
+								sa section see showinitializer since skip skipline struct subsection
+								test throw todo typedef union until
+								var verbatim verbinclude version warning weakgroup $ @ \ &amp; &lt; &gt;  # { }"/>
+				</Keywords>
+				<SampleCode value="lexer_angelscript.sample"/>
+				<LanguageAttributes
+                    LineComment="//"
+                    StreamCommentStart="/*"
+                    StreamCommentEnd="*/"
+                    BoxCommentStart="/* "
+                    BoxCommentMid=" * "
+                    BoxCommentEnd=" */"
+                    CaseSensitive="1"
+                    LexerCommentStyles="1,2,3,15,17,18,23,65,66,67,79,81,82,87"
+                    LexerCharacterStyles="7,71"
+                    LexerStringStyles="6,12,70,76"
+                    LexerPreprocessorStyles="9,73"/>
+		</Lexer>
+</CodeBlocks_lexer_properties>

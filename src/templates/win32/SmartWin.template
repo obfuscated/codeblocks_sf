@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_template_file>
+<CodeBlocks_template_file>
+		<Template name="SmartWin" title="SmartWin Application" category="GUI" bitmap="SmartWin.png">
+		<Notice value="This template expects SmartWin to be located at C:\SmartWin.
+						If this is not the case, you will have to update the relevant
+						custom variable accordingly.
+
+						To do this, click on &quot;Project->Build options->Custom variables&quot;"
+				isWarning="1"/>
+		<FileSet name="s" title="Default">
+			<File source="SmartWin-main.cpp" destination="main.cpp"/>
+		</FileSet>
+		<Option name="SmartWin Application">
+			<Project file="SmartWin.cbp"/>
+		</Option>
+	</Template>
+</CodeBlocks_template_file>

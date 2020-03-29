@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="OGRE_Sample"/>
+		<Option makefile="Makefile"/>
+		<Option makefile_is_custom="0"/>
+		<Option active_target="0"/>
+		<Option compiler="0"/>
+		<Build>
+			<Target title="default">
+				<Option output="ogre_sample.exe"/>
+				<Option working_dir="$(OGRE_SAMPLES)/Common/bin"/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="1"/>
+				<Option compiler="0"/>
+				<Option includeInTargetAll="0"/>
+				<Option projectResourceIncludeDirsRelation="1"/>
+			</Target>
+			<Environment>
+				<Variable name="OGRE_SAMPLES" value="/opt/ogrenew/Samples"/>
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="-Wall"/>
+			<Add option="`pkg-config --cflags OGRE`"/>
+			<Add directory="$(OGRE_SAMPLES)/Common/include"/>
+		</Compiler>
+		<Linker>
+			<Add option="`pkg-config --libs OGRE`"/>
+			<Add library="OgreMain"/>
+		</Linker>
+	</Project>
+</CodeBlocks_project_file>

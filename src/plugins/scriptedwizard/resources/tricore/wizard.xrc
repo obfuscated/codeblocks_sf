@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxPanel" name="processorChoice">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="lblintro">
+					<label>Please configure your TriCore hardware.</label>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxFlexGridSizer">
+					<cols>2</cols>
+					<rows>2</rows>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="lblProc">
+							<label>Select hardware:</label>
+							<tooltip>Choose a TriCore derivative to configure the compiler settings.</tooltip>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>3</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxComboBox" name="comboboxProc">
+							<content>
+								<item>EasyRun TC1796</item>
+								<item>TriBoard TC1130</item>
+								<item>TriBoard TC1161</item>
+								<item>TriBoard TC1162</item>
+								<item>TriBoard TC1762</item>
+								<item>TriBoard TC1766</item>
+								<item>EasyKit TC1767</item>
+								<item>TriBoard TC1792</item>
+								<item>TriBoard TC1796</item>
+								<item>TriBoard TC1797</item>
+								<item>phyCORE TC1130</item>
+							</content>
+							<selection>0</selection>
+							<pos>-1,-1</pos>
+							<size>120,-1</size>
+							<style>wxCB_READONLY</style>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="lblFlashType">
+							<label>Choose type of flash:</label>
+							<tooltip>Choose type of flash chip and access mode (32-Bit or 16-Bit).</tooltip>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxComboBox" name="comboboxFlashType">
+							<content>
+								<item>intern</item>
+								<item>amd</item>
+								<item>intel</item>
+								<item>amd16</item>
+								<item>intel16</item>
+							</content>
+							<selection>0</selection>
+							<size>120,-1</size>
+							<style>wxCB_READONLY</style>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+</resource>

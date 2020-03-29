@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="Perl"
+                index="6"
+                filemasks="*.pl,*.pm,*.cgi,*.pod">
+                <Style name="Default"
+                        index="0"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <Style name="Error"
+                        index="1"
+                        fg="128,0,0"/>
+                <Style name="CommentLine"
+                        index="2"
+                        fg="160,160,160"/>
+                <Style name="POD"
+                        index="3"
+                        fg="0,0,255"/>
+                <Style name="Number"
+                        index="4"
+                        fg="240,0,240"/>
+                <Style name="Word"
+                        index="5"
+                        fg="0,0,160"
+                        bold="1"/>
+                <Style name="String"
+                        index="6"
+                        fg="0,0,255"/>
+                <Style name="Character"
+                        index="7"
+                        fg="224,160,0"/>
+                <Style name="Punctuation"
+                        index="8"
+                        fg="0,0,0"/>
+                <Style name="PreProcessor"
+                        index="9"
+                        fg="0,160,0"
+                        bold="1"/>
+                <Style name="Operator"
+                        index="10"
+                        fg="255,0,0"/>
+                <Style name="Identifier"
+                        index="11"
+                        fg="0,0,0"/>
+                <Style name="Scalar"
+                        index="12"
+                        fg="0,0,0"
+                        bg="255,224,224"/>
+                <Style name="Array"
+                        index="13"
+                        fg="0,0,0"
+                        bg="255,255,224"/>
+                <Style name="Hash"
+                        index="14"
+                        fg="0,0,0"
+                        bg="255,224,255"/>
+                <Style name="SymbolTable"
+                        index="15"
+                        fg="0,0,0"
+                        bg="224,224,224"/>
+                <Style name="Variable Indexer"
+                        index="16"/>
+                <Style name="RegEx"
+                        index="17"
+                        fg="0,0,0"
+                        bg="160,255,160"/>
+                <Style name="RegSubst"
+                        index="18"
+                        fg="0,0,0"
+                        bg="240,224,128"/>
+                <Style name="LongQuote"
+                        index="19"
+                        fg="255,255,0"
+                        bg="128,128,160"/>
+                <Style name="BackTicks"
+                        index="20"
+                        fg="255,255,0"
+                        bg="160,128,128"/>
+                <Style name="DataSection"
+                        index="21"
+                        fg="96,0,0"
+                        bg="255,240,216"/>
+                <Style name="Here Delim"
+                        index="22"
+                        fg="0,0,0"
+                        bg="221,208,221"/>
+                <Style name="Here Q"
+                        index="23"
+                        fg="127,0,127"
+                        bg="221,208,221"
+                        bold="0"
+                        italics="0"/>
+                <Style name="Here QQ"
+                        index="24"
+                        fg="127,0,127"
+                        bg="221,208,221"
+                        bold="1"
+                        italics="0"/>
+                <Style name="Here QX"
+                        index="25"
+                        fg="127,0,127"
+                        bg="221,208,221"
+                        bold="0"
+                        italics="1"/>
+                <Style name="String Q"
+                        index="26"
+                        fg="127,0,127"
+                        bold="0"/>
+                <Style name="String QQ"
+                        index="27"
+                        fg="0,0,255"/>
+                <Style name="String QX"
+                        index="28"
+                        fg="255,255,0"
+                        bg="160,128,128"/>
+                <Style name="String QR"
+                        index="29"
+                        fg="0,0,0"
+                        bg="160,255,160"/>
+                <Style name="String QW"
+                        index="30"
+                        fg="0,0,0"
+                        bg="255,255,224"/>
+                <Style name="POD Verb"
+                        index="31"
+                        fg="0,64,0"
+                        bg="192,255,192"/>
+                <Keywords>
+                        <!-- Keywords -->
+                        <Set index="0"
+                            value="NULL __FILE__ __LINE__ __PACKAGE__ __DATA__ __END__ AUTOLOAD
+                                   BEGIN CORE DESTROY END EQ GE GT INIT LE LT NE CHECK abs accept alarm
+                                   and atan2 bind binmode bless caller chdir chmod chomp chop chown chr
+                                   chroot close closedir cmp connect continue cos crypt dbmclose dbmopen
+                                   defined delete die do dump each else elsif endgrent endhostent endnetent
+                                   endprotoent endpwent endservent eof eq eval exec exists exit exp fcntl
+                                   fileno flock for foreach fork format formline ge getc getgrent getgrgid
+                                   getgrnam gethostbyaddr gethostbyname gethostent getlogin getnetbyaddr
+                                   getnetbyname getnetent getpeername getpgrp getppid getpriority
+                                   getprotobyname getprotobynumber getprotoent getpwent getpwnam
+                                   getpwuid getservbyname getservbyport getservent getsockname
+                                   getsockopt glob gmtime goto grep gt hex if index int ioctl join keys kill last lc
+                                   lcfirst le length link listen local localtime lock log lstat lt m map mkdir msgctl
+                                   msgget msgrcv msgsnd my ne next no not oct open opendir or ord our pack
+                                   package pipe pop pos print printf prototype push q qq qr quotemeta qu qw
+                                   qx rand read readdir readline readlink readpipe recv redo ref rename require
+                                   reset return reverse rewinddir rindex rmdir s scalar seek seekdir select
+                                   semctl semget semop send setgrent sethostent setnetent setpgrp
+                                   setpriority setprotoent setpwent setservent setsockopt shift shmctl shmget
+                                   shmread shmwrite shutdown sin sleep socket socketpair sort splice split
+                                   sprintf sqrt srand stat study sub substr symlink syscall sysopen sysread
+                                   sysseek system syswrite tell telldir tie tied time times tr truncate uc ucfirst
+                                   umask undef unless unlink unpack unshift untie until use utime values vec
+                                   wait waitpid wantarray warn while write x xor y" />
+                </Keywords>
+                <SampleCode value="lexer_perl.sample"/>
+                <LanguageAttributes
+                    LineComment="#"
+                    StreamCommentStart=""
+                    StreamCommentEnd=""
+                    BoxCommentStart=""
+                    BoxCommentMid=""
+                    BoxCommentEnd=""
+                    CaseSensitive="1"
+                    LexerCommentStyles="2"
+                    LexerCharacterStyles="7"
+                    LexerStringStyles="6,26,27,28,29,30"
+                    LexerPreprocessorStyles="9"/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

@@ -1,0 +1,436 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <if platform="windows">
+        <!-- Looks a lot like the msvc compiler. Needs sdk as the msvc does -->
+        <Program name="C"         value="icl.exe"/>
+        <Program name="CPP"       value="icl.exe"/>
+        <Program name="LD"        value="xilink.exe"/>       <!-- Runs Microsoft's link.exe-->
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="xilink.exe"/>
+        <Program name="WINDRES"   value="rc.exe"/>           <!-- platform SDK is needed for this -->
+        <Program name="MAKE"      value="mingw32-make.exe"/> <!-- it works with nmake as well but cb doesn't -->
+
+        <Switch name="includeDirs"             value="/I"/>
+        <Switch name="libDirs"                 value="/LIBPATH:"/>
+        <Switch name="linkLibs"                value=""/>
+        <Switch name="defines"                 value="/D"/>
+        <Switch name="genericSwitch"           value="/"/>
+        <Switch name="objectExtension"         value="obj"/>
+        <Switch name="needDependencies"        value="false"/>
+        <Switch name="forceCompilerUseQuotes"  value="false"/>
+        <Switch name="forceLinkerUseQuotes"    value="false"/>
+        <Switch name="logging"                 value="default"/>
+        <Switch name="libPrefix"               value=""/>
+        <Switch name="libExtension"            value="lib"/>
+        <Switch name="linkerNeedsLibPrefix"    value="false"/>
+        <Switch name="linkerNeedsLibExtension" value="true"/>
+
+        <!-- Intel Compiler Options from the supplied with the compiler documentation (man pages and docs)
+             NOTE(yop): I have been as descriptive as possible, producing very long descriptions for
+                        each option. Should this change to something more compact but less informative?
+                        These are not the most common options but they are from my point of view some
+                        of the most useful ones. Some of them should be removed to conform with the
+                        rest of the supported compilers layout of options (that are significantly less). -->
+        <Category name="Output and Debug">
+            <Option name="Trap uninitialized variables"
+                    option="/Qtrapuv"/>
+            <!-- This is a tricky one. I see precompiled headers enabled by default in RC2 but each compiler
+                 takes different flags to generate them. Shouldn't the functionality of precompiled headers
+                 move here? This option produces a precompiled header during first compilation and uses the
+                 produced one for the next ones. -->
+            <Option name="Enable automatic precompiled header file creation/usage"
+                    option="/YX"/>
+            <Option name="Perform syntax and semantic checking only (no object file produced)"
+                    option="/Zs"/>
+            <Option name="Produce symbolic debug information in object files"
+                    option="/Zi"
+                    checkAgainst="/O1 /O2 /O3 /Os"
+                    checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."/>
+        </Category>
+
+        <Category name="Compiler Diagnostics (some options override each other)">
+            <Option name="Only display errors"
+                    option="-W0"/>
+            <Option name="Enable more strict diagnostics"
+                    option="-Wcheck"/>
+            <Option name="Force warnings to be reported as errors"
+                    option="-WX"/>
+            <Option name="Print brief one-line diagnostics"
+                    option="-WL"/>
+            <Option name="Enable all compiler diagnostics"
+                    option="-Wall"/>
+            <Option name="Issue portability diagnostics"
+                    option="-Wport"/>
+            <Option name="Print diagnostics for 64-bit porting"
+                    option="-Wp64"/>
+        </Category>
+
+        <Category name="Performance">
+            <Option name="Disable optimizations"
+                    option="/Od"
+                    supersedes="/O1 /O2 /O3 /Os"/>
+            <Option name="Optimize for maximum speed, but disable some optimizations which increase code size for a small speed benefit."
+                    option="/O1"
+                    supersedes="/Od /O2 /O3 /Os"/>
+            <Option name="Enable optimizations"
+                    option="/O2"
+                    supersedes="/Od /O1 /O3 /Os"/>
+            <Option name="Enable /O2 plus more aggressive optimizations that may not improve performance for all programs"
+                    option="/O3"
+                    supersedes="/Od /O1 /O2 /Os"/>
+            <Option name="Enable speed optimizations, but disable some optimizations which increase code size for small speed benefit"
+                    option="/Os"
+                    supersedes="/Od /O1 /O2 /O3"/>
+            <Option name="Enable -xP -O3 -ipo -no-prec-div -static"
+                    option="/fast"/>
+            <Option name="Disable inlining"
+                    option="/Ob0"/>
+            <Option name="Inline functions declared with __inline, and perform C++ inlining"
+                    option="/Ob1"/>
+            <Option name="Inline any function, at the compiler's discretion"
+                    option="/Ob2"/>
+            <Option name="Assume no aliasing in program"
+                    option="/Oa"/>
+            <Option name="Assume no aliasing within functions, but assume aliasing across calls"
+                    option="/Ow"/>
+            <Option name="Maintain floating point precision (disables some optimizations)"
+                    option="/Op"
+                    supersedes="/Qprec"/>
+            <Option name="Improve floating-point precision (speed impact is less than /Op)"
+                    option="/Qprec"
+                    supersedes="/Op"/>
+            <Option name="Disable using EBP as general purpose register"
+                    option="-Oy"/>
+            <Option name="Improve precision of floating-point divides (some speed impact)"
+                    option="/Qprec-div"/>
+            <Option name="Determine if certain square root optimizations are enabled"
+                    option="/Qprec-sqrt"/>
+            <Option name="Round fp results at assignments and casts (some speed impact)"
+                    option="/Qfp-port"/>
+            <Option name="Enable fp stack checking after every function/procedure call"
+                    option="/Qfpstkchk"/>
+            <Option name="Rounding mode to enable fast float-to-int conversions"
+                    option="/Qrcd"/>
+            <Option name="Optimize specifically for Pentium processor"
+                    option="/G5"
+                    supersedes="/G6 /QxK /QxW /QxN /QxB /QxP"/>
+            <Option name="Optimize specifically for Pentium Pro, Pentium II and Pentium III processors"
+                    option="/G6"
+                    supersedes="/G5 /QxK /QxW /QxN /QxB /QxP"/>
+            <Option name="Code is optimized for Intel Pentium III"
+                    option="/QxK"
+                    supersedes="/G5 /G6 /QxW /QxN /QxB /QxP"/>
+            <Option name="Code is optimized for Intel Pentium 4"
+                    option="/QxW"
+                    supersedes="/G5 /G6 /QxK /QxN /QxB /QxP"/>
+            <Option name="Code is optimized for Intel Pentium 4 and enables new optimizations"
+                    option="/QxN"
+                    supersedes="/G5 /G6 /QxK /QxW /QxB /QxP"/>
+            <Option name="Code is optimized for Intel Pentium M"
+                    option="/QxB"
+                    supersedes="/G5 /G6 /QxK /QxW /QxN /QxP"/>
+            <Option name="Code is optimized for Intel Pentium 4 with SSE3 support"
+                    option="/QxP"
+                    supersedes="/G5 /G6 /QxK /QxW /QxN /QxB"/>
+        </Category>
+
+        <Category name="Language">
+            <Option name="Enable the 'restrict' keyword for disambiguating pointers"
+                    option="/Qrestrict"/>
+            <Option name="Strict ANSI conformance dialects"
+                    option="/Za"/>
+            <Option name="Compile all source or unrecognized file types as C++ source files"
+                    option="/Qc++"/>
+            <Option name="Disable RTTI support"
+                    option="/GR-"/>
+            <Option name="Process OpenMP directives"
+                    option="/Qopenmp"/>
+            <Option name="Specify alignment constraint for structures to 1"
+                    option="/Zp1"
+                    supersedes="/Zp2 /Zp4 /Zp8 /Zp16"/>
+            <Option name="Specify alignment constraint for structures to 2"
+                    option="/Zp2"
+                    supersedes="/Zp1 /Zp4 /Zp8 /Zp16"/>
+            <Option name="Specify alignment constraint for structures to 4"
+                    option="/Zp4"
+                    supersedes="/Zp1 /Zp2 /Zp8 /Zp16"/>
+            <Option name="Specify alignment constraint for structures to 8"
+                    option="/Zp8"
+                    supersedes="/Zp1 /Zp2 /Zp4 /Zp16"/>
+            <Option name="Specify alignment constraint for structures to 16"
+                    option="/Zp16"
+                    supersedes="/Zp1 /Zp2 /Zp4 /Zp8"/>
+            <Option name="Change default char type to unsigned"
+                    option="/J"/>
+        </Category>
+
+        <Command name="CompileObject"
+                 value="$compiler /nologo $options $includes /c $file /Fo$object"/>
+        <!-- The rest are part of the microsoft sdk. The xilink.exe calls link.exe eventually. -->
+        <Command name="CompileResource"
+                 value="$rescomp $res_includes $res_options -fo$resource_output $file"/>
+        <Command name="LinkExe"
+                 value="$linker /nologo /subsystem:windows $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options"/>
+        <Command name="LinkConsoleExe"
+                 value="$linker /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options"/>
+        <Command name="LinkDynamic"
+                 value="$linker /dll /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options"/>
+        <Command name="LinkStatic"
+                 value="$lib_linker /lib /nologo $libdirs /out:$static_output $libs $link_objects $link_resobjects $link_options"/>
+        <Command name="LinkNative"
+                 value="$linker /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options"/>
+    </if>
+    <else>
+        <Program name="C"         value="icc"/>
+        <Program name="CPP"       value="icpc"/>
+        <Program name="LD"        value="icpc"/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="ar"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make"/>
+
+        <Switch name="includeDirs"             value="-I"/>
+        <Switch name="libDirs"                 value="-L"/>
+        <Switch name="linkLibs"                value="-l"/>
+        <Switch name="defines"                 value="-D"/>
+        <Switch name="genericSwitch"           value="-"/>
+        <Switch name="objectExtension"         value="o"/>
+        <Switch name="needDependencies"        value="true"/>
+        <Switch name="forceCompilerUseQuotes"  value="false"/>
+        <Switch name="forceLinkerUseQuotes"    value="false"/>
+        <Switch name="logging"                 value="default"/>
+        <Switch name="libPrefix"               value="lib"/>
+        <Switch name="libExtension"            value="a"/>
+        <Switch name="linkerNeedsLibPrefix"    value="false"/>
+        <Switch name="linkerNeedsLibExtension" value="false"/>
+
+        <Category name="Output, Debug and Profile">
+            <Option name="Trap uninitialized variables"
+                    option="-ftrapuv"/>
+            <Option name="Enable automatic precompiled header file creation/usage"
+                    option="-pch"/>
+            <Option name="Perform syntax and semantic checking only (no object file produced)"
+                    option="-fsyntax-only"/>
+            <Option name="Produce symbolic debug information in object files"
+                    option="-g"
+                    checkAgainst="-O1 -O2 -O3 -Os"
+                    checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."/>
+            <Option name="Compile and link for function profiling with UNIX gprof tool"
+                    option="-p"/>
+        </Category>
+
+        <Category name="Compiler Diagnostics (some options override each other)">
+            <Option name="Only display errors"
+                    option="-w0"/>
+            <Option name="Display remarks, warnings, and errors"
+                    option="-w2"/>
+            <Option name="Enable more strict diagnostics"
+                    option="-Wcheck"/>
+            <Option name="Force warnings to be reported as errors"
+                    option="-Werror"/>
+            <Option name="Print brief one-line diagnostics"
+                    option="-Wbrief"/>
+            <Option name="Enable all compiler diagnostics"
+                    option="-Wall"/>
+            <Option name="Warn for missing prototypes"
+                    option="-Wmissing-prototypes"/>
+            <Option name="Warn for questionable pointer arithmetic"
+                    option="-Wpointer-arith"/>
+            <Option name="Warn if a variable is used before being initialized"
+                    option="-Wuninitialized"/>
+            <Option name="Enable inline diagnostics"
+                    option="-Winline"/>
+            <Option name="Print warnings related to deprecated features"
+                    option="-Wdeprecated"/>
+            <Option name="Warn if declared function is not used"
+                    option="-Wunused-function"/>
+            <Option name="Don't warn if an unknown #pragma directive is used"
+                    option="-Wno-unknown-pragmas"/>
+            <Option name="Warn if return type of main is not expected"
+                    option="-Wmain"/>
+            <Option name="Warn when /* appears in the middle of a /* */ comment"
+                    option="-Wcomment"/>
+            <Option name="Warn when a function uses the default int return type and warn when a return statement is used in a void function"
+                    option="-Wreturn-type"/>
+            <Option name="Print diagnostics for 64-bit porting"
+                    option="-Wp64"/>
+        </Category>
+
+        <Category name="Performance">
+            <Option name="Disable optimizations"
+                    option="-O0"
+                    supersedes="-O1 -O2 -O3 -Os"/>
+            <Option name="Optimize for maximum speed, but disable some optimizations which increase code size for a small speed benefit."
+                    option="-O1"
+                    supersedes="-O0 -O2 -O3 -Os"/>
+            <Option name="Enable optimizations"
+                    option="-O2"
+                    supersedes="-O0 -O1 -O3 -Os"/>
+            <Option name="Enable -O2 plus more aggressive optimizations that may not improve performance for all programs"
+                    option="-O3"
+                    supersedes="-O0 -O1 -O2 -Os"/>
+            <Option name="Enable speed optimizations, but disable some optimizations which increase code size for small speed benefit"
+                    option="-Os"
+                    supersedes="-O0 -O1 -O2 -O3"/>
+            <Option name="Enable -xP -O3 -ipo -no-prec-div -static"
+                    option="-fast"/>
+            <Option name="Disable inlining"
+                    option="-Ob0"/>
+            <Option name="Inline functions declared with __inline, and perform C++ inlining"
+                    option="-Ob1"/>
+            <Option name="Inline any function, at the compiler's discretion"
+                    option="-Ob2"/>
+            <Option name="Assume no aliasing in program"
+                    option="-fno-alias"/>
+            <Option name="Assume no aliasing within functions, but assume aliasing across calls"
+                    option="-fno-fnalias"/>
+            <Option name="Maintain floating point precision (disables some optimizations)"
+                    option="-mp"
+                    supersedes="-mp1"/>
+            <Option name="Improve floating-point precision (speed impact is less than -mp)"
+                    option="-mp1"
+                    supersedes="-mp"/>
+            <Option name="Disable using EBP as general purpose register"
+                    option="-fp"/>
+            <Option name="Improve precision of floating-point divides (some speed impact)"
+                    option="-prec-div"/>
+            <Option name="Determine if certain square root optimizations are enabled"
+                    option="-prec-sqrt"/>
+            <Option name="Round fp results at assignments and casts (some speed impact)"
+                    option="-fp-port"/>
+            <Option name="Enable fp stack checking after every function/procedure call"
+                    option="-fpstkchk"/>
+            <Option name="Rounding mode to enable fast float-to-int conversions"
+                    option="-rcd"/>
+            <Option name="Optimize specifically for Pentium processor"
+                    option="-mtune=pentium"
+                    supersedes="-mtune=pentiumpro -march=pentiumpro -march=pentiumii -march=pentiumiii -march=pentium4 -msse -msse2 -msse3"/>
+            <Option name="Optimize specifically for Pentium Pro, Pentium II and Pentium III processors"
+                    option="-mtune=pentiumpro"
+                    supersedes="-mtune=pentium -march=pentiumpro -march=pentiumii -march=pentiumiii -march=pentium4 -msse -msse2 -msse3"/>
+            <Option name="Generate code exclusively for Pentium Pro and Pentium II processor instructions"
+                    option="-march=pentiumpro"
+                    supersedes="-mtune=pentium -mtune=pentiumpro -march=pentiumii -march=pentiumiii -march=pentium4 -msse -msse2 -msse3"/>
+            <Option name="Generate code exclusively for MMX instructions"
+                    option="-march=pentiumii"
+                    supersedes="-mtune=pentium -mtune=pentiumpro -march=pentiumpro -march=pentiumiii -march=pentium4 -msse -msse2 -msse3"/>
+            <Option name="Generate code exclusively for streaming SIMD extensions"
+                    option="-march=pentiumiii"
+                    supersedes="-mtune=pentium -mtune=pentiumpro -march=pentiumpro -march=pentiumii -march=pentium4 -msse -msse2 -msse3"/>
+            <Option name="Generate code exclusively for Pentium 4 New Instructions"
+                    option="-march=pentium4"
+                    supersedes="-mtune=pentium -mtune=pentiumpro -march=pentiumpro -march=pentiumii -march=pentiumiii -msse -msse2 -msse3"/>
+            <Option name="Generate code for Intel Pentium III and compatible Intel processors"
+                    option="-msse"
+                    supersedes="-mtune=pentium -mtune=pentiumpro -march=pentiumpro -march=pentiumii -march=pentiumiii -march=pentium4 -msse2 -msse3"/>
+            <Option name="Generate code for Intel Pentium 4 and compatible Intel processors"
+                    option="-msse2"
+                    supersedes="-mtune=pentium -mtune=pentiumpro -march=pentiumpro -march=pentiumii -march=pentiumiii -march=pentium4 -msse -msse3"/>
+            <Option name="Generate code for Intel Pentium 4 processors with SSE3 extensions"
+                    option="-msse3"
+                    supersedes="-mtune=pentium -mtune=pentiumpro -march=pentiumpro -march=pentiumii -march=pentiumiii -march=pentium4 -msse -msse2"/>
+        </Category>
+
+        <Category name="Language">
+            <Option name="Enable the 'restrict' keyword for disambiguating pointers"
+                    option="-restrict"/>
+            <Option name="Equivalent to GNU -ansi"
+                    option="-ansi"/>
+            <Option name="Strict ANSI conformance dialects"
+                    option="-strict-ansi"/>
+            <Option name="Compile all source or unrecognized file types as C++ source files"
+                    option="-Kc++"/>
+            <Option name="Disable RTTI support"
+                    option="-fno-rtti"/>
+            <Option name="Process OpenMP directives"
+                    option="-openmp"/>
+            <Option name="Analyze and reorder memory layout for variables and arrays"
+                    option="-align"/>
+            <Option name="Specify alignment constraint for structures to 1"
+                    option="-Zp1"
+                    supersedes="-Zp2 -Zp4 -Zp8 -Zp16"/>
+            <Option name="Specify alignment constraint for structures to 2"
+                    option="-Zp2"
+                    supersedes="-Zp1 -Zp4 -Zp8 -Zp16"/>
+            <Option name="Specify alignment constraint for structures to 4"
+                    option="-Zp4"
+                    supersedes="-Zp1 -Zp2 -Zp8 -Zp16"/>
+            <Option name="Specify alignment constraint for structures to 8"
+                    option="-Zp8"
+                    supersedes="-Zp1 -Zp2 -Zp4 -Zp16"/>
+            <Option name="Specify alignment constraint for structures to 16"
+                    option="-Zp16"
+                    supersedes="-Zp1 -Zp2 -Zp4 -Zp8"/>
+            <Option name="Allocate as many bytes as needed for enumerated types"
+                    option="-fshort-enums"/>
+            <Option name="Change default char type to unsigned"
+                    option="-funsigned-char"/>
+            <Option name="Change default bitfield type to unsigned"
+                    option="-funsigned-bitfields"/>
+            <Option name="Disable support for operator name keywords"
+                    option="-fno-operator-names"/>
+            <Option name="Do not recognize 'typeof' as a keyword"
+                    option="-fno-gnu-keywords"/>
+            <Option name="Allow for non-conformant code"
+                    option="-fpermissive"/>
+        </Category>
+
+        <Command name="CompileObject"
+                 value="$compiler $options $includes -c $file -o $object"/>
+        <Command name="GenDependencies"
+                 value="$compiler -MM $options -MF $dep_object -MT $object $includes $file"/>
+        <Command name="CompileResource"
+                 value="$rescomp $res_includes $res_options -J rc -O coff -i $file -o $resource_output"/>
+        <Command name="LinkConsoleExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+        <Command name="LinkExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+        <Command name="LinkDynamic"
+                 value="$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+        <Command name="LinkStatic"
+                 value="$lib_linker -r $static_output $link_objects\n\tranlib $exe_output"/>
+        <Command name="LinkNative"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+    </else>
+    <Common name="cmds"/>
+
+    <RegEx name="Compilation remark"
+           type="warning"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+)\(([0-9]+).:[ \t]([Rr]emark[ \t]#[0-9]+:[ \t].*)]]>
+    </RegEx>
+    <RegEx name="OpenMP remark"
+           type="info"
+           msg="4"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+)\(([0-9]+)\):[ \t]\(col. ([0-9]+)\)[ \t]([Rr]emark:[ \t].*)]]>
+    </RegEx>
+    <RegEx name="Compilation warning"
+           type="warning"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+)\(([0-9]+).:[ \t]([Ww]arning[ \t]#[0-9]+:[ \t].*)]]>
+    </RegEx>
+    <RegEx name="Compilation error"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+)\(([0-9]+).:[ \t](.*)]]>
+    </RegEx>
+    <RegEx name="General warning"
+           type="warning"
+           msg="1">
+        <![CDATA[([Ww]arning:[ \t].*)]]>
+    </RegEx>
+    <RegEx name="General error"
+           type="error"
+           msg="1">
+        <![CDATA[([Ee]rror:[ \t].*)]]>
+    </RegEx>
+</CodeBlocks_compiler_options>

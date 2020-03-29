@@ -1,0 +1,186 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="Python"
+                index="2"
+                filemasks="*.py,*.pyw,*.pyx,*SConstruct,*SConscript">
+                <Style name="Default"
+                        index="0"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <Style name="Comment"
+                        index="1"
+                        fg="160,160,160"/>
+                <Style name="Number"
+                        index="2"
+                        fg="240,0,240"/>
+                <Style name="Double quote string"
+                        index="3"
+                        fg="0,0,255"/>
+                <Style name="Single quote string"
+                        index="4"
+                        fg="224,160,0"/>
+                <Style name="Keyword"
+                        index="5"
+                        fg="0,0,160"
+                        bold="1"/>
+                <Style name="Triple single quote string"
+                        index="6"
+                        fg="128,0,0"/>
+                <Style name="Triple double quote string"
+                        index="7"
+                        fg="128,0,128"/>
+                <Style name="Class name"
+                        index="8"
+                        fg="0,0,0"/>
+                <Style name="Definiton name"
+                        index="9"
+                        fg="0,160,0"
+                        bold="1"/>
+                <Style name="Operator"
+                        index="10"
+                        fg="255,0,0"/>
+                <Style name="Identifier"
+                        index="11"/>
+                <Style name="Comment block"
+                        index="12"
+                        fg="128,128,255"
+                        bold="1"/>
+                <Style name="String EOL"
+                        index="13"/>
+                <Style name="User keyword"
+                        index="14"/>
+                <Style name="Decorator"
+                        index="15"
+                        fg="0,128,128"/>
+                <Style name="Double quote f-string"
+                        index="16"
+                        fg="0,0,255"/>
+                <Style name="Single quote f-string"
+                        index="17"
+                        fg="224,160,0"/>
+                <Style name="Triple single quote f-string"
+                        index="18"
+                        fg="128,0,0"/>
+                <Style name="Triple double quote f-string"
+                        index="19"
+                        fg="128,0,128"/>
+                <Style name="Breakpoint line"
+                        index="-2"
+                        bg="255,160,160"/>
+                <Style name="Debugger active line"
+                        index="-3"
+                        bg="160,160,255"/>
+                <Style name="Compiler error line"
+                        index="-4"
+                        bg="255,128,0"/>
+                <Keywords>
+                        <!-- Keywords -->
+                        <Set index="0"
+                            value="and assert break class continue def del elif else except
+                                   exec finally for from global if import in is lambda None
+                                   not or pass print raise return try while yield
+
+                                   __import__ abs basestring bool callable chr classmethod
+                                   cmp compile complex delattr dict dir divmod enumerate
+                                   eval execfile file filter float frozenset getattr globals
+                                   hasattr hash help hex id input int isinstance issubclass
+                                   iter len list locals long map max min object oct open
+                                   ord pow property range raw_input reduce reload repr
+                                   reversed round set setattr slice sorted staticmethod
+                                   str sum super tuple type type unichr unicode vars xrange
+                                   zip
+
+                                   apply buffer coerce intern
+
+                                   __dict__ Ellipsis False True NotImplemented
+                                   __class__ __bases__ __name__
+
+                                   exception Exception StandardError ArithmeticError
+                                   LookupError EnvironmentError AssertionError
+                                   AttributeError EOFError FloatingPointError IOError
+                                   ImportError IndexError KeyError KeyboardInterrupt
+                                   MemoryError NameError NotImplementedError OSError
+                                   OverflowError ReferenceError RuntimeError
+                                   StopIteration SyntaxError SystemError SystemExit
+                                   TypeError UnboundLocalError UnicodeError
+                                   UnicodeEncodeError UnicodeDecodeError
+                                   UnicodeTranslateError ValueError WindowsError
+                                   ZeroDivisionError Warning UserWarning
+                                   DeprecationWarning PendingDeprecationWarning
+                                   SyntaxWarning RuntimeWarning FutureWarning"/>
+                        <!-- Highlighted identifiers -->
+                        <Set index="1"
+                            value="sys gc weakref fpectl atexit types UserDict UserList UserString
+                                   operator inspect traceback linecache pickle cPickle copy_reg
+                                   shelve copy marshal warnings imp zipimport pkgutil modulefinder
+                                   code codeop pprint repr new site user __builtin__ __main__
+                                   __future__
+
+                                   string re struct difflib fpformat StringIO cStringIO textwrap
+                                   codecs encodings.idna unicodedata stringprep
+
+                                   pydoc doctest unittest test test.test_support decimal math
+                                   cmath random whrandom bisect collections heapq array sets
+                                   itertools ConfigParser fileinput calendar cmd shlex
+
+                                   os os.path dircache stat statcache statvfs filecmp subprocess
+                                   popen2 datetime time sched mutex getpass curses curses.textpad
+                                   curses.wrapper curses.ascii curses.panel getopt optparse tempfile
+                                   errno glob fnmatch shutil locale gettext logging platform
+
+                                   signal socket select thread threading dummy_thread dummy_threading
+                                   Queue mmap anydbm dbhash whichdb bsddb dumbdbm zlib gzip bz2
+                                   zipfile tarfile readline rlcompleter
+
+                                   posix pwd grp crypt dl dbm gdbm termios tty pty fcntl pipes
+                                   posixfile resource nis syslog commands
+
+                                   hotshot timeit
+
+                                   webbrowser cgi cgitb urllib urllib2 httplib ftplib gopherlib
+                                   poplib imaplib nntplib smtplib smtpd telnetlib urlparse
+                                   SocketServer BaseHTTPServer SimpleHTTPServer CGIHTTPServer
+                                   cookielib Cookie xmlrpclib SimpleXMLRPCServer DocXMLRPCServer
+                                   asyncore asynchat
+
+                                   formatter email email.Message email.Parser email.Generator
+                                   email.Header email.Charset email.Encoders email.Errors
+                                   email.Utils email.Iterators mailcap mailbox mhlib mimetools
+                                   mimetypes MimeWriter mimify multifile rfc822 base64 binascii
+                                   binhex quopri uu xdrlib netrc robotparser csv
+
+                                   HTMLParser sgmllib htmllib htmlentitydefs xml.parsers.expat
+                                   xml.dom xml.dom.minidom xml.dom.pulldom xml.sax
+                                   xml.sax.handler xml.sax.saxutils xml.sax.xmlreader xmllib
+
+                                   audioop imageop aifc sunau wave chunk colorsys rgbimg imghdr
+                                   sndhdr ossaudiodev
+
+                                   hmac md5 sha
+
+                                   Tkinter Tix ScrolledText turtle
+
+                                   parser symbol token keyword tokenize tabnanny pyclbr
+                                   py_compile compileall dis pickletools distutils"/>
+                </Keywords>
+                <SampleCode value="lexer_python.sample"/>
+                <LanguageAttributes
+                    LineComment="#"
+                    DoxygenLineComment="##"
+                    StreamCommentStart=""
+                    StreamCommentEnd=""
+                    DoxygenStreamCommentStart=""
+                    DoxygenStreamCommentEnd=""
+                    BoxCommentStart=""
+                    BoxCommentMid=""
+                    BoxCommentEnd=""
+                    CaseSensitive="1"
+                    LexerCommentStyles="1,12"
+                    LexerCharacterStyles=""
+                    LexerStringStyles="3,4,6,7,13"/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

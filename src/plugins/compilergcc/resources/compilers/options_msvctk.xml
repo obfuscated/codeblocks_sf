@@ -1,0 +1,110 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <Program name="C"         value="cl.exe"/>
+    <Program name="CPP"       value="cl.exe"/>
+    <Program name="LD"        value="link.exe"/>
+    <Program name="DBGconfig" value=""/>
+    <Program name="LIB"       value="link.exe"/>
+    <Program name="WINDRES"   value="rc.exe"/> <!-- platform SDK is needed for this -->
+    <Program name="MAKE"      value="nmake.exe"/>
+
+    <Switch name="includeDirs"             value="/I"/>
+    <Switch name="libDirs"                 value="/LIBPATH:"/>
+    <Switch name="linkLibs"                value=""/>
+    <Switch name="defines"                 value="/D"/>
+    <Switch name="genericSwitch"           value="/"/>
+    <Switch name="objectExtension"         value="obj"/>
+    <Switch name="needDependencies"        value="false"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value=""/>
+    <Switch name="libExtension"            value="lib"/>
+    <Switch name="linkerNeedsLibPrefix"    value="false"/>
+    <Switch name="linkerNeedsLibExtension" value="true"/>
+
+    <Option name="Produce debugging symbols"
+            option="/Zi"
+            category="Debugging"
+            additionalLibs="/DEBUG"
+            checkAgainst="/Og /O1 /O2 /Os /Ot /Ox /NDEBUG"
+            checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."/>
+
+    <Common name="warnings-msvc"/>
+
+    <Option name="Enable global optimization"
+            option="/Og"
+            category="Optimization"
+            checkAgainst="/Zi /ZI"
+            checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."/>
+    <Common name="optimize-msvc"/>
+
+    <Category name="C++ Features">
+        <Option name="Enable C++ RTTI"
+                option="/GR"/>
+        <Option name="Enable C++ exception handling"
+                option="/GX"/>
+    </Category>
+
+    <Category name="Architecture">
+        <Option name="Optimize for 80386"
+                option="/G3"
+                supersedes="/G4 /G5 /G6 /G7"/>
+        <Option name="Optimize for 80486"
+                option="/G4"
+                supersedes="/G3 /G5 /G6 /G7"/>
+        <Option name="Optimize for Pentium"
+                option="/G5"
+                supersedes="/G3 /G4 /G6 /G7"/>
+        <Option name="Optimize for Pentium Pro, Pentium II, Pentium III"
+                option="/G6"
+                supersedes="/G3 /G4 /G5 /G7"/>
+        <Option name="Optimize for Pentium 4 or Athlon"
+                option="/G7"
+                supersedes="/G3 /G4 /G5 /G6"/>
+        <Option name="Enable SSE instruction set"
+                option="/arch:SSE"
+                supersedes="/arch:SSE2"/>
+        <Option name="Enable SSE2 instruction set"
+                option="/arch:SSE2"
+                supersedes="/arch:SSE"/>
+    </Category>
+
+    <Category name="Others">
+        <Option name="Enable minimal rebuild"
+                option="/Gm"/>
+        <Option name="Enable link-time code generation"
+                option="/GL"
+                checkAgainst="/Zi /ZI"
+                checkMessage="Link-time code generation is incompatible with debugging info"/>
+        <Option name="Optimize for windows application"
+                option="/GA"/>
+        <Option name="__cdecl calling convention"
+                option="/Gd"/>
+        <Option name="__fastcall calling convention"
+                option="/Gr"/>
+        <Option name="__stdcall calling convention"
+                option="/Gz"/>
+    </Category>
+
+    <Common name="runtime"/>
+
+    <Command name="CompileObject"
+             value="$compiler /nologo $options $includes /c $file /Fo$object"/>
+    <Command name="CompileResource"
+             value="$rescomp $res_includes $res_options -fo$resource_output $file"/>
+    <Command name="LinkExe"
+             value="$linker /nologo /subsystem:windows $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options"/>
+    <Command name="LinkConsoleExe"
+             value="$linker /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options"/>
+    <Command name="LinkDynamic"
+             value="$linker /dll /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options"/>
+    <Command name="LinkStatic"
+             value="$lib_linker /lib /nologo $libdirs /out:$static_output $libs $link_objects $link_resobjects $link_options"/>
+    <Command name="LinkNative"
+             value="$linker /nologo /subsystem:native $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options"/>
+    <Common name="cmds"/>
+
+    <Common name="re-msvc"/>
+</CodeBlocks_compiler_options>

@@ -1,0 +1,11 @@
+<CodeBlocks_template_file>
+	<Template name="sdlapp" title="SDL Application" category="2D/3D Graphics" bitmap="sdl.png">
+		<FileSet name="c++" title="Default">
+			<File source="sdl-main.cpp" destination="main.cpp"/>
+			<File source="sdl-cb.bmp" destination="cb.bmp"/>
+		</FileSet>
+		<Option name="SDL Application">
+			<Project file="sdlapp.cbp"/>
+		</Option>
+	</Template>
+</CodeBlocks_template_file>

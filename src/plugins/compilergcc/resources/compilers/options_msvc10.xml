@@ -1,0 +1,113 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <Program name="C"         value="cl.exe"/>
+    <Program name="CPP"       value="cl.exe"/>
+    <Program name="LD"        value="link.exe"/>
+    <Program name="DBGconfig" value=""/>
+    <Program name="LIB"       value="link.exe"/>
+    <Program name="WINDRES"   value="rc.exe"/>
+    <Program name="MAKE"      value="nmake.exe"/>
+
+    <Switch name="includeDirs"             value="/I"/>
+    <Switch name="libDirs"                 value="/LIBPATH:"/>
+    <Switch name="linkLibs"                value=""/>
+    <Switch name="defines"                 value="/D"/>
+    <Switch name="genericSwitch"           value="/"/>
+    <Switch name="objectExtension"         value="obj"/>
+    <Switch name="needDependencies"        value="false"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value=""/>
+    <Switch name="libExtension"            value="lib"/>
+    <Switch name="linkerNeedsLibPrefix"    value="false"/>
+    <Switch name="linkerNeedsLibExtension" value="true"/>
+
+    <Category name="Debugging">
+        <Option name="Produce debugging symbols"
+                option="/Zi"
+                additionalLibs="/debug"
+                checkAgainst="/Og /O1 /O2 /Os /Ot /Ox /DNDEBUG"
+                checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."/>
+        <Option name="Enable Edit and Continue debug info"
+                option="/ZI"
+                checkAgainst="/Og /O1 /O2 /Os /Ot /Ox /DNDEBUG"
+                checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."/>
+    </Category>
+
+    <Category name="Language">
+        <Option name="Disable extensions"
+                option="/Za"/>
+        <Option name="Enforce Standard C++ for scoping rules"
+                option="/Zc:forScope"/>
+        <Option name="wchar_t is the native type, not a typedef"
+                option="/Zc:wchar_t"/>
+        <Option name="enforce the new Standard C++ meaning for auto"
+                option="/Zc:auto"/>
+        <Option name="enable trigraphs (off by default)"
+                option="/Zc:trigraphs"/>
+        <Option name="Enable OpenMP 2.0 language extensions"
+                option="/openmp"/>
+    </Category>
+
+    <Common name="warnings-msvc"/>
+    <Option name="Enable one line diagnostics"
+            option="/WL"
+            category="Warnings"/>
+
+    <Common name="optimize-msvc"/>
+    <Category name="Optimization">
+        <Option name="Enable intrinsic functions"
+                option="/Oi"
+                checkAgainst="/Zi /ZI"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."/>
+        <Option name="Enable frame pointer omission"
+                option="/Oy"
+                checkAgainst="/Zi /ZI"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."/>
+        <Option name="Inline expansion"
+                option="/Ob"
+                checkAgainst="/Zi /ZI"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."/>
+    </Category>
+
+    <Common name="codegen"/>
+
+    <Category name="Other">
+        <Option name="Default char type is unsigned"
+                option="/J"/>
+        <Option name="Compile all files as .c"
+                option="/TC"
+                supersedes="/TP"/>
+        <Option name="Compile all files as .cpp"
+                option="/TP"
+                supersedes="/TC"/>
+        <Option name="use UNICODE (wchar_t)"
+                option="/D_UNICODE /DUNICODE"
+                supersedes="/D_MBCS"/>
+        <Option name="use MultiByte (char)"
+                option="/D_MBCS"
+                supersedes="/D_UNICODE /DUNICODE"/>
+    </Category>
+
+    <Common name="runtime"/>
+
+    <Command name="CompileObject"
+             value="$compiler /nologo $options $includes /c $file /Fo$object"/>
+    <Command name="CompileResource"
+             value="$rescomp $res_includes $res_options -fo$resource_output $file"/>
+    <Command name="LinkExe"
+             value="$linker /nologo /subsystem:windows $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options"/>
+    <Command name="LinkConsoleExe"
+             value="$linker /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options"/>
+    <Command name="LinkDynamic"
+             value="$linker /dll /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options"/>
+    <Command name="LinkStatic"
+             value="$lib_linker /lib /nologo $libdirs /out:$static_output $libs $link_objects $link_resobjects $link_options"/>
+    <Command name="LinkNative"
+             value="$linker /nologo /subsystem:native $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options"/>
+    <Common name="cmds"/>
+
+    <Common name="re-msvc"/>
+</CodeBlocks_compiler_options>

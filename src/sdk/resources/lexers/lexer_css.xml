@@ -1,0 +1,118 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="CSS"
+                index="38"
+                filemasks="*.css">
+                <Style name="Default"
+                        index="0"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <Style name="Tag"
+                        index="1"
+                        fg="0,0,128"
+                        bold="1"/>
+                <Style name="Class"
+                        index="2"
+                        fg="0,0,0"/>
+                <Style name="Pseudo class"
+                        index="3"
+                        fg="128,0,0"/>
+                <Style name="Unknown Pseudo class"
+                        index="4"
+                        fg="255,0,0"/>
+                <Style name="Operator"
+                        index="5"
+                        fg="0,0,0"/>
+                <Style name="CSS1 property"
+                        index="6"
+                        fg="0,64,224"/>
+                <Style name="Unknown property"
+                        index="7"
+                        fg="255,0,0"/>
+                <Style name="Value"
+                        index="8"
+                        fg="128,0,128"/>
+                <Style name="Comment"
+                        index="9"
+                        fg="160,160,160"/>
+                <Style name="ID selector"
+                        index="10"
+                        fg="0,128,128"/>
+                <Style name="Important"
+                        index="11"
+                        fg="255,128,0"
+                        bold="1"/>
+                <Style name="Directive"
+                        index="12"
+                        fg="128,128,0"
+                        bold="1"/>
+                <Style name="Double quote string"
+                        index="13"
+                        fg="128,0,128"/>
+                <Style name="Single quote string"
+                        index="14"
+                        fg="128,0,128"/>
+                <Style name="CSS2 property"
+                        index="15"
+                        fg="0,160,224"/>
+                <Style name="Attribute"
+                        index="16"
+                        fg="128,0,0"/>
+                <Keywords>
+                        <!-- CSS1 Keywords -->
+                        <Set index="0"
+                            value="color background-color background-image background-repeat
+                                   background-attachment background-position background
+                                   font-family font-style font-variant font-weight font-size font
+                                   word-spacing letter-spacing text-decoration vertical-align
+                                   text-transform text-align text-indent line-height margin-top
+                                   margin-right margin-bottom margin-left margin
+                                   padding-top padding-right padding-bottom padding-left padding
+                                   border-top-width border-right-width border-bottom-width
+                                   border-left-width border-width border-top border-right
+                                   border-bottom border-left border border-color border-style width
+                                   height float clear display white-space list-style-type
+                                   list-style-image list-style-position list-style"/>
+                        <!-- Pseudo classes -->
+                        <Set index="1"
+                            value="first-letter first-line link active visited first-child focus
+                                   hover lang before after left right first"/>
+                        <!-- CSS2 Keywords -->
+                        <Set index="2"
+                            value="border-top-color border-right-color border-bottom-color
+                                   border-left-color border-color border-top-style
+                                   border-right-style border-bottom-style border-left-style
+                                   border-style top right bottom left position z-index direction
+                                   unicode-bidi min-width max-width min-height max-height overflow
+                                   clip visibility content quotes counter-reset counter-increment
+                                   marker-offset size marks page-break-before page-break-after
+                                   page-break-inside page orphans widows font-stretch
+                                   font-size-adjust unicode-range units-per-em src panose-1 stemv
+                                   stemh slope cap-height x-height ascent descent widths bbox
+                                   definition-src baseline centerline mathline topline text-shadow
+                                   caption-side table-layout border-collapse border-spacing
+                                   empty-cells speak-header cursor outline outline-width
+                                   outline-style outline-color volume speak pause-before pause-after
+                                   pause cue-before cue-after cue play-during azimuth elevation
+                                   speech-rate voice-family pitch pitch-range stress richness
+                                   speak-punctuation speak-numeral"/>
+				</Keywords>
+                <SampleCode value="lexer_css.sample"/>
+                <LanguageAttributes
+                    LineComment=""
+                    StreamCommentStart="/*"
+                    StreamCommentEnd="*/"
+                    BoxCommentStart="/* "
+                    BoxCommentMid=" * "
+                    BoxCommentEnd=" */"
+                    CaseSensitive="0"
+                    LexerCommentStyles="9"
+                    LexerCharacterStyles=""
+                    LexerStringStyles="13,14"
+                    LexerPreprocessorStyles=""/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

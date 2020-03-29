@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+		<Lexer name="Ruby"
+				index="22"
+				filemasks="*.rb,*.rbw">
+				<Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+				<Style name="Error"
+						index="1"
+						fg="0,0,0"/>
+				<Style name="Comment"
+						index="2"
+						fg="0,128,0"/>
+				<Style name="POD"
+						index="3"
+						fg="0,64,0"/>
+				<Style name="Number"
+						index="4"
+						fg="255,128,0"/>
+				<Style name="Instruction"
+						index="5"
+						fg="0,0,255"
+						bold="1"/>
+				<Style name="String"
+						index="6"
+						fg="128,128,128"/>
+				<Style name="Character"
+						index="7"
+						fg="128,128,0"/>
+                <Style name="Class name"
+						index="8"
+						fg="0,128,192"
+						bold="1"/>
+                <Style name="Def name"
+						index="9"
+						fg="128,128,255"
+						bold="1"/>
+                <Style name="Operator"
+						index="10"
+						fg="0,0,128"
+						bold="1"/>
+                <Style name="Identifier"
+						index="11"
+						fg="0,0,0"
+						bold="1"/>
+                <Style name="Regex"
+						index="12"
+						fg="0,128,255"/>
+                <Style name="Global"
+						index="13"
+						fg="0,0,128"
+						bold="1"/>
+                <Style name="Symbol"
+						index="14"
+						fg="0,0,0"/>
+                <Style name="Module name"
+						index="15"
+						fg="128,64,0"
+						bold="1"/>
+                <Style name="Instance var"
+						index="16"
+						fg="0,0,0"/>
+                <Style name="Class val"
+						index="17"
+						fg="0,0,0"/>
+                <Style name="Backticks"
+						index="18"
+						fg="255,255,0"
+						gb="160,128,128"/>
+                <Style name="Data section"
+						index="19"
+						fg="96,0,0"
+						bg="255,240,216"/>
+                <Style name="Here Q"
+						index="20,21,22,23"
+						fg="0,0,0"/>
+                <Style name="String Q"
+						index="24,25,26,27,28"
+						fg="128,128,128"/>
+                <Style name="Word demoted"
+						index="29"
+						fg="0,0,0"/>
+                <Style name="Stdin"
+						index="30"
+						fg="0,0,0"/>
+                <Style name="Stdout"
+						index="31"
+						fg="0,0,0"/>
+                <Style name="Stderr"
+						index="40"
+						fg="255,0,0"/>
+                <Style name="Upper Bound"
+						index="41"
+						fg="0,0,0"/>
+				<Style name="Breakpoint line"
+						index="-2"
+						bg="255,160,160"/>
+				<Style name="Debugger active line"
+						index="-3"
+						bg="160,160,255"/>
+				<Style name="Compiler error line"
+						index="-4"
+						bg="255,128,0"/>
+				<Keywords>
+                        <Set index="0"
+                            value="BEGIN END __ENCODING__ __END__ __FILE__ __LINE__ alias and begin break case class def
+                                   defined? do else elsif end ensure false for if in module next nil not or redo rescue
+                                   retry return self super then true undef unless until when while yield"/>
+                        <Set index="1"
+                            value=""/>
+						<Set index="2"
+                            value=""/>
+				</Keywords>
+				<SampleCode value="lexer_ruby.sample"
+						breakpoint_line="3"
+						debug_line="4"
+						error_line="9"/>
+                <LanguageAttributes
+                    LineComment="#"
+                    StreamCommentStart="=begin"
+                    StreamCommentEnd="=end"
+                    BoxCommentStart="=begin"
+                    BoxCommentMid=""
+                    BoxCommentEnd="=end"
+                    CaseSensitive="1"/>
+		</Lexer>
+</CodeBlocks_lexer_properties>

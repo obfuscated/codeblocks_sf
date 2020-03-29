@@ -1,0 +1,21 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler>
+<CodeBlocks_compiler name="GNU GCC Compiler for TriCore (HighTec)"
+                     id="tricore-gcc"
+                     weight="67">
+    <Path type="master">
+        <Search envVar="PATH"
+                for="C"/>
+        <if platform="windows">
+            <Search registry="HKEY_LOCAL_MACHINE\Software\HighTec EDV-Systeme\TriCore"
+                    value="InstallPath"/>
+            <Fallback path="C:\HighTec\TriCore"/>
+        </if>
+        <else>
+            <Fallback path="/usr/local/tricore"/>
+        </else>
+    </Path>
+    <Path type="include">
+        <Add><master/><separator/>tricore<separator/>include</Add>
+    </Path>
+</CodeBlocks_compiler>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_template_file>
+<CodeBlocks_template_file>
+		<Template name="OpenGLGLUT" title="OpenGL GLUT Application" category="2D/3D Graphics" bitmap="glut.png">
+		<Notice value="This template expects the global variable &quot;glut&quot; to point
+		               to the appropriate GLUT SDK.
+                   This is the GLUT SDK e.g. as obtained from a DevPack.
+
+                   You will be asked to setup the variable accordingly. If this is
+                   not the case, verify &quot;Settings->Global variables&quot;"
+				isWarning="1"/>
+		<FileSet name="s" title="Default">
+			<File source="glut-main.cpp" destination="main.cpp"/>
+		</FileSet>
+		<Option name="OpenGL GLUT Application">
+			<Project file="glut.cbp"/>
+		</Option>
+	</Template>
+</CodeBlocks_template_file>

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options extends="keilc51">
+    <!-- Compiler is Windows-only (or possibly Linux under Wine) -->
+    <Program name="CPP" value="CX51.exe"/>
+    <Program name="LD"  value="LX51.exe"/>
+    <Program name="LIB" value="LIBX51.exe"/>
+
+    <!-- Summary of Keil Cx51 options: http://www.keil.com/support/man/docs/c51/c51_cm_dirlist.htm -->
+
+    <Option name="Enable Linker level optimizations"
+            option="OBJECTADVANCED"/>
+
+    <Command name="CompileObject"
+             value="$compiler $file OBJECT($object) OMF2 $options $includes"/>
+
+</CodeBlocks_compiler_options>

@@ -1,0 +1,10 @@
+ToDo's by MortenMacFly:
+
+...the easy ones:
+- for the log: Optional: Leave out the files which were not modified.
+- save bindings in a separate file, not into the global config
+  (as it grows a lot otherwise)
+- optional: open files, modify them (if needed) and leave them unsaved
+
+...more complex ones:
+- add reason for include as a comment just after the include (optional)

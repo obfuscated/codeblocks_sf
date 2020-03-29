@@ -1,0 +1,223 @@
+/*
+  Collection of non-cryptographic string hashing functions.
+  All documentation is Public Domain.
+*/
+
+/*!
+  \file stringhash.h
+  \brief Non-cryptographic string hash functions.
+*/
+
+/*!
+  \typedef data_t
+  \brief Type of element of input array of a hash function.
+*/
+
+/*!
+  \typedef hash_t
+  \brief Type of hash function result.
+*/
+
+/*!
+  \fn add_hash(const data_t *data, const size_t size)
+  \brief Additive hash.
+  \param data input array (string).
+  \param size size of input array.
+  \return hash digest.
+  
+  Probably the simplest algorithm for hashing a sequence of integral values
+  (such as a string), is to add all of the characters together and then force
+  the range into something suitable for lookup with the remainder of division.
+  I will give an example of this algorithm only because books commonly suggest
+  it in their rush to get past the topic of hash functions on their way to
+  collision resolution methods. This algorithm is very bad.
+  
+  Generally, any hash algorithm that relies primarily on a commutitive operation
+  will have an exceptionally bad distribution. This hash fails to treat
+  permutations differently, so “abc”, “cba”, and “cab” will all result in the
+  same hash value.
+  
+  Despite the suckiness of this algorithm, the example is useful in that it
+  shows how to create a general hash function. add_hash can be used to hash
+  strings, single integers, single floating-point values, arrays of scalar
+  values, and just about anything else you can think of because it is always
+  legal to pun a simple object into an array of unsigned char and work with the
+  individual bytes of the object.
+*/
+
+/*!
+  \fn xor_hash(const data_t *data, const size_t size)
+  \brief XOR hash.
+  \param data input array (string).
+  \param size size of input array.
+  \return hash digest.
+  
+  The XOR hash is another algorithm commonly suggested by textbooks. Instead of
+  adding together the bytes of an object as the additive hash does, the XOR
+  hash repeatedly folds the bytes together to produce a seemingly random hash
+  value.
+  
+  Unfortunately, this algorithm is too simple to work properly on most input
+  data. The internal state, the variable h, is not mixed nearly enough to come
+  close to achieving avalanche, nor is a single XOR effective at permuting the
+  internal state, so the resulting distribution, while better than the additive
+  and multiplicative hashes, is still not very good.
+*/
+
+/*!
+  \fn rot_hash(const data_t *data, const size_t size)
+  \brief Rotating hash.
+  \param data input array (string).
+  \param size size of input array.
+  \return hash digest.
+  
+  The rotating hash is identical to the XOR hash except instead of simply
+  folding each byte of the input into the internal state, it also performs
+  a fold of the internal state before combining it with the each byte of the
+  input. This extra mixing step is enough to give the rotating hash a much
+  better distribution. Much of the time, the rotating hash is sufficient, and
+  can be considered the minimal acceptable algorithm. Notice that with each
+  improvement, the internal state is being mixed up more and more. This is a
+  key element in a good hash function.
+*/
+
+/*!
+  \fn djb_hash(const data_t *data, const size_t size)
+  \brief Bernstein hash.
+  \param data input array (string).
+  \param size size of input array.
+  \return hash digest.
+  
+  Professor Dan Bernstein created this algorithm and posted it in a comp.lang.c
+  newsgroup. It is known by many as the Chris Torek hash because Chris went a
+  long way toward popularizing it. Since then it has been used successfully by
+  many, but despite that the algorithm itself is not very sound when it comes
+  to avalanche and permutation of the internal state. It has proven very good
+  for small character keys, where it can outperform algorithms that result in
+  a more random distribution.
+  
+  Bernstein's hash should be used with caution. It performs very well in
+  practice, for no apparently known reasons (much like how the constant 33 does
+  better than more logical constants for no apparent reason), but in theory it
+  is not up to snuff. Always test this function with sample data for every
+  application to ensure that it does not encounter a degenerate case and cause
+  excessive collisions.
+*/
+
+/*!
+  \fn djb2_hash(const data_t *data, const size_t size);
+  \brief Modified Bernstein hash.
+  \param data input array (string).
+  \param size size of input array.
+  \return hash digest.
+  
+  A minor update to Bernstein's hash replaces addition with XOR for the
+  combining step. This change does not appear to be well known or often used,
+  the original algorithm is still recommended by nearly everyone, but the new
+  algorithm typically results in a better distribution.
+*/
+
+/*!
+  \fn sax_hash(const data_t *data, const size_t size)
+  \brief Shift-Add-XOR hash.
+  \param data input array (string).
+  \param size size of input array.
+  \return hash digest.
+  
+  The shift-add-XOR hash was designed as a string hashing function, but because
+  it is so effective, it works for any data as well with similar efficiency.
+  The algorithm is surprisingly similar to the rotating hash except a different
+  choice of constants for the rotation is used, and addition is a preferred
+  operation for mixing. All in all, this is a surprisingly powerful and flexible
+  hash. Like many effective hashes, it will fail tests for avalanche, but that
+  does not seem to affect its performance in practice.
+*/
+
+/*!
+  \fn fnv_hash(const data_t *data, const size_t size)
+  \brief FNV hash.
+  \param data input array (string).
+  \param size size of input array.
+  \return hash digest.
+  
+  The FNV hash, short for Fowler/Noll/Vo in honor of the creators, is a very
+  powerful algorithm that, not surprisingly, follows the same lines as
+  Bernstein's modified hash with carefully chosen constants. This algorithm has
+  been used in many applications with wonderful results, and for its simplicity,
+  the FNV hash should be one of the first hashes tried in an application.
+*/
+
+/*!
+  \fn oat_hash(const data_t *data, const size_t size)
+  \brief One-at-a-Time hash.
+  \param data input array (string).
+  \param size size of input array.
+  \return hash digest.
+  
+  Bob Jenkins is a well known authority on designing hash functions for table
+  lookup. In fact, one of his hashes is considered state of the art for lookup,
+  which we will see shortly. A considerably simpler algorithm of his design is
+  the One-at-a-Time hash.
+  
+  This algorithm quickly reaches avalanche and performs very well. This function
+  is another that should be one of the first to be tested in any application, if
+  not the very first. This algorithm has seen effective use in several high level
+  scripting languages as the hash function for their associative array data type.
+*/
+
+/*!
+  \fn jsw_hash(const data_t *data, const size_t size, const hash_t *magic)
+  \brief JSW hash.
+  \param data input array (string).
+  \param size size of input array.
+  \param magic table of random numbers.
+  \return hash digest.
+  
+  This is a hash of my own devising that combines a rotating hash with a table
+  of randomly generated numbers. The algorithm walks through each byte of the
+  input, and uses it as an index into a table of random integers generated by
+  a good random number generator. The internal state is rotated to mix it up a
+  bit, then XORed with the random number from the table. The result is a
+  uniform distribution if the random numbers are uniform. The size of the table
+  should match the values in a byte. For example, if a byte is eight bits then
+  the table would hold 256 random numbers.
+*/
+
+/*!
+  \fn elf_hash(const data_t *data, const size_t size)
+  \brief ELF hash.
+  \param data input array (string).
+  \param size size of input array.
+  \return hash digest.
+  
+  The ELF hash function has been around for a while, and it is believed to be
+  one of the better algorithms out there. In my experience, this is true, though
+  ELF hash does not perform sufficiently better than most of the other
+  algorithms presented in this tutorial to justify its slightly more complicated
+  implementation. It should be on your list of first functions to test in a new
+  lookup implementation.
+*/
+
+/*!
+  \fn jen_hash(const data_t *data, const size_t size, const hash_t magic)
+  \brief Jenkins hash.
+  \param data input array (string).
+  \param size size of input array.
+  \param magic a random number.
+  \return hash digest.
+  
+  The dreaded Jenkins hash has been thoroughly tested and passes all kinds of
+  tests for avalanche and permutations. As such it is considered to be one of
+  the best and most thoroughly analyzed algorithms. Unfortunately, it is also
+  ridiculously complicated compared to the other hashes.
+*/
+
+/*!
+  \fn sdbm_hash(const data_t *data, const size_t size)
+  \brief Public-domain reimplementation of NDBM hash.
+  \param data input array (string).
+  \param size size of input array.
+  \return hash digest.
+*/
+
+//------------------------------------------------------------------------------

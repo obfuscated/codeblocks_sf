@@ -1,0 +1,18 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+datarootdir = @datarootdir@
+plugindir=@datadir@/@PACKAGE@/plugins
+sharedir=@datadir@
+
+Name: codeblocks
+Description: Code::Blocks IDE
+Version: @VERSION@
+Libs: -L${libdir} -lcodeblocks
+Cflags: -I${includedir}/@PACKAGE@ \
+			-I${includedir}/@PACKAGE@/tinyxml \
+			-I${includedir}/@PACKAGE@/scripting/include \
+			-I${includedir}/@PACKAGE@/scripting/bindings \
+			-I${includedir}/@PACKAGE@/scripting/sqplus \
+			-I${includedir}/@PACKAGE@/wxscintilla/include

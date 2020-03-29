@@ -1,0 +1,52 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <Category name="Optimization">
+        <Option name="Strip all symbols from binary (minimizes size)"
+                additionalLibs="-s"
+                supersedes="-g -ggdb -pg"/>
+        <Option name="Optimize generated code (for speed)"
+                option="-O"
+                checkAgainst="-g -ggdb"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="-O1 -O2 -O3 -Os"/>
+        <Option name="Optimize more (for speed)"
+                option="-O1"
+                checkAgainst="-g -ggdb"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="-O -O2 -O3 -Os"/>
+        <Option name="Optimize even more (for speed)"
+                option="-O2"
+                checkAgainst="-g -ggdb"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="-O -O1 -O3 -Os"/>
+        <Option name="Optimize fully (for speed)"
+                option="-O3"
+                checkAgainst="-g -ggdb"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="-O -O1 -O2 -Os"/>
+        <Option name="Optimize generated code (for size)"
+                option="-Os"
+                checkAgainst="-g -ggdb"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="-O -O1 -O2 -O3"/>
+        <Option name="Link-Time-Optimization"
+                option="-flto"
+                additionalLibs="-flto"
+                checkAgainst="-g -ggdb"
+                checkMessage="Combining -flto with -g is currently experimental and expected to produce wrong results."/>
+        <Option name="    "
+                additionalLibs="-O1"
+                supersedes="-O -O2 -O3 -Os"/>
+        <Option name="    "
+                additionalLibs="-O2"
+                supersedes="-O -O1 -O3 -Os"/>
+        <Option name="    "
+                additionalLibs="-O3"
+                supersedes="-O -O1 -O2 -Os"/>
+        <Option name="Expensive optimizations"
+                option="-fexpensive-optimizations"
+                checkAgainst="-g -ggdb"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."/>
+    </Category>
+</CodeBlocks_compiler_options>

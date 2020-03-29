@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<resource_extra>
+		<object root="1" />
+		<object name="ID_LST_ALIASES" class="wxListBox" variable="lstAliases" member="yes">
+			<handler function="OnAliasesSelect" entry="EVT_LISTBOX" />
+		</object>
+		<object name="ID_BTN_ADD" class="wxButton" variable="btnAdd" member="yes">
+			<handler function="OnAddClick" entry="EVT_BUTTON" />
+		</object>
+		<object name="ID_BTN_EDIT" class="wxButton" variable="btnEdit" member="yes">
+			<handler function="OnEditClick" entry="EVT_BUTTON" />
+		</object>
+		<object name="ID_BTN_REMOVE" class="wxButton" variable="btnRemove" member="yes">
+			<handler function="OnRemoveClick" entry="EVT_BUTTON" />
+		</object>
+		<object name="ID_LST_TARGETS" class="wxCheckListBox" variable="lstTargets" member="yes">
+			<handler function="OnTargetsToggled" entry="EVT_CHECKLISTBOX" />
+		</object>
+		<object name="ID_STATIC_LINE" class="wxStaticLine" variable="StaticLine" member="no" />
+	</resource_extra>
+</wxsmith>

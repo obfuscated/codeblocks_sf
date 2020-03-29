@@ -1,0 +1,92 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <Category name="General">
+        <Option name="In C mode, this is equivalent to -std=c90, in C++ mode, it is equivalent to -std=c++98"
+                option="-ansi"
+                supersedes="-std=c90 -std=c99 -std=c++98 -std=gnu++98 -std=c11 -std=c++11 -std=gnu++11 -std=c++14 -std=gnu++14 -std=c17 -std=c++17 -std=gnu++17"/>
+        <Option name="Have gcc follow the 2017 ISO C language standard"
+                option="-std=c17"
+                supersedes="-std=c90 -std=c99 -std=c11 -ansi"/>
+        <Option name="Have gcc follow the 2011 ISO C language standard"
+                option="-std=c11"
+                supersedes="-std=c90 -std=c99 -std=c17 -ansi"/>
+        <Option name="Have gcc follow the 1999 ISO C language standard"
+                option="-std=c99"
+                supersedes="-std=c90 -std=c11 -std=c17 -ansi"/>
+        <Option name="Have gcc follow the 1990 ISO C language standard  (certain GNU extensions that conflict with ISO C90 are disabled)"
+                option="-std=c90"
+                supersedes="-std=c99 -std=c11 -std=c17 -ansi"/>
+        <Option name="Have g++ follow the 1998 ISO C++ language standard"
+                option="-std=c++98"
+                supersedes="-std=gnu++98 -std=c++11 -std=gnu++11 -std=c++14 -std=gnu+14 -std=c++17 -std=gnu++17 -std=c++20 -std=gnu++20"/>
+        <Option name="Have g++ follow the 1998 GNU C++ language standard (ISO C++ plus GNU extensions)"
+                option="-std=gnu++98"
+                supersedes="-std=c++98 -std=c++11 -std=gnu++11 -std=c++14 -std=gnu+14 -std=c++17 -std=gnu++17 -std=c++20 -std=gnu++20"/>
+        <if exec="C -dumpversion"
+            regex="^4\.[7-9]|^([5-9]|10)"
+            default="true">
+            <Option name="Have g++ follow the C++11 ISO C++ language standard"
+                    option="-std=c++11"
+                    supersedes="-std=c++98 -std=c++14 -std=c++17 -std=c++20"/>
+            <Option name="Have g++ follow the C++11 GNU C++ language standard (ISO C++ plus GNU extensions)"
+                    option="-std=gnu++11"
+                    supersedes="-std=c++98 -std=gnu++98 -std=c++11 -std=c++14 -std=gnu++14 -std=c++17 -std=gnu++17 -std=c++20 -std=gnu++20"/>
+        </if>
+        <if exec="C -dumpversion"
+            regex="^([5-9]|10)"
+            default="true">
+            <Option name="Have g++ follow the C++14 ISO C++ language standard"
+                    option="-std=c++14"
+                    supersedes="-std=c++98 -std=gnu++98 -std=c++11 -std=gnu++11 -std=gnu++14 -std=c++17 -std=gnu++17 -std=c++20 -std=gnu++20"/>
+            <Option name="Have g++ follow the C++14 GNU C++ language standard (ISO C++ plus GNU extensions)"
+                    option="-std=gnu++14"
+                    supersedes="-std=c++98 -std=gnu++98 -std=c++11 -std=gnu++11 -std=c++14 -std=c++17 -std=gnu++17 -std=c++20 -std=gnu++20"/>
+        </if>
+        <if exec="C -dumpversion"
+            regex="^([7-9]|10)"
+            default="true">
+            <Option name="Have g++ follow the C++17 ISO C++ language standard"
+                    option="-std=c++17"
+                    supersedes="-std=c++98 -std=gnu++98 -std=c++11 -std=gnu++11 -std=c++14 -std=gnu++14 -std=gnu++17 -std=c++20 -std=gnu++20"/>
+            <Option name="Have g++ follow the C++17 GNU C++ language standard (ISO C++ plus GNU extensions)"
+                    option="-std=gnu++17"
+                    supersedes="-std=c++98 -std=gnu++98 -std=c++11 -std=gnu++11 -std=c++14 -std=gnu++14 -std=c++17 -std=c++20 -std=gnu++20"/>
+        </if>
+        <if exec="C -dumpversion"
+            regex="^(9|10)"
+            default="true">
+            <Option name="Have g++ follow the C++20 ISO C++ language standard"
+                    option="-std=c++20"
+                    supersedes="-std=c++98 -std=gnu++98 -std=c++11 -std=gnu++11 -std=c++14 -std=gnu++14 -std=c++17 -std=gnu++17 -std=gnu++20"/>
+            <Option name="Have g++ follow the C++20 GNU C++ language standard (ISO C++ plus GNU extensions)"
+                    option="-std=gnu++20"
+                    supersedes="-std=c++98 -std=gnu++98 -std=c++11 -std=gnu++11 -std=c++14 -std=gnu++14 -std=c++17 -std=gnu++17 -std=c++20"/>
+        </if>
+    </Category>
+    <Category name="Warnings">
+        <Option name="Enable all common compiler warnings (overrides many other settings)"
+                option="-Wall"
+                supersedes="-w"/>
+        <Option name="Enable extra compiler warnings"
+                option="-Wextra"/>
+        <Option name="Stop compiling after first error"
+                option="-Wfatal-errors"/>
+        <Option name="Inhibit all warning messages"
+                option="-w"
+                supersedes="-Wall"/>
+        <Option name="Enable warnings demanded by strict ISO C and ISO C++"
+                option="-pedantic"/>
+        <Option name="Treat as errors the warnings demanded by strict ISO C and ISO C++"
+                option="-pedantic-errors"/>
+        <Option name="Warn if main() is not conformant"
+                option="-Wmain"/>
+        <if exec="C -dumpversion"
+            regex="^4\.[7-9]|^[5-9]"
+            default="true">
+            <Option name="Warn if '0' is used as a null pointer constant"
+                    option="-Wzero-as-null-pointer-constant"/>
+        </if>
+
+    </Category>
+</CodeBlocks_compiler_options>

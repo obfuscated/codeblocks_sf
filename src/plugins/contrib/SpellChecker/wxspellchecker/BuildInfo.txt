@@ -1,0 +1,21 @@
+So far the only build instruction files that are included with wxSpellChecker are project files for MinGWStudio (*.msp) and MSVC dsp files for Win32.  Makefiles for Linux will be added eventually.
+
+At this time, there are issues with crashes when using the demo compiled via MSVC, so MinGWStudio is recommended even on Win32.  This lack of flexibility will hopefully be corrected soon.
+
+Win32:
+MySpell_static_win32.msp - MySpell spell check engine static library
+wxSpellChecker_static_win32.msp - wxSpellChecker static library
+wxSpellCheckerDemo_win32.msp - wxWidgets-based wxSpellChecker demo executable
+
+Linux:
+MySpell_static_linux.msp
+wxSpellChecker_static_linux.msp
+wxSpellCheckerDemo_linux.msp
+
+aspell.h is needs to be in the include path for the Aspell spell check engine interface to compile.  On Linux, that's probably done for you if you have the aspell package installed.  On Win32, I'd recommend downloading from http://aspell.net and placing the aspell.h file in the include directory of the wxSpellChecker project.
+
+If you'd like to use the Aspell engine an runtime, the libaspell.so (Linux) or aspell.dll (Win32) needs to be in the directory where executable runs from.  Also in this directory need to go the Aspell dictionary and data file directories "data" and "dict".  The data directory should contain a bunch of *.dat files, and the dict directory contains *.multi, *.rws, and *.alias files.  The location of the Aspell library and its data/dict directories are all options that can be set at runtime.
+
+The MySpell engine is used by OpenOffice.org and Mozilla and its homepage is http://lingucomponent.openoffice.org/dictionary.html.  A copy of the source to the MySpell engine is provided with the wxSpellChecker source code and gets statically linked into the application so the MySpell engine library files don't need to be shipped separately.  The affix and dictionary files that MySpell uses (en_US.aff and en_US.dic respectively) need to be in the directory where the executable runs from, although these file locations and language choices can be changed at runtime.
+
+Information on where to download addition dictionaries can be found in the Dictionaries.txt file.

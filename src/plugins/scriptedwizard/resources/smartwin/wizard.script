@@ -1,0 +1,136 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Smartwin project wizard
+//
+////////////////////////////////////////////////////////////////////////////////
+
+// globals
+SmartwinPathDefault    <- _T("$(#sw)");
+SmartwinPathDefaultInc <- _T("$(#sw.include)");
+SmartwinPathDefaultLib <- _T("$(#sw.lib)");
+SmartwinPath           <- _T("");
+
+function BeginWizard()
+{
+    local intro_msg = _T("Welcome to the new Smartwin project wizard!\n\n" +
+                         "This wizard will guide you to create a new project\n" +
+                         "using the Smartwin GUI C++ library.\n\n" +
+                         "When you 're ready to proceed, please click \"Next\"...");
+
+    local swpath_descr = _T("Please select the location of SmartWin on your computer.\n" +
+                            "This is the top-level folder where SmartWin was installed (unpacked).\n" +
+                            "To help you, this folder must contain the subfolders\n" +
+                            "\"include\" and \"lib\".");
+
+    Wizard.AddInfoPage(_T("SmartwinIntro"), intro_msg);
+    Wizard.AddProjectPathPage();
+    Wizard.AddGenericSelectPathPage(_T("SmartwinPath"), swpath_descr, _T("Please select SmartWin's location:"), SmartwinPathDefault);
+    Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Smartwin's path page
+////////////////////////////////////////////////////////////////////////////////
+
+function OnLeave_SmartwinPath(fwd)
+{
+    if (fwd)
+    {
+        local dir         = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
+        local dir_nomacro = VerifyDirectory(dir);
+
+        if (dir_nomacro.IsEmpty())
+            return false;
+
+        // verify include dependencies
+        local dir_nomacro_inc = GetCompilerIncludeDir(dir, SmartwinPathDefault, SmartwinPathDefaultInc);
+        if (dir_nomacro_inc.IsEmpty())
+            return false;
+        if (!VerifyFile(dir_nomacro_inc, _T("SmartWin.h"), _T("Smartwin's include"))) return false;
+
+        // verify library dependencies
+        local dir_nomacro_lib = GetCompilerLibDir(dir, SmartwinPathDefault, SmartwinPathDefaultLib);
+        if (dir_nomacro_lib.IsEmpty())
+            return false;
+        if (!VerifyLibFile(dir_nomacro_lib, _T("smartwin"), _T("Smartwin's library"))) return false;
+
+
+        SmartwinPath = dir; // Remember the original selection.
+
+        local is_macro = _T("");
+
+        // try to resolve the include directory as macro
+        is_macro = GetCompilerIncludeMacro(dir, SmartwinPathDefault, SmartwinPathDefaultInc);
+        if (is_macro.IsEmpty())
+        {
+            // not possible -> use the real inc path we had computed instead
+            SmartwinPathDefaultInc = dir_nomacro_inc;
+        }
+
+        // try to resolve the library directory as macro
+        is_macro = GetCompilerLibMacro(dir, SmartwinPathDefault, SmartwinPathDefaultLib);
+        if (is_macro.IsEmpty())
+        {
+            // not possible -> use the real lib path we had computed instead
+            SmartwinPathDefaultLib = dir_nomacro_lib;
+        }
+    }
+    return true;
+}
+
+// return the files this project contains
+function GetFilesDir()
+{
+    return _T("smartwin/files");
+}
+
+// setup the already created project
+function SetupProject(project)
+{
+    // set project options
+    project.AddIncludeDir(SmartwinPathDefaultInc);
+    project.AddLibDir(SmartwinPathDefaultLib);
+
+
+    // add link libraries
+    project.AddLinkLib(_T("smartwin"));
+    project.AddLinkLib(_T("comctl32"));
+    project.AddLinkLib(_T("gdi32"));
+    project.AddLinkLib(_T("user32"));
+    project.AddLinkLib(_T("kernel32"));
+
+    // This has to be done to disable the "-I-" compiler switch which
+    // would break the compilation of any Smartwin application.
+    project.SetModeForPCH(pchSourceDir); // pch dir
+
+    // Debug
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttConsoleOnly); // ttConsoleOnly: console for debugging
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        if (Wizard.GetCompilerID().Matches(_T("gcc")))
+        {
+            // enable generation of debugging symbols for target
+            // Note: DebugSymbolsOn() won't work because -Wall produces far too many warnings
+            target.AddCompilerOption(_T("-g"));
+        }
+    }
+
+    // Release
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttExecutable); // ttExecutable: no console
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        if (Wizard.GetCompilerID().Matches(_T("gcc")))
+        {
+            // enable optimizations for target.
+            // Note: OptimizationsOn() won't work because of -I-!
+            target.AddCompilerOption(_T("-O2"));
+            target.AddCompilerOption(_T("-s"));
+        }
+    }
+
+    return true;
+}

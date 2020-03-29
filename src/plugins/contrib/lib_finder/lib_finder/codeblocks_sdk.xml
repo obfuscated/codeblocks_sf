@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<library name="Code::Blocks SDK" short_code="cb">
+
+    <config description="Code::Blocks SDK (pkg-config)">
+        <pkgconfig name="codeblocks"/>
+    </config>
+
+    <!--
+
+    TODO: These need to be updated to newest sdk structure
+
+
+    <config>
+        <file name="sdk/sdk.h"/>
+        <file name="sdk/cbplugin.h"/>
+        <file name="sdk/tinyxml/tinyxml.h"/>
+        <file name="sdk/wxscintilla/include/wx/wxscintilla.h"/>
+
+        <path include="$(BASE_DIR)/sdk"/>
+        <path include="$(BASE_DIR)/sdk/tinyxml"/>
+        <path include="$(BASE_DIR)/sdk/wxscintilla/include"/>
+        <path include="$(BASE_DIR)/sdk/as/include"/>
+
+        <path lib="$(BASE_DIR)/lib"/>
+        <path lib="$(BASE_DIR)/devel"/>
+        <path lib="$(BASE_DIR)/sdk/tinyxml"/>
+        <path lib="$(BASE_DIR)/sdk/as"/>
+
+        <flags cflags="-DcbDEBUG -DTIXML_USE_STL -DCB_PRECOMP -DWX_PRECOMP -DBUILDING_PLUGIN"/>
+        <flags lflags="-ltxml -lcodeblocks"/>
+    </config>
+
+    <config description="Code::Blocks SDK (Standalone Development SDK)">
+        <file name="include/sdk.h"/>
+        <file name="include/cbplugin.h"/>
+        <file name="include/tinyxml/tinyxml.h"/>
+        <file name="sdk/wxscintilla/include/wx/wxscintilla.h"/>
+
+        <path include="$(BASE_DIR)/include"/>
+        <path include="$(BASE_DIR)/sdk"/>
+        <path include="$(BASE_DIR)/sdk/tinyxml"/>
+        <path include="$(BASE_DIR)/sdk/wxscintilla/include"/>
+        <path include="$(BASE_DIR)/sdk/as/include"/>
+
+        <path lib="$(BASE_DIR)/lib"/>
+        <path lib="$(BASE_DIR)/devel"/>
+        <path lib="$(BASE_DIR)/sdk/tinyxml"/>
+        <path lib="$(BASE_DIR)/sdk/as"/>
+
+        <flags cflags="-DcbDEBUG -DTIXML_USE_STL -DCB_PRECOMP -DWX_PRECOMP -DBUILDING_PLUGIN"/>
+        <flags lflags="-ltxml -lcodeblocks"/>
+    </config>
+
+    -->
+</library>

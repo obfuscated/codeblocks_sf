@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="Nim"
+                index="96"
+                filemasks="*.nim">
+                <Style name="Default"
+                        index="0"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <!-- SCE_P_COMMENTLINE -->
+                <Style name="Comment"
+                        index="1"
+                        fg="160,160,160"/>
+                <!-- SCE_P_NUMBER -->
+                <Style name="Number"
+                        index="2"
+                        fg="240,0,240"/>
+                <!-- SCE_P_STRING -->
+                <Style name="String"
+                        index="3"
+                        fg="0,0,255"/>
+                <!-- SCE_P_CHARACTER -->
+                <Style name="Char"
+                        index="4"
+                        fg="224,160,0"/>
+                <!-- SCE_P_WORD -->
+                <Style name="Keyword"
+                        index="5"
+                        fg="0,0,160"
+                        bold="1"/>
+                <!-- SCE_P_TRIPLE -->
+                <Style name="Triple single quote string"
+                        index="6"
+                        fg="128,0,0"/>
+                <!-- SCE_P_TRIPLEDOUBLE -->
+                <Style name="Triple double quote string"
+                        index="7"
+                        fg="128,0,128"/>
+                <Style name="Class name"
+                        index="8"
+                        fg="0,0,0"/>
+                <Style name="Definiton name"
+                        index="9"
+                        fg="0,160,0"
+                        bold="1"/>
+                <!-- SCE_P_OPERATOR -->
+                <Style name="Operator"
+                        index="10"
+                        fg="255,0,0"/>
+                <!-- SCE_P_IDENTIFIER -->
+                <Style name="Identifier"
+                        index="11"/>
+                <Style name="Comment block"
+                        index="12"
+                        fg="128,128,255"
+                        bold="1"/>
+                <Style name="String EOL"
+                        index="13"/>
+                <Style name="User keyword"
+                        index="14"/>
+                <!-- SCE_C_COMMENTLINEDOC -->
+                <Style name="Comment doc"
+                        index="15"
+                        fg="0,128,128"/>
+                <Style name="Selection"
+                        index="-99"
+                        bg="192,192,192"/>
+                <Style name="Active line"
+                        index="-98"
+                        bg="255,255,160"/>
+                <Style name="Breakpoint line"
+                        index="-2"
+                        bg="255,160,160"/>
+                <Style name="Debugger active line"
+                        index="-3"
+                        bg="160,160,255"/>
+                <Style name="Compiler error line"
+                        index="-4"
+                        bg="255,128,0"/>
+                <Style name="Matching brace highlight"
+                        index="34"
+                        bg="0,255,0"
+                        bold="1"
+                        underlined="1"/>
+                <Style name="No matching brace highlight"
+                        index="35"
+                        bg="255,0,0"/>
+                <Keywords>
+                        <!-- Keywords -->
+                        <Set index="0"
+                            value="addr and as asm atomic bind block break case cast const continue converter
+  discard distinct div do elif else end enum except export finally for from
+  generic if import in include interface is isnot iterator lambda let macro
+  method mixin mod nil not notin object of or out proc ptr raise ref return
+  shared shl static template try tuple type var when while with without xor
+  yield"/>
+                        <!-- Highlighted Functions: Procs -->
+                        <Set index="1"
+                            value="defined definedInScope new unsafeNew internalNew reset high low sizeof succ
+  pred inc dec newSeq len incl excl card ord chr ze ze64 toU8 toU16 toU32 abs
+  min max contains cmp setLen newString newStringOfCap add compileOption quit
+  shallowCopy del delete insert repr toFloat toBiggestFloat toInt toBiggestInt
+  addQuitProc substr zeroMem copyMem moveMem equalMem swap getRefcount clamp
+  isNil find contains pop each map GC_ref GC_unref echo debugEcho getTypeInfo
+  Open repopen Close EndOfFile readChar FlushFile readAll readFile writeFile
+  write readLine writeln getFileSize ReadBytes ReadChars readBuffer writeBytes
+  writeChars writeBuffer setFilePos getFilePos fileHandle cstringArrayToSeq
+  allocCStringArray deallocCStringArray atomicInc atomicDec compareAndSwap
+  setControlCHook writeStackTrace getStackTrace alloc alloc0 dealloc realloc
+  getFreeMem getTotalMem getOccupiedMem allocShared allocShared0 deallocShared
+  reallocShared IsOnStack GC_addCycleRoot GC_disable GC_enable GC_setStrategy
+  GC_enableMarkAndSweep GC_disableMarkAndSweep GC_fullCollect GC_getStatistics
+  nimDestroyRange getCurrentException getCurrentExceptionMsg onRaise likely
+  unlikely rawProc rawEnv finished slurp staticRead gorge staticExec rand
+  astToStr InstatiationInfo raiseAssert shallow compiles safeAdd locals"/>
+                        <!-- Highlighted Functions: Iterators -->
+                        <Set index="2"
+                            value="countdown countup items pairs fields fieldPairs lines"/>
+                        <!-- Highlighted Functions: Templates -->
+                        <Set index="3"
+                            value="accumulateResult newException CurrentSourcePath assert doAssert onFailedAssert
+  eval"/>
+                        <!-- Highlighted Functions: Threads -->
+                        <Set index="4"
+                            value="running joinThread joinThreads createThread threadId myThreadId"/>
+                        <!-- Highlighted Functions: Channels -->
+                        <Set index="5"
+                            value="send recv peek ready"/>
+                        <!-- Highlighted Types -->
+                        <Set index="6"
+                            value="int int8 int16 int32 int64 uint uint8 uint16 uint32 uint64 float float32
+  float64 bool char string cstring pointer Ordinal auto any TSignedInt
+  TUnsignedInt TInteger TOrdinal TReal TNumber range array openarray varargs
+  seq set TSlice TThread TChannel"/>
+                        <!-- Highlighted Meta Types -->
+                        <Set index="6"
+                            value="expr stmt typeDesc void"/>
+                        <!-- Highlighted Constants -->
+                        <Set index="7"
+                            value="on off isMainModule CompileDate CompileTime NimVersion NimMajor NimMinor
+  NimPatch cpuEndian hostOS hostCPU appType QuitSuccess QuitFailure inf neginf
+  nan"/>
+                </Keywords>
+                <SampleCode value="lexer_nim.sample"/>
+                <LanguageAttributes
+                    LineComment="#"
+                    DoxygenLineComment="##"
+                    StreamCommentStart="#["
+                    StreamCommentEnd="]#"
+                    DoxygenStreamCommentStart="##["
+                    DoxygenStreamCommentEnd="]##"
+                    BoxCommentStart="#[ "
+                    BoxCommentMid=" # "
+                    BoxCommentEnd=" ]#"
+                    CaseSensitive="0"
+                    LexerCommentStyles="1,12,15"
+                    LexerCharacterStyles="4"
+                    LexerStringStyles="3,6,7,11"/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="10" release="0" />
+    <Plugin name="copystrings">
+        <Value title="Copy Strings to clipboard" />
+        <Value version="1.00" />
+        <Value description="This plugin copies all the strings in the current editor, into the clipboard.
+Duplicated strings are removed." />
+        <Value author="Ricardo Garcia" />
+        <Value authorEmail="rick_g22 <at> yahoo <dot> com" />
+        <Value authorWebsite="http://www.codeblocks.org/" />
+        <Value thanksTo="The Code::Blocks team!" />
+        <Value license="wxWidgets" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

@@ -1,0 +1,142 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Code::Blocks new project wizard script
+//
+// Project: DLL (Dynamic Link Library)
+// Author:  Yiannis Mandravellos
+// Modified by: Biplab Kumar Modak
+//
+////////////////////////////////////////////////////////////////////////////////
+
+
+function BeginWizard()
+{
+    local wiz_type = Wizard.GetWizardType();
+
+    if (wiz_type == wizProject)
+    {
+        local intro_msg = _T("Welcome to the new DLL wizard!\n" +
+                             "This wizard will guide you to create a new DLL.\n\n" +
+                             "When you 're ready to proceed, please click \"Next\"...");
+
+        Wizard.AddInfoPage(_T("DllIntro"), intro_msg);
+        Wizard.AddProjectPathPage();
+        Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+    }
+    else if (wiz_type == wizTarget)
+    {
+        local intro_msg = _T("Welcome to the new DLL build target wizard!\n" +
+                             "This wizard will guide you to create a new DLL build target.\n\n" +
+                             "When you 're ready to proceed, please click \"Next\"...");
+        Wizard.AddInfoPage(_T("DllIntro"), intro_msg);
+        Wizard.AddBuildTargetPage(_T(""), false, true, _T(""), _T("*"), true);
+    }
+    else
+        print(wiz_type);
+}
+
+function GetFilesDir()
+{
+    local result = _T("dll/files");
+    return result;
+}
+
+function SetupProject(project)
+{
+    // Debug build target
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+        SetupTarget(target, true);
+
+    // Release build target
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+        SetupTarget(target, false);
+
+    return true;
+}
+
+function SetupTarget(target, is_debug)
+{
+    if (IsNull(target))
+        return false;
+
+    target.SetTargetType(ttDynamicLib);
+
+    local WizType = Wizard.GetWizardType();
+    local dll_file_name, dll_output_dir, dll_filename_with_path;
+    if (WizType == wizProject)
+    {
+        if (is_debug)
+            dll_output_dir = Wizard.GetDebugOutputDir();
+        else
+            dll_output_dir = Wizard.GetReleaseOutputDir();
+    }
+    else if (WizType == wizTarget)
+        dll_output_dir = Wizard.GetTargetOutputDir();
+    dll_file_name = target.SuggestOutputFilename();
+    dll_filename_with_path = dll_output_dir + dll_file_name;
+
+    target.SetOutputFilename(dll_filename_with_path);
+
+    // enable compiler warnings (project-wide)
+    WarningsOn(target, Wizard.GetCompilerID());
+
+    // Now define BUILD_DLL to export the functions
+    if (    GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc"))
+        ||  GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("dmc")))
+    {
+        target.AddCompilerOption(_T("-DBUILD_DLL"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("bcc")))
+    {
+        target.AddCompilerOption(_T("-DBUILD_DLL"));
+        target.AddCompilerOption(_T("-tWR")); // To use Dynamic RTL
+        target.AddLinkerOption(_T("-Gi")); // To create an import library
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
+    {
+        target.AddCompilerOption(_T("/DBUILD_DLL"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("ow")))
+    {
+        target.AddCompilerOption(_T("-dBUILD_DLL"));
+        target.AddCompilerOption(_T("-bt=nt"));
+        target.AddLinkerOption(_T("OPTION IMPLIB")); // To create an import library
+    }
+
+    // Add user32.lib for MessageBox()
+    target.AddLinkLib(_T("user32"));
+
+    if (is_debug)
+    {
+        // enable debugging symbols for this target
+        // DebugSymbolsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
+    }
+    else
+    {
+        // enable optimizations for this target
+        // OptimizationsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
+        OptimizationsOn(target, Wizard.GetCompilerID());
+    }
+
+    if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
+    {
+        if (is_debug)
+            target.AddCompilerOption(_T("/MDd"));
+        else
+            target.AddCompilerOption(_T("/MD"));
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8"))
+            || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc10")))
+        {
+            /* Incremental linking shall be set to NO to embed manifest in the following way.
+            * Visit http://msdn2.microsoft.com/en-us/library/ms235605(VS.80).aspx for more details.
+            */
+            target.AddLinkerOption(_T("/INCREMENTAL:NO"));
+            target.AddCommandsAfterBuild(_T("mt.exe /nologo /manifest \"") + dll_filename_with_path + _T(".manifest\" /outputresource:\"") + dll_filename_with_path + _T("\";2"));
+        }
+    }
+
+    return true;
+}

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler>
+<CodeBlocks_compiler name="GNU GCC Compiler for PowerPC (HighTec)"
+                     id="ppc-gcc"
+                     weight="68">
+    <Path type="master">
+        <Search envVar="PATH"
+                for="C"/>
+        <if platform="windows">
+            <Search registry="HKEY_LOCAL_MACHINE\Software\HighTec EDV-Systeme\PowerPC"
+                    value="InstallPath"/>
+            <Fallback path="C:\HighTec\PowerPC"/>
+        </if>
+        <else>
+            <Fallback path="/usr/local/ppc"/>
+        </else>
+    </Path>
+</CodeBlocks_compiler>

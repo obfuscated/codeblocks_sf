@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+		<Lexer name="Caml"
+				index="65"
+				filemasks="*.ml,*.mli,*.sml,*.thy">
+				<Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+				<Style name="Operator"
+						index="7"
+						fg="255,0,0"/>
+                <Style name="Number"
+						index="8"
+						fg="240,0,240"/>
+				<Style name="Character"
+						index="9"
+						fg="224,160,0"/>
+				<Style name="Identifier"
+						index="1"
+						fg="0,0,0"/>
+				<Style name="Tag Name"
+						index="2"
+						fg="0,160,0"/>
+				<Style name="Instruction word"
+						index="3"
+						fg="0,0,160"
+						bold="1"/>
+				<Style name="Builting Function"
+						index="4"
+						fg="0,160,0"/>
+				<Style name="Type"
+						index="5"
+						fg="160,0,0"/>
+                <Style name="Line number"
+                        index="6"
+                        fg="0,0,0"/>
+                <Style name="String"
+						index="11"
+						fg="0,0,255"/>
+				<Style name="Comment"
+						index="12,13"
+						fg="160,160,160"/>
+				<Style name="Comment (documentation)"
+						index="14,15"
+						fg="128,128,255"
+						bold="1"/>
+				<Style name="Breakpoint line"
+						index="-2"
+						bg="255,160,160"/>
+				<Style name="Debugger active line"
+						index="-3"
+						bg="160,160,255"/>
+				<Style name="Compiler error line"
+						index="-4"
+						bg="255,128,0"/>
+				<Keywords>
+                        <Set index="0"
+                            value="and as assert asr begin class constraint do done downto else end exception external false for fun function functor if in include inherit initializer land lazy let lor lsl lsr lxor match method mod module mutable new object of open or private rec sig struct then to true try type val virtual when while with"/>
+                        <Set index="1"
+                            value="option Some None ignore ref lnot succ pred"/>
+                        <Set index="2"
+                            value="array bool char float int list string unit"/>
+				</Keywords>
+				<SampleCode value="lexer_caml.sample"
+						breakpoint_line="20"
+						debug_line="22"
+						error_line="23"/>
+                <LanguageAttributes
+                    LineComment=""
+                    StreamCommentStart="(*"
+                    StreamCommentEnd="*)"
+                    BoxCommentStart="(* "
+                    BoxCommentMid=" * "
+                    BoxCommentEnd=" *)"
+                    CaseSensitive="1"/>
+		</Lexer>
+</CodeBlocks_lexer_properties>

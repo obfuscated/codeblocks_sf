@@ -1,0 +1,93 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Code::Blocks new project wizard script
+//
+// Project: SYS (Kernel Mode Driver)
+// Author:  Yiannis Mandravellos, Timo Kreuzer
+//
+////////////////////////////////////////////////////////////////////////////////
+
+
+function BeginWizard()
+{
+    local wiz_type = Wizard.GetWizardType();
+
+    if (wiz_type == wizProject)
+    {
+        local intro_msg = _T("Welcome to the new Kernel Mode Driver wizard!\n" +
+                             "This wizard will guide you to create a new Kernel Mode Driver.\n\n" +
+                             "When you 're ready to proceed, please click \"Next\"...");
+
+        Wizard.AddInfoPage(_T("SysIntro"), intro_msg);
+        Wizard.AddProjectPathPage();
+        Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+    }
+    else if (wiz_type == wizTarget)
+    {
+        local intro_msg = _T("Welcome to the new Kernel Mode Driver build target wizard!\n" +
+                             "This wizard will guide you to create a new Kernel Mode Driver build target.\n\n" +
+                             "When you 're ready to proceed, please click \"Next\"...");
+        Wizard.AddInfoPage(_T("SysIntro"), intro_msg);
+        Wizard.AddBuildTargetPage(_T(""), false, false, _T(""), _T("*"), true);
+    }
+    else
+        print(wiz_type);
+}
+
+function GetFilesDir()
+{
+    local result = _T("sys/files");
+    return result;
+}
+
+function SetupProject(project)
+{
+    // enable compiler warnings (project-wide)
+    WarningsOn(project, Wizard.GetCompilerID());
+
+    // Debug build target
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+        SetupTarget(target, true);
+
+    project.AddLinkLib(_T("ntoskrnl"));
+    project.AddLinkerOption(_T("-nostartfiles"));
+    project.AddLinkerOption(_T("-Wl,--nostdlib"));
+    project.AddLinkerOption(_T("-shared"));
+    project.AddLinkerOption(_T("-Wl,--entry,_DriverEntry@8"));
+    project.AddLinkerOption(_T("-Wl,--file-alignment,0x1000"));
+    project.AddLinkerOption(_T("-Wl,--section-alignment,0x1000"));
+    project.AddLinkerOption(_T("-Wl,--image-base,0x00010000"));
+
+    // Release build target
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+        SetupTarget(target, false);
+
+    return true;
+}
+
+function SetupTarget(target, is_debug)
+{
+    if (IsNull(target))
+        return false;
+
+    target.SetTargetType(ttNative);
+
+    if (is_debug)
+    {
+        // enable debugging symbols for this target
+        // DebugSymbolsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + target.SuggestOutputFilename());
+    }
+    else
+    {
+        // enable optimizations for this target
+        // OptimizationsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
+        OptimizationsOn(target, Wizard.GetCompilerID());
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + target.SuggestOutputFilename());
+    }
+
+    return true;
+}

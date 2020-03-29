@@ -1,0 +1,292 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <if platform="windows">
+        <Program name="C"         value="arm-linux-androideabi-gcc.exe"/>
+        <Program name="CPP"       value="arm-linux-androideabi-g++.exe"/>
+        <Program name="LD"        value="arm-linux-androideabi-g++.exe"/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="arm-linux-androideabi-ar.exe"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make.exe"/>
+    </if>
+    <else>
+        <Program name="C"         value="arm-linux-androideabi-gcc"/>
+        <Program name="CPP"       value="arm-linux-androideabi-g++"/>
+        <Program name="LD"        value="arm-linux-androideabi-g++"/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="arm-linux-androideabi-ar"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="ndk-build"/>
+    </else>
+
+    <Switch name="includeDirs"             value="-I"/>
+    <Switch name="libDirs"                 value="-L"/>
+    <Switch name="linkLibs"                value="-l"/>
+    <Switch name="defines"                 value="-D"/>
+    <Switch name="genericSwitch"           value="-"/>
+    <Switch name="objectExtension"         value="o"/>
+    <Switch name="needDependencies"        value="true"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value="lib"/>
+    <Switch name="libExtension"            value="a"/>
+    <Switch name="linkerNeedsLibPrefix"    value="false"/>
+    <Switch name="linkerNeedsLibExtension" value="false"/>
+
+    <Option name="Produce debugging symbols"
+            option="-g"
+            category="Debugging"
+            checkAgainst="-O -O1 -O2 -O3 -Os"
+            checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."
+            supersedes="-s"/>
+
+    <if platform="windows">
+        <Option name="Profile code when executed"
+                option="-pg"
+                category="Profiling"
+                additionalLibs="-pg -lgmon"
+                supersedes="-s"/>
+    </if>
+    <else>
+        <Option name="Profile code when executed"
+                option="-pg"
+                category="Profiling"
+                additionalLibs="-pg"
+                supersedes="-s"/>
+    </else>
+
+    <Common name="warnings"/>
+    <Category name="Warnings">
+        <Option name="Enable Effective-C++ warnings (thanks Scott Meyers)"
+                option="-Weffc++"/>
+        <Option name="Warn whenever a switch statement does not have a default case"
+                option="-Wswitch-default"/>
+        <Option name="Warn whenever a switch statement has an index of enumerated type and lacks a case for one or more of the named codes of that enumeration"
+                option="-Wswitch-enum"/>
+        <Option name="Warn if a user supplied include directory does not exist"
+                option="-Wmissing-include-dirs"/>
+        <Option name="Warn if a global function is defined without a previous declaration"
+                option="-Wmissing-declarations"/>
+        <Option name="Warn if the compiler detects that code will never be executed"
+                option="-Wunreachable-code"/>
+        <Option name="Warn if a function can not be inlined and it was declared as inline"
+                option="-Winline"/>
+        <Option name="Warn if floating point values are used in equality comparisons"
+                option="-Wfloat-equal"/>
+        <Option name="Warn if an undefined identifier is evaluated in an '#if' directive"
+                option="-Wundef"/>
+        <Option name="Warn whenever a pointer is cast such that the required alignment of the target is increased"
+                option="-Wcast-align"/>
+        <Option name="Warn if anything is declared more than once in the same scope"
+                option="-Wredundant-decls"/>
+        <Option name="Warn about unitialized variables which are initialized with themselves"
+                option="-Winit-self"/>
+        <Option name="Warn whenever a local variable shadows another local variable, parameter or global variable or whenever a built-in function is shadowed"
+                option="-Wshadow"/>
+        <Option name="Warn if a class has virtual functions but no virtual destructor"
+                option="-Wnon-virtual-dtor"/>
+        <Option name="Check calls to printf and scanf, etc., to make sure that the arguments supplied have types appropriate to the format string specified, and that the conversions specified in the format string make sense, included in -Wall."
+                option="-Wformat"/>
+        <Option name="If -Wformat is specified, also warn about uses of format functions that represent possible security problems."
+                option="-Werror=format-security"/>
+    </Category>
+
+    <Common name="optimization"/>
+    <Category name="Optimization">
+        <Option name="-fno-omit-frame-pointer"
+              option="-fno-omit-frame-pointer"
+              supersedes="-fomit-frame-pointer"/>
+
+        <Option name="Don't keep the frame pointer in a register for functions that don't need one"
+            option="-fomit-frame-pointer"
+            checkAgainst="-g -ggdb"
+            checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."/>
+    </Category>
+
+    <Category name="ARM CPU architecture specific">
+        <Option name="Generate stack frame even if unnecessary"
+                option="-mapcs-frame"
+                supersedes="-mno-apcs-frame"/>
+        <Option name="-mno-apcs-frame"
+                option="-mno-apcs-frame"
+                supersedes="-mapcs-frame"/>
+        <Option name="-mabi=apcs-gnu"
+                option="-mabi=apcs-gnu"
+                supersedes="-mabi=atpcs -mabi=aapcs -mabi=aapcs-linux -mabi=iwmmxt"/>
+        <Option name="-mabi=atpcs"
+                option="-mabi=atpcs"
+                supersedes="-mabi=apcs-gnu -mabi=aapcs -mabi=aapcs-linux -mabi=iwmmxt"/>
+        <Option name="-mabi=aapcs"
+                option="-mabi=aapcs"
+                supersedes="-mabi=apcs-gnu -mabi=atpcs -mabi=aapcs-linux -mabi=iwmmxt"/>
+        <Option name="-mabi=aapcs-linux"
+                option="-mabi=aapcs-linux"
+                supersedes="-mabi=apcs-gnu -mabi=atpcs -mabi=aapcs -mabi=iwmmxt"/>
+        <Option name="-mabi=iwmmxt"
+                option="-mabi=iwmmxt"
+                supersedes="-mabi=apcs-gnu -mabi=atpcs -mabi=aapcs -mabi=aapcs-linux"/>
+        <Option name="-mapcs-stack-check"
+                option="-mapcs-stack-check"
+                supersedes="-mno-apcs-stack-check"/>
+        <Option name="-mno-apcs-stack-check"
+                option="-mno-apcs-stack-check"
+                supersedes="-mapcs-stack-check"/>
+        <Option name="-mapcs-float"
+                option="-mapcs-float"
+                supersedes="-mno-apcs-float"/>
+        <Option name="-mno-apcs-float"
+                option="-mno-apcs-float"
+                supersedes="-mapcs-float"/>
+        <Option name="-mapcs-reentrant"
+                option="-mapcs-reentrant"
+                supersedes="-mno-apcs-reentrant"/>
+        <Option name="-mno-apcs-reentrant"
+                option="-mno-apcs-reentrant"
+                supersedes="-mapcs-reentrant"/>
+        <Option name="-msched-prolog"
+                option="-msched-prolog"
+                supersedes="-mno-sched-prolog"/>
+        <Option name="Prevent the reordering of instructions in the function prolog"
+                option="-mno-sched-prolog"
+                supersedes="-msched-prolog"/>
+        <Option name="Generate code for little-endian processors"
+                option="-mlittle-endian"
+                supersedes="-mbig-endian"/>
+        <Option name="Generate code for big-endian processors"
+                option="-mbig-endian"
+                supersedes="-mlittle-endian"/>
+        <Option name="-mwords-little-endian"
+                option="-mwords-little-endian"/>
+        <Option name="-msoft-float"
+                option="-msoft-float"
+                supersedes="-mhard-float"/>
+        <Option name="-mhard-float"
+                option="-mhard-float"
+                supersedes="-msoft-float"/>
+        <Option name="-mfloat-abi=softfp"
+                option="-mfloat-abi=softfp"
+                supersedes="-msoft-float -mhard-float"/>
+        <Option name="-mfpe"
+                option="-mfpe"/>
+        <Option name="Generate code supporting calls between the ARM and Thumb instruction sets"
+                option="-mthumb-interwork"
+                supersedes="-mno-thumb-interwork -marm -mthumb"/>
+        <Option name="-mno-thumb-interwork"
+                option="-mno-thumb-interwork"
+                supersedes="-mthumb-interwork"/>
+        <Option name="'fpa' floating point unit"
+                option="-mfpu=fpa"
+                supersedes="-mfpu=fpe2 -mfpu=fpe3 -mfpu=maverick -mfpu=vfp -mfpu=vfpv3 -mfpu=vfpv3-d16 -mfpu=neon"/>
+        <Option name="'fpe2' floating point unit"
+                option="-mfpu=fpe2"
+                supersedes="-mfpu=fpa -mfpu=fpe3 -mfpu=maverick -mfpu=vfp -mfpu=vfpv3 -mfpu=vfpv3-d16 -mfpu=neon"/>
+        <Option name="'fpe3' floating point unit"
+                option="-mfpu=fpe3"
+                supersedes="-mfpu=fpa -mfpu=fpe2 -mfpu=maverick -mfpu=vfp -mfpu=vfpv3 -mfpu=vfpv3-d16 -mfpu=neon"/>
+        <Option name="'maverick' floating point unit"
+                option="-mfpu=maverick"
+                supersedes="-mfpu=fpa -mfpu=fpe2 -mfpu=fpe3 -mfpu=vfp -mfpu=vfpv3 -mfpu=vfpv3-d16 -mfpu=neon"/>
+        <Option name="'vfp' floating point unit"
+                option="-mfpu=vfp"
+                supersedes="-mfpu=fpa -mfpu=fpe2 -mfpu=fpe3 -mfpu=maverick -mfpu=vfpv3 -mfpu=vfpv3-d16 -mfpu=neon"/>
+        <Option name="'vfpv3' floating point unit"
+                option="-mfpu=vfpv3"
+                supersedes="-mfpu=fpa -mfpu=fpe2 -mfpu=fpe3 -mfpu=maverick -mfpu=vfp -mfpu=vfpv3-d16 -mfpu=neon"/>
+        <Option name="'vfpv3-d16' floating point unit"
+                option="-mfpu=vfpv3-d16"
+                supersedes="-mfpu=fpa -mfpu=fpe2 -mfpu=fpe3 -mfpu=maverick -mfpu=vfp -mfpu=vfpv3 -mfpu=neon"/>
+        <Option name="'neon' floating point unit"
+                option="-mfpu=neon"
+                supersedes="-mfpu=fpa -mfpu=fpe2 -mfpu=fpe3 -mfpu=maverick -mfpu=vfp -mfpu=vfpv3 -mfpu=vfpv3-d16"/>
+        <Option name="Round structure and union size up to a multiple of 8 bits"
+                option="-mstructure-size-boundary=8"
+                supersedes="-mstructure-size-boundary=32 -mstructure-size-boundary=64"/>
+        <Option name="Round structure and union size up to a multiple of 32 bits"
+                option="-mstructure-size-boundary=32"
+                supersedes="-mstructure-size-boundary=8 -mstructure-size-boundary=64"/>
+        <Option name="Round structure and union size up to a multiple of 64 bits"
+                option="-mstructure-size-boundary=64"
+                supersedes="-mstructure-size-boundary=8 -mstructure-size-boundary=32"/>
+        <Option name="Generate a call to the function abort at the end of a noreturn function"
+                option="-mabort-on-noreturn"/>
+        <Option name="-mlong-calls"
+                option="-mlong-calls"
+                supersedes="-mno-long-calls"/>
+        <Option name="-mno-long-calls"
+                option="-mno-long-calls"
+                supersedes="-mlong-calls"/>
+        <Option name="-mnop-fun-dllimport"
+                option="-mnop-fun-dllimport"/>
+        <Option name="-mpoke-function-name"
+                option="-mpoke-function-name"/>
+        <Option name="Generate code that executes in Thumb state"
+                option="-mthumb"
+                supersedes="-marm -mthumb-interwork"/>
+        <Option name="Generate code that executes in ARM state"
+                option="-marm"
+                supersedes="-mthumb -mthumb-interwork"/>
+     </Category>
+
+    <Category name="Other">
+        <Option name="-fpic"
+                option="-fpic"/>
+        <Option name="-ffunction-sections"
+                option="-ffunction-sections"/>
+        <Option name="-funwind-tables"
+                option="-funwind-tables"/>
+        <Option name="-fstack-protector"
+                option="-fstack-protector"/>
+        <Option name="-no-canonical-prefixes"
+                option="-no-canonical-prefixes"/>
+        <Option name="-fno-exceptions"
+                option="-fno-exceptions"/>
+        <Option name="-fno-rtti"
+                option="-fno-rtti"/>
+        <Option name="No exec stack"
+              option="-Wa,--noexecstack"/>
+        <Option name="Like -MD except mention only user header files, not system header files."
+              option="-MMD"/>
+        <Option name="This option instructs CPP to add a phony target for each dependency other than the main file, causing each to depend on nothing."
+              option="-MP"/>
+        <Option name="-fno-strict-aliasing"
+              option="-fno-strict-aliasing"/>
+    </Category>
+
+    <Category name="ARM CPU architecture derivatives"
+              exclusive="true">
+        <Option name="Armeabi-v7a"
+                option="-march=armv7-a"/>
+    </Category>
+
+    <Command name="CompileObject"
+             value="$compiler $options $includes -c $file -o $object"/>
+    <Command name="GenDependencies"
+             value="$compiler -MM $options -MF $dep_object -MT $object $includes $file"/>
+    <Command name="CompileResource"
+             value="$rescomp -i $file -J rc -o $resource_output -O coff $res_includes"/>
+    <Command name="LinkConsoleExe"
+             value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+    <if platform="windows">
+        <Command name="LinkExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs -mwindows"/>
+        <Command name="LinkDynamic"
+                 value="$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output -Wl,--dll $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+    </if>
+    <else>
+        <Command name="LinkExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+        <Command name="LinkDynamic"
+                 value="$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+    </else>
+    <Command name="LinkNative"
+             value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+    <Command name="LinkStatic"
+             value="$lib_linker -r -s $static_output $link_objects"/>
+    <Common name="cmds"/>
+
+    <Common name="re"/>
+
+    <Common name="sort"/>
+</CodeBlocks_compiler_options>

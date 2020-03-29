@@ -1,0 +1,159 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <Program name="C"         value="lcc.exe"/>
+    <Program name="CPP"       value="lcc.exe"/>
+    <Program name="LD"        value="lcclnk.exe"/>
+    <Program name="DBGconfig" value=""/>
+    <Program name="LIB"       value="lcclib.exe"/>
+    <Program name="WINDRES"   value="lrc.exe"/>
+    <Program name="MAKE"      value="make.exe"/>
+
+    <Switch name="includeDirs"             value="-I"/>
+    <Switch name="libDirs"                 value="-L"/>
+    <Switch name="linkLibs"                value=""/>
+    <Switch name="defines"                 value="-D"/>
+    <Switch name="genericSwitch"           value="-"/>
+    <Switch name="objectExtension"         value="obj"/>
+    <Switch name="needDependencies"        value="true"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value=""/>
+    <Switch name="libExtension"            value="lib"/>
+    <Switch name="linkerNeedsLibPrefix"    value="false"/>
+    <Switch name="linkerNeedsLibExtension" value="true"/>
+
+    <Category name="Debugging">
+        <Option name="Generate the debugging information."
+                option="-g2"
+                checkAgainst="-O"
+                checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."/>
+        <Option name="Arrange for function stack tracing. If a trap occurs, the function stack will be displayed."
+                option="-g3"
+                checkAgainst="-O"
+                checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."/>
+        <Option name="Arrange for function stack and line number tracing."
+                option="-g4"
+                checkAgainst="-O"
+                checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."/>
+        <Option name="Arrange for function stack, line number, and return call stack corruption tracing."
+                option="-g5"
+                checkAgainst="-O"
+                checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."/>
+    </Category>
+
+    <Option name="Inject code into the generated program to measure execution time. Incompatible with debug level higher than 2!"
+            option="-profile"/>
+    <Option name="All warnings will be active"
+            option="-A"/>
+    <Option name="Check the given source for errors. No object file is generated."
+            option="-check"/>
+    <Option name="No warnings will be emitted. Errors will be still printed."
+            option="-nw"/>
+    <Option name="Warn when a local variable shadows a global one."
+            option="-shadows"/>
+    <Option name="Warns about unused assignments and suppresses the dead code."
+            option="-unused"/>
+    <Option name="Generate code to test for overflow for all additions, subtractions and multiplications."
+            option="-overflowcheck"/>
+
+    <Category name="Optimization">
+        <Option name="Optimize the output. This activates the peephole optimizer."
+                option="-O"/>
+        <Option name="Enable Pentium III instructions."
+                option="-p6"/>
+        <Option name="The inline directive is ignored."
+                option="-fno-inline"/>
+        <Option name="Use declarations for lcclibc.dll. Don't forget the -dynamic option for the linker!"
+                option="-libcdll"/>
+        <Option name="Set the default alignment in structures to no alignment at all."
+                option="-Zp1"
+                supersedes="-Zp2 -Zp4 -Zp8 -Zp16"/>
+        <Option name="Set the default alignment in structures to 2."
+                option="-Zp2"
+                supersedes="-Zp1 -Zp4 -Zp8 -Zp16"/>
+        <Option name="Set the default alignment in structures to 4."
+                option="-Zp4"
+                supersedes="-Zp1 -Zp2 -Zp8 -Zp16"/>
+        <Option name="Set the default alignment in structures to 8."
+                option="-Zp8"
+                supersedes="-Zp1 -Zp2 -Zp4 -Zp16"/>
+        <Option name="Set the default alignment in structures to 16."
+                option="-Zp16"
+                supersedes="-Zp1 -Zp2 -Zp4 -Zp8"/>
+    </Category>
+
+    <Category name="Miscellaneous">
+        <Option name="Disallow the language extensions of lcc-win32."
+                option="-ansic"/>
+        <Option name="Print in standard output each include file recursively."
+                option="-M1"/>
+        <Option name="Do not query the registry for the lib path."
+                option="-noregistrylookup"/>
+        <Option name="Do not use underscores for name mangling (pass this to the linker!)."
+                option="-nounderscore"/>
+    </Category>
+
+    <Command name="CompileObject"
+             value="$compiler -c $includes $options $file -Fo$object"/>
+    <Command name="GenDependencies"
+             value=""/>
+    <Command name="CompileResource"
+             value="$rescomp $res_includes $file -fo$resource_output"/>
+    <Command name="LinkExe"
+             value="$linker $libdirs $link_options $link_objects $link_resobjects $libs -o $exe_output"/>
+    <Command name="LinkConsoleExe"
+             value="$linker -subsystem console $libdirs $link_options $link_objects $link_resobjects $libs -o $exe_output"/>
+    <Command name="LinkDynamic"
+             value="$linker -dll $libdirs $link_options $link_objects $link_resobjects $libs -o $exe_output"/>
+    <Command name="LinkStatic"
+             value="$lib_linker $link_objects $link_resobjects -OUT:$static_output"/>
+    <Command name="LinkNative"
+             value="$linker -subsystem console $libdirs $link_options $link_objects $link_resobjects $libs -o $exe_output"/>
+    <Common name="cmds"/>
+
+    <RegEx name="Preprocessor error"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[cpp:[ \t]"?([][{}() \t#%$~[:alnum:]&_:+/\.-]+)"?:([0-9]+)[ \t](.*)]]>
+    </RegEx>
+    <RegEx name="Compiler warning"
+           type="warning"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[[Ww]arning[ \t]"?([][{}() \t#%$~[:alnum:]&_:+/\.-]+)"?:[ \t]([0-9]+)[ \t]+(.*)]]>
+    </RegEx>
+    <RegEx name="Compiler error"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[[Ee]rror[ \t]"?([][{}() \t#%$~[:alnum:]&_:+/\.-]+)"?:[ \t]([0-9]+)[ \t]+(.*)]]>
+    </RegEx>
+    <RegEx name="Linker error"
+           type="error"
+           msg="1;2"
+           file="2">
+        <![CDATA[(cannot open)[ \t]"?([][{}() \t#%$~[:alnum:]&_:+/\.-]+)"?]]>
+    </RegEx>
+    <RegEx name="Undefined reference"
+           type="error"
+           msg="2"
+           file="1">
+        <![CDATA["?([][{}() \t#%$~[:alnum:]&_:+/\.-]+)"?[ \t].text:[ \t](undefined reference.*)]]>
+    </RegEx>
+    <RegEx name="General warning"
+           type="warning"
+           msg="1">
+        <![CDATA[([Ww]arning[ \t].*)]]>
+    </RegEx>
+    <RegEx name="General error"
+           type="error"
+           msg="1">
+        <![CDATA[([Ee]rror[ \t].*)]]>
+    </RegEx>
+</CodeBlocks_compiler_options>

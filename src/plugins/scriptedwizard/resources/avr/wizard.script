@@ -1,0 +1,572 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Code::Blocks new project wizard script
+//
+// Project: Atmel AVR project
+// Author:  Brian Sidebotham
+// Modified: H. Metin OZER
+//
+////////////////////////////////////////////////////////////////////////////////
+
+// Global Vars
+Processor <- _T("");     // The chosen processor
+AvrHex <- false;         // produce Hex file from ELF output ?
+AvrSrec <- false;              // produce Motorola S-Record files?
+AvrBin <- false;               // produce Binary image files?
+AvrExt <- false;         // produce extra files .fuse .lock .sig etc...
+AvrLss <- false;         // produce extended list file from ELF output?
+AvrMap <- false;         // produce Symbol Map file from ELF output?
+AvrExtMem <- false;      // Locate .data in on-board SRAM, or external SRAM
+AvrExtMemAddr <- ""      // The external memory address
+AvrSize <- false;        // Run avr-size after the build
+AvrF_CPU <- false;       // Define F_CPU?
+AvrF_CPUValue <- _T(""); // F_CPU textual value
+Programmer <- _T("");    // Avrdude 'programmer-id'
+Debugger <- _T("");      // Avarice debugger choice
+DebuggerCon <- _T("");   // Avarice debugger connection type
+
+function BeginWizard()
+{
+    local wiz_type = Wizard.GetWizardType();
+
+    if (wiz_type == wizProject)
+    {
+        local intro_msg = _T("Welcome to the new Atmel AVR project wizard!\n" +
+                             "This wizard will guide you to create a new Atmel AVR project.\n\n" +
+                             "When you 're ready to proceed, please click \"Next\"...");
+
+        Wizard.AddInfoPage(_T("AtmelAVRIntro"), intro_msg);
+        Wizard.AddProjectPathPage();
+        Wizard.AddCompilerPage(_T("GNU AVR GCC Compiler"), _T("avr*"), false, true);
+        Wizard.AddPage(_T("processorChoice"));
+        //Wizard.AddPage(_T("programmerChoice"));
+    }
+    else
+        print(wiz_type);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Processor choice page
+////////////////////////////////////////////////////////////////////////////////
+
+
+function OnEnter_processorChoice(fwd)
+{
+    if (fwd)
+    {
+        Wizard.SetComboboxSelection(_T("comboboxProc"), ConfigManager.Read(_T("/avr_project_wizard/processor"), 0));
+    }
+    return true;
+}
+
+function OnLeave_processorChoice(fwd)
+{
+    if (fwd)
+    {
+        Processor = Wizard.GetComboboxStringSelection(_T("comboboxProc"));
+        AvrHex = Wizard.IsCheckboxChecked(_T("checkboxHex"));
+        AvrSrec = Wizard.IsCheckboxChecked(_T("checkboxSrec"));
+        AvrBin = Wizard.IsCheckboxChecked(_T("checkboxBin"));
+        AvrExt = Wizard.IsCheckboxChecked(_T("checkboxExt"));
+        AvrMap = Wizard.IsCheckboxChecked(_T("checkboxMap"));
+        AvrLss = Wizard.IsCheckboxChecked(_T("checkboxLss"));
+        AvrExtMem = Wizard.IsCheckboxChecked(_T("checkboxExtMem"));
+        AvrExtMemAddr = Wizard.GetTextControlValue(_T("textctrlExtMem"));
+        AvrSize = Wizard.IsCheckboxChecked(_T("checkboxAvrSize"));
+        AvrF_CPU = Wizard.IsCheckboxChecked(_T("checkboxF_CPU"));
+        AvrF_CPUValue = Wizard.GetTextControlValue(_T("textctrlF_CPU"));
+
+        ConfigManager.Write(_T("/avr_project_wizard/processor"), Wizard.GetComboboxSelection(_T("comboboxProc")));
+    }
+    return true;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Processor choice page
+////////////////////////////////////////////////////////////////////////////////
+
+function OnLeave_programmerChoice(fwd)
+{
+    if (fwd)
+    {
+        Programmer = Wizard.GetComboboxStringSelection(_T("comboboxProg"));
+        Debugger = Wizard.GetComboboxStringSelection(_T("comboboxDbgr"));
+        DebuggerCon = Wizard.GetComboboxStringSelection(_T("comboboxDbgrCon"));
+    }
+    return true;
+}
+
+// table with information about fuse bytes
+function GetFuseBytes()
+{
+    local part = Processor;
+    local parts  = ::wxArrayString();
+    local fuses = ::wxArrayString();
+
+    parts.Add(_T("at43usb320"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("at43usb355"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("at76c711"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("at86rf401"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("at90c8534"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("at90can128"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("at90can32"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("at90can64"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("at90pwm1"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("at90pwm161"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("at90pwm2"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("at90pwm216"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("at90pwm2b"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("at90pwm3"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("at90pwm316"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("at90pwm3b"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("at90pwm81"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("at90s1200"),1); fuses.Add(_T("[LOW]"),1);
+    parts.Add(_T("at90s2313"),1); fuses.Add(_T("[LOW]"),1);
+    parts.Add(_T("at90s2323"),1); fuses.Add(_T("[LOW]"),1);
+    parts.Add(_T("at90s2333"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("at90s2343"),1); fuses.Add(_T("[LOW]"),1);
+    parts.Add(_T("at90s4414"),1); fuses.Add(_T("[LOW]"),1);
+    parts.Add(_T("at90s4433"),1); fuses.Add(_T("[LOW]"),1);
+    parts.Add(_T("at90s4434"),1); fuses.Add(_T("[LOW]"),1);
+    parts.Add(_T("at90s8515"),1); fuses.Add(_T("[LOW]"),1);
+    parts.Add(_T("at90s8535"),1); fuses.Add(_T("[LOW]"),1);
+    parts.Add(_T("at90scr100"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("at90usb1286"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("at90usb1287"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("at90usb162"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("at90usb646"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("at90usb647"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("at90usb82"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("at94k"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("ata6289"),1); fuses.Add(_T("[LOW:HIGH]"),1);
+    parts.Add(_T("atmega103"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega128"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega1280"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega1281"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega1284p"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega128rfa1"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega16"),1); fuses.Add(_T("[LOW:HIGH]"),1);
+    parts.Add(_T("atmega161"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega162"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega163"),1); fuses.Add(_T("[LOW:HIGH]"),1);
+    parts.Add(_T("atmega164a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega164p"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega165"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega165a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega165p"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega168"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega168a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega168p"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega169"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega169a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega169p"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega169pa"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega16a"),1); fuses.Add(_T("[LOW:HIGH]"),1);
+    parts.Add(_T("atmega16hva"),1); fuses.Add(_T("[LOW]"),1);
+    parts.Add(_T("atmega16hva2"),1); fuses.Add(_T("[LOW:HIGH]"),1);
+    parts.Add(_T("atmega16hvb"),1); fuses.Add(_T("[LOW:HIGH]"),1);
+    parts.Add(_T("atmega16hvbrevb"),1); fuses.Add(_T("[LOW:HIGH]"),1);
+    parts.Add(_T("atmega16m1"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega16u2"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega16u4"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega2560"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega2561"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega32"),1); fuses.Add(_T("[LOW:HIGH]"),1);
+    parts.Add(_T("atmega323"),1); fuses.Add(_T("[LOW:HIGH]"),1);
+    parts.Add(_T("atmega324a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega324p"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega324pa"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega325"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega3250"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega3250a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega3250p"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega3250pa"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega325a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega325p"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega325pa"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega328"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega328p"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega329"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega3290"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega3290a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega3290p"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega3290pa"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega329a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega329p"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega329pa"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega32c1"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega32hvb"),1); fuses.Add(_T("[LOW:HIGH]"),1);
+    parts.Add(_T("atmega32hvbrevb"),1); fuses.Add(_T("[LOW:HIGH]"),1);
+    parts.Add(_T("atmega32m1"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega32u2"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega32u4"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega32u6"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega406"),1); fuses.Add(_T("[LOW:HIGH]"),1);
+    parts.Add(_T("atmega48"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega48a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega48p"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega48pa"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega64"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega640"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega644"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega644a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega644p"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega644pa"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega645"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega6450"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega6450a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega6450p"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega645a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega645p"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega649"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega6490"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega6490a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega6490p"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega649a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega649p"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega64c1"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega64hve"),1); fuses.Add(_T("[LOW:HIGH]"),1);
+    parts.Add(_T("atmega64m1"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega8"),1); fuses.Add(_T("[LOW:HIGH]"),1);
+    parts.Add(_T("atmega8515"),1); fuses.Add(_T("[LOW:HIGH]"),1);
+    parts.Add(_T("atmega8535"),1); fuses.Add(_T("[LOW:HIGH]"),1);
+    parts.Add(_T("atmega88"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega88a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega88p"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega88pa"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("atmega8hva"),1); fuses.Add(_T("[LOW]"),1);
+    parts.Add(_T("atmega8u2"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny10"),1); fuses.Add(_T("[BYTE0]"),1);
+    parts.Add(_T("attiny11"),1); fuses.Add(_T("[LOW]"),1);
+    parts.Add(_T("attiny12"),1); fuses.Add(_T("[LOW]"),1);
+    parts.Add(_T("attiny13"),1); fuses.Add(_T("[LOW:HIGH]"),1);
+    parts.Add(_T("attiny13a"),1); fuses.Add(_T("[LOW:HIGH]"),1);
+    parts.Add(_T("attiny15"),1); fuses.Add(_T("[LOW]"),1);
+    parts.Add(_T("attiny1634"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("attiny167"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny20"),1); fuses.Add(_T("[BYTE0]"),1);
+    parts.Add(_T("attiny22"),1); fuses.Add(_T("[LOW]"),1);
+    parts.Add(_T("attiny2313"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny2313a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny24"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny24a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny25"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny26"),1); fuses.Add(_T("[LOW:HIGH]"),1);
+    parts.Add(_T("attiny261"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny261a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny28"),1); fuses.Add(_T("[LOW]"),1);
+    parts.Add(_T("attiny4"),1); fuses.Add(_T("[BYTE0]"),1);
+    parts.Add(_T("attiny40"),1); fuses.Add(_T("[BYTE0]"),1);
+    parts.Add(_T("attiny4313"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny43u"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny44"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny44a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny45"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny461"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny461a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny48"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny5"),1); fuses.Add(_T("[BYTE0]"),1);
+    parts.Add(_T("attiny84"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny84a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny85"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny861"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny861a"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny87"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny88"),1); fuses.Add(_T("[LOW:HIGH:EXTENDED]"),1);
+    parts.Add(_T("attiny9"),1); fuses.Add(_T("[BYTE0]"),1);
+    parts.Add(_T("atxmega128a1"),1); fuses.Add(_T("[FUSE0:FUSE1:FUSE2:FUSE3:FUSE4]"),1);
+    parts.Add(_T("atxmega128a1u"),1); fuses.Add(_T("[FUSE0:FUSE1:FUSE2:FUSE3:FUSE4]"),1);
+    parts.Add(_T("atxmega128a3"),1); fuses.Add(_T("[FUSE0:FUSE1:FUSE2:FUSE3:FUSE4]"),1);
+    parts.Add(_T("atxmega128b1"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("atxmega128d3"),1); fuses.Add(_T("[FUSE0:FUSE1:FUSE2:FUSE3:FUSE4]"),1);
+    parts.Add(_T("atxmega16a4"),1); fuses.Add(_T("[FUSE0:FUSE1:FUSE2:FUSE3:FUSE4]"),1);
+    parts.Add(_T("atxmega16d4"),1); fuses.Add(_T("[FUSE0:FUSE1:FUSE2:FUSE3:FUSE4]"),1);
+    parts.Add(_T("atxmega16x1"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("atxmega192a3"),1); fuses.Add(_T("[FUSE0:FUSE1:FUSE2:FUSE3:FUSE4]"),1);
+    parts.Add(_T("atxmega192d3"),1); fuses.Add(_T("[FUSE0:FUSE1:FUSE2:FUSE3:FUSE4]"),1);
+    parts.Add(_T("atxmega256a3"),1); fuses.Add(_T("[FUSE0:FUSE1:FUSE2:FUSE3:FUSE4]"),1);
+    parts.Add(_T("atxmega256a3b"),1); fuses.Add(_T("[FUSE0:FUSE1:FUSE2:FUSE3:FUSE4]"),1);
+    parts.Add(_T("atxmega256a3bu"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("atxmega256d3"),1); fuses.Add(_T("[FUSE0:FUSE1:FUSE2:FUSE3:FUSE4]"),1);
+    parts.Add(_T("atxmega32a4"),1); fuses.Add(_T("[FUSE0:FUSE1:FUSE2:FUSE3:FUSE4]"),1);
+    parts.Add(_T("atxmega32d4"),1); fuses.Add(_T("[FUSE0:FUSE1:FUSE2:FUSE3:FUSE4]"),1);
+    parts.Add(_T("atxmega32x1"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("atxmega64a1"),1); fuses.Add(_T("[FUSE0:FUSE1:FUSE2:FUSE3:FUSE4]"),1);
+    parts.Add(_T("atxmega64a1u"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("atxmega64a3"),1); fuses.Add(_T("[FUSE0:FUSE1:FUSE2:FUSE3:FUSE4]"),1);
+    parts.Add(_T("atxmega64d3"),1); fuses.Add(_T("[FUSE0:FUSE1:FUSE2:FUSE3:FUSE4]"),1);
+    parts.Add(_T("avr1"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("avr2"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("avr25"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("avr3"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("avr31"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("avr35"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("avr4"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("avr5"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("avr51"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("avr6"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("avrtiny10"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("avrxmega1"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("avrxmega2"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("avrxmega3"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("avrxmega4"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("avrxmega5"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("avrxmega6"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("avrxmega7"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("m3000"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("m3000f"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("m3000s"),1); fuses.Add(_T("[]"),1);
+    parts.Add(_T("m3001b"),1); fuses.Add(_T("[]"),1);
+
+    part = part.Lower();
+    for ( local i = 0 ; i < parts.GetCount() ; i+=1)
+    {
+        if ( part.Matches( parts.Item(i) ) )
+            return fuses.Item(i);
+    }
+    return _T("[]");
+}
+
+// -----------------------------------------------------------------------------
+// each time, return a string of the form "filename.ext;contents"
+// you can change the return string based on <file_index>
+// return an empty string to denote that no more files are to be generated
+function GetGeneratedFile(file_index)
+{
+    if (file_index == 0)
+    {
+        local path = Wizard.FindTemplateFile(_T("avr/files/main.c"));
+        return _T("main.c") + _T(";") + IO.ReadFileContents(path);
+    }
+    else if ( file_index == 1)
+    {
+        if (AvrExt)
+        {
+            local fuses = GetFuseBytes();
+
+            local path = ::wxString();
+            if (fuses.Matches(_T("[LOW]")) )
+                path = Wizard.FindTemplateFile(_T("avr/files/FuseLow.c"));
+            else if (fuses.Matches(_T("[LOW:HIGH]")) )
+                path = Wizard.FindTemplateFile(_T("avr/files/FuseHigh.c"));
+            else if (fuses.Matches(_T("[LOW:HIGH:EXTENDED]")) )
+                path = Wizard.FindTemplateFile(_T("avr/files/FuseExt.c"));
+            else if (fuses.Matches(_T("[FUSE0:FUSE1:FUSE2:FUSE3:FUSE4]")) )
+                path = Wizard.FindTemplateFile(_T("avr/files/FuseFuse0to4.c"));
+            else if (fuses.Matches(_T("[BYTE0]")))
+                Message(_("This processor has no fuses."), _("Warning"), wxICON_WARNING);
+            else if (fuses.Matches(_T("[]")) )
+                Message(_("Don't know how to generate fuses section for this processor."), _("Warning"),
+                        wxICON_WARNING);
+
+            if (!path.IsEmpty())
+                return _T("fuse.c") + _T(";") + IO.ReadFileContents(path);
+        }
+    }
+
+    return _T(""); // no more generated files
+}
+
+function GetFilesDir()
+{
+    local result = _T("");
+    return result;
+}
+
+// setup the already created project
+function SetupProject(project)
+{
+    // Linker options
+    local lo_map = ::wxString();
+    local lo_extmem = ::wxString();
+
+    // Post Build steps
+    local pb_avrsize = ::wxString();
+
+    local pb_eephex = ::wxString();
+    local pb_fusehex = ::wxString();
+    local pb_lockhex = ::wxString();
+    local pb_sighex = ::wxString();
+    local pb_hex = ::wxString();
+    local pb_lfshex = ::wxString();
+    local pb_hfshex = ::wxString();
+    local pb_efshex = ::wxString();
+
+    local pb_eepbin = ::wxString();
+    local pb_fusebin = ::wxString();
+    local pb_lockbin = ::wxString();
+    local pb_sigbin = ::wxString();
+    local pb_bin = ::wxString();
+
+    local pb_eepsrec = ::wxString();
+    local pb_fusesrec = ::wxString();
+    local pb_locksrec = ::wxString();
+    local pb_sigsrec = ::wxString();
+    local pb_srec = ::wxString();
+
+    local pb_lss = ::wxString();
+
+
+    local AvrExtFuse = AvrExt;
+    local fuses = GetFuseBytes();
+    if (fuses.Matches(_T("[BYTE0]")))
+        AvrExtFuse = false;
+    if (fuses.Matches(_T("[]")) )
+        AvrExtFuse = false;
+
+
+    // Post build commands
+    pb_eephex = _T("avr-objcopy --no-change-warnings -j .eeprom --change-section-lma .eeprom=0 -O ihex $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).eep");
+    pb_fusehex = _T("avr-objcopy --no-change-warnings -j .fuse --change-section-lma .fuse=0 -O ihex $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).fuse");
+    pb_lockhex = _T("avr-objcopy --no-change-warnings -j .lock --change-section-lma .lock=0 -O ihex $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).lock");
+    pb_sighex = _T("avr-objcopy --no-change-warnings -j .signature --change-section-lma .signature=0 -O ihex $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).sig");
+    pb_hex = _T("avr-objcopy -R .eeprom -R .fuse -R .lock -R .signature -O ihex $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).hex");
+    pb_lfshex = _T("srec_cat $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).fuse -Intel -crop 0x00 0x01 -offset  0x00 -O $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).lfs -Intel ");
+    pb_hfshex = _T("srec_cat $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).fuse -Intel -crop 0x01 0x02 -offset -0x01 -O $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).hfs -Intel ");
+    pb_efshex = _T("srec_cat $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).fuse -Intel -crop 0x02 0x03 -offset -0x02 -O $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).efs -Intel ");
+
+    pb_eepbin = _T("avr-objcopy --no-change-warnings -j .eeprom --change-section-lma .eeprom=0 -O binary $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).eep");
+    pb_fusebin = _T("avr-objcopy --no-change-warnings -j .fuse --change-section-lma .fuse=0 -O binary $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).fuse");
+    pb_lockbin = _T("avr-objcopy --no-change-warnings -j .lock --change-section-lma .lock=0 -O binary $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).lock");
+    pb_sigbin = _T("avr-objcopy --no-change-warnings -j .signature --change-section-lma .signature=0 -O binary $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).sig");
+    pb_bin = _T("avr-objcopy -R .eeprom -R .fuse -R .lock -R .signature -O binary $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).bin");
+
+    pb_eepsrec = _T("avr-objcopy --no-change-warnings -j .eeprom --change-section-lma .eeprom=0 -O srec $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).eep");
+    pb_fusesrec = _T("avr-objcopy --no-change-warnings -j .fuse --change-section-lma .fuse=0 -O srec $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).fuse");
+    pb_locksrec = _T("avr-objcopy --no-change-warnings -j .lock --change-section-lma .lock=0 -O srec $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).lock");
+    pb_sigsrec = _T("avr-objcopy --no-change-warnings -j .signature --change-section-lma .signature=0 -O srec $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).sig");
+    pb_srec = _T("avr-objcopy -R .eeprom -R .fuse -R .lock -R .signature -O srec $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).srec");
+
+    if ( PLATFORM == PLATFORM_MSW )
+        pb_lss = _T("cmd /c \"avr-objdump -h -S $(TARGET_OUTPUT_FILE) > $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).lss\"");
+    else
+        pb_lss = _T("avr-objdump -h -S $(TARGET_OUTPUT_FILE) > $(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).lss");
+
+    // avr-size is compiled with patches under winavr to produce a fancy output
+    // which displays the percentage of memory used by the application for the
+    // target mcu. However, this option is not available under standard binutils
+    // avr-size.
+    if (PLATFORM_MSW == PLATFORM)
+        pb_avrsize = _T("avr-size --mcu=") + Processor + _T(" --format=avr $(TARGET_OUTPUT_FILE)");
+    else
+        pb_avrsize = _T("avr-size $(TARGET_OUTPUT_FILE)");
+
+    // Setup the linker options
+    lo_map = _T("-Wl,-Map=$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).map,--cref");
+
+    // Get external memory start address
+    lo_extmem = _T("-Wl,--section-start=.data=") + AvrExtMemAddr;
+
+    // Project compiler options
+    WarningsOn(project, Wizard.GetCompilerID());
+    project.AddCompilerOption(_T("-mmcu=") + Processor);
+
+    if (AvrF_CPU)
+        project.AddCompilerOption(_T("-DF_CPU=") + AvrF_CPUValue);
+
+    // Project linker options
+    project.AddLinkerOption(_T("-mmcu=") + Processor);
+
+    if (AvrMap)
+        project.AddLinkerOption(lo_map);
+
+    if (AvrExtMem)
+        project.AddLinkerOption(lo_extmem);
+
+    // Project post-build steps
+    if (AvrSize)
+        project.AddCommandsAfterBuild(pb_avrsize);
+
+    if (AvrLss)
+        project.AddCommandsAfterBuild(pb_lss);
+
+    if (AvrHex)
+    {
+        project.AddCommandsAfterBuild(pb_hex);
+        project.AddCommandsAfterBuild(pb_eephex);
+
+        if (AvrExt)
+        {
+            project.AddCommandsAfterBuild(pb_lockhex);
+            project.AddCommandsAfterBuild(pb_sighex);
+            if (AvrExtFuse)
+            {
+                project.AddCommandsAfterBuild(pb_fusehex);
+
+                if (fuses.Matches(_T("[LOW]")) )
+                {
+                    project.AddCommandsAfterBuild(pb_lfshex);
+                }
+                else if (fuses.Matches(_T("[LOW:HIGH]")) )
+                {
+                    project.AddCommandsAfterBuild(pb_lfshex);
+                    project.AddCommandsAfterBuild(pb_hfshex);
+                }
+                else if (fuses.Matches(_T("[LOW:HIGH:EXTENDED]")) )
+                {
+                    project.AddCommandsAfterBuild(pb_lfshex);
+                    project.AddCommandsAfterBuild(pb_hfshex);
+                    project.AddCommandsAfterBuild(pb_efshex);
+                }
+                //else if (fuses.Matches(_T("[FUSE0:FUSE1:FUSE2:FUSE3:FUSE4]")) )
+            }
+        }
+    }
+
+    if (AvrSrec)
+    {
+        project.AddCommandsAfterBuild(pb_srec);
+        project.AddCommandsAfterBuild(pb_eepsrec);
+
+        if (AvrExt)
+        {
+            project.AddCommandsAfterBuild(pb_locksrec);
+            project.AddCommandsAfterBuild(pb_sigsrec);
+            if (AvrExtFuse)
+                project.AddCommandsAfterBuild(pb_fusesrec);
+        }
+    }
+
+    if (AvrBin)
+    {
+        project.AddCommandsAfterBuild(pb_bin);
+        project.AddCommandsAfterBuild(pb_eepbin);
+
+        if (AvrExt)
+        {
+            project.AddCommandsAfterBuild(pb_lockbin);
+            project.AddCommandsAfterBuild(pb_sigbin);
+            if (AvrExtFuse)
+                project.AddCommandsAfterBuild(pb_fusebin);
+        }
+    }
+
+
+    // Debug build target
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttNative);
+        target.SetTargetFilenameGenerationPolicy(tgfpPlatformDefault, tgfpNone);
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + _T(".elf"));
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
+    }
+
+    // Release build target
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+        {
+            target.SetTargetType(ttNative);
+            target.SetTargetFilenameGenerationPolicy(tgfpPlatformDefault, tgfpNone);
+            target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + _T(".elf"));
+            OptimizationsOn(target, Wizard.GetCompilerID());
+        }
+
+    project.SetVar(_T("MCU"), Processor, false);
+    //project.SetVar(_T("PROGRAMMER"), Programmer, false);
+    //project.SetVar(_T("DEBUGGER"), Debugger, false);
+    //project.SetVar(_T("DEBUGGER_CONNECTION"), DebuggerCon, false);
+
+    return true;
+}

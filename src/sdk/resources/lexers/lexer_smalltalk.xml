@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+		<Lexer name="Smalltalk"
+				index="72"
+				filemasks="*.st">
+				<Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+				<Style name="String"
+						index="1"
+						fg="0,0,255"/>
+				<Style name="Number"
+						index="2"
+						fg="240,0,240"/>
+				<Style name="Comment (normal)"
+						index="3"
+						fg="160,160,160"/>
+				<Style name="Symbol"
+						index="4"
+						fg="0,0,160"
+						bold="1"/>
+                <Style name="Binary"
+                        index="5"
+                        fg="0,0,128"/>
+                <Style name="Bool"
+                        index="6"
+                        fg="128,0,255"/>
+                <Style name="Self"
+                        index="7"
+                        fg="128,128,255"
+                        bg="255,255,204"
+                        bold="1"/>
+                <Style name="Super"
+                        index="8"
+                        fg="0,128,255"
+                        bg="236,255,234"
+                        bold="1"/>
+                <Style name="Nil"
+                        index="9"
+                        fg="128,128,192"/>
+                <Style name="Global"
+                        index="10"
+                        fg="128,0,0"/>
+                <Style name="Return"
+                        index="11"
+                        fg="0,0,255"
+                        bold="1"/>
+                <Style name="Special"
+                        index="12"
+                        fg="128,128,0"/>
+                <Style name="Kws end"
+                        index="13"
+                        fg="0,128,255"/>
+                <Style name="Assign"
+                        index="14"
+                        fg="255,0,0"/>
+                <Style name="Character"
+						index="15"
+						fg="224,160,0"/>
+				<Style name="Special selector"
+                        index="16"
+                        fg="255,128,192"/>
+
+				<Style name="Breakpoint line"
+						index="-2"
+						bg="255,160,160"/>
+				<Style name="Debugger active line"
+						index="-3"
+						bg="160,160,255"/>
+				<Style name="Compiler error line"
+						index="-4"
+						bg="255,128,0"/>
+				<Keywords>
+                        <!-- "Special selectors" -->
+                        <Set index="0"
+                            value="ifTrue: ifFalse: whileTrue: whileFalse: ifNil: ifNotNil: whileTrue whileFalse repeat isNil notNil"/>
+				</Keywords>
+				<SampleCode value="lexer_smalltalk.sample"
+						breakpoint_line="12"
+						debug_line="17"
+						error_line="23"/>
+                <LanguageAttributes
+                    LineComment=""
+                    StreamCommentStart="&quot;"
+                    StreamCommentEnd="&quot;"
+                    BoxCommentStart="&quot;"
+                    BoxCommentMid=""
+                    BoxCommentEnd="&quot;"
+                    CaseSensitive="1"/>
+		</Lexer>
+</CodeBlocks_lexer_properties>

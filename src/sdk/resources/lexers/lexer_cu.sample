@@ -1,0 +1,7 @@
+__global__ static void HelloCUDA(char* result, int num)
+{
+    int i=threadIdx.x;
+    char p_HelloCUDA[]="Hello CUDA!";
+    if(i<num)
+        result[i]=p_HelloCUDA[i];
+}

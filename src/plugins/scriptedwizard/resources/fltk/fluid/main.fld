@@ -1,0 +1,38 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0107 
+header_name {.h} 
+code_name {.cpp}
+decl {\#include <iostream>} {} 
+
+Function {bt_callback(Fl_Widget*, void* userdata)} {open selected return_type {static void}
+} {
+  code {if(userdata == "test")
+	std::cout << "Testing" << std::endl;
+else if (userdata == "close")
+	exit(0);} {}
+} 
+
+Function {} {open
+} {
+  Fl_Window window_main {
+    label {FLTK window} open
+    xywh {387 309 305 135} type Double align 80 visible
+  } {
+    Fl_Input input {
+      label {Please enter value:}
+      xywh {145 10 150 25}
+    }
+    Fl_Button btnTest {
+      label Test
+      user_data {"test"}
+      callback bt_callback
+      xywh {10 100 100 25}
+    }
+    Fl_Return_Button btnClose {
+      label Close
+      user_data {"close"}
+      callback bt_callback
+      xywh {195 100 100 25}
+    }
+  }
+} 

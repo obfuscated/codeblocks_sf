@@ -1,0 +1,128 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// PSDK project wizard
+//
+////////////////////////////////////////////////////////////////////////////////
+
+/*  Define few Global Variables     */
+
+/** ProjectType: 0 - Frame, 1 - Dialog and 2 - MDI
+*   Default: 0
+*/
+ProjectType <- 0;
+PsdkPath <- _T("$(#psdk)");
+
+function BeginWizard()
+{
+    local intro_msg = _T("Welcome to the new Win32 GUI project wizard!\n\n" +
+                         "This wizard will guide you to create a new Win32 GUI project.\n\n" +
+                         "When you 're ready to proceed, please click \"Next\"...");
+    local psdk_msg = _T("Please define Platform SDK directory.\n\n" +
+                        "Project will not compile without the necessary system\n" +
+                        "libraries");
+
+    Wizard.AddInfoPage(_T("Win32Intro"), intro_msg);
+    Wizard.AddGenericSingleChoiceListPage(_T("Win32ProjType"),
+            _T("Please select type of project."),
+            _T("Frame based;Dialog based"),
+            ProjectType); // select wxwidgets version
+    Wizard.AddProjectPathPage();
+    Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+    Wizard.AddGenericSelectPathPage(_T("PsdkPath"), psdk_msg, _T("Platform SDK's location:"), _T("$(#psdk)"));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Project Type page
+////////////////////////////////////////////////////////////////////////////////
+
+function OnEnter_Win32ProjType(fwd)
+{
+    if (fwd)
+    {
+        ProjectType = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+    }
+    return true;
+}
+
+function OnLeave_Win32ProjType(fwd)
+{
+    if (fwd)
+    {
+        ProjectType = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+    }
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Determines the next page of compiler page
+////////////////////////////////////////////////////////////////////////////////
+
+function OnGetNextPage_CompilerPage()
+{
+    if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
+        return _T("PsdkPath");
+    else
+        return _T("");
+}
+
+// return the files this project contains
+function GetFilesDir()
+{
+    local file_loc = _T("");
+    if (ProjectType == 0)
+        return _T("win32gui/files/frame");
+    else if (ProjectType == 1)
+        return _T("win32gui/files/dialog");
+}
+
+// setup the already created project
+function SetupProject(project)
+{
+    // add link libraries
+    project.AddLinkLib(_T("gdi32"));
+    project.AddLinkLib(_T("user32"));
+    project.AddLinkLib(_T("kernel32"));
+    project.AddLinkLib(_T("comctl32"));
+    if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("bcc")))
+        project.AddLinkLib(_T("cw32mti"));
+
+    // set additional path's for MS VC++ Toolkit
+    if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
+    {
+        // set project options for MS Visual C++ Toolkit
+        project.AddIncludeDir(_T("$(#psdk.include)"));
+        project.AddLibDir(_T("$(#psdk.lib)"));
+    }
+    
+    // Additional code to support OpenWatcom
+    if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("ow")))
+        project.AddCompilerOption(_T("-bt=nt"));
+
+    // enable compiler warnings (project-wide)
+    WarningsOn(project, Wizard.GetCompilerID());
+
+    // Debug
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+    {
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc")))
+            target.SetTargetType(ttConsoleOnly); // ttConsoleOnly: console for debugging, only for GCC
+        else
+            target.SetTargetType(ttExecutable);
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable generation of debugging symbols for target
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
+    }
+
+    // Release
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttExecutable); // ttExecutable: no console
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable optimizations for target
+        OptimizationsOn(target, Wizard.GetCompilerID());
+    }
+
+    return true;
+}

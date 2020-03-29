@@ -1,0 +1,17 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options extends="gcc">
+    <!-- NOTE: In the old Cygwin's gcc.exe maybe a file
+         link and is not a good default name for
+         running via cmd.exe; tested good using gcc.exe
+         and g++.exe under Cygwin 2.873 32 bit -->
+    <Program name="C"         value="gcc.exe"/>
+    <Program name="CPP"       value="g++.exe"/>
+    <Program name="LD"        value="g++.exe"/>
+    <Program name="DBGconfig" value="gdb_debugger:Default"/>
+    <Program name="LIB"       value="ar.exe"/>
+    <Program name="WINDRES"   value="windres.exe"/>
+    <Program name="MAKE"      value="make.exe"/>
+
+    <Switch name="forceFwdSlashes" value="true"/>
+</CodeBlocks_compiler_options>

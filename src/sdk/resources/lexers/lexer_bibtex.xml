@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+  <Lexer name="BibTeX"
+         index="116"
+         filemasks="*.bib">
+<!--#define SCE_BIBTEX_DEFAULT 0-->
+    <Style name="Default"
+           index="0"
+           fg="0,0,0"
+           bg="255,255,255"
+           bold="0"
+           italics="0"
+           underlined="0" />
+<!--#define SCE_BIBTEX_ENTRY 1-->
+    <Style name="Entry"
+           index="1"
+           fg="0,0,128"
+           bold="1" />
+<!--#define SCE_BIBTEX_UNKNOWN_ENTRY 2-->
+    <Style name="Unknown Entry"
+           index="2"
+           fg="255,0,0"
+           bold="1" />
+<!--#define SCE_BIBTEX_KEY 3-->
+    <Style name="Key"
+           index="3"
+           fg="160,882,45" />
+<!--#define SCE_BIBTEX_PARAMETER 4-->
+    <Style name="Parameter"
+           index="4"
+           fg="0,0,255" />
+<!--#define SCE_BIBTEX_VALUE 5-->
+    <Style name="Value"
+           index="5"
+           fg="0,0,160"
+           bold="0" />
+<!--#define SCE_BIBTEX_COMMENT 6-->
+    <Style name="Comment"
+           index="6"
+           fg="34,138,34" />
+
+    <Style name="Breakpoint line"
+           index="-2"
+           bg="255,160,160" />
+    <Style name="Debugger active line"
+           index="-3"
+           bg="160,160,255" />
+    <Style name="Compiler error line"
+           index="-4"
+           bg="255,128,0" />
+	<Keywords>
+      <Set index="0"
+           value="article book booklet conference inbook incollection inproceedings manual mastersthesis
+                  misc phdthesis proceedings techreport unpublished string url" />
+    </Keywords>
+    <SampleCode value="lexer_bibtex.sample"/>
+    <LanguageAttributes
+        LineComment=""
+        StreamCommentStart=""
+        StreamCommentEnd=""
+        BoxCommentStart=""
+        BoxCommentMid=""
+        BoxCommentEnd=""
+        CaseSensitive="0"/>
+  </Lexer>
+</CodeBlocks_lexer_properties>

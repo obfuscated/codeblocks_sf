@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+		<Lexer name="VBScript"
+				   index="28"
+				   filemasks="*.vbs">
+				<Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+				<Style name="Comment"
+						index="1"
+						fg="160,160,160"/>
+				<Style name="Number"
+						index="2"
+						fg="240,0,240"/>
+				<Style name="Keyword"
+						index="3"
+						fg="0,0,160"
+						bold="1"/>
+				<Style name="String"
+						index="4"
+						fg="0,0,255"/>
+				<Style name="Preprocessor"
+						index="5"
+						fg="0,160,0"/>
+				<Style name="Operator"
+						index="6"
+						fg="255,0,0"/>
+				<Style name="Identifier"
+						index="7"
+						fg="0,0,128"
+						bold="1"/>
+				<Style name="Date"
+						index="8"
+						fg="255,192,0"/>
+				<Style name="StringEOL"
+						index="9"
+						fg="0,0,255"/>
+				<Style name="Keyword2"
+						index="10"
+						fg="0,0,160"
+						bold="1"/>
+				<Style name="Keyword3"
+						index="11"
+						fg="0,0,160"
+						bold="1"/>
+				<Style name="Keyword4"
+						index="12"
+						fg="0,0,160"
+						bold="1"/>
+				<Style name="Constants"
+						index="13"
+						fg="0,0,160"
+						bold="1"/>
+				<Style name="ASM"
+						index="14"
+						fg="0,160,0"/>
+				<Style name="Label"
+						index="15"
+						fg="0,0,255"/>
+				<Style name="Error"
+						index="16"
+						fg="128,0,0"/>
+				<Style name="Hex Number"
+						index="17"
+						fg="240,64,240"/>
+				<Style name="Bin Number"
+						index="18"
+						fg="240,128,240"/>
+				<Style name="HB Start"
+						index="70"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="1"/>
+				<Style name="HB Default"
+						index="71"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+				<Style name="HB Comment line"
+						index="72"
+						fg="160,160,160"/>
+				<Style name="HB Number"
+						index="73"
+						fg="240,0,240"/>
+				<Style name="HB Word"
+						index="74"
+						fg="0,0,160"
+						bold="1"/>
+				<Style name="HB String"
+						index="75"
+						fg="0,0,255"/>
+				<Style name="HB Identifier"
+						index="76"
+						fg="0,0,255"/>
+				<Style name="HB StringEOL"
+						index="77"
+						fg="0,0,255"/>
+				<Style name="Selection"
+						index="-99"
+						bg="192,192,192"/>
+				<Style name="Active line"
+						index="-98"
+						bg="255,255,160"/>
+				<Style name="Breakpoint line"
+						index="-2"
+						bg="255,160,160"/>
+				<Style name="Debugger active line"
+						index="-3"
+						bg="160,160,255"/>
+				<Keywords>
+						<!-- Primary keywords and identifiers -->
+						<Set index="0"
+							value="Abs Array Asc Atn CBool CByte CCur CDate
+									   CDbl Chr CInt CLng Cos CreateObject CSng
+									   CStr Date DateAdd DateDiff DatePart
+									   DateSerial DateValue Day Escape Eval
+									   Exp Filter FormatCurrency FormatDateTime
+									   FormatNumber FormatPercent GetLocale
+									   GetObject GetRef Hex Hour InputBox InStr
+									   InStrRev Int Fix IsArray IsDate IsEmpty
+									   IsNull IsNumeric IsObject Join LBound
+									   LCase Left Len LoadPicture Log LTrim
+									   RTrim Trim Mid Minute Month MonthName
+									   MsgBox Now Oct Replace RGB Right Rnd Round
+									   ScriptEngine ScriptEngineBuildVersion
+									   ScriptEngineMajorVersion
+									   ScriptEngineMinorVersion Second SetLocale
+									   Sqn Sin Space Split Sqr StrComp String
+									   StrReverse TanTime Timer TimeSerial
+									   TimeValue TypeName UBound UCase Unescape
+									   VarType Weekday WeekdayName Year
+									   Empty False Nothing Null True
+									   Call Class Const Dim Doo Loop Erase
+									   Execute ExecuteGlobal Exit For Each Next
+									   Function If Then Else OnError Option
+									   Explicit Private Property Public
+									   Randomize ReDim Rem Select Case Let Set
+									   Stop Sub While Wend With
+									   Mod And Not Or Xor Imp
+									   Debug Err Error Resume"/>
+				</Keywords>
+				<SampleCode value="lexer_vbscript.sample"
+						breakpoint_line="7"
+						debug_line="10"
+						error_line="12"/>
+                <LanguageAttributes
+                    LineComment="'"
+                    StreamCommentStart=""
+                    StreamCommentEnd=""
+                    BoxCommentStart=""
+                    BoxCommentMid=""
+                    BoxCommentEnd=""
+                    CaseSensitive="0"/>
+		</Lexer>
+</CodeBlocks_lexer_properties>

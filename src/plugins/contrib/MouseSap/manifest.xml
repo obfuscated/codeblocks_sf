@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="11" release="12" />
+    <Plugin name="MouseSap">
+        <Value title="MouseSap" />
+        <Value version="0.0 2008/02/13" />
+        <Value description="Middle Mouse Select and Paste
+This plugin emulates Linux GPM functions within the editors in linux and Windows
+using the middle mouse button and shiftKey + middleMouse button.
+If selected text, paste selected text at current cursor position.
+If selected text, and middleMouse-click inside selection, copy to clipboard.
+If no selected text, paste clipboard data at cursor position(like ctrl-v).
+If selected text, and user switches editors, copy selection to clipboard.
+If selected text, and shiftKeyDown, replace selected text with clipboard text."
+/>
+        <Value author="Pecan" />
+        <Value authorEmail=" " />
+        <Value authorWebsite=" " />
+        <Value thanksTo="wxWidgets & Code::Blocks Team" />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

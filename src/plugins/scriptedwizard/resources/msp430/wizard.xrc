@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxPanel" name="processorChoice">
+		<style>wxTAB_TRAVERSAL</style>
+		<size>500,500</size>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>3</border>
+				<object class="wxStaticText" name="textChoice">
+					<label>Please choose a processor for this project...</label>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>3</border>
+				<object class="wxComboBox" name="comboboxProc">
+					<value></value>
+					<content>
+						<item>msp1</item>
+						<item>msp2</item>
+						<item>msp3</item>
+						<item>msp4</item>
+						<item>msp5</item>
+						<item>msp6</item>
+						<item>msp430x110</item>
+						<item>msp430x112</item>
+						<item>msp430x1101</item>
+						<item>msp430x1111</item>
+						<item>msp430x1121</item>
+						<item>msp430x1122</item>
+						<item>msp430x1132</item>
+						<item>msp430x122</item>
+						<item>msp430x123</item>
+						<item>msp430x1222</item>
+						<item>msp430x1232</item>
+						<item>msp430x133</item>
+						<item>msp430x135</item>
+						<item>msp430x1331</item>
+						<item>msp430x1351</item>
+						<item>msp430x147</item>
+						<item>msp430x148</item>
+						<item>msp430x149</item>
+						<item>msp430x1471</item>
+						<item>msp430x1481</item>
+						<item>msp430x1491</item>
+						<item>msp430x155</item>
+						<item>msp430x156</item>
+						<item>msp430x157</item>
+						<item>msp430x167</item>
+						<item>msp430x168</item>
+						<item>msp430x169</item>
+						<item>msp430x1610</item>
+						<item>msp430x1611</item>
+						<item>msp430x1612</item>
+						<item>msp430x2001</item>
+						<item>msp430x2011</item>
+						<item>msp430x2002</item>
+						<item>msp430x2012</item>
+						<item>msp430x2003</item>
+						<item>msp430x2013</item>
+						<item>msp430x2101</item>
+						<item>msp430x2111</item>
+						<item>msp430x2121</item>
+						<item>msp430x2131</item>
+						<item>msp430x2112</item>
+						<item>msp430x2122</item>
+						<item>msp430x2132</item>
+						<item>msp430x2201</item>
+						<item>msp430x2211</item>
+						<item>msp430x2221</item>
+						<item>msp430x2231</item>
+						<item>msp430x2232</item>
+						<item>msp430x2252</item>
+						<item>msp430x2272</item>
+						<item>msp430x2234</item>
+						<item>msp430x2254</item>
+						<item>msp430x2274</item>
+						<item>msp430x233</item>
+						<item>msp430x235</item>
+						<item>msp430x2330</item>
+						<item>msp430x2350</item>
+						<item>msp430x2370</item>
+						<item>msp430x247</item>
+						<item>msp430x248</item>
+						<item>msp430x249</item>
+						<item>msp430x2410</item>
+						<item>msp430x2471</item>
+						<item>msp430x2481</item>
+						<item>msp430x2491</item>
+						<item>msp430x2416</item>
+						<item>msp430x2417</item>
+						<item>msp430x2418</item>
+						<item>msp430x2419</item>
+						<item>msp430x2616</item>
+						<item>msp430x2617</item>
+						<item>msp430x2618</item>
+						<item>msp430x2619</item>
+						<item>msp430x311</item>
+						<item>msp430x312</item>
+						<item>msp430x313</item>
+						<item>msp430x314</item>
+						<item>msp430x315</item>
+						<item>msp430x323</item>
+						<item>msp430x325</item>
+						<item>msp430x336</item>
+						<item>msp430x337</item>
+						<item>msp430x412</item>
+						<item>msp430x413</item>
+						<item>msp430x415</item>
+						<item>msp430x417</item>
+						<item>msp430x423</item>
+						<item>msp430x425</item>
+						<item>msp430x427</item>
+						<item>msp430x4250</item>
+						<item>msp430x4260</item>
+						<item>msp430x4270</item>
+						<item>msp430xG4250</item>
+						<item>msp430xG4260</item>
+						<item>msp430xG4270</item>
+						<item>msp430xE423</item>
+						<item>msp430xE425</item>
+						<item>msp430xE427</item>
+						<item>msp430xE4232</item>
+						<item>msp430xE4242</item>
+						<item>msp430xE4252</item>
+						<item>msp430xE4272</item>
+						<item>msp430xW423</item>
+						<item>msp430xW425</item>
+						<item>msp430xW427</item>
+						<item>msp430xG437</item>
+						<item>msp430xG438</item>
+						<item>msp430xG439</item>
+						<item>msp430x435</item>
+						<item>msp430x436</item>
+						<item>msp430x437</item>
+						<item>msp430x4351</item>
+						<item>msp430x4361</item>
+						<item>msp430x4371</item>
+						<item>msp430x447</item>
+						<item>msp430x448</item>
+						<item>msp430x449</item>
+						<item>msp430xG4616</item>
+						<item>msp430xG4617</item>
+						<item>msp430xG4618</item>
+						<item>msp430xG4619</item>
+						<item>msp430x4783</item>
+						<item>msp430x4784</item>
+						<item>msp430x4793</item>
+						<item>msp430x4794</item>
+						<item>msp430x47163</item>
+						<item>msp430x47173</item>
+						<item>msp430x47183</item>
+						<item>msp430x47193</item>
+						<item>msp430x47166</item>
+						<item>msp430x47176</item>
+						<item>msp430x47186</item>
+						<item>msp430x47196</item>
+						<item>msp430x47167</item>
+						<item>msp430x47177</item>
+						<item>msp430x47187</item>
+						<item>msp430x47197</item>
+						<item>msp430x5418</item>
+						<item>msp430x5419</item>
+						<item>msp430x5435</item>
+						<item>msp430x5436</item>
+						<item>msp430x5437</item>
+						<item>msp430x5438</item>
+						<item>msp430x5500</item>
+						<item>msp430x5501</item>
+						<item>msp430x5502</item>
+						<item>msp430x5503</item>
+						<item>msp430x5504</item>
+						<item>msp430x5505</item>
+						<item>msp430x5506</item>
+						<item>msp430x5507</item>
+						<item>msp430x5508</item>
+						<item>msp430x5509</item>
+						<item>msp430x5510</item>
+						<item>msp430x5513</item>
+						<item>msp430x5514</item>
+						<item>msp430x5515</item>
+						<item>msp430x5517</item>
+						<item>msp430x5519</item>
+						<item>msp430x5521</item>
+						<item>msp430x5522</item>
+						<item>msp430x5524</item>
+						<item>msp430x5525</item>
+						<item>msp430x5526</item>
+						<item>msp430x5527</item>
+						<item>msp430x5528</item>
+						<item>msp430x5529</item>
+						<item>msp430x6638</item>
+						<item>cc430x5133</item>
+						<item>cc430x5125</item>
+						<item>cc430x6125</item>
+						<item>cc430x6135</item>
+						<item>cc430x6126</item>
+						<item>cc430x5137</item>
+						<item>cc430x6127</item>
+						<item>cc430x6137</item>
+					</content>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<object class="wxCheckBox" name="checkboxMap">
+					<tooltip>Create an extended symbol file from the .elf output file</tooltip>
+					<label>Create symbol map file (.map)</label>
+					<checked>1</checked>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<object class="wxCheckBox" name="checkboxHex">
+					<tooltip>Create Intel hex files from the .elf output file</tooltip>
+					<label>Create hex files (.hex .eep.hex)</label>
+					<checked>1</checked>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<object class="wxCheckBox" name="checkboxSrec">
+					<tooltip>Create Motorola S-Record output files from the .elf output of the project</tooltip>
+					<label>Create Motorola S-Record files (.srec .eep.srec)</label>
+					<checked>0</checked>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<object class="wxCheckBox" name="checkboxBin">
+					<tooltip>Create binary image files from the .elf output file</tooltip>
+					<label>Create Binary files (.bin .eep.bin)</label>
+					<checked>0</checked>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<object class="wxCheckBox" name="checkboxLss">
+					<label>Create extended listing file (.lss)</label>
+					<checked>1</checked>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<object class="wxCheckBox" name="checkboxAvrSize">
+					<tooltip>Run avr-size after a build to display how much resource is being used in the microcontroller.</tooltip>
+					<label>Run msp430-size after build</label>
+					<checked>1</checked>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL</flag>
+				<border>5</border>
+				<object class="wxCheckBox" name="checkBoxMspDebug">
+					<label>Program with mspdebug to target after building</label>
+					<checked>0</checked>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL</flag>
+				<border>5</border>
+				<object class="wxStaticText" name="m_staticText2">
+					<label>Not tested with all programmers, \nand try to use /dev/ttyUSB0 by default!\nEdit the cbp file with hand to chanege the options\n</label>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL</flag>
+				<border>5</border>
+				<object class="wxComboBox" name="comboboxProgrammer">
+					<value></value>
+					<content>
+						<item>TI FET430UIF and compatible devices (e.g. eZ430)</item>
+						<item>eZ430-RF2500</item>
+						<item>Olimex MSP-JTAG-TINY</item>
+						<item>Olimex MSP-JTAG-ISO</item>
+						<item>TI generic flash-based bootloader via RS-232</item>
+					</content>
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>
+

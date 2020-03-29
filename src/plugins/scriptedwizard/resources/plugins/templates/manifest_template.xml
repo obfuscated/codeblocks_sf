@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="[PLUGIN_SDK_VERSION_MAJOR]" minor="[PLUGIN_SDK_VERSION_MINOR]"  release="[PLUGIN_SDK_VERSION_RELEASE]" />
+    <Plugin name="[PLUGIN_NAME]">
+        <Value title="[PLUGIN_TITLE]" />
+        <Value version="[PLUGIN_VERSION]" />
+        <Value description="[PLUGIN_DESCRIPTION]" />
+        <Value author="[AUTHOR_NAME]" />
+        <Value authorEmail="[AUTHOR_EMAIL]" />
+        <Value authorWebsite="[AUTHOR_WWW]" />
+        <Value thanksTo="[THANKS_TO]" />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

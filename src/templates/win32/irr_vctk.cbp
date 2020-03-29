@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="Irrlicht Project"/>
+		<Option compiler="1"/>
+		<Build>
+			<Target title="default">
+				<Option output="Irrlicht.exe"/>
+				<Option working_dir="$(IRR_BASE)\bin\Win32-VisualStudio"/>
+				<Option type="1"/>
+				<Option compiler="1"/>
+				<Compiler>
+					<Add option="/Ox"/>
+				</Compiler>
+			</Target>
+			<Environment>
+				<Variable name="IRR_BASE" value="C:\Irrlicht"/>
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="/GX"/>
+			<Add option="/W3"/>
+			<Add directory="$(IRR_BASE)\include"/>
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(IRR_BASE)\include"/>
+		</ResourceCompiler>
+		<Linker>
+			<Add library="irrlicht"/>
+			<Add directory="$(IRR_BASE)\lib\Win32-VisualStudio"/>
+		</Linker>
+	</Project>
+</CodeBlocks_project_file>

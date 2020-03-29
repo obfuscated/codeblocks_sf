@@ -1,0 +1,221 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <Program name="C"       value="bcc32.exe"/>
+    <Program name="CPP"     value="bcc32.exe"/>
+    <Program name="LD"      value="ilink32.exe"/>
+    <Program name="LIB"     value="tlib.exe"/>
+    <Program name="WINDRES" value="brcc32.exe"/> <!-- platform SDK is needed for this -->
+    <Program name="MAKE"    value="make.exe"/>
+
+    <Switch name="includeDirs"             value="-I"/>
+    <Switch name="libDirs"                 value="-L"/>
+    <Switch name="linkLibs"                value=""/>
+    <Switch name="defines"                 value="-D"/>
+    <Switch name="genericSwitch"           value="-"/>
+    <Switch name="objectExtension"         value="obj"/>
+    <Switch name="needDependencies"        value="false"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="true"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value=""/>
+    <Switch name="libExtension"            value="lib"/>
+    <Switch name="linkerNeedsLibPrefix"    value="false"/>
+    <Switch name="linkerNeedsLibExtension" value="true"/>
+
+    <Category name="Optimization">
+        <Option name="Optimizations for size"
+                option="-O1"
+                supersedes="-O2"/>
+        <Option name="Optimizations for speed"
+                option="-O2"
+                supersedes="-O1"/>
+        <Option name="Optimize jumps"
+                option="-O"/>
+        <Option name="Eliminate duplicate expressions"
+                option="-Oc"/>
+        <Option name="Disable optimizations"
+                option="-Od"
+                exclusive="true"/>
+        <Option name="Expand intrinsic functions"
+                option="-Oi"/>
+        <Option name="Enable instruction scheduling for Pentium"
+                option="-OS"/>
+        <Option name="Disable instruction scheduling"
+                option="-O-S"/>
+        <Option name="Enable loop induction variable and strength reduction"
+                option="-Ov"/>
+        <Option name="Disable register variables"
+                option="-r-"/>
+        <Option name="Merge duplicate strings"
+                option="-d"/>
+        <Option name="Function stack frame optimization"
+                option="-k-"/>
+    </Category>
+
+    <Category name="C++ Features">
+        <Option name="Disable runtime type information"
+                option="-RT-"/>
+        <Option name="Disable exception handling"
+                option="-x-"/>
+        <Option name="Enable destructor cleanup"
+                option="-xd"/>
+        <Option name="Use global destructor count"
+                option="-xdg"/>
+        <Option name="Enable fast exception prologs"
+                option="-xf"/>
+        <Option name="Enable exception location information"
+                option="-xp"/>
+        <Option name="Enable slow exception epilogues"
+                option="-xs"/>
+        <Option name="Zero length empty class members"
+                option="-Vx"/>
+        <Option name="Zero-length empty base classes"
+                option="-Ve"/>
+    </Category>
+
+    <Category name="C Features">
+        <Option name="Emulate floating point"
+                option="-f"/>
+        <Option name="Disable floating point"
+                option="-f-"/>
+        <Option name="Fast floating point"
+                option="-ff"/>
+        <Option name="Pentium FDIV workaround"
+                option="-fp"/>
+        <Option name="Pascal calling convention"
+                option="-p"/>
+        <Option name="C calling convention"
+                option="-pc"/>
+        <Option name="__msfastcall calling convention"
+                option="-pm"/>
+        <Option name="fastcall calling convention"
+                option="-pr"/>
+        <Option name="stdcall calling convention"
+                option="-ps"/>
+        <Option name="Align data by byte"
+                option="-a1"
+                supersedes="-a2 -a4 -a8 -a16"/>
+        <Option name="Align data by word (2 bytes)"
+                option="-a2"
+                supersedes="-a1 -a4 -a8 -a16"/>
+        <Option name="Align data by double word (4 bytes)"
+                option="-a4"
+                supersedes="-a1 -a2 -a8 -a16"/>
+        <Option name="Align data by quad word (8 bytes)"
+                option="-a8"
+                supersedes="-a1 -a2 -a4 -a16"/>
+        <Option name="Align data by paragraph (16 bytes)"
+                option="-a16"
+                supersedes="-a1 -a2 -a4 -a8"/>
+        <Option name="Use minimum sized enums"
+                option="-b-"/>
+        <Option name="Use unsigned char"
+                option="-K"/>
+    </Category>
+
+    <Category name="Language">
+        <Option name="ANSI keywords and extensions"
+                option="-A"/>
+        <Option name="Kernighan and Ritchie keywords and extensions"
+                option="-AK"/>
+        <Option name="Borland C++ keywords and extensions"
+                option="-AT"/>
+        <Option name="UNIX V keywords and extensions"
+                option="-AU"/>
+        <Option name="Allow nested comments"
+                option="-C"/>
+    </Category>
+
+    <Category name="Debugging">
+        <Option name="debugging on, inline expansion off"
+                option="-v"
+                supersedes="-v-"/>
+        <Option name="debugging off, inline expansion on"
+                option="-v-"
+                supersedes="-v"/>
+        <Option name="inline function expansion on"
+                option="-vi"
+                supersedes="-vi-"/>
+        <Option name="inline function expansion off"
+                option="-vi-"
+                supersedes="-vi"/>
+        <Option name="Include line numbers"
+                option="-y"/>
+    </Category>
+
+    <Category name="Architecture"
+              exclusive="true">
+        <Option name="Optimize for 80386"
+                option="-3"/>
+        <Option name="Optimize for 80486"
+                option="-4"/>
+        <Option name="Optimize for Pentium"
+                option="-5"/>
+        <Option name="Optimize for Pentium Pro, Pentium II, Pentium III"
+                option="-6"/>
+    </Category>
+
+    <Category name="Target">
+        <Option name="Windows application"
+                option="-tW"
+                supersedes="-tWC -tWD"/>
+        <Option name="Console application"
+                option="-tWC"
+                supersedes="-tW -tWD"/>
+        <Option name=".DLL executable"
+                option="-tWD"
+                supersedes="-tW -tWC"/>
+        <Option name="32-bit multi-threaded"
+                option="-tWM"/>
+        <Option name="Target uses the dynamic RTL"
+                option="-tWR"/>
+        <Option name="Target uses the VCL"
+                option="-tWV"/>
+    </Category>
+
+    <Option name="Display all warnings"
+            option="-w"
+            category="Warnings"/>
+
+    <Command name="CompileObject"
+             value="$compiler -q $options $includes -o$object -c $file"/>
+    <Command name="CompileResource"
+             value="$rescomp -32 -fo$resource_output $res_includes $res_options $file"/>
+    <Command name="LinkExe"
+             value="$linker -q -aa  $link_options $libdirs c0w32 $link_objects,$exe_output,,$libs,,$link_resobjects"/>
+    <Command name="LinkConsoleExe"
+             value="$linker -q -ap  $link_options $libdirs c0x32 $link_objects,$exe_output,,$libs,,$link_resobjects"/>
+    <Command name="LinkDynamic"
+             value="$linker -q $libdirs -Tpd $link_options $link_objects,$exe_output,,$libs,,$link_resobjects"/>
+    <Command name="LinkStatic"
+             value="$lib_linker /C $static_output $+-link_objects,$def_output"/>
+    <Command name="LinkNative"
+             value="$linker -q -ap  $link_options $libdirs c0x32 $link_objects,$exe_output,,$libs,,$link_resobjects"/>
+    <Common name="cmds"/>
+
+    <RegEx name="Compiler warning"
+           type="warning"
+           msg="1;4"
+           file="2"
+           line="3">
+        <![CDATA[(^Warning[ \t]W[0-9]+)[ \t]([][{}() \t#%$~[:alnum:]&_:+/\.-]+)[ \t]([0-9]+)(:[ \t].*)]]>
+    </RegEx>
+    <RegEx name="Compiler error"
+           type="error"
+           msg="1;4"
+           file="2"
+           line="3">
+        <![CDATA[(^Error[ \t]E[0-9]+)[ \t]([][{}() \t#%$~[:alnum:]&_:+/\.-]+)[ \t]([0-9]+)(:[ \t].*)]]>
+    </RegEx>
+    <RegEx name="Unknown error"
+           type="error"
+           msg="1">
+        <![CDATA[(^Error[ \t]+E[0-9]+:.*)]]>
+    </RegEx>
+    <RegEx name="Fatal error"
+           type="error"
+           msg="1">
+        <![CDATA[Fatal:[ \t]+(.*)]]>
+    </RegEx>
+</CodeBlocks_compiler_options>

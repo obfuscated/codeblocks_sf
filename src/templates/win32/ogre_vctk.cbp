@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="OGRE_Sample"/>
+		<Option makefile="Makefile"/>
+		<Option makefile_is_custom="0"/>
+		<Option active_target="1"/>
+		<Option compiler="1"/>
+		<Build>
+			<Target title="Debug">
+				<Option output="Debug/ogre_sample.exe"/>
+				<Option working_dir="$(OGRE_HOME)/bin/Debug"/>
+				<Option object_output="Debug/.objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option additional_depfiles=""/>
+				<Option type="1"/>
+				<Option compiler="1"/>
+				<Option includeInTargetAll="0"/>
+				<Option projectResourceIncludeDirsRelation="1"/>
+				<Compiler>
+					<Add option="/Zi"/>
+					<Add option="/DDEBUG"/>
+					<Add option="/D_DEBUG"/>
+				</Compiler>
+				<Linker>
+					<Add directory="$(OGRE_HOME)/lib/opt/debug"/>
+					<Add library="OgreMain_d"/>
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="Release/ogre_sample.exe"/>
+				<Option working_dir="$(OGRE_HOME)/bin/Release"/>
+				<Option object_output="Release/.objs"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option additional_depfiles=""/>
+				<Option type="1"/>
+				<Option compiler="1"/>
+				<Option includeInTargetAll="0"/>
+				<Option projectResourceIncludeDirsRelation="1"/>
+				<Compiler>
+					<Add option="/Ox"/>
+					<Add option="/DNDEBUG"/>
+				</Compiler>
+				<Linker>
+					<Add directory="$(OGRE_HOME)/lib/opt/release"/>
+					<Add library="OgreMain"/>
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="/GX"/>
+			<Add directory="$(OGRE_HOME)/include"/>
+			<Add directory="$(OGRE_HOME)/include/opt"/>
+			<Add directory="$(OGRE_HOME)/Samples/include"/>
+		</Compiler>
+		<Linker>
+			<Add library="user32"/>
+			<Add library="kernel32"/>
+			<Add library="gdi32"/>
+			<Add library="opengl32"/>
+			<Add directory="$(OGRE_HOME)/lib"/>
+		</Linker>
+	</Project>
+</CodeBlocks_project_file>

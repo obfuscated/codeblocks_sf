@@ -1,0 +1,7 @@
+program FirstProg;
+
+  begin
+    { I always wanted to do this. }
+    Writeln('Hel-lo nurse... I mean, World!');
+    writel("Hello ");
+  end.

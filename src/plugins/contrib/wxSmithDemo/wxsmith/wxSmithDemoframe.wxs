@@ -1,0 +1,1452 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxFrame" name="wxSmithDemoFrame">
+		<title>wxSmith Demonstration Application</title>
+		<centered>1</centered>
+		<size>500,500</size>
+		<minsize>500,500</minsize>
+		<id_arg>0</id_arg>
+		<object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="yes">
+			<object class="wxBoxSizer" variable="BoxSizer1" member="no">
+				<orient>wxVERTICAL</orient>
+				<object class="sizeritem">
+					<object class="wxNotebook" name="ID_NOTEBOOK1" variable="Notebook1" member="yes">
+						<style>wxNB_MULTILINE</style>
+						<handler function="OnNotebook1PageChanged" entry="EVT_NOTEBOOK_PAGE_CHANGED" />
+						<object class="notebookpage">
+							<object class="wxPanel" name="ID_PANEL7" variable="Panel7" member="yes">
+								<object class="wxBoxSizer" variable="BoxSizer6" member="no">
+									<orient>wxVERTICAL</orient>
+									<object class="sizeritem">
+										<object class="wxAnimationCtrl" name="ID_ANIMATIONCTRL1" variable="AnimationCtrl1" member="yes">
+											<animation>media/bird__44.gif</animation>
+										</object>
+										<flag>wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxBoxSizer" variable="BoxSizer8" member="no">
+											<object class="sizeritem">
+												<object class="wxButton" name="ID_BUTTON1" variable="ButtonPlayAnimation" member="yes">
+													<label>Play Animation</label>
+													<handler function="OnButtonPlayAnimationClick" entry="EVT_BUTTON" />
+												</object>
+												<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+											<object class="sizeritem">
+												<object class="wxButton" name="ID_BUTTON2" variable="ButtonStopAnimation" member="yes">
+													<label>Stop Animation</label>
+													<handler function="OnButtonStopAnimationClick" entry="EVT_BUTTON" />
+												</object>
+												<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+										</object>
+										<flag>wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+								</object>
+							</object>
+							<label>wxAnimationCtrl</label>
+						</object>
+						<object class="notebookpage">
+							<object class="wxPanel" name="ID_PANEL4" variable="Panel4" member="yes">
+								<object class="wxGridSizer" variable="GridSizer1" member="no">
+									<cols>2</cols>
+									<rows>3</rows>
+									<object class="sizeritem">
+										<object class="wxSimpleHtmlListBox" name="ID_SIMPLEHTMLLISTBOX1" variable="SimpleHtmlListBox1" member="yes">
+											<content>
+												<item>&lt;b&gt;Bold text&lt;/b&gt;</item>
+												<item>&lt;u&gt;Underlined text&lt;/u&gt;</item>
+												<item>&lt;h2&gt;Heading 2 text&lt;/h2&gt;</item>
+												<item>&lt;font color=&quot;green&quot;&gt;Green text&lt;/font&gt;</item>
+												<item>&lt;font color=&quot;blue&quot;&gt;&lt;i&gt;Blue italic text&lt;/i&gt;&lt;/font&gt;</item>
+												<item>A link: &lt;a href=&quot;http://www.codeblocks.org/&quot;&gt;http://www.codeblocks.org/&lt;/a&gt;</item>
+												<item>Some HTML entities: &amp;copy; &amp;lt; &amp;reg;  &amp;gt; &amp;pound; &amp;cent;  &#x09;&amp;sup2; &amp;frac34; &amp;iquest;</item>
+												<item>Nice, isn&apos;t it?</item>
+												<item>&lt;img src=&quot;media/smiley.xpm&quot;&gt;</item>
+											</content>
+											<default>-1</default>
+											<size>331,220</size>
+											<tooltip>wxSimpleHtmlListBox&#x0A;&#x0A;An implementation of wxHtmlListBox which shows HTML content in&#x0A;the listbox rows. The entries in this list are styled using HTML.</tooltip>
+											<help>This is sample context-sensitive help for the &#x0A;wxSimpleHtmlListBox in its simplest form.</help>
+											<handler function="OnSimpleHtmlListBox1Select" entry="EVT_LISTBOX" />
+											<handler function="OnSimpleHtmlListBox1CellClicked" entry="EVT_HTML_CELL_CLICKED" />
+											<handler function="OnSimpleHtmlListBox1CellHover" entry="EVT_HTML_CELL_HOVER" />
+											<handler function="OnSimpleHtmlListBox1LinkClicked" entry="EVT_HTML_LINK_CLICKED" />
+										</object>
+										<flag>wxALL|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxListView" name="ID_LISTVIEW1" variable="ListView1" member="yes">
+											<size>263,291</size>
+											<tooltip>wxListView&#x0A;&#x0A;A facade for wxListCtrl in report mode.</tooltip>
+											<help>This is sample context-sensitive help&#x0A;for the wxListView in its simplest form.</help>
+											<style>wxLC_LIST</style>
+											<handler function="OnListView1ItemSelect" entry="EVT_LIST_ITEM_SELECTED" />
+										</object>
+										<flag>wxALL|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxBitmapComboBox" name="ID_BITMAPCOMBOBOX1" variable="BitmapComboBox1" member="yes">
+											<content>
+												<item>Item 1</item>
+												<item>Item 2</item>
+												<item>Item 3</item>
+												<item>Item 4</item>
+												<item>Item 5</item>
+												<item>Item 6</item>
+											</content>
+											<selection>0</selection>
+											<image_list>ImageList1</image_list>
+											<tooltip>wxBitmapComboBox&#x0A;&#x0A;An enhanced ComboBox wich allows images to be associated with&#x0A;entries. This control is taking it&apos;s images from a wxImageList created&#x0A;in wxSmith.</tooltip>
+											<help>This is sample context-sensitive help&#x0A;for the wxBitmapComboBox in its simplest form.</help>
+											<handler function="OnBitmapComboBox1Selected" entry="EVT_COMBOBOX" />
+											<handler function="OnBitmapComboBox1TextEnter" entry="EVT_TEXT_ENTER" />
+										</object>
+										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticBitmap" name="ID_STATICBITMAP1" variable="StaticBitmap1" member="yes">
+											<tooltip>wxImage&#x0A;&#x0A;This wxStaticBitmap control is getting it&apos;s image from a wxImage&#x0A;created in wxSmith.&#x0A;&#x0A;</tooltip>
+											<help>This is sample context-sensitive help&#x0A;for the wxImage in its simplest form.</help>
+										</object>
+										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxContextHelpButton" name="wxID_CONTEXT_HELP" variable="ContextHelpButton1" member="yes">
+											<size>54,21</size>
+											<tooltip>wxContextHelpButton&#x0A;&#x0A;Puts the application into context-help mode. Click on the button&#x0A;and then click on the other controls on this page to see context help in&#x0A;action.</tooltip>
+										</object>
+										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxSearchCtrl" name="ID_SEARCHCTRL" variable="SearchCtrl1" member="yes">
+											<tooltip>wxSearchCtrl&#x0A;&#x0A;A composite control with a search button, a text control, and a cancel button. </tooltip>
+											<help>This is sample context-sensitive help&#x0A;for the wxSearchCtrl in its simplest form.</help>
+										</object>
+										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+								</object>
+							</object>
+							<label>wxControls</label>
+						</object>
+						<object class="notebookpage">
+							<object class="wxPanel" name="ID_PANEL8" variable="Panel8" member="yes">
+								<object class="wxBoxSizer" variable="BoxSizer10" member="no">
+									<orient>wxVERTICAL</orient>
+									<object class="sizeritem">
+										<object class="wxBoxSizer" variable="BoxSizer4" member="no">
+											<object class="sizeritem">
+												<object class="wxMediaCtrl" name="ID_MEDIACTRL1" variable="MediaCtrl1" member="yes">
+													<media_file>media/EarthImpactSml__512kb.mp4</media_file>
+													<size>326,101</size>
+													<tooltip>wxMediaCtrl&#x0A;&#x0A;A class for displaying types of media, such as videos, audio files,&#x0A;natively through native codecs.wxMediaCtrl&#x0A;&#x0A;A class for displaying types of media, such as videos, audio files,&#x0A;natively through native codecs.</tooltip>
+													<handler function="OnMediaCtrl1Play" entry="EVT_MEDIA_PLAY" />
+													<handler function="OnMediaCtrl1Pause" entry="EVT_MEDIA_PAUSE" />
+													<handler function="OnMediaCtrl1Stop" entry="EVT_MEDIA_STOP" />
+													<handler function="OnMediaCtrl1Finished" entry="EVT_MEDIA_FINISHED" />
+												</object>
+												<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+										</object>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+								</object>
+							</object>
+							<label>wxMediaCtrl</label>
+						</object>
+						<object class="notebookpage">
+							<object class="wxPanel" name="ID_PANEL2" variable="Panel2" member="yes">
+								<object class="wxBoxSizer" variable="BoxSizer2" member="no">
+									<orient>wxVERTICAL</orient>
+									<object class="sizeritem">
+										<object class="wxStaticBoxSizer" variable="StaticBoxSizer3" member="no">
+											<label>wxColourPickerCtrl</label>
+											<object class="sizeritem">
+												<object class="wxColourPickerCtrl" name="ID_COLOURPICKERCTRL1" variable="ColourPickerCtrl1" member="yes">
+													<colour>#000000</colour>
+													<tooltip>wxColourPickerCtrl&#x0A;&#x0A;A button which brings up a wxColourDialog when clicked. This control&#x0A;is using the default style.</tooltip>
+												</object>
+												<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+											<object class="sizeritem">
+												<object class="wxColourPickerCtrl" name="ID_COLOURPICKERCTRL2" variable="ColourPickerCtrl2" member="yes">
+													<colour>#000000</colour>
+													<tooltip>wxColourPickerCtrl&#x0A;&#x0A;A button which brings up a wxColourDialog when clicked. This control&#x0A;is using the wxCLRP__SHOW__LABEL style.</tooltip>
+													<style>wxCLRP_SHOW_LABEL</style>
+												</object>
+												<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+											<object class="sizeritem">
+												<object class="wxColourPickerCtrl" name="ID_COLOURPICKERCTRL3" variable="ColourPickerCtrl3" member="yes">
+													<colour>#000000</colour>
+													<tooltip>wxColourPickerCtrl&#x0A;&#x0A;wxColourPickerCtrl&#x0A;&#x0A;A button which brings up a wxColourDialog when clicked. This control&#x0A;is using the wxCLRP__USE__TEXTCTRL style.</tooltip>
+													<style>wxCLRP_USE_TEXTCTRL</style>
+												</object>
+												<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+										</object>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticBoxSizer" variable="StaticBoxSizer5" member="no">
+											<label>wxFilePickerCtrl</label>
+											<object class="sizeritem">
+												<object class="wxFilePickerCtrl" name="ID_FILEPICKERCTRL1" variable="FilePickerCtrl1" member="yes">
+													<message></message>
+													<wildcard></wildcard>
+													<tooltip>wxFilePickerCtrl&#x0A;&#x0A;A button which brings up a wxFileDialog when clicked.</tooltip>
+													<style>wxFLP_FILE_MUST_EXIST|wxFLP_SAVE|wxFLP_USE_TEXTCTRL</style>
+												</object>
+												<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+										</object>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticBoxSizer" variable="StaticBoxSizer4" member="no">
+											<label>wxDirPickerCtrl</label>
+											<object class="sizeritem">
+												<object class="wxDirPickerCtrl" name="ID_DIRPICKERCTRL1" variable="DirPickerCtrl1" member="yes">
+													<message></message>
+													<tooltip>wxDirPickerCtrl&#x0A;&#x0A;A button which brings up a wxDirDialog when clicked.</tooltip>
+												</object>
+												<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+										</object>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticBoxSizer" variable="StaticBoxSizer6" member="no">
+											<label>wxFontPickerCtrl</label>
+											<object class="sizeritem">
+												<object class="wxFontPickerCtrl" name="ID_FONTPICKERCTRL1" variable="FontPickerCtrl1" member="yes">
+													<font>
+														<size>12</size>
+														<style>italic</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+														<family>swiss</family>
+														<face>Tahoma</face>
+													</font>
+													<tooltip>wxFontPickerCtrl&#x0A;&#x0A;A button which brings up a wxFontDialog when clicked. This control&#x0A;is using the wxFNTP__FONTDESC__AS__LABEL, &#x0A;wxFNTP__USEFONT__FOR__LABEL and wxFNTP__USE__TEXTCTRL styles.</tooltip>
+													<style>wxFNTP_FONTDESC_AS_LABEL|wxFNTP_USEFONT_FOR_LABEL|wxFNTP_USE_TEXTCTRL</style>
+												</object>
+												<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+										</object>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="spacer">
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="spacer">
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+								</object>
+							</object>
+							<label>wxPickers</label>
+						</object>
+						<object class="notebookpage">
+							<object class="wxPanel" name="ID_PANEL3" variable="Panel3" member="yes">
+								<object class="wxBoxSizer" variable="BoxSizer7" member="no">
+									<object class="sizeritem">
+										<object class="wxRichTextCtrl" name="ID_RICHTEXTCTRL1" variable="RichTextCtrl1" member="yes">
+											<tooltip>wxRichTextCtrl&#x0A;&#x0A;Provides a generic, ground-up implementation of a text control&#x0A;capable of showing multiple styles and images.</tooltip>
+											<style>wxRE_MULTILINE|wxWANTS_CHARS</style>
+											<handler function="OnRichTextCtrl1Text" entry="EVT_TEXT" />
+											<handler function="OnRichTextCtrl1TextEnter" entry="EVT_TEXT_ENTER" />
+											<handler function="OnRichTextCtrl1TextUrl" entry="EVT_TEXT_URL" />
+										</object>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+								</object>
+							</object>
+							<label>wxRichTextCtrl</label>
+						</object>
+						<object class="notebookpage">
+							<object class="wxPanel" name="ID_PANEL11" variable="Panel11" member="yes">
+								<object class="wxBoxSizer" variable="BoxSizer5" member="no">
+									<object class="sizeritem">
+										<object class="wxTreebook" name="ID_TREEBOOK1" variable="Treebook1" member="yes">
+											<size>237,167</size>
+											<tooltip>wxTreebook&#x0A;&#x0A;An extension of the wxNotebook class that allows a tree structured&#x0A;set of pages to be shown in a control.&#x0A;wxSmith can currently only enter pages at the root level of the tree.&#x0A;Pages at lower levels have been added manually.</tooltip>
+											<object class="treebookpage">
+												<object class="wxPanel" name="ID_PANEL12" variable="Panel12" member="yes">
+													<pos>108,0</pos>
+													<size>218,224</size>
+													<style>wxSTATIC_BORDER|wxTAB_TRAVERSAL</style>
+													<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
+														<label>wxTreebook&#x0A;&#x0A;An extension of the wxNotebook&#x0A;class that allows a tree structure&#x0A;set of pages to be shown in a control.&#x0A;wxSmith can currently only enter&#x0A;pages at the root level of the tree.&#x0A;Pages at lower levels have been&#x0A;added manually.</label>
+														<pos>88,80</pos>
+													</object>
+												</object>
+												<label>Page Number 1</label>
+											</object>
+											<object class="treebookpage">
+												<object class="wxPanel" name="ID_PANEL13" variable="Panel13" member="yes">
+													<style>wxSTATIC_BORDER|wxTAB_TRAVERSAL</style>
+													<object class="wxStaticText" name="ID_STATICTEXT5" variable="StaticText5" member="yes">
+														<label>This is page 2.</label>
+														<pos>88,96</pos>
+													</object>
+												</object>
+												<label>Page Number 2</label>
+											</object>
+											<object class="treebookpage">
+												<object class="wxPanel" name="ID_PANEL14" variable="Panel14" member="yes">
+													<pos>116,0</pos>
+													<size>305,224</size>
+													<style>wxSTATIC_BORDER|wxTAB_TRAVERSAL</style>
+													<object class="wxStaticText" name="ID_STATICTEXT6" variable="StaticText6" member="yes">
+														<label>This is page 3.</label>
+														<pos>88,96</pos>
+													</object>
+												</object>
+												<label>Page Number 3</label>
+											</object>
+										</object>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+								</object>
+							</object>
+							<label>wxTreebook</label>
+						</object>
+						<object class="notebookpage">
+							<object class="wxPanel" name="ID_PANEL5" variable="Panel5" member="yes">
+								<object class="wxBoxSizer" variable="BoxSizer3" member="no">
+									<object class="sizeritem">
+										<object class="wxBoxSizer" variable="BoxSizer11" member="no">
+											<object class="sizeritem">
+												<object class="wxRichTextStyleListCtrl" name="ID_RICHTEXTSTYLELISTCTRL1" variable="RichTextStyleListCtrl1" member="yes">
+													<control>RichTextCtrl1</control>
+													<style_sheet>richTextStyleSheet__1</style_sheet>
+													<tooltip>wxRichTextStyleListCtrl&#x0A;&#x0A;This class incorporates a wxRichTextStyleListBox and a choice control&#x0A;that allows the user to select the category of style to view. </tooltip>
+												</object>
+												<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+										</object>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxBoxSizer" variable="BoxSizer9" member="no">
+											<orient>wxVERTICAL</orient>
+											<object class="sizeritem">
+												<object class="wxRichTextStyleComboCtrl" name="ID_RICHTEXTSTYLECOMBOCTRL1" variable="RichTextStyleComboCtrl1" member="yes">
+													<control>RichTextCtrl1</control>
+													<style_sheet></style_sheet>
+													<size>221,25</size>
+													<tooltip>wxRichTextStyleComboCtrl&#x0A;&#x0A;A combo control that can display the styles in a wxRichTextStyleSheet,&#x0A;and apply the selection to an associated wxRichTextCtrl.</tooltip>
+												</object>
+												<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+											<object class="sizeritem">
+												<object class="wxRichTextStyleListBox" name="ID_RICHTEXTSTYLELISTBOX1" variable="RichTextStyleListBox1" member="yes">
+													<control>RichTextCtrl1</control>
+													<style_sheet>richTextStyleSheet__1</style_sheet>
+													<style_type>wxRICHTEXT_STYLE_ALL</style_type>
+													<size>221,184</size>
+													<tooltip>wxRichTextStyleListBox&#x0A;&#x0A;A listbox that can display the styles in a wxRichTextStyleSheet, and&#x0A;apply the selection to an associated wxRichTextCtrl.</tooltip>
+													<style>wxSUNKEN_BORDER</style>
+												</object>
+												<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>5</border>
+												<option>6</option>
+											</object>
+										</object>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+								</object>
+							</object>
+							<label>Rich Text Controls</label>
+						</object>
+					</object>
+					<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+					<border>5</border>
+					<option>3</option>
+				</object>
+				<object class="sizeritem">
+					<object class="wxListBox" name="ID_LISTBOX1" variable="ListBoxLog" member="yes">
+						<default>-1</default>
+					</object>
+					<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+					<border>5</border>
+					<option>1</option>
+				</object>
+			</object>
+		</object>
+		<object class="wxDialUpManager" name="ID_DIALUPMANAGER1" variable="DialUpManager1" member="yes" />
+		<object class="wxFindReplaceDialog" name="-1" variable="FindReplaceDialog1" member="yes">
+			<caption>wxFindReplaceDialog</caption>
+			<style>wxFR_REPLACEDIALOG</style>
+			<handler function="OnFindReplaceDialog1Find" entry="EVT_FIND" />
+			<handler function="OnFindReplaceDialog1FindNext" entry="EVT_FIND_NEXT" />
+			<handler function="OnFindReplaceDialog1Close" entry="EVT_FIND_CLOSE" />
+		</object>
+		<object class="wxFontDialog" variable="FontDialog1" member="yes" />
+		<object class="wxHtmlEasyPrinting" variable="HtmlEasyPrinting1" member="yes" />
+		<object class="wxMessageDialog" name="ID_MESSAGEDIALOG1" variable="MessageDialog1" member="yes">
+			<caption>wxMessageDialog</caption>
+			<message>Exciting, isn&apos;t it? :-)</message>
+			<style>wxOK</style>
+		</object>
+		<object class="wxPageSetupDialog" variable="PageSetupDialog1" member="yes" />
+		<object class="wxPasswordEntryDialog" name="ID_PASSWORDENTRYDIALOG1" variable="PasswordEntryDialog1" member="yes">
+			<caption>wxPasswordEntryDialog</caption>
+			<message>Enter some text.</message>
+			<default_value>Password</default_value>
+		</object>
+		<object class="wxPrintDialog" variable="PrintDialog1" member="yes" />
+		<object class="wxProgressDialog" name="ID_PROGRESSDIALOG1" variable="ProgressDialog1" member="yes">
+			<title></title>
+			<message></message>
+			<style>0</style>
+		</object>
+		<object class="wxRichTextFormattingDialog" name="ID_RICHTEXTFORMATTINGDIALOG1" variable="RichTextFormattingDialog1" member="yes">
+			<title>wxRichTextFormattingDialog</title>
+		</object>
+		<object class="wxRichTextStyleOrganiserDialog" name="ID_RICHTEXTSTYLEORGANISERDIALOG1" variable="RichTextStyleOrganiserDialog1" member="yes">
+			<caption>wxRichTextStyleOrganiserDialog</caption>
+		</object>
+		<object class="wxTextEntryDialog" name="ID_TEXTENTRYDIALOG1" variable="TextEntryDialog1" member="yes">
+			<caption>wxTextEntryDialog</caption>
+			<message>Enter some text.</message>
+			<default_value>Text</default_value>
+		</object>
+		<object class="wxMenuBar" variable="MenuBar1" member="no">
+			<object class="wxMenu" variable="Menu1" member="no">
+				<label>&amp;File</label>
+				<object class="wxMenuItem" name="idMenuQuit" variable="MenuItem1" member="no">
+					<label>Quit</label>
+					<accel>Alt-F4</accel>
+					<help>Quit the application.</help>
+					<handler function="OnQuit" entry="EVT_MENU" />
+				</object>
+			</object>
+			<object class="wxMenu" variable="Menu5" member="yes">
+				<label>Dialogues</label>
+				<object class="wxMenuItem" name="idFindReplaceDlg" variable="MenuItemFindReplaceDlg" member="yes">
+					<label>wxFindReplaceDialog</label>
+					<help>Run the find/replace dialogue.</help>
+					<handler function="OnMenuItemFindReplaceDlgSelected" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="idFontDlg" variable="MenuItemFontDlg" member="yes">
+					<label>wxFontDialog</label>
+					<help>Run the font dialogue.</help>
+					<handler function="OnMenuItemFontDlgSelected" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="idMessageDlg" variable="MenuItemMessageDlg" member="yes">
+					<label>wxMessageDialog</label>
+					<help>Run the message dialogue.</help>
+					<handler function="OnMenuItemMessageDlgSelected" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="idPageSetupDlg" variable="MenuItemPageSetupDlg" member="yes">
+					<label>wxPageSetupDialog</label>
+					<help>Run the page setup dialogue.</help>
+					<handler function="OnMenuItemPageSetupDlgSelected" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="idPasswordEntryDialog" variable="MenuItemPasswordEntryDialog" member="yes">
+					<label>wxPasswordEntryDialog</label>
+					<help>Run the password entry dialogue.</help>
+					<handler function="OnMenuItemPasswordEntryDialogSelected" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="idPrintDlg" variable="MenuItemPrintDlg" member="yes">
+					<label>wxPrintDialog</label>
+					<help>Run the print dialogue.</help>
+					<handler function="OnMenuItemPrintDlgSelected" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="idProgressDlg" variable="MenuItemProgressDlg" member="yes">
+					<label>wxProgressDialog</label>
+					<help>Run the progress dialogue.</help>
+					<handler function="OnMenuItemProgressDlgSelected" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="idRichTextFormattingDlg" variable="MenuItemRichTextFormattingDlg" member="yes">
+					<label>wxRichTextFormattingDialog</label>
+					<help>Run the rich text formatting dialogue.</help>
+					<handler function="OnMenuItemRichTextFormattingDlgSelected" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="idRichTextStyleOrganiserDlg" variable="MenuItemRichTextStyleOrganiserDlg" member="yes">
+					<label>wxRichTextStyleOrganiserDialog</label>
+					<help>Run the rich text style organiser dialogue.</help>
+					<handler function="OnMenuItemRichTextStyleOrganiserDlgSelected" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="idTextEntryDlg" variable="MenuItemTextEntryDlg" member="yes">
+					<label>wxTextEntryDialog</label>
+					<help>Run the text entry dialogue.</help>
+					<handler function="OnMenuItemTextEntryDlgSelected" entry="EVT_MENU" />
+				</object>
+			</object>
+			<object class="wxMenu" variable="Menu3" member="yes">
+				<label>wx&amp;DialUpmanager</label>
+				<object class="wxMenuItem" name="idCheckNetworkStatus" variable="MenuItem3" member="yes">
+					<label>Check network status</label>
+					<help>wxDialUpManager: Check network status.</help>
+					<handler function="OnMenuItemCheckNetworkStatus" entry="EVT_MENU" />
+				</object>
+			</object>
+			<object class="wxMenu" variable="Menu4" member="yes">
+				<label>wx&amp;HtmlEasyPrinting</label>
+				<object class="wxMenuItem" name="idHtmlEasyPrint" variable="MenuItem4" member="yes">
+					<label>Print</label>
+					<help>wxHtmlEasyPrinting: Run the print dialogue.</help>
+					<handler function="OnHtmlEasyPrint" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="idHtmlEasyPageSetup" variable="MenuItem5" member="yes">
+					<label>Page &amp;Setup...</label>
+					<help>wxHtmlEasyPrinting: Run the page setup dialogue.</help>
+					<handler function="OnHtmlEasyPageSetup" entry="EVT_MENU" />
+				</object>
+			</object>
+			<object class="wxMenu" variable="Menu2" member="no">
+				<label>Help</label>
+				<object class="wxMenuItem" name="idMenuAbout" variable="MenuItem2" member="no">
+					<label>About</label>
+					<accel>F1</accel>
+					<help>Show info about this application.</help>
+					<handler function="OnAbout" entry="EVT_MENU" />
+				</object>
+			</object>
+		</object>
+		<object class="wxStatusBar" name="ID_STATUSBAR1" variable="StatusBar1" member="yes">
+			<fields>3</fields>
+			<widths>-25,-10,-10</widths>
+			<styles>wxSB_NORMAL,wxSB_NORMAL,wxSB_NORMAL</styles>
+		</object>
+		<object class="wxImageList" variable="ImageList1" member="yes">
+			<image_list>
+				<Item>32</Item>
+				<Item>32</Item>
+				<Item>static const char *xpm_data[] = {</Item>
+				<Item>&quot;32 32 6 1&quot;,</Item>
+				<Item>&quot;. c Black&quot;,</Item>
+				<Item>&quot;X c #FFFFFF&quot;,</Item>
+				<Item>&quot;o c #FF0000&quot;,</Item>
+				<Item>&quot;+ c #0000FF&quot;,</Item>
+				<Item>&quot;_ c None&quot;,</Item>
+				<Item>&quot;O c #00FF00&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;__............................__&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXX...........__&quot;,</Item>
+				<Item>&quot;__.XooooXOOOOX++++X...XXXXX...__&quot;,</Item>
+				<Item>&quot;__.XooooXOOOOX++++X....XXX....__&quot;,</Item>
+				<Item>&quot;__.XooooXOOOOX++++X.....X.....__&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXX...........__&quot;,</Item>
+				<Item>&quot;__............................__&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.X.....XXXXXXXX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.X.ooo.X.XXXXXX.XXXX.XXXX.__&quot;,</Item>
+				<Item>&quot;____.X.ooo.XX.X.X.X.XXX...XXX.__&quot;,</Item>
+				<Item>&quot;____.X.ooo.XXX.X.XX.XX.....XX.__&quot;,</Item>
+				<Item>&quot;____.X.....XXXXXXXX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.X.....XXXXXXXX...........__&quot;,</Item>
+				<Item>&quot;____.X.OOO.X.X.X.XX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.X.OOO.XX.XX.XX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.X.OOO.X.X.X.XX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.X.....XXXXXXXX...........__&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.X.....XXXXXXXX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.X.+++.XX.XX.XX.XX.....XX.__&quot;,</Item>
+				<Item>&quot;____.X.+++.X...XX.X.XXX...XXX.__&quot;,</Item>
+				<Item>&quot;____.X.+++.XX.XX.XX.XXXX.XXXX.__&quot;,</Item>
+				<Item>&quot;____.X.....XXXXXXXX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____..........................__&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;</Item>
+				<Item>};</Item>
+				<Item>static const char *xpm_data[] = {</Item>
+				<Item>&quot;32 32 4 1&quot;,</Item>
+				<Item>&quot;. c Black&quot;,</Item>
+				<Item>&quot;X c #FFFFFF&quot;,</Item>
+				<Item>&quot;o c #808080&quot;,</Item>
+				<Item>&quot;_ c None&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;_____......................_____&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXXXXXXXXXXXXXXX.____&quot;,</Item>
+				<Item>&quot;___.XXXXXXXXXXXXXXXXXXXXXXXo.___&quot;,</Item>
+				<Item>&quot;__.XX______________________oo.__&quot;,</Item>
+				<Item>&quot;__.XX______________________oo.__&quot;,</Item>
+				<Item>&quot;__.XX______________________oo.__&quot;,</Item>
+				<Item>&quot;__.XX______________________oo.__&quot;,</Item>
+				<Item>&quot;__.XX______________________oo.__&quot;,</Item>
+				<Item>&quot;__.XX______________________oo.__&quot;,</Item>
+				<Item>&quot;__.XX______________________oo.__&quot;,</Item>
+				<Item>&quot;__.XX______________________oo.__&quot;,</Item>
+				<Item>&quot;__.XX______________________oo.__&quot;,</Item>
+				<Item>&quot;__.XX______________________oo.__&quot;,</Item>
+				<Item>&quot;__.XX______________________oo.__&quot;,</Item>
+				<Item>&quot;__.XX______________________oo.__&quot;,</Item>
+				<Item>&quot;__.XX______________________oo.__&quot;,</Item>
+				<Item>&quot;___.oooooooooooooooooooooooo.___&quot;,</Item>
+				<Item>&quot;____.oooooooooooooooooooooo.____&quot;,</Item>
+				<Item>&quot;_____......................_____&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;</Item>
+				<Item>};</Item>
+				<Item>static const char *xpm_data[] = {</Item>
+				<Item>&quot;32 32 4 1&quot;,</Item>
+				<Item>&quot;X c Black&quot;,</Item>
+				<Item>&quot;o c #FFFFFF&quot;,</Item>
+				<Item>&quot;. c #808080&quot;,</Item>
+				<Item>&quot;_ c None&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;_____......................_____&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXXXXXXXXXXXXXX_o____&quot;,</Item>
+				<Item>&quot;____.Xoooooooooooooooooooo_o____&quot;,</Item>
+				<Item>&quot;____.Xoooooooooooooooooooo_o____&quot;,</Item>
+				<Item>&quot;____.Xoooooooooooooooooooo_o____&quot;,</Item>
+				<Item>&quot;____.XoooXXooooooooooXXooo_o____&quot;,</Item>
+				<Item>&quot;____.XoooXXXooooooooXXXooo_o____&quot;,</Item>
+				<Item>&quot;____.XooooXXXooooooXXXoooo_o____&quot;,</Item>
+				<Item>&quot;____.XoooooXXXooooXXXooooo_o____&quot;,</Item>
+				<Item>&quot;____.XooooooXXXooXXXoooooo_o____&quot;,</Item>
+				<Item>&quot;____.XoooooooXXXXXXooooooo_o____&quot;,</Item>
+				<Item>&quot;____.XooooooooXXXXoooooooo_o____&quot;,</Item>
+				<Item>&quot;____.XooooooooXXXXoooooooo_o____&quot;,</Item>
+				<Item>&quot;____.XoooooooXXXXXXooooooo_o____&quot;,</Item>
+				<Item>&quot;____.XooooooXXXooXXXoooooo_o____&quot;,</Item>
+				<Item>&quot;____.XoooooXXXooooXXXooooo_o____&quot;,</Item>
+				<Item>&quot;____.XooooXXXooooooXXXoooo_o____&quot;,</Item>
+				<Item>&quot;____.XoooXXXooooooooXXXooo_o____&quot;,</Item>
+				<Item>&quot;____.XoooXXooooooooooXXooo_o____&quot;,</Item>
+				<Item>&quot;____.Xoooooooooooooooooooo_o____&quot;,</Item>
+				<Item>&quot;____.Xoooooooooooooooooooo_o____&quot;,</Item>
+				<Item>&quot;____.Xoooooooooooooooooooo_o____&quot;,</Item>
+				<Item>&quot;____.X_____________________o____&quot;,</Item>
+				<Item>&quot;_____oooooooooooooooooooooo_____&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;</Item>
+				<Item>};</Item>
+				<Item>static const char *xpm_data[] = {</Item>
+				<Item>&quot;32 32 4 1&quot;,</Item>
+				<Item>&quot;. c Black&quot;,</Item>
+				<Item>&quot;X c #FFFFFF&quot;,</Item>
+				<Item>&quot;o c #808080&quot;,</Item>
+				<Item>&quot;_ c None&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;__............................__&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXX...........__&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXX...XXXXX...__&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXX....XXX....__&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXX.....X.....__&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXX...........__&quot;,</Item>
+				<Item>&quot;__............................__&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;______oooooooooooooooooooooooo__&quot;,</Item>
+				<Item>&quot;______oXXXXXXXXXXXXXXXXXXXXXXo__&quot;,</Item>
+				<Item>&quot;____ooooooooooooooooooooooooXo__&quot;,</Item>
+				<Item>&quot;____oXXXXXXXXXXXXXXXXXXXXXXoXo__&quot;,</Item>
+				<Item>&quot;__........................XoXo__&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXXXXXXXX.XoXo__&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXXXXXXXX.XoXo__&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXXXXXXXX.XoXo__&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXXXXXXXX.XoXo__&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXXXXXXXX.Xooo__&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXXXXXXXX.Xo____&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXXXXXXXX.oo____&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXXXXXXXX.______&quot;,</Item>
+				<Item>&quot;__........................______&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;</Item>
+				<Item>};</Item>
+				<Item>static const char *xpm_data[] = {</Item>
+				<Item>&quot;32 32 158 2&quot;,</Item>
+				<Item>&quot;8. c Black&quot;,</Item>
+				<Item>&quot;*_ c #52C152&quot;,</Item>
+				<Item>&quot;1. c #D9D9DB&quot;,</Item>
+				<Item>&quot;@. c #D9D9DC&quot;,</Item>
+				<Item>&quot;w_ c #68A868&quot;,</Item>
+				<Item>&quot;&amp;_ c #DDF3DD&quot;,</Item>
+				<Item>&quot;F_ c #3F923C&quot;,</Item>
+				<Item>&quot;Z_ c #BFD2BF&quot;,</Item>
+				<Item>&quot;C. c #69696A&quot;,</Item>
+				<Item>&quot;j. c #878788&quot;,</Item>
+				<Item>&quot;g_ c #93D893&quot;,</Item>
+				<Item>&quot;&apos;_ c #0D8109&quot;,</Item>
+				<Item>&quot;6. c #D2D2D3&quot;,</Item>
+				<Item>&quot;}_ c #D2D2D4&quot;,</Item>
+				<Item>&quot;v. c #FFFFFF&quot;,</Item>
+				<Item>&quot;@_ c #A5C8A5&quot;,</Item>
+				<Item>&quot;b_ c #0D7E09&quot;,</Item>
+				<Item>&quot;w. c #717172&quot;,</Item>
+				<Item>&quot;,. c #8F8F90&quot;,</Item>
+				<Item>&quot;L_ c #167616&quot;,</Item>
+				<Item>&quot;x_ c #0F750E&quot;,</Item>
+				<Item>&quot;I_ c #BCBCBC&quot;,</Item>
+				<Item>&quot;h. c #CBCBCB&quot;,</Item>
+				<Item>&quot;A. c #DADADA&quot;,</Item>
+				<Item>&quot;z. c #DADADB&quot;,</Item>
+				<Item>&quot;|_ c #DADADC&quot;,</Item>
+				<Item>&quot;a_ c #77A876&quot;,</Item>
+				<Item>&quot;5_ c #067706&quot;,</Item>
+				<Item>&quot;#_ c #218B20&quot;,</Item>
+				<Item>&quot;Z. c #797979&quot;,</Item>
+				<Item>&quot;2_ c #00AC01&quot;,</Item>
+				<Item>&quot;v_ c #1A8719&quot;,</Item>
+				<Item>&quot;-. c #D3D3D4&quot;,</Item>
+				<Item>&quot;(_ c #D3D3D5&quot;,</Item>
+				<Item>&quot;&lt;. c #D3D3D6&quot;,</Item>
+				<Item>&quot;_. c #E2E2E3&quot;,</Item>
+				<Item>&quot;T_ c #BBC9BC&quot;,</Item>
+				<Item>&quot;j_ c #00A900&quot;,</Item>
+				<Item>&quot;i_ c #37BB37&quot;,</Item>
+				<Item>&quot;7. c #727273&quot;,</Item>
+				<Item>&quot;b. c #818181&quot;,</Item>
+				<Item>&quot;=. c #909091&quot;,</Item>
+				<Item>&quot;+. c #909092&quot;,</Item>
+				<Item>&quot;H_ c #31A130&quot;,</Item>
+				<Item>&quot;{_ c #BDBDBD&quot;,</Item>
+				<Item>&quot;P_ c #C8D8C8&quot;,</Item>
+				<Item>&quot;d_ c #018D00&quot;,</Item>
+				<Item>&quot;G. c #FF00FE&quot;,</Item>
+				<Item>&quot;t. c #CCCCCC&quot;,</Item>
+				<Item>&quot;/_ c #DBDBDD&quot;,</Item>
+				<Item>&quot;W_ c #1F821A&quot;,</Item>
+				<Item>&quot;O. c #95B795&quot;,</Item>
+				<Item>&quot;N_ c #179716&quot;,</Item>
+				<Item>&quot;=_ c #018700&quot;,</Item>
+				<Item>&quot;a. c #989899&quot;,</Item>
+				<Item>&quot;._ c #CBDCCB&quot;,</Item>
+				<Item>&quot;l_ c #52C353&quot;,</Item>
+				<Item>&quot;X. c #5E795F&quot;,</Item>
+				<Item>&quot;R_ c #389635&quot;,</Item>
+				<Item>&quot;n. c #C5C5C8&quot;,</Item>
+				<Item>&quot;#. c #D4D4D5&quot;,</Item>
+				<Item>&quot;;. c #E3E3E3&quot;,</Item>
+				<Item>&quot;.. c #D4D4D6&quot;,</Item>
+				<Item>&quot;9. c #D4D4D7&quot;,</Item>
+				<Item>&quot;2. c #E3E3E4&quot;,</Item>
+				<Item>&quot;Q_ c #AAD4A9&quot;,</Item>
+				<Item>&quot;J_ c #75BC74&quot;,</Item>
+				<Item>&quot;S. c #737373&quot;,</Item>
+				<Item>&quot;3. c #737374&quot;,</Item>
+				<Item>&quot;[_ c #659A65&quot;,</Item>
+				<Item>&quot;U_ c #919192&quot;,</Item>
+				<Item>&quot;:_ c #319231&quot;,</Item>
+				<Item>&quot;t_ c #06AB06&quot;,</Item>
+				<Item>&quot;&amp;. c #AFAFAF&quot;,</Item>
+				<Item>&quot;A_ c #BEBEBE&quot;,</Item>
+				<Item>&quot;O_ c #278427&quot;,</Item>
+				<Item>&quot;D_ c #2A8E29&quot;,</Item>
+				<Item>&quot;F. c #FFFF00&quot;,</Item>
+				<Item>&quot;n_ c #349632&quot;,</Item>
+				<Item>&quot;o_ c #198219&quot;,</Item>
+				<Item>&quot;r. c #999999&quot;,</Item>
+				<Item>&quot;H. c #00FFFF&quot;,</Item>
+				<Item>&quot;0. c #E4E4E4&quot;,</Item>
+				<Item>&quot;u. c #D5D5D8&quot;,</Item>
+				<Item>&quot;7_ c #6BCB6C&quot;,</Item>
+				<Item>&quot;z_ c #7ECE7E&quot;,</Item>
+				<Item>&quot;f_ c #32BC32&quot;,</Item>
+				<Item>&quot;$. c #747475&quot;,</Item>
+				<Item>&quot;N. c #838384&quot;,</Item>
+				<Item>&quot;:. c #B0B0B0&quot;,</Item>
+				<Item>&quot;V. c #B0B0B2&quot;,</Item>
+				<Item>&quot;*. c #BFBFBF&quot;,</Item>
+				<Item>&quot;9_ c #00AB01&quot;,</Item>
+				<Item>&quot;x. c #CECECF&quot;,</Item>
+				<Item>&quot;M_ c #069905&quot;,</Item>
+				<Item>&quot;k. c #DDDDDF&quot;,</Item>
+				<Item>&quot;;_ c #B7D1B7&quot;,</Item>
+				<Item>&quot;B_ c #7FD27F&quot;,</Item>
+				<Item>&quot;s. c #E5E5E5&quot;,</Item>
+				<Item>&quot;J. c #FF0000&quot;,</Item>
+				<Item>&quot;8_ c #22B422&quot;,</Item>
+				<Item>&quot;c_ c #E3E8E3&quot;,</Item>
+				<Item>&quot;e_ c #018901&quot;,</Item>
+				<Item>&quot;r_ c #029902&quot;,</Item>
+				<Item>&quot;G_ c #1A7A16&quot;,</Item>
+				<Item>&quot;q_ c #1A7A19&quot;,</Item>
+				<Item>&quot;K. c #0000FF&quot;,</Item>
+				<Item>&quot;B. c #939395&quot;,</Item>
+				<Item>&quot;g. c #B1B1B1&quot;,</Item>
+				<Item>&quot;&gt;. c #C0C0C0&quot;,</Item>
+				<Item>&quot;]_ c #267C23&quot;,</Item>
+				<Item>&quot;m. c #C0C0C3&quot;,</Item>
+				<Item>&quot;d. c #CFCFD1&quot;,</Item>
+				<Item>&quot;k_ c #01A901&quot;,</Item>
+				<Item>&quot;-_ c #80B080&quot;,</Item>
+				<Item>&quot;c. c #6E6E6F&quot;,</Item>
+				<Item>&quot;f. c #6E6E70&quot;,</Item>
+				<Item>&quot;+_ c #8AB88A&quot;,</Item>
+				<Item>&quot;m_ c #059A05&quot;,</Item>
+				<Item>&quot;E_ c #ACCAAB&quot;,</Item>
+				<Item>&quot;D. c #C8C8C8&quot;,</Item>
+				<Item>&quot;K_ c #9ECB9E&quot;,</Item>
+				<Item>&quot;C_ c #117611&quot;,</Item>
+				<Item>&quot;l. c #C8C8CB&quot;,</Item>
+				<Item>&quot;$_ c #ABDDAB&quot;,</Item>
+				<Item>&quot;6_ c #5CC15C&quot;,</Item>
+				<Item>&quot;)_ c #DADEDA&quot;,</Item>
+				<Item>&quot;`_ c #8DBC8D&quot;,</Item>
+				<Item>&quot;,_ c #A9E0A9&quot;,</Item>
+				<Item>&quot;X_ c #5FA25F&quot;,</Item>
+				<Item>&quot;__ c None&quot;,</Item>
+				<Item>&quot;4. c #C1C1C1&quot;,</Item>
+				<Item>&quot;s_ c #70AB70&quot;,</Item>
+				<Item>&quot;i. c #D0D0D2&quot;,</Item>
+				<Item>&quot;o. c #2B712A&quot;,</Item>
+				<Item>&quot;Y_ c #D0D0D3&quot;,</Item>
+				<Item>&quot;L. c #00FF00&quot;,</Item>
+				<Item>&quot;4_ c #92BD92&quot;,</Item>
+				<Item>&quot;e. c #333333&quot;,</Item>
+				<Item>&quot;p. c #6F6F70&quot;,</Item>
+				<Item>&quot;S_ c #639064&quot;,</Item>
+				<Item>&quot;u_ c #00AD01&quot;,</Item>
+				<Item>&quot;&lt;_ c #3EBD3E&quot;,</Item>
+				<Item>&quot;M. c #BABABC&quot;,</Item>
+				<Item>&quot;5. c #D8D8DA&quot;,</Item>
+				<Item>&quot;1_ c #00AA01&quot;,</Item>
+				<Item>&quot;3_ c #288428&quot;,</Item>
+				<Item>&quot;V_ c #A5DAA5&quot;,</Item>
+				<Item>&quot;q. c #D1D1D2&quot;,</Item>
+				<Item>&quot;^_ c #D1D1D3&quot;,</Item>
+				<Item>&quot;0_ c #16B116&quot;,</Item>
+				<Item>&quot;!_ c #217D1F&quot;,</Item>
+				<Item>&quot;h_ c #029B02&quot;,</Item>
+				<Item>&quot;~_ c #9ABC9A&quot;,</Item>
+				<Item>&quot;y_ c #03AB03&quot;,</Item>
+				<Item>&quot;p_ c #40AB40&quot;,</Item>
+				<Item>&quot;y. c #8E8E90&quot;,</Item>
+				<Item>&quot;&gt;_ c #B4E3B4&quot;,</Item>
+				<Item>&quot;____________________________________________________._X_o_O_+___&quot;,</Item>
+				<Item>&quot;__________________________________________________@_#_$_&amp;_*_=_-_&quot;,</Item>
+				<Item>&quot;________________________________________________;_:_&gt;_,_&lt;_1_2_3_&quot;,</Item>
+				<Item>&quot;______________________________________________4_5_6_7_8_9_2_0_q_&quot;,</Item>
+				<Item>&quot;____________________________________________w_e_r_t_y_u_9_i_p_a_&quot;,</Item>
+				<Item>&quot;__________________________________________s_d_f_g_h_j_k_l_z_x_c_&quot;,</Item>
+				<Item>&quot;__________________________________________v_b_n_m_M_N_B_V_C_Z___&quot;,</Item>
+				<Item>&quot;________________________________________A_S_D_F_G_H_J_K_L_P_____&quot;,</Item>
+				<Item>&quot;______________________________________I_U_Y_T_R_E_W_Q_!_~_______&quot;,</Item>
+				<Item>&quot;____________________________________I_U_^_/_(_)_`_&apos;_]_[_________&quot;,</Item>
+				<Item>&quot;__________________________________{_U_}_|_(__...X.o.O.__________&quot;,</Item>
+				<Item>&quot;________________________________A_+.}_@.(__.#.$.&amp;.______________&quot;,</Item>
+				<Item>&quot;______________________________*.=.(_@.-.;.-.$.:.________________&quot;,</Item>
+				<Item>&quot;____________________________&gt;.,.&lt;.1.-.2.-.3.:.__________________&quot;,</Item>
+				<Item>&quot;__________________________4.U_&lt;.5.-.2.6.7.:.____________________&quot;,</Item>
+				<Item>&quot;8.8.8.8.8.8.__8.8.8.8.8.4.U_9.5.-.0.q.w.:.______________________&quot;,</Item>
+				<Item>&quot;8.e.e.e.e.8.__8.r.r.r.t.y.u.5.6.0.i.p.:.________________________&quot;,</Item>
+				<Item>&quot;8.e.e.e.e.8.__8.r.r.r.a.9.^_-.s.d.f.g.8.________________________&quot;,</Item>
+				<Item>&quot;8.e.e.e.e.8.__8.r.r.h.j.k.l.z.x.c.&amp;.v.8.________________________&quot;,</Item>
+				<Item>&quot;8.8.8.8.8.8.__8.8.8.b.n.l.m.M.c.&amp;.8.8.8.________________________&quot;,</Item>
+				<Item>&quot;____________________N.B.V.C.Z.A.________________________________&quot;,</Item>
+				<Item>&quot;8.8.8.8.8.8.__8.8.8.{_p.S.D.8.8.8.8.8.8.________________________&quot;,</Item>
+				<Item>&quot;8.F.F.F.F.8.__8.G.G.G.G.8.__8.H.H.H.H.8.________________________&quot;,</Item>
+				<Item>&quot;8.F.F.F.F.8.__8.G.G.G.G.8.__8.H.H.H.H.8.________________________&quot;,</Item>
+				<Item>&quot;8.F.F.F.F.8.__8.G.G.G.G.8.__8.H.H.H.H.8.________________________&quot;,</Item>
+				<Item>&quot;8.8.8.8.8.8.__8.8.8.8.8.8.__8.8.8.8.8.8.________________________&quot;,</Item>
+				<Item>&quot;________________________________________________________________&quot;,</Item>
+				<Item>&quot;8.8.8.8.8.8.__8.8.8.8.8.8.__8.8.8.8.8.8.________________________&quot;,</Item>
+				<Item>&quot;8.J.J.J.J.8.__8.K.K.K.K.8.__8.L.L.L.L.8.________________________&quot;,</Item>
+				<Item>&quot;8.J.J.J.J.8.__8.K.K.K.K.8.__8.L.L.L.L.8.________________________&quot;,</Item>
+				<Item>&quot;8.J.J.J.J.8.__8.K.K.K.K.8.__8.L.L.L.L.8.________________________&quot;,</Item>
+				<Item>&quot;8.8.8.8.8.8.__8.8.8.8.8.8.__8.8.8.8.8.8.________________________&quot;</Item>
+				<Item>};</Item>
+				<Item>static const char *xpm_data[] = {</Item>
+				<Item>&quot;32 32 3 1&quot;,</Item>
+				<Item>&quot;. c Black&quot;,</Item>
+				<Item>&quot;X c #FFFFFF&quot;,</Item>
+				<Item>&quot;_ c None&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;__............................__&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXX...........__&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXX...XXXXX...__&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXX....XXX....__&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXX.....X.....__&quot;,</Item>
+				<Item>&quot;__.XXXXXXXXXXXXXXXX...........__&quot;,</Item>
+				<Item>&quot;__............................__&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXXXXXXX.XXXX.XXXX.__&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXXXXXXX.XXX...XXX.__&quot;,</Item>
+				<Item>&quot;____.XX.......XXXXX.XX.....XX.__&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.XX........XXXX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXXXXXXX...........__&quot;,</Item>
+				<Item>&quot;____.XX.........XXX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.XX........XXXX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXXXXXXX...........__&quot;,</Item>
+				<Item>&quot;____.XX.......XXXXX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.XX........XXXX.XX.....XX.__&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXXXXXXX.XXX...XXX.__&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXXXXXXX.XXXX.XXXX.__&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;____..........................__&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;</Item>
+				<Item>};</Item>
+			</image_list>
+			<image_text>
+				<item2>32</item2>
+				<item2>32</item2>
+				<item2>static const char *xpm_data[] = {</item2>
+				<item2>&quot;32 32 6 1&quot;,</item2>
+				<item2>&quot;. c Black&quot;,</item2>
+				<item2>&quot;X c #FFFFFF&quot;,</item2>
+				<item2>&quot;o c #FF0000&quot;,</item2>
+				<item2>&quot;+ c #0000FF&quot;,</item2>
+				<item2>&quot;_ c None&quot;,</item2>
+				<item2>&quot;O c #00FF00&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;__............................__&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXX...........__&quot;,</item2>
+				<item2>&quot;__.XooooXOOOOX++++X...XXXXX...__&quot;,</item2>
+				<item2>&quot;__.XooooXOOOOX++++X....XXX....__&quot;,</item2>
+				<item2>&quot;__.XooooXOOOOX++++X.....X.....__&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXX...........__&quot;,</item2>
+				<item2>&quot;__............................__&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.X.....XXXXXXXX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.X.ooo.X.XXXXXX.XXXX.XXXX.__&quot;,</item2>
+				<item2>&quot;____.X.ooo.XX.X.X.X.XXX...XXX.__&quot;,</item2>
+				<item2>&quot;____.X.ooo.XXX.X.XX.XX.....XX.__&quot;,</item2>
+				<item2>&quot;____.X.....XXXXXXXX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.X.....XXXXXXXX...........__&quot;,</item2>
+				<item2>&quot;____.X.OOO.X.X.X.XX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.X.OOO.XX.XX.XX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.X.OOO.X.X.X.XX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.X.....XXXXXXXX...........__&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.X.....XXXXXXXX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.X.+++.XX.XX.XX.XX.....XX.__&quot;,</item2>
+				<item2>&quot;____.X.+++.X...XX.X.XXX...XXX.__&quot;,</item2>
+				<item2>&quot;____.X.+++.XX.XX.XX.XXXX.XXXX.__&quot;,</item2>
+				<item2>&quot;____.X.....XXXXXXXX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____..........................__&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;</item2>
+				<item2>};</item2>
+				<item2>static const char *xpm_data[] = {</item2>
+				<item2>&quot;32 32 4 1&quot;,</item2>
+				<item2>&quot;. c Black&quot;,</item2>
+				<item2>&quot;X c #FFFFFF&quot;,</item2>
+				<item2>&quot;o c #808080&quot;,</item2>
+				<item2>&quot;_ c None&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;_____......................_____&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXXXXXXXXXXXXXXX.____&quot;,</item2>
+				<item2>&quot;___.XXXXXXXXXXXXXXXXXXXXXXXo.___&quot;,</item2>
+				<item2>&quot;__.XX______________________oo.__&quot;,</item2>
+				<item2>&quot;__.XX______________________oo.__&quot;,</item2>
+				<item2>&quot;__.XX______________________oo.__&quot;,</item2>
+				<item2>&quot;__.XX______________________oo.__&quot;,</item2>
+				<item2>&quot;__.XX______________________oo.__&quot;,</item2>
+				<item2>&quot;__.XX______________________oo.__&quot;,</item2>
+				<item2>&quot;__.XX______________________oo.__&quot;,</item2>
+				<item2>&quot;__.XX______________________oo.__&quot;,</item2>
+				<item2>&quot;__.XX______________________oo.__&quot;,</item2>
+				<item2>&quot;__.XX______________________oo.__&quot;,</item2>
+				<item2>&quot;__.XX______________________oo.__&quot;,</item2>
+				<item2>&quot;__.XX______________________oo.__&quot;,</item2>
+				<item2>&quot;__.XX______________________oo.__&quot;,</item2>
+				<item2>&quot;___.oooooooooooooooooooooooo.___&quot;,</item2>
+				<item2>&quot;____.oooooooooooooooooooooo.____&quot;,</item2>
+				<item2>&quot;_____......................_____&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;</item2>
+				<item2>};</item2>
+				<item2>static const char *xpm_data[] = {</item2>
+				<item2>&quot;32 32 4 1&quot;,</item2>
+				<item2>&quot;X c Black&quot;,</item2>
+				<item2>&quot;o c #FFFFFF&quot;,</item2>
+				<item2>&quot;. c #808080&quot;,</item2>
+				<item2>&quot;_ c None&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;_____......................_____&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXXXXXXXXXXXXXX_o____&quot;,</item2>
+				<item2>&quot;____.Xoooooooooooooooooooo_o____&quot;,</item2>
+				<item2>&quot;____.Xoooooooooooooooooooo_o____&quot;,</item2>
+				<item2>&quot;____.Xoooooooooooooooooooo_o____&quot;,</item2>
+				<item2>&quot;____.XoooXXooooooooooXXooo_o____&quot;,</item2>
+				<item2>&quot;____.XoooXXXooooooooXXXooo_o____&quot;,</item2>
+				<item2>&quot;____.XooooXXXooooooXXXoooo_o____&quot;,</item2>
+				<item2>&quot;____.XoooooXXXooooXXXooooo_o____&quot;,</item2>
+				<item2>&quot;____.XooooooXXXooXXXoooooo_o____&quot;,</item2>
+				<item2>&quot;____.XoooooooXXXXXXooooooo_o____&quot;,</item2>
+				<item2>&quot;____.XooooooooXXXXoooooooo_o____&quot;,</item2>
+				<item2>&quot;____.XooooooooXXXXoooooooo_o____&quot;,</item2>
+				<item2>&quot;____.XoooooooXXXXXXooooooo_o____&quot;,</item2>
+				<item2>&quot;____.XooooooXXXooXXXoooooo_o____&quot;,</item2>
+				<item2>&quot;____.XoooooXXXooooXXXooooo_o____&quot;,</item2>
+				<item2>&quot;____.XooooXXXooooooXXXoooo_o____&quot;,</item2>
+				<item2>&quot;____.XoooXXXooooooooXXXooo_o____&quot;,</item2>
+				<item2>&quot;____.XoooXXooooooooooXXooo_o____&quot;,</item2>
+				<item2>&quot;____.Xoooooooooooooooooooo_o____&quot;,</item2>
+				<item2>&quot;____.Xoooooooooooooooooooo_o____&quot;,</item2>
+				<item2>&quot;____.Xoooooooooooooooooooo_o____&quot;,</item2>
+				<item2>&quot;____.X_____________________o____&quot;,</item2>
+				<item2>&quot;_____oooooooooooooooooooooo_____&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;</item2>
+				<item2>};</item2>
+				<item2>static const char *xpm_data[] = {</item2>
+				<item2>&quot;32 32 4 1&quot;,</item2>
+				<item2>&quot;. c Black&quot;,</item2>
+				<item2>&quot;X c #FFFFFF&quot;,</item2>
+				<item2>&quot;o c #808080&quot;,</item2>
+				<item2>&quot;_ c None&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;__............................__&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXX...........__&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXX...XXXXX...__&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXX....XXX....__&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXX.....X.....__&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXX...........__&quot;,</item2>
+				<item2>&quot;__............................__&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;______oooooooooooooooooooooooo__&quot;,</item2>
+				<item2>&quot;______oXXXXXXXXXXXXXXXXXXXXXXo__&quot;,</item2>
+				<item2>&quot;____ooooooooooooooooooooooooXo__&quot;,</item2>
+				<item2>&quot;____oXXXXXXXXXXXXXXXXXXXXXXoXo__&quot;,</item2>
+				<item2>&quot;__........................XoXo__&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXXXXXXXX.XoXo__&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXXXXXXXX.XoXo__&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXXXXXXXX.XoXo__&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXXXXXXXX.XoXo__&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXXXXXXXX.Xooo__&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXXXXXXXX.Xo____&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXXXXXXXX.oo____&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXXXXXXXX.______&quot;,</item2>
+				<item2>&quot;__........................______&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;</item2>
+				<item2>};</item2>
+				<item2>static const char *xpm_data[] = {</item2>
+				<item2>&quot;32 32 158 2&quot;,</item2>
+				<item2>&quot;8. c Black&quot;,</item2>
+				<item2>&quot;*_ c #52C152&quot;,</item2>
+				<item2>&quot;1. c #D9D9DB&quot;,</item2>
+				<item2>&quot;@. c #D9D9DC&quot;,</item2>
+				<item2>&quot;w_ c #68A868&quot;,</item2>
+				<item2>&quot;&amp;_ c #DDF3DD&quot;,</item2>
+				<item2>&quot;F_ c #3F923C&quot;,</item2>
+				<item2>&quot;Z_ c #BFD2BF&quot;,</item2>
+				<item2>&quot;C. c #69696A&quot;,</item2>
+				<item2>&quot;j. c #878788&quot;,</item2>
+				<item2>&quot;g_ c #93D893&quot;,</item2>
+				<item2>&quot;&apos;_ c #0D8109&quot;,</item2>
+				<item2>&quot;6. c #D2D2D3&quot;,</item2>
+				<item2>&quot;}_ c #D2D2D4&quot;,</item2>
+				<item2>&quot;v. c #FFFFFF&quot;,</item2>
+				<item2>&quot;@_ c #A5C8A5&quot;,</item2>
+				<item2>&quot;b_ c #0D7E09&quot;,</item2>
+				<item2>&quot;w. c #717172&quot;,</item2>
+				<item2>&quot;,. c #8F8F90&quot;,</item2>
+				<item2>&quot;L_ c #167616&quot;,</item2>
+				<item2>&quot;x_ c #0F750E&quot;,</item2>
+				<item2>&quot;I_ c #BCBCBC&quot;,</item2>
+				<item2>&quot;h. c #CBCBCB&quot;,</item2>
+				<item2>&quot;A. c #DADADA&quot;,</item2>
+				<item2>&quot;z. c #DADADB&quot;,</item2>
+				<item2>&quot;|_ c #DADADC&quot;,</item2>
+				<item2>&quot;a_ c #77A876&quot;,</item2>
+				<item2>&quot;5_ c #067706&quot;,</item2>
+				<item2>&quot;#_ c #218B20&quot;,</item2>
+				<item2>&quot;Z. c #797979&quot;,</item2>
+				<item2>&quot;2_ c #00AC01&quot;,</item2>
+				<item2>&quot;v_ c #1A8719&quot;,</item2>
+				<item2>&quot;-. c #D3D3D4&quot;,</item2>
+				<item2>&quot;(_ c #D3D3D5&quot;,</item2>
+				<item2>&quot;&lt;. c #D3D3D6&quot;,</item2>
+				<item2>&quot;_. c #E2E2E3&quot;,</item2>
+				<item2>&quot;T_ c #BBC9BC&quot;,</item2>
+				<item2>&quot;j_ c #00A900&quot;,</item2>
+				<item2>&quot;i_ c #37BB37&quot;,</item2>
+				<item2>&quot;7. c #727273&quot;,</item2>
+				<item2>&quot;b. c #818181&quot;,</item2>
+				<item2>&quot;=. c #909091&quot;,</item2>
+				<item2>&quot;+. c #909092&quot;,</item2>
+				<item2>&quot;H_ c #31A130&quot;,</item2>
+				<item2>&quot;{_ c #BDBDBD&quot;,</item2>
+				<item2>&quot;P_ c #C8D8C8&quot;,</item2>
+				<item2>&quot;d_ c #018D00&quot;,</item2>
+				<item2>&quot;G. c #FF00FE&quot;,</item2>
+				<item2>&quot;t. c #CCCCCC&quot;,</item2>
+				<item2>&quot;/_ c #DBDBDD&quot;,</item2>
+				<item2>&quot;W_ c #1F821A&quot;,</item2>
+				<item2>&quot;O. c #95B795&quot;,</item2>
+				<item2>&quot;N_ c #179716&quot;,</item2>
+				<item2>&quot;=_ c #018700&quot;,</item2>
+				<item2>&quot;a. c #989899&quot;,</item2>
+				<item2>&quot;._ c #CBDCCB&quot;,</item2>
+				<item2>&quot;l_ c #52C353&quot;,</item2>
+				<item2>&quot;X. c #5E795F&quot;,</item2>
+				<item2>&quot;R_ c #389635&quot;,</item2>
+				<item2>&quot;n. c #C5C5C8&quot;,</item2>
+				<item2>&quot;#. c #D4D4D5&quot;,</item2>
+				<item2>&quot;;. c #E3E3E3&quot;,</item2>
+				<item2>&quot;.. c #D4D4D6&quot;,</item2>
+				<item2>&quot;9. c #D4D4D7&quot;,</item2>
+				<item2>&quot;2. c #E3E3E4&quot;,</item2>
+				<item2>&quot;Q_ c #AAD4A9&quot;,</item2>
+				<item2>&quot;J_ c #75BC74&quot;,</item2>
+				<item2>&quot;S. c #737373&quot;,</item2>
+				<item2>&quot;3. c #737374&quot;,</item2>
+				<item2>&quot;[_ c #659A65&quot;,</item2>
+				<item2>&quot;U_ c #919192&quot;,</item2>
+				<item2>&quot;:_ c #319231&quot;,</item2>
+				<item2>&quot;t_ c #06AB06&quot;,</item2>
+				<item2>&quot;&amp;. c #AFAFAF&quot;,</item2>
+				<item2>&quot;A_ c #BEBEBE&quot;,</item2>
+				<item2>&quot;O_ c #278427&quot;,</item2>
+				<item2>&quot;D_ c #2A8E29&quot;,</item2>
+				<item2>&quot;F. c #FFFF00&quot;,</item2>
+				<item2>&quot;n_ c #349632&quot;,</item2>
+				<item2>&quot;o_ c #198219&quot;,</item2>
+				<item2>&quot;r. c #999999&quot;,</item2>
+				<item2>&quot;H. c #00FFFF&quot;,</item2>
+				<item2>&quot;0. c #E4E4E4&quot;,</item2>
+				<item2>&quot;u. c #D5D5D8&quot;,</item2>
+				<item2>&quot;7_ c #6BCB6C&quot;,</item2>
+				<item2>&quot;z_ c #7ECE7E&quot;,</item2>
+				<item2>&quot;f_ c #32BC32&quot;,</item2>
+				<item2>&quot;$. c #747475&quot;,</item2>
+				<item2>&quot;N. c #838384&quot;,</item2>
+				<item2>&quot;:. c #B0B0B0&quot;,</item2>
+				<item2>&quot;V. c #B0B0B2&quot;,</item2>
+				<item2>&quot;*. c #BFBFBF&quot;,</item2>
+				<item2>&quot;9_ c #00AB01&quot;,</item2>
+				<item2>&quot;x. c #CECECF&quot;,</item2>
+				<item2>&quot;M_ c #069905&quot;,</item2>
+				<item2>&quot;k. c #DDDDDF&quot;,</item2>
+				<item2>&quot;;_ c #B7D1B7&quot;,</item2>
+				<item2>&quot;B_ c #7FD27F&quot;,</item2>
+				<item2>&quot;s. c #E5E5E5&quot;,</item2>
+				<item2>&quot;J. c #FF0000&quot;,</item2>
+				<item2>&quot;8_ c #22B422&quot;,</item2>
+				<item2>&quot;c_ c #E3E8E3&quot;,</item2>
+				<item2>&quot;e_ c #018901&quot;,</item2>
+				<item2>&quot;r_ c #029902&quot;,</item2>
+				<item2>&quot;G_ c #1A7A16&quot;,</item2>
+				<item2>&quot;q_ c #1A7A19&quot;,</item2>
+				<item2>&quot;K. c #0000FF&quot;,</item2>
+				<item2>&quot;B. c #939395&quot;,</item2>
+				<item2>&quot;g. c #B1B1B1&quot;,</item2>
+				<item2>&quot;&gt;. c #C0C0C0&quot;,</item2>
+				<item2>&quot;]_ c #267C23&quot;,</item2>
+				<item2>&quot;m. c #C0C0C3&quot;,</item2>
+				<item2>&quot;d. c #CFCFD1&quot;,</item2>
+				<item2>&quot;k_ c #01A901&quot;,</item2>
+				<item2>&quot;-_ c #80B080&quot;,</item2>
+				<item2>&quot;c. c #6E6E6F&quot;,</item2>
+				<item2>&quot;f. c #6E6E70&quot;,</item2>
+				<item2>&quot;+_ c #8AB88A&quot;,</item2>
+				<item2>&quot;m_ c #059A05&quot;,</item2>
+				<item2>&quot;E_ c #ACCAAB&quot;,</item2>
+				<item2>&quot;D. c #C8C8C8&quot;,</item2>
+				<item2>&quot;K_ c #9ECB9E&quot;,</item2>
+				<item2>&quot;C_ c #117611&quot;,</item2>
+				<item2>&quot;l. c #C8C8CB&quot;,</item2>
+				<item2>&quot;$_ c #ABDDAB&quot;,</item2>
+				<item2>&quot;6_ c #5CC15C&quot;,</item2>
+				<item2>&quot;)_ c #DADEDA&quot;,</item2>
+				<item2>&quot;`_ c #8DBC8D&quot;,</item2>
+				<item2>&quot;,_ c #A9E0A9&quot;,</item2>
+				<item2>&quot;X_ c #5FA25F&quot;,</item2>
+				<item2>&quot;__ c None&quot;,</item2>
+				<item2>&quot;4. c #C1C1C1&quot;,</item2>
+				<item2>&quot;s_ c #70AB70&quot;,</item2>
+				<item2>&quot;i. c #D0D0D2&quot;,</item2>
+				<item2>&quot;o. c #2B712A&quot;,</item2>
+				<item2>&quot;Y_ c #D0D0D3&quot;,</item2>
+				<item2>&quot;L. c #00FF00&quot;,</item2>
+				<item2>&quot;4_ c #92BD92&quot;,</item2>
+				<item2>&quot;e. c #333333&quot;,</item2>
+				<item2>&quot;p. c #6F6F70&quot;,</item2>
+				<item2>&quot;S_ c #639064&quot;,</item2>
+				<item2>&quot;u_ c #00AD01&quot;,</item2>
+				<item2>&quot;&lt;_ c #3EBD3E&quot;,</item2>
+				<item2>&quot;M. c #BABABC&quot;,</item2>
+				<item2>&quot;5. c #D8D8DA&quot;,</item2>
+				<item2>&quot;1_ c #00AA01&quot;,</item2>
+				<item2>&quot;3_ c #288428&quot;,</item2>
+				<item2>&quot;V_ c #A5DAA5&quot;,</item2>
+				<item2>&quot;q. c #D1D1D2&quot;,</item2>
+				<item2>&quot;^_ c #D1D1D3&quot;,</item2>
+				<item2>&quot;0_ c #16B116&quot;,</item2>
+				<item2>&quot;!_ c #217D1F&quot;,</item2>
+				<item2>&quot;h_ c #029B02&quot;,</item2>
+				<item2>&quot;~_ c #9ABC9A&quot;,</item2>
+				<item2>&quot;y_ c #03AB03&quot;,</item2>
+				<item2>&quot;p_ c #40AB40&quot;,</item2>
+				<item2>&quot;y. c #8E8E90&quot;,</item2>
+				<item2>&quot;&gt;_ c #B4E3B4&quot;,</item2>
+				<item2>&quot;____________________________________________________._X_o_O_+___&quot;,</item2>
+				<item2>&quot;__________________________________________________@_#_$_&amp;_*_=_-_&quot;,</item2>
+				<item2>&quot;________________________________________________;_:_&gt;_,_&lt;_1_2_3_&quot;,</item2>
+				<item2>&quot;______________________________________________4_5_6_7_8_9_2_0_q_&quot;,</item2>
+				<item2>&quot;____________________________________________w_e_r_t_y_u_9_i_p_a_&quot;,</item2>
+				<item2>&quot;__________________________________________s_d_f_g_h_j_k_l_z_x_c_&quot;,</item2>
+				<item2>&quot;__________________________________________v_b_n_m_M_N_B_V_C_Z___&quot;,</item2>
+				<item2>&quot;________________________________________A_S_D_F_G_H_J_K_L_P_____&quot;,</item2>
+				<item2>&quot;______________________________________I_U_Y_T_R_E_W_Q_!_~_______&quot;,</item2>
+				<item2>&quot;____________________________________I_U_^_/_(_)_`_&apos;_]_[_________&quot;,</item2>
+				<item2>&quot;__________________________________{_U_}_|_(__...X.o.O.__________&quot;,</item2>
+				<item2>&quot;________________________________A_+.}_@.(__.#.$.&amp;.______________&quot;,</item2>
+				<item2>&quot;______________________________*.=.(_@.-.;.-.$.:.________________&quot;,</item2>
+				<item2>&quot;____________________________&gt;.,.&lt;.1.-.2.-.3.:.__________________&quot;,</item2>
+				<item2>&quot;__________________________4.U_&lt;.5.-.2.6.7.:.____________________&quot;,</item2>
+				<item2>&quot;8.8.8.8.8.8.__8.8.8.8.8.4.U_9.5.-.0.q.w.:.______________________&quot;,</item2>
+				<item2>&quot;8.e.e.e.e.8.__8.r.r.r.t.y.u.5.6.0.i.p.:.________________________&quot;,</item2>
+				<item2>&quot;8.e.e.e.e.8.__8.r.r.r.a.9.^_-.s.d.f.g.8.________________________&quot;,</item2>
+				<item2>&quot;8.e.e.e.e.8.__8.r.r.h.j.k.l.z.x.c.&amp;.v.8.________________________&quot;,</item2>
+				<item2>&quot;8.8.8.8.8.8.__8.8.8.b.n.l.m.M.c.&amp;.8.8.8.________________________&quot;,</item2>
+				<item2>&quot;____________________N.B.V.C.Z.A.________________________________&quot;,</item2>
+				<item2>&quot;8.8.8.8.8.8.__8.8.8.{_p.S.D.8.8.8.8.8.8.________________________&quot;,</item2>
+				<item2>&quot;8.F.F.F.F.8.__8.G.G.G.G.8.__8.H.H.H.H.8.________________________&quot;,</item2>
+				<item2>&quot;8.F.F.F.F.8.__8.G.G.G.G.8.__8.H.H.H.H.8.________________________&quot;,</item2>
+				<item2>&quot;8.F.F.F.F.8.__8.G.G.G.G.8.__8.H.H.H.H.8.________________________&quot;,</item2>
+				<item2>&quot;8.8.8.8.8.8.__8.8.8.8.8.8.__8.8.8.8.8.8.________________________&quot;,</item2>
+				<item2>&quot;________________________________________________________________&quot;,</item2>
+				<item2>&quot;8.8.8.8.8.8.__8.8.8.8.8.8.__8.8.8.8.8.8.________________________&quot;,</item2>
+				<item2>&quot;8.J.J.J.J.8.__8.K.K.K.K.8.__8.L.L.L.L.8.________________________&quot;,</item2>
+				<item2>&quot;8.J.J.J.J.8.__8.K.K.K.K.8.__8.L.L.L.L.8.________________________&quot;,</item2>
+				<item2>&quot;8.J.J.J.J.8.__8.K.K.K.K.8.__8.L.L.L.L.8.________________________&quot;,</item2>
+				<item2>&quot;8.8.8.8.8.8.__8.8.8.8.8.8.__8.8.8.8.8.8.________________________&quot;</item2>
+				<item2>};</item2>
+				<item2>static const char *xpm_data[] = {</item2>
+				<item2>&quot;32 32 3 1&quot;,</item2>
+				<item2>&quot;. c Black&quot;,</item2>
+				<item2>&quot;X c #FFFFFF&quot;,</item2>
+				<item2>&quot;_ c None&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;__............................__&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXX...........__&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXX...XXXXX...__&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXX....XXX....__&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXX.....X.....__&quot;,</item2>
+				<item2>&quot;__.XXXXXXXXXXXXXXXX...........__&quot;,</item2>
+				<item2>&quot;__............................__&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXXXXXXX.XXXX.XXXX.__&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXXXXXXX.XXX...XXX.__&quot;,</item2>
+				<item2>&quot;____.XX.......XXXXX.XX.....XX.__&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.XX........XXXX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXXXXXXX...........__&quot;,</item2>
+				<item2>&quot;____.XX.........XXX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.XX........XXXX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXXXXXXX...........__&quot;,</item2>
+				<item2>&quot;____.XX.......XXXXX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.XX........XXXX.XX.....XX.__&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXXXXXXX.XXX...XXX.__&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXXXXXXX.XXXX.XXXX.__&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXXXXXXX.XXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;____..........................__&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;</item2>
+				<item2>};</item2>
+			</image_text>
+			<image_width>32</image_width>
+			<image_height>32</image_height>
+			<image_count>6</image_count>
+			<use_include>1</use_include>
+		</object>
+		<object class="wxImage" variable="Image1" member="yes">
+			<image>
+				<Item>static const char *xpm_data[] = {</Item>
+				<Item>&quot;32 32 4 1&quot;,</Item>
+				<Item>&quot;. c Black&quot;,</Item>
+				<Item>&quot;X c #FFFF00&quot;,</Item>
+				<Item>&quot;_ c None&quot;,</Item>
+				<Item>&quot;o c #C00000&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;_____________.....______________&quot;,</Item>
+				<Item>&quot;__________...XXXXX...___________&quot;,</Item>
+				<Item>&quot;________..XXXXXXXXXXX.._________&quot;,</Item>
+				<Item>&quot;_______.XXXXXXXXXXXXXXX.________&quot;,</Item>
+				<Item>&quot;_____..XXXXXXXXXXXXXXXXX..______&quot;,</Item>
+				<Item>&quot;_____.XXXXXXXXXXXXXXXXXXXX._____&quot;,</Item>
+				<Item>&quot;____.XXXXXX.XXXXXXX.XXXXXX._____&quot;,</Item>
+				<Item>&quot;___.XXXXXX.X.XXXXX.X.XXXXXX.____&quot;,</Item>
+				<Item>&quot;___.XXXXX.XXX.XXX.XXX.XXXXXX.___&quot;,</Item>
+				<Item>&quot;__.XXXXX.XXXXXXXXXXXXX.XXXXX.___&quot;,</Item>
+				<Item>&quot;__.XXXXXXXX.XXXXXXX.XXXXXXXX.___&quot;,</Item>
+				<Item>&quot;__.XXXXXXXX.XXXXXXX.XXXXXXXX.___&quot;,</Item>
+				<Item>&quot;_.XXXXXXXXXXXXXXXXXXXXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;_.XXXXXXXXXXXXXXXXXXXXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;_.XXXXXXXXXXXXXXXXXXXXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;_.XXXXXXXXXXXXXXXXXXXXXXXXXXX.__&quot;,</Item>
+				<Item>&quot;_.XXXXXXX.XXXXXXXXXXX.XXXXXXX.__&quot;,</Item>
+				<Item>&quot;__.XXXXXX...XXXXXXX...XXXXXX.___&quot;,</Item>
+				<Item>&quot;__.XXXXXX.oo..XXX..oo.XXXXXX.___&quot;,</Item>
+				<Item>&quot;__.XXXXXXX.ooo...ooo.XXXXXXX.___&quot;,</Item>
+				<Item>&quot;___.XXXXXXX.ooooooo.XXXXXXXX.___&quot;,</Item>
+				<Item>&quot;___.XXXXXXXX..ooo..XXXXXXXX.____&quot;,</Item>
+				<Item>&quot;____.XXXXXXXXX...XXXXXXXXX._____&quot;,</Item>
+				<Item>&quot;_____.XXXXXXXXXXXXXXXXXXXX._____&quot;,</Item>
+				<Item>&quot;_____..XXXXXXXXXXXXXXXXX..______&quot;,</Item>
+				<Item>&quot;_______.XXXXXXXXXXXXXXX.________&quot;,</Item>
+				<Item>&quot;________..XXXXXXXXXXX.._________&quot;,</Item>
+				<Item>&quot;__________...XXXXX...___________&quot;,</Item>
+				<Item>&quot;_____________.....______________&quot;,</Item>
+				<Item>&quot;________________________________&quot;,</Item>
+				<Item>&quot;________________________________&quot;</Item>
+				<Item>};</Item>
+			</image>
+			<image_text>
+				<item2>static const char *xpm_data[] = {</item2>
+				<item2>&quot;32 32 4 1&quot;,</item2>
+				<item2>&quot;. c Black&quot;,</item2>
+				<item2>&quot;X c #FFFF00&quot;,</item2>
+				<item2>&quot;_ c None&quot;,</item2>
+				<item2>&quot;o c #C00000&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;_____________.....______________&quot;,</item2>
+				<item2>&quot;__________...XXXXX...___________&quot;,</item2>
+				<item2>&quot;________..XXXXXXXXXXX.._________&quot;,</item2>
+				<item2>&quot;_______.XXXXXXXXXXXXXXX.________&quot;,</item2>
+				<item2>&quot;_____..XXXXXXXXXXXXXXXXX..______&quot;,</item2>
+				<item2>&quot;_____.XXXXXXXXXXXXXXXXXXXX._____&quot;,</item2>
+				<item2>&quot;____.XXXXXX.XXXXXXX.XXXXXX._____&quot;,</item2>
+				<item2>&quot;___.XXXXXX.X.XXXXX.X.XXXXXX.____&quot;,</item2>
+				<item2>&quot;___.XXXXX.XXX.XXX.XXX.XXXXXX.___&quot;,</item2>
+				<item2>&quot;__.XXXXX.XXXXXXXXXXXXX.XXXXX.___&quot;,</item2>
+				<item2>&quot;__.XXXXXXXX.XXXXXXX.XXXXXXXX.___&quot;,</item2>
+				<item2>&quot;__.XXXXXXXX.XXXXXXX.XXXXXXXX.___&quot;,</item2>
+				<item2>&quot;_.XXXXXXXXXXXXXXXXXXXXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;_.XXXXXXXXXXXXXXXXXXXXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;_.XXXXXXXXXXXXXXXXXXXXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;_.XXXXXXXXXXXXXXXXXXXXXXXXXXX.__&quot;,</item2>
+				<item2>&quot;_.XXXXXXX.XXXXXXXXXXX.XXXXXXX.__&quot;,</item2>
+				<item2>&quot;__.XXXXXX...XXXXXXX...XXXXXX.___&quot;,</item2>
+				<item2>&quot;__.XXXXXX.oo..XXX..oo.XXXXXX.___&quot;,</item2>
+				<item2>&quot;__.XXXXXXX.ooo...ooo.XXXXXXX.___&quot;,</item2>
+				<item2>&quot;___.XXXXXXX.ooooooo.XXXXXXXX.___&quot;,</item2>
+				<item2>&quot;___.XXXXXXXX..ooo..XXXXXXXX.____&quot;,</item2>
+				<item2>&quot;____.XXXXXXXXX...XXXXXXXXX._____&quot;,</item2>
+				<item2>&quot;_____.XXXXXXXXXXXXXXXXXXXX._____&quot;,</item2>
+				<item2>&quot;_____..XXXXXXXXXXXXXXXXX..______&quot;,</item2>
+				<item2>&quot;_______.XXXXXXXXXXXXXXX.________&quot;,</item2>
+				<item2>&quot;________..XXXXXXXXXXX.._________&quot;,</item2>
+				<item2>&quot;__________...XXXXX...___________&quot;,</item2>
+				<item2>&quot;_____________.....______________&quot;,</item2>
+				<item2>&quot;________________________________&quot;,</item2>
+				<item2>&quot;________________________________&quot;</item2>
+				<item2>};</item2>
+			</image_text>
+			<use_include>1</use_include>
+		</object>
+	</object>
+</wxsmith>

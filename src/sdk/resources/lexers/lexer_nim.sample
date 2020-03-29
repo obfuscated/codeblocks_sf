@@ -1,0 +1,61 @@
+# This is a comment
+## This is a documentaion comment
+
+import os, sys, time, string, macros
+
+proc getStr(num: int): string =
+  result = case num:
+    of low(int).. -1:
+      "negative"
+    of 0:
+      "zero"
+    of 1..high(int):
+      "positive"
+    else:
+      "impossible"
+  for letter in 'a'..'z':
+    result.add(letter)
+
+type Animal = ref object of RootObj
+  name: string
+  age: int
+method vocalize(this: Animal): string {.base.} = "..."
+
+var
+  a = @[1, 2, 3]
+  b = newSeq[int](3)
+
+discard a[0] + MyInteger(4)
+
+for i, v in a:
+  b[i] = v*v
+b.delete(0)  # takes O(n) time
+b = a[0] & b  # Same as original b
+
+echo powersOfTwo.filter(proc (x: int): bool = x > 32)
+
+type
+  ThreeStringAddress = array[3, string]
+let names: ThreeStringAddress = ["Jasmine", "Ktisztina", "Kristof"]
+
+proc zip[I, T](a, b: array[I, T]):
+               array[I, tuple[a, b: T]] =
+  for i in low(a)..high(a):
+    result[i] = (a[i], b[i])
+
+macro class*(head, body: untyped): untyped =
+  # The macro is immediate, since all its parameters are untyped.
+  if head.kind == nnkInfix and head[0].ident == !"of":
+    # `head` is expression `typeName of baseClass`
+    # echo head.treeRepr
+    # --------------------
+    # Infix
+    #   Ident !"of"
+    #   Ident !"Animal"
+    #   Ident !"RootObj"
+    typeName = head[1]
+    baseName = head[2]
+
+  # create a type section in the result
+  template typeDecl(a, b): untyped =
+    type a = ref object of b

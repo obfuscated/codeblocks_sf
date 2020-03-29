@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_template_file>
+<CodeBlocks_template_file>
+	<Template name="Win32GUI" title="Win32 GUI Application" category="GUI" bitmap="gui.png">
+		<FileSet name="s" title="Default">
+			<File source="win32-main.cpp" destination="main.cpp"/>
+		</FileSet>
+		<Option name="Win32 GUI Application">
+			<Project file="win32.cbp"/>
+		</Option>
+	</Template>
+</CodeBlocks_template_file>

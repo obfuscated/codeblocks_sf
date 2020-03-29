@@ -1,0 +1,11 @@
+<CodeBlocks_template_file>
+	<Template name="SFML" title="SFML Application" category="2D/3D Graphics" bitmap="sfml.png">
+		<FileSet name="c++" title="Default">
+			<File source="sfml-main.cpp" destination="main.cpp"/>
+			<File source="sfml-cb.bmp" destination="cb.bmp"/>
+		</FileSet>
+		<Option name="SFML Application">
+			<Project file="sfml.cbp"/>
+		</Option>
+	</Template>
+</CodeBlocks_template_file>

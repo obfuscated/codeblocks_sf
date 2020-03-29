@@ -1,0 +1,155 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <if platform="windows">
+        <Program name="C"         value="tcc.exe"/>
+        <Program name="CPP"       value=""/>
+        <Program name="LD"        value="tcc.exe"/>
+        <Program name="DBGconfig" value="gdb_debugger:Default"/>
+        <Program name="LIB"       value="tcc.exe"/>
+        <Program name="WINDRES"   value="windres.exe"/>
+        <Program name="MAKE"      value="mingw32-make.exe"/>
+    </if>
+    <else>
+        <Program name="C"         value="tcc"/>
+        <Program name="CPP"       value=""/>
+        <Program name="LD"        value="tcc"/>
+        <Program name="DBGconfig" value="gdb_debugger:Default"/>
+        <Program name="LIB"       value="tcc"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make"/>
+    </else>
+
+    <Switch name="includeDirs"             value="-I"/>
+    <Switch name="libDirs"                 value="-L"/>
+    <Switch name="linkLibs"                value="-l"/>
+    <Switch name="defines"                 value="-D"/>
+    <Switch name="genericSwitch"           value="-"/>
+    <Switch name="objectExtension"         value="o"/>
+    <Switch name="needDependencies"        value="true"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value="lib"/>
+    <Switch name="libExtension"            value="a"/>
+    <Switch name="linkerNeedsLibPrefix"    value="false"/>
+    <Switch name="linkerNeedsLibExtension" value="false"/>
+    <Switch name="supportsPCH"             value="false"/>
+    <Switch name="PCHExtension"            value=""/>
+
+    <Option name="Produce debugging symbols"
+            option="-g"
+            category="Debugging"/>
+
+    <Category name="Warnings">
+        <Option name="Enable all compiler warnings (overrides every other setting)"
+                option="-Wall"
+                supersedes="-w"/>
+        <Option name="Disable all warnings"
+                option="-w"
+                supersedes="-Wall"/>
+        <Option name="Abort compilation if warnings are issued"
+                option="-Werror"/>
+    </Category>
+
+    <Command name="CompileObject"
+             value="$compiler $options $includes -c $file -o $object"/>
+    <Command name="GenDependencies"
+             value=""/>
+    <Command name="CompileResource"
+             value=""/>
+    <Command name="LinkConsoleExe"
+             value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+    <if platform="windows">
+        <Command name="LinkExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs -mwindows"/>
+        <Command name="LinkDynamic"
+                 value="$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output -Wl,--dll $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+    </if>
+    <else>
+        <Command name="LinkExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+        <Command name="LinkDynamic"
+                 value="$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+    </else>
+    <Command name="LinkStatic"
+             value=""/>
+    <Command name="LinkNative"
+             value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+
+    <RegEx name="Fatal error"
+           type="error"
+           msg="1">
+        <![CDATA[FATAL:[ \t]*(.*)]]>
+    </RegEx>
+    <RegEx name="Resource compiler error"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[windres.exe:[ \t]([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):[ \t](.*)]]>
+    </RegEx>
+    <RegEx name="Resource compiler error (2)"
+           type="error"
+           msg="1">
+        <![CDATA[windres.exe:[ \t](.*)]]>
+    </RegEx>
+    <RegEx name="Preprocessor warning"
+           type="warning"
+           msg="4"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):([0-9]+):[ \t]([Ww]arning:[ \t].*)]]>
+    </RegEx>
+    <RegEx name="Preprocessor error"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):[0-9]+:[ \t](.*)]]>
+    </RegEx>
+    <RegEx name="Compiler warning"
+           type="warning"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):[ \t]([Ww]arning:[ \t].*)]]>
+    </RegEx>
+    <RegEx name="Compiler error"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):[ \t](.*)]]>
+    </RegEx>
+    <RegEx name="Linker error"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):[0-9]+:[ \t](.*)]]>
+    </RegEx>
+    <RegEx name="Linker error (2)"
+           type="error"
+           msg="2"
+           file="1">
+        <![CDATA[[][{}() \t#%$~[:alnum:]&_:+/\.-]+\(.text\+[0-9A-Za-z]+\):([ \tA-Za-z0-9_:+/\.-]+):[ \t](.*)]]>
+    </RegEx>
+    <RegEx name="Linker error (lib not found)"
+           type="error"
+           msg="2"
+           file="1">
+        <![CDATA[.*(ld.*):[ \t](cannot find.*)]]>
+    </RegEx>
+    <RegEx name="Undefined reference"
+           type="error"
+           msg="2"
+           file="1">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):[ \t](undefined reference.*)]]>
+    </RegEx>
+    <RegEx name="General warning"
+           type="warning"
+           msg="1">
+        <![CDATA[([Ww]arning:[ \t].*)]]>
+    </RegEx>
+</CodeBlocks_compiler_options>

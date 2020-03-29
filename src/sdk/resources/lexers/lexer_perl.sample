@@ -1,0 +1,78 @@
+# A grep in perl - found somewhere in the depth of the internet...
+#
+# Usage: perlgrep.pl [OPTION]... PATTERN [FILE]...
+# OPTIONS:
+#   -r  Recursive search
+#   -i  Case insensitive
+
+use Getopt::Std;
+use File::Find;
+
+
+if ($#ARGV < 1) {
+   &showUsage();
+}
+else
+{
+  getopts('ir'); # Get the options
+
+  # this assumes that all the options are before the REGEX
+  while ($ARGV[0] =~ /^-/) { shift @ARGV } # Remove options from @ARGV array
+
+  if ($#ARGV > 1) { $SHOW_FILENAME = 1 }
+
+  $REGEX = shift @ARGV;
+  $REGEX =~ s/^\///;
+  $REGEX =~ s/\/$//;
+
+  for ($i=0; $i <= $#ARGV; $i++) {
+    if ($opt_r && -d $ARGV[$i]) {
+      find(\&wanted, $ARGV[$i]);
+    }
+    else {
+      if (-d $ARGV[$i]) {
+        print "$0: $ARGV[$i] is a directory.\n";
+      }
+      if (-f $ARGV[$i]) { perlGrep($REGEX, $ARGV[$i]) }
+    }
+  }
+}
+
+
+sub showUsage {
+
+print <<END_OF_PRINT
+Usage: perlgrep.pl [OPTION]... PATTERN [FILE]...
+
+OPTIONS:
+   -r  Recursive search
+   -i  Case insensitive
+
+END_OF_PRINT
+
+}
+
+sub wanted {
+  &perlGrep($REGEX, $File::Find::name);
+}
+
+sub perlGrep {
+  $r = shift;
+  $f = shift;
+
+  $r =~ s/^m\///;
+  $r =~ s/^\///;
+  $r =~ s/\/$//;
+
+  #$f = "/usr/include/$f";
+  if (-T "$f") {
+    open(FILE, $f) || warn "Cannot open $f: $!";
+    while (<FILE>) {
+      if (/$r/) {
+        if ($SHOW_FILENAME) { print $f, ":" }
+        print;
+      }
+    }
+  }
+  close(FILE);
+}

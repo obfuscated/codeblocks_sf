@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="11"  release="12" />
+    <Plugin name="DoxyBlocks">
+        <Value title="DoxyBlocks" />
+        <Value version="1.7.663" />
+        <Value description="
+Doxygen integration for Code::Blocks.
+Supported doxygen version: 1.7.3" />
+        <Value author="Gary Harris" />
+        <Value authorEmail="garyjharris@sourceforge.net" />
+        <Value authorWebsite="http://cryogen.66ghz.com/" />
+        <Value thanksTo="jomeggs for doxygen_docs.script.
+-------------------------------------
+Code::Blocks plugin developers for code
+and inspiration.
+-------------------------------------
+Some icon elements are from the
+NUVOLA ICON THEME for KDE 3.x
+by David Vignoni.
+http://www.icon-king.com/
+-------------------------------------
+Codeur for testing and feedback." />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

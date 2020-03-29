@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+  <object class="wxToolBarAddOn" name="browse_tracker_toolbar">
+    <object class="tool" name="idJumpPrev">
+      <tooltip>Jump back</tooltip>
+      <longhelp>Jump back</longhelp>
+      <bitmap>images/22x22/prev.png</bitmap>
+    </object>
+    <object class="tool" name="idJumpNext">
+      <tooltip>Jump forward</tooltip>
+      <longhelp>Jump forward</longhelp>
+      <bitmap>images/22x22/next.png</bitmap>
+    </object>
+    <object class="separator"/>
+    <object class="tool" name="idMarkToggle">
+      <tooltip>Toggle bookmark</tooltip>
+      <longhelp>Toggle bookmark</longhelp>
+      <bitmap>images/22x22/mark.png</bitmap>
+    </object>
+    <object class="tool" name="idMarkPrev">
+      <tooltip>Prev bookmark</tooltip>
+      <longhelp>Prev bookmark</longhelp>
+      <bitmap>images/22x22/mark_prev.png</bitmap>
+    </object>
+    <object class="tool" name="idMarkNext">
+      <tooltip>Next bookmark</tooltip>
+      <longhelp>Next bookmark</longhelp>
+      <bitmap>images/22x22/mark_next.png</bitmap>
+    </object>
+    <object class="tool" name="idMarksClear">
+      <tooltip>Clear bookmarks</tooltip>
+      <longhelp>Clear bookmarks</longhelp>
+      <bitmap>images/22x22/mark_clear.png</bitmap>
+    </object>
+  </object>
+</resource>
+

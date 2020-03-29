@@ -1,0 +1,75 @@
+/*
+    cbp2make : Makefile generation tool for the Code::Blocks IDE
+    Copyright (C) 2010-2013 Mirai Computing (mirai.computing@gmail.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/*!
+  \file macros.h
+  \brief Base definitions and macros.
+*/
+
+/*!
+  \def OS_MAC
+  \brief This macro is set if at compile-time the platform is Apple MacOS.
+*/
+
+/*!
+  \def OS_WIN
+  \brief This macro is set if at compile-time the platform is Microsoft Windows.
+*/
+
+/*!
+  \def OS_UNIX
+  \brief This macro is set if at compile-time the platform is UNIX-like (GNU/Linux etc).
+*/
+
+/*!
+  \def SHOW_MODE_ONELINE
+  \brief Allows compact style for verbose message output.
+*/
+
+/*!
+  \def TARGET_WDIR_ENABLED
+  \brief Allows changing working directories for individual build targets.
+*/
+
+/*!
+  \def NOMINMAX
+  \brief Indicates that standard min() and max() template functions are declared.
+*/
+
+/*!
+  \namespace std
+  \brief Namespace of C++ standard library.
+*/
+
+/*!
+  \fn std::min (T1 const& a, T2 const& b)
+  \brief Returns minimal of two arguments.
+  \param a first argument.
+  \param b second argument.
+  \return minimal of two arguments, type of result is defined by the first argument.
+*/
+
+/*!
+  \fn std::max (T1 const& a, T2 const& b)
+  \brief Returns maximal of two arguments.
+  \param a first argument.
+  \param b second argument.
+  \return maximal of two arguments, type of result is defined by the first argument.
+*/
+
+//------------------------------------------------------------------------------

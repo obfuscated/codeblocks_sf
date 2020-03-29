@@ -1,0 +1,22 @@
+//////////////////////////////////////////////////////////////////////////////
+//
+// Generic Manifest for Windows XP/Vista
+//
+
+#if !defined(wxUSE_NO_MANIFEST) || (wxUSE_NO_MANIFEST == 0)
+#if !defined(WX_MSC_FULL_VER) || WX_MSC_FULL_VER < 140040130
+
+// ver la página sobre "isolated applications" en MSDN
+#
+#ifdef ISOLATION_AWARE_ENABLED
+#define APP_MANIFEST 2
+#else
+#define APP_MANIFEST 1
+#endif
+
+#define RT_MANIFEST 24
+
+APP_MANIFEST RT_MANIFEST generic.Manifest
+
+#endif // !defined(WX_MSC_FULL_VER) || WX_MSC_FULL_VER < 140040130
+#endif // !defined(wxUSE_NO_MANIFEST) || (wxUSE_NO_MANIFEST == 0)

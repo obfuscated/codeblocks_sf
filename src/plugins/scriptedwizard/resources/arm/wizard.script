@@ -1,0 +1,532 @@
+board <- 1;
+derivative <- 0;
+outputvariant <- 1;
+function BeginWizard()
+{
+	// this is the text that will appear in the start (intro) page
+	local intro_msg = _T(	"Welcome to the new ARM application wizard!\n" +
+				"This wizard will guide you to create a new ARM application.\n\n" +
+				"Please click \"Next\" to proceed.");
+
+	local ARM_boards = _T(	"ARM-eval7t;" +
+					"ek-at91sam7a3;" +
+					"lpd-lh7a404;" +
+					"olimex-at91sam7sx;" +
+					"olimex-lpc213x;" +
+					"phyCORE-AT91M55800;" +
+					"phyCORE-LPC2294;" +
+					"phyCORE-PXA255;"
+					);
+	// intro
+	Wizard.AddInfoPage(_T("ConsoleIntro"), intro_msg);
+	// select project name and path
+	Wizard.AddProjectPathPage();
+	// select compiler and configurations
+	Wizard.AddCompilerPage(_T(""), _T("arm-elf*"), false, false);
+	// select language
+	Wizard.AddGenericSingleChoiceListPage(_T("ARMBoards"), _T("Please select your ARM evaluation board."), ARM_boards , board);
+
+	// Targetconfiguration for ARM
+	Wizard.AddGenericSingleChoiceListPage(_T("ARM_eval7t_Config"), _T("Please select the configuration you want to use."), _T("default"), derivative);
+	Wizard.AddGenericSingleChoiceListPage(_T("ek_at91sam7a3_Config"), _T("Please select the configuration you want to use."), _T("Code in ROM;Code in RAM"), derivative);
+	Wizard.AddGenericSingleChoiceListPage(_T("lpd_lh7a404_Config"), _T("Please select the configuration you want to use."), _T("default"), derivative);
+	Wizard.AddGenericSingleChoiceListPage(_T("olimex_at91sam7sx_Config"), _T("Please select the configuration you want to use."), _T("at91sam7s32;at91sam7s64;at91sam7s128;at91sam7s256"), derivative);
+	Wizard.AddGenericSingleChoiceListPage(_T("olimex_lpc213x_Config"), _T("Please select the configuration you want to use."), _T("lpc2132;lpc2134;lpc2136;lpc2138"), derivative);
+	Wizard.AddGenericSingleChoiceListPage(_T("phyCORE_AT91M55800_Config"), _T("Please select the configuration you want to use."), _T("default;ROM;RAM 512kB;RAM 1MB"), derivative);
+	Wizard.AddGenericSingleChoiceListPage(_T("phyCORE_LPC2294_Config"), _T("Please select the configuration you want to use."), _T("default;ROM;RAM 1MB"), derivative);
+	Wizard.AddGenericSingleChoiceListPage(_T("phyCORE_PXA255_Config"), _T("Please select the configuration you want to use."), _T("default"), derivative);
+
+//	Wizard.AddGenericSingleChoiceListPage(_T("OutputVariant"), _T("Please select the content of your project.\nPlease note: Empty projects are only compilable\nafter adding files!"), _T("Empty project;Compilable project with dummyfiles"), outputvariant);
+}
+//
+//------------------------------------------------------------------------------
+//
+function OnLeave_ARMBoards(fwd)
+{
+	if (fwd)
+	{
+		board = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+	}
+	return true;
+}
+
+function OnGetNextPage_ARMBoards()
+{
+	switch (Wizard.GetListboxSelection(_T("GenericChoiceList")))
+	{
+		case 0:
+			return _T("ARM_eval7t_Config");
+			break;
+		case 1:
+			return _T("ek_at91sam7a3_Config");
+			break;
+		case 2:
+			return _T("lpd_lh7a404_Config");
+			break;
+		case 3:
+			return _T("olimex_at91sam7sx_Config");
+			break;
+		case 4:
+			return _T("olimex_lpc213x_Config");
+			break;
+		case 5:
+			return _T("phyCORE_AT91M55800_Config");
+			break;
+		case 6:
+			return _T("phyCORE_LPC2294_Config");
+			break;
+		case 7:
+			return _T("phyCORE_PXA255_Config");
+			break;
+	}
+	return _T("")
+}
+
+function OnLeave_ARM_eval7t_Config(fwd)
+{
+	if (fwd)
+	{
+		derivative = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+	}
+	return true;
+}
+
+function OnGetPrevPage_ARM_eval7t_Config()
+{
+	return _T("ARMBoards");
+}
+
+function OnGetNextPage_ARM_eval7t_Config()
+{
+	derivative = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+	return _T("OutputVariant")
+}
+
+function OnLeave_ek_at91sam7a3_Config(fwd)
+{
+	if (fwd)
+	{
+		derivative = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+	}
+	return true;
+}
+
+function OnGetPrevPage_ek_at91sam7a3_Config()
+{
+	return _T("ARMBoards");
+}
+
+function OnGetNextPage_ek_at91sam7a3_Config()
+{
+	derivative = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+	return _T("OutputVariant")
+}
+
+function OnLeave_lpd_h7a404_Config(fwd)
+{
+	if (fwd)
+	{
+		derivative = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+	}
+	return true;
+}
+
+function OnGetPrevPage_lpd_lh7a404_Config()
+{
+	return _T("ARMBoards");
+}
+
+function OnGetNextPage_lpd_lh7a404_Config()
+{
+	derivative = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+	return _T("OutputVariant")
+}
+
+function OnLeave_olimex_at91sam7sx_Config(fwd)
+{
+	if (fwd)
+	{
+		derivative = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+	}
+	return true;
+}
+function OnGetPrevPage_olimex_at91sam7sx_Config()
+{
+	return _T("ARMBoards");
+}
+function OnGetNextPage_olimex_at91sam7sx_Config()
+{
+	derivative = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+	return _T("OutputVariant")
+}
+
+function OnLeave_olimex_olimex_lpc213x_Config(fwd)
+{
+	if (fwd)
+	{
+		derivative = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+	}
+	return true;
+}
+function OnGetPrevPage_olimex_lpc213x_Config()
+{
+	return _T("ARMBoards");
+}
+function OnGetNextPage_olimex_lpc213x_Config()
+{
+	derivative = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+	return _T("OutputVariant")
+}
+
+function OnLeave_phyCORE_AT91M55800_Config(fwd)
+{
+	if (fwd)
+	{
+		derivative = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+	}
+	return true;
+}
+function OnGetPrevPage_phyCORE_AT91M55800_Config()
+{
+	return _T("ARMBoards");
+}
+function OnGetNextPage_phyCORE_AT91M55800_Config()
+{
+	derivative = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+	return _T("OutputVariant")
+}
+
+function OnLeave_phyCORE_LPC2294_Config(fwd)
+{
+	if (fwd)
+	{
+		derivative = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+	}
+	return true;
+}
+function OnGetPrevPage_phyCORE_LPC2294_Config()
+{
+	return _T("ARMBoards");
+}
+function OnGetNextPage_phyCORE_LPC2294_Config()
+{
+	derivative = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+	return _T("OutputVariant")
+}
+
+function OnLeave_phyCORE_PXA255_Config(fwd)
+{
+	if (fwd)
+	{
+		derivative = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+	}
+	return true;
+}
+function OnGetPrevPage_phyCORE_PXA255_Config()
+{
+	return _T("ARMBoards");
+}
+function OnGetNextPage_phyCORE_PXA255_Config()
+{
+	derivative = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+	return _T("OutputVariant")
+}
+
+
+//
+//------------------------------------------------------------------------------
+//
+function GetFilesDir()
+{
+//	if (outputvariant == 0)
+//	{
+//		return _T("");
+//	}
+
+	switch (board)
+	{
+		case 0:
+			return _T("arm") + wxFILE_SEP_PATH + _T("files") + wxFILE_SEP_PATH + _T("ARM-eval7t");
+			break;
+
+		case 1:
+			return _T("arm") + wxFILE_SEP_PATH + _T("files") + wxFILE_SEP_PATH + _T("ek-at91sam7a3");
+			break;
+
+		case 2:
+			return _T("arm") + wxFILE_SEP_PATH + _T("files") + wxFILE_SEP_PATH + _T("lpd-lh7a404");
+			break;
+
+		case 3:
+			return _T("arm") + wxFILE_SEP_PATH + _T("files") + wxFILE_SEP_PATH + _T("olimex-at91sam7sx");
+			break;
+
+		case 4:
+			return _T("arm") + wxFILE_SEP_PATH + _T("files") + wxFILE_SEP_PATH + _T("olimex-lpc213x");
+			break;
+
+		case 5:
+			return _T("arm") + wxFILE_SEP_PATH + _T("files") + wxFILE_SEP_PATH + _T("phyCORE-AT91M55800");
+			break;
+
+		case 6:
+			return _T("arm") + wxFILE_SEP_PATH + _T("files") + wxFILE_SEP_PATH + _T("phyCORE-LPC2294");
+			break;
+
+		case 7:
+			return _T("arm") + wxFILE_SEP_PATH + _T("files") + wxFILE_SEP_PATH + _T("phyCORE-PXA255");
+			break;
+	}
+
+}
+//
+//------------------------------------------------------------------------------
+//
+function SetupProject(project)
+{
+	local target;
+	local i;
+
+	// NOTE: Major compiler system drawback here.
+	// Until it is redesigned to allow easier compiler settings,
+	// we have to check the compiler's ID and set options for different compilers...
+	// We make things easier for scripts, by providing a few predefined functions
+	// to setup common settings like "debug", "warnings", etc.
+	// These functions are located in <templates_path>/common_functions.script.
+	// If you add other commonly used functions or bug-fix anything in that file,
+	// please share it with us :)
+
+	// enable compiler warnings (project-wide)
+	WarningsOn(project, Wizard.GetCompilerID());
+	DebugSymbolsOn(project, Wizard.GetCompilerID());
+	OptimizationsOn(project, Wizard.GetCompilerID());
+
+	// Add subdirectories for includes
+	project.AddIncludeDir(_T("src"));
+	project.AddIncludeDir(_T("h"));
+
+	project.AddCompilerOption(_T("-fno-common"));
+	project.AddLinkerOption(_T("-Wl,-Map,map.txt"));
+
+	SetupDerivative(derivative,project);
+
+	// We setup the targets using SetupTarget() which is conveniently called by Code::Blocks
+	// if we register this wizard as wizTarget type :)
+	// This means that this very wizard can be used both as wizProject *and* as wizTarget ;)
+
+	//configure default target
+	target = project.GetBuildTarget(_T("default"));
+
+	if (IsNull(target))
+		target = project.AddBuildTarget(_T("default"));
+
+	SetupTarget(target, true);
+
+	for (i = 0; i < project.GetFilesCount(); i++)
+	{
+		if ((project.GetFile(i).relativeFilename.Matches(_T("*S"))) || (project.GetFile(i).relativeFilename.Matches(_T("*s"))))
+		{
+			project.GetFile(i).compile = true;
+			project.GetFile(i).link = true;
+		}
+	}
+	// all done!
+	return true;
+}
+//
+//------------------------------------------------------------------------------
+//
+function SetupTarget(target,is_debug)
+{
+	if (IsNull(target))
+		return false;
+
+	local projectname = GetProjectManager().GetActiveProject().GetTitle();
+	target.SetTargetType(ttConsoleOnly);
+
+	target.SetTargetFilenameGenerationPolicy(1, 1);
+	target.SetOutputFilename(target.GetTitle() + wxFILE_SEP_PATH + projectname + _T(".elf"));
+
+	target.SetObjectOutput(target.GetTitle());
+
+	switch (board)
+	{
+		case 2:
+			target.AddCommandsAfterBuild(_T("arm-elf-objcopy --change-section-lma .text+0xC0000000 --change-section-lma .rom_vectors+0xC0000000 --change-section-lma .rodata+0xC0000000 --change-section-lma .jcr+0xC0000000 --change-section-lma .data+0xC0000000 --change-start 0xC0000000 ") + target.GetTitle() + wxFILE_SEP_PATH + projectname + _T(".elf"));
+			break;
+		case 7:
+			target.AddCommandsAfterBuild(_T("arm-elf-objcopy --change-section-lma .text+0xA0000000 --change-section-lma .rom_vectors+0xA0000000 --change-section-lma .rodata+0xA0000000 --change-section-lma .jcr+0xA0000000 --change-section-lma .data+0xA0000000 --change-start 0xA0000000 ") + target.GetTitle() + wxFILE_SEP_PATH + projectname + _T(".elf"));
+			break;
+	}
+
+	if (is_debug)
+	{
+		// enable debugging symbols for this target
+		DebugSymbolsOn(target, Wizard.GetCompilerID());
+	}
+
+	return true;
+}
+
+
+function SetupDerivative(derivative,project)
+{
+	switch (board)
+	{
+		case 0:// ARM-eval7t
+			project.AddCompilerOption(_T("-mcpu=arm7tdmi"));
+			project.AddCompilerOption(_T("-DARM_EVAL7T"));
+			project.AddCompilerOption(_T("-D__NO_CTOR_DTOR_SUPPORT__"));
+			project.AddCompilerOption(_T("-DUSE_IRQ"));
+			project.AddLinkerOption(_T("-mcpu=arm7tdmi"));
+
+			switch (derivative)
+			{
+				case 0:
+					project.AddLinkerOption(_T("-T ld/target.ld"));
+				break;
+			}
+			break;
+
+		case 1:// ek-at91sam7a3
+			project.AddCompilerOption(_T("-mcpu=arm7tdmi"));
+			project.AddCompilerOption(_T("-DEK_AT91SAM7A3"));
+			project.AddCompilerOption(_T("-D__NO_CTOR_DTOR_SUPPORT__"));
+			project.AddCompilerOption(_T("-DUSE_IRQ"));
+			project.AddLinkerOption(_T("-mcpu=arm7tdmi"));
+
+			switch (derivative)
+			{
+				case 0:
+					project.AddLinkerOption(_T("-T ld/target.ld"));
+				break;
+				case 1:
+					project.AddLinkerOption(_T("-T ld/targetRAM.ld"));
+				break;
+			}
+			break;
+
+		case 2:// lpd-lh7a404
+			project.AddCompilerOption(_T("-mcpu=arm9tdmi"));
+			project.AddCompilerOption(_T("-DLPD_LH7A404"));
+			project.AddCompilerOption(_T("-DENABLE_ICACHE"));
+			project.AddCompilerOption(_T("-DENABLE_DCACHE"));
+			project.AddCompilerOption(_T("-DUSE_IRQ"));
+			project.AddLinkerOption(_T("-mcpu=arm9tdmi"));
+
+			switch (derivative)
+			{
+				case 0:
+					project.AddLinkerOption(_T("-T ld/target.ld"));
+				break;
+			}
+			break;
+
+		case 3:// olimex-at91sam7sx
+			project.AddCompilerOption(_T("-mcpu=arm7tdmi"));
+			project.AddCompilerOption(_T("-DOLIMEX_AT91SAM7SX"));
+			project.AddCompilerOption(_T("-D__NO_CTOR_DTOR_SUPPORT__"));
+			project.AddCompilerOption(_T("-DUSE_IRQ"));
+			project.AddLinkerOption(_T("-mcpu=arm7tdmi"));
+
+			switch (derivative)
+			{
+				case 0:
+					project.AddLinkerOption(_T("-T ld/target_s32.ld"));
+				break;
+				case 1:
+					project.AddLinkerOption(_T("-T ld/target_s64.ld"));
+				break;
+				case 2:
+					project.AddLinkerOption(_T("-T ld/target_s128.ld"));
+				break;
+				case 3:
+					project.AddLinkerOption(_T("-T ld/target_s256.ld"));
+				break;
+			}
+			break;
+
+		case 4:// olimex-lpc213x
+			project.AddCompilerOption(_T("-mcpu=arm7tdmi"));
+			project.AddCompilerOption(_T("-DOLIMEX_LPC213X"));
+			project.AddCompilerOption(_T("-D__NO_CTOR_DTOR_SUPPORT__"));
+			project.AddCompilerOption(_T("-DUSE_IRQ"));
+			project.AddLinkerOption(_T("-mcpu=arm7tdmi"));
+
+			switch (derivative)
+			{
+				case 0:
+					project.AddLinkerOption(_T("-T ld/target_2132.ld"));
+				break;
+				case 1:
+					project.AddLinkerOption(_T("-T ld/target_2134.ld"));
+				break;
+				case 2:
+					project.AddLinkerOption(_T("-T ld/target_2136.ld"));
+				break;
+				case 3:
+					project.AddLinkerOption(_T("-T ld/target_2138.ld"));
+				break;
+			}
+			break;
+
+		case 5:// phyCORE-AT91M55800
+			project.AddCompilerOption(_T("-mcpu=arm7tdmi"));
+			project.AddCompilerOption(_T("-DPHYCORE_AT91M55800"));
+			project.AddCompilerOption(_T("-DUSE_IRQ"));
+			project.AddLinkerOption(_T("-mcpu=arm7tdmi"));
+
+			switch (derivative)
+			{
+				case 0:
+					project.AddLinkerOption(_T("-T ld/target.ld"));
+				break;
+				case 1:
+					project.AddLinkerOption(_T("-T ld/targetROM.ld"));
+				break;
+				case 2:
+					project.AddLinkerOption(_T("-T ld/targetRAM_512kB.ld"));
+				break;
+				case 3:
+					project.AddLinkerOption(_T("-T ld/targetRAM_1MB.ld"));
+				break;
+			}
+			break;
+
+		case 6:// phyCORE-LPC2294
+			project.AddCompilerOption(_T("-mcpu=arm7tdmi"));
+			project.AddCompilerOption(_T("-DPHYCORE_LPC2294"));
+			project.AddCompilerOption(_T("-DUSE_IRQ"));
+			project.AddLinkerOption(_T("-mcpu=arm7tdmi"));
+
+			switch (derivative)
+			{
+				case 0:
+					project.AddLinkerOption(_T("-T ld/target.ld"));
+				break;
+				case 1:
+					project.AddLinkerOption(_T("-T ld/targetROM.ld"));
+				break;
+				case 2:
+					project.AddLinkerOption(_T("-T ld/targetRAM_1MB.ld"));
+				break;
+			}
+			break;
+
+		case 7:// phyCORE-PXA255
+			project.AddCompilerOption(_T("-mcpu=xscale"));
+			project.AddCompilerOption(_T("-DPHYCORE_PXA255"));
+			project.AddCompilerOption(_T("-DFAST_CLOCK"));
+			project.AddCompilerOption(_T("-DENABLE_ICACHE"));
+			project.AddCompilerOption(_T("-DUSE_IRQ"));
+			project.AddLinkerOption(_T("-mcpu=xscale"));
+
+			switch (derivative)
+			{
+				case 0:
+					project.AddLinkerOption(_T("-T ld/target.ld"));
+				break;
+			}
+			break;
+	}
+}

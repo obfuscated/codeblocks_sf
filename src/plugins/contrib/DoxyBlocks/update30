@@ -1,0 +1,4 @@
+#! /bin/sh
+
+./update 30
+exit 0

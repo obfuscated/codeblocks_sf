@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+    <Lexer name="LaTeX"
+        index="14"
+        filemasks="*.tex,*.sty">
+        <Style name="Default"
+               index="0"
+               fg="0,0,0"
+               bg="255,255,255"
+               bold="0"
+               italics="0"
+               underlined="0"/>
+        <Style name="Command"
+               index="1"
+               fg="0,160,0"/>
+        <Style name="Tag"
+               index="2"
+               fg="0,0,255"
+               bold="1"/>
+        <Style name="Math"
+               index="3"
+               fg="160,0,0"
+               bold="1"/>
+        <Style name="Comment"
+               index="4"
+               fg="128,128,255"
+               bold="1"/>
+        <Style name="Comment"
+               index="5"
+               fg="0,0,255"
+               bold="1"/>
+        <SampleCode value="lexer_latex.sample"/>
+        <LanguageAttributes
+            LineComment="%"
+            StreamCommentStart=""
+            StreamCommentEnd=""
+            BoxCommentStart=""
+            BoxCommentMid=""
+            BoxCommentEnd=""
+            CaseSensitive="1"
+            LexerCommentStyles="4,5"
+            LexerCharacterStyles=""
+            LexerStringStyles=""
+            LexerPreprocessorStyles=""/>
+    </Lexer>
+</CodeBlocks_lexer_properties>

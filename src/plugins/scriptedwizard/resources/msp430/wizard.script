@@ -1,0 +1,252 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Code::Blocks new project wizard script
+//
+// Project: MSP430 project
+// Author:  Miklò±Ÿ?à±´on
+//
+////////////////////////////////////////////////////////////////////////////////
+
+
+// Global Vars
+Processor <- "msp430x5438";     	// The chosen processor
+Msp430Hex <- false;         // produce Hex file from ELF output ?
+Msp430Srec <- false;        // produce Motorola S-Record files?
+Msp430Bin <- false;         // produce Binary image files?
+Msp430Lss <- false;         // produce extended list file from ELF output?
+Msp430Map <- false;         // produce Symbol Map file from ELF output?
+Msp430Size <- false;        // Run msp430-size after the build 
+Msp430UseProgrammer <- true;   // Run msp430-size after the build 
+Msp430ProgrammerId <- "";    // Selected programmer type ID
+ 
+function BeginWizard()
+{
+    local wiz_type = Wizard.GetWizardType();
+
+    if (wiz_type == wizProject)
+    {
+        local intro_msg = _T("Welcome to the new MSP430 project wizard!\n" +
+                             "This wizard will guide you to create a new MSP430 project.\n\n" +
+                             "When you 're ready to proceed, please click \"Next\"...");
+        Wizard.AddInfoPage(_T("MSP430Intro"), intro_msg);
+        Wizard.AddProjectPathPage();
+        Wizard.AddCompilerPage(_T("GNU MSP430 GCC Compiler"), _T("msp430*"), false, true);
+        Wizard.AddPage(_T("processorChoice"));        
+    }
+    else
+    {
+        print(wiz_type);
+    }
+}
+
+function GetFilesDir()
+{
+    local result = _T("msp430/files");
+    return result;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Processor choice page
+////////////////////////////////////////////////////////////////////////////////
+
+
+function OnLeave_processorChoice(fwd)
+{
+    if (fwd)
+    {
+        Processor = Wizard.GetComboboxStringSelection(_T("comboboxProc"));
+        Msp430Hex = Wizard.IsCheckboxChecked(_T("checkboxHex"));
+        Msp430Srec = Wizard.IsCheckboxChecked(_T("checkboxSrec"));
+        Msp430Bin = Wizard.IsCheckboxChecked(_T("checkboxBin"));
+        Msp430Map = Wizard.IsCheckboxChecked(_T("checkboxMap"));
+        Msp430Lss = Wizard.IsCheckboxChecked(_T("checkboxLss"));
+        Msp430Size = Wizard.IsCheckboxChecked(_T("checkboxMsp430Size"));
+        Msp430UseProgrammer = Wizard.IsCheckboxChecked(_T("checkBoxMspDebug"));
+        Msp430ProgrammerId  = Wizard.GetComboboxSelection(_T("choiceProgrammer"));
+    }
+    return true;
+}
+
+function SetupProject(project)
+{   
+    // Linker options 
+    local lo_map = ::wxString();
+    local lo_extmem = ::wxString();
+    
+    // Post Build steps
+    local pb_msp430size = ::wxString();
+    local pb_eephex = ::wxString();
+    local pb_hex = ::wxString();
+    local pb_eepbin = ::wxString();
+    local pb_bin = ::wxString();
+    local pb_eepsrec = ::wxString();
+    local pb_srec = ::wxString();    
+    local pb_lss = ::wxString();
+    local pb_program = ::wxString();
+
+    // Post build commands
+    pb_eephex = _T("msp430-objcopy --no-change-warnings -j .eeprom --change-section-lma .eeprom=0 -O ihex $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).eep.hex");
+    pb_hex = _T("msp430-objcopy -O ihex -R .eeprom -R .eesafe $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).hex");
+    pb_eepbin = _T("msp430-objcopy --no-change-warnings -j .eeprom --change-section-lma .eeprom=0 -O binary $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).eep.bin");
+    pb_bin = _T("msp430-objcopy -O binary -R .eeprom -R .eesafe $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).bin");
+    pb_eepsrec = _T("msp430-objcopy --no-change-warnings -j .eeprom --change-section-lma .eeprom=0 -O srec $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).eep.srec");
+    pb_srec = _T("msp430-objcopy -O srec -R .eeprom -R .eesafe $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).srec");
+	pb_program = "mspdebug -j -d /dev/ttyUSB0 ";
+	
+    if ( PLATFORM == PLATFORM_MSW )
+        pb_lss = _T("cmd /c \"msp430-objdump -h -S $(TARGET_OUTPUT_FILE) > $(TARGET_OUTPUT_FILE).lss\"");
+    else
+        pb_lss = _T("msp430-objdump -h -S $(TARGET_OUTPUT_FILE) > $(TARGET_OUTPUT_FILE).lss");
+
+
+    pb_msp430size = _T("msp430-size $(TARGET_OUTPUT_FILE)");
+
+    // Setup the linker options
+    lo_map = _T("-Wl,-Map=$(TARGET_OUTPUT_FILE).map,--cref");
+    
+            
+	// Project compiler options
+	WarningsOn(project, Wizard.GetCompilerID());
+    project.AddCompilerOption(_T("-mmcu=") + Processor);
+        
+    // Project linker options
+    project.AddLinkerOption(_T("-mmcu=") + Processor);
+    
+    if (Msp430Map)
+        project.AddLinkerOption(lo_map);
+    
+    // Project post-build steps 
+    if (Msp430Size)
+        project.AddCommandsAfterBuild(pb_msp430size);
+                
+    if (Msp430Hex)
+    {
+        project.AddCommandsAfterBuild(pb_hex);
+        project.AddCommandsAfterBuild(pb_eephex);
+    }
+
+    if (Msp430Srec)
+    {
+        project.AddCommandsAfterBuild(pb_srec);
+        project.AddCommandsAfterBuild(pb_eepsrec);
+    }
+
+    if (Msp430Bin)
+    {
+        project.AddCommandsAfterBuild(pb_bin);
+        project.AddCommandsAfterBuild(pb_eepbin);
+    }
+
+    if ( Msp430Lss )
+        project.AddCommandsAfterBuild(pb_lss);
+
+	if (Msp430UseProgrammer)
+	{
+		local programmerDriver = "";
+		local ProcessorNameConverted = "";
+		local mspDebugCPUNames = [
+			"CC430F5133",
+			"MSP430F149",
+			"MSP430F2234",
+			"MSP430F2618",
+			"MSP430F5438A",
+			"CC430F5137",
+			"MSP430F1611",
+			"MSP430F2274",
+			"MSP430F413",
+			"MSP430F5529",
+			"CC430F6137",
+			"MSP430F1612",
+			"MSP430F2370",
+			"MSP430F4270",
+			"MSP430FG4618",
+			"MSP430F1121",
+			"MSP430F169",
+			"MSP430F247",
+			"MSP430F47197",
+			"MSP430G2231",
+			"MSP430F1232",
+			"MSP430F2013",
+			"MSP430F249",
+			"MSP430F5437",
+			"MSP430F147",
+			"MSP430F2131",
+			"MSP430F2616",
+			"MSP430F5437A",
+			"MSP430F148",
+			"MSP430F2132",
+			"MSP430F2617",
+			"MSP430F5438"
+		];
+		
+		Processor = Processor.toupper();
+		local Xpos = Processor.find("X");
+		if (Xpos != -1) 
+		{
+			ProcessorNameConverted = Processor.slice(0, Xpos) + "F" + Processor.slice(Xpos + 1);
+			print(ProcessorNameConverted);
+		}
+		local CPUFound = false;
+		
+		foreach (i,cpu in mspDebugCPUNames)
+		{
+			if(cpu == ProcessorNameConverted)
+			{	
+				CPUFound = true;
+				break;
+			}
+		}
+		
+		if (CPUFound == true)
+		{	
+			switch (Msp430ProgrammerId)
+			{
+				case 0: // <item>TI FET430UIF and compatible devices (e.g. eZ430)</item>
+					programmerDriver = "uif";
+					break;
+				case 1: // <item>eZ430-RF2500</item>
+					programmerDriver = "rf2500";
+					break;
+				case 2: // <item>Olimex MSP-JTAG-TINY</item>
+					programmerDriver = "olimex";
+					break;olimex
+				case 3: // <item>Olimex MSP-JTAG-ISO</item>
+					programmerDriver = "olimex";
+					break;olimex
+				case 4: // <item>TI generic flash-based bootloader via RS-232</item>
+					programmerDriver = "flash-bsl";
+					break;					
+			}
+			
+			if (programmerDriver != "") 
+			{
+				pb_program = pb_program + programmerDriver + "\"program $(TARGET_OUTPUT_FILE).hex\"";
+				project.AddCommandsAfterBuild(pb_program);
+			}
+		}
+	}
+
+    // Debug build target
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttConsoleOnly);
+        target.SetTargetFilenameGenerationPolicy(tgfpPlatformDefault, tgfpNone);
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + _T(".elf"));
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
+    }
+
+    // Release build target
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttConsoleOnly);
+        target.SetTargetFilenameGenerationPolicy(tgfpPlatformDefault, tgfpNone);
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + _T(".elf"));
+        OptimizationsOn(target, Wizard.GetCompilerID());
+    }
+        
+    return true;
+}
+
+

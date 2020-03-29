@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="Diff/Patch"
+                index="16"
+                filemasks="*.diff,*.patch,*.svnpatch.rej">
+                <Style name="Default"
+                        index="0"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <Style name="Comment"
+                        index="1"
+                        fg="0,128,0"/>
+                <Style name="Command"
+                        index="2"
+                        fg="128,128,0"/>
+                <Style name="Header"
+                        index="3"
+                        fg="128,0,0"/>
+                <Style name="Position"
+                        index="4"
+                        fg="128,0,128"/>
+                <Style name="Deleted"
+                        index="5"
+                        fg="0,128,128"/>
+                <Style name="Added"
+                        index="6"
+                        fg="0,0,128"/>
+                <SampleCode value="lexer_diff.sample"/>
+                <LanguageAttributes
+                    LineComment=""
+                    StreamCommentStart=""
+                    StreamCommentEnd=""
+                    BoxCommentStart=""
+                    BoxCommentMid=""
+                    BoxCommentEnd=""
+                    CaseSensitive="1"
+                    LexerCommentStyles="1"
+                    LexerCharacterStyles=""
+                    LexerStringStyles=""
+                    LexerPreprocessorStyles=""/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

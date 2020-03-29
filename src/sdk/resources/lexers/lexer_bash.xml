@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="Bash"
+                index="62"
+                filemasks="*.sh,*bootstrap,*configure">
+                <Style name="Default"
+                        index="0"
+                        fg="128,128,128"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <Style name="Error"
+                        index="1"
+                        fg="255,255,0"
+                        bg="255,0,0"/>
+                <Style name="Comment"
+                        index="2"
+                        fg="0,128,0"/>
+                <Style name="Number"
+                        index="3"
+                        fg="240,0,240"/>
+                <Style name="Keyword"
+                        index="4"
+                        fg="0,0,160"
+                        bold="1"/>
+                <Style name="String"
+                        index="5"
+                        fg="0,0,255"/>
+                <Style name="Character"
+                        index="6"
+                        fg="0,0,255"/>
+                <Style name="Operator"
+                        index="7"
+                        fg="255,0,0"
+                        bold="1"/>
+                <Style name="Identifier"
+                        index="8"
+                        fg="0,0,0"/>
+                <Style name="Scalar"
+                        index="9"
+                        fg="0,0,0"
+                        bg="255,224,224"/>
+                <Style name="Param"
+                        index="10"
+                        fg="0,0,0"
+                        bg="255,255,224"/>
+                <Style name="BackTicks"
+                        index="11"
+                        fg="255,255,0"
+                        bg="160,128,128"/>
+                <Style name="HereDelim"
+                        index="12"
+                        fg="0,0,0"
+                        bg="221,208,221"/>
+                <Style name="HereQ"
+                        index="13"
+                        fg="128,0,128"
+                        bg="221,208,221"/>
+                <Keywords>
+                        <Set index="0"
+                            value="alias ar asa awk banner basename bash bc bdiff break
+                                   bunzip2 bzip2 cal calendar case cat cc cd chmod cksum
+                                   clear cmp col comm compress continue cp cpio crypt
+                                   csplit ctags cut date dc dd declare deroff dev df diff diff3
+                                   dircmp dirname do done du echo ed egrep elif else env
+                                   esac eval ex exec exit expand export expr false fc
+                                   fgrep fi file find fmt fold for function functions
+                                   getconf getopt getopts grep gres hash head help
+                                   history iconv id if in integer jobs join kill local lc
+                                   let line ln logname look ls m4 mail mailx make
+                                   man mkdir more mt mv newgrp nl nm nohup ntps od
+                                   pack paste patch pathchk pax pcat perl pg pr print
+                                   printf ps pwd read readonly red return rev rm rmdir
+                                   sed select set sh shift size sleep sort spell
+                                   split start stop strings strip stty sum suspend
+                                   sync tail tar tee test then time times touch tr
+                                   trap true tsort tty type typeset ulimit umask unalias
+                                   uname uncompress unexpand uniq unpack unset until
+                                   uudecode uuencode vi vim vpax wait wc whence which
+                                   while who wpaste wstart xargs zcat"/>
+                        <Set index="1"
+                            value="chgrp chown chroot dir dircolors
+                                   factor groups hostid install link md5sum mkfifo
+                                   mknod nice pinky printenv ptx readlink seq
+                                   sha1sum shred stat su tac unlink users vdir whoami yes"/>
+                </Keywords>
+                <SampleCode value="lexer_bash.sample"/>
+                <LanguageAttributes
+                    LineComment="#"
+                    StreamCommentStart=""
+                    StreamCommentEnd=""
+                    BoxCommentStart=""
+                    BoxCommentMid=""
+                    BoxCommentEnd=""
+                    CaseSensitive="1"/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

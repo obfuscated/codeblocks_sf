@@ -1,0 +1,243 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <if platform="windows">
+        <Program name="C"         value="clang.exe"/>
+        <Program name="CPP"       value="clang++.exe"/>
+        <Program name="LD"        value="clang++.exe"/>
+        <Program name="DBGconfig" value="gdb_debugger:Default"/>
+        <Program name="LIB"       value="llvm-ar.exe"/>
+        <if exec="llvm-ar.exe -version">
+            <!-- found, do nothing -->
+        </if>
+        <else>
+            <if exec="ar.exe --version">
+                <!-- use GNU archiver -->
+                <Program name="LIB" value="ar.exe"/>
+            </if>
+        </else>
+        <Program name="WINDRES"   value="windres.exe"/>
+        <Program name="MAKE"      value="mingw32-make.exe"/>
+    </if>
+    <else>
+        <Program name="C"         value="clang"/>
+        <Program name="CPP"       value="clang++"/>
+        <Program name="LD"        value="clang++"/>
+        <Program name="DBGconfig" value="gdb_debugger:Default"/>
+        <Program name="LIB"       value="llvm-ar"/>
+        <if exec="llvm-ar -version">
+            <!-- found, do nothing -->
+        </if>
+        <else>
+            <if exec="ar --version">
+                <!-- use GNU archiver -->
+                <Program name="LIB" value="ar"/>
+            </if>
+        </else>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make"/>
+    </else>
+
+    <Switch name="includeDirs"             value="-I"/>
+    <Switch name="libDirs"                 value="-L"/>
+    <Switch name="linkLibs"                value="-l"/>
+    <Switch name="defines"                 value="-D"/>
+    <Switch name="genericSwitch"           value="-"/>
+    <Switch name="objectExtension"         value="o"/>
+    <Switch name="needDependencies"        value="true"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value="lib"/>
+    <Switch name="libExtension"            value="a"/>
+    <Switch name="linkerNeedsLibPrefix"    value="false"/>
+    <Switch name="linkerNeedsLibExtension" value="false"/>
+    <Switch name="UseFullSourcePaths"      value="true"/>
+
+    <Category name="General">
+        <Option name="Have clang follow the 1990 ISO C language standard"
+                option="-std=c90"
+                supersedes="-std=c99 -std=c11 -ansi"/>
+        <Option name="Have clang follow the 1999 ISO C language standard"
+                option="-std=c99"
+                supersedes="-std=c90 -std11 -ansi"/>
+        <Option name="Have clang follow the 2011 ISO C language standard"
+                option="-std=c11"
+                supersedes="-std=c99 -std=c90 -ansi"/>
+
+        <Option name="Have clang++ follow the 1998 ISO C++ language standard"
+                option="-std=c++98"
+                supersedes="-std=c++11 -std=c++14 -std=c++17 -std=c++20"/>
+        <Option name="Have clang++ follow the C++11 ISO C++ language standard"
+                option="-std=c++11"
+                supersedes="-std=c++98 -std=c++14 -std=c++17 -std=c++20"/>
+        <Option name="Have clang++ follow the C++14 ISO C++ language standard"
+                option="-std=c++14"
+                supersedes="-std=c++98 -std=c++11 -std=c++17 -std=c++20"/>
+        <Option name="Have clang++ follow the C++17 ISO C++ language standard"
+                option="-std=c++17"
+                supersedes="-std=c++98 -std=c++11 -std=c++14 -std=c++20"/>
+        <Option name="Have clang++ follow the C++20 ISO C++ language standard"
+                option="-std=c++20"
+                supersedes="-std=c++98 -std=c++11 -std=c++14 -std=c++17"/>
+    </Category>
+
+    <Category name="Debugging">
+        <Option name="Produce minimal debugging symbols"
+                option="-gline-tables-only"
+                checkAgainst="-O1 -O2 -Os -O3 -O4"
+                checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."
+                supersedes="-s -g"/>
+        <Option name="Produce full debugging symbols"
+                option="-g"
+                checkAgainst="-O1 -O2 -Os -O3 -O4"
+                checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."
+                supersedes="-s -gline-tables-only"/>
+    </Category>
+
+    <Category name="Warnings">
+        <Option name="Enable all common compiler warnings"
+                option="-Wall"
+                supersedes="-w"/>
+        <Option name="Enable all warnings"
+                option="-Weverything"
+                supersedes="-w"/>
+        <Option name="Disable all warnings"
+                option="-w"
+                supersedes="-Wall -Weverything"/>
+        <Option name="Turn warnings into errors"
+                option="-Werror"/>
+        <Option name="Warn on language extensions"
+                option="-pedantic"/>
+        <Option name="Error on language extensions"
+                option="-pedantic-errors"/>
+        <Option name="Enable warnings from system headers"
+                option="-Wsystem-headers"/>
+        <Option name="Warn about excess tokens in preprocessor directives"
+                option="-Wextra-tokens"/>
+        <Option name="Warn about unqualified uses of member templates"
+                option="-Wambiguous-member-template"/>
+        <Option name="Warn about unusable copy constructors when binding references to temporaries"
+                option="-Wbind-to-temporary-copy"/>
+        <Option name="Warn if a class has virtual functions but no virtual destructor"
+                option="-Wnon-virtual-dtor"/>
+    </Category>
+
+    <Category name="Optimization">
+        <Option name="Strip all symbols from binary (minimizes size)"
+                additionalLibs="-s"
+                supersedes="-g -gline-tables-only"/>
+        <Option name="Optimize generated code"
+                option="-O1"
+                checkAgainst="-g -gline-tables-only"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="-O2 -Os -O3 -O4"/>
+        <Option name="Optimize more"
+                option="-O2"
+                checkAgainst="-g -gline-tables-only"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="-O1 -Os -O3 -O4"/>
+        <Option name="Optimize more (for size)"
+                option="-Os"
+                checkAgainst="-g -gline-tables-only"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="-O1 -O2 -O3 -O4"/>
+        <Option name="Optimize even more (for speed)"
+                option="-O3"
+                checkAgainst="-g -gline-tables-only"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="-O1 -O2 -Os -O4"/>
+        <Option name="Optimize even more (with link time optimization)"
+                option="-O4"
+                checkAgainst="-g -gline-tables-only"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="-O1 -O2 -Os -O3"/>
+        <Option name="Don't keep the frame pointer in a register for functions that don't need one"
+                option="-fomit-frame-pointer"
+                category="Optimization"
+                checkAgainst="-g -gline-tables-only"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."/>
+    </Category>
+
+    <Category name="Code generation">
+        <Option name="Target x86 (32bit)"
+                option="-m32"
+                additionalLibs="-m32"
+                supersedes="-m64"/>
+        <Option name="Target x86_64 (64bit)"
+                option="-m64"
+                additionalLibs="-m64"
+                supersedes="-m32"/>
+        <Option name="Position Independent Code"
+                option="-fPIC"/>
+        <Option name="Runtime check for undefined behavior"
+                option="-fsanitize=undefined-trap -fsanitize-undefined-trap-on-error"/>
+        <Option name="Catch integer overflow errors"
+                option="-ftrapv"/>
+        <Option name="Use AddressSanitizer, a memory error detector"
+                option="-fsanitize=address"
+                additionalLibs="-fsanitize=address"
+                checkAgainst="-fsanitize=thread"
+                checkMessage="'-fsanitize=address' not allowed with '-fsanitize=thread'"
+                supersedes="-fsanitize=thread"/>
+        <Option name="Use ThreadSanitizer, a data race detector"
+                option="-fsanitize=thread"
+                additionalLibs="-fsanitize=thread"
+                checkAgainst="-fsanitize=address"
+                checkMessage="'-fsanitize=address' not allowed with '-fsanitize=thread'"
+                supersedes="-fsanitize=address"/>
+        <Option name="Use thread local storage model 'global-dynamic'"
+                option="-ftls-model=global-dynamic"
+                supersedes="-ftls-model=local-dynamic -ftls-model=initial-exec -ftls-model=local-exec"/>
+        <Option name="Use thread local storage model 'local-dynamic'"
+                option="-ftls-model=local-dynamic"
+                supersedes="-ftls-model=global-dynamic -ftls-model=initial-exec -ftls-model=local-exec"/>
+        <Option name="Use thread local storage model 'initial-exec'"
+                option="-ftls-model=initial-exec"
+                supersedes="-ftls-model=global-dynamic -ftls-model=local-dynamic -ftls-model=local-exec"/>
+        <Option name="Use thread local storage model 'local-exec'"
+                option="-ftls-model=local-exec"
+                supersedes="-ftls-model=global-dynamic -ftls-model=local-dynamic -ftls-model=initial-exec"/>
+        <Option name="Enable support for Microsoft extensions"
+                option="-fms-extensions"/>
+    </Category>
+
+    <Command name="CompileObject"
+             value="$compiler $options $includes -c $file -o $object"/>
+    <Command name="GenDependencies"
+             value="$compiler -MM $options -MF $dep_object -MT $object $includes $file"/>
+    <Command name="CompileResource"
+             value="$rescomp $res_includes $res_options -J rc -O coff -i $file -o $resource_output"/>
+    <Command name="LinkConsoleExe"
+             value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+    <if platform="windows">
+        <Command name="LinkNative"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs -Wl,--subsystem,native"/>
+        <Command name="LinkExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs -Wl,--subsystem,windows"/>
+        <Command name="LinkDynamic"
+                 value="$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output -Wl,--dll $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+    </if>
+    <else>
+        <Command name="LinkNative"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+        <Command name="LinkExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+        <Command name="LinkDynamic"
+                 value="$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+    </else>
+    <Command name="LinkStatic"
+             value="$lib_linker r $static_output $link_objects"/>
+    <Common name="cmds"/>
+
+    <RegEx name="'note: In instantiation' info"
+           type="info"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):[0-9]+: note:[ \t]+([Ii]n [Ii]nstantiation.*)]]>
+    </RegEx>
+
+    <Common name="re"/>
+    <Common name="sort"/>
+</CodeBlocks_compiler_options>

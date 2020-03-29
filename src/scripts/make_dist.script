@@ -1,0 +1,112 @@
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * $Revision$
+ * $Id$
+ * $HeadURL$
+ */
+
+/*
+ * Simple script that adds "make dist" functionality. It creates a package
+ * containining all files in your project, ready for distribution.
+ *
+ * Author: Yiannis Mandravellos
+ */
+
+// Script plugins must extend cbScriptPlugin
+class MakeDistPlugin extends cbScriptPlugin
+{
+	// default to creating a zip file
+	Cmd = _T("zip -9 \"$ARCHIVE.zip\" $FILES_LIST");
+	
+	// examples of other commands:
+	//
+	// tar.gz:
+	// Cmd = _T("tar czf  \"$ARCHIVE.tar.gz\" $FILES_LIST");
+	//
+	// tar.bz2:
+	// Cmd = _T("tar cjf  \"$ARCHIVE.tar.bz2\" $FILES_LIST");
+	
+	constructor()
+	{
+		info.name = _T("MakeDistPlugin");
+		info.title = _T("Make distribution package");
+		info.version = _T("0.2");
+		info.license = _T("GPL");
+	}
+
+    // create menubar items
+	function GetMenu()
+	{
+		local entries = ::wxArrayString();
+		entries.Add(_T("Project/7:Create package for distribution"), 1);
+		return entries;
+	}
+	
+    // calback for menubar items clicking
+	function OnMenuClicked(index)
+	{
+        if (index == 0) // index 0 is the single menu we added in GetMenu()
+            Execute();
+	}
+
+	// this is where our work is performed :)
+	function Execute()
+    {
+        // first, let's find out if there's even a project open
+        local prj = GetProjectManager().GetActiveProject();
+        if (IsNull(prj))
+        {
+        	ShowError(_T("No project is open!"));
+        	return -1;
+        }
+        
+        // if there is more then one project in the workspace the current working dir is the one of the last loaded project,
+        // so we have to set it explicitely to make the zip-command find the files
+        IO.SetCwd(prj.GetCommonTopLevelPath());
+
+        // good, now let's get the project's filename
+        local prj_fname = wxFileName();
+        prj_fname.Assign(prj.GetFilename(), ::wxPATH_NATIVE);
+        
+        // now let's build a string containing all the project files.
+        // to be on the safe side, we will quote them all so spaces
+        // and other special chars don't break the actual packaging
+        // command later...
+        local file_list = wxString();
+        local count = prj.GetFilesCount();
+        for (local i = 0; i < count; ++i)
+        {
+        	local prj_file = prj.GetFile(i);
+        	if (!IsNull(prj_file))
+				file_list += _T("\"") + prj_file.relativeFilename + _T("\" ");
+        }
+        
+        // also include the project file :)
+        file_list += _T("\"") + prj_fname.GetFullName() + _T("\"");
+        
+        // all that's left is to replace the variables in the command
+		// we have to copy Cmd into cmd or both are two names for the same instance and the placeholders get overwritten
+		local cmd = wxString();
+		cmd += Cmd;
+        cmd.Replace(_T("$ARCHIVE"), prj_fname.GetName());
+        cmd.Replace(_T("$FILES_LIST"), file_list);
+        
+        // and, of course, launch it :)
+        //ShowMessage(cmd);
+        local result = IO.Execute(cmd);
+        if (result == 0)
+			ShowInfo(_T("All done!"));
+		else
+			ShowWarning(_T("Failed. Make sure the ZIP program is installed and somewhere in the path..."));
+        
+        return result;
+    }
+}
+
+// this call actually registers the script plugin with Code::Blocks
+RegisterPlugin(MakeDistPlugin());
+
+// if you want to call this plugin's Execute() function, use this in a script:
+// ExecutePlugin(_T("MakeDistPlugin"));

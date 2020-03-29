@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+		<Lexer name="Pascal"
+				index="18"
+				filemasks="*.pas,*.inc">
+				<Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+                <Style name="Number"
+						index="3"
+						fg="240,0,240"/>
+                <Style mame="Preprocessor"
+                        index = "9"
+                        fg="0,160,0"/>
+                <Style name ="Identifier"
+                        index = "11"
+                        fg = "0,0,0"/>
+                <Style name = "Instruction word"
+                        index = "5"
+                        fg="0,0,160"
+                        bold="1"/>
+                <Style name = "Character"
+                        index="7"
+                        fg="0,0,255"/>
+                <Style name = "Operator"
+                        index="10"
+                        fg="255,0,0"
+                        bold="1"/>
+                <Style name = "Regex"
+                        index="14"
+                        fg="0,0,0"
+                        bold="1"/>
+                <Style name = "Comment (normal)"
+                        index="1,2"
+                        fg="0,128,0"/>
+                <Style name = "Comment (documentation)"
+                        index="3"
+                        fg="128,128,255"
+                        bold="1"/>
+                <Style name="Comment keyword (documentation)"
+						index="17"
+						fg="0,128,128"/>
+                <Style name="Comment keyword error (documentation)"
+						index="18"
+						fg="128,0,0"/>
+				<Style name="Breakpoint line"
+						index="-2"
+						bg="255,160,160"/>
+				<Style name="Debugger active line"
+						index="-3"
+						bg="160,160,255"/>
+				<Style name="Compiler error line"
+						index="-4"
+						bg="255,128,0"/>
+				<Keywords>
+                        <!-- Primary keywords and identifiers -->
+                        <Set index="0"
+                        value = "and array asm begin case cdecl class const constructor
+                                 default destructor div do downto else end end. except
+                                 exit exports external far file finalization finally for
+                                 function goto if implementation in index inherited
+                                 initialization inline interface label library message
+                                 mod near nil not object of on or out overload override
+                                 packed pascal private procedure program property protected
+                                 public published raise read record register repeat resourcestring
+                                 safecall set shl shr stdcall stored string then threadvar to
+                                 try type unit until uses var virtual while with write xor"/>
+				</Keywords>
+				<SampleCode value="lexer_pascal.sample"
+						breakpoint_line="3"
+						debug_line="6"
+						error_line="7"/>
+                <LanguageAttributes
+                    LineComment="//"
+                    StreamCommentStart="{"
+                    StreamCommentEnd="}"
+                    BoxCommentStart="(* "
+                    BoxCommentMid=" * "
+                    BoxCommentEnd=" *)"
+                    CaseSensitive="0"
+                    LexerCommentStyles="2,3,4"
+                    LexerCharacterStyles="12"
+                    LexerStringStyles="10,11"
+                    LexerPreprocessorStyles="5,6"/>
+		</Lexer>
+</CodeBlocks_lexer_properties>

@@ -1,0 +1,225 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <if platform="windows">
+        <Program name="C"         value="powerpc-eabi-gcc.exe"/>
+        <Program name="CPP"       value="powerpc-eabi-g++.exe"/>
+        <Program name="LD"        value="powerpc-eabi-gcc.exe"/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="powerpc-eabi-gcc.exe"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make.exe"/>
+    </if>
+    <else>
+        <Program name="C"         value=""/>
+        <Program name="CPP"       value=""/>
+        <Program name="LD"        value=""/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value=""/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value=""/>
+    </else>
+
+    <Switch name="includeDirs"             value="-I"/>
+    <Switch name="libDirs"                 value="-Xlinker -L"/>
+    <Switch name="linkLibs"                value="-l"/>
+    <Switch name="defines"                 value="-D"/>
+    <Switch name="genericSwitch"           value="-"/>
+    <Switch name="objectExtension"         value="o"/>
+    <Switch name="needDependencies"        value="true"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value="lib"/>
+    <Switch name="libExtension"            value="a"/>
+    <Switch name="linkerNeedsLibPrefix"    value="false"/>
+    <Switch name="linkerNeedsLibExtension" value="false"/>
+
+
+   <!-- This is a copy of options_gcc.xml but different architecture options -->
+
+   <Option name="Produce debugging symbols"
+            option="-g -Wa,-g -Wl,-g"
+            category="Debugging"
+            checkAgainst="-O -O1 -O2 -O3 -Os"
+            checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."
+            supersedes="-s"/>
+
+    <if platform="windows">
+        <Option name="Profile code when executed"
+                option="-pg"
+                category="Profiling"
+                additionalLibs="-pg -lgmon"
+                supersedes="-s"/>
+    </if>
+    <else>
+        <Option name="Profile code when executed"
+                option="-pg"
+                category="Profiling"
+                additionalLibs="-pg"
+                supersedes="-s"/>
+    </else>
+
+    <Common name="warnings"/>
+    <Category name="General Options">
+        <Option name="Output an error if same variable is declared without extern in different modules"
+                option="-fno-common"/>
+        <Option name="Save intermediate files in the build directory"
+                option="-save-temps"/>
+    </Category>
+
+    <!-- warnings -->
+    <Common name="warnings"/>
+    <Category name="Warnings">
+        <Option name="Enable Effective-C++ warnings (thanks Scott Meyers)"
+                option="-Weffc++"/>
+        <Option name="Warn whenever a switch statement does not have a default case"
+                option="-Wswitch-default"/>
+        <Option name="Warn whenever a switch statement has an index of enumerated type and lacks a case for one or more of the named codes of that enumeration"
+                option="-Wswitch-enum"/>
+        <if exec="C -dumpversion"
+            regex="^[4-9]\.[0-9]"
+            default="true">
+            <Option name="Warn if a user supplied include directory does not exist"
+                    option="-Wmissing-include-dirs"/>
+        </if>
+        <Option name="Warn if a global function is defined without a previous declaration"
+                option="-Wmissing-declarations"/>
+        <Option name="Warn if the compiler detects that code will never be executed"
+                option="-Wunreachable-code"/>
+        <Option name="Warn if a function can not be inlined and it was declared as inline"
+                option="-Winline"/>
+        <Option name="Warn if floating point values are used in equality comparisons"
+                option="-Wfloat-equal"/>
+        <Option name="Warn if an undefined identifier is evaluated in an '#if' directive"
+                option="-Wundef"/>
+        <Option name="Warn whenever a pointer is cast such that the required alignment of the target is increased"
+                option="-Wcast-align"/>
+        <Option name="Warn if anything is declared more than once in the same scope"
+                option="-Wredundant-decls"/>
+        <Option name="Warn about unitialized variables which are initialized with themselves"
+                option="-Winit-self"/>
+        <Option name="Warn whenever a local variable shadows another local variable, parameter or global variable or whenever a built-in function is shadowed"
+                option="-Wshadow"/>
+        <Option name="Warn if a class has virtual functions but no virtual destructor"
+                option="-Wnon-virtual-dtor"/>
+    </Category>
+
+    <!-- optimization -->
+    <Common name="optimization"/>
+    <Option name="Don't keep the frame pointer in a register for functions that don't need one"
+            option="-fomit-frame-pointer"
+            category="Optimization"
+            checkAgainst="-g -ggdb"
+            checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."/>
+
+
+    <!-- machine dependent options - cpu arch -->
+<!-- Summary of PowerPC Options: https://gcc.gnu.org/onlinedocs/gcc/RS_002f6000-and-PowerPC-Options.html -->
+   <Category name="PowerPC architecture specific">
+        <Option name="Generate 32-bit code"
+                option="-m32"/>
+        <Option name="Use EABI"
+                option="-mcall-eabi"/>
+        <Option name="Do not use EABI"
+                option="-mcall-sysv-noeabi"/>
+        <Option name="Produce big endian code"
+                option="-mbig-endian"/>
+        <Option name="Produce little endian code"
+                option="-mlittle-endian"/>
+        <Option name="Do not allow bit-fields to cross word boundaries"
+                option="-mno-bit-word"/>
+        <Option name="Align to the base type of the bit-field"
+                option="-mbit-align"/>
+        <Option name="Do not generate single field mfcr instruction"
+                option="-mno-mfcrf"/>
+        <Option name="Generate single field mfcr instruction"
+                option="-mmfcrf"/>
+        <Option name="Generate load/store with update instructions"
+                option="-mupdate"/>
+        <Option name="Generate load/store multiple instructions"
+                option="-mmultiple"/>
+        <Option name="Select method for sdata handling"
+                option="-msdata=none"/>
+        <Option name="Specify alignment of structure fields none/default/natural"
+                option="-malign=none"/>
+        <Option name="Avoid all range limits on call instructions"
+                option="-mlongcall"/>
+        <Option name="Using floating point in the GPRs"
+                option="-mfloat-gprs=yes"/>
+        <Option name="Not using floating point in the GPRs"
+                option="-mfloat-gprs=no"/>
+        <Option name="Enable debug output"
+                option="-mdebug"/>
+        <Option name="Schedule code for given CPU"
+                option="-mtune="/>
+        <Option name="Allow symbolic names for registers"
+                option="-mregnames -Wa,-mregnames"/>
+        <Option name="Do not allow symbolic names for registers"
+                option="-mno-regnames"/>
+        <Option name="Support for GCC's -mrelocatble option"
+                option="-mrelocatable"/>
+        <Option name="Support for GCC's -mrelocatble-lib option"
+                option="-mrelocatable-lib"/>
+        <Option name="Disables the generation of ISEL instructions"
+                option="-mno-isel"/>
+        <Option name="Enables the generation of ISEL instructions"
+                option="-misel"/>
+        <Option name="Disables the generation of SPE simd instructions"
+                option="-mno-spe"/>
+        <Option name="Enables the generation of SPE simd instructions"
+                option="-mspe"/>
+        <Option name="Do not use hardware floating point"
+                option="-msoft-float"/>
+        <Option name="Use hardware floating point"
+                option="-mhard-float"/>
+        <Option name="Generates of floating-point operations yes/single/double/no for (MPC854x)"
+                option="-mfloat-gprs=no"/>
+        <Option name="Uses the load string instructions"
+                option="-mstring"/>
+        <Option name="Does not use the load string instructions"
+                option="-mno-string"/>
+	</Category>
+
+    <!-- Assembly -->
+    <Category name="Assembly">
+		<Option name="32-bit PowerPC bookE"
+				option="-Wa,-mbooke32"/>
+		<Option name="Select e200/e500 core"
+				option="-Wa,-me500"/>
+    </Category>
+
+    <Category name="PowerPC MCU derivatives"
+              exclusive="true">
+        <Option name="Select CPU PowerPC 5xx"
+                option="-mcpu=505"/>
+        <Option name="Select CPU PowerPC 823"
+                option="-mcpu=823"/>
+        <Option name="Select PowerPC 5200"
+                option="-mcpu=603e -msoft-float"/>
+        <Option name="Select CPU PowerPC 8540"
+                option="-mcpu=8540"
+				additionalLibs="-mcpu=8540"/>
+    </Category>
+	
+	
+    <Command name="CompileObject"
+             value="$compiler $options $includes -c $file -o $object"/>
+    <Command name="CompileObject"
+			 ext="s"
+             value="$compiler -x assembler-with-cpp $options -Wa,$includes -c $file -o $object"/>
+    <Command name="CompileObject"
+			 ext="asm"
+             value="$compiler -x assembler-with-cpp $options -Wa,$includes -c $file -o $object"/>
+    <Command name="LinkExe"
+			 value="$linker $link_options $libs $libdirs $link_objects $link_resobjects -o $exe_output"/>
+	<Command name="LinkDynamic"
+			 value="$linker $link_options $libs $libdirs $link_objects $link_resobjects -o $exe_output"/>
+	<Command name="LinkStatic"
+			 value="$linker $link_options $libs $libdirs $link_objects $link_resobjects -o $static_output"/>
+	<Common name="cmds"/>
+
+    <Common name="re"/>
+
+    <Common name="sort"/>
+</CodeBlocks_compiler_options>

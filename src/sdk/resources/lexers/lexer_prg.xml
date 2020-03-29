@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+		<Lexer name="XBase"
+				index="73"
+				filemasks="*.prg,*.spr">
+				<Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+                <Style name="Comment"
+                        index="1,2,3,4,5,6"
+                        fg="128,128,128"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <Style name="Keywords"
+                        index="7"
+                        fg="0,64,210"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <Style name="Keywords2"
+                        index="8,9,10"
+                        fg="0,0,255"
+                        bg="255,255,255"
+                        bold="1"
+                        italics="0"
+                        underlined="0"/>
+				<Style name="Number"
+						index="11,22,23"
+						fg="128,0,128"
+						bold="1" />
+				<Style name="String"
+						index="12"
+						fg="0,0,160"
+						bg="255,255,255"/>
+                <Style name="Preprocessor"
+                        index="13"
+                        fg="0,160,0"
+                        bg="255,255,255"/>
+				<Style name="Operator"
+						index="14"
+						fg="0,128,128"
+						bg="255,255,255"
+						bold="1"/>
+                <Style name="Identifier"
+                        index="15"
+                        fg="0,0,0"
+                        bg="255,255,255"/>
+                <Style name="Date"
+                        index="16"
+                        fg="255,192,0"
+                        bg="255,255,255"/>
+                <Style name="Label"
+                        index="20"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="1"/>
+				<Style name="Selection"
+						index="-99"
+						bg="192,192,192"/>
+				<Style name="Active line"
+						index="-98"
+						bg="255,255,160"/>
+				<Style name="Compiler error line"
+						index="-4"
+						bg="255,128,0"/>
+				<Keywords>
+                        <!-- Keywords -->
+						<Set index="0"
+                            value="if iif then else endif do exit loop enddo
+                                   while endwhile for to endfor next scan break go
+                                   goto endscan end case otherwise endcase and or
+                                   not .and. .or. .not. null .null. true .t. .y. .f.
+                                   false define class enddefine return master
+                                   procedure proc end endproc function endfunc local
+                                   private global public form parameters params int
+                                   date time file word array on error at"/>
+                        <!-- Functions -->
+                        <Set index="1"
+                            value="aadd ctod month row abs fcount lastrec
+                                    pcol rtrim transform asc day fieldname len chr
+                                    pcount seconds trim deleted lock prow select
+                                    break devpos flock log reccount setpos upper
+                                    bof dow found lower recno space cdow dtoc ltrim
+                                    replicate sqrt dtos max rlock str val type
+                                    valtype cmonth empty inkey min round substr year
+                                    col eof browse select into close clear message
+                                    messagebox wait"/>
+                        <!-- User defined -->
+                        <Set index="2"
+                            value=""/>
+                        <!-- User defined -->
+                        <Set index="3"
+                            value=""/>
+				</Keywords>
+				<SampleCode value="lexer_prg.sample"
+						error_line="25"/>
+                <LanguageAttributes
+                    LineComment=""
+                    StreamCommentStart=""
+                    StreamCommentEnd=""
+                    BoxCommentStart=""
+                    BoxCommentMid=""
+                    BoxCommentEnd=""
+                    LexerCommentStyles="1,2,3,4,5,6"
+                    LexerCharacterStyles=""
+                    LexerStringStyles="12"
+                    LexerPreprocessorStyles="13"/>
+		</Lexer>
+</CodeBlocks_lexer_properties>

@@ -1,0 +1,13 @@
+<CodeBlocks_template_file>
+	<Template name="console" title="Console Application" category="Console" bitmap="console.png">
+		<FileSet name="c++" title="C++ source">
+			<File source="console-main-cpp.cpp" destination="main.cpp"/>
+		</FileSet>
+		<FileSet name="c" title="C source">
+			<File source="console-main-c.cpp" destination="main.c"/>
+		</FileSet>
+		<Option name="Console Application">
+			<Project file="console.cbp"/>
+		</Option>
+	</Template>
+</CodeBlocks_template_file>

@@ -1,0 +1,90 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Code::Blocks new project wizard script
+//
+// Project: Static Library
+// Author:  Yiannis Mandravellos
+//
+////////////////////////////////////////////////////////////////////////////////
+
+
+function BeginWizard()
+{
+    local wiz_type = Wizard.GetWizardType();
+
+    if (wiz_type == wizProject)
+    {
+        local intro_msg = _T("Welcome to the new static library wizard!\n" +
+                             "This wizard will guide you to create a new static library.\n\n" +
+                             "When you 're ready to proceed, please click \"Next\"...");
+
+        Wizard.AddInfoPage(_T("StaticLibIntro"), intro_msg);
+        Wizard.AddProjectPathPage();
+        Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+    }
+    else if (wiz_type == wizTarget)
+    {
+        local intro_msg = _T("Welcome to the new static library build target wizard!\n" +
+                             "This wizard will guide you to create a new static library build target.\n\n" +
+                             "When you 're ready to proceed, please click \"Next\"...");
+        Wizard.AddInfoPage(_T("StaticLibIntro"), intro_msg);
+        Wizard.AddBuildTargetPage(_T(""), false, true, _T(""), _T("*"), true);
+    }
+    else
+        print(wiz_type);
+}
+
+function GetFilesDir()
+{
+    local result = _T("staticlib/files");
+    return result;
+}
+
+function SetupProject(project)
+{
+    // Debug build target
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+    {
+        WarningsOn(target, Wizard.GetCompilerID());
+        SetupTarget(target, true);
+    }
+
+    // Release build target
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+    {
+        WarningsOn(target, Wizard.GetCompilerID());
+        SetupTarget(target, false);
+    }
+
+    return true;
+}
+
+function SetupTarget(target, is_debug)
+{
+    if (IsNull(target))
+        return false;
+
+    target.SetTargetType(ttStaticLib);
+
+    if (is_debug)
+    {
+        // enable debugging symbols for this target
+        // DebugSymbolsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + target.SuggestOutputFilename());
+    }
+    else
+    {
+        // enable optimizations for this target
+        // OptimizationsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
+        OptimizationsOn(target, Wizard.GetCompilerID());
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + target.SuggestOutputFilename());
+    }
+
+    if (Wizard.GetWizardType() == wizTarget)
+        target.SetOutputFilename(Wizard.GetTargetOutputDir() + target.SuggestOutputFilename());
+
+    return true;
+}
