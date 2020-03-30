@@ -699,33 +699,40 @@
 													<border>4</border>
 												</object>
 												<object class="sizeritem">
-													<object class="wxButton" name="btnColour">
-														<label>...</label>
+													<object class="wxColourPickerCtrl" name="colourPicker">
+														<colour>#000000</colour>
 													</object>
 													<flag>wxTOP|wxEXPAND</flag>
-													<border>4</border>
+													<border>5</border>
 													<option>1</option>
 												</object>
 												<object class="sizeritem">
 													<object class="wxStaticLine" name="ID_STATICLINE4">
 														<size>10,-1</size>
 													</object>
-													<flag>wxTOP|wxEXPAND</flag>
-													<border>4</border>
-													<option>1</option>
+													<flag>wxTOP|wxBOTTOM|wxEXPAND</flag>
+													<border>10</border>
 												</object>
 												<object class="sizeritem">
 													<object class="wxStaticText" name="ID_STATICTEXT25">
 														<label>Default:</label>
 													</object>
-													<flag>wxTOP|wxEXPAND</flag>
+													<flag>wxEXPAND</flag>
 													<border>4</border>
 												</object>
 												<object class="sizeritem">
-													<object class="wxButton" name="btnDefaultColour">
-														<label>Default</label>
+													<object class="wxStaticBitmap" name="bmpDefaultColour">
+														<style>wxBORDER_RAISED</style>
 													</object>
-													<flag>wxTOP|wxALIGN_LEFT</flag>
+													<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
+												<object class="sizeritem">
+													<object class="wxButton" name="btnDefaultColour">
+														<label>Reset</label>
+													</object>
+													<flag>wxTOP|wxEXPAND</flag>
 													<border>4</border>
 													<option>1</option>
 												</object>

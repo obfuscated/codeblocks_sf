@@ -40,6 +40,7 @@
 #endif
 
 #include <wx/aui/aui.h>
+#include <wx/clrpicker.h>
 #include <wx/listbook.h>
 
 #include "annoyingdialog.h"
@@ -95,8 +96,8 @@ BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxScrollingDialog)
     EVT_CHOICE(XRCID("chCategory"), EnvironmentSettingsDlg::OnChooseAppColourCategory)
     EVT_CHOICE(XRCID("chSettingsIconsSize"), EnvironmentSettingsDlg::OnSettingsIconsSize)
     EVT_LISTBOX(XRCID("lstColours"), EnvironmentSettingsDlg::OnChooseAppColourItem)
-    EVT_BUTTON(XRCID("btnColour"), EnvironmentSettingsDlg::OnClickAppColour)
-    EVT_BUTTON(XRCID("btnDefaultColour"), EnvironmentSettingsDlg::OnClickAppColour)
+    EVT_COLOURPICKER_CHANGED(XRCID("colourPicker"), EnvironmentSettingsDlg::OnClickAppColour)
+    EVT_BUTTON(XRCID("btnDefaultColour"), EnvironmentSettingsDlg::OnClickAppColourDefault)
 END_EVENT_TABLE()
 
 EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* art)
@@ -741,6 +742,25 @@ struct AppColoursClientData : wxClientData
     wxString id;
 };
 
+static void CreateAndSetBitmap(wxStaticBitmap &control, const wxColour &colour)
+{
+    const wxString label(("WWWWw"));
+
+    int width, height;
+    control.GetTextExtent(label, &width, &height);
+    height = (height * 3) / 2;
+
+    wxBitmap bmp(wxSize(width, height));
+    wxMemoryDC dc;
+    dc.SelectObject(bmp);
+    dc.SetFont(control.GetFont());
+    dc.SetPen(*wxBLACK_PEN);
+    dc.SetBrush(wxBrush(colour));
+    dc.DrawRectangle(wxRect(0, 0, width, height));
+
+    control.SetBitmap(bmp);
+}
+
 } // anonymous namespace
 
 void EnvironmentSettingsDlg::FillApplicationColours()
@@ -778,6 +798,11 @@ void EnvironmentSettingsDlg::FillApplicationColours()
     }
 
     wxCommandEvent tempEvent;
+    if (list->GetCount() > 0)
+    {
+        list->SetSelection(0);
+        tempEvent.SetClientObject(list->GetClientObject(0));
+    }
     OnChooseAppColourItem(tempEvent);
 }
 
@@ -786,18 +811,20 @@ void EnvironmentSettingsDlg::OnChooseAppColourCategory(cb_unused wxCommandEvent 
     FillApplicationColours();
 }
 
+
 void EnvironmentSettingsDlg::OnChooseAppColourItem(wxCommandEvent &event)
 {
-    wxButton *btnColour = XRCCTRL(*this, "btnColour", wxButton);
+    wxColourPickerCtrl *picker = XRCCTRL(*this, "colourPicker", wxColourPickerCtrl);
     wxButton *btnDefault = XRCCTRL(*this, "btnDefaultColour", wxButton);
+    wxStaticBitmap *bmpDefaultColour = XRCCTRL(*this, "bmpDefaultColour", wxStaticBitmap);
 
     const AppColoursClientData *data = static_cast<AppColoursClientData*>(event.GetClientObject());
     if (!data)
     {
-        btnColour->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
-        btnDefault->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
-        btnColour->Enable(false);
+        picker->SetColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+        picker->Enable(false);
         btnDefault->Enable(false);
+        CreateAndSetBitmap(*bmpDefaultColour, wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
         return;
     }
 
@@ -806,61 +833,74 @@ void EnvironmentSettingsDlg::OnChooseAppColourItem(wxCommandEvent &event)
     if (it != colours.end())
     {
         std::map<wxString, wxColour>::const_iterator colourIt = m_ChangedAppColours.find(data->id);
+        wxColour activeColour;
         if (colourIt != m_ChangedAppColours.end())
-            btnColour->SetBackgroundColour(colourIt->second);
+            activeColour = colourIt->second;
         else
-            btnColour->SetBackgroundColour(it->second.value);
+            activeColour = it->second.value;
+        picker->SetColour(activeColour);
+        picker->Enable(true);
 
-        btnDefault->SetBackgroundColour(it->second.defaultValue);
-        btnColour->Enable(true);
-        btnDefault->Enable(true);
+        btnDefault->Enable(activeColour != it->second.defaultValue);
+        CreateAndSetBitmap(*bmpDefaultColour, it->second.defaultValue);
     }
     else
     {
-        btnColour->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
-        btnDefault->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
-        btnColour->Enable(false);
+        picker->SetColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+        picker->Enable(false);
         btnDefault->Enable(false);
+        CreateAndSetBitmap(*bmpDefaultColour, wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
     }
 }
 
-void EnvironmentSettingsDlg::OnClickAppColour(wxCommandEvent &event)
+static bool GetSelectedColourDefinitionFromList(wxString *id, ColourManager::ColourDef *def, wxListBox *list)
 {
-    wxListBox *list = XRCCTRL(*this, "lstColours", wxListBox);
     if (list->GetSelection() == wxNOT_FOUND)
-        return;
+        return false;
     const AppColoursClientData *data;
     data = static_cast<AppColoursClientData*>(list->GetClientObject(list->GetSelection()));
     if (!data)
-        return;
+        return false;
 
     const ColourManager::ColourDefMap &colours = Manager::Get()->GetColourManager()->GetColourDefinitions();
     const ColourManager::ColourDefMap::const_iterator it = colours.find(data->id);
     if (it == colours.end())
+        return false;
+
+    *def = it->second;
+    *id = data->id;
+    return true;
+}
+
+void EnvironmentSettingsDlg::OnClickAppColour(wxColourPickerEvent &event)
+{
+    wxListBox *list = XRCCTRL(*this, "lstColours", wxListBox);
+    wxString id;
+    ColourManager::ColourDef colourDef;
+    if (!GetSelectedColourDefinitionFromList(&id, &colourDef, list))
         return;
-    wxColour oldColour = it->second.value;
-    std::map<wxString, wxColour>::iterator changedIt = m_ChangedAppColours.find(data->id);
-    if (changedIt != m_ChangedAppColours.end())
-        oldColour = changedIt->second;
 
-    wxButton *btnColour = XRCCTRL(*this, "btnColour", wxButton);
+    const wxColour newColour = event.GetColour();
+    m_ChangedAppColours[id] = newColour;
 
-    if (event.GetId() == XRCID("btnColour"))
-    {
-        wxColourData colour;
-        colour.SetColour(oldColour);
-        wxColourDialog dlg(this, &colour);
-        if (dlg.ShowModal() == wxID_OK)
-        {
-            m_ChangedAppColours[data->id] = dlg.GetColourData().GetColour();
-            btnColour->SetBackgroundColour(dlg.GetColourData().GetColour());
-        }
-    }
-    else if (event.GetId() == XRCID("btnDefaultColour"))
-    {
-        m_ChangedAppColours[data->id] = it->second.defaultValue;
-        btnColour->SetBackgroundColour(it->second.defaultValue);
-    }
+    wxButton *btnDefault = XRCCTRL(*this, "btnDefaultColour", wxButton);
+    btnDefault->Enable(newColour != colourDef.defaultValue);
+}
+
+void EnvironmentSettingsDlg::OnClickAppColourDefault(cb_unused wxCommandEvent &event)
+{
+    wxListBox *list = XRCCTRL(*this, "lstColours", wxListBox);
+    wxString id;
+    ColourManager::ColourDef colourDef;
+    if (!GetSelectedColourDefinitionFromList(&id, &colourDef, list))
+        return;
+
+    m_ChangedAppColours[id] = colourDef.defaultValue;
+    wxColourPickerCtrl *picker = XRCCTRL(*this, "colourPicker", wxColourPickerCtrl);
+    picker->SetColour(colourDef.defaultValue);
+
+    wxButton *btnDefault = XRCCTRL(*this, "btnDefaultColour", wxButton);
+    btnDefault->Enable(false);
 }
 
 void EnvironmentSettingsDlg::WriteApplicationColours()

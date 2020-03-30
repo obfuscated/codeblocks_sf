@@ -10,8 +10,9 @@
 #include <pluginmanager.h>
 
 class wxAuiDockArt;
-class wxListbookEvent;
 class wxCheckListBox;
+class wxColourPickerEvent;
+class wxListbookEvent;
 
 class EnvironmentSettingsDlg : public wxScrollingDialog
 {
@@ -38,7 +39,8 @@ class EnvironmentSettingsDlg : public wxScrollingDialog
 
         void OnChooseAppColourCategory(wxCommandEvent &event);
         void OnChooseAppColourItem(wxCommandEvent &event);
-        void OnClickAppColour(wxCommandEvent &event);
+        void OnClickAppColour(wxColourPickerEvent &event);
+        void OnClickAppColourDefault(wxCommandEvent &event);
     private:
         void AddPluginPanels();
         void LoadListbookImages();
