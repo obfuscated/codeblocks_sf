@@ -10,10 +10,6 @@
 #ifndef CBKEYCONFIGPANEL_H
 #define CBKEYCONFIGPANEL_H
 
-#ifdef __BORLANDC__
-	#pragma hdrstop
-#endif
-
 // Modified Keybinder for CodeBlocks KeyBnder v2.0
 
 // ----------------------------------------------------------------------------
