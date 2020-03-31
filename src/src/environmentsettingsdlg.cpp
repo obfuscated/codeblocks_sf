@@ -746,13 +746,13 @@ struct AppColoursClientData : wxClientData
 
 static void CreateAndSetBitmap(wxStaticBitmap &control, const wxColour &colour)
 {
-    const wxString label(("WWWWw"));
+    const wxString label(_T("WWWWw"));
 
     int width, height;
     control.GetTextExtent(label, &width, &height);
     height = (height * 3) / 2;
 
-    wxBitmap bmp(wxSize(width, height));
+    wxBitmap bmp(width, height);
     wxMemoryDC dc;
     dc.SelectObject(bmp);
     dc.SetFont(control.GetFont());
