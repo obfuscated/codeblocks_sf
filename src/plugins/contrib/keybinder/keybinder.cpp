@@ -12,11 +12,6 @@
 
 // Modified Keybinder for CodeBlocks KeyBnder v2.0 2019/04/8
 
-#ifdef __GNUG__
-#pragma implementation "keybinder.h" //necessary for linux, else undefines when linking
-#endif
-
-
 // includes
 #include <wx/event.h>
 #include <wx/frame.h> // Manager::Get()->GetAppWindow()

@@ -15,10 +15,6 @@
 #ifndef __WX_MENUUTILS_H__
 #define __WX_MENUUTILS_H__
 
-#ifdef __GNUG__
-#pragma interface "menuutils.h"
-#endif
-
 // includes
 #include "wx/panel.h"
 #include "wx/dialog.h"

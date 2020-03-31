@@ -12,10 +12,6 @@
 
 // Modified CodeBlocks KeyBnder v2.0 2019/04/8
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma implementation "cbkeybinder.h"
-#endif
-
 #include <vector>
 
 #include <sdk.h>
