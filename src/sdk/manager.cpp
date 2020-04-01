@@ -10,9 +10,10 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/xrc/xmlres.h>
     #include <wx/fs_zip.h>
+    #include <wx/log.h>
     #include <wx/menu.h>
+    #include <wx/xrc/xmlres.h>
 
     #include "manager.h" // class's header file
     #include "sdk_events.h"
@@ -33,10 +34,9 @@
     #include "xtra_res.h" // our new ToolBarAddOn handler
 #endif
 
-#include <wx/app.h>    // wxTheApp
+#include <wx/app.h> // wxTheApp
 #include <wx/toolbar.h>
 #include <wx/fs_mem.h>
-
 
 #ifdef PPRCESS_EVENT_PERFORMANCE_MEASURE
     // this preprocessor directive can be defined in cbfunctor.h to enable performance measure
@@ -49,7 +49,6 @@
 #include "debuggermanager.h"
 
 static Manager* s_ManagerInstance = nullptr;
-
 
 #ifdef PPRCESS_EVENT_PERFORMANCE_MEASURE
 static wxString GetCodeblocksEventName(wxEventType type)
@@ -547,6 +546,7 @@ bool Manager::LoadResource(const wxString& file)
         {
             wxMemoryFSHandler::AddFile(file, buf, len);
         }
+        wxLogNull ln; // avoid warnings about missing xrc files o wx31+ with verbose messages enabled
         if ( !wxXmlResource::Get()->Load(memoryFile) )
             Get()->GetLogManager()->LogError(_("Manager failed to load XRC resource '") + resourceFile + _("'."));
         delete[] buf;
@@ -660,9 +660,9 @@ void Manager::RemoveAllEventSinksFor(void* owner)
     }
 }
 
-bool            Manager::m_AppShuttingDown = false;
-bool            Manager::m_AppStartedUp    = false;
-bool            Manager::m_BlockYields     = false;
-bool            Manager::m_IsBatch         = false;
-wxCmdLineParser Manager::m_CmdLineParser;
-wxToolBarAddOnXmlHandler* Manager::m_ToolbarHandler = nullptr;
+bool                      Manager::m_AppShuttingDown = false;
+bool                      Manager::m_AppStartedUp    = false;
+bool                      Manager::m_BlockYields     = false;
+bool                      Manager::m_IsBatch         = false;
+wxCmdLineParser           Manager::m_CmdLineParser;
+wxToolBarAddOnXmlHandler* Manager::m_ToolbarHandler  = nullptr;
