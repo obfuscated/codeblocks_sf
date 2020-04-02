@@ -220,7 +220,7 @@ int Foo(bool isBar)\n\
 #define AS_1TBS "\
 int Foo(bool isBar)\n\
 {\n\
-    if (isFoo) {\n\
+    if (isBar) {\n\
         bar();\n\
         return 1;\n\
     } else {\n\
