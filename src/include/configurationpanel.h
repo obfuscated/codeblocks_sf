@@ -30,6 +30,8 @@ class DLLIMPORT cbConfigurationPanel : public wxPanel
         virtual void OnApply() = 0;
         /// Called when the user chooses to cancel the configuration.
         virtual void OnCancel() = 0;
+        /// Called when the panel is about to be shown. Could be called repeatedly.
+        virtual void OnPageChanging() {}
 
         /// Sets the panel's parent dialog
         void SetParentDialog(wxWindow* dialog)

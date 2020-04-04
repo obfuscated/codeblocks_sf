@@ -91,7 +91,8 @@ BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxScrollingDialog)
     EVT_CHECKBOX(XRCID("chkEnableMultipleSelections"), EditorConfigurationDlg::OnMultipleSelections)
     EVT_CHOICE(XRCID("lstCaretStyle"),                 EditorConfigurationDlg::OnCaretStyle)
 
-    EVT_LISTBOOK_PAGE_CHANGED(XRCID("nbMain"), EditorConfigurationDlg::OnPageChanged)
+    EVT_LISTBOOK_PAGE_CHANGING(XRCID("nbMain"),        EditorConfigurationDlg::OnPageChanging)
+    EVT_LISTBOOK_PAGE_CHANGED(XRCID("nbMain"),         EditorConfigurationDlg::OnPageChanged)
     EVT_BUTTON(XRCID("btnWSColour"),                   EditorConfigurationDlg::OnChooseColour)
 
     EVT_UPDATE_UI(XRCID("cmbFontQuality"),             EditorConfigurationDlg::OnUpdateUIFontQuality)
@@ -377,6 +378,27 @@ void EditorConfigurationDlg::UpdateListbookImages()
         ;
     XRCCTRL(*this, "lblBigTitle", wxStaticText)->SetLabel(label);
     XRCCTRL(*this, "pnlTitleInfo", wxPanel)->Layout();
+}
+
+void EditorConfigurationDlg::OnPageChanging(wxListbookEvent& event)
+{
+    const int selection = event.GetSelection();
+    if (selection == wxNOT_FOUND)
+        return;
+
+    wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
+    wxWindow *page = lb->GetPage(selection);
+    if (page == nullptr)
+        return;
+
+    for (cbConfigurationPanel *panel : m_PluginPanels)
+    {
+        if (panel == page)
+        {
+            panel->OnPageChanging();
+            break;
+        }
+    }
 }
 
 void EditorConfigurationDlg::OnPageChanged(wxListbookEvent& event)

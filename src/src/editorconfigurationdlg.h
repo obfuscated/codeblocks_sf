@@ -50,6 +50,7 @@ class EditorConfigurationDlg : public wxScrollingDialog
 
         void EndModal(int retCode);
     private:
+        void OnPageChanging(wxListbookEvent& event);
         void OnPageChanged(wxListbookEvent& event);
         void AddPluginPanels();
         void LoadListbookImages();

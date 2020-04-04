@@ -437,8 +437,25 @@ void EnvironmentSettingsDlg::UpdateListbookImages()
     XRCCTRL(*this, "pnlTitleInfo", wxPanel)->Layout();
 }
 
-void EnvironmentSettingsDlg::OnPageChanging(cb_unused wxListbookEvent& event)
+void EnvironmentSettingsDlg::OnPageChanging(wxListbookEvent& event)
 {
+    const int selection = event.GetSelection();
+    if (selection == wxNOT_FOUND)
+        return;
+
+    wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
+    wxWindow *page = lb->GetPage(selection);
+    if (page == nullptr)
+        return;
+
+    for (cbConfigurationPanel *panel : m_PluginPanels)
+    {
+        if (panel == page)
+        {
+            panel->OnPageChanging();
+            break;
+        }
+    }
 }
 
 void EnvironmentSettingsDlg::OnPageChanged(wxListbookEvent& event)
