@@ -13,7 +13,7 @@ Preparations for a release:
 4.) With respect to changes (if any) in the logo, adopt:
     [C::B]\src\src\splashscreen.cpp
     if needed.
-    Especially hav an eye on the positions of text overlays in:
+    Especially have an eye on the positions of text overlays in:
     DrawReleaseInfo(wxDC& dc)
     Check if it works, also for SAFE-MODE (start C::B w/ safe-mode option).
 
