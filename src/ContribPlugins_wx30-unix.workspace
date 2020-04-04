@@ -9,7 +9,7 @@
 			<Depends filename="plugins/contrib/wxContribItems/wxContribItems_wx30-unix.cbp" />
 			<Depends filename="plugins/contrib/wxSmith/wxSmith_wx30-unix.cbp" />
 		</Project>
-		<Project filename="plugins/contrib/wxSmithAui/wxSmithAui_wx30.cbp">
+		<Project filename="plugins/contrib/wxSmithAui/wxSmithAui_wx30-unix.cbp">
 			<Depends filename="plugins/contrib/wxSmith/wxSmith_wx30-unix.cbp" />
 		</Project>
 		<Project filename="plugins/contrib/AutoVersioning/AutoVersioning_wx30-unix.cbp" active="1" />
