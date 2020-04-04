@@ -1,4 +1,12 @@
 -- comment
 /* comment */
 
-SELECT * FROM bar WHERE foo = 10 AND xxx LIKE 'abcd%'
+CREATE TABLE bar (
+    foo INT,
+    xxx VARCHAR(10),
+);
+
+INSERT INTO bar (foo, xxx)
+VALUES (10, 'abcdefg');
+
+SELECT * FROM bar WHERE foo = 10 AND xxx LIKE 'abcd%';
