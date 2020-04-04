@@ -372,7 +372,8 @@ void EnvironmentSettingsDlg::AddPluginPanels()
 
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     // get all configuration panels which are *not* about compiler and editor.
-    Manager::Get()->GetPluginManager()->GetConfigurationPanels(~(cgCompiler | cgEditor), lb, m_PluginPanels);
+    Manager::Get()->GetPluginManager()->GetConfigurationPanels(~(cgCompiler | cgEditor), lb,
+                                                               m_PluginPanels, this);
 
     for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)
     {
@@ -961,4 +962,28 @@ wxString EnvironmentSettingsDlg::StringToAnnoyingDlgReturn(const wxString& capti
             return caption.BeforeLast(wxT(':')) + wxT(':') + it->first;
     }
     return caption;
+}
+
+wxColour EnvironmentSettingsDlg::GetValue(const wxString &id)
+{
+    const ColourManager::ColourDefMap &colours = Manager::Get()->GetColourManager()->GetColourDefinitions();
+    const ColourManager::ColourDefMap::const_iterator it = colours.find(id);
+    if (it == colours.end())
+        return *wxBLACK;
+
+    std::map<wxString, wxColour>::const_iterator colourIt = m_ChangedAppColours.find(id);
+    if (colourIt != m_ChangedAppColours.end())
+        return colourIt->second;
+    else
+        return it->second.value;
+}
+
+void EnvironmentSettingsDlg::SetValue(const wxString &id, const wxColour &colour)
+{
+    m_ChangedAppColours[id] = colour;
+}
+
+void EnvironmentSettingsDlg::ResetDefault(const wxString &id)
+{
+    m_ChangedAppColours.erase(id);
 }

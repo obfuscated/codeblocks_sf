@@ -37,7 +37,7 @@
 // this is the plugins SDK version number
 // it will change when the SDK interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR   2
-#define PLUGIN_SDK_VERSION_MINOR   1
+#define PLUGIN_SDK_VERSION_MINOR   2
 #define PLUGIN_SDK_VERSION_RELEASE 0
 
 // class decls
@@ -113,7 +113,12 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
           * @param parent The parent window.
           * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
           */
-        virtual cbConfigurationPanel* GetConfigurationPanel(cb_optional wxWindow* parent){ return nullptr; }
+        virtual cbConfigurationPanel* GetConfigurationPanel(cb_optional wxWindow* parent) { return nullptr; }
+        virtual cbConfigurationPanel* GetConfigurationPanelEx(wxWindow* parent,
+                                                              cb_optional cbConfigurationPanelColoursInterface *colourInterface)
+        {
+            return GetConfigurationPanel(parent);
+        }
 
         /** Return plugin's configuration panel for projects.
           * The panel returned from this function will be added in the project's
@@ -122,7 +127,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
           * @param project The project that is being edited.
           * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
           */
-        virtual cbConfigurationPanel* GetProjectConfigurationPanel(cb_optional wxWindow* parent, cb_optional cbProject* project){ return nullptr; }
+        virtual cbConfigurationPanel* GetProjectConfigurationPanel(cb_optional wxWindow* parent, cb_optional cbProject* project) { return nullptr; }
 
         /** This method is called by Code::Blocks and is used by the plugin
           * to add any menu items it needs on Code::Blocks's menu bar.\n

@@ -6,6 +6,7 @@
 #ifndef ENVIRONMENTSETTINGSDLG_H
 #define ENVIRONMENTSETTINGSDLG_H
 
+#include <configurationpanel.h>
 #include <scrollingdialog.h>
 #include <pluginmanager.h>
 
@@ -14,12 +15,18 @@ class wxCheckListBox;
 class wxColourPickerEvent;
 class wxListbookEvent;
 
-class EnvironmentSettingsDlg : public wxScrollingDialog
+class EnvironmentSettingsDlg : public wxScrollingDialog, public cbConfigurationPanelColoursInterface
 {
     public:
 		EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* art);
 		virtual ~EnvironmentSettingsDlg();
 		virtual void EndModal(int retCode);
+
+    public:
+        // From cbConfigurationPanelColoursInterface
+        wxColour GetValue(const wxString &id) override;
+        void SetValue(const wxString &id, const wxColour &colour) override;
+        void ResetDefault(const wxString &id) override;
     protected:
         void OnPageChanging(wxListbookEvent& event);
         void OnPageChanged(wxListbookEvent& event);

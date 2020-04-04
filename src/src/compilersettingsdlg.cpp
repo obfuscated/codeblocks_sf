@@ -125,7 +125,7 @@ void CompilerSettingsDlg::AddPluginPanels()
     ConfigurationPanelsArray local;
 
     // step 1
-    Manager::Get()->GetPluginManager()->GetConfigurationPanels(cgCompiler, lb, local);
+    Manager::Get()->GetPluginManager()->GetConfigurationPanels(cgCompiler, lb, local, nullptr);
     for (size_t i = 0; i < local.GetCount(); ++i)
     {
         cbConfigurationPanel* panel = local[i];

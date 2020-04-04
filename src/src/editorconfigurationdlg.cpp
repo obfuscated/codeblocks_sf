@@ -314,7 +314,8 @@ void EditorConfigurationDlg::AddPluginPanels()
 
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     // get all configuration panels which are about the editor.
-    Manager::Get()->GetPluginManager()->GetConfigurationPanels(cgEditor, lb, m_PluginPanels);
+    Manager::Get()->GetPluginManager()->GetConfigurationPanels(cgEditor, lb, m_PluginPanels,
+                                                               nullptr);
 
     for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)
     {

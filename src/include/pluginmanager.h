@@ -21,6 +21,7 @@ class cbPlugin;
 class cbCompilerPlugin;
 class cbMimePlugin;
 class cbConfigurationPanel;
+class cbConfigurationPanelColoursInterface;
 class cbProject;
 class wxDynamicLibrary;
 class wxMenuBar;
@@ -151,7 +152,9 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
         int FindSortedMenuItemPosition(wxMenu &popup, const wxString& label) const;
 
         cbMimePlugin* GetMIMEHandlerForFile(const wxString& filename);
-        void GetConfigurationPanels(int group, wxWindow* parent, ConfigurationPanelsArray& arrayToFill);
+        void GetConfigurationPanels(int group, wxWindow* parent,
+                                    ConfigurationPanelsArray& arrayToFill,
+                                    cbConfigurationPanelColoursInterface *coloursInterface);
         void GetProjectConfigurationPanels(wxWindow* parent, cbProject* project, ConfigurationPanelsArray& arrayToFill);
         int Configure();
         void SetupLocaleDomain(const wxString& DomainName);

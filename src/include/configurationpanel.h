@@ -15,6 +15,22 @@
 class wxButton;
 class wxWindow;
 
+/// Interface which is passed to the cbPlugin::GetConfigurationPanelEx implementation. It is used by
+/// the Environment settings dialog to allow editing colours stored in the colour manager in the
+/// configuration panel of a plugin.
+class DLLIMPORT cbConfigurationPanelColoursInterface
+{
+    public:
+        virtual ~cbConfigurationPanelColoursInterface() {}
+
+        /// Get the colour value with a given id.
+        virtual wxColour GetValue(const wxString &id) = 0;
+        /// Set the colour value of a given id.
+        virtual void SetValue(const wxString &id, const wxColour &colour) = 0;
+        /// Reset the colour value to the default.
+        virtual void ResetDefault(const wxString &id) = 0;
+};
+
 /** @brief Base class for plugin configuration panels. */
 class DLLIMPORT cbConfigurationPanel : public wxPanel
 {

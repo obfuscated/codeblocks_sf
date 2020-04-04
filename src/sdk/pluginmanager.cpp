@@ -1266,7 +1266,9 @@ inline int SortByConfigurationPriority(cbPlugin** first, cbPlugin** second)
     return (*first)->GetConfigurationPriority() - (*second)->GetConfigurationPriority();
 }
 
-void PluginManager::GetConfigurationPanels(int group, wxWindow* parent, ConfigurationPanelsArray& arrayToFill)
+void PluginManager::GetConfigurationPanels(int group, wxWindow* parent,
+                                           ConfigurationPanelsArray& arrayToFill,
+                                           cbConfigurationPanelColoursInterface *coloursInterface)
 {
     // build an array of Plugins* because we need to order it by configuration priority
     PluginsArray arr;
@@ -1286,7 +1288,7 @@ void PluginManager::GetConfigurationPanels(int group, wxWindow* parent, Configur
     for (unsigned int i = 0; i < arr.GetCount(); ++i)
     {
         cbPlugin* plug = arr[i];
-        cbConfigurationPanel* pnl = plug->GetConfigurationPanel(parent);
+        cbConfigurationPanel* pnl = plug->GetConfigurationPanelEx(parent, coloursInterface);
         if (pnl)
             arrayToFill.Add(pnl);
     }
