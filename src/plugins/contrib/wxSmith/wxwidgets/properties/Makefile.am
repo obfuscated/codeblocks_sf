@@ -1,7 +1,6 @@
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include \
-		$(WXPROPGRID_INCLUDE)
+		-I$(top_srcdir)/src/sdk/wxscintilla/include
 
 noinst_LTLIBRARIES = libwxsmith_wxwidgets_properties.la
 

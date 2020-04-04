@@ -1,16 +1,8 @@
-if ! HAVE_WX29
-TREELIST_INCLUDE=-I$(srcdir)/../wxContribItems/wxTreeList/include
-TREELIST_LA=../wxContribItems/wxTreeList/libwxtreelist.la
-TREELIST_SRC=./wxtreelist/wxsTreeListCtrl.cpp
-TREELIST_HDR=./wxtreelist/wxsTreeListCtrl.h
-else
 TREELIST_DIST=$(srcdir)/wxtreelist/wxsTreeListCtrl.cpp $(srcdir)/wxtreelist/wxsTreeListCtrl.h
-endif
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
-		$(WXPROPGRID_INCLUDE) \
 		-I$(top_srcdir)/src/plugins/contrib/wxSmith \
 		-I$(top_srcdir)/src/plugins/contrib/wxSmith/wxwidgets \
 		-I$(top_srcdir)/src/plugins/contrib/wxSmith/wxwidgets/properties \

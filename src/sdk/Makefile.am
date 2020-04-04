@@ -1,12 +1,11 @@
-SUBDIRS = scripting wxscintilla $(WXPROPGRID_DIR) resources
-DIST_SUBDIRS = scripting wxscintilla  wxpropgrid resources
+SUBDIRS = scripting wxscintilla resources
+DIST_SUBDIRS = scripting wxscintilla resources
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
 			$(CB_GLIB2_CFLAGS) \
 			$(CB_SQUIRREL_CFLAGS) \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
-			 $(WXPROPGRID_INCLUDE) \
 			-I$(top_srcdir)/src/include/scripting/bindings \
 			-I$(top_srcdir)/src/include/scripting/sqplus \
 			-I$(top_srcdir)/src/sdk/mozilla_chardet/include \
@@ -26,7 +25,6 @@ libcodeblocks_la_LIBADD = scripting/bindings/libsqbindings.la \
 			$(WX_LIBS) \
 			$(SCINTILLA_GTK_LIBS) \
 			$(CB_GLIB2_LIBS) \
-			$(WXPROPGRID_LIB) \
 			$(CB_TINYXML_LIBS) \
 			$(CB_SQUIRREL_LIBS)
 

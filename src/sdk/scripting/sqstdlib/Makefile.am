@@ -11,7 +11,3 @@ libsqstdlib_la_SOURCES = sqstdsystem.cpp \
                         sqstdstring.cpp \
                         sqstdio.cpp \
                         sqstdblob.cpp
-
-EXTRA_DIST = sqstdlib71.vcproj \
-            sqstdlib.cbp \
-            sqstdlib.vcproj
