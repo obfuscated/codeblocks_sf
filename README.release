@@ -31,6 +31,9 @@ Preparations for a release:
     [C::B]src\plugins\contrib\wxSmith\wxs.doxy
     [C::B]src\sdk.doxy
 
+5.1.) Add a release entry in the debian change log, so the generated packages could
+    have the proper version numbers.
+
 6.) Probably update year in footer of:
     [C::B]\src\src\resources\start_here\start_here.html
 
