@@ -45,26 +45,28 @@ public:
     ThreadSearch();
 
     /** Destructor. */
-    virtual ~ThreadSearch();
+    virtual ~ThreadSearch() override;
 
     /** Return the plugin's configuration priority.
       * This is a number (default is 50) that is used to sort plugins
       * in configuration dialogs. Lower numbers mean the plugin's
       * configuration is put higher in the list.
       */
-    virtual int GetConfigurationPriority() const { return 50; }
+    virtual int GetConfigurationPriority() const override { return 50; }
 
     /** Return the configuration group for this plugin. Default is cgUnknown.
       * Notice that you can logically OR more than one configuration groups,
       * so you could set it, for example, as "cgCompiler | cgContribPlugin".
       */
-    virtual int GetConfigurationGroup() const { return cgContribPlugin; }
+    virtual int GetConfigurationGroup() const override { return cgContribPlugin; }
 
     /** Return plugin's configuration panel.
       * @param parent The parent window.
       * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
       */
-    virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
+    virtual cbConfigurationPanel* GetConfigurationPanelEx(wxWindow* parent,
+                                                          cbConfigurationPanelColoursInterface *coloursInterface
+                                                         ) override;
 
     /** Return plugin's configuration panel for projects.
       * The panel returned from this function will be added in the project's
@@ -73,7 +75,11 @@ public:
       * @param project The project that is being edited.
       * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
       */
-    virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* WXUNUSED(parent), cbProject* WXUNUSED(project)){ return 0; }
+    virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* WXUNUSED(parent),
+                                                               cbProject* WXUNUSED(project)) override
+    {
+        return 0;
+    }
 
     /** This method is called by Code::Blocks and is used by the plugin
       * to add any menu items it needs on Code::Blocks's menu bar.\n
@@ -82,7 +88,7 @@ public:
       * just do nothing ;)
       * @param menuBar the wxMenuBar to create items in
       */
-    virtual void BuildMenu(wxMenuBar* menuBar);
+    virtual void BuildMenu(wxMenuBar* menuBar) override;
 
     /** This method is called by Code::Blocks core modules (EditorManager,
       * ProjectManager etc) and is used by the plugin to add any menu
@@ -99,7 +105,8 @@ public:
       * @param pMenu pointer to the popup menu
       * @param data pointer to FileTreeData object (to access/modify the file tree)
       */
-    virtual void BuildModuleMenu(const ModuleType type, wxMenu* pMenu, const FileTreeData* data = 0);
+    virtual void BuildModuleMenu(const ModuleType type, wxMenu* pMenu,
+                                 const FileTreeData* data = nullptr) override;
 
     /** This method is called by Code::Blocks and is used by the plugin
       * to add any toolbar items it needs on Code::Blocks's toolbar.\n
@@ -109,7 +116,7 @@ public:
       * @param toolBar the wxToolBar to create items on
       * @return The plugin should return true if it needed the toolbar, false if not
       */
-    virtual bool BuildToolBar(wxToolBar* toolBar);
+    virtual bool BuildToolBar(wxToolBar* toolBar) override;
 
     /** This method is called to update observers.
       * The pattern has not been implemented as there is only one observer

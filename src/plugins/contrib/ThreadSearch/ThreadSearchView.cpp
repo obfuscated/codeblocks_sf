@@ -267,7 +267,8 @@ void ThreadSearchView::OnShowOptionsDialog(wxCommandEvent &/*event*/)
     // It is the same as doing 'Settings/environment/Thread search'
     // Settings are updated by the cbConfigurationDialog
     cbConfigurationDialog* pDlg       = new cbConfigurationDialog(Manager::Get()->GetAppWindow(), -1, _("Options"));
-    ThreadSearchConfPanel* pConfPanel = new ThreadSearchConfPanel(m_ThreadSearchPlugin, pDlg);
+    ThreadSearchConfPanel* pConfPanel = new ThreadSearchConfPanel(m_ThreadSearchPlugin, nullptr,
+                                                                  pDlg);
 
     pDlg->AttachConfigurationPanel(pConfPanel);
     pDlg->ShowModal();
