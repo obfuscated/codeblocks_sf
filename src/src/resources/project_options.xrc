@@ -58,13 +58,14 @@
 											<object class="wxStaticText" name="ID_STATICTEXT3">
 												<label>Filename:</label>
 											</object>
-											<flag>wxALIGN_TOP</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="txtProjectFilename">
-												<label></label>
+											<object class="wxTextCtrl" name="txtProjectFilename">
+												<style>wxTE_READONLY</style>
 											</object>
 											<flag>wxEXPAND</flag>
+											<option>1</option>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT4">

@@ -115,7 +115,7 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
 
     // general
     XRCCTRL(*this, "txtProjectName", wxTextCtrl)->SetValue(m_Project->GetTitle());
-    XRCCTRL(*this, "txtProjectFilename", wxStaticText)->SetLabel(m_Project->GetFilename());
+    XRCCTRL(*this, "txtProjectFilename", wxTextCtrl)->SetValue(m_Project->GetFilename());
     XRCCTRL(*this, "txtPlatformProj", wxTextCtrl)->SetValue(GetStringFromPlatforms(m_Project->GetPlatforms()));
     XRCCTRL(*this, "txtProjectMakefile", wxTextCtrl)->SetValue(m_Project->GetMakefile());
     XRCCTRL(*this, "chkCustomMakefile", wxCheckBox)->SetValue(m_Project->IsMakefileCustom());
