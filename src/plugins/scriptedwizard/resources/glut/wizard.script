@@ -60,13 +60,22 @@ function OnLeave_GlutPath(fwd)
 
         if (PLATFORM == PLATFORM_MSW)
         {
-            if (!VerifyLibFile(dir_nomacro_lib, _T("glut32"), _T("GLUT's"))) return false;
+            if (!VerifyLibFile(dir_nomacro_lib, _T("freeglut"), _T("GLUT's"))) return false;
         }
         else
         {
-            if (!VerifyLibFile(dir_nomacro_lib, _T("glut"), _T("GLUT's"))) return false;
+            if (!SilentVerifyLibFile(dir_nomacro_lib, _T("glut")))
+            {
+                if (VerifyLibFile(dir_nomacro_lib + _T("/x86_64-linux-gnu/"), _T("glut"), _T("GLUT's")))
+                {
+                    dir_nomacro_lib  = dir_nomacro_lib  + _T("/x86_64-linux-gnu/");
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
-
 
         GlutPath = dir; // Remember the original selection.
 
@@ -110,7 +119,7 @@ function SetupProject(project)
     // add link libraries
     if (PLATFORM == PLATFORM_MSW)
     {
-        project.AddLinkLib(_T("glut32"));
+        project.AddLinkLib(_T("freeglut"));
         project.AddLinkLib(_T("opengl32"));
         project.AddLinkLib(_T("glu32"));
         project.AddLinkLib(_T("winmm"));
