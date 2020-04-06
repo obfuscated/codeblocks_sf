@@ -33,15 +33,31 @@ typedef std::map<FAMRequest, wxString> MonMap;
 
 struct MonDescriptors
 {
-    MonDescriptors(int event_pipe)
+    MonDescriptors() : fc(nullptr)
+    {}
+
+    bool init(int event_pipe)
     {
-        FAMOpen(&fc);
+        const int result=FAMOpen(&fcStorage);
         read_pipe=event_pipe;
+        if (result==0)
+        {
+            fc = &fcStorage;
+            return true;
+        }
+        else
+            return false;
     }
     ~MonDescriptors()
     {
-        FAMClose(&fc);
+        FAMClose(fc);
     }
+
+    MonDescriptors(const MonDescriptors&)=delete;
+    MonDescriptors(MonDescriptors&&)=delete;
+    MonDescriptors operator=(const MonDescriptors&)=delete;
+    MonDescriptors operator=(MonDescriptors&&)=delete;
+
     int pipe_set()
     {
         return FD_ISSET(read_pipe,&readset);
@@ -56,14 +72,16 @@ struct MonDescriptors
     }
     int famfd()
     {
-        return FAMCONNECTION_GETFD(&fc);
+        return FAMCONNECTION_GETFD(fc);
     }
     FAMConnection *fam()
     {
-        return &fc;
+        return fc;
     }
     int do_select()
     {
+        if (fc == nullptr)
+            return -1;
         int result;
         do {
            FD_ZERO(&readset);
@@ -80,7 +98,9 @@ struct MonDescriptors
         }
         return -1;
     }
-    FAMConnection fc;
+private:
+    FAMConnection fcStorage;
+    FAMConnection *fc;
     int read_pipe;
     fd_set readset;
 };
@@ -145,7 +165,10 @@ public:
     }
     void *Entry()
     {
-        MonDescriptors fd(m_msg_rcv);
+        MonDescriptors fd;
+
+        if (!fd.init(m_msg_rcv))
+            return nullptr;
 
         m_interrupt_mutex.Lock();
         m_thread_notify=false;
