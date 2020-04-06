@@ -10,6 +10,14 @@
 #ifndef CBKEYBINDER_H
 #define CBKEYBINDER_H
 
+#if defined(__GNUG__) && !defined(__APPLE__)
+	#pragma interface "cbkeybinder.h"
+#endif
+
+#ifdef __BORLANDC__
+	#pragma hdrstop
+#endif
+
 #include <wx/string.h>
 //-#include <wx/timer.h>
 #include <wx/listbook.h>
@@ -23,7 +31,7 @@
 // Modified Keybinder for CodeBlocks KeyBnder v2.0
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "2.0.12 2020/03/23"
+#define VERSION "2.0.13 2020/04/6"
 // -----------------------------------
 class wxKeyConfigPanel;
 class wxKeyProfileArray;
@@ -691,4 +699,7 @@ class cbKeyBinder : public cbPlugin
 // ----------------------------------------------------------------------------
 //  Commit 2.0.12 2020/03/23
 //          Match .conf and menu structure (by menu titles) to replace old menu ids with newer.
+// ----------------------------------------------------------------------------
+//  Commit 2.0.13 2020/04/6
+//          More comparisons in Initialize() to capture changed menu items from build to build.
 // ----------------------------------------------------------------------------
