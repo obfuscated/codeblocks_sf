@@ -6,17 +6,9 @@
  * License:   GPL
  **************************************************************/
 // RCS-ID:      $Id$
-
+//cause a commit 2020/04/7
 #ifndef CBKEYBINDER_H
 #define CBKEYBINDER_H
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma interface "cbkeybinder.h"
-#endif
-
-#ifdef __BORLANDC__
-	#pragma hdrstop
-#endif
 
 #include <wx/string.h>
 //-#include <wx/timer.h>

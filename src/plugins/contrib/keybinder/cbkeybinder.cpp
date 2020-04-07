@@ -10,7 +10,7 @@
 // The majority of this code was lifted from wxKeyBinder and
 // its "minimal.cpp" sample program
 
-// Modified CodeBlocks KeyBnder v2.0 2019/04/8
+// Modified CodeBlocks KeyBnder 2020/04/7
 
 #include <vector>
 

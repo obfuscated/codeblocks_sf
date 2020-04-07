@@ -850,9 +850,9 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
                 switch(c)
                 {
                     case _T('C'):
-                        if (menuItemLabel.Matches(_T("Copy"))) continue;
+                        if (menuItemLabel.Matches(_T("Copy"))) continue;  /*falls through*/
                     case _T('V'):
-                        if (menuItemLabel.Matches(_T("Paste"))) continue;
+                        if (menuItemLabel.Matches(_T("Paste"))) continue;  /*falls through*/
                     case _T('S'):
                         if (menuItemLabel.Matches(_T("Cut"))) continue;
                     default:

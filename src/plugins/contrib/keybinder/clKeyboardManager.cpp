@@ -1210,6 +1210,9 @@ void clKeyboardManager::LogAccelerators(MenuItemDataMap_t& menuTable, wxString t
         wxString mapMnuID = mapIter->first;
         LOGIT( _T("[%s][%s][%s][%s]"), logTitle.wx_str(), mapMnuID.wx_str(), mapParent.wx_str(), mapAccel.wx_str());
     }
+    #else
+        wxUnusedVar(menuTable);
+        wxUnusedVar(title);
     #endif
 }
 // ----------------------------------------------------------------------------

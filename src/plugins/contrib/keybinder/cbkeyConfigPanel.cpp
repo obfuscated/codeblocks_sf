@@ -290,14 +290,14 @@ void UsrConfigPanel::OnApply()
             if (accel.empty() ) switch(shortcutCount)
             {
                 case 0: continue;
-                case 2: CreateGlobalAccel(pCmd);
+                case 2: CreateGlobalAccel(pCmd);  /*falls through*/
                 case 1: iter->second.accel = cmdShortcuts[0];
                 continue;
             }
             if (not accel.empty() ) switch(shortcutCount)
             {
                 case 0: iter->second.accel = _T(""); continue;
-                case 2: CreateGlobalAccel(pCmd);
+                case 2: CreateGlobalAccel(pCmd);  /*falls through*/
                 case 1: iter->second.accel = cmdShortcuts[0];
                 continue;
             }
