@@ -295,6 +295,7 @@ private:
     void OnMnuEditCopyUpdateUI(wxUpdateUIEvent& event);
     void OnMnuEditPaste(wxCommandEvent& event);
 
+    void OnSettingsChanged(CodeBlocksEvent &event);
 
     // Member variables
     wxString                             m_SearchedWord;              // Word under cursor on right click

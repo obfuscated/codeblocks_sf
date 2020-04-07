@@ -142,6 +142,7 @@ public:
     void ApplySplitterSettings(bool showCodePreview, long splitterMode);
 
     void FocusSearchCombo(const wxString &searchWord);
+    void UpdateSettings();
 private:
     // begin wxGlade: ThreadSearchView::methods
     void set_properties();

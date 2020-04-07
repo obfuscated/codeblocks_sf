@@ -69,7 +69,9 @@ public:
     virtual wxWindow* GetWindow() = 0;
 
     /** Sets focus on logger window. */
-    virtual void      SetFocus()  = 0;
+    virtual void SetFocus()  = 0;
+
+    virtual void UpdateSettings() {}
 
 protected:
     ThreadSearchLoggerBase(wxWindow *parent, ThreadSearchView &threadSearchView,

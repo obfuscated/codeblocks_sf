@@ -1177,3 +1177,9 @@ wxArrayString ThreadSearchView::GetSearchMasksHistory() const
 {
     return m_pPnlDirParams->GetSearchMasksHistory();
 }
+
+void ThreadSearchView::UpdateSettings()
+{
+    if (m_pLogger)
+        m_pLogger->UpdateSettings();
+}
