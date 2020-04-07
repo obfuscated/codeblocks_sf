@@ -174,8 +174,8 @@ void ThreadSearchLoggerSTC::OnThreadSearchEvent(const ThreadSearchEvent& event)
     m_stc->Freeze();
     m_stc->SetReadOnly(false);
 
-    AppendStyledText(STCStyles::File, wxString::Format(_("%s (%d matches)\n"), filename.wx_str(),
-                                                       words.size() / 2));
+    AppendStyledText(STCStyles::File, wxString::Format(_("%s (%lld matches)\n"), filename.wx_str(),
+                                                       static_cast<long long>(words.size() / 2)));
 
     // The only reason it is constructed here is to preserve the allocated space between loop
     // iterations.
