@@ -10,7 +10,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 // Modifed for Code::Blocks by pecan
-
+//
 #ifndef CLKEYBOARDBINDINGCONFIG_H
 #define CLKEYBOARDBINDINGCONFIG_H
 

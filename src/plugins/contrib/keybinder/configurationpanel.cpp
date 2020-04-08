@@ -6,7 +6,7 @@
  * $Id: configurationpanel.cpp 7964 2012-05-11 07:36:28Z mortenmacfly $
  * $HeadURL: https://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/configurationpanel.cpp $
  */
-
+//
 #include "configurationpanel.h"
 #include <wx/intl.h>
 #include <wx/statline.h>

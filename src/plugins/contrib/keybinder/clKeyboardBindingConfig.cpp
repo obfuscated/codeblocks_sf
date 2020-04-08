@@ -10,7 +10,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 // Modifed for Code::Blocks by pecan
-
+//
 #include <wx/filename.h>
 # if defined(LOGGING)
     #include <wx/private/wxprintf.h>

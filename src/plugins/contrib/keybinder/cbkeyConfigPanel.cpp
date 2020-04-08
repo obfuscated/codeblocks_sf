@@ -11,7 +11,7 @@
 // its "minimal.cpp" sample program
 
 // Modified CodeBlocks KeyBnder v2.0 2019/04/8
-
+//
 #include <vector>
 
 #include <sdk.h>

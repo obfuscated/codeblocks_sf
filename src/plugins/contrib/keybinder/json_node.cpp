@@ -652,3 +652,5 @@ wxFont JSONElement::FromString(const wxString& str) const            //(2019/04/
     #endif
     return font;
 }
+
+
