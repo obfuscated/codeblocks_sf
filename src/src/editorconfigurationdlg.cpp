@@ -396,9 +396,6 @@ void EditorConfigurationDlg::OnPageChanging(wxListbookEvent& event)
     {
         if (panel == page)
         {
-            // FIXME (ph#):This call crashes KeyBinder, I'll fix soon.
-            if (lb->GetPageText(selection) == wxT("Keyboard shortcuts")) break;
-
             panel->OnPageChanging();
             break;
         }

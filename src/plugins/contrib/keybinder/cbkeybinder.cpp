@@ -153,71 +153,18 @@ void cbKeyBinder::OnRelease(bool /*appShutDown*/)
     // IsAttached() will be FALSE...
 }
 // ----------------------------------------------------------------------------
-void cbKeyBinder::OnConfigListbookClose(wxEvent& event)
-// ----------------------------------------------------------------------------
-{
-    // The Editor configuration dialog is being destroyed.
-    // Remove this routines connected events to that dialog.
-
-
-    wxWindow* pWindow = (wxWindow*)(event.GetEventObject());
-    if (pWindow == m_pConfigListbook)
-    {
-        pWindow->GetEventHandler()->Disconnect(XRCID("nbMain"), wxEVT_LISTBOOK_PAGE_CHANGED, wxListbookEventHandler( cbKeyBinder::OnConfigListbookEvent), NULL, this);
-        pWindow->GetEventHandler()->Disconnect(XRCID("nbMain"), wxEVT_DESTROY, wxEventHandler( cbKeyBinder::OnConfigListbookClose), NULL, this);
-        // Dont event.Skip(). causes crash
-        return;
-    }
-
-    event.Skip();
-
-}//OnWindowClose
-// ----------------------------------------------------------------------------
-void cbKeyBinder::OnConfigListbookEvent(wxListbookEvent& event)
-// ----------------------------------------------------------------------------
-{
-    // This event occurs when the user clicks on MainMenu/Settings/Editor/Keyboard shortccuts .
-    // This routine will call phaseII to complete the setting dialog
-    // by scanning the menu structure and merging the user defined shortcuts.
-    // It will then display a menu tree and allow the user to modify the menu and global key shortcuts.
-
-    event.Skip();
-
-    if ( (event.GetEventType() == wxEVT_LISTBOOK_PAGE_CHANGED))
-    {
-        int sel = event.GetSelection();
-        wxListbook* plb = (wxListbook*)event.GetEventObject();
-        wxString label = plb->GetPageText(sel);
-        if (label == _("Keyboard shortcuts") )
-        {
-            wxMenuBar* pMenuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
-            m_pUsrConfigPanel->Freeze();    // dont show panel updating
-            m_pUsrConfigPanel->GetKeyConfigPanelPhaseII(pMenuBar, m_pUsrConfigPanel, m_mode);
-            m_pUsrConfigPanel->Thaw();      // unfreeze updates
-        }
-    }
-
-    return;
-}
-// ----------------------------------------------------------------------------
 //  cbKeyBinder GetConfigurationPanel()  //phaseI
 // ----------------------------------------------------------------------------
 cbConfigurationPanel* cbKeyBinder::GetConfigurationPanel(wxWindow* parent)
 {
     // This routine will create a minimal configuration panel for
     // the Editor configuration 'Keyboard shortcuts' dialog. The actual work
-    // for this panel will done in GetConfigurationPanePhaseII() if the user
+    // for this panel will be done in GetConfigurationPanePhaseII() when the user
     // clicks on MainMenu\Settings\Editor\Keyboard shortcuts.
-    // See OnConfigListbookEvent().
+    // See OnPageChanging().
 
     //create and display the configuration dialog for your plugin
     if(not IsAttached()) { return nullptr;}
-
-    // Note : parent == wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
-    // cf., editorconfiguration.cpp
-    m_pConfigListbook = (wxListbook*)parent;
-    parent->GetEventHandler()->Connect(XRCID("nbMain"), wxEVT_LISTBOOK_PAGE_CHANGED, wxListbookEventHandler( cbKeyBinder::OnConfigListbookEvent), NULL, this);
-    parent->GetEventHandler()->Connect(XRCID("nbMain"), wxEVT_DESTROY, wxEventHandler( cbKeyBinder::OnConfigListbookClose), NULL, this);
 
     // Create a Configurtion panel and return it to CodeBlocks
     // The commented lines below are from the original wxKeyBinder

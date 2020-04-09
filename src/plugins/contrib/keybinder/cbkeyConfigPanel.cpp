@@ -223,7 +223,15 @@ void UsrConfigPanel::GetKeyConfigPanelPhaseII(wxMenuBar* pMenuBar, UsrConfigPane
     // CB will call OnAppy() or OnCanel() when the user finishes
 
 }//UsrConfigDlg
-
+// ----------------------------------------------------------------------------
+void UsrConfigPanel::OnPageChanging()
+// ----------------------------------------------------------------------------
+{
+    wxMenuBar* pMenuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
+    Freeze();    // dont show panel updating
+    GetKeyConfigPanelPhaseII(pMenuBar, this, m_mode);
+    Thaw();      // unfreeze updates
+}
 // ----------------------------------------------------------------------------
 void UsrConfigPanel::OnApply()
 // ----------------------------------------------------------------------------

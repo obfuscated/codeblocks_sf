@@ -23,7 +23,7 @@
 // Modified Keybinder for CodeBlocks KeyBnder v2.0
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "2.0.13 2020/04/6"
+#define VERSION "2.0.14 2020/04/9"
 // -----------------------------------
 class wxKeyConfigPanel;
 class wxKeyProfileArray;
@@ -72,8 +72,6 @@ class cbKeyBinder : public cbPlugin
     private:
         void OnAppStartupDone(CodeBlocksEvent& event);
         void OnAppStartShutdown(CodeBlocksEvent& event);
-        void OnConfigListbookEvent(wxListbookEvent& event);
-        void OnConfigListbookClose(wxEvent& event);
 
         wxString GetUserPersonality() {return m_UserPersonality; }
         bool     CreateKeyBindDefaultFile(bool refresh);
@@ -98,7 +96,6 @@ class cbKeyBinder : public cbPlugin
         }
 
         wxWindow*       pcbWindow;              //main app window
-        wxListbook*     m_pConfigListbook;      // CBs Configuration panel wxListbook
 
     private:
         bool            m_bAppShutDown;
@@ -694,4 +691,9 @@ class cbKeyBinder : public cbPlugin
 // ----------------------------------------------------------------------------
 //  Commit 2.0.13 2020/04/6
 //          More comparisons in Initialize() to capture changed menu items from build to build.
+// ----------------------------------------------------------------------------
+//  Commit 2.0.14 2020/04/9
+//          Changes to fix crash when OnPageChanging() called.
+//          Removed old duplicated configurationpanel.h & cpp causing crash
+//          Removed wxListBook events in lieu of using new OnPageChanging() UI
 // ----------------------------------------------------------------------------

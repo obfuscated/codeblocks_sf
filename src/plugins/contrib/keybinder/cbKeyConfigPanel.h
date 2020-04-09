@@ -27,6 +27,7 @@ class UsrConfigPanel : public cbConfigurationPanel
     wxString GetBitmapBaseName() const { return _T("onekeytobindthem"); }
 	void OnApply();
 	void OnCancel(){}
+    void OnPageChanging();
 
 	wxKeyConfigPanel* GetKeyConfigPanel(){return m_pwxKeyConfigPanel;} //(2019/04/6)
     void GetKeyConfigPanelPhaseII(wxMenuBar* pMenuBar, UsrConfigPanel* pUsrConfigPanel, int mode);

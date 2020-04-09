@@ -15,7 +15,6 @@ libkeybinder_la_SOURCES = cbkeybinder.cpp \
 			cJSON.cpp \
 			clKeyboardBindingConfig.cpp \
 			clKeyboardManager.cpp \
-			configurationpanel.cpp \
 			json_node.cpp \
 			keybinder.cpp \
 			menuutils.cpp
@@ -25,7 +24,6 @@ noinst_HEADERS = cbkeybinder.h \
 			cJSON.h \
 			clKeyboardBindingConfig.h \
 			clKeyboardManager.h \
-			configurationpanel.h \
 			debugging.h \
 			json_node.h \
 			keybinder.h \
