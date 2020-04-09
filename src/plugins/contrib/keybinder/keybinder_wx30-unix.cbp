@@ -69,8 +69,6 @@
 		<Unit filename="clKeyboardBindingConfig.h" />
 		<Unit filename="clKeyboardManager.cpp" />
 		<Unit filename="clKeyboardManager.h" />
-		<Unit filename="configurationpanel.cpp" />
-		<Unit filename="configurationpanel.h" />
 		<Unit filename="debugging.h">
 			<Option target="default" />
 			<Option target="KeyBinder plugin" />
