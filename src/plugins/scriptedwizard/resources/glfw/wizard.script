@@ -46,13 +46,13 @@ function OnLeave_GlfwPath(fwd)
         local dir_nomacro_inc = GetCompilerIncludeDir(dir, GlfwPathDefault, GlfwPathDefaultInc);
         if (dir_nomacro_inc.IsEmpty())
             return false;
-        if (!VerifyFile(dir_nomacro_inc + wxFILE_SEP_PATH + _T("GL"), _T("glfw.h"), _T("GLFW's include"))) return false;
+        if (!VerifyFile(dir_nomacro_inc + wxFILE_SEP_PATH + _T("GLFW"), _T("glfw3.h"), _T("GLFW's include"))) return false;
 
         // verify library dependencies
         local dir_nomacro_lib = GetCompilerLibDir(dir, GlfwPathDefault, GlfwPathDefaultLib);
         if (dir_nomacro_lib.IsEmpty())
             return false;
-        if (!VerifyLibFile(dir_nomacro_lib, _T("glfw"), _T("GLFW's"))) return false;
+        if (!VerifyLibFile(dir_nomacro_lib, _T("glfw3"), _T("GLFW's"))) return false;
 
 
         GlfwPath = dir; // Remember the original selection.
@@ -92,7 +92,7 @@ function SetupProject(project)
     project.AddLibDir(GlfwPathDefaultLib);
 
     // add link libraries
-    project.AddLinkLib(_T("glfw"));
+    project.AddLinkLib(_T("glfw3"));
     if (PLATFORM == PLATFORM_MSW)
     {
         project.AddLinkLib(_T("opengl32"));

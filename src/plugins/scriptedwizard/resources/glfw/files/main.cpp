@@ -1,69 +1,134 @@
-#include <GL/glfw.h>
+#include <GLFW/glfw3.h>
+#include <iostream>
+#include <vector>
 
-int main()
+static void error_callback(int error, const char* description)
 {
-    int     width, height;
-    int     frame = 0;
-    bool    running = true;
 
-    glfwInit();
+    std::cerr << description << std::endl;
+}
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GL_TRUE);
+}
 
-    if( !glfwOpenWindow( 512, 512, 0, 0, 0, 0, 0, 0, GLFW_WINDOW ) )
+struct point
+{
+    point()
+    {
+        x = 0.0;
+        y = 0.0;
+    }
+
+    point(float px, float py)
+    {
+        x = px;
+        y = py;
+    }
+
+    float x;
+    float y;
+};
+
+struct triangle
+{
+    triangle(point t, point bl, point br )
+    {
+        top = t;
+        bot_left = bl;
+        bot_right = br;
+    }
+
+    point top;
+    point bot_left;
+    point bot_right;
+};
+
+// Generate the Sierpinski triangle with a given level
+void generateTriangle(std::vector<triangle>& tr, int level, point top_point, point left_point, point right_point)
+{
+    if (level == 0)
+    {
+
+        tr.push_back(triangle(top_point, left_point, right_point));
+    }
+    else
+    {
+        // Find the edge midpoints.
+        point left_mid = point(
+            (top_point.x + left_point.x) / 2.0,
+            (top_point.y + left_point.y) / 2.0);
+        point right_mid = point(
+            (top_point.x + right_point.x) / 2.0,
+            (top_point.y + right_point.y) / 2.0);
+        point bottom_mid = point(
+            (left_point.x + right_point.x) / 2.0,
+            (left_point.y + right_point.y) / 2.0);
+
+
+        // Recursively generate smaller triangles.
+        generateTriangle(tr, level - 1, top_point, left_mid, right_mid);
+        generateTriangle(tr, level - 1, left_mid, left_point, bottom_mid);
+        generateTriangle(tr, level - 1, right_mid, bottom_mid, right_point);
+    }
+}
+
+int main(void)
+{
+    GLFWwindow* window;
+    glfwSetErrorCallback(error_callback);
+    if (!glfwInit())
+        return -1;
+
+
+    window = glfwCreateWindow(640, 480, "Sierpinski example", NULL, NULL);
+    if (!window)
     {
         glfwTerminate();
-        return 0;
+        return -1;
     }
+    glfwMakeContextCurrent(window);
+    glfwSetKeyCallback(window, key_callback);
 
-    glfwSetWindowTitle("GLFW Application");
 
-    while(running)
+    std::vector<triangle> image;
+    generateTriangle(image, 5, point(0, 1), point(-0.8, -0.8), point(0.8, -0.8));
+    std::cout << "Draw " << image.size() << " triangles..." << std::endl;
+    while (!glfwWindowShouldClose(window))
     {
-        frame++;
-
-        glfwGetWindowSize( &width, &height );
-        height = height > 0 ? height : 1;
-
-        glViewport( 0, 0, width, height );
-
-        glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-        glClear( GL_COLOR_BUFFER_BIT );
-
-        glMatrixMode( GL_PROJECTION );
+        float ratio;
+        int width, height;
+        glfwGetFramebufferSize(window, &width, &height);
+        ratio = width / (float) height;
+        glViewport(0, 0, width, height);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        gluPerspective( 65.0f, (GLfloat)width/(GLfloat)height, 1.0f, 100.0f );
 
-        // Draw some rotating garbage
-        glMatrixMode( GL_MODELVIEW );
+
+        glOrtho(-ratio, ratio, -1.0, 1.0, 1.0, -1.0);
+        glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        gluLookAt(0.0f, -10.0f, 0.0f,
-                0.0f, 0.0f, 0.0f,
-                0.0f, 0.0f, 1.0f );
 
-        //glTranslatef( 1.0f, 1.0f, 0.0f );
-        glRotatef(frame, 0.25f, 1.0f, 0.75f);
-        glBegin( GL_TRIANGLES );
-          glColor3f(0.1f, 0.0f, 0.0f );
-          glVertex3f(0.0f, 3.0f, -4.0f);
-          glColor3f(0.0f, 1.0f, 0.0f );
-          glVertex3f(3.0f, -2.0f, -4.0f);
-          glColor3f(0.0f, 0.0f, 1.0f );
-          glVertex3f(-3.0f, -2.0f, -4.0f);
+        glRotatef(glfwGetTime() * 50.0, 0.0 , 0.0 , 1.0);
+        glBegin(GL_TRIANGLES);
+        // go trought all triangles and draw them
+        for(const triangle& item : image)
+        {
+            glColor3f(1.0, 0.0, 0.0);
+            glVertex3f(item.top.x, item.top.y, 0.0);
+            glColor3f(0.0, 1.0, 0.0);
+            glVertex3f(item.bot_left.x, item.bot_left.y, 0.0);
+            glColor3f(0.0, 0.0, 1.0);
+            glVertex3f(item.bot_right.x, item.bot_right.y, 0.0);
+        }
         glEnd();
-        glBegin( GL_TRIANGLES );
-          glColor3f(0.0f, 0.1f, 0.0f );
-          glVertex3f(0.0f, 3.0f, -3.0f);
-          glColor3f(0.0f, 0.0f, 1.0f );
-          glVertex3f(3.0f, -2.0f, -2.0f);
-          glColor3f(1.0f, 0.0f, 0.0f );
-          glVertex3f(-3.0f, -2.0f, 2.0f);
-        glEnd();
-        glfwSwapBuffers();
 
-        // exit if ESC was pressed or window was closed
-        running = !glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam( GLFW_OPENED);
+        glfwSwapBuffers(window);
+        glfwPollEvents();
     }
-
-    glfwTerminate();
-
-    return 0;
-}
+    glfwDestroyWindow(window);
+     glfwTerminate();
+     return 0;
+ }
