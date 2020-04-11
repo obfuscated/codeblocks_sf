@@ -340,7 +340,10 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
     {
         wxMenuItem *last = popupItems[popupItems.GetCount() - 1];
         if (last && last->IsSeparator())
-            popup->Remove(last);
+        {
+            wxMenuItem *removed = popup->Remove(last);
+            delete removed;
+        }
     }
 
     // Insert a separator at the end of the "Find XXX" menu group of items.
