@@ -81,16 +81,19 @@ void EnvVars::SaveProjectEnvvarSet(cbProject &project, const wxString& envvar_se
     if (!elem)
         return;
     TiXmlElement* node = elem->FirstChildElement("envvars");
-    if (!node)
+
+    // If the set is empty we want to remove the node, else we set it.
+    if (envvar_set.empty())
     {
-        if (!envvar_set.empty())
-            return;
-        node = elem->InsertEndChild(TiXmlElement("envvars"))->ToElement();
+        if (node)
+            elem->RemoveChild(node);
     }
-    if (!envvar_set.empty())
-        node->SetAttribute("set", cbU2C(envvar_set));
     else
-        elem->RemoveChild(node);
+    {
+        if (!node)
+            node = elem->InsertEndChild(TiXmlElement("envvars"))->ToElement();
+        node->SetAttribute("set", cbU2C(envvar_set));
+    }
 }
 
 void EnvVars::DoProjectActivate(cbProject* project)

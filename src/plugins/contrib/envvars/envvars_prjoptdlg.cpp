@@ -97,17 +97,17 @@ void EnvVarsProjectOptionsDlg::OnApply()
   Manager::Get()->GetLogManager()->DebugLog(F(_T("OnApply")));
 #endif
 
+  wxString envvarSet;
+
   wxCheckBox* checkbox_control = XRCCTRL(*this, "chkEnvvarSet", wxCheckBox);
   if (checkbox_control && checkbox_control->IsChecked())
   {
     wxChoice* choice_control = XRCCTRL(*this, "choEnvvarSets", wxChoice);
     if (choice_control)
     {
-      wxString envvar_set = choice_control->GetStringSelection();
-      if (!envvar_set.IsEmpty())
-        EnvVars::SaveProjectEnvvarSet(*m_pProject, envvar_set);
+      envvarSet = choice_control->GetStringSelection();
     }
   }
-  else
-    EnvVars::SaveProjectEnvvarSet(*m_pProject, wxEmptyString);
+
+  EnvVars::SaveProjectEnvvarSet(*m_pProject, envvarSet);
 }// OnApply
