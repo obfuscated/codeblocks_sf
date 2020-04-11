@@ -20,17 +20,16 @@ class EnvVarsProjectOptionsDlg : public cbConfigurationPanel
 {
 public:
   /// Ctor
-           EnvVarsProjectOptionsDlg(wxWindow*  parent, EnvVars* plugin,
-                                    cbProject* project);
+  EnvVarsProjectOptionsDlg(wxWindow*  parent, cbProject* project);
   /// Dtor
-  virtual ~EnvVarsProjectOptionsDlg();
+  ~EnvVarsProjectOptionsDlg() override;
 
   /// returns the title of the plugin configuration panel
-  virtual wxString GetTitle() const
+  wxString GetTitle() const override
   { return _("EnvVars options"); }
 
   /// returns the title of the plugin's bitmap to use for settings
-  virtual wxString GetBitmapBaseName() const
+  wxString GetBitmapBaseName() const override
   { return _T("generic-plugin"); }
 
 protected:
@@ -39,11 +38,10 @@ protected:
 
 private:
   /// Fires if the "apply" button is pressed inside project settings
-  virtual void OnApply();
+  void OnApply() override;
 
   /// Fires if the "cancel" button is pressed inside project settings
-  virtual void OnCancel()
-  { ; }
+  void OnCancel() override {}
 
   EnvVars*   m_pPlugin;  //!< pointer to the EnvVars plugin (the parent)
   cbProject* m_pProject; //!< pointer to the currently active C::B project

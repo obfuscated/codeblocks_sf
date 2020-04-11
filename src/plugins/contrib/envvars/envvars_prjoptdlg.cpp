@@ -33,7 +33,7 @@ END_EVENT_TABLE()
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-EnvVarsProjectOptionsDlg::EnvVarsProjectOptionsDlg(wxWindow* parent, EnvVars* plugin, cbProject* project) :
+EnvVarsProjectOptionsDlg::EnvVarsProjectOptionsDlg(wxWindow* parent, cbProject* project) :
   m_pProject(project)
 {
   wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlProjectEnvVarsOptions"));

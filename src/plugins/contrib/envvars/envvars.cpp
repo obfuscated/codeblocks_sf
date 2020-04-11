@@ -265,7 +265,7 @@ cbConfigurationPanel* EnvVars::GetConfigurationPanel(wxWindow* parent)
 cbConfigurationPanel* EnvVars::GetProjectConfigurationPanel(wxWindow* parent,
                                                             cbProject* project)
 {
-  EnvVarsProjectOptionsDlg* dlg = new EnvVarsProjectOptionsDlg(parent, this, project);
+  EnvVarsProjectOptionsDlg* dlg = new EnvVarsProjectOptionsDlg(parent, project);
   // deleted by the caller
 
   return dlg;
