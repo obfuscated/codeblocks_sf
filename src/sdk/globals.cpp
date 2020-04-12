@@ -993,7 +993,7 @@ bool IsSuffixOfPath(wxFileName const & suffix, wxFileName const & path)
         j--;
     }
 
-    if (suffix.IsAbsolute() && (j >= 0 || suffix.GetVolume() != path.GetVolume()))
+    if (suffix.IsAbsolute() && (j >= 0 || !(suffix.GetVolume().IsSameAs(path.GetVolume(), false))) )
         return false;
 
     // 'suffix' is a suffix of 'path'

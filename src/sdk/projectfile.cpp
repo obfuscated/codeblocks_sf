@@ -473,7 +473,7 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
             bool     diffVolume         = false;
 
             if (   platform::windows
-                && (!fileVol.IsEmpty() && !fileVol.IsSameAs(prjbase.GetVolume())) )
+                && (!fileVol.IsEmpty() && !fileVol.IsSameAs(prjbase.GetVolume(), false)) )
             {
                 objOut += fileVol;
                 obj_file_full_path = obj_file_full_path.AfterFirst(_T('\\'));

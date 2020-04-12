@@ -504,7 +504,7 @@ void cbProject::CalculateCommonTopLevelPath()
         if (   (prjHasUNCName && fileHasUNCName)
             || (   !prjHasUNCName
                 && !fileHasUNCName
-                && vol.IsSameAs(f->file.GetVolume()) ) )
+                && vol.IsSameAs(f->file.GetVolume(), false) ) )
         {
             wxFileName relFileCTLP(f->file);
             relFileCTLP.MakeRelativeTo( m_CommonTopLevelPath );
