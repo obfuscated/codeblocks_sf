@@ -156,7 +156,8 @@ class WatchesProperty : public wxStringProperty
 
         WatchesProperty(){}
     public:
-        WatchesProperty(const wxString& label, const wxString& value, cb::shared_ptr<cbWatch> watch, bool readonly) :
+        WatchesProperty(const wxString& label, const wxString& value, cb::shared_ptr<cbWatch> watch,
+                        bool readonly) :
             wxStringProperty(label, wxPG_LABEL, value),
             m_watch(watch),
             m_readonly(readonly)
@@ -379,10 +380,15 @@ WatchesDlg::WatchesDlg() :
     m_grid = new wxPropertyGrid(this, idGrid, wxDefaultPosition, wxDefaultSize,
                                 wxPG_SPLITTER_AUTO_CENTER | wxTAB_TRAVERSAL /*| wxWANTS_CHARS*/);
 
+    long extraStyles = wxPG_EX_HELP_AS_TOOLTIPS;
 #if wxCHECK_VERSION(3, 0, 0)
-    #define wxPG_EX_DISABLE_TLP_TRACKING 0x00000000
+    // This makes it possible for the watches window to get a focus when the user clicks on it with
+    // the mouse.
+    extraStyles |= wxPG_EX_ALWAYS_ALLOW_FOCUS;
+#else
+    extraStyles |= wxPG_EX_DISABLE_TLP_TRACKING;
 #endif
-    m_grid->SetExtraStyle(wxPG_EX_DISABLE_TLP_TRACKING | wxPG_EX_HELP_AS_TOOLTIPS);
+    m_grid->SetExtraStyle(extraStyles);
     m_grid->SetDropTarget(new WatchesDropTarget);
     m_grid->SetColumnCount(3);
     m_grid->SetVirtualWidth(0);
@@ -564,7 +570,8 @@ void WatchesDlg::AddWatch(cb::shared_ptr<cbWatch> watch)
 
         WatchesProperty *watches_prop = static_cast<WatchesProperty*>(last_prop);
         watches_prop->SetWatch(watch);
-        m_grid->Append(new WatchesProperty(wxEmptyString, wxEmptyString, cb::shared_ptr<cbWatch>(), false));
+        m_grid->Append(new WatchesProperty(wxEmptyString, wxEmptyString, cb::shared_ptr<cbWatch>(),
+                                           false));
     }
     else
     {
@@ -579,7 +586,8 @@ void WatchesDlg::AddWatch(cb::shared_ptr<cbWatch> watch)
 
 void WatchesDlg::AddSpecialWatch(cb::shared_ptr<cbWatch> watch, bool readonly)
 {
-    WatchItems::iterator it = std::find_if(m_watches.begin(), m_watches.end(), WatchItemPredicate(watch));
+    WatchItems::iterator it = std::find_if(m_watches.begin(), m_watches.end(),
+                                           WatchItemPredicate(watch));
     if (it != m_watches.end())
         return;
     wxPGProperty *first_prop = m_grid->wxPropertyGridInterface::GetFirst(wxPG_ITERATE_ALL);
@@ -664,7 +672,8 @@ void WatchesDlg::OnIdle(cb_unused wxIdleEvent &event)
     if (m_append_empty_watch)
     {
         wxPGProperty *new_prop = m_grid->Append(new WatchesProperty(wxEmptyString, wxEmptyString,
-                                                                    cb::shared_ptr<cbWatch>(), false));
+                                                                    cb::shared_ptr<cbWatch>(),
+                                                                    false));
         m_grid->SelectProperty(new_prop, false);
         m_grid->Refresh();
         m_append_empty_watch = false;
@@ -1183,7 +1192,13 @@ ValueTooltip::ValueTooltip(const cb::shared_ptr<cbWatch> &watch, wxWindow *paren
     m_panel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxSize(200, 200));
     m_grid = new wxPropertyGrid(m_panel, idTooltipGrid, wxDefaultPosition, wxSize(400,400), wxPG_SPLITTER_AUTO_CENTER);
 
-    m_grid->SetExtraStyle(wxPG_EX_DISABLE_TLP_TRACKING /*| wxPG_EX_HELP_AS_TOOLTIPS*/);
+    long extraStyles = 0;
+#if wxCHECK_VERSION(3, 0, 0)
+    extraStyles |= wxPG_EX_ALWAYS_ALLOW_FOCUS;
+#else
+    extraStyles |= wxPG_EX_DISABLE_TLP_TRACKING;
+#endif
+    m_grid->SetExtraStyle(extraStyles);
     m_grid->SetDropTarget(new WatchesDropTarget);
 
     wxNativeFontInfo fontInfo;
