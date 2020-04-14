@@ -361,7 +361,7 @@ void ThreadSearch::RemoveMenuItems()
 
 void ThreadSearch::OnMnuViewThreadSearch(wxCommandEvent& event)
 {
-    if ( !IsAttached() )
+    if (!IsAttached())
         return;
 
     const bool checked = event.IsChecked();
@@ -378,14 +378,13 @@ void ThreadSearch::OnMnuViewThreadSearch(wxCommandEvent& event)
     m_pViewManager->ShowView(checked, false);
 }
 
-
 void ThreadSearch::OnMnuSearchThreadSearch(wxCommandEvent& /*event*/)
 {
-    if ( !IsAttached() )
+    if (!IsAttached())
         return;
 
     // Need to get the cursor word first and ensure it is consistent.
-    if ( (GetCursorWord(m_SearchedWord) == true) && (m_SearchedWord.IsEmpty() == false) )
+    if ((GetCursorWord(m_SearchedWord) == true) && (m_SearchedWord.IsEmpty() == false))
     {
         // m_SearchedWord is Ok => Search
         RunThreadSearch(m_SearchedWord, true);
@@ -399,7 +398,7 @@ void ThreadSearch::OnMnuSearchThreadSearch(wxCommandEvent& /*event*/)
 
 void ThreadSearch::OnMnuViewFocusThreadSearch(wxCommandEvent& /*event*/)
 {
-    if ( !IsAttached() )
+    if (!IsAttached())
         return;
 
     GetCursorWord(m_SearchedWord);
