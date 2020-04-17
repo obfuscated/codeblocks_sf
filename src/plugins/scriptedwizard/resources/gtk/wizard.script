@@ -18,15 +18,16 @@ function BeginWizard()
                          "using the GTK cross-platform GUI toolkit\n\n" +
                          "When you're ready to proceed, please click \"Next\"...");
 
-    local gtkpath_msg = _T("Please select the location of GTK on your computer.\n" +
-                           "This is the top-level folder where GTK was installed.\n" +
-                           "To help you, this folder must contain the subfolders\n" +
-                           "\"include\" and \"lib\".");
-
     Wizard.AddInfoPage(_T("GtkIntro"), intro_msg);
     Wizard.AddProjectPathPage();
     if (PLATFORM == PLATFORM_MSW)
     {
+        local gtkpath_msg = _T("Please select the location of GTK on your computer.\n" +
+                               "This is the top-level folder where GTK was installed.\n" +
+                               "To help you, this folder must contain the subfolders\n" +
+                               "\"include\" and \"lib\".\n\n") +
+                               "You can also use a global variable, p.e. $(#gtk)\n");
+
         Wizard.AddGenericSelectPathPage(_T("GtkPath"), gtkpath_msg, _T("GTK's location:"), GtkPathDefault);
     }
     /*else

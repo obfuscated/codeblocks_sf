@@ -19,11 +19,6 @@ function BeginWizard()
                          "using the FLTK GUI C++ library.\n\n" +
                          "When you 're ready to proceed, please click \"Next\"...");
 
-    local fltkpath_descr = _T("Please select the location of FLTK on your computer.\n" +
-                              "This is the top-level folder where FLTK was installed (unpacked).\n" +
-                              "To help you, this folder must contain the subfolders\n" +
-                              "\"include\" and \"lib\".");
-
     // "select fltk project to generate" text
     local fltkprjtype_descr = _T("Please select the type of project to generate.");
     local fltkprj_choices = _T("Simple main() example;FLUID-based project");
@@ -31,7 +26,16 @@ function BeginWizard()
     Wizard.AddInfoPage(_T("FltkIntro"), intro_msg);
     Wizard.AddProjectPathPage();
     if (PLATFORM == PLATFORM_MSW)
+    {
+        local fltkpath_descr = _T("Please select the location of FLTK on your computer.\n" +
+                                  "This is the top-level folder where FLTK was installed (unpacked).\n" +
+                                  "To help you, this folder must contain the subfolders\n" +
+                                  "\"include\" and \"lib\".\n\n") +
+                                  "You can also use a global variable, p.e. $(#fl)\n");
+
         Wizard.AddGenericSelectPathPage(_T("FltkPath"), fltkpath_descr, _T("Please select FLTK's location:"), FltkPathDefault);
+    }
+
     Wizard.AddGenericSingleChoiceListPage(_T("FLTKPrjType"), fltkprjtype_descr, fltkprj_choices, 0);
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }

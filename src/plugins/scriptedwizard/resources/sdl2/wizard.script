@@ -17,15 +17,19 @@ function BeginWizard()
                          "using the SDL2 library.\n\n" +
                          "When you 're ready to proceed, please click \"Next\"...");
 
-    local sdl2path_descr = _T("Please select the folder where SDL2 is installed on your computer.\n" +
-                              "This is either the i686-w64-mingw32 (32-bit) or the x86_64-w64-mingw32 (64-bit)\n" +
-                              "folder under the top-level folder where SDL2 was unpacked.\n\n" +
-                              "To help you, this folder must contain the subfolders \"include\" and \"lib\".");
-
     Wizard.AddInfoPage(_T("SDL2Intro"), intro_msg);
     Wizard.AddProjectPathPage();
     if (PLATFORM == PLATFORM_MSW)
+    {
+        local sdl2path_descr = _T("Please select the folder where SDL2 is installed on your computer.\n" +
+                                  "This is either the i686-w64-mingw32 (32-bit) or the x86_64-w64-mingw32 (64-bit)\n" +
+                                  "folder under the top-level folder where SDL2 was unpacked.\n\n" +
+                                  "To help you, this folder must contain the subfolders \"include\" and \"lib\".\n\n") +
+                                  "You can also use a global variable, p.e. $(#sdl2)\n");
+
         Wizard.AddGenericSelectPathPage(_T("SDL2Path"), sdl2path_descr, _T("Please select SDL2's location:"), SDL2PathDefault);
+    }
+
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }
 
@@ -47,7 +51,7 @@ function OnLeave_SDL2Path(fwd)
         local dir_nomacro_inc = GetCompilerIncludeDir(dir, SDL2PathDefault, SDL2PathDefaultInc);
         if (dir_nomacro_inc.IsEmpty())
             return false;
-            
+
         if (!IO.FileExists(dir_nomacro_inc + wxFILE_SEP_PATH + _T("SDL.h")))
         {
             if (VerifyFile(dir_nomacro_inc, _T("SDL2/SDL.h"), _T("SDL2's include")))
@@ -55,7 +59,7 @@ function OnLeave_SDL2Path(fwd)
             else
                 return false;
         }
-        
+
         // verify library dependencies
         local dir_nomacro_lib = GetCompilerLibDir(dir, SDL2PathDefault, SDL2PathDefaultLib);
         if (dir_nomacro_lib.IsEmpty())

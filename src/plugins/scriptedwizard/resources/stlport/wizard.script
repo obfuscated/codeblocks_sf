@@ -17,15 +17,19 @@ function BeginWizard()
                          "using the STLport library.\n\n" +
                          "When you 're ready to proceed, please click \"Next\"...");
 
-    local stlportpath_descr = _T("Please select the location of STLport on your computer.\n" +
-                                 "This is the top-level folder where STLport was installed (unpacked).\n" +
-                                 "To help you, this folder must contain the subfolders\n" +
-                                 "\"include\" and \"lib\".");
-
     Wizard.AddInfoPage(_T("STLportIntro"), intro_msg);
     Wizard.AddProjectPathPage();
     if (PLATFORM == PLATFORM_MSW)
+    {
+        local stlportpath_descr = _T("Please select the location of STLport on your computer.\n" +
+                                     "This is the top-level folder where STLport was installed (unpacked).\n" +
+                                     "To help you, this folder must contain the subfolders\n" +
+                                     "\"include\" and \"lib\".\n\n") +
+                                     "You can also use a global variable, p.e. $(#stlport)\n");
+
         Wizard.AddGenericSelectPathPage(_T("STLportPath"), stlportpath_descr, _T("Please select STLport's location:"), STLportPathDefault);
+    }
+
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }
 

@@ -21,18 +21,23 @@ function BeginWizard()
                          "using the Simple and Fast Multimedia Library.\n\n" +
                          "When you are ready to proceed, please click \"Next\"...");
 
-    local sfmlpath_descr = _T("Please select the location of SFML on your computer.\n" +
-                             "This is the top-level folder where SFML was installed (unpacked).\n" +
-                             "To help you, this folder must contain the subfolders\n" +
-                             "\"include\" and \"lib\".");
-
     Wizard.AddInfoPage(_T("SFMLIntro"), intro_msg);
     Wizard.AddGenericSingleChoiceListPage(_T("SFMLVersionPage"), _T("Please select the SFML version you want to use."), _T("SFML 1.6;SFML 2.0"), SFMLVersion);
     if (PLATFORM == PLATFORM_MSW)
         Wizard.AddGenericSingleChoiceListPage(_T("SFMLLinkPage"), _T("Please choose the kind of library you want to link to."), _T("Static Library;Dynamic Link Library"), SFMLLinkType);
+
     Wizard.AddProjectPathPage();
     if (PLATFORM == PLATFORM_MSW)
+    {
+        local sfmlpath_descr = _T("Please select the location of SFML on your computer.\n" +
+                                 "This is the top-level folder where SFML was installed (unpacked).\n" +
+                                 "To help you, this folder must contain the subfolders\n" +
+                                 "\"include\" and \"lib\".\n\n") +
+                                 "You can also use a global variable, p.e. $(#sfml)\n");
+
         Wizard.AddGenericSelectPathPage(_T("SFMLPath"), sfmlpath_descr, _T("Please select SFML's location:"), SFMLPathDefault);
+    }
+
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }
 
