@@ -119,7 +119,23 @@ void wxsListView::OnBuildCreatingCode()
  */
 wxObject* wxsListView::OnBuildPreview(wxWindow* Parent,long Flags)
 {
-    wxListView* Preview = new wxListView(Parent,GetId(),Pos(Parent),Size(Parent),Style());
+    // wxListView constructor expects exactly one active mode bit, it will assert otherwise
+    // While changing the mode in wxSmith this rule is violated every time
+
+    // Isolate mode bits
+    long Mode = Style() & wxLC_MASK_TYPE;
+    // Take just the first active bit (looking from wxLC_LIST to wxLC_SMALL_ICON)
+    // If there is none use wxLC_LIST
+    if (!Mode || (Mode & wxLC_LIST))
+        Mode = wxLC_LIST;
+    else if (Mode & wxLC_REPORT)
+        Mode = wxLC_REPORT;
+    else if (Mode & wxLC_ICON)
+        Mode = wxLC_ICON;
+    else
+        Mode = wxLC_SMALL_ICON;
+
+    wxListView* Preview = new wxListView(Parent,GetId(),Pos(Parent),Size(Parent), (Style() & ~wxLC_MASK_TYPE) | Mode);
     return SetupWindow(Preview,Flags);
 }
 
