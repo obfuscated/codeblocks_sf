@@ -521,11 +521,14 @@ void ThreadSearch::LoadConfig(int& sashPosition,
         mgrType = ThreadSearchViewManagerBase::TypeLayout;
     }
 
-    int loggerType = pCfg->ReadInt(wxT("/LoggerType"), ThreadSearchLoggerBase::TypeList);
-    m_LoggerType = ThreadSearchLoggerBase::TypeList;
-    if (loggerType == ThreadSearchLoggerBase::TypeTree)
+    const int loggerType = pCfg->ReadInt(wxT("/LoggerType"), ThreadSearchLoggerBase::TypeList);
+    if (loggerType >= 0 && loggerType < ThreadSearchLoggerBase::TypeLast)
     {
-        m_LoggerType = ThreadSearchLoggerBase::TypeTree;
+        m_LoggerType = ThreadSearchLoggerBase::eLoggerTypes(loggerType);
+    }
+    else
+    {
+        m_LoggerType = ThreadSearchLoggerBase::TypeList;
     }
 
     searchPatterns = pCfg->ReadArrayString(wxT("/SearchPatterns"));

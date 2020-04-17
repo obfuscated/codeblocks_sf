@@ -92,6 +92,8 @@
 		<Unit filename="ThreadSearchLoggerBase.h" />
 		<Unit filename="ThreadSearchLoggerList.cpp" />
 		<Unit filename="ThreadSearchLoggerList.h" />
+		<Unit filename="ThreadSearchLoggerSTC.cpp" />
+		<Unit filename="ThreadSearchLoggerSTC.h" />
 		<Unit filename="ThreadSearchLoggerTree.cpp" />
 		<Unit filename="ThreadSearchLoggerTree.h" />
 		<Unit filename="ThreadSearchThread.cpp" />

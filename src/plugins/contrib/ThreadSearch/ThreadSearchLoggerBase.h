@@ -32,7 +32,10 @@ public:
     enum eLoggerTypes
     {
         TypeList = 0,
-        TypeTree
+        TypeTree,
+        TypeSTC,
+
+        TypeLast
     };
 
     /** Builds a ThreadSearchLoggerList or a ThreadSearchLoggerTree pointer depending on loggerType.
