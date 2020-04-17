@@ -139,7 +139,7 @@ CODEBLOCKS_GET_PLATFORM
 CODEBLOCKS_ENABLE_SETTINGS
 
 AM_OPTIONS_WXCONFIG
-AM_PATH_WXCONFIG(2.8.12, wxWin=1)
+AM_PATH_WXCONFIG(3.0.0, wxWin=1)
     if test "$wxWin" != 1; then
         AC_MSG_ERROR([
                 wxWidgets must be installed on your system.
@@ -148,17 +148,8 @@ AM_PATH_WXCONFIG(2.8.12, wxWin=1)
                 where wxWidgets libraries are installed (returned by
                 'wx-config --libs' or 'wx-config --static --libs' command)
                 is in LD_LIBRARY_PATH or equivalent variable and
-                wxWindows version is 2.8.0 or above.
+                wxWindows version is 3.0.0 or above.
                 ])
-	else
-		# check for wx2.8.3 which is known to behave badly for us
-		if test "$WX_VERSION" = "2.8.3"; then
-			AC_MSG_ERROR([
-		wxWidgets version 2.8.3 is known to behave badly with
-		Code::Blocks. Please upgrade to a newer (or downgrade to an
-		earlier) wxWidgets version...
-			])
-		fi
     fi
 
 dnl		CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
@@ -309,34 +300,12 @@ case $WX_BASENAME in
 esac
 
 CB_GCC_VERSION
-AM_CONDITIONAL([HAVE_GCC48], [test $GCC_MAJOR_VERSION -gt 4 -o $GCC_MAJOR_VERSION -eq 4 -a $GCC_MINOR_VERSION -ge 8])
 
-AC_MSG_CHECKING([for wxWidgets >= 2.9.0])
-AM_CONDITIONAL([HAVE_WX29], [test $wx_config_major_version -gt 2 -o $wx_config_major_version -eq 2 -a $wx_config_minor_version -ge 9])
-
-if test "x$HAVE_WX29_TRUE" = "x" ; then
-    AC_MSG_RESULT(yes (version $WX_VERSION))
-    AC_MSG_NOTICE([(Re)setting libs for wxWidgets $WX_VERSION])
-    WX_LIBS=`$WX_CONFIG_WITH_ARGS --libs std,aui,propgrid,richtext`
-    WXPROPGRID_DIR=
-    WXPROPGRID_LIB=
-    WXPROPGRID_INCLUDE=
-    SCINTILLA_GTK_CFLAGS="$WX_GDK_CFLAGS"
-    SCINTILLA_GTK_LIBS="$WX_GDK_LIBS"
-else
-    AC_MSG_RESULT(no)
-    WXPROPGRID_DIR=wxpropgrid
-    WXPROPGRID_LIB=wxpropgrid/libwxpropgrid.la
-    WXPROPGRID_INCLUDE=-I\$\(top_srcdir\)/src/sdk/wxpropgrid/include
-
-    if test "x$HAVE_GCC48_TRUE" = "x" ; then
-	gcc48_flags="-Wno-unused-local-typedefs"
-        AC_MSG_NOTICE([setting additional flags for gcc $GCC_FULL_VERSION]: $gcc48_flags)
-        CXXFLAGS="$gcc48_flags $CXXFLAGS"
-    fi
-    SCINTILLA_GTK_CFLAGS="$WX_GTK_CFLAGS $WX_GDK_CFLAGS"
-    SCINTILLA_GTK_LIBS="$WX_GTK_LIBS $WX_GDK_LIBS"
-fi
+AC_MSG_RESULT(yes (version $WX_VERSION))
+AC_MSG_NOTICE([(Re)setting libs for wxWidgets $WX_VERSION])
+WX_LIBS=`$WX_CONFIG_WITH_ARGS --libs std,aui,propgrid,richtext`
+SCINTILLA_GTK_CFLAGS="$WX_GDK_CFLAGS"
+SCINTILLA_GTK_LIBS="$WX_GDK_LIBS"
 
 if test "x$HAVE_SQUIRREL_TRUE" = "x" ; then
 	CB_SQUIRREL_CFLAGS="$SQUIRREL_CFLAGS"
@@ -372,10 +341,6 @@ AC_SUBST(CB_FONTCONFIG_CFLAGS)
 AC_SUBST(CB_FONTCONFIG_LIBS)
 AC_SUBST(WX_X11_CFLAGS)
 AC_SUBST(WX_X11_LIBS)
-AC_SUBST(WXPROPGRID_DIR)
-AC_SUBST(WXPROPGRID_LIB)
-AC_SUBST(WXPROPGRID_INCLUDE)
-AC_SUBST(WXPROPGRID_HEADERS)
 
 AC_SUBST(POSTLINK_COMMAND)
 AC_SUBST(MACSETFILE)
@@ -434,7 +399,6 @@ AC_CONFIG_FILES([Makefile
 	src/include/scripting/squirrel/Makefile
 	src/include/tinyxml/Makefile
 	src/sdk/Makefile
-	src/sdk/wxpropgrid/Makefile
 	src/sdk/scripting/Makefile
 	src/sdk/scripting/bindings/Makefile
 	src/sdk/scripting/squirrel/Makefile
@@ -575,7 +539,6 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/wxContribItems/cb_wxflatnotebook.pc
 	src/plugins/contrib/wxContribItems/cb_wxspeedbutton.pc
 	src/plugins/contrib/wxContribItems/cb_wxKWIC.pc
-	src/plugins/contrib/wxContribItems/cb_wxtreelist.pc
 	src/plugins/contrib/wxContribItems/cb_wxled.pc
 	src/plugins/contrib/wxContribItems/cb_wxmathplot.pc
 	src/plugins/contrib/wxContribItems/wxchart/Makefile
@@ -586,7 +549,6 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/wxContribItems/KWIC/Makefile
 	src/plugins/contrib/wxContribItems/KWIC/include/wx/KWIC/Makefile
 	src/plugins/contrib/wxContribItems/KWIC/include/wx/xrc/Makefile
-	src/plugins/contrib/wxContribItems/wxTreeList/Makefile
 	src/plugins/contrib/wxContribItems/wxled/Makefile
 	src/plugins/contrib/wxContribItems/wxled/gizmosled/include/wx/gizmos/Makefile
 	src/plugins/contrib/wxContribItems/wxled/lcdWindow/include/wx/Makefile

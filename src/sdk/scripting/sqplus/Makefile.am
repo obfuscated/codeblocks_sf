@@ -7,8 +7,3 @@ libsqplus_la_SOURCES = SqPlus.cpp \
                         SquirrelVM.cpp \
                         SquirrelBindingsUtils.cpp \
                         SquirrelObject.cpp
-
-EXTRA_DIST = sqplus71.vcproj \
-            sqplus.cbp \
-            sqplus.vcproj \
-            SquirrelBindingsUtilsWin32.cpp

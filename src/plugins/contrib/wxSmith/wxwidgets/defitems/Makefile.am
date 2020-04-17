@@ -1,7 +1,6 @@
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include \
-		$(WXPROPGRID_INCLUDE)
+		-I$(top_srcdir)/src/sdk/wxscintilla/include
 
 noinst_LTLIBRARIES = libwxsmith_wxwidgets_defitems.la
 
@@ -102,7 +101,8 @@ libwxsmith_wxwidgets_defitems_la_SOURCES = \
 ./wxsimagelist.cpp \
 ./wxsrichtextstylecomboctrl.cpp \
 ./wxsrichtextstylelistbox.cpp \
-./wxsrichtextstylelistctrl.cpp
+./wxsrichtextstylelistctrl.cpp \
+./wxsspinctrldouble.cpp
 
 noinst_HEADERS = \
 ./wxsgauge.h \
@@ -197,12 +197,7 @@ noinst_HEADERS = \
 ./wxsimagelist.h \
 ./wxsrichtextstylecomboctrl.h \
 ./wxsrichtextstylelistbox.h \
-./wxsrichtextstylelistctrl.h
-
-if HAVE_WX29
-libwxsmith_wxwidgets_defitems_la_SOURCES += ./wxsspinctrldouble.cpp
-noinst_HEADERS += ./wxsspinctrldouble.h
-endif
-
+./wxsrichtextstylelistctrl.h \
+./wxsspinctrldouble.h
 
 EXTRA_DIST = $(srcdir)/wxsmediactrl.*

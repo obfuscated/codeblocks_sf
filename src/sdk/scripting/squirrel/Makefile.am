@@ -16,7 +16,3 @@ libsquirrel_la_SOURCES = sqfuncstate.cpp \
                         sqapi.cpp \
                         sqdebug.cpp
 
-EXTRA_DIST = squirrel71.vcproj \
-            squirrel.cbp \
-            squirrellib.cbp \
-            squirrel.vcproj

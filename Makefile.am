@@ -36,15 +36,5 @@ clean-bin:
 	find . -name "*.la" | xargs rm -f
 	rm -f src/src/codeblocks
 
-all-local:
-if HAVE_WX29
-	cp $(top_srcdir)/debian/codeblocks-headers.install.wx30 $(top_srcdir)/debian/codeblocks-headers.install
-else
-	cp $(top_srcdir)/debian/codeblocks-headers.install.wx28 $(top_srcdir)/debian/codeblocks-headers.install
-endif
-
-clean-local:
-	rm -f $(top_srcdir)/debian/codeblocks-headers.install
-
 appdatadir = $(datarootdir)/metainfo
 dist_appdata_DATA = $(top_srcdir)/codeblocks.appdata.xml
