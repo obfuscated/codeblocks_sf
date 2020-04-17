@@ -258,12 +258,10 @@ private:
       */
     void OnMnuViewThreadSearchUpdateUI(wxUpdateUIEvent& event);
 
-    /** Event handler called to update the 'Thread search'
-      * item of the 'Search' menu.
+    /** Event handler called to update the 'Search -> Thread search' and 'View -> Focus Thread
+      * Search' items in the menu.
       */
-    void OnMnuSearchThreadSearchUpdateUI(wxUpdateUIEvent& event);
-
-    void OnMnuViewFocusThreadSearchUpdateUI(wxUpdateUIEvent& event);
+    void OnUpdateUISearchRunning(wxUpdateUIEvent& event);
 
     // Toolbar controls events management
     void OnBtnOptionsClick(wxCommandEvent& event);

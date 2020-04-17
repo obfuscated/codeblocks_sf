@@ -74,9 +74,9 @@ BEGIN_EVENT_TABLE(ThreadSearch, cbPlugin)
     // add any events you want to handle here
     EVT_UPDATE_UI (controlIDs.Get(ControlIDs::idMenuViewThreadSearch),   ThreadSearch::OnMnuViewThreadSearchUpdateUI)
     EVT_MENU      (controlIDs.Get(ControlIDs::idMenuViewThreadSearch),   ThreadSearch::OnMnuViewThreadSearch)
-    EVT_UPDATE_UI (controlIDs.Get(ControlIDs::idMenuViewFocusThreadSearch),   ThreadSearch::OnMnuViewFocusThreadSearchUpdateUI)
+    EVT_UPDATE_UI (controlIDs.Get(ControlIDs::idMenuViewFocusThreadSearch),   ThreadSearch::OnUpdateUISearchRunning)
     EVT_MENU      (controlIDs.Get(ControlIDs::idMenuViewFocusThreadSearch),   ThreadSearch::OnMnuViewFocusThreadSearch)
-    EVT_UPDATE_UI (controlIDs.Get(ControlIDs::idMenuSearchThreadSearch), ThreadSearch::OnMnuSearchThreadSearchUpdateUI)
+    EVT_UPDATE_UI (controlIDs.Get(ControlIDs::idMenuSearchThreadSearch), ThreadSearch::OnUpdateUISearchRunning)
     EVT_MENU      (controlIDs.Get(ControlIDs::idMenuSearchThreadSearch), ThreadSearch::OnMnuSearchThreadSearch)
     EVT_MENU      (controlIDs.Get(ControlIDs::idMenuCtxThreadSearch),    ThreadSearch::OnCtxThreadSearch)
     EVT_MENU      (idMenuEditCopy,           ThreadSearch::OnMnuEditCopy)
@@ -178,6 +178,7 @@ void ThreadSearch::CreateView(ThreadSearchViewManagerBase::eManagerTypes externa
     m_pThreadSearchView->ShowSearchControls(m_ShowSearchControls);
 
     // Builds manager
+    delete m_pViewManager;
     m_pViewManager = ThreadSearchViewManagerBase::BuildThreadSearchViewManagerBase(m_pThreadSearchView, true, mgrType);
     m_pViewManager->ShowView(true);
 }
@@ -351,7 +352,17 @@ void ThreadSearch::OnMnuViewThreadSearch(wxCommandEvent& event)
     if ( !IsAttached() )
         return;
 
-    m_pViewManager->ShowView(event.IsChecked());
+    const bool checked = event.IsChecked();
+
+    if (checked && m_pThreadSearchView == nullptr)
+    {
+        // The view might have been destroyed if the notebook page has been removed.
+        // So we need to recreate it.
+        CreateView(ThreadSearchViewManagerBase::TypeMessagesNotebook, false);
+        return;
+    }
+
+    m_pViewManager->ShowView(checked);
 }
 
 
@@ -405,23 +416,14 @@ void ThreadSearch::OnMnuViewThreadSearchUpdateUI(wxUpdateUIEvent& /*event*/)
     menubar->Check(controlIDs.Get(ControlIDs::idMenuViewThreadSearch), m_pViewManager->IsViewShown());
 }
 
-
-void ThreadSearch::OnMnuSearchThreadSearchUpdateUI(wxUpdateUIEvent& event)
+void ThreadSearch::OnUpdateUISearchRunning(wxUpdateUIEvent& event)
 {
-    if ( !IsAttached() )
+    if (!IsAttached())
         return;
 
-    event.Enable(m_pThreadSearchView->IsSearchRunning() == false);
+    const bool isRunning = (m_pThreadSearchView && m_pThreadSearchView->IsSearchRunning());
+    event.Enable(!isRunning);
 }
-
-void ThreadSearch::OnMnuViewFocusThreadSearchUpdateUI(wxUpdateUIEvent& event)
-{
-    if ( !IsAttached() )
-        return;
-
-    event.Enable(m_pThreadSearchView->IsSearchRunning() == false);
-}
-
 
 void ThreadSearch::BuildModuleMenu(const ModuleType type, wxMenu* pMenu, const FileTreeData* /*data*/)
 {
@@ -833,17 +835,21 @@ void ThreadSearch::OnMnuEditCopyUpdateUI(wxUpdateUIEvent& event)
         hasSel =  m_pCboSearchExpr->CanCopy() ;
         //LOGIT( _T("OnMnuEditCopyUpdateUI m_pCboSearchExpr") );
     }
-    else if ( pFocused == m_pThreadSearchView->m_pCboSearchExpr )
+    else if (m_pThreadSearchView)
     {
-        //event.Enable(m_pThreadSearchView->m_pCboSearchExpr->CanCopy());
-        hasSel = m_pThreadSearchView->m_pCboSearchExpr->CanCopy();
-        //LOGIT( _T("OnMnuEditCopyUpdateUI m_pThreadSearchView->m_pCboSearchExpr") );
+        if ( pFocused == m_pThreadSearchView->m_pCboSearchExpr )
+        {
+            //event.Enable(m_pThreadSearchView->m_pCboSearchExpr->CanCopy());
+            hasSel = m_pThreadSearchView->m_pCboSearchExpr->CanCopy();
+            //LOGIT( _T("OnMnuEditCopyUpdateUI m_pThreadSearchView->m_pCboSearchExpr") );
+        }
+        else if ( pFocused == static_cast<wxWindow*>(m_pThreadSearchView->m_pSearchPreview) )
+        {
+            hasSel = m_pThreadSearchView->m_pSearchPreview->GetSelectionStart() != m_pThreadSearchView->m_pSearchPreview->GetSelectionEnd();
+            //LOGIT( _T("OnMnuEditCopyUpdateUI m_pSearchPreview") );
+        }
     }
-    else if ( pFocused == static_cast<wxWindow*>(m_pThreadSearchView->m_pSearchPreview) )
-    {
-        hasSel = m_pThreadSearchView->m_pSearchPreview->GetSelectionStart() != m_pThreadSearchView->m_pSearchPreview->GetSelectionEnd();
-        //LOGIT( _T("OnMnuEditCopyUpdateUI m_pSearchPreview") );
-    }
+
     if ( hasSel )
     {
         mbar->Enable(idMenuEditCopy, hasSel);

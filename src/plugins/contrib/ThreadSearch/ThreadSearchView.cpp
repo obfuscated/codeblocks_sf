@@ -919,7 +919,7 @@ bool ThreadSearchView::StopThread()
 
 bool ThreadSearchView::IsSearchRunning()
 {
-    bool searchRunning = (m_pFindThread != 0);
+    bool searchRunning = (m_pFindThread != nullptr);
 
     if ( m_MutexSearchEventsArray.Lock() == wxMUTEX_NO_ERROR )
     {
@@ -927,6 +927,7 @@ bool ThreadSearchView::IsSearchRunning()
         // events to display in the array. In this case, we consider the search is
         // stil running even if thread is over.
         searchRunning = searchRunning || (m_ThreadSearchEventsArray.GetCount() > 0);
+
         m_MutexSearchEventsArray.Unlock();
     }
 
