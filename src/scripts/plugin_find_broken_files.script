@@ -38,7 +38,7 @@ class FindBrokenFilesPlugin extends cbScriptPlugin
         // display a message if project manager could not be located
         if (IsNull(pm))
         {
-            ShowError(_T("Could not query the project manager. Cannot continue."));
+            ShowError(_("Could not query the project manager. Cannot continue."));
             return 0;
         }
 
@@ -48,7 +48,7 @@ class FindBrokenFilesPlugin extends cbScriptPlugin
         // display a message if there is no active project
         if (IsNull(p))
         {
-            ShowError(_T("Currently no project is loaded/activated. Cannot continue."));
+            ShowError(_("Currently no project is loaded/activated. Cannot continue."));
             return 0;
         }
 
@@ -58,7 +58,7 @@ class FindBrokenFilesPlugin extends cbScriptPlugin
         // display a message if the project contains no files
         if (files_count<1)
         {
-            ShowError(_T("The active project contains no files. Cannot continue."));
+            ShowError(_("The active project contains no files. Cannot continue."));
             return 0;
         }
 
@@ -70,7 +70,7 @@ class FindBrokenFilesPlugin extends cbScriptPlugin
             local pf = p.GetFile(i);
             if (IsNull(pf))
             {
-                ShowError(_T("Could not access project file(s). Cannot continue."));
+                ShowError(_("Could not access project file(s). Cannot continue."));
                 return 0;
             }
 
@@ -85,10 +85,13 @@ class FindBrokenFilesPlugin extends cbScriptPlugin
         // operate broken files (if any)
         if (broken_files>0)
         {
-            ShowInfo(_T("The project has ") + broken_files + _T(" broken files:\n") + broken_files_str);
+            local infoMsg = _("The project has {brokenCnt} broken files:\n {brokenFiles}");
+            infoMsg.Replace(_T("{brokenCnt}"), _T(broken_files.tostring()), true);
+            infoMsg.Replace(_T("{brokenFiles}"), broken_files_str, true);
+            ShowInfo(infoMsg);
 
-            local msg          = _T("Do you want to remove them from the project now?");
-            local remove_files = Message(msg, _T("Broken Files Plugin"), ::wxICON_QUESTION | ::wxYES_NO);
+            local msg          = _("Do you want to remove them from the project now?");
+            local remove_files = Message(msg, _("Broken Files Plugin"), ::wxICON_QUESTION | ::wxYES_NO);
             if (remove_files==::wxID_YES)
             {
                 // search for broken files again and remove them from the project
@@ -98,7 +101,7 @@ class FindBrokenFilesPlugin extends cbScriptPlugin
                     local pf = p.GetFile(i);
                     if (IsNull(pf))
                     {
-                        ShowError(_T("Could not access project file(s). Cannot continue."));
+                        ShowError(_("Could not access project file(s). Cannot continue."));
                         return 0;
                     }
 
@@ -113,13 +116,16 @@ class FindBrokenFilesPlugin extends cbScriptPlugin
                     }
                 }
                 pm.RebuildTree();
-                ShowInfo(_T("Operation successfully completed.\n") + removed_files + _T(" files have been removed."));
+
+                local infoMsg = _("Operation successfully completed.\n{removed} files have been removed.");
+                infoMsg.Replace(_T("{removed}"), _T(removed_files.tostring()), true);
+                ShowInfo(infoMsg);
             }
         else
-            ShowInfo(_T("Operation cancelled."));
+            ShowInfo(_("Operation cancelled."));
         }
         else
-            ShowInfo(_T("In this project no broken files were found."));
+            ShowInfo(_("In this project no broken files were found."));
 
         return 0;
     }
