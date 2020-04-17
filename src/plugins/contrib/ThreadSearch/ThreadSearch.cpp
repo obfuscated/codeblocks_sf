@@ -185,7 +185,7 @@ void ThreadSearch::CreateView(ThreadSearchViewManagerBase::eManagerTypes externa
     // Builds manager
     delete m_pViewManager;
     m_pViewManager = ThreadSearchViewManagerBase::BuildThreadSearchViewManagerBase(m_pThreadSearchView, true, mgrType);
-    m_pViewManager->ShowView(true);
+    m_pViewManager->ShowView(true, true);
 }
 
 void ThreadSearch::OnAttach()
@@ -375,7 +375,7 @@ void ThreadSearch::OnMnuViewThreadSearch(wxCommandEvent& event)
         return;
     }
 
-    m_pViewManager->ShowView(checked);
+    m_pViewManager->ShowView(checked, false);
 }
 
 
@@ -393,7 +393,7 @@ void ThreadSearch::OnMnuSearchThreadSearch(wxCommandEvent& /*event*/)
     else
     {
         // Word is KO, just show the panel
-        m_pViewManager->ShowView(true);
+        m_pViewManager->ShowView(true, false);
     }
 }
 
@@ -404,7 +404,7 @@ void ThreadSearch::OnMnuViewFocusThreadSearch(wxCommandEvent& /*event*/)
 
     GetCursorWord(m_SearchedWord);
 
-    m_pViewManager->ShowView(true);
+    m_pViewManager->ShowView(true, false);
     m_pViewManager->Raise();
     m_pThreadSearchView->FocusSearchCombo(m_SearchedWord);
 }
@@ -707,7 +707,7 @@ void ThreadSearch::RunThreadSearch(const wxString& text, bool isCtxSearch/*=fals
     findData.SetFindText(text);
 
     // Displays m_pThreadSearchView in manager
-    m_pViewManager->ShowView(true);
+    m_pViewManager->ShowView(true, true);
 
     // Runs the search through a worker thread
     m_pThreadSearchView->ThreadedSearch(findData);

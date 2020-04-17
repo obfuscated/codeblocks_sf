@@ -25,16 +25,16 @@ public:
     {}
 
     /** Destructor. */
-    virtual ~ThreadSearchViewManagerLayout();
+    ~ThreadSearchViewManagerLayout() override;
 
-    eManagerTypes GetManagerType() {return TypeLayout;}
+    eManagerTypes GetManagerType() override { return TypeLayout; }
 
     /** By default, view is not managed by the manager.
       * This method adds view to manager if managed.
       * No parameters because only m_pThreadSearchView is managed
       * and given in constructor.
       */
-    virtual void AddViewToManager();
+    void AddViewToManager() override;
 
     /** By default, view is not managed by the manager.
       * This method removes view from manager if not already managed.
@@ -42,20 +42,20 @@ public:
       * and given in constructor.
       * m_pThreadSearchView is not modified.
       */
-    virtual void RemoveViewFromManager();
+    void RemoveViewFromManager() override;
 
     /** Return true if success. Fails if view is not managed.
       * @param show : true => show, false => hide
       * @return true if success.
       */
-    virtual bool ShowView(bool show = true);
+    bool ShowView(bool show, bool preserveFocus) override;
 
     /** Return true if view is visible.
       * @return true if view is visible.
       */
-    bool IsViewShown();
+    bool IsViewShown() override;
 
-    virtual void Raise();
+    void Raise() override;
 };
 
 #endif // THREAD_SEARCH_VIEW_MANAGER_LAYOUT_H

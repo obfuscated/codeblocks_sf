@@ -55,7 +55,7 @@ public:
       * @param show : true => show, false => hide
       * @return true if success.
       */
-    virtual bool ShowView(bool show = true) = 0;
+    virtual bool ShowView(bool show, bool preserveFocus) = 0;
 
     /** Return true if view is visible.
       * @return true if view is visible.

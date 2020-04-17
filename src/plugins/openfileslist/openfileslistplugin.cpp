@@ -326,7 +326,7 @@ void OpenFilesListPlugin::OnTreeItemRightClick(wxTreeEvent& event)
     if (ed)
     {
         wxPoint pt = m_pTree->ClientToScreen(event.GetPoint());
-        ed->DisplayContextMenu(pt,mtOpenFilesList);
+        ed->DisplayContextMenu(pt, mtOpenFilesList, nullptr);
     }
 }
 
