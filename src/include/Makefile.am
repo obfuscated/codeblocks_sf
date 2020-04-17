@@ -68,6 +68,7 @@ ALLHEADERS = annoyingdialog.h \
 				editorlexerloader.h \
 				editormanager.h \
 				editor_hooks.h \
+				editor_utils.h \
 				editpairdlg.h \
 				editpathdlg.h \
 				edittooldlg.h \

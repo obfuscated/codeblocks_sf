@@ -1,15 +1,22 @@
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
+ * http://www.gnu.org/licenses/lgpl-3.0.html
+ */
+
 #ifndef CB_THREADSEARCH_LOGGER_STC_H
 #define CB_THREADSEARCH_LOGGER_STC_H
 
 #include "ThreadSearchLoggerBase.h"
 
 class wxScintilla;
+class wxScintillaEvent;
 
 class ThreadSearchLoggerSTC : public ThreadSearchLoggerBase
 {
 public:
     ThreadSearchLoggerSTC(ThreadSearchView& threadSearchView, ThreadSearch& threadSearchPlugin,
                           InsertIndexManager::eFileSorting fileSorting, wxWindow* parent, long id);
+    ~ThreadSearchLoggerSTC();
 
     static void RegisterColours();
 
@@ -24,6 +31,8 @@ public:
 private:
     void ConnectEvents(wxEvtHandler* pEvtHandler) override;
     void DisconnectEvents(wxEvtHandler* pEvtHandler) override;
+
+    void OnMarginClick(wxScintillaEvent &event);
 
     void AppendStyledText(int style, const wxString &text);
 private:

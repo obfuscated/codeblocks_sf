@@ -48,6 +48,7 @@
 #include "cbeditorprintout.h"
 #include "cbdebugger_interfaces.h"
 #include "editor_hooks.h"
+#include "editor_utils.h"
 #include "encodingdetector.h"
 #include "filefilters.h"
 #include "projectfileoptionsdlg.h"
@@ -1074,9 +1075,9 @@ void cbEditor::SetMarkerStyle(int marker, int markerType, wxColor fore, wxColor 
 
 void cbEditor::UnderlineFoldedLines(bool underline)
 {
-    m_pControl->SetFoldFlags(underline ? wxSCI_FOLDFLAG_LINEAFTER_CONTRACTED : 0);
+    cb::UnderlineFoldedLines(m_pControl, underline);
     if (m_pControl2)
-        m_pControl2->SetFoldFlags(underline ? wxSCI_FOLDFLAG_LINEAFTER_CONTRACTED : 0);
+        cb::UnderlineFoldedLines(m_pControl2, underline);
 }
 
 cbStyledTextCtrl* cbEditor::CreateEditor()
@@ -1682,7 +1683,6 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
         control->SetProperty(_T("fold.compact"),      _T("0"));
         control->SetProperty(_T("fold.preprocessor"), mgr->ReadBool(_T("/folding/fold_preprocessor"), false) ? _T("1") : _T("0"));
 
-        control->SetFoldFlags(wxSCI_FOLDFLAG_LINEAFTER_CONTRACTED);
         control->SetMarginType(C_FOLDING_MARGIN, wxSCI_MARGIN_SYMBOL);
         control->SetMarginWidth(C_FOLDING_MARGIN, foldingMarginBaseWidth);
         // use "|" here or we might break plugins that use the margin (none at the moment)
@@ -2248,52 +2248,9 @@ void cbEditor::ToggleAllFolds()
 
 void cbEditor::SetFoldingIndicator(int id)
 {
-    wxColor f(0xff, 0xff, 0xff); // foreground colour
-    wxColor b(0x80, 0x80, 0x80); // background colour
-    // Arrow
-    if (id == 0)
-    {
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN,    wxSCI_MARK_ARROWDOWN,  f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDER,        wxSCI_MARK_ARROW,      f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB,     wxSCI_MARK_BACKGROUND, f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL,    wxSCI_MARK_BACKGROUND, f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND,     wxSCI_MARK_ARROW,      f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_ARROWDOWN,  f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_BACKGROUND, f, b);
-    }
-    // Circle
-    else if (id == 1)
-    {
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN,    wxSCI_MARK_CIRCLEMINUS,          f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDER,        wxSCI_MARK_CIRCLEPLUS,           f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB,     wxSCI_MARK_VLINE,                f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL,    wxSCI_MARK_LCORNERCURVE,         f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND,     wxSCI_MARK_CIRCLEPLUSCONNECTED,  f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_CIRCLEMINUSCONNECTED, f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_TCORNER,              f, b);
-    }
-    // Square
-    else if (id == 2)
-    {
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN,    wxSCI_MARK_BOXMINUS,          f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDER,        wxSCI_MARK_BOXPLUS,           f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB,     wxSCI_MARK_VLINE,             f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL,    wxSCI_MARK_LCORNER,           f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND,     wxSCI_MARK_BOXPLUSCONNECTED,  f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_BOXMINUSCONNECTED, f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_TCORNER,           f, b);
-    }
-    // Simple
-    else if (id == 3)
-    {
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN,    wxSCI_MARK_MINUS,      f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDER,        wxSCI_MARK_PLUS,       f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB,     wxSCI_MARK_BACKGROUND, f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL,    wxSCI_MARK_BACKGROUND, f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND,     wxSCI_MARK_PLUS,       f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_MINUS,      f, b);
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_BACKGROUND, f, b);
-    }
+    cb::SetFoldingMarkers(m_pControl, id);
+    if (m_pControl2)
+        cb::SetFoldingMarkers(m_pControl2, id);
 }
 
 void cbEditor::FoldBlockFromLine(int line)
