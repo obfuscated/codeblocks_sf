@@ -4,7 +4,7 @@
     <Plugin name="tidycmt">
         <Value title="tidycmt" />
         <Value version="0.1.1" />
-        <Value description="For the anal but lazy." />
+        <Value description="For the lazy." />
         <Value author="" />
         <Value authorEmail="" />
         <Value authorWebsite="" />
