@@ -99,7 +99,7 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticText" name="ID_STATICTEXT5">
-							<label>You can use the following macros:&#x0A;&#x0A;${PROJECT__FILENAME}&#x0A;${PROJECT__NAME}&#x0A;${PROJECT__DIR}&#x0A;${ACTIVE__EDITOR__FILENAME}&#x0A;${ACTIVE__EDITOR__LINE} (${ACTIVE__EDITOR__LINE__0})&#x0A;${ACTIVE__EDITOR__COLUMN} (${ACTIVE__EDITOR__COLUMN__0})&#x0A;${ACTIVE__EDITOR__SELECTION}&#x0A;${ALL__PROJECT__FILES}&#x0A;${TARGET__OUTPUT__DIR}&#x0A;${TARGET__NAME}&#x0A;${TARGET__OUTPUT__BASENAME}&#x0A;${TARGET__OUTPUT__FILE}&#x0A;${MAKEFILE}&#x0A;</label>
+							<label>You can use the following macros:&#x0A;&#x0A;Global variables of the form $(#variable__name)&#x0A;${PROJECT__FILENAME},  ${PROJECT__NAME},  ${PROJECT__DIR}&#x0A;${ACTIVE__EDITOR__FILENAME}&#x0A;${ACTIVE__EDITOR__LINE},  ${ACTIVE__EDITOR__LINE__0}&#x0A;${ACTIVE__EDITOR__COLUMN},  (${ACTIVE__EDITOR__COLUMN__0})&#x0A;${ACTIVE__EDITOR__SELECTION}&#x0A;${ALL__PROJECT__FILES}&#x0A;${TARGET__NAME},  ${TARGET__OUTPUT__DIR}&#x0A;${TARGET__OUTPUT__BASENAME},  ${TARGET__OUTPUT__FILE}&#x0A;${TARGET&amp;COMPILER&amp;DIR}&#x0A;${MAKEFILE}</label>
 						</object>
 						<flag>wxEXPAND</flag>
 						<option>1</option>
