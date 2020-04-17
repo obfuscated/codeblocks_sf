@@ -381,12 +381,10 @@ WatchesDlg::WatchesDlg() :
                                 wxPG_SPLITTER_AUTO_CENTER | wxTAB_TRAVERSAL /*| wxWANTS_CHARS*/);
 
     long extraStyles = wxPG_EX_HELP_AS_TOOLTIPS;
-#if wxCHECK_VERSION(3, 0, 0)
+#if wxCHECK_VERSION(3, 0, 3)
     // This makes it possible for the watches window to get a focus when the user clicks on it with
     // the mouse.
     extraStyles |= wxPG_EX_ALWAYS_ALLOW_FOCUS;
-#else
-    extraStyles |= wxPG_EX_DISABLE_TLP_TRACKING;
 #endif
     m_grid->SetExtraStyle(extraStyles);
     m_grid->SetDropTarget(new WatchesDropTarget);
@@ -1193,10 +1191,8 @@ ValueTooltip::ValueTooltip(const cb::shared_ptr<cbWatch> &watch, wxWindow *paren
     m_grid = new wxPropertyGrid(m_panel, idTooltipGrid, wxDefaultPosition, wxSize(400,400), wxPG_SPLITTER_AUTO_CENTER);
 
     long extraStyles = 0;
-#if wxCHECK_VERSION(3, 0, 0)
+#if wxCHECK_VERSION(3, 0, 3)
     extraStyles |= wxPG_EX_ALWAYS_ALLOW_FOCUS;
-#else
-    extraStyles |= wxPG_EX_DISABLE_TLP_TRACKING;
 #endif
     m_grid->SetExtraStyle(extraStyles);
     m_grid->SetDropTarget(new WatchesDropTarget);
