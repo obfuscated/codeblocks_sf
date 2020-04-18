@@ -123,9 +123,9 @@ END_EVENT_TABLE()
 // constructor
 ThreadSearch::ThreadSearch()
              :m_SearchedWord(wxEmptyString),
-              m_pThreadSearchView(NULL),
-              m_pViewManager(NULL),
-              m_pToolbar(NULL),
+              m_pThreadSearchView(nullptr),
+              m_pViewManager(nullptr),
+              m_pToolbar(nullptr),
               m_CtxMenuIntegration(true),
               m_UseDefValsForThreadSearch(true),
               m_ShowSearchControls(true),
@@ -136,7 +136,7 @@ ThreadSearch::ThreadSearch()
               m_DisplayLogHeaders(true),
               m_DrawLogLines(false),
               m_AutosizeLogColumns(false),
-              m_pCboSearchExpr(0),
+              m_pCboSearchExpr(nullptr),
               m_SplitterMode(wxSPLIT_VERTICAL),
               m_FileSorting(InsertIndexManager::SortByFilePath)
 {
@@ -610,7 +610,7 @@ bool ThreadSearch::BuildToolBar(wxToolBar* toolBar)
     m_pThreadSearchView->UpdateOptionsButtonImage(m_FindData);
 
     m_pCboSearchExpr->Append(m_pThreadSearchView->GetSearchHistory());
-    if ( m_pCboSearchExpr->GetCount() > 0 )
+    if (m_pCboSearchExpr->GetCount() > 0)
     {
         m_pCboSearchExpr->SetSelection(0);
     }
