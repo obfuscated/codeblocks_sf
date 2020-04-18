@@ -359,6 +359,7 @@ void ThreadSearch::OnMnuViewThreadSearch(wxCommandEvent& event)
         // The view might have been destroyed if the notebook page has been removed.
         // So we need to recreate it.
         CreateView(ThreadSearchViewManagerBase::TypeMessagesNotebook, false);
+        m_pThreadSearchView->SetToolBar(m_pToolbar);
         return;
     }
 
