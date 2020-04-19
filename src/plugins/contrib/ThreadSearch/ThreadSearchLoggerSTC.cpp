@@ -35,9 +35,9 @@ enum STCStyles : int
 
 enum STCFoldLevels : int
 {
-    Search = wxSCI_FOLDLEVELBASE,
+    Search = wxSCI_FOLDLEVELBASE + 1,
     Messages,
-    Files = Messages,
+    Files,
     ResultLines
 };
 
@@ -420,6 +420,12 @@ static bool FindFileLineFromLine(int *outLine, wxScintilla *stc, int inLine)
     // We use the fold level to determine what is the kind of line. If the line is for a result
     // line, we know that its fold parent is the line with the file name.
     const int foldLevel = stc->GetFoldLevel(inLine) & wxSCI_FOLDLEVELNUMBERMASK;
+    if (foldLevel == STCFoldLevels::Files)
+    {
+        *outLine = inLine;
+        return true;
+    }
+
     if (foldLevel != STCFoldLevels::ResultLines)
         return false;
 
@@ -540,16 +546,37 @@ void ThreadSearchLoggerSTC::OnMarginClick(wxScintillaEvent &event)
 
 void ThreadSearchLoggerSTC::OnContextMenu(wxContextMenuEvent &event)
 {
+    const int stcLine = m_stc->GetCurrentLine();
+    int temp;
+    const bool isFileLine = FindFileLineFromLine(&temp, m_stc, stcLine);
+    const bool isSearchLine = FindSearchLineFromLine(&temp, m_stc, stcLine);
+    const bool isEmpty = m_stc->GetLength() == 0;
+
     wxMenu menu;
     menu.Append(controlIDs.Get(ControlIDs::idMenuCtxCopy), _("Copy contents to clipboard"));
+    menu.Enable(controlIDs.Get(ControlIDs::idMenuCtxCopy), !isEmpty);
+
     menu.Append(controlIDs.Get(ControlIDs::idMenuCtxCopySelection), _("Copy selection to clipboard"));
+    menu.Enable(controlIDs.Get(ControlIDs::idMenuCtxCopySelection), !m_stc->GetSelectionEmpty());
+
     menu.AppendSeparator();
+
     menu.Append(controlIDs.Get(ControlIDs::idMenuCtxCollapseFile), _("Collapse file"));
+    menu.Enable(controlIDs.Get(ControlIDs::idMenuCtxCollapseFile), isFileLine);
+
     menu.Append(controlIDs.Get(ControlIDs::idMenuCtxCollapseSearch), _("Collapse search"));
+    menu.Enable(controlIDs.Get(ControlIDs::idMenuCtxCollapseSearch), isSearchLine);
+
     menu.Append(controlIDs.Get(ControlIDs::idMenuCtxCollapseAll), _("Collapse all"));
+    menu.Enable(controlIDs.Get(ControlIDs::idMenuCtxCollapseAll), !m_stc->GetSelectionEmpty());
+
     menu.AppendSeparator();
+
     menu.Append(controlIDs.Get(ControlIDs::idMenuCtxDeleteItem), _("Delete search"));
+    menu.Enable(controlIDs.Get(ControlIDs::idMenuCtxDeleteItem), isSearchLine);
+
     menu.Append(controlIDs.Get(ControlIDs::idMenuCtxDeleteAllItems), _("Delete all"));
+    menu.Enable(controlIDs.Get(ControlIDs::idMenuCtxDeleteAllItems), !isEmpty);
 
     // display menu
     wxPoint clientpos;
