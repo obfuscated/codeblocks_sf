@@ -44,6 +44,7 @@ public:
 
 protected:
     wxRegEx m_RegEx;
+    int m_IndexToMatch;
 };
 
 #endif // TEXT_FILE_SEARCHER_REG_EX_H

@@ -18,29 +18,35 @@
 #include "TextFileSearcherRegEx.h"
 
 
-TextFileSearcherRegEx::TextFileSearcherRegEx(const wxString& searchText, bool matchCase, bool matchWordBegin,
-                                            bool matchWord)
-                      :TextFileSearcher(searchText, matchCase, matchWordBegin, matchWord)
+TextFileSearcherRegEx::TextFileSearcherRegEx(const wxString& searchText, bool matchCase,
+                                             bool matchWordBegin, bool matchWord) :
+    TextFileSearcher(searchText, matchCase, matchWordBegin, matchWord)
 {
-    wxString pattern = searchText;
-
 #ifdef wxHAS_REGEX_ADVANCED
     int flags = wxRE_ADVANCED;
 #else
     int flags = wxRE_EXTENDED;
 #endif
-    if ( matchCase == false )
+    if (matchCase == false)
     {
         flags |= wxRE_ICASE;
     }
 
-    if ( matchWord == true )
+    wxString pattern;
+    if (matchWord == true)
     {
-        pattern = _T("([^[:alnum:]_]|^)") + pattern + _T("([^[:alnum:]_]|$)");
+        pattern = _T("([^[:alnum:]_]|^)(") + searchText + _T(")([^[:alnum:]_]|$)");
+        m_IndexToMatch = 2;
     }
-    else if ( matchWordBegin == true )
+    else if (matchWordBegin == true)
     {
-        pattern = _T("([^[:alnum:]_]|^)") + pattern;
+        pattern = _T("([^[:alnum:]_]|^)(") + searchText + wxT(")");
+        m_IndexToMatch = 2;
+    }
+    else
+    {
+        m_IndexToMatch = 0;
+        pattern = searchText;
     }
 
     m_RegEx.Compile(pattern, flags);
@@ -66,7 +72,7 @@ bool TextFileSearcherRegEx::MatchLine(std::vector<int> *outMatchedPositions, con
     // GetMatch returns the values relative to the start of the string, so for the second and later
     // matches we need to know the position of the string relative to the full string.
     int offset = 0;
-    while (m_RegEx.GetMatch(&start, &length))
+    while (m_RegEx.GetMatch(&start, &length, m_IndexToMatch))
     {
         count++;
         outMatchedPositions->push_back(start + offset);
