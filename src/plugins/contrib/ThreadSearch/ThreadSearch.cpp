@@ -471,7 +471,14 @@ cbConfigurationPanel* ThreadSearch::GetConfigurationPanelEx(wxWindow* parent,
     if (!IsAttached())
         return NULL;
 
-    return new ThreadSearchConfPanel(*this, coloursInterface, parent);
+    ThreadSearchConfPanel *panel = new ThreadSearchConfPanel(*this, coloursInterface, parent);
+
+    if (m_pThreadSearchView)
+    {
+        panel->SetSearchAndMaskHistory(m_pThreadSearchView->GetSearchDirsHistory(),
+                                       m_pThreadSearchView->GetSearchMasksHistory());
+    }
+    return panel;
 }
 
 

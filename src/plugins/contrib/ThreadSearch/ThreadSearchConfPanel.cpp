@@ -161,6 +161,12 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin,
     // end wxGlade
 }
 
+void ThreadSearchConfPanel::SetSearchAndMaskHistory(const wxArrayString &dirHistory,
+                                                    const wxArrayString &maskHistory)
+{
+    m_pPnlDirParams->SetSearchHistory(dirHistory, maskHistory);
+}
+
 BEGIN_EVENT_TABLE(ThreadSearchConfPanel, wxPanel)
     // begin wxGlade: ThreadSearchConfPanel::event_table
     EVT_CHECKBOX(controlIDs.Get(ControlIDs::idChkThreadSearchEnable), ThreadSearchConfPanel::OnThreadSearchEnable)

@@ -37,8 +37,9 @@ public:
     // end wxGlade
 
     /** Constructor. */
-    DirectoryParamsPanel(ThreadSearchFindData *findData, wxWindow* parent, int id, const wxPoint& pos=wxDefaultPosition,
-                         const wxSize& size=wxDefaultSize, long style=0);
+    DirectoryParamsPanel(ThreadSearchFindData *findData, wxWindow* parent, int id,
+                         const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize,
+                         long style=0);
 
     // Getters
     wxString GetSearchDirPath()        const;

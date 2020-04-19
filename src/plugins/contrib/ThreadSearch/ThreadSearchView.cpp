@@ -45,13 +45,8 @@
 #include "ThreadSearchControlIds.h"
 #include "wx/tglbtn.h"
 
-
-// Max number of items in search history combo box
-const unsigned int MAX_NB_SEARCH_ITEMS = 20;
-
 // Timer value for events handling (events sent by worker thread)
-const          int TIMER_PERIOD        = 100;
-
+const int TIMER_PERIOD = 100;
 
 ThreadSearchView::ThreadSearchView(ThreadSearch& threadSearchPlugin) :
     wxPanel(Manager::Get()->GetAppWindow()),
@@ -267,10 +262,11 @@ void ThreadSearchView::OnShowOptionsDialog(wxCommandEvent &/*event*/)
     // All parameters can be set on this dialog.
     // It is the same as doing 'Settings/environment/Thread search'
     // Settings are updated by the cbConfigurationDialog
-    cbConfigurationDialog* pDlg       = new cbConfigurationDialog(Manager::Get()->GetAppWindow(), -1, _("Options"));
+    cbConfigurationDialog* pDlg = new cbConfigurationDialog(Manager::Get()->GetAppWindow(), -1,
+                                                            _("Options"));
     ThreadSearchConfPanel* pConfPanel = new ThreadSearchConfPanel(m_ThreadSearchPlugin, nullptr,
                                                                   pDlg);
-
+    pConfPanel->SetSearchAndMaskHistory(GetSearchDirsHistory(), GetSearchMasksHistory());
     pDlg->AttachConfigurationPanel(pConfPanel);
     pDlg->ShowModal();
     pDlg->Destroy();
@@ -711,30 +707,8 @@ void ThreadSearchView::AddExpressionToSearchCombos(const wxString& expression, c
     const long id = controlIDs.Get(ControlIDs::idCboSearchExpr);
     wxComboBox* pToolBarCombo = static_cast<wxComboBox*>(m_pToolBar->FindControl(id));
 
-    // Updates combos box with new item
-    // Search item index
-    int index = m_pCboSearchExpr->FindString(expression);
-
-    // Removes item if already in combos box
-    if ( index != wxNOT_FOUND )
-    {
-        m_pCboSearchExpr->Delete(index);
-        pToolBarCombo->Delete(index);
-    }
-
-    // Removes last item if max nb item is reached
-    if ( m_pCboSearchExpr->GetCount() > MAX_NB_SEARCH_ITEMS )
-    {
-        // Removes last one
-        m_pCboSearchExpr->Delete(m_pCboSearchExpr->GetCount()-1);
-        pToolBarCombo->Delete(pToolBarCombo->GetCount()-1);
-    }
-
-    // Adds it to combos
-    m_pCboSearchExpr->Insert(expression, 0);
-    m_pCboSearchExpr->SetSelection(0);
-    pToolBarCombo->Insert(expression, 0);
-    pToolBarCombo->SetSelection(0);
+    AddItemToCombo(m_pCboSearchExpr, expression);
+    AddItemToCombo(pToolBarCombo, expression);
 
     m_pPnlDirParams->AddExpressionToCombos(path, mask);
 }
@@ -763,6 +737,8 @@ void ThreadSearchView::Update()
     m_pPnlDirParams->SetSearchDirRecursively (findData.GetRecursiveSearch());
     m_pPnlDirParams->SetSearchDirPath        (findData.GetSearchPath());
     m_pPnlDirParams->SetSearchMask           (findData.GetSearchMask());
+
+    m_pPnlDirParams->AddExpressionToCombos(findData.GetSearchPath(), findData.GetSearchMask());
 
     ShowSearchControls(m_ThreadSearchPlugin.GetShowSearchControls());
     SetLoggerType(m_ThreadSearchPlugin.GetLoggerType());
