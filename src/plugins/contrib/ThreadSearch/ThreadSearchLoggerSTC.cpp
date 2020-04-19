@@ -635,6 +635,7 @@ void ThreadSearchLoggerSTC::OnMenuDelete(cb_unused wxCommandEvent &event)
     if (FindSearchLineFromLine(&startLine, m_stc, stcLine))
     {
         int endLine = -1;
+        // Try to find the start of the next search. This will be our end position.
         const int count = m_stc->GetLineCount();
         for (int line = startLine + 1; line < count; ++line)
         {
@@ -646,17 +647,18 @@ void ThreadSearchLoggerSTC::OnMenuDelete(cb_unused wxCommandEvent &event)
             }
         }
 
-        if (endLine != -1)
-        {
-            const int startPosition = m_stc->PositionFromLine(startLine);
-            const int endPosition = m_stc->PositionFromLine(endLine);
+        const int startPosition = m_stc->PositionFromLine(startLine);
+        int endPosition;
+        if (endLine == -1)
+            endPosition = m_stc->GetLength();
+        else
+            endPosition = m_stc->PositionFromLine(endLine);
 
-            // We have the range for the search, so delete the whole text for it.
-            m_stc->SetReadOnly(false);
-            m_stc->Remove(startPosition, endPosition);
-            m_stc->SetScrollWidth(100);
-            m_stc->SetReadOnly(true);
-        }
+        // We have the range for the search, so delete the whole text for it.
+        m_stc->SetReadOnly(false);
+        m_stc->Remove(startPosition, endPosition);
+        m_stc->SetScrollWidth(100);
+        m_stc->SetReadOnly(true);
     }
 }
 
