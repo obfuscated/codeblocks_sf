@@ -44,13 +44,34 @@ enum STCFoldLevels : int
 const int C_FOLDING_MARGIN = 0;
 } // anonymous namespace
 
+/// We use this class only to handle enter presses.
+class STCList : public wxScintilla
+{
+public:
+    STCList(wxWindow *parent, wxWindowID id) : wxScintilla(parent, id)
+    {
+    }
+
+private:
+    void OnKeyDown(wxKeyEvent &event)
+    {
+        static_cast<ThreadSearchLoggerSTC*>(GetParent())->OnKeyDown(event);
+    }
+
+    DECLARE_EVENT_TABLE()
+};
+
+BEGIN_EVENT_TABLE(STCList, wxScintilla)
+    EVT_KEY_DOWN(STCList::OnKeyDown)
+END_EVENT_TABLE()
+
 ThreadSearchLoggerSTC::ThreadSearchLoggerSTC(ThreadSearchView& threadSearchView,
                                              ThreadSearch& threadSearchPlugin,
                                              InsertIndexManager::eFileSorting fileSorting,
                                              wxWindow* parent, long id) :
     ThreadSearchLoggerBase(parent, threadSearchView, threadSearchPlugin, fileSorting)
 {
-    m_stc = new wxScintilla(this, id, wxDefaultPosition, wxDefaultSize);
+    m_stc = new STCList(this, id);
     m_stc->SetCaretLineVisible(true);
     m_stc->SetCaretWidth(0);
     m_stc->SetReadOnly(true);
@@ -527,6 +548,20 @@ void ThreadSearchLoggerSTC::OnDoubleClick(wxScintillaEvent &event)
         m_ThreadSearchView.OnLoggerDoubleClick(filepath, line);
     }
 
+    event.Skip();
+}
+
+void ThreadSearchLoggerSTC::OnKeyDown(wxKeyEvent& event)
+{
+    const int keyCode = event.GetKeyCode();
+    if (keyCode == WXK_RETURN || keyCode == WXK_NUMPAD_ENTER)
+    {
+        wxString filepath;
+        int line;
+
+        if (FindResultInfoForLine(&filepath, &line, m_stc, m_stc->GetCurrentLine()))
+            m_ThreadSearchView.OnLoggerDoubleClick(filepath, line);
+    }
     event.Skip();
 }
 
