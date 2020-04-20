@@ -25,7 +25,7 @@
 
 
 class wxCheckBox;
-class wxColourPickerCtrl;
+class ResetableColourPicker;
 class wxColourPickerEvent;
 class wxCommandEvent;
 class wxNotebook;
@@ -87,7 +87,7 @@ private:
     wxStaticBox *STCColours_staticbox;
     constexpr static int STCColoursCount = 5;
     wxStaticText *m_STCColoursLabels[STCColoursCount];
-    wxColourPickerCtrl *m_STCColourPickers[STCColoursCount*2];
+    ResetableColourPicker *m_STCColourPickers[STCColoursCount*2];
     SearchInPanel* m_pPnlSearchIn;
     DirectoryParamsPanel* m_pPnlDirParams;
     wxCheckBox* m_pChkWholeWord;
@@ -130,6 +130,7 @@ public:
     void OnChkShowCantOpenFileErrorClick(wxCommandEvent &event); // wxGlade: <event_handler>
 
     void OnColourPickerChanged(wxColourPickerEvent &event);
+    void OnColourPickerContext(wxContextMenuEvent &event);
 }; // wxGlade: end class
 
 

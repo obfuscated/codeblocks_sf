@@ -36,6 +36,38 @@
 
 // end wxGlade
 
+/// Override the colour picker to implement a resetable control. This is possible with right click.
+/// Unfortunately the colour picker doesn't send right down or context menu events to its parent, so
+/// we have to derive from it.
+struct ResetableColourPicker : wxColourPickerCtrl
+{
+    ResetableColourPicker(ThreadSearchConfPanel *panel, wxWindow *parent, ControlIDs::IDs id,
+                          const wxColour &colour) :
+        wxColourPickerCtrl(parent, controlIDs.Get(id), colour),
+        m_panel(panel)
+    {
+        SetToolTip(_("Right click would reset the colour to its default value"));
+    }
+private:
+    void OnContext(wxContextMenuEvent &event)
+    {
+        // Relay the event to the panel. It seems the id in the event is for some internal control,
+        // so we just change it.
+        wxContextMenuEvent e(event);
+        e.SetId(GetId());
+        m_panel->OnColourPickerContext(e);
+    }
+
+private:
+    ThreadSearchConfPanel *m_panel;
+
+    DECLARE_EVENT_TABLE()
+};
+
+BEGIN_EVENT_TABLE(ResetableColourPicker, wxColourPickerCtrl)
+    EVT_CONTEXT_MENU(ResetableColourPicker::OnContext)
+END_EVENT_TABLE()
+
 ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin,
                                              cbConfigurationPanelColoursInterface *coloursInterface,
                                              wxWindow* parent) :
@@ -111,45 +143,44 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin,
 
         STCColours_staticbox = new wxStaticBox(m_PageLayout, -1, _("STC Logger colours"));
 
-        int ii = 0;
-        m_STCColoursLabels[ii++] = new wxStaticText(m_PageLayout, wxID_ANY, _("Text (fg/bg)"));
-        m_STCColoursLabels[ii++] = new wxStaticText(m_PageLayout, wxID_ANY, _("File (fg/bg)"));
-        m_STCColoursLabels[ii++] = new wxStaticText(m_PageLayout, wxID_ANY, _("LineNo (fg/bg)"));
-        m_STCColoursLabels[ii++] = new wxStaticText(m_PageLayout, wxID_ANY, _("Match (fg/bg)"));
-        m_STCColoursLabels[ii++] = new wxStaticText(m_PageLayout, wxID_ANY, _("Selected line background"));
+        int labelIdx = 0;
+        m_STCColoursLabels[labelIdx++] = new wxStaticText(m_PageLayout, wxID_ANY, _("Text (fg/bg)"));
+        m_STCColoursLabels[labelIdx++] = new wxStaticText(m_PageLayout, wxID_ANY, _("File (fg/bg)"));
+        m_STCColoursLabels[labelIdx++] = new wxStaticText(m_PageLayout, wxID_ANY, _("LineNo (fg/bg)"));
+        m_STCColoursLabels[labelIdx++] = new wxStaticText(m_PageLayout, wxID_ANY, _("Match (fg/bg)"));
+        m_STCColoursLabels[labelIdx++] = new wxStaticText(m_PageLayout, wxID_ANY,_("Selected line background"));
 
+        int pickerIdx = 0;
         if (!m_ColoursInterface)
         {
             ColourManager *colours = Manager::Get()->GetColourManager();
-            ii = 0;
-            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_text_fore")));
-            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_text_back")));
-            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_file_fore")));
-            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_file_back")));
-            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_lineno_fore")));
-            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_lineno_back")));
-            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_match_fore")));
-            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_match_back")));
-            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_selected_line_back")));
-            m_STCColourPickers[ii++] = nullptr;
+            m_STCColourPickers[pickerIdx++] = new ResetableColourPicker(this, m_PageLayout, ControlIDs::idConfPanelColorPicker0, colours->GetColour(wxT("thread_search_text_fore")));
+            m_STCColourPickers[pickerIdx++] = new ResetableColourPicker(this, m_PageLayout, ControlIDs::idConfPanelColorPicker1, colours->GetColour(wxT("thread_search_text_back")));
+            m_STCColourPickers[pickerIdx++] = new ResetableColourPicker(this, m_PageLayout, ControlIDs::idConfPanelColorPicker2, colours->GetColour(wxT("thread_search_file_fore")));
+            m_STCColourPickers[pickerIdx++] = new ResetableColourPicker(this, m_PageLayout, ControlIDs::idConfPanelColorPicker3, colours->GetColour(wxT("thread_search_file_back")));
+            m_STCColourPickers[pickerIdx++] = new ResetableColourPicker(this, m_PageLayout, ControlIDs::idConfPanelColorPicker4, colours->GetColour(wxT("thread_search_lineno_fore")));
+            m_STCColourPickers[pickerIdx++] = new ResetableColourPicker(this, m_PageLayout, ControlIDs::idConfPanelColorPicker5, colours->GetColour(wxT("thread_search_lineno_back")));
+            m_STCColourPickers[pickerIdx++] = new ResetableColourPicker(this, m_PageLayout, ControlIDs::idConfPanelColorPicker6, colours->GetColour(wxT("thread_search_match_fore")));
+            m_STCColourPickers[pickerIdx++] = new ResetableColourPicker(this, m_PageLayout, ControlIDs::idConfPanelColorPicker7, colours->GetColour(wxT("thread_search_match_back")));
+            m_STCColourPickers[pickerIdx++] = new ResetableColourPicker(this, m_PageLayout, ControlIDs::idConfPanelColorPicker8, colours->GetColour(wxT("thread_search_selected_line_back")));
+            m_STCColourPickers[pickerIdx] = nullptr;
         }
         else
         {
-            ii = 0;
-            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, controlIDs.Get(ControlIDs::idConfPanelColorPicker0), *wxBLACK);
-            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, controlIDs.Get(ControlIDs::idConfPanelColorPicker1), *wxBLACK);
-            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, controlIDs.Get(ControlIDs::idConfPanelColorPicker2), *wxBLACK);
-            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, controlIDs.Get(ControlIDs::idConfPanelColorPicker3), *wxBLACK);
-            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, controlIDs.Get(ControlIDs::idConfPanelColorPicker4), *wxBLACK);
-            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, controlIDs.Get(ControlIDs::idConfPanelColorPicker5), *wxBLACK);
-            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, controlIDs.Get(ControlIDs::idConfPanelColorPicker6), *wxBLACK);
-            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, controlIDs.Get(ControlIDs::idConfPanelColorPicker7), *wxBLACK);
-            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, controlIDs.Get(ControlIDs::idConfPanelColorPicker8), *wxBLACK);
-            m_STCColourPickers[ii++] = nullptr;
+            m_STCColourPickers[pickerIdx++] = new ResetableColourPicker(this, m_PageLayout, ControlIDs::idConfPanelColorPicker0, *wxBLACK);
+            m_STCColourPickers[pickerIdx++] = new ResetableColourPicker(this, m_PageLayout, ControlIDs::idConfPanelColorPicker1, *wxBLACK);
+            m_STCColourPickers[pickerIdx++] = new ResetableColourPicker(this, m_PageLayout, ControlIDs::idConfPanelColorPicker2, *wxBLACK);
+            m_STCColourPickers[pickerIdx++] = new ResetableColourPicker(this, m_PageLayout, ControlIDs::idConfPanelColorPicker3, *wxBLACK);
+            m_STCColourPickers[pickerIdx++] = new ResetableColourPicker(this, m_PageLayout, ControlIDs::idConfPanelColorPicker4, *wxBLACK);
+            m_STCColourPickers[pickerIdx++] = new ResetableColourPicker(this, m_PageLayout, ControlIDs::idConfPanelColorPicker5, *wxBLACK);
+            m_STCColourPickers[pickerIdx++] = new ResetableColourPicker(this, m_PageLayout, ControlIDs::idConfPanelColorPicker6, *wxBLACK);
+            m_STCColourPickers[pickerIdx++] = new ResetableColourPicker(this, m_PageLayout, ControlIDs::idConfPanelColorPicker7, *wxBLACK);
+            m_STCColourPickers[pickerIdx++] = new ResetableColourPicker(this, m_PageLayout, ControlIDs::idConfPanelColorPicker8, *wxBLACK);
+            m_STCColourPickers[pickerIdx] = nullptr;
 
-            for (int jj = 0; jj < ii; ++jj)
+            for (int jj = 0; jj < pickerIdx; ++jj)
             {
-                ControlIDs::IDs id = ControlIDs::IDs(ControlIDs::idConfPanelColorPicker0 + jj);
+                const ControlIDs::IDs id = ControlIDs::IDs(ControlIDs::idConfPanelColorPicker0 + jj);
                 Connect(controlIDs.Get(id), wxEVT_COLOURPICKER_CHANGED,
                         wxObjectEventFunction(&ThreadSearchConfPanel::OnColourPickerChanged));
             }
@@ -575,46 +606,63 @@ void ThreadSearchConfPanel::OnPageChanging()
     m_STCColourPickers[ii++]->SetColour(colours->GetValue(wxT("thread_search_selected_line_back")));
 }
 
+static wxString findColourIDFromControlID(long controlID)
+{
+    if (controlID == controlIDs.Get(ControlIDs::idConfPanelColorPicker0))
+        return "thread_search_text_fore";
+    else if (controlID == controlIDs.Get(ControlIDs::idConfPanelColorPicker1))
+        return "thread_search_text_back";
+    else if (controlID == controlIDs.Get(ControlIDs::idConfPanelColorPicker2))
+        return "thread_search_file_fore";
+    else if (controlID == controlIDs.Get(ControlIDs::idConfPanelColorPicker3))
+        return "thread_search_file_back";
+    else if (controlID == controlIDs.Get(ControlIDs::idConfPanelColorPicker4))
+        return "thread_search_lineno_fore";
+    else if (controlID == controlIDs.Get(ControlIDs::idConfPanelColorPicker5))
+        return "thread_search_lineno_back";
+    else if (controlID == controlIDs.Get(ControlIDs::idConfPanelColorPicker6))
+        return "thread_search_match_fore";
+    else if (controlID == controlIDs.Get(ControlIDs::idConfPanelColorPicker7))
+        return "thread_search_match_back";
+    else if (controlID == controlIDs.Get(ControlIDs::idConfPanelColorPicker8))
+        return "thread_search_selected_line_back";
+    else
+        return wxString();
+}
+
 void ThreadSearchConfPanel::OnColourPickerChanged(wxColourPickerEvent &event)
 {
     if (!m_ColoursInterface)
         return;
 
     const long id = event.GetId();
-    if (id == controlIDs.Get(ControlIDs::idConfPanelColorPicker0))
+    const wxString colourID = findColourIDFromControlID(id);
+    if (!colourID.empty())
     {
-        m_ColoursInterface->SetValue(wxT("thread_search_text_fore"), event.GetColour());
+        m_ColoursInterface->SetValue(colourID, event.GetColour());
     }
-    else if (id == controlIDs.Get(ControlIDs::idConfPanelColorPicker1))
+}
+
+void ThreadSearchConfPanel::OnColourPickerContext(wxContextMenuEvent &event)
+{
+    const long id = event.GetId();
+    const wxString colourID = findColourIDFromControlID(id);
+    if (!colourID.empty())
     {
-        m_ColoursInterface->SetValue(wxT("thread_search_text_back"), event.GetColour());
-    }
-    else if (id == controlIDs.Get(ControlIDs::idConfPanelColorPicker2))
-    {
-        m_ColoursInterface->SetValue(wxT("thread_search_file_fore"), event.GetColour());
-    }
-    else if (id == controlIDs.Get(ControlIDs::idConfPanelColorPicker3))
-    {
-        m_ColoursInterface->SetValue(wxT("thread_search_file_back"), event.GetColour());
-    }
-    else if (id == controlIDs.Get(ControlIDs::idConfPanelColorPicker4))
-    {
-        m_ColoursInterface->SetValue(wxT("thread_search_lineno_fore"), event.GetColour());
-    }
-    else if (id == controlIDs.Get(ControlIDs::idConfPanelColorPicker5))
-    {
-        m_ColoursInterface->SetValue(wxT("thread_search_lineno_back"), event.GetColour());
-    }
-    else if (id == controlIDs.Get(ControlIDs::idConfPanelColorPicker6))
-    {
-        m_ColoursInterface->SetValue(wxT("thread_search_match_fore"), event.GetColour());
-    }
-    else if (id == controlIDs.Get(ControlIDs::idConfPanelColorPicker7))
-    {
-        m_ColoursInterface->SetValue(wxT("thread_search_match_back"), event.GetColour());
-    }
-    else if (id == controlIDs.Get(ControlIDs::idConfPanelColorPicker8))
-    {
-        m_ColoursInterface->SetValue(wxT("thread_search_selected_line_back"), event.GetColour());
+        wxColour defaultColour;
+        if (m_ColoursInterface)
+        {
+            m_ColoursInterface->ResetDefault(colourID);
+            defaultColour = m_ColoursInterface->GetValue(colourID);
+        }
+        else
+        {
+            ColourManager *colours = Manager::Get()->GetColourManager();
+            defaultColour = colours->GetDefaultColour(colourID);
+        }
+
+        wxWindow *control = FindWindow(id);
+        if (control)
+            static_cast<wxColourPickerCtrl*>(control)->SetColour(defaultColour);
     }
 }

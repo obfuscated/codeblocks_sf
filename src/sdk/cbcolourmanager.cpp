@@ -78,6 +78,12 @@ wxColour ColourManager::GetColour(const wxString &id) const
     return it != m_colours.end() ? it->second.value : *wxBLACK;
 }
 
+wxColour ColourManager::GetDefaultColour(const wxString &id) const
+{
+    ColourDefMap::const_iterator it = m_colours.find(id);
+    return it != m_colours.end() ? it->second.defaultValue : *wxBLACK;
+}
+
 void ColourManager::SetColour(const wxString &id, const wxColour &colour)
 {
     ColourDefMap::iterator it = m_colours.find(id);
