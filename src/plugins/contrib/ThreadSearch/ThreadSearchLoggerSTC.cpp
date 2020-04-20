@@ -565,6 +565,8 @@ void ThreadSearchLoggerSTC::OnDoubleClick(wxScintillaEvent &event)
         m_ThreadSearchView.OnLoggerDoubleClick(filepath, line);
     }
 
+    m_stc->SetEmptySelection(m_stc->GetCurrentPos());
+
     event.Skip();
 }
 
