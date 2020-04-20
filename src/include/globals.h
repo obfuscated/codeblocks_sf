@@ -332,6 +332,9 @@ extern DLLIMPORT std::unique_ptr<wxImageList> cbMakeScaledImageList(int size, do
 extern DLLIMPORT bool cbAddBitmapToImageList(wxImageList &list, const wxBitmap &bitmap, int size,
                                              int listSize, double scaleFactor);
 
+/// Returns true if the theme used for running Code::Blocks is a dark one.
+extern DLLIMPORT bool cbIsDarkTheme();
+
 // compatibility function
 inline wxBitmap LoadPNGWindows2000Hack(const wxString& filename){ return cbLoadBitmap(filename); }
 
