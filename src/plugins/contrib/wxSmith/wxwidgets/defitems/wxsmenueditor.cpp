@@ -65,9 +65,9 @@ const long wxsMenuEditor::ID_BUTTON6 = wxNewId();
 
 wxsMenuEditor::wxsMenuEditor(wxWindow* parent,wxsMenuBar* MenuBar):
     m_MenuBar(MenuBar),
-    m_Menu(0),
-    m_First(0),
-    m_Selected(0),
+    m_Menu(nullptr),
+    m_First(nullptr),
+    m_Selected(nullptr),
     m_BlockSel(false),
     m_BlockRead(false)
 {
@@ -77,10 +77,10 @@ wxsMenuEditor::wxsMenuEditor(wxWindow* parent,wxsMenuBar* MenuBar):
 }
 
 wxsMenuEditor::wxsMenuEditor(wxWindow* parent,wxsMenu* Menu):
-    m_MenuBar(0),
+    m_MenuBar(nullptr),
     m_Menu(Menu),
-    m_First(0),
-    m_Selected(0),
+    m_First(nullptr),
+    m_Selected(nullptr),
     m_BlockSel(false),
     m_BlockRead(false)
 {
@@ -213,23 +213,23 @@ void wxsMenuEditor::CreateDataCopy()
 {
     if ( m_Menu )
     {
-        CreateDataCopyReq(m_Menu,0);
+        CreateDataCopyReq(m_Menu, nullptr);
     }
     else
     {
-        CreateDataCopyReq(m_MenuBar,0);
+        CreateDataCopyReq(m_MenuBar, nullptr);
     }
 }
 
 void wxsMenuEditor::CreateDataCopyReq(wxsMenu* Menu,MenuItem* Parent)
 {
-    MenuItem* LastChild = 0;
+    MenuItem* LastChild = nullptr;
     for ( int i=0; i<Menu->GetChildCount(); i++ )
     {
         wxsMenuItem* ChildMenu = (wxsMenuItem*)Menu->GetChild(i);
         MenuItem* ChildItem = new MenuItem;
-        ChildItem->m_Next = 0;
-        ChildItem->m_Child = 0;
+        ChildItem->m_Next = nullptr;
+        ChildItem->m_Child = nullptr;
         ChildItem->m_Parent = Parent;
         if ( LastChild )
         {
@@ -246,7 +246,7 @@ void wxsMenuEditor::CreateDataCopyReq(wxsMenu* Menu,MenuItem* Parent)
 
 void wxsMenuEditor::CreateDataCopyReq(wxsMenuBar* Menu,MenuItem* Parent)
 {
-    MenuItem* LastChild = 0;
+    MenuItem* LastChild = nullptr;
     for ( int i=0; i<Menu->GetChildCount(); i++ )
     {
         wxsMenu* ChildMenu = (wxsMenu*)Menu->GetChild(i);
@@ -258,8 +258,8 @@ void wxsMenuEditor::CreateDataCopyReq(wxsMenuBar* Menu,MenuItem* Parent)
         ChildItem->m_Label = ChildMenu->m_Label;
         ChildItem->m_Enabled = true;
         ChildItem->m_Checked = false;
-        ChildItem->m_Next = 0;
-        ChildItem->m_Child = 0;
+        ChildItem->m_Next = nullptr;
+        ChildItem->m_Child = nullptr;
         ChildItem->m_Parent = Parent;
         if ( LastChild )
         {
@@ -294,13 +294,13 @@ void wxsMenuEditor::CreateDataCopyReq(wxsMenuItem* Menu,MenuItem* Parent)
         Parent->m_HandlerFunction = Events.GetHandler(0);
     }
 
-    MenuItem* LastChild = 0;
+    MenuItem* LastChild = nullptr;
     for ( int i=0; i<Menu->GetChildCount(); i++ )
     {
         wxsMenuItem* ChildMenu = (wxsMenuItem*)Menu->GetChild(i);
         MenuItem* ChildItem = new MenuItem;
-        ChildItem->m_Next = 0;
-        ChildItem->m_Child = 0;
+        ChildItem->m_Next = nullptr;
+        ChildItem->m_Child = nullptr;
         ChildItem->m_Parent = Parent;
         if ( LastChild )
         {
@@ -318,7 +318,7 @@ void wxsMenuEditor::CreateDataCopyReq(wxsMenuItem* Menu,MenuItem* Parent)
 void wxsMenuEditor::DeleteDataCopy()
 {
     DeleteDataCopyReq(m_First);
-    m_First = 0;
+    m_First = nullptr;
 }
 
 void wxsMenuEditor::DeleteDataCopyReq(MenuItem* Item)
@@ -656,7 +656,7 @@ void wxsMenuEditor::OnTypeChanged(cb_unused wxCommandEvent& event)
 {
     MenuItem* Selected = m_Selected;
     SelectItem(Selected);
-    m_Selected = 0;
+    m_Selected = nullptr;
     SelectItem(Selected);
     m_Content->SetItemText(m_Selected->m_TreeId,GetItemTreeName(m_Selected));
 }
@@ -695,22 +695,25 @@ void wxsMenuEditor::OnButtonUpClick(cb_unused wxCommandEvent& event)
     {
         // Have to put outside current parent
         if ( !Parent ) return;
+        // Disconect m_Selected from the child chain
         Parent->m_Child = m_Selected->m_Next;
-        m_Selected->m_Next = Parent;
-        Parent = m_Selected->m_Parent = Parent->m_Parent;
-        MenuItem* Previous2 = GetPrevious(Parent);
-        if ( Previous2 )
+        // Insert m_Selected between parent's previous sibling (if any) and the parent
+        MenuItem* PreviousSibling = GetPrevious(Parent);
+        if ( PreviousSibling )
         {
-            Previous2->m_Next = m_Selected;
+            PreviousSibling->m_Next = m_Selected;
         }
-        else if ( Parent )
+        else if ( Parent->m_Parent )
         {
-            Parent->m_Child = m_Selected;
+            Parent->m_Parent->m_Child = m_Selected;
         }
         else
         {
             m_First = m_Selected;
         }
+
+        m_Selected->m_Parent = Parent->m_Parent;
+        m_Selected->m_Next = Parent;
     }
 
     // Rebuilding tree
@@ -749,11 +752,11 @@ void wxsMenuEditor::OnButtonDownClick(cb_unused wxCommandEvent& event)
         if ( !Parent ) return;
         if ( Previous )
         {
-            Previous->m_Next = 0;
+            Previous->m_Next = nullptr;
         }
         else
         {
-            Parent->m_Child = 0;
+            Parent->m_Child = nullptr;
         }
         m_Selected->m_Next = Parent->m_Next;
         m_Selected->m_Parent = Parent->m_Parent;
@@ -767,14 +770,14 @@ void wxsMenuEditor::OnButtonDownClick(cb_unused wxCommandEvent& event)
 wxsMenuEditor::MenuItem* wxsMenuEditor::GetPrevious(MenuItem* Item)
 {
     MenuItem* Parent = Item->m_Parent;
-    if ( !Parent && Item == m_First         ) return 0;
-    if (  Parent && Item == Parent->m_Child ) return 0;
+    if ( !Parent && Item == m_First         ) return nullptr;
+    if (  Parent && Item == Parent->m_Child ) return nullptr;
 
     for ( MenuItem* Prev = Parent ? Parent->m_Child : m_First ; Prev; Prev = Prev->m_Next )
     {
         if ( Prev->m_Next == Item ) return Prev;
     }
-    return 0;
+    return nullptr;
 }
 
 void wxsMenuEditor::OnButtonNewClick(cb_unused wxCommandEvent& event)
@@ -785,12 +788,12 @@ void wxsMenuEditor::OnButtonNewClick(cb_unused wxCommandEvent& event)
     NewItem->m_IsMember = true;
     NewItem->m_Enabled = true;
     NewItem->m_Checked = false;
-    NewItem->m_Child = 0;
+    NewItem->m_Child = nullptr;
 
     if ( !m_Selected )
     {
         // Just adding new item into m_Data
-        NewItem->m_Parent = 0;
+        NewItem->m_Parent = nullptr;
         NewItem->m_Next = m_First;
         m_First = NewItem;
     }
@@ -821,9 +824,9 @@ void wxsMenuEditor::OnButtonDelClick(cb_unused wxCommandEvent& event)
     if ( Previous )
     {
         Previous->m_Next = m_Selected->m_Next;
-        m_Selected->m_Next = 0;
+        m_Selected->m_Next = nullptr;
         DeleteDataCopyReq(m_Selected);
-        m_Selected = 0;
+        m_Selected = nullptr;
         if ( Previous->m_Next )
         {
             SelectItem(Previous->m_Next);
@@ -855,9 +858,9 @@ void wxsMenuEditor::OnButtonDelClick(cb_unused wxCommandEvent& event)
             NewSelected = m_Selected->m_Parent;
         }
 
-        m_Selected->m_Next = 0;
+        m_Selected->m_Next = nullptr;
         DeleteDataCopyReq(m_Selected);
-        m_Selected = 0;
+        m_Selected = nullptr;
         SelectItem(NewSelected);
     }
 
@@ -900,7 +903,7 @@ void wxsMenuEditor::OnButtonRightClick(cb_unused wxCommandEvent& event)
     Previous->m_Type = wxsMenuItem::Normal;
     Previous->m_Next = m_Selected->m_Next;
     m_Selected->m_Parent = Previous;
-    m_Selected->m_Next = 0;
+    m_Selected->m_Next = nullptr;
 
     if ( !Previous->m_Child )
     {
