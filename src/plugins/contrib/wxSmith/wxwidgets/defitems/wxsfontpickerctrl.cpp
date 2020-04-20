@@ -108,5 +108,5 @@ wxObject* wxsFontPickerCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
  */
 void wxsFontPickerCtrl::OnEnumWidgetProperties(cb_unused long Flags)
 {
-    WXS_FONT(wxsFontPickerCtrl, m_fdFont, _("Font"), _T("font"))
+    WXS_FONT(wxsFontPickerCtrl, m_fdFont, _("Selected font"), _T("value"))
 }
