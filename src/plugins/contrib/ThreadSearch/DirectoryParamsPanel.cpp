@@ -20,15 +20,22 @@
     #include <wx/button.h>
     #include <wx/checkbox.h>
     #include <wx/combobox.h>
+    #include <wx/dir.h>
     #include <wx/dirdlg.h>
+    #include <wx/filename.h>
     #include <wx/sizer.h>
     #include <wx/stattext.h>
+
+    #include <algorithm>
 #endif
 
 #include "DirectoryParamsPanel.h"
 #include "ThreadSearchCommon.h"
 #include "ThreadSearchControlIds.h"
 #include "ThreadSearchFindData.h"
+
+#include <wx/textcompleter.h>
+#include <mutex>
 
 // Max number of items in search history combo box
 const unsigned int MAX_NB_SEARCH_ITEMS = 20;
@@ -53,6 +60,83 @@ void AddItemToCombo(wxComboBox *combo, const wxString &str)
     combo->SetSelection(0);
 }
 
+/// Directory traverser which finds the sub-directories in a given directory.
+/// It ignores everything else and doesn't do more than on 1 level.
+struct DirTraverserSingleLevel : wxDirTraverser
+{
+    DirTraverserSingleLevel(wxArrayString &files) : m_files(files) {}
+
+    wxDirTraverseResult OnFile(cb_unused const wxString &filename) override
+    {
+        return wxDIR_IGNORE;
+    }
+
+    wxDirTraverseResult OnDir(const wxString &dirname) override
+    {
+        m_files.push_back(dirname);
+        return wxDIR_IGNORE;
+    }
+
+private:
+    wxArrayString& m_files;
+};
+
+struct DirTextCompleter : wxTextCompleter
+{
+    bool Start(const wxString &prefix) override
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
+
+        wxString directory;
+
+        // Extract the directory from the given string.
+        if (wxDir::Exists(prefix))
+            directory = prefix;
+        else
+            wxFileName::SplitPath(prefix, &directory, nullptr, nullptr);
+
+        if (directory.empty())
+            return false;
+
+        // If the directory differs then we cannot use our old results and so we have to regenerate
+        // them. If the directory is the same reuse the results, to make the completer a bit more
+        // responsive.
+        if (m_dirName != directory)
+        {
+            m_dirName = directory;
+            m_filesInDir.clear();
+
+            wxDir dir(directory);
+            if (dir.IsOpened())
+            {
+                DirTraverserSingleLevel traverser(m_filesInDir);
+                dir.Traverse(traverser, wxString(), wxDIR_DIRS);
+            }
+
+            std::sort(m_filesInDir.begin(), m_filesInDir.end());
+        }
+
+        m_index = 0;
+
+        return true;
+    }
+
+    wxString GetNext() override
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        if (m_index >= int(m_filesInDir.size()))
+            return wxString();
+        else
+            return m_filesInDir[m_index++];
+    }
+
+private:
+    std::mutex m_mutex;
+    wxString m_dirName;
+    wxArrayString m_filesInDir;
+    int m_index;
+};
+
 DirectoryParamsPanel::DirectoryParamsPanel(ThreadSearchFindData *findData, wxWindow* parent, int id, const wxPoint& pos,
                                            const wxSize& size, long WXUNUSED(style)):
     wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL),
@@ -64,6 +148,7 @@ DirectoryParamsPanel::DirectoryParamsPanel(ThreadSearchFindData *findData, wxWin
     m_pSearchDirPath = new wxComboBox(this, controlIDs.Get(ControlIDs::idSearchDirPath), wxEmptyString,
                                       wxDefaultPosition, wxDefaultSize, 0, choices, wxCB_DROPDOWN|wxTE_PROCESS_ENTER);
     SetWindowMinMaxSize(*m_pSearchDirPath, 80, 180);
+    m_pSearchDirPath->AutoComplete(new DirTextCompleter);
 
     m_pBtnSelectDir = new wxButton(this, controlIDs.Get(ControlIDs::idBtnDirSelectClick), _("..."));
     m_pChkSearchDirRecursively = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkSearchDirRecurse), _("Recurse"));
