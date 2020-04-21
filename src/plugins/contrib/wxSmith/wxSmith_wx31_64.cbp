@@ -185,6 +185,12 @@
 		<Unit filename="properties/wxsstringproperty.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="properties/wxstwolongproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties/wxstwolongproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="wxsadvqpp.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
