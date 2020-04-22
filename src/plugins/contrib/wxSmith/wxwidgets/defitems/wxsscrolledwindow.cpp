@@ -54,6 +54,10 @@ void wxsScrolledWindow::OnBuildCreatingCode()
             Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
             BuildSetupWindowCode();
             AddChildrenCode();
+            if(!m_scrollRate.DefValue)
+            {
+                Codef(_T("%ASetScrollRate(%d,%d);\n"), m_scrollRate.GetValue1(), m_scrollRate.GetValue2() );
+            }
             return;
         }
 
@@ -74,6 +78,11 @@ wxObject* wxsScrolledWindow::OnBuildPreview(wxWindow* Parent,long Flags)
     return NewItem;
 }
 
-void wxsScrolledWindow::OnEnumContainerProperties(cb_unused long Flags)
+void wxsScrolledWindow::OnEnumContainerProperties(long Flags)
 {
+    if ( Flags & flSource )
+    {
+        WXS_TWOLONG( wxsScrolledWindow, m_scrollRate,  _("Default scroll rate"), _("Rate x"), _("Rate y"), _("scrollrate"), -1, -1);
+    }
 }
+

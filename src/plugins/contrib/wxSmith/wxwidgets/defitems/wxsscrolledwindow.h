@@ -24,6 +24,7 @@
 #define WXSSCROLLEDWINDOW_H
 
 #include "../wxscontainer.h"
+#include "../../properties/wxstwolongproperty.h"
 
 class wxsScrolledWindow : public wxsContainer
 {
@@ -36,6 +37,8 @@ class wxsScrolledWindow : public wxsContainer
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnBuildCreatingCode();
         virtual void OnEnumContainerProperties(long Flags);
+
+        wxsTwoLongData m_scrollRate;
 };
 
 #endif
