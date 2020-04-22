@@ -24,7 +24,6 @@
 #define WXSTWOLONGPROPERTY_H
 
 #include "wxsproperties.h"
-#include "../wxWidgets/wxscodercontext.h"
 
 struct wxsTwoLongData
 {
