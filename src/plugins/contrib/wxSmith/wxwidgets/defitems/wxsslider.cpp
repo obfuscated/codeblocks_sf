@@ -57,6 +57,7 @@ namespace
         WXS_EVI(EVT_COMMAND_SCROLL_THUMBRELEASE,wxEVT_SCROLL_THUMBRELEASE,wxScrollEvent,CmdScrollThumbRelease)
         WXS_EVI(EVT_COMMAND_SCROLL_CHANGED,wxEVT_SCROLL_CHANGED,wxScrollEvent,CmdScrollChanged)
         WXS_EVI(EVT_COMMAND_SLIDER_UPDATED,wxEVT_COMMAND_SLIDER_UPDATED,wxScrollEvent,CmdSliderUpdated)
+        WXS_EVI(EVT_SLIDER,wxEVT_SLIDER,wxCommandEvent,OnUpdate)
     WXS_EV_END()
 
 }
