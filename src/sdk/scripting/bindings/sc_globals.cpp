@@ -196,6 +196,11 @@ namespace ScriptBindings
         return value;
     }
 
+    wxString GetEOL()
+    {
+        return  GetEOLStr(-1);
+    }
+
 
     void Register_Globals()
     {
@@ -245,6 +250,9 @@ namespace ScriptBindings
         SqPlus::RegisterGlobal(InfoWindow::Display, "InfoWindow");
 
         SquirrelVM::CreateFunctionGlobal(IsNull, "IsNull", "*");
+
+        SqPlus::RegisterGlobal(GetEOL, "GetEOLStr");
+        SqPlus::RegisterGlobal(cbGetTabStr, "cbGetTabStr");
 
         // now for some wx globals (utility) functions
         SqPlus::RegisterGlobal(wxLaunchDefaultBrowser, "wxLaunchDefaultBrowser");

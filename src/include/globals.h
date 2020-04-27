@@ -260,11 +260,27 @@ extern DLLIMPORT bool cbResolveSymLinkedDirPath(wxString& dirpath);
 /// @return The resolved path or the same path if not a symlink.
 extern DLLIMPORT wxString cbResolveSymLinkedDirPathRecursive(wxString dirpath);
 
+/**
+  * Return true if the indentation line endings should be consistent in the file,
+  * so you have to detect the line ending of the file you are editing.
+  * If the value is false use cbGetEOLStr(-1) go get the line ending.
+  */
+extern DLLIMPORT bool cbEnsureLineEndingConsistency();
+
 /** Reads settings if eolMode is -1
   * Expected input (defined in sdk/wxscintilla/include/wx/wxscintilla.h) is:
   * wxSCI_EOL_CRLF=0, wxSCI_EOL_CR=1, or wxSCI_EOL_LF=2
   */
 extern DLLIMPORT wxString GetEOLStr(int eolMode = -1);
+
+/**
+  * Return true if the indentation style should be detected automatically, or false if the indentation should be used like in the settings
+  */
+extern DLLIMPORT bool cbDetectTabStrAutomatically();
+/**
+  * Return the tab character as set in the settings. (\t or the set number of spaces)
+  */
+extern DLLIMPORT wxString cbGetTabStr();
 
 extern DLLIMPORT wxString URLEncode(const wxString &str);
 

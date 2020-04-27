@@ -831,6 +831,30 @@ wxString GetEOLStr(int eolMode)
     }
 }
 
+bool cbEnsureLineEndingConsistency()
+{
+    return Manager::Get()->GetConfigManager(wxT("editor"))->ReadBool(_T("/eol/ensure_consistent_line_ends"), false);
+}
+
+bool cbDetectTabStrAutomatically()
+{
+    ConfigManager *CfgMan = Manager::Get()->GetConfigManager(_T("editor"));
+    return CfgMan->ReadBool(_T("/detect_indent"), false);
+}
+
+wxString cbGetTabStr()
+{
+    ConfigManager *CfgMan = Manager::Get()->GetConfigManager(_T("editor"));
+    const bool UseTab = CfgMan->ReadBool(_T("/use_tab"), false);
+    if ( !UseTab )
+    {
+        const int TabSize = CfgMan->ReadInt(_T("/tab_size"), 4);
+        return wxString(' ', TabSize);
+    }
+    else
+        return _T("\t");
+}
+
 wxString URLEncode(const wxString &str) // not sure this is 100% standards compliant, but I hope so
 {
     wxString ret;
