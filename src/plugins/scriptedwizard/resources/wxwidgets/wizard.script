@@ -1286,6 +1286,9 @@ function SubstituteMacros(buffer)
     buffer.Replace(_T("[NOW]"), ReplaceMacros(_T("$(TODAY)"), false));
     buffer.Replace(_T("[PCH_INCLUDE]"), PchInclude);
 
+    buffer.Replace(_T("\n"), GetEOLStr());
+    buffer.Replace(_T("\t"), cbGetTabStr());
+
     return buffer;
 }
 
