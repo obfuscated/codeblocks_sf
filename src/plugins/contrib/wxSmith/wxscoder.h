@@ -91,6 +91,12 @@ class wxsCoder: public wxEvtHandler
         /** \brief Function getting singleton object from system */
         static wxsCoder* Get() { return Singleton; }
 
+        /** \brief detect the tab style (indentation) and line ending of the line */
+        static void GetLineEndingIndentation(const wxString& line, wxString& indentation, wxString& lineending);
+
+        /** \brief Rebuilding code to support current editor settings */
+        static wxString RebuildCode(wxString& BaseIndentation, const wxChar* Code, int CodeLen, wxString EOL, const wxString& tab);
+
     private:
 
         /** \brief Structure which contains one data change */
@@ -124,8 +130,7 @@ class wxsCoder: public wxEvtHandler
             const wxString& End,
             wxString& Code,
             bool CodeHasHeader,
-            bool CodeHasEnd,
-            wxString& EOL);
+            bool CodeHasEnd);
 
         /** \brief Applying changes to string (file's content) */
         bool ApplyChangesString(
@@ -135,8 +140,7 @@ class wxsCoder: public wxEvtHandler
             wxString& Code,
             bool CodeHasHeader,
             bool CodeHasEnd,
-            bool& HasChanged,
-            wxString& EOL);
+            bool& HasChanged);
 
         /** \brief Flushing all changes for given file */
         void FlushFile(const wxString& FileName);
@@ -146,9 +150,6 @@ class wxsCoder: public wxEvtHandler
 
         /** \brief Flush timer procedure */
         void FlushTimerEvent(wxTimerEvent& event);
-
-        /** \brief Rebuilding code to support current editor settings */
-        wxString RebuildCode(wxString& BaseIndentation,const wxChar* Code,int CodeLen,wxString& EOL);
 
         /** \brief Cutting off given number of spaces at every new line */
         wxString CutSpaces(wxString Code,int Count);

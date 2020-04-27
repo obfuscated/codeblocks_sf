@@ -429,17 +429,20 @@ bool wxsEventsEditor::CreateNewFunction(const wxsEventDesc* Event,const wxString
                 return false;
             }
 
+            cbStyledTextCtrl* Ctrl = Editor->GetControl();
+            int LineNumber = Ctrl->GetLineCount();
+            wxString eof, tab;
+            wxsCoder::GetLineEndingIndentation(Ctrl->GetLine(LineNumber/2), tab, eof); // Get line endings form a random position in the editor control
             wxString NewFunctionCode;
             NewFunctionCode <<
-                _T("\n")
-                _T("void ") << m_Class << _T("::") << NewFunctionName << _T("(") << Event->ArgType << _T("& event)\n")
-                _T("{\n")
-                _T("}\n");
+                eof <<
+                _T("void ") << m_Class << _T("::") << NewFunctionName << _T("(") << Event->ArgType << _T("& event)") << eof <<
+                _T("{") << eof <<
+                _T("}") << eof;
 
             // TODO: Replace line endings with propert string
 
-            cbStyledTextCtrl* Ctrl = Editor->GetControl();
-            int LineNumber = Ctrl->GetLineCount();
+
             Ctrl->DocumentEnd();
             Ctrl->AddText(NewFunctionCode);
             Editor->SetModified();
