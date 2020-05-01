@@ -101,8 +101,8 @@ END_EVENT_TABLE()
 
 // constructor
 DoxyBlocks::DoxyBlocks() :
-    m_pToolbar(0l),
-    m_DoxyBlocksLog(0l),
+    m_pToolbar(nullptr),
+    m_DoxyBlocksLog(nullptr),
     m_LogPageIndex(0),
     m_bAutoVersioning(false)
 {
@@ -234,8 +234,10 @@ void DoxyBlocks::OnEditorClose(CodeBlocksEvent& WXUNUSED(event))
  */
 void DoxyBlocks::OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event))
 {
-    if(Manager::Get()->GetProjectManager()->GetProjects()->GetCount() == 0){
-        m_pToolbar->Enable(false);
+    if (Manager::Get()->GetProjectManager()->GetProjects()->GetCount() == 0)
+    {
+        if (m_pToolbar)
+            m_pToolbar->Enable(false);
         wxMenuBar *menuBar =  Manager::Get()->GetAppFrame()->GetMenuBar();
         menuBar->FindItem(ID_MENU_DOXYWIZARD)->Enable(false);
         menuBar->FindItem(ID_MENU_EXTRACTPROJECT)->Enable(false);
@@ -264,14 +266,15 @@ void DoxyBlocks::OnRelease(bool /*appShutDown*/)
             Manager::Get()->ProcessEvent(evt);
         }
     }
-    m_DoxyBlocksLog = 0;
+    m_DoxyBlocksLog = nullptr;
 }
 
-cbConfigurationPanel *DoxyBlocks::GetConfigurationPanel(wxWindow *parent)
+cbConfigurationPanel* DoxyBlocks::GetConfigurationPanel(wxWindow *parent)
 {
     //create and display the configuration dialog for your plugin
-    if(!IsAttached()){
-        return 0;
+    if (!IsAttached())
+    {
+        return nullptr;
     }
 
     // Get the version string before instantiating the panel so that it is recorded before
@@ -346,7 +349,7 @@ cbConfigurationPanel *DoxyBlocks::GetConfigurationPanel(wxWindow *parent)
 
 cbConfigurationPanel* DoxyBlocks::GetProjectConfigurationPanel(wxWindow* /*parent*/, cbProject* /*project*/)
 {
-    return 0;
+    return nullptr;
 }
 
 void DoxyBlocks::OnConfigure(wxCommandEvent & WXUNUSED(event))
