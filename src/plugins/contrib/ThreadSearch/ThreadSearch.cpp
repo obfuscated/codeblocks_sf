@@ -524,8 +524,12 @@ void ThreadSearch::LoadConfig(int& sashPosition,
 
     m_FindData.SetScope           (pCfg->ReadInt (wxT("/Scope"),                 ScopeProjectFiles));
 
-    m_FindData.SetSearchPath      (pCfg->Read    (wxT("/DirPath"),               wxEmptyString));
-    m_FindData.SetSearchMask      (pCfg->Read    (wxT("/Mask"),                  wxT("*.cpp;*.c;*.h")));
+    m_FindData.SetSearchPath      (pCfg->Read(wxT("/DirPath"), wxString()));
+    m_FindData.SetSearchMask      (pCfg->Read(wxT("/Mask"), wxT("*.cpp;*.c;*.h")));
+
+    wxArrayString fullList;
+    pCfg->Read(wxT("/DirPathFullList"), &fullList);
+    m_FindData.SetSearchPathFullList(fullList);
 
     sashPosition                 = pCfg->ReadInt(wxT("/SplitterPosn"),           0);
     int splitterMode             = pCfg->ReadInt(wxT("/SplitterMode"),           wxSPLIT_VERTICAL);
@@ -588,6 +592,8 @@ void ThreadSearch::SaveConfig(int sashPosition, const wxArrayString& searchPatte
     pCfg->Write(wxT("/Scope"),                 m_FindData.GetScope());
 
     pCfg->Write(wxT("/DirPath"),               m_FindData.GetSearchPath());
+    pCfg->Write("/DirPathFullList",            m_FindData.GetSearchPathFullList());
+
     pCfg->Write(wxT("/Mask"),                  m_FindData.GetSearchMask());
 
     pCfg->Write(wxT("/SplitterPosn"),          sashPosition);

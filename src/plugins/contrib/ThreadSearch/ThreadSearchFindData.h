@@ -12,8 +12,8 @@
 #ifndef THREAD_SEARCH_FIND_DATA_H
 #define THREAD_SEARCH_FIND_DATA_H
 
-
 #include <wx/string.h>
+#include <wx/arrstr.h>
 
 // Possible search scopes.
 enum eSearchScope
@@ -50,6 +50,10 @@ public:
     void SetRegEx          (bool regEx)                 {m_RegEx           = regEx;}
     void SetScope          (int scope)                  {m_Scope           = scope;}
     void SetSearchPath     (const wxString& searchPath) {m_SearchPath      = searchPath;}
+    void SetSearchPathFullList(const wxArrayString &searchPaths)
+    {
+        m_SearchPathFullList = searchPaths;
+    }
     void SetSearchMask     (const wxString& searchMask) {m_SearchMask      = searchMask;}
     void SetRecursiveSearch(bool recursiveSearch)       {m_RecursiveSearch = recursiveSearch;}
     void SetHiddenSearch   (bool hiddenSearch)          {m_HiddenSearch    = hiddenSearch;}
@@ -65,6 +69,7 @@ public:
     bool     GetHiddenSearch()    const {return m_HiddenSearch;}
 
     wxString GetSearchPath(bool bExpanded = false) const;
+    wxArrayString GetSearchPathFullList() const { return m_SearchPathFullList; }
 
     bool IsOptionEnabled() const;
 
@@ -76,6 +81,7 @@ private:
     bool     m_RegEx;
     int      m_Scope;
     wxString m_SearchPath;
+    wxArrayString m_SearchPathFullList;
     wxString m_SearchMask;
     bool     m_RecursiveSearch;
     bool     m_HiddenSearch;
