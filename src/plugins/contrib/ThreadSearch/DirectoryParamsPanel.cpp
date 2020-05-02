@@ -186,8 +186,9 @@ struct DirectorySelectDialog : wxDialog
                                                              wxArtProvider::GetBitmap("core/folder_open", wxART_BUTTON));
         wxPanel *panelList = new wxPanel(this);
         {
-            m_list = new wxCheckListBox(panelList, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                        wxArrayString(), wxLB_EXTENDED);
+            m_list = new wxCheckListBox(panelList, controlIDs.Get(ControlIDs::idDirDialogList),
+                                        wxDefaultPosition, wxDefaultSize, wxArrayString(),
+                                        wxLB_EXTENDED);
             m_list->SetMinSize(wxSize(m_list->GetCharWidth() * 50, m_list->GetCharHeight() * 20));
 
             const std::vector<wxString> &splittedPaths = GetVectorFromString(paths, ";", true);
@@ -233,6 +234,9 @@ struct DirectorySelectDialog : wxDialog
             wxButton *buttonAdd = new wxButton(panelList,
                                                controlIDs.Get(ControlIDs::idDirDialogAddButton),
                                                _("&Add"));
+            wxButton *buttonEdit = new wxButton(panelList,
+                                                controlIDs.Get(ControlIDs::idDirDialogEditButton),
+                                                _("&Edit"));
             wxButton *buttonDelete = new wxButton(panelList,
                                                   controlIDs.Get(ControlIDs::idDirDialogDeleteButton),
                                                   _("&Delete"));
@@ -245,6 +249,7 @@ struct DirectorySelectDialog : wxDialog
 
             wxBoxSizer *listButtonSizer = new wxBoxSizer(wxVERTICAL);
             listButtonSizer->Add(buttonAdd, 0, wxEXPAND, sizerBorder / 2);
+            listButtonSizer->Add(buttonEdit, 0, wxTOP | wxEXPAND, sizerBorder / 2);
             listButtonSizer->Add(buttonDelete, 0, wxTOP | wxEXPAND, sizerBorder / 2);
             listButtonSizer->Add(buttonDeleteAll, 0, wxTOP | wxEXPAND, sizerBorder / 2);
             listButtonSizer->Add(separator, 0, wxTOP | wxEXPAND, sizerBorder / 2);
@@ -305,7 +310,7 @@ private:
     /// Inserts the path in the list. The list must be sorted and after the function returns it will
     /// remain sorted (the path would be inserted at the correct place). The item would be checked
     /// no matter if it is already present in the list or the function adds it.
-    void InsertItemInList(const wxString &path)
+    int InsertItemInList(const wxString &path)
     {
         int insertedIndex = -1;
         bool found = false;
@@ -332,6 +337,7 @@ private:
         }
 
         m_list->Check(insertedIndex, true);
+        return insertedIndex;
     }
 
     void OnEnter(wxCommandEvent &event)
@@ -344,6 +350,33 @@ private:
             m_entry->SetValue(wxString());
         }
         event.Skip();
+    }
+
+    void OnEdit(wxCommandEvent &event)
+    {
+        wxArrayInt selected;
+        m_list->GetSelections(selected);
+
+        if (selected.empty())
+            return;
+
+        const int selectedItem = selected.front();
+        const wxString &selectedPath = m_list->GetString(selectedItem);
+
+        wxDirDialog dialog(this, _("Select directory"), selectedPath);
+        if (dialog.ShowModal() == wxID_OK)
+        {
+            const wxString &newPath = dialog.GetPath();
+            if (selectedPath != newPath)
+            {
+                // We want to keep the sorted property of the list, so we need to remove the old
+                // item and insert a new one. It seems expected that the new item would be
+                // automatically in a checked stated, no matter if the old item was checked or not.
+                m_list->Delete(selectedItem);
+                const int newItem = InsertItemInList(newPath);
+                m_list->SetSelection(newItem);
+            }
+        }
     }
 
     void OnDirDialog(wxCommandEvent &event)
@@ -438,12 +471,16 @@ BEGIN_EVENT_TABLE(DirectorySelectDialog, wxDialog)
     EVT_TEXT_ENTER(controlIDs.Get(ControlIDs::idDirDialogCombo), DirectorySelectDialog::OnEnter)
 
     EVT_BUTTON(controlIDs.Get(ControlIDs::idDirDialogAddButton), DirectorySelectDialog::OnEnter)
+    EVT_BUTTON(controlIDs.Get(ControlIDs::idDirDialogEditButton), DirectorySelectDialog::OnEdit)
     EVT_BUTTON(controlIDs.Get(ControlIDs::idDirDialogDirButton), DirectorySelectDialog::OnDirDialog)
     EVT_BUTTON(controlIDs.Get(ControlIDs::idDirDialogDeleteButton), DirectorySelectDialog::OnDelete)
     EVT_BUTTON(controlIDs.Get(ControlIDs::idDirDialogDeleteAllButton), DirectorySelectDialog::OnDeleteAll)
     EVT_BUTTON(controlIDs.Get(ControlIDs::idDirDialogCheckSelectedButton), DirectorySelectDialog::OnCheckSelected)
 
+    EVT_LISTBOX_DCLICK(controlIDs.Get(ControlIDs::idDirDialogList), DirectorySelectDialog::OnEdit)
+
     EVT_UPDATE_UI(controlIDs.Get(ControlIDs::idDirDialogAddButton), DirectorySelectDialog::OnUpdateUIHasText)
+    EVT_UPDATE_UI(controlIDs.Get(ControlIDs::idDirDialogEditButton), DirectorySelectDialog::OnUpdateUIHasSelected)
     EVT_UPDATE_UI(controlIDs.Get(ControlIDs::idDirDialogDeleteButton), DirectorySelectDialog::OnUpdateUIHasSelected)
     EVT_UPDATE_UI(controlIDs.Get(ControlIDs::idDirDialogCheckSelectedButton), DirectorySelectDialog::OnUpdateUIHasSelected)
     EVT_UPDATE_UI(controlIDs.Get(ControlIDs::idDirDialogDeleteAllButton), DirectorySelectDialog::OnUpdateUIHasItems)
