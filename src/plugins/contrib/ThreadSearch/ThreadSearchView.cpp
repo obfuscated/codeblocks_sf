@@ -510,6 +510,7 @@ void ThreadSearchView::ThreadedSearch(const ThreadSearchFindData& aFindData)
 
         // Prepares logger
         m_pLogger->OnSearchBegin(aFindData);
+        m_hasSearchItems = false;
 
         // Two steps thread creation
         m_pFindThread = new ThreadSearchThread(this, findData);
@@ -860,31 +861,34 @@ void ThreadSearchView::PostThreadSearchEvent(const ThreadSearchEvent& event)
     }
 }
 
-
 void ThreadSearchView::OnTmrListCtrlUpdate(wxTimerEvent& /*event*/)
 {
-    if ( m_MutexSearchEventsArray.Lock() == wxMUTEX_NO_ERROR )
+    if (m_MutexSearchEventsArray.Lock() == wxMUTEX_NO_ERROR)
     {
-        if ( m_ThreadSearchEventsArray.GetCount() > 0 )
+        if (m_ThreadSearchEventsArray.GetCount() > 0)
         {
             ThreadSearchEvent *pEvent = static_cast<ThreadSearchEvent*>(m_ThreadSearchEventsArray[0]);
             m_pLogger->OnThreadSearchEvent(*pEvent);
             delete pEvent;
             m_ThreadSearchEventsArray.RemoveAt(0,1);
+            m_hasSearchItems = true;
         }
 
-        if ( (m_ThreadSearchEventsArray.GetCount() == 0) && (m_pFindThread == NULL) )
+        if ((m_ThreadSearchEventsArray.GetCount() == 0) && (m_pFindThread == nullptr))
         {
-            // Thread search is finished (m_pFindThread == NULL) and m_ThreadSearchEventsArray
+            // Thread search is finished (m_pFindThread == nullptr) and m_ThreadSearchEventsArray
             // is empty (m_ThreadSearchEventsArray.GetCount() == 0).
             // We stop the timer to spare resources
             m_Timer.Stop();
 
             m_pLogger->OnSearchEnd();
 
+            // Clear the search string, so the user can type a new one. This makes using
+            // middle-click paste on linux a lot more usable. But don't clear the search if there
+            // are no results, this might make it possible for the user to edit the search query a
+            // bit more easily.
+            if (m_hasSearchItems)
             {
-                // Clear the search string, so the user can type a new one.
-                // This makes using middle-click paste on linux a lot more usable.
                 m_pCboSearchExpr->SetValue(wxString());
                 const long id = controlIDs.Get(ControlIDs::idCboSearchExpr);
                 wxComboBox* pToolBarCombo = static_cast<wxComboBox*>(m_pToolBar->FindControl(id));
