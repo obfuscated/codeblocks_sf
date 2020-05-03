@@ -189,7 +189,7 @@ struct DirectorySelectDialog : wxDialog
             m_list = new wxCheckListBox(panelList, controlIDs.Get(ControlIDs::idDirDialogList),
                                         wxDefaultPosition, wxDefaultSize, wxArrayString(),
                                         wxLB_EXTENDED);
-            m_list->SetMinSize(wxSize(m_list->GetCharWidth() * 50, m_list->GetCharHeight() * 20));
+            m_list->SetMinSize(wxSize(m_list->GetCharWidth() * 70, m_list->GetCharHeight() * 20));
 
             const std::vector<wxString> &splittedPaths = GetVectorFromString(paths, ";", true);
             // Make sure all paths already selected are present in the full path list. If not add
