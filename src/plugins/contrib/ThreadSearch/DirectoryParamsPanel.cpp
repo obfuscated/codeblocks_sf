@@ -231,29 +231,31 @@ struct DirectorySelectDialog : wxDialog
                     m_list->Check(newIndex, true);
             }
 
+            wxButton *buttonUnCheckUnselected = new wxButton(panelList, controlIDs.Get(ControlIDs::idDirDialogCheckSelectedButton),
+                                                             "Check only selected");
+            wxStaticLine *separator0 = new wxStaticLine(panelList);
             wxButton *buttonAdd = new wxButton(panelList,
                                                controlIDs.Get(ControlIDs::idDirDialogAddButton),
                                                _("&Add"));
             wxButton *buttonEdit = new wxButton(panelList,
                                                 controlIDs.Get(ControlIDs::idDirDialogEditButton),
                                                 _("&Edit"));
+            wxStaticLine *separator1 = new wxStaticLine(panelList);
             wxButton *buttonDelete = new wxButton(panelList,
                                                   controlIDs.Get(ControlIDs::idDirDialogDeleteButton),
                                                   _("&Delete"));
             wxButton *buttonDeleteAll = new wxButton(panelList,
                                                      controlIDs.Get(ControlIDs::idDirDialogDeleteAllButton),
                                                      _("Delete a&ll"));
-            wxStaticLine *separator = new wxStaticLine(panelList);
-            wxButton *buttonUnCheckUnselected = new wxButton(panelList, controlIDs.Get(ControlIDs::idDirDialogCheckSelectedButton),
-                                                             "Check only selected");
 
             wxBoxSizer *listButtonSizer = new wxBoxSizer(wxVERTICAL);
+            listButtonSizer->Add(buttonUnCheckUnselected, 0, wxTOP | wxEXPAND, sizerBorder / 2);
+            listButtonSizer->Add(separator0, 0, wxTOP | wxEXPAND, sizerBorder / 2);
             listButtonSizer->Add(buttonAdd, 0, wxEXPAND, sizerBorder / 2);
             listButtonSizer->Add(buttonEdit, 0, wxTOP | wxEXPAND, sizerBorder / 2);
+            listButtonSizer->Add(separator1, 0, wxTOP | wxEXPAND, sizerBorder / 2);
             listButtonSizer->Add(buttonDelete, 0, wxTOP | wxEXPAND, sizerBorder / 2);
             listButtonSizer->Add(buttonDeleteAll, 0, wxTOP | wxEXPAND, sizerBorder / 2);
-            listButtonSizer->Add(separator, 0, wxTOP | wxEXPAND, sizerBorder / 2);
-            listButtonSizer->Add(buttonUnCheckUnselected, 0, wxTOP | wxEXPAND, sizerBorder / 2);
 
             wxBoxSizer *listSizer = new wxBoxSizer(wxHORIZONTAL);
             listSizer->Add(m_list, 1, wxRIGHT | wxEXPAND, sizerBorder / 2);
