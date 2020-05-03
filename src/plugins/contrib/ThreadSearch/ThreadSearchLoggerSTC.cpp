@@ -42,6 +42,7 @@ enum STCFoldLevels : int
 };
 
 const int C_FOLDING_MARGIN = 0;
+const int MARKER_UNFOCUSED_LINE = 5;
 } // anonymous namespace
 
 /// We use this class only to handle enter presses.
@@ -95,6 +96,10 @@ ThreadSearchLoggerSTC::ThreadSearchLoggerSTC(ThreadSearchView& threadSearchView,
         cb::UnderlineFoldedLines(m_stc, config->ReadBool(_T("/folding/underline_folded_line"), true));
         cb::SetFoldingMarkers(m_stc, id);
     }
+
+    // Define a marker which will be used when the stc control looses focus to preserve the selected
+    // line. When the focus is regained the marker would be removed.
+    m_stc->MarkerDefine(MARKER_UNFOCUSED_LINE, wxSCI_MARK_BACKGROUND);
 
     SetupStyles();
 
@@ -161,6 +166,8 @@ void ThreadSearchLoggerSTC::SetupStyles()
     ColourManager *colours = Manager::Get()->GetColourManager();
 
     m_stc->SetCaretLineBackground(colours->GetColour(wxT("thread_search_selected_line_back")));
+    m_stc->MarkerSetBackground(MARKER_UNFOCUSED_LINE,
+                               colours->GetColour("thread_search_selected_line_back"));
 
     m_stc->StyleSetForeground(wxSCI_STYLE_DEFAULT,
                               colours->GetColour(wxT("thread_search_text_fore")));
@@ -272,6 +279,9 @@ void ThreadSearchLoggerSTC::Clear()
 {
     m_stc->Clear();
     m_stc->SetScrollWidth(100);
+    m_lastLineMarkerHandle = -1;
+    m_fileCount = 0;
+    m_totalCount = 0;
 }
 
 void ThreadSearchLoggerSTC::OnSearchBegin(const ThreadSearchFindData& findData)
@@ -412,6 +422,12 @@ void ThreadSearchLoggerSTC::ConnectEvents()
     Connect(stcId, wxEVT_SCI_DOUBLECLICK,
             wxScintillaEventHandler(ThreadSearchLoggerSTC::OnDoubleClick));
 
+    // Handle Focus
+    m_stc->Connect(wxEVT_KILL_FOCUS, wxFocusEventHandler(ThreadSearchLoggerSTC::OnSTCFocus),
+                   nullptr, this);
+    m_stc->Connect(wxEVT_SET_FOCUS, wxFocusEventHandler(ThreadSearchLoggerSTC::OnSTCFocus),
+                   nullptr, this);
+
     // Context menu
     Connect(stcId, wxEVT_CONTEXT_MENU,
             wxContextMenuEventHandler(ThreadSearchLoggerSTC::OnContextMenu));
@@ -445,6 +461,12 @@ void ThreadSearchLoggerSTC::DisconnectEvents()
             wxScintillaEventHandler(ThreadSearchLoggerSTC::OnSTCUpdateUI));
     Disconnect(stcId, wxEVT_SCI_DOUBLECLICK,
                wxScintillaEventHandler(ThreadSearchLoggerSTC::OnDoubleClick));
+
+    // Handle Focus
+    m_stc->Disconnect(wxEVT_KILL_FOCUS, wxFocusEventHandler(ThreadSearchLoggerSTC::OnSTCFocus),
+                      nullptr, this);
+    m_stc->Disconnect(wxEVT_SET_FOCUS, wxFocusEventHandler(ThreadSearchLoggerSTC::OnSTCFocus),
+                      nullptr, this);
 
     // Context menu
     Disconnect(stcId, wxEVT_CONTEXT_MENU,
@@ -759,4 +781,20 @@ void ThreadSearchLoggerSTC::OnMenuDeleteAll(cb_unused wxCommandEvent &event)
     m_stc->ClearAll();
     m_stc->SetScrollWidth(100);
     m_stc->SetReadOnly(true);
+}
+
+void ThreadSearchLoggerSTC::OnSTCFocus(wxFocusEvent &event)
+{
+    const wxEventType type = event.GetEventType();
+    if (type == wxEVT_KILL_FOCUS)
+    {
+        m_lastLineMarkerHandle = m_stc->MarkerAdd(m_stc->GetCurrentLine(), MARKER_UNFOCUSED_LINE);
+    }
+    else if (type == wxEVT_SET_FOCUS)
+    {
+        m_stc->MarkerDeleteHandle(m_lastLineMarkerHandle);
+        m_lastLineMarkerHandle = -1;
+    }
+
+    event.Skip();
 }
