@@ -180,6 +180,9 @@ struct DirectorySelectDialog : wxDialog
                         AddItemToCombo(m_entry, s);
                 }
             }
+
+            // We have to reset the value because AddItemToCombo might have set it.
+            m_entry->SetValue(wxString());
         }
 
         wxBitmapButton *buttonDirSelect = new wxBitmapButton(this, controlIDs.Get(ControlIDs::idDirDialogDirButton),
@@ -342,7 +345,7 @@ private:
         return insertedIndex;
     }
 
-    void OnEnter(wxCommandEvent &event)
+    void OnEnter(cb_unused wxCommandEvent &event)
     {
         const wxString &path = m_entry->GetValue();
         if (!path.empty())
@@ -351,10 +354,9 @@ private:
             InsertItemInList(path);
             m_entry->SetValue(wxString());
         }
-        event.Skip();
     }
 
-    void OnEdit(wxCommandEvent &event)
+    void OnEdit(cb_unused wxCommandEvent &event)
     {
         wxArrayInt selected;
         m_list->GetSelections(selected);
@@ -381,11 +383,11 @@ private:
         }
     }
 
-    void OnDirDialog(wxCommandEvent &event)
+    void OnDirDialog(cb_unused wxCommandEvent &event)
     {
-        wxString initialPath;
+        wxString initialPath = m_entry->GetValue();
 
-        if (m_list->GetCount() > 0)
+        if (initialPath.empty() && m_list->GetCount() > 0)
         {
             wxArrayInt selections;
             m_list->GetSelections(selections);
@@ -403,9 +405,9 @@ private:
         {
             const wxString &newPath = dialog.GetPath();
             AddItemToCombo(m_entry, newPath);
+            m_entry->SetValue(wxString()); // this should be after the call to AddItemToCombo
             InsertItemInList(newPath);
         }
-        event.Skip();
     }
 
     void OnDelete(cb_unused wxCommandEvent &event)
