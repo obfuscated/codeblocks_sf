@@ -14,17 +14,20 @@
 
 #include "InsertIndexManager.h"
 
+#include "prep.h"
+
 #include <wx/panel.h>
 
-class wxWindow;
-class wxPoint;
 class wxEvtHandler;
+class wxPoint;
+class wxWindow;
+
+class cbEditor;
 
 class ThreadSearch;
 class ThreadSearchView;
 class ThreadSearchEvent;
 class ThreadSearchFindData;
-
 
 class ThreadSearchLoggerBase : public wxPanel
 {
@@ -72,6 +75,10 @@ public:
     virtual void SetFocus()  = 0;
 
     virtual void UpdateSettings() {}
+
+    virtual void EditorLinesAddedOrRemoved(cb_unused cbEditor *editor, cb_unused int startLine,
+                                           cb_unused int linesAdded)
+    {}
 
 protected:
     ThreadSearchLoggerBase(wxWindow *parent, ThreadSearchView &threadSearchView,

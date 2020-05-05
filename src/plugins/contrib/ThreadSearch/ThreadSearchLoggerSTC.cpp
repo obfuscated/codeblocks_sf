@@ -9,6 +9,7 @@
     #include <wx/settings.h>
     #include <wx/wxscintilla.h>
 
+    #include <cbeditor.h>
     #include <configmanager.h>
 #endif
 
@@ -797,4 +798,94 @@ void ThreadSearchLoggerSTC::OnSTCFocus(wxFocusEvent &event)
     }
 
     event.Skip();
+}
+
+struct WordRange
+{
+    int start, end;
+};
+
+static WordRange FindWordForLineNumber(wxScintilla *stc, int lineStart)
+{
+    int start = lineStart;
+    int end;
+    while (1)
+    {
+        end = stc->WordEndPosition(start, true);
+        if (end == start)
+            ++start;
+        else
+            break;
+    }
+
+    WordRange result;
+    result.end = end;
+    result.start = stc->WordStartPosition(end, true);
+    return result;
+}
+
+void ThreadSearchLoggerSTC::EditorLinesAddedOrRemoved(cbEditor *editor, int startLine,
+                                                      int linesAdded)
+{
+    m_stc->SetReadOnly(false);
+
+    // Start from the end of the document and jump from file to file until a match is found.
+    // When a matching file is found search the lines one by one and adjust them.
+
+    int lastLine = m_stc->LineFromPosition(m_stc->GetLength() - 1);
+
+    while (lastLine > 0)
+    {
+        while (lastLine > 0)
+        {
+            const int foldLevel = m_stc->GetFoldLevel(lastLine) & wxSCI_FOLDLEVELNUMBERMASK;
+            if (foldLevel == STCFoldLevels::ResultLines)
+                break;
+            lastLine--;
+        }
+
+        int fileLine;
+        if (!FindFileLineFromLine(&fileLine, m_stc, lastLine))
+        {
+            break;
+        }
+
+        wxString textFile = m_stc->GetLine(fileLine);
+
+        const wxString::size_type delimiterPosition = textFile.rfind(" (");
+        if (delimiterPosition != wxString::npos)
+        {
+            textFile.RemoveLast(textFile.length() - delimiterPosition);
+
+            if (textFile == editor->GetFilename())
+            {
+                // Iterate the lines of the file
+                for (int line = fileLine + 1; line <= lastLine; ++line)
+                {
+                    const int lineStartPosition = m_stc->PositionFromLine(line);
+
+                    const WordRange word = FindWordForLineNumber(m_stc, lineStartPosition);
+                    const wxString &lineNumberText = m_stc->GetTextRange(word.start,
+                                                                         word.end);
+
+                    long value;
+                    if (lineNumberText.ToLong(&value))
+                    {
+                        if (value >= startLine)
+                        {
+                            int newValue;
+                            newValue = value + linesAdded;
+                            m_stc->SetTargetRange(lineStartPosition, word.end);
+                            m_stc->ReplaceTarget(wxString::Format("%10d", newValue));
+                        }
+                    }
+                }
+            }
+        }
+
+        lastLine = fileLine - 1;
+    }
+
+    // Never return before this line!
+    m_stc->SetReadOnly(false);
 }

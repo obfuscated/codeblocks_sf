@@ -30,6 +30,7 @@ public:
     wxWindow* GetWindow() override;
     void SetFocus() override;
     void UpdateSettings() override;
+    void EditorLinesAddedOrRemoved(cbEditor *editor, int startLine, int linesAdded) override;
 
 private:
     void ConnectEvents();
