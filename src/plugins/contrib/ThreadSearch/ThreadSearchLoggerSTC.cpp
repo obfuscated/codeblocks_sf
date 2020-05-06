@@ -5,6 +5,8 @@
 
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
+    #include <algorithm>
+
     #include <wx/menu.h>
     #include <wx/settings.h>
     #include <wx/wxscintilla.h>
@@ -166,6 +168,8 @@ void ThreadSearchLoggerSTC::SetupStyles()
 {
     ColourManager *colours = Manager::Get()->GetColourManager();
 
+    m_stc->SetLexer(wxSCI_LEX_CONTAINER);
+
     m_stc->SetCaretLineBackground(colours->GetColour(wxT("thread_search_selected_line_back")));
     m_stc->MarkerSetBackground(MARKER_UNFOCUSED_LINE,
                                colours->GetColour("thread_search_selected_line_back"));
@@ -220,9 +224,22 @@ void ThreadSearchLoggerSTC::OnThreadSearchEvent(const ThreadSearchEvent& event)
     m_stc->Freeze();
     m_stc->SetReadOnly(false);
 
-    AppendStyledText(STCStyles::File, filename);
-    AppendStyledText(STCStyles::Text, wxString::Format(_(" (%lld matches)\n"),
-                                                       static_cast<long long>(words.size() / 2)));
+    {
+        int position = m_stc->GetLength();
+        // Append, style and fold the filename
+        m_stc->AppendText(filename);
+        int endPosition = m_stc->GetLength();
+        AppendStyleItem(position, endPosition, STCStyles::File);
+        const int line = m_stc->LineFromPosition(position);
+        m_stc->SetFoldLevel(line, STCFoldLevels::Files | wxSCI_FOLDLEVELHEADERFLAG);
+
+        // Append and style the number of matches in the file
+        position = endPosition;
+        m_stc->AppendText(wxString::Format(_(" (%lld matches)\n"),
+                                           static_cast<long long>(words.size() / 2)));
+        endPosition = m_stc->GetLength();
+        AppendStyleItem(position, endPosition, STCStyles::Text);
+    }
 
     // The only reason it is constructed here is to preserve the allocated space between loop
     // iterations.
@@ -240,18 +257,24 @@ void ThreadSearchLoggerSTC::OnThreadSearchEvent(const ThreadSearchEvent& event)
             justifier.Append(wxT(' '), 10 - lineNoStr.length());
         }
 
-        AppendStyledText(STCStyles::LineNo, justifier + lineNoStr + wxT(':'));
+        const int startPosition = m_stc->GetLength();
+        const int line = m_stc->LineFromPosition(startPosition);
 
-        const int textStartPos = m_stc->GetLength() + 4;
+        m_stc->AppendText(justifier + lineNoStr + wxT(':'));
 
-        AppendStyledText(STCStyles::Text, wxT("    ") + words[ii + 1] + wxT('\n'));
+        const int textStartPos = m_stc->GetLength();
+        AppendStyleItem(startPosition, textStartPos, STCStyles::LineNo);
+        m_stc->SetFoldLevel(line, STCFoldLevels::ResultLines);
+
+        m_stc->AppendText(wxT("    ") + words[ii + 1] + wxT('\n'));
+
+        int lastStyledPosition = textStartPos;
 
         {
             const int matchedCount = *matchedIt;
             ++matchedIt;
 
-            const int line = m_stc->LineFromPosition(textStartPos);
-            const int textStartColumn = m_stc->GetColumn(textStartPos);
+            const int textStartColumn = m_stc->GetColumn(textStartPos + 4);
 
             for (int ii = 0; ii < matchedCount; ++ii)
             {
@@ -265,9 +288,17 @@ void ThreadSearchLoggerSTC::OnThreadSearchEvent(const ThreadSearchEvent& event)
                 const int startPos = m_stc->FindColumn(line, textStartColumn + start);
                 const int endPos = m_stc->FindColumn(line, textStartColumn + start + length);
 
-                m_stc->StartStyling(startPos);
-                m_stc->SetStyling(endPos - startPos, STCStyles::TextMatching);
+                if (lastStyledPosition < startPos)
+                    AppendStyleItem(lastStyledPosition, startPos, STCStyles::Text);
+
+                AppendStyleItem(startPos, endPos, STCStyles::TextMatching);
+                lastStyledPosition = endPos;
             }
+
+            // Style the text after the last match.
+            const int lineEndPos = m_stc->GetLength();
+            if (lastStyledPosition < lineEndPos)
+                AppendStyleItem(lastStyledPosition, lineEndPos, STCStyles::Text);
         }
     }
 
@@ -278,11 +309,14 @@ void ThreadSearchLoggerSTC::OnThreadSearchEvent(const ThreadSearchEvent& event)
 
 void ThreadSearchLoggerSTC::Clear()
 {
-    m_stc->Clear();
+    m_stc->SetReadOnly(false);
+    m_stc->ClearAll();
     m_stc->SetScrollWidth(100);
     m_lastLineMarkerHandle = -1;
     m_fileCount = 0;
     m_totalCount = 0;
+    m_styles.clear();
+    m_stc->SetReadOnly(true);
 }
 
 void ThreadSearchLoggerSTC::OnSearchBegin(const ThreadSearchFindData& findData)
@@ -298,6 +332,7 @@ void ThreadSearchLoggerSTC::OnSearchBegin(const ThreadSearchFindData& findData)
     {
         m_stc->ClearAll();
         m_stc->SetScrollWidth(100);
+        m_styles.clear();
     }
 
     m_startLine = m_stc->LineFromPosition(m_stc->GetLength());
@@ -388,25 +423,13 @@ void ThreadSearchLoggerSTC::UpdateSettings()
     SetupStyles();
 }
 
-void ThreadSearchLoggerSTC::AppendStyledText(int style, const wxString &text)
+void ThreadSearchLoggerSTC::AppendStyleItem(int startPos, int endPos, int style)
 {
-    const int position = m_stc->GetLength();
-    m_stc->StartStyling(position);
-    m_stc->AppendText(text);
-    const int endPosition = m_stc->GetLength();
-    m_stc->SetStyling(endPosition - position, style);
-
-    int foldLevel = -1;
-    if (style == STCStyles::File)
-        foldLevel = STCFoldLevels::Files | wxSCI_FOLDLEVELHEADERFLAG;
-    else if (style == STCStyles::LineNo)
-        foldLevel = STCFoldLevels::ResultLines;
-
-    if (foldLevel != -1)
-    {
-        const int line = m_stc->LineFromPosition(position);
-        m_stc->SetFoldLevel(line, foldLevel);
-    }
+    StyleItem item;
+    item.startPos = startPos;
+    item.length = endPos - startPos;
+    item.style = style;
+    m_styles.push_back(item);
 }
 
 void ThreadSearchLoggerSTC::ConnectEvents()
@@ -416,6 +439,8 @@ void ThreadSearchLoggerSTC::ConnectEvents()
     // Handle folding
     Connect(stcId, wxEVT_SCI_MARGINCLICK,
             wxScintillaEventHandler(ThreadSearchLoggerSTC::OnMarginClick));
+    Connect(stcId, wxEVT_SCI_STYLENEEDED,
+            wxScintillaEventHandler(ThreadSearchLoggerSTC::OnStyleNeeded));
 
     // Handle clicking/selection change events
     Connect(stcId, wxEVT_SCI_UPDATEUI,
@@ -456,6 +481,8 @@ void ThreadSearchLoggerSTC::DisconnectEvents()
     // Handle folding
     Disconnect(stcId, wxEVT_SCI_MARGINCLICK,
                wxScintillaEventHandler(ThreadSearchLoggerSTC::OnMarginClick));
+    Disconnect(stcId, wxEVT_SCI_STYLENEEDED,
+               wxScintillaEventHandler(ThreadSearchLoggerSTC::OnStyleNeeded));
 
     // Handle clicking/selection change events
     Disconnect(stcId, wxEVT_SCI_UPDATEUI,
@@ -568,6 +595,43 @@ static bool FindResultInfoForLine(wxString *outFilepath, int *outLineInFile, wxS
     }
 
     return true;
+}
+
+void ThreadSearchLoggerSTC::OnStyleNeeded(wxScintillaEvent &event)
+{
+    int startPosition = m_stc->GetEndStyled();
+    const int startLine = m_stc->LineFromPosition(startPosition);
+    startPosition = m_stc->PositionFromLine(startLine);
+
+    StyleItemVector::const_iterator first = std::lower_bound(m_styles.cbegin(), m_styles.cend(),
+                                                             StyleItem::make(startPosition));
+    const int lastPosition = event.GetPosition();
+    if (first != m_styles.end())
+    {
+        m_stc->StartStyling(startPosition);
+        int pos = startPosition;
+        while (first != m_styles.end())
+        {
+            if (first->startPos > pos)
+                m_stc->SetStyling(first->startPos - pos, wxSCI_STYLE_DEFAULT);
+            m_stc->SetStyling(first->length, first->style);
+
+            pos = first->startPos + first->length;
+            if (pos >= lastPosition)
+                break;
+            ++first;
+        }
+
+        if (pos < lastPosition)
+            m_stc->SetStyling(lastPosition - pos, wxSCI_STYLE_DEFAULT);
+    }
+    else
+    {
+        m_stc->StartStyling(startPosition);
+        m_stc->SetStyling(lastPosition - startPosition, wxSCI_STYLE_DEFAULT);
+    }
+
+    event.Skip();
 }
 
 void ThreadSearchLoggerSTC::OnSTCUpdateUI(wxScintillaEvent &event)
@@ -746,42 +810,63 @@ void ThreadSearchLoggerSTC::OnMenuDelete(cb_unused wxCommandEvent &event)
 {
     const int stcLine = m_stc->GetCurrentLine();
     int startLine;
-    if (FindSearchLineFromLine(&startLine, m_stc, stcLine))
+    if (!FindSearchLineFromLine(&startLine, m_stc, stcLine))
+        return;
+
+    int endLine = -1;
+    // Try to find the start of the next search. This will be our end position.
+    const int count = m_stc->GetLineCount();
+    for (int line = startLine + 1; line < count; ++line)
     {
-        int endLine = -1;
-        // Try to find the start of the next search. This will be our end position.
-        const int count = m_stc->GetLineCount();
-        for (int line = startLine + 1; line < count; ++line)
+        const int level = m_stc->GetFoldLevel(line);
+        if ((level & wxSCI_FOLDLEVELNUMBERMASK) == STCFoldLevels::Search)
         {
-            const int level = m_stc->GetFoldLevel(line);
-            if ((level & wxSCI_FOLDLEVELNUMBERMASK) == STCFoldLevels::Search)
-            {
-                endLine = line;
-                break;
-            }
+            endLine = line;
+            break;
+        }
+    }
+
+    const int startPosition = m_stc->PositionFromLine(startLine);
+    int endPosition;
+    if (endLine == -1)
+        endPosition = m_stc->GetLength();
+    else
+        endPosition = m_stc->PositionFromLine(endLine);
+
+    // We have the range for the search, so delete the whole text for it.
+    m_stc->SetReadOnly(false);
+    m_stc->Remove(startPosition, endPosition);
+    m_stc->SetScrollWidth(100);
+    m_stc->SetReadOnly(true);
+
+    {
+        // Now we have to delete the style information.
+
+        // Lower bounds work, because we don't have style items which are specifying styles across
+        // more than one line.
+
+        // First is pointing to the first item in the deleted search.
+        StyleItemVector::iterator first = std::lower_bound(m_styles.begin(), m_styles.end(),
+                                                           StyleItem::make(startPosition));
+        // Last is pointing to the first item after the deleted search.
+        StyleItemVector::iterator last = std::lower_bound(first, m_styles.end(),
+                                                          StyleItem::make(endPosition));
+
+        // We have to adjust the start positions of all style items for the text after the deleted
+        // block.
+        const int delta = endPosition - startPosition;
+        for (StyleItemVector::iterator it = last; it != m_styles.end(); ++it)
+        {
+            it->startPos -= delta;
         }
 
-        const int startPosition = m_stc->PositionFromLine(startLine);
-        int endPosition;
-        if (endLine == -1)
-            endPosition = m_stc->GetLength();
-        else
-            endPosition = m_stc->PositionFromLine(endLine);
-
-        // We have the range for the search, so delete the whole text for it.
-        m_stc->SetReadOnly(false);
-        m_stc->Remove(startPosition, endPosition);
-        m_stc->SetScrollWidth(100);
-        m_stc->SetReadOnly(true);
+        m_styles.erase(first, last);
     }
 }
 
 void ThreadSearchLoggerSTC::OnMenuDeleteAll(cb_unused wxCommandEvent &event)
 {
-    m_stc->SetReadOnly(false);
-    m_stc->ClearAll();
-    m_stc->SetScrollWidth(100);
-    m_stc->SetReadOnly(true);
+    Clear();
 }
 
 void ThreadSearchLoggerSTC::OnSTCFocus(wxFocusEvent &event)
