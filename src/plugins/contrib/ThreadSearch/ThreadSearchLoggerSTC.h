@@ -64,6 +64,7 @@ private:
     int m_startLine;
     int m_lastVisibleLine;
     int m_lastLineMarkerHandle = -1;
+    wxLongLong m_timeBegin;
 
     struct StyleItem
     {
