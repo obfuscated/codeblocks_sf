@@ -40,11 +40,16 @@ const wxString PersonalityManager::GetPersonality()
 
 const wxArrayString PersonalityManager::GetPersonalitiesList()
 {
-    wxArrayString list;
-    wxDir::GetAllFiles(ConfigManager::GetConfigFolder(), &list, _T("*.conf"), wxDIR_FILES);
+    wxArrayString list, allConf;
+    wxDir::GetAllFiles(ConfigManager::GetConfigFolder(), &allConf, _T("*.conf"), wxDIR_FILES);
 
-    for(size_t i = 0; i < list.GetCount(); ++i)
-        list[i] = wxFileName(list[i]).GetName();
+    for(size_t i = 0; i < allConf.GetCount(); ++i)
+    {
+        // return only <personality>.conf names, exclude <personality>.some.other.conf
+        if (wxFileName(allConf[i]).GetName().Contains(wxT(".")))
+            continue;
+        list.Add(wxFileName(allConf[i]).GetName());
+    }
 
     return list;
 }
