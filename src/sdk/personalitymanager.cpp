@@ -46,7 +46,7 @@ const wxArrayString PersonalityManager::GetPersonalitiesList()
     for(size_t i = 0; i < allConf.GetCount(); ++i)
     {
         // return only <personality>.conf names, exclude <personality>.some.other.conf
-        if (wxFileName(allConf[i]).GetName().Contains(wxT(".")))
+        if (wxFileName(allConf[i]).GetName().Contains(wxT(".cbKeyBinder")))
             continue;
         list.Add(wxFileName(allConf[i]).GetName());
     }
