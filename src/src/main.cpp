@@ -389,6 +389,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idViewFocusLogsAndOthers, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewFullScreen,         MainFrame::OnViewMenuUpdateUI)
 
+    EVT_UPDATE_UI(idEditHighlightModeText, MainFrame::OnEditHighlightModeUpdateUI)
+
     EVT_MENU(idFileNewEmpty,   MainFrame::OnFileNewWhat)
     EVT_MENU(idFileNewProject, MainFrame::OnFileNewWhat)
     EVT_MENU(idFileNewTarget,  MainFrame::OnFileNewWhat)
@@ -1086,23 +1088,42 @@ void MainFrame::CreateMenubar()
     {
         wxMenu *hl = nullptr;
         mbar->FindItem(idEditHighlightModeText, &hl);
-        if (hl)
+        EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+
+        if (hl && colour_set)
         {
-            EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
-            if (colour_set)
+            wxArrayString langs = colour_set->GetAllHighlightLanguages();
+            for (size_t i = 0; i < langs.GetCount(); ++i)
             {
-                wxArrayString langs = colour_set->GetAllHighlightLanguages();
-                for (size_t i = 0; i < langs.GetCount(); ++i)
+                if (i > 0 && !(i % 20))
+                    hl->Break(); // break into columns every 20 items
+
+                const wxString &lang = langs[i];
+                bool found = false;
+                int id = -1;
+                for (const MenuIDToLanugage::value_type &menuIDToLanguage : m_MapMenuIDToLanguage)
                 {
-                    if (i > 0 && !(i % 20))
-                        hl->Break(); // break into columns every 20 items
-                    int id = wxNewId();
-                    hl->AppendRadioItem(id, langs[i],
-                                wxString::Format(_("Switch highlighting mode for current document to \"%s\""), langs[i].wx_str()));
-                    Connect(id, -1, wxEVT_COMMAND_MENU_SELECTED,
-                            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                            &MainFrame::OnEditHighlightMode);
+                    if (menuIDToLanguage.second == lang)
+                    {
+                        found = true;
+                        id = menuIDToLanguage.first;
+                        break;
+                    }
                 }
+
+                if (!found)
+                {
+                    id = wxNewId();
+                    m_MapMenuIDToLanguage.insert(MenuIDToLanugage::value_type(id, lang));
+                }
+
+                hl->AppendRadioItem(id, lang,
+                                    wxString::Format(_("Switch highlighting mode for current document to \"%s\""),
+                                                     lang.wx_str()));
+                Connect(id, wxEVT_COMMAND_MENU_SELECTED,
+                        wxObjectEventFunction(&MainFrame::OnEditHighlightMode));
+                Connect(id, wxEVT_UPDATE_UI,
+                        wxObjectEventFunction(&MainFrame::OnEditHighlightModeUpdateUI));
             }
         }
         const wxLanguageInfo* info = wxLocale::GetLanguageInfo(wxLANGUAGE_DEFAULT);
@@ -4007,6 +4028,47 @@ void MainFrame::OnEditHighlightMode(wxCommandEvent& event)
         changeButtonLabel(*m_pHighlightButton, colour_set->GetLanguageName(lang));
     ed->SetLanguage(lang, true);
     Manager::Get()->GetCCManager()->NotifyPluginStatus();
+}
+
+void MainFrame::OnEditHighlightModeUpdateUI(wxUpdateUIEvent &event)
+{
+    if (Manager::IsAppShuttingDown())
+    {
+        event.Enable(false);
+        return;
+    }
+
+    cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed == nullptr)
+    {
+        event.Enable(false);
+        return;
+    }
+    EditorColourSet* colour_set = ed->GetColourSet();
+    if (colour_set == nullptr)
+    {
+        event.Enable(false);
+        return;
+    }
+
+    const wxString &languageName = colour_set->GetLanguageName(ed->GetLanguage());
+
+    const int id = event.GetId();
+    MenuIDToLanugage::const_iterator it = m_MapMenuIDToLanguage.find(id);
+    if (it != m_MapMenuIDToLanguage.end())
+        event.Check(languageName == it->second);
+    else
+    {
+        if (id == idEditHighlightModeText)
+            event.Check(languageName == "Plain text");
+        else
+        {
+            // Unknown language, just disable.
+            event.Enable(false);
+            return;
+        }
+    }
+    event.Enable(true);
 }
 
 void MainFrame::OnEditFoldAll(cb_unused wxCommandEvent& event)

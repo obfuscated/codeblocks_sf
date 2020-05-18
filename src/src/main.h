@@ -23,6 +23,8 @@
 #include "scripting/bindings/sc_base_types.h"
 #include "scrollingdialog.h"
 
+#include <unordered_map>
+
 WX_DECLARE_HASH_MAP(int, wxString, wxIntegerHash, wxIntegerEqual, PluginIDsMap);
 WX_DECLARE_HASH_MAP(cbPlugin*, wxToolBar*, wxPointerHash, wxPointerEqual, PluginToolbarsMap);
 WX_DECLARE_STRING_HASH_MAP(wxString, LayoutViewsMap);
@@ -151,6 +153,7 @@ class MainFrame : public wxFrame
         void OnEditSwapHeaderSource(wxCommandEvent& event);
         void OnEditGotoMatchingBrace(wxCommandEvent& event);
         void OnEditHighlightMode(wxCommandEvent& event);
+        void OnEditHighlightModeUpdateUI(wxUpdateUIEvent &event);
         void OnEditFoldAll(wxCommandEvent& event);
         void OnEditUnfoldAll(wxCommandEvent& event);
         void OnEditToggleAllFolds(wxCommandEvent& event);
@@ -402,6 +405,9 @@ class MainFrame : public wxFrame
 
         typedef std::map<int, const wxString> MenuIDToScript; // script menuitem ID -> script function name
         MenuIDToScript m_MenuIDToScript;
+
+        typedef std::unordered_map<int, wxString> MenuIDToLanugage;
+        MenuIDToLanugage m_MapMenuIDToLanguage;
 
         wxScrollingDialog* m_pBatchBuildDialog;
         wxButton*          m_pHighlightButton;
