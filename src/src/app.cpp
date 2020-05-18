@@ -511,7 +511,6 @@ MainFrame* CodeBlocksApp::InitFrame()
     static_assert(wxMinimumVersion<2,8,12>::eval, "wxWidgets 2.8.12 is required");
 
     MainFrame *frame = new MainFrame();
-    wxUpdateUIEvent::SetUpdateInterval(100);
     SetTopWindow(nullptr);
 
     if (g_DDEServer && m_DDE)
