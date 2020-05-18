@@ -4398,132 +4398,116 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     }
 }
 
+static void SetupEOLItem(wxUpdateUIEvent &event, EditorBase *editor, int targetEOLMode)
+{
+    if (!editor->IsBuiltinEditor())
+        event.Enable(false);
+    else
+    {
+        event.Enable(true);
+        const int eolMode = static_cast<cbEditor*>(editor)->GetControl()->GetEOLMode();
+        event.Check(eolMode == targetEOLMode);
+    }
+}
+
 void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 {
     if (Manager::IsAppShuttingDown())
     {
-        event.Skip();
+        event.Enable(false);
         return;
     }
 
-    cbEditor*   ed = NULL;
-    EditorBase* eb = NULL;
-    bool hasSel    = false;
-    bool canUndo   = false;
-    bool canRedo   = false;
-    bool canPaste  = false;
-    bool canCut    = false;
-    bool canSelAll = false;
+    const int id = event.GetId();
 
-    if (Manager::Get()->GetEditorManager() && !Manager::IsAppShuttingDown())
+    EditorManager *editorManager = Manager::Get()->GetEditorManager();
+    EditorBase *eb = editorManager->GetActiveEditor();
+    if (!eb)
     {
-        ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-        eb = Manager::Get()->GetEditorManager()->GetActiveEditor();
+        event.Enable(false);
+        return;
     }
 
-    wxMenuBar* mbar = GetMenuBar();
-
-    if (eb)
+    if (id == idEditUndo)
+        event.Enable(eb->CanUndo());
+    else if (id == idEditRedo)
+        event.Enable(eb->CanRedo());
+    else if (id == idEditClearHistory)
+        event.Enable(eb->CanUndo() || eb->CanRedo());
+    else if (id == idEditCut)
+        event.Enable(!eb->IsReadOnly() && eb->HasSelection());
+    else if (id == idEditCopy || id == idEditSelectNextSkip)
+        event.Enable(eb->HasSelection());
+    else if (id == idEditPaste)
+        event.Enable(eb->CanPaste());
+    else if (id == idEditSwapHeaderSource || id == idEditGotoMatchingBrace
+             || id == idEditHighlightMode || id == idEditSelectNext || id == idEditBookmarks
+             || id == idEditEOLMode || id == idEditEncoding || id == idEditSpecialCommands
+             || id == idEditCommentSelected || id == idEditUncommentSelected
+             || id == idEditToggleCommentSelected || id == idEditStreamCommentSelected
+             || id == idEditBoxCommentSelected || id == idEditShowCallTip
+             || id == idEditCompleteCode)
     {
-        canUndo   = eb->CanUndo();
-        canRedo   = eb->CanRedo();
-        hasSel    = eb->HasSelection();
-        canPaste  = eb->CanPaste();
-        canCut    = !eb->IsReadOnly() && hasSel;
-        canSelAll = eb->CanSelectAll();
+        event.Enable(eb->IsBuiltinEditor());
     }
-
-    mbar->Enable(idEditUndo,                  canUndo);
-    mbar->Enable(idEditRedo,                  canRedo);
-    mbar->Enable(idEditClearHistory,          canUndo || canRedo);
-    mbar->Enable(idEditCut,                   canCut);
-    mbar->Enable(idEditCopy,                  hasSel);
-    mbar->Enable(idEditPaste,                 canPaste);
-    mbar->Enable(idEditSwapHeaderSource,      ed);
-    mbar->Enable(idEditGotoMatchingBrace,     ed);
-    mbar->Enable(idEditHighlightMode,         ed);
-    mbar->Enable(idEditSelectAll,             canSelAll);
-    mbar->Enable(idEditSelectNext,            ed);
-    mbar->Enable(idEditSelectNextSkip,        hasSel);
-    mbar->Enable(idEditBookmarks,             ed);
-    mbar->Enable(idEditFolding,               ed &&
-                                              Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/folding/show_folds"), false));
-    mbar->Enable(idEditEOLMode,               ed);
-    mbar->Enable(idEditEncoding,              ed);
-    mbar->Enable(idEditSpecialCommands,       ed);
-    mbar->Enable(idEditSpecialCommandsCase,   ed && hasSel);
-    mbar->Enable(idEditCommentSelected,       ed);
-    mbar->Enable(idEditUncommentSelected,     ed);
-    mbar->Enable(idEditToggleCommentSelected, ed);
-    mbar->Enable(idEditStreamCommentSelected, ed);
-    mbar->Enable(idEditBoxCommentSelected,    ed);
-    mbar->Enable(idEditShowCallTip,           ed);
-    mbar->Enable(idEditCompleteCode,          ed);
-
-    if (ed)
+    else if (id == idEditSelectAll)
+        event.Enable(eb->CanSelectAll());
+    else if (id == idEditFolding)
     {
-        // OK... this was the strangest/silliest/most-frustrating bug ever in the computer programs history...
-        // Under wxGTK it seems that if you try to Check() a menu item if its container Menu is disabled,
-        // you enter an endless message loop eating 100% CPU...
-        // DARN!
-        // This fixes the dreaded 'linux-hang-on-close-project' bug.
-
-        switch (ed->GetControl()->GetEOLMode())
+        if (eb->IsBuiltinEditor())
         {
-            case wxSCI_EOL_CRLF:
-                mbar->Check(idEditEOLCRLF, true);
-                break;
-            case wxSCI_EOL_CR:
-                mbar->Check(idEditEOLCR,   true);
-                break;
-            case wxSCI_EOL_LF:
-                mbar->Check(idEditEOLLF,   true);
-                break;
-            default:
-                (platform::windows ? mbar->Check(idEditEOLCRLF, true) : mbar->Check(idEditEOLLF,   true));
-                break;
+            bool showFolds = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/folding/show_folds"), false);
+            event.Enable(showFolds);
         }
-
-        bool defenc = ed && (   ed->GetEncoding() == wxFONTENCODING_SYSTEM
-                             || ed->GetEncoding() == wxLocale::GetSystemEncoding() );
-
-        mbar->Check(idEditEncodingDefault,     defenc);
-        mbar->Check(idEditEncodingUseBom,      ed && ed->GetUseBom());
-        mbar->Check(idEditEncodingAscii,       ed && ed->GetEncoding() == wxFONTENCODING_ISO8859_1);
-        mbar->Check(idEditEncodingUtf7,        ed && ed->GetEncoding() == wxFONTENCODING_UTF7);
-        mbar->Check(idEditEncodingUtf8,        ed && ed->GetEncoding() == wxFONTENCODING_UTF8);
-        mbar->Check(idEditEncodingUnicode,     ed && ed->GetEncoding() == wxFONTENCODING_UNICODE);
-        mbar->Check(idEditEncodingUtf16,       ed && ed->GetEncoding() == wxFONTENCODING_UTF16);
-        mbar->Check(idEditEncodingUtf32,       ed && ed->GetEncoding() == wxFONTENCODING_UTF32);
-        mbar->Check(idEditEncodingUnicode16BE, ed && ed->GetEncoding() == wxFONTENCODING_UTF16BE);
-        mbar->Check(idEditEncodingUnicode16LE, ed && ed->GetEncoding() == wxFONTENCODING_UTF16LE);
-        mbar->Check(idEditEncodingUnicode32BE, ed && ed->GetEncoding() == wxFONTENCODING_UTF32BE);
-        mbar->Check(idEditEncodingUnicode32LE, ed && ed->GetEncoding() == wxFONTENCODING_UTF32LE);
-
-        wxMenu* hl = nullptr;
-        mbar->FindItem(idEditHighlightModeText, &hl);
-        if (hl)
-        {
-            EditorColourSet* colour_set = ed->GetColourSet();
-            if (colour_set)
-            {
-                int item = hl->FindItem(colour_set->GetLanguageName(ed->GetLanguage()));
-                if (item != wxNOT_FOUND)
-                    mbar->Check(item, true);
-            }
-        }
+        else
+            event.Enable(false);
     }
-
-    if (m_pToolbar)
+    else if (id == idEditSpecialCommandsCase)
+        event.Enable(eb->IsBuiltinEditor() && eb->HasSelection());
+    else if (id == idEditEOLCRLF)
+        SetupEOLItem(event, eb, wxSCI_EOL_CRLF);
+    else if (id == idEditEOLCR)
+        SetupEOLItem(event, eb, wxSCI_EOL_CR);
+    else if (id == idEditEOLLF)
+        SetupEOLItem(event, eb, wxSCI_EOL_LF);
+    else
     {
-        m_pToolbar->EnableTool(idEditUndo,  canUndo);
-        m_pToolbar->EnableTool(idEditRedo,  canRedo);
-        m_pToolbar->EnableTool(idEditCut,   canCut);
-        m_pToolbar->EnableTool(idEditCopy,  hasSel);
-        m_pToolbar->EnableTool(idEditPaste, canPaste);
-    }
+        cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+        if (!ed)
+        {
+            event.Enable(false);
+            return;
+        }
+        event.Enable(true);
 
-    event.Skip();
+        if (id == idEditEncodingDefault)
+        {
+            const wxFontEncoding encoding = ed->GetEncoding();
+            event.Check(encoding == wxFONTENCODING_SYSTEM || encoding == wxLocale::GetSystemEncoding());
+        }
+        else if (id == idEditEncodingUseBom)
+            event.Check(ed->GetUseBom());
+        else if (id == idEditEncodingAscii)
+            event.Check(ed->GetEncoding() == wxFONTENCODING_ISO8859_1);
+        else if (id == idEditEncodingUtf7)
+            event.Check(ed->GetEncoding() == wxFONTENCODING_UTF7);
+        else if (id == idEditEncodingUtf8)
+            event.Check(ed->GetEncoding() == wxFONTENCODING_UTF8);
+        else if (id == idEditEncodingUnicode)
+            event.Check(ed->GetEncoding() == wxFONTENCODING_UNICODE);
+        else if (id == idEditEncodingUtf16)
+            event.Check(ed->GetEncoding() == wxFONTENCODING_UTF16);
+        else if (id == idEditEncodingUtf32)
+            event.Check(ed->GetEncoding() == wxFONTENCODING_UTF32);
+        else if (id == idEditEncodingUnicode16BE)
+            event.Check(ed->GetEncoding() == wxFONTENCODING_UTF16BE);
+        else if (id == idEditEncodingUnicode16LE)
+            event.Check(ed->GetEncoding() == wxFONTENCODING_UTF16LE);
+        else if (id == idEditEncodingUnicode32BE)
+            event.Check(ed->GetEncoding() == wxFONTENCODING_UTF32BE);
+        else if (id == idEditEncodingUnicode32LE)
+            event.Check(ed->GetEncoding() == wxFONTENCODING_UTF32LE);
+    }
 }
 
 void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
