@@ -30,6 +30,7 @@ class DebuggerMenuHandler : public wxEvtHandler, public cbDebuggerMenuHandler
         virtual void UnregisterWindowMenu(const wxString &name);
     private:
         void OnUpdateUI(wxUpdateUIEvent& event);
+        void OnUpdateUIActive(wxUpdateUIEvent &event);
         void OnStart(wxCommandEvent& event);
         void OnBreak(wxCommandEvent& event);
         void OnStop(wxCommandEvent& event);

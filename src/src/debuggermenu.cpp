@@ -119,6 +119,7 @@ BEGIN_EVENT_TABLE(DebuggerMenuHandler, wxEvtHandler)
     EVT_UPDATE_UI(idMenuDetach, DebuggerMenuHandler::OnUpdateUI)
 
     EVT_UPDATE_UI(idMenuTools, DebuggerMenuHandler::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuDebugActiveTargetsDefault, DebuggerMenuHandler::OnUpdateUIActive)
 
     EVT_MENU(idMenuDebug, DebuggerMenuHandler::OnStart)
     EVT_MENU(idMenuBreak, DebuggerMenuHandler::OnBreak)
@@ -377,9 +378,10 @@ void DebuggerMenuHandler::RebuildMenus()
             }
 
             menu->AppendRadioItem(id, it->first->GetGUIName() + wxT(": ") + (*itConf)->GetName());
-            Connect(id, -1, wxEVT_COMMAND_MENU_SELECTED,
-                    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                    &DebuggerMenuHandler::OnActiveDebuggerClick);
+            Connect(id, wxEVT_COMMAND_MENU_SELECTED,
+                    wxObjectEventFunction(&DebuggerMenuHandler::OnActiveDebuggerClick));
+            Connect(id, wxEVT_UPDATE_UI,
+                    wxObjectEventFunction(&DebuggerMenuHandler::OnUpdateUIActive));
         }
     }
 
@@ -453,64 +455,82 @@ void DebuggerMenuHandler::BuildContextMenu(wxMenu &menu, const wxString& word_at
 
 void DebuggerMenuHandler::OnUpdateUI(wxUpdateUIEvent& event)
 {
-    cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-    bool en = false, stopped = false, isRunning = false, isAttached = false;
+    bool en = false;
+    bool stopped = false;
+    bool isRunning = false;
+    bool isAttached = false;
 
     if (m_activeDebugger)
     {
         isAttached = m_activeDebugger->IsAttachedToProcess();
-        en = (prj && !prj->GetCurrentlyCompilingTarget()) || isAttached;
+        if (isAttached)
+            en = true;
+        else
+        {
+            cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+            en = (prj && !prj->GetCurrentlyCompilingTarget());
+        }
         stopped = m_activeDebugger->IsStopped() && !m_activeDebugger->IsBusy();
         isRunning = m_activeDebugger->IsRunning();
     }
 
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
     cbPlugin *runningPlugin = Manager::Get()->GetProjectManager()->GetIsRunning();
-
     bool otherPlugin = false;
-    if (runningPlugin != NULL && runningPlugin != m_activeDebugger)
+    if (runningPlugin != nullptr && runningPlugin != m_activeDebugger)
     {
         en = false;
         otherPlugin = true;
     }
 
-    if (mbar && Manager::Get()->GetDebuggerManager()->HasMenu())
+    const int id = event.GetId();
+
+    if (id == idMenuDebug)
+        event.Enable((!isRunning || stopped) && en);
+    else if (id == idMenuNext || id == idMenuNextInstr || id == idMenuStepIntoInstr
+             || id == idMenuStepOut)
     {
-        bool hasBreaks = Support(m_activeDebugger, cbDebuggerFeature::Breakpoints);
-
-        mbar->Enable(idMenuDebug, (!isRunning || stopped) && en);
-        mbar->Enable(idMenuNext, isRunning && en && stopped);
-        mbar->Enable(idMenuNextInstr, isRunning && en && stopped);
-        mbar->Enable(idMenuStepIntoInstr, isRunning && en && stopped);
-        mbar->Enable(idMenuStep, en && stopped);
-        mbar->Enable(idMenuStepOut, isRunning && en && stopped);
-        mbar->Enable(idMenuRunToCursor,
-                     en && ed && stopped && Support(m_activeDebugger, cbDebuggerFeature::RunToCursor));
-        mbar->Enable(idMenuSetNextStatement,
-                     en && ed && stopped && isRunning && Support(m_activeDebugger, cbDebuggerFeature::SetNextStatement));
-        mbar->Enable(idMenuToggleBreakpoint, ed && m_activeDebugger && hasBreaks);
-        mbar->Enable(idMenuRemoveAllBreakpoints, m_activeDebugger && hasBreaks);
-        mbar->Enable(idMenuSendCommand, isRunning && stopped);
-        mbar->Enable(idMenuAddSymbolFile, isRunning && stopped);
-        mbar->Enable(idMenuStop, isRunning && en);
-        mbar->Enable(idMenuBreak, isRunning && !stopped && en);
-        mbar->Enable(idMenuAttachToProcess, !isRunning && !otherPlugin && m_activeDebugger);
-        mbar->Enable(idMenuDetach, isRunning && stopped && isAttached);
-
-        wxMenu *activeMenu = GetMenuById(idMenuDebugActive);
-        if (activeMenu)
-        {
-            for (size_t ii = 0; ii < activeMenu->GetMenuItemCount(); ++ii)
-                activeMenu->Enable(activeMenu->FindItemByPosition(ii)->GetId(), !isRunning);
-        }
-
-        mbar->Enable(idMenuTools, m_activeDebugger && m_activeDebugger->ToolMenuEnabled());
+        event.Enable(isRunning && en && stopped);
     }
+    else if (id == idMenuStep)
+        event.Enable(en && stopped);
+    else if (id == idMenuRunToCursor)
+    {
+        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+        event.Enable(en && ed && stopped
+                     && Support(m_activeDebugger, cbDebuggerFeature::RunToCursor));
+    }
+    else if (id == idMenuSetNextStatement)
+    {
+        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+        event.Enable(en && ed && stopped && isRunning
+                     && Support(m_activeDebugger, cbDebuggerFeature::SetNextStatement));
+    }
+    else if (id == idMenuToggleBreakpoint)
+    {
+        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+        event.Enable(ed && m_activeDebugger
+                     && Support(m_activeDebugger, cbDebuggerFeature::Breakpoints));
+    }
+    else if (id == idMenuRemoveAllBreakpoints)
+        event.Enable(m_activeDebugger && Support(m_activeDebugger, cbDebuggerFeature::Breakpoints));
+    else if (id == idMenuSendCommand || id == idMenuAddSymbolFile)
+        event.Enable(isRunning && stopped);
+    else if (id == idMenuStop)
+        event.Enable(isRunning && en);
+    else if (id == idMenuBreak)
+        event.Enable(isRunning && !stopped && en);
+    else if (id == idMenuAttachToProcess)
+        event.Enable(!isRunning && !otherPlugin && m_activeDebugger);
+    else if (id == idMenuDetach)
+        event.Enable(isRunning && stopped && isAttached);
+    else if (id == idMenuTools)
+        event.Enable(m_activeDebugger && m_activeDebugger->ToolMenuEnabled());
+}
 
-    // allow other UpdateUI handlers to process this event
-    // *very* important! don't forget it...
-    event.Skip();
+void DebuggerMenuHandler::OnUpdateUIActive(wxUpdateUIEvent &event)
+{
+    const bool isRunning = (m_activeDebugger && m_activeDebugger->IsRunning());
+    event.Enable(!isRunning);
 }
 
 void DebuggerMenuHandler::LogActiveConfig()
@@ -770,14 +790,7 @@ void  DebuggerMenuHandler::OnActiveDebuggerTargetsDefaultClick(cb_unused wxComma
 
 BEGIN_EVENT_TABLE(DebuggerToolbarHandler, wxEvtHandler)
     // these are different because they are loaded from the XRC
-    EVT_UPDATE_UI(idMenuDebug, DebuggerToolbarHandler::OnUpdateUI)
-    EVT_UPDATE_UI(idMenuRunToCursor, DebuggerToolbarHandler::OnUpdateUI)
-    EVT_UPDATE_UI(idMenuNext, DebuggerToolbarHandler::OnUpdateUI)
-    EVT_UPDATE_UI(idMenuNextInstr, DebuggerToolbarHandler::OnUpdateUI)
-    EVT_UPDATE_UI(idMenuStepIntoInstr, DebuggerToolbarHandler::OnUpdateUI)
-    EVT_UPDATE_UI(idMenuStep, DebuggerToolbarHandler::OnUpdateUI)
-    EVT_UPDATE_UI(idMenuStepOut, DebuggerToolbarHandler::OnUpdateUI)
-    EVT_UPDATE_UI(idMenuBreak, DebuggerToolbarHandler::OnUpdateUI)
+    EVT_UPDATE_UI(idDebuggerToolInfo, DebuggerToolbarHandler::OnUpdateUI)
     EVT_UPDATE_UI(idToolbarStop, DebuggerToolbarHandler::OnUpdateUI)
 
     EVT_MENU(idDebuggerToolInfo, DebuggerToolbarHandler::OnToolInfo)
@@ -809,43 +822,34 @@ wxToolBar* DebuggerToolbarHandler::GetToolbar(bool create)
 
 void DebuggerToolbarHandler::OnUpdateUI(wxUpdateUIEvent& event)
 {
-    cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
-    ProjectManager *manager = Manager::Get()->GetProjectManager();
+    const int id = event.GetId();
 
-    bool en = false;
-    bool stopped = false, isRunning = false;
-
-    if (plugin)
+    if (id == idDebuggerToolInfo)
     {
-        cbProject* prj = manager->GetActiveProject();
-        en = (prj && !prj->GetCurrentlyCompilingTarget()) || plugin->IsAttachedToProcess();
-        stopped = plugin->IsStopped();
-        isRunning = plugin->IsRunning();
+        cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
+        event.Enable(plugin && plugin->ToolMenuEnabled());
     }
-
-    if (m_Toolbar)
+    if (id == idToolbarStop)
     {
-        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-
-        cbPlugin *runningPlugin = manager->GetIsRunning();
-        if (runningPlugin != NULL && runningPlugin != plugin)
-            en = false;
-
-        m_Toolbar->EnableTool(idMenuDebug, (!isRunning || stopped) && en);
-        m_Toolbar->EnableTool(idMenuRunToCursor, en && ed && stopped);
-        m_Toolbar->EnableTool(idMenuNext, isRunning && en && stopped);
-        m_Toolbar->EnableTool(idMenuNextInstr, isRunning && en && stopped);
-        m_Toolbar->EnableTool(idMenuStepIntoInstr, isRunning && en && stopped);
-        m_Toolbar->EnableTool(idMenuStep, en && stopped);
-        m_Toolbar->EnableTool(idMenuStepOut, isRunning && en && stopped);
-        m_Toolbar->EnableTool(idToolbarStop, isRunning && en);
-        m_Toolbar->EnableTool(idMenuBreak, isRunning && !stopped && en);
-        m_Toolbar->EnableTool(idDebuggerToolInfo, plugin && plugin->ToolMenuEnabled());
+        bool enable = false;
+        cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
+        if (plugin && plugin->IsRunning())
+        {
+            ProjectManager *projectManager = Manager::Get()->GetProjectManager();
+            cbPlugin *runningPlugin = projectManager->GetIsRunning();
+            if (runningPlugin == nullptr || runningPlugin == plugin)
+            {
+                if (plugin->IsAttachedToProcess())
+                    enable = true;
+                else
+                {
+                    cbProject* project = projectManager->GetActiveProject();
+                    enable = (project && !project->GetCurrentlyCompilingTarget());
+                }
+            }
+        }
+        event.Enable(enable);
     }
-
-    // allow other UpdateUI handlers to process this event
-    // *very* important! don't forget it...
-    event.Skip();
 }
 
 void DebuggerToolbarHandler::OnToolInfo(cb_unused wxCommandEvent& event)
