@@ -337,11 +337,7 @@ void DebuggerMenuHandler::MarkActiveTargetAsValid(bool valid)
         return;
     wxMenuItem *item = menu->FindItem(idMenuDebugActiveTargetsDefault);
     if (item)
-#if wxCHECK_VERSION(3, 0, 0)
         item->SetItemLabel(valid ? _("Target's default") : _("Target's default (invalid)"));
-#else
-        item->SetText(valid ? _("Target's default") : _("Target's default (invalid)"));
-#endif
 }
 
 void DebuggerMenuHandler::RebuildMenus()
