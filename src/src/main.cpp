@@ -388,6 +388,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idViewFocusManagement,    MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewFocusLogsAndOthers, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewFullScreen,         MainFrame::OnViewMenuUpdateUI)
+    EVT_UPDATE_UI(idViewToolDebugger,       MainFrame::OnViewMenuUpdateUI)
 
     EVT_UPDATE_UI(idEditHighlightModeText, MainFrame::OnEditHighlightModeUpdateUI)
 
@@ -1362,7 +1363,12 @@ wxMenuItem* MainFrame::AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObject
         --pos;
     }
 
-    Connect( id,  wxEVT_COMMAND_MENU_SELECTED, callback );
+    Connect(id, wxEVT_COMMAND_MENU_SELECTED, callback);
+    if (checkable)
+    {
+        Connect(id, wxEVT_UPDATE_UI,
+                wxObjectEventFunction(&MainFrame::OnUpdateCheckablePluginMenu));
+    }
     return item;
 }
 
@@ -4576,34 +4582,88 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
 {
     if (Manager::IsAppShuttingDown())
     {
-        event.Skip();
+        event.Enable(false);
         return;
     }
 
-    wxMenuBar* mbar   = GetMenuBar();
-    cbEditor*  ed     = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() : nullptr;
-    bool       manVis = m_LayoutManager.GetPane(m_pPrjManUI->GetNotebook()).IsShown();
-
-    mbar->Check(idViewManager,             manVis);
-    mbar->Check(idViewLogManager,          m_LayoutManager.GetPane(m_pInfoPane).IsShown());
-    mbar->Check(idViewStartPage,           Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle)!=NULL);
-    mbar->Check(idViewStatusbar,           GetStatusBar() && GetStatusBar()->IsShown());
-    mbar->Check(idViewScriptConsole,       m_LayoutManager.GetPane(m_pScriptConsole).IsShown());
-    mbar->Check(idViewHideEditorTabs,      Manager::Get()->GetEditorManager()->GetNotebook()->GetTabCtrlHeight() == 0);
-    mbar->Check(idViewFullScreen,          IsFullScreen());
-    mbar->Enable(idViewFocusEditor,        ed);
-    mbar->Enable(idViewFocusManagement,    manVis);
-    mbar->Enable(idViewFocusLogsAndOthers, m_pInfoPane->IsShown());
-
-    // toolbars
-    wxMenu* viewToolbars = nullptr;
-    GetMenuBar()->FindItem(idViewToolMain, &viewToolbars);
-    if (viewToolbars)
+    const int id = event.GetId();
+    if (id == idViewManager)
     {
-        SetChecksForViewToolbarsMenu(*viewToolbars);
+        const bool managerVisibility = m_LayoutManager.GetPane(m_pPrjManUI->GetNotebook()).IsShown();
+        event.Check(managerVisibility);
+    }
+    else if (id == idViewFocusManagement)
+    {
+        const bool managerVisibility = m_LayoutManager.GetPane(m_pPrjManUI->GetNotebook()).IsShown();
+        event.Enable(managerVisibility);
+    }
+    else if (id == idViewLogManager)
+        event.Check(m_LayoutManager.GetPane(m_pInfoPane).IsShown());
+    else if (id == idViewStartPage)
+    {
+        EditorManager *editorManager = Manager::Get()->GetEditorManager();
+        const int editorCount = editorManager->GetEditorsCount();
+        bool found = false;
+        for (int ii = 0; ii < editorCount; ++ii)
+        {
+            EditorBase *editor = editorManager->GetEditor(ii);
+            if (editor && editor->GetTitle() == g_StartHereTitle)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        event.Check(found);
+    }
+    else if (id == idViewStatusbar)
+    {
+        wxStatusBar *statusBar = GetStatusBar();
+        event.Check(statusBar && statusBar->IsShown());
+    }
+    else if (id == idViewScriptConsole)
+        event.Check(m_LayoutManager.GetPane(m_pScriptConsole).IsShown());
+    else if (id == idViewHideEditorTabs)
+        event.Check(Manager::Get()->GetEditorManager()->GetNotebook()->GetTabCtrlHeight() == 0);
+    else if (id == idViewFullScreen)
+        event.Check(IsFullScreen());
+    else if (id == idViewFocusEditor)
+    {
+        EditorManager *editorManager = Manager::Get()->GetEditorManager();
+        event.Enable(editorManager && editorManager->GetBuiltinActiveEditor() != nullptr);
+    }
+    else if (id == idViewFocusLogsAndOthers)
+        event.Enable(m_pInfoPane->IsShown());
+    else if (id == idViewToolMain)
+        event.Check(m_LayoutManager.GetPane(m_pToolbar).IsShown());
+    else if (id == idViewToolDebugger)
+        event.Check(m_LayoutManager.GetPane(m_debuggerToolbarHandler->GetToolbar(false)).IsShown());
+}
+
+void MainFrame::OnUpdateCheckablePluginMenu(wxUpdateUIEvent &event)
+{
+    if (Manager::IsAppShuttingDown())
+    {
+        event.Enable(false);
+        return;
     }
 
-    event.Skip();
+    bool check = false;
+
+    const int id = event.GetId();
+    PluginIDsMap::const_iterator it = m_PluginIDsMap.find(id);
+    if (it != m_PluginIDsMap.end())
+    {
+        const wxString &pluginName = it->second;
+        if (!pluginName.empty())
+        {
+            cbPlugin* plugin = Manager::Get()->GetPluginManager()->FindPluginByName(pluginName);
+            if (plugin)
+                check = m_LayoutManager.GetPane(m_PluginsTools[plugin]).IsShown();
+        }
+    }
+
+    event.Check(check);
 }
 
 void MainFrame::OnSearchMenuUpdateUI(wxUpdateUIEvent& event)
@@ -5390,26 +5450,7 @@ void MainFrame::PopupToggleToolbarMenu()
         item = new wxMenuItem(&menu, old->GetId(), old->GetItemLabelText(), old->GetHelp(), old->GetKind());
         menu.Append(item);
     }
-    SetChecksForViewToolbarsMenu(menu);
     PopupMenu(&menu);
-}
-
-void MainFrame::SetChecksForViewToolbarsMenu(wxMenu &menu)
-{
-    for (size_t i = 0; i < menu.GetMenuItemCount(); ++i)
-    {
-        wxMenuItem* item = menu.GetMenuItems()[i];
-        wxString pluginName = m_PluginIDsMap[item->GetId()];
-        if (!pluginName.IsEmpty())
-        {
-            cbPlugin* plugin = Manager::Get()->GetPluginManager()->FindPluginByName(pluginName);
-            if (plugin)
-                item->Check(m_LayoutManager.GetPane(m_PluginsTools[plugin]).IsShown());
-        }
-    }
-
-    menu.Check(idViewToolMain,     m_LayoutManager.GetPane(m_pToolbar).IsShown());
-    menu.Check(idViewToolDebugger, m_LayoutManager.GetPane(m_debuggerToolbarHandler->GetToolbar(false)).IsShown());
 }
 
 void MainFrame::OnGetGlobalAccels(wxCommandEvent& event)
