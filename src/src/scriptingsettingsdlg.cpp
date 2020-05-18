@@ -132,8 +132,8 @@ void ScriptingSettingsDlg::FillTrusts()
         const ScriptingManager::TrustedScriptProps& props = it->second;
 
         long item = list->InsertItem(list->GetItemCount(), it->first);
-        list->SetItem(item, 1, wxString::Format(_T("%x"), props.crc));
-        list->SetItem(item, 2, !props.permanent ? _("Yes") : _(""));
+        list->SetItem(item, 1, wxString::Format("%x", props.crc));
+        list->SetItem(item, 2, !props.permanent ? _("Yes") : wxString());
     }
 
     UpdateTrustsState();
