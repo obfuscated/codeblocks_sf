@@ -4610,35 +4610,38 @@ void MainFrame::OnSearchMenuUpdateUI(wxUpdateUIEvent& event)
 {
     if (Manager::IsAppShuttingDown())
     {
-        event.Skip();
+        event.Enable(false);
         return;
     }
 
-    cbEditor* ed = Manager::Get()->GetEditorManager()
-                 ? Manager::Get()->GetEditorManager()->GetBuiltinEditor(
-                     Manager::Get()->GetEditorManager()->GetActiveEditor() ) : nullptr;
+    const int id = event.GetId();
+    if (id == idSearchFindInFiles || id == idSearchReplaceInFiles)
+    {
+        // 'Find' and 'Replace' are always enabled for (find|replace)-in-files
+        event.Enable(true);
+        return;
+    }
 
-    bool enableGoto = false;
-    if (ed)
-        enableGoto = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/margin/use_changebar"), true)
-                   && (ed->CanUndo() || ed->CanRedo());
+    EditorManager *editorManager = Manager::Get()->GetEditorManager();
+    if (editorManager == nullptr)
+    {
+        event.Enable(false);
+        return;
+    }
+    cbEditor* ed = editorManager->GetBuiltinActiveEditor();
+    if (ed == nullptr)
+    {
+        event.Enable(false);
+        return;
+    }
 
-    wxMenuBar* mbar = GetMenuBar();
-
-    // 'Find' and 'Replace' are always enabled for (find|replace)-in-files
-    // (idSearchFindInFiles and idSearchReplaceInFiles)
-
-    mbar->Enable(idSearchFind,                  ed);
-    mbar->Enable(idSearchFindNext,              ed);
-    mbar->Enable(idSearchFindPrevious,          ed);
-    mbar->Enable(idSearchFindSelectedNext,      ed);
-    mbar->Enable(idSearchFindSelectedPrevious,  ed);
-    mbar->Enable(idSearchReplace,               ed);
-    mbar->Enable(idSearchGotoLine,              ed);
-    mbar->Enable(idSearchGotoNextChanged,       enableGoto);
-    mbar->Enable(idSearchGotoPreviousChanged,   enableGoto);
-
-    event.Skip();
+    if (id == idSearchGotoNextChanged || id == idSearchGotoPreviousChanged)
+    {
+        bool useChangeBar = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/margin/use_changebar"), true);
+        event.Enable(useChangeBar && (ed->CanUndo() || ed->CanRedo()));
+    }
+    else
+        event.Enable(true);
 }
 
 
