@@ -69,15 +69,9 @@ class MainFrame : public wxFrame
     private:
         MainFrame(cb_unused const MainFrame& rhs); // prevent copy construction
 
-        wxAuiManager m_LayoutManager;
-        LayoutViewsMap m_LayoutViews;
-        LayoutViewsMap m_LayoutMessagePane;
         bool LayoutDifferent(const wxString& layout1,const wxString& layout2,const wxString& delimiter=_("|"));
         bool LayoutMessagePaneDifferent(const wxString& layout1,const wxString& layout2, bool checkSelection=false);
     public:
-        std::unique_ptr<wxAcceleratorTable> m_pAccel;
-        std::unique_ptr<wxAcceleratorEntry[]> m_pAccelEntries;
-        size_t              m_AccelCount;
 
         MainFrame(wxWindow* parent = (wxWindow*)NULL);
         ~MainFrame();
@@ -364,7 +358,14 @@ class MainFrame : public wxFrame
         #if wxUSE_STATUSBAR
         wxStatusBar *OnCreateStatusBar(int number, long style, wxWindowID id, const wxString& name) override;
         #endif
-    protected:
+    private:
+        wxAuiManager m_LayoutManager;
+        LayoutViewsMap m_LayoutViews;
+        LayoutViewsMap m_LayoutMessagePane;
+        std::unique_ptr<wxAcceleratorTable> m_pAccel;
+        std::unique_ptr<wxAcceleratorEntry[]> m_pAccelEntries;
+        size_t m_AccelCount;
+
         RecentItemsList m_filesHistory, m_projectsHistory;
 
         /// "Close FullScreen" button. Only shown when in FullScreen view
