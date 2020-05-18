@@ -4333,19 +4333,35 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
         return;
     }
 
-    EditorManager *editorManager = Manager::Get()->GetEditorManager();
-    EditorBase *ed = (editorManager ? editorManager->GetActiveEditor() : nullptr);
-    EditorBase *sh = (editorManager ? editorManager->GetEditor(g_StartHereTitle) : nullptr);
 
     const int id = event.GetId();
 
     // Single file related menu items
     if (id == idFileClose || id == idFileCloseAll || id == idFileSaveAs)
-        event.Enable(ed && ed != sh);
+    {
+        EditorManager *editorManager = Manager::Get()->GetEditorManager();
+        EditorBase *ed = (editorManager ? editorManager->GetActiveEditor() : nullptr);
+        if (ed == nullptr)
+            event.Enable(false);
+        else if (ed->IsBuiltinEditor())
+            event.Enable(true);
+        else
+        {
+            // Detect if this is the start here page.
+            event.Enable(ed->GetTitle() != g_StartHereTitle);
+        }
+    }
     else if (id == idFileSave)
+    {
+        EditorManager *editorManager = Manager::Get()->GetEditorManager();
+        EditorBase *ed = (editorManager ? editorManager->GetActiveEditor() : nullptr);
         event.Enable(ed && ed->GetModified());
+    }
     else if (id == idFilePrint)
+    {
+        EditorManager *editorManager = Manager::Get()->GetEditorManager();
         event.Enable(editorManager && editorManager->GetBuiltinActiveEditor());
+    }
     else if (id == idFileOpen)
         event.Enable(true);
     else
