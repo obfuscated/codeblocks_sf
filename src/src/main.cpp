@@ -1102,7 +1102,7 @@ void MainFrame::CreateMenubar()
                 const wxString &lang = langs[i];
                 bool found = false;
                 int id = -1;
-                for (const MenuIDToLanugage::value_type &menuIDToLanguage : m_MapMenuIDToLanguage)
+                for (const MenuIDToLanguage::value_type &menuIDToLanguage : m_MapMenuIDToLanguage)
                 {
                     if (menuIDToLanguage.second == lang)
                     {
@@ -1115,7 +1115,7 @@ void MainFrame::CreateMenubar()
                 if (!found)
                 {
                     id = wxNewId();
-                    m_MapMenuIDToLanguage.insert(MenuIDToLanugage::value_type(id, lang));
+                    m_MapMenuIDToLanguage.insert(MenuIDToLanguage::value_type(id, lang));
                 }
 
                 hl->AppendRadioItem(id, lang,
@@ -4060,7 +4060,7 @@ void MainFrame::OnEditHighlightModeUpdateUI(wxUpdateUIEvent &event)
     const wxString &languageName = colour_set->GetLanguageName(ed->GetLanguage());
 
     const int id = event.GetId();
-    MenuIDToLanugage::const_iterator it = m_MapMenuIDToLanguage.find(id);
+    MenuIDToLanguage::const_iterator it = m_MapMenuIDToLanguage.find(id);
     if (it != m_MapMenuIDToLanguage.end())
         event.Check(languageName == it->second);
     else

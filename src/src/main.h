@@ -406,8 +406,8 @@ class MainFrame : public wxFrame
         typedef std::map<int, const wxString> MenuIDToScript; // script menuitem ID -> script function name
         MenuIDToScript m_MenuIDToScript;
 
-        typedef std::unordered_map<int, wxString> MenuIDToLanugage;
-        MenuIDToLanugage m_MapMenuIDToLanguage;
+        typedef std::unordered_map<int, wxString> MenuIDToLanguage;
+        MenuIDToLanguage m_MapMenuIDToLanguage;
 
         wxScrollingDialog* m_pBatchBuildDialog;
         wxButton*          m_pHighlightButton;
