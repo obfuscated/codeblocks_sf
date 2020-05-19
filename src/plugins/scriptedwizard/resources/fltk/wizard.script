@@ -30,7 +30,7 @@ function BeginWizard()
         local fltkpath_descr = _T("Please select the location of FLTK on your computer.\n" +
                                   "This is the top-level folder where FLTK was installed (unpacked).\n" +
                                   "To help you, this folder must contain the subfolders\n" +
-                                  "\"include\" and \"lib\".\n\n") +
+                                  "\"include\" and \"lib\".\n\n" +
                                   "You can also use a global variable, p.e. $(#fl)\n");
 
         Wizard.AddGenericSelectPathPage(_T("FltkPath"), fltkpath_descr, _T("Please select FLTK's location:"), FltkPathDefault);
