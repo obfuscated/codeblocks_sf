@@ -723,8 +723,10 @@ int ProjectManager::DoAddFileToProject(const wxString& filename, cbProject* proj
 
     // make sure filename is relative to project path
     wxFileName fname(filename);
-    fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE, project->GetBasePath());
-    fname.MakeRelativeTo(project->GetBasePath());
+
+    const wxString basePath = project->GetBasePath();
+    fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE, basePath);
+    fname.MakeRelativeTo(basePath);
 
     // add the file to the project first
     ProjectFile* pf = project->AddFile(-1, fname.GetFullPath());
