@@ -317,8 +317,14 @@ cbEditor* EditorManager::GetBuiltinEditor(EditorBase* eb)
 
 EditorBase* EditorManager::IsOpen(const wxString& filename)
 {
+    // Fast path it there are no open editors. This is useful, because UnixFilename and realpath are
+    // rather expensive when called many times.
+    const size_t pageCount = m_pNotebook->GetPageCount();
+    if (pageCount == 0)
+        return nullptr;
+
     wxString uFilename = UnixFilename(realpath(filename));
-    for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
+    for (size_t i = 0; i < pageCount; ++i)
     {
         EditorBase* eb = InternalGetEditorBase(i);
         if (!eb)
@@ -330,7 +336,7 @@ EditorBase* EditorManager::IsOpen(const wxString& filename)
             return eb;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 EditorBase* EditorManager::GetEditor(int index)

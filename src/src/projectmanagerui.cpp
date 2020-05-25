@@ -35,6 +35,7 @@
 #include <unordered_map>
 #include <wx/dataobj.h>
 #include <wx/dnd.h>
+#include <wx/progdlg.h>
 
 #include "cbauibook.h"
 #include "cbcolourmanager.h"
@@ -268,6 +269,8 @@ void ProjectManagerUI::RebuildTree()
     if (Manager::IsAppShuttingDown()) // saves a lot of time at startup for large projects
         return;
 
+    wxStopWatch timer;
+
     FreezeTree();
     ProjectManager* pm = Manager::Get()->GetProjectManager();
     ProjectsArray* pa = pm->GetProjects();
@@ -308,6 +311,13 @@ void ProjectManagerUI::RebuildTree()
             prj->RestoreTreeState(m_pTree);
     }
     UnfreezeTree();
+
+    const long time = timer.Time();
+    if (time >= 100)
+    {
+        LogManager *log = Manager::Get()->GetLogManager();
+        log->Log(wxString::Format("ProjectManagerUI::RebuildTree %.3f sec", time / 1000.0f));
+    }
 }
 
 void ProjectManagerUI::FreezeTree()
@@ -1436,18 +1446,42 @@ void ProjectManagerUI::OnRemoveFileFromProject(wxCommandEvent& event)
             {
                 return;
             }
+
+            wxStopWatch timer;
+            wxProgressDialog progress(_("Project Manager"),
+                                      _("Please wait while removing files to project..."),
+                                      indices.GetCount(),
+                                      Manager::Get()->GetAppFrame());
+
             prj->BeginRemoveFiles();
+
+            wxStopWatch updateProgressTimer;
             // we iterate the array backwards, because if we iterate it normally,
             // when we remove the first index, the rest becomes invalid...
             for (int i = (int)indices.GetCount() - 1; i >= 0; --i)
             {
-                Manager::Get()->GetLogManager()->DebugLog(F(_T("Removing index %d"), indices[i]));
-
                 if ( ProjectFile* pf = prj->GetFileByFilename(files[indices[i]]) )
                     pm->RemoveFileFromProject(pf, prj);
+
+                if ((i % 256 == 0) && (updateProgressTimer.Time() >= 100))
+                {
+                    progress.Update(indices.GetCount() - i);
+                    updateProgressTimer.Start();
+                }
             }
             prj->CalculateCommonTopLevelPath();
             prj->EndRemoveFiles();
+
+            progress.Update(indices.GetCount());
+
+            const long time = timer.Time();
+            if (time >= 100)
+            {
+                LogManager *log = Manager::Get()->GetLogManager();
+                log->Log(wxString::Format("ProjectManagerUI::OnRemoveFileFromProject took: %.3f seconds for %d files.",
+                                          time / 1000.0f, int(indices.GetCount())));
+            }
+
             RebuildTree();
         }
     }

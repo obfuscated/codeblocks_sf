@@ -691,11 +691,10 @@ bool ProjectManager::IsClosingWorkspace()
     return m_IsClosingWorkspace;
 }
 
-
-int ProjectManager::DoAddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets)
+bool SetupTargets(wxArrayInt &targets, cbProject *project, cbProjectManagerUI *ui)
 {
-    if (!project)
-        return 0;
+    cbAssert(project);
+    cbAssert(ui);
 
     // do we have to ask for target?
     if (targets.GetCount() == 0)
@@ -706,11 +705,21 @@ int ProjectManager::DoAddFileToProject(const wxString& filename, cbProject* proj
         // else display multiple target selection dialog
         else
         {
-            targets = m_ui->AskForMultiBuildTargetIndex(project);
+            targets = ui->AskForMultiBuildTargetIndex(project);
             if (targets.GetCount() == 0)
-                return 0;
+                return false;
         }
     }
+    return true;
+}
+
+int ProjectManager::DoAddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets)
+{
+    if (!project)
+        return 0;
+
+    if (!SetupTargets(targets, project, m_ui))
+        return 0;
 
     // make sure filename is relative to project path
     wxFileName fname(filename);
@@ -773,24 +782,41 @@ int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbP
     return -1;
 }
 
-int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbProject* project, wxArrayInt& targets)
+int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbProject* project,
+                                              wxArrayInt& targets)
 {
-    wxProgressDialog progress(_("Project Manager"), _("Please wait while adding files to project..."), filelist.GetCount(), Manager::Get()->GetAppFrame());
-
     if (!project)
         project = GetActiveProject();
 
-    if (project)
+    if (!project)
+        return 0;
+
+    if (SetupTargets(targets, project, m_ui))
     {
+        wxStopWatch timer;
+
+        wxProgressDialog progress(_("Project Manager"),
+                                  _("Please wait while adding files to project..."),
+                                  filelist.GetCount(),
+                                  Manager::Get()->GetAppFrame());
+
         project->BeginAddFiles();
+
+        wxStopWatch updateProgressTimer;
 
         wxArrayString addedFiles; // to know which files were added successfully
         for (unsigned int i = 0; i < filelist.GetCount(); ++i)
         {
             if (DoAddFileToProject(filelist[i], project, targets) != 0)
                 addedFiles.Add(filelist[i]);
-            progress.Update(i);
+
+            if ((i % 256 == 0) && (updateProgressTimer.Time() >= 100))
+            {
+                progress.Update(i);
+                updateProgressTimer.Start();
+            }
         }
+        progress.Update(filelist.GetCount());
 
         if (addedFiles.GetCount() != 0)
         {
@@ -804,6 +830,14 @@ int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbP
         }
 
         project->EndAddFiles();
+
+        const long time = timer.Time();
+        if (time >= 100)
+        {
+            LogManager *log = Manager::Get()->GetLogManager();
+            log->Log(wxString::Format("ProjectManager::AddMultipleFilesToProject took: %.3f seconds for %d files.",
+                                      time / 1000.0f, int(addedFiles.GetCount())));
+        }
     }
 
     return targets.GetCount();
@@ -1001,8 +1035,6 @@ void ProjectManager::RemoveFileFromProject(ProjectFile *pfile, cbProject* projec
     evt.SetProject(project);
     evt.SetString(filename);
     Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
-
-    Manager::Get()->GetLogManager()->DebugLog(_T("Removed ") + filename + _T(" from ") + project->GetTitle());
 }
 
 bool ProjectManager::BeginLoadingProject()
