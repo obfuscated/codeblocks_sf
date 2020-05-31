@@ -207,6 +207,11 @@ void ThreadSearch::OnAttach()
 
     CreateView(ThreadSearchViewManagerBase::TypeMessagesNotebook, false);
 
+    typedef cbEventFunctor<ThreadSearch, CodeBlocksEvent> Event;
+
+    Manager::Get()->RegisterEventSink(cbEVT_SETTINGS_CHANGED,
+                                      new Event(this, &ThreadSearch::OnSettingsChanged));
+
     // true if it enters in OnRelease for the first time
     m_OnReleased = false;
 }
@@ -225,6 +230,8 @@ void ThreadSearch::OnRelease(bool /*appShutDown*/)
     if (m_OnReleased)
         return;
     m_OnReleased = true;
+
+    Manager::Get()->RemoveAllEventSinksFor(this);
 
     // Removes Thread search menu item from the View menu
     RemoveMenuItems();
@@ -958,6 +965,10 @@ void ThreadSearch::SetManagerType(ThreadSearchViewManagerBase::eManagerTypes mgr
     }
 }
 
-
-
-
+void ThreadSearch::OnSettingsChanged(CodeBlocksEvent &event)
+{
+    if (event.GetInt() == cbSettingsType::Environment && m_pThreadSearchView)
+    {
+        m_pThreadSearchView->UpdateSettings();
+    }
+}

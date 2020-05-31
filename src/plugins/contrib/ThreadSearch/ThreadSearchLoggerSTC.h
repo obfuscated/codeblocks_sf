@@ -28,6 +28,7 @@ public:
     void OnSearchEnd() override;
     wxWindow* GetWindow() override;
     void SetFocus() override;
+    void UpdateSettings() override;
 
 private:
     void ConnectEvents();

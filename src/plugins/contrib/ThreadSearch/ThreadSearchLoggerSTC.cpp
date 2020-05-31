@@ -312,6 +312,11 @@ void ThreadSearchLoggerSTC::SetFocus()
     m_stc->SetFocus();
 }
 
+void ThreadSearchLoggerSTC::UpdateSettings()
+{
+    SetupStyles();
+}
+
 void ThreadSearchLoggerSTC::AppendStyledText(int style, const wxString &text)
 {
     const int position = m_stc->GetLength();
