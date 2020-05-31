@@ -19,6 +19,8 @@
     #include "configmanager.h"
 #endif
 
+#include "wx/clrpicker.h"
+#include "cbcolourmanager.h"
 #include "ThreadSearch.h"
 #include "SearchInPanel.h"
 #include "DirectoryParamsPanel.h"
@@ -100,6 +102,31 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, w
         _("Vertical")
     };
     m_pRadSplitterWndMode = new wxRadioBox(m_PageLayout, wxID_ANY, _("Splitter window mode"), wxDefaultPosition, wxDefaultSize, 2, m_pRadSplitterWndMode_choices, 1, wxRA_SPECIFY_ROWS);
+
+    {
+        ColourManager *colours = Manager::Get()->GetColourManager();
+
+        STCColours_staticbox = new wxStaticBox(m_PageLayout, -1, _("STC Logger colours"));
+
+        int ii = 0;
+        m_STCColoursLabels[ii++] = new wxStaticText(m_PageLayout, wxID_ANY, _("Text (fg/bg)"));
+        m_STCColoursLabels[ii++] = new wxStaticText(m_PageLayout, wxID_ANY, _("File (fg/bg)"));
+        m_STCColoursLabels[ii++] = new wxStaticText(m_PageLayout, wxID_ANY, _("LineNo (fg/bg)"));
+        m_STCColoursLabels[ii++] = new wxStaticText(m_PageLayout, wxID_ANY, _("Match (fg/bg)"));
+        m_STCColoursLabels[ii++] = new wxStaticText(m_PageLayout, wxID_ANY, _("Selected line background"));
+
+        ii = 0;
+        m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_text_fore")));
+        m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_text_back")));
+        m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_file_fore")));
+        m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_file_back")));
+        m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_lineno_fore")));
+        m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_lineno_back")));
+        m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_match_fore")));
+        m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_match_back")));
+        m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_selected_line_back")));
+        m_STCColourPickers[ii++] = nullptr;
+    }
 
     set_properties();
     do_layout();
@@ -352,6 +379,22 @@ void ThreadSearchConfPanel::do_layout()
         SizerThreadSearchGridLayout->Add(m_pRadSplitterWndMode, 0, wxALL|wxEXPAND, 4);
         SizerThreadSearchGridLayout->AddGrowableCol(0);
         SizerThreadSearchGridLayout->AddGrowableCol(1);
+
+        wxStaticBoxSizer* SizerThreadSearchLayoutSTCColours = new wxStaticBoxSizer(STCColours_staticbox, wxVERTICAL);
+        wxFlexGridSizer* SizerThreadSearchLayoutSTCColoursGrid = new wxFlexGridSizer(5, 3, 0, 0);
+        SizerThreadSearchLayoutSTCColoursGrid->AddGrowableCol(0);
+        SizerThreadSearchLayoutSTCColours->Add(SizerThreadSearchLayoutSTCColoursGrid, 1, wxEXPAND | wxALL, 4);
+        for (int ii = 0; ii < STCColoursCount/*(cbCountOf(STCColoursLabels) / 2) * 2*/; ii ++)
+        {
+            SizerThreadSearchLayoutSTCColoursGrid->Add(m_STCColoursLabels[ii], 1, wxEXPAND | wxLEFT | wxTOP, 4);
+            if (m_STCColourPickers[ii * 2] != nullptr)
+                SizerThreadSearchLayoutSTCColoursGrid->Add(m_STCColourPickers[ii * 2], 1, wxEXPAND | wxLEFT | wxTOP, 4);
+            if (m_STCColourPickers[ii * 2 + 1] != nullptr)
+                SizerThreadSearchLayoutSTCColoursGrid->Add(m_STCColourPickers[ii * 2 + 1], 1, wxEXPAND | wxLEFT | wxTOP, 4);
+        }
+
+        SizerThreadSearchGridLayout->Add(SizerThreadSearchLayoutSTCColours, 1, wxEXPAND | wxALL, 4);
+
         SizerTop->Add(SizerThreadSearchGridLayout, 1, wxALL|wxEXPAND, 4);
 
         m_PageLayout->SetSizer(SizerTop);
@@ -458,6 +501,21 @@ void ThreadSearchConfPanel::OnApply()
         }
     }
     m_ThreadSearchPlugin.SetSplitterMode(splitterMode);
+
+    {
+        ColourManager *colours = Manager::Get()->GetColourManager();
+        int ii = 0;
+        colours->SetColour(wxT("thread_search_text_fore"), m_STCColourPickers[ii++]->GetColour());
+        colours->SetColour(wxT("thread_search_text_back"), m_STCColourPickers[ii++]->GetColour());
+        colours->SetColour(wxT("thread_search_file_fore"), m_STCColourPickers[ii++]->GetColour());
+        colours->SetColour(wxT("thread_search_file_back"), m_STCColourPickers[ii++]->GetColour());
+        colours->SetColour(wxT("thread_search_lineno_fore"), m_STCColourPickers[ii++]->GetColour());
+        colours->SetColour(wxT("thread_search_lineno_back"), m_STCColourPickers[ii++]->GetColour());
+        colours->SetColour(wxT("thread_search_match_fore"), m_STCColourPickers[ii++]->GetColour());
+        colours->SetColour(wxT("thread_search_match_back"), m_STCColourPickers[ii++]->GetColour());
+        colours->SetColour(wxT("thread_search_selected_line_back"),
+                           m_STCColourPickers[ii++]->GetColour());
+    }
 
     // Updates toolbar visibility
     m_ThreadSearchPlugin.ShowToolBar(m_pChkShowThreadSearchToolBar->IsChecked());

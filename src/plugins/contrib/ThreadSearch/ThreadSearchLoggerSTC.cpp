@@ -46,11 +46,8 @@ ThreadSearchLoggerSTC::ThreadSearchLoggerSTC(ThreadSearchView& threadSearchView,
                                              wxWindow* parent, long id) :
     ThreadSearchLoggerBase(parent, threadSearchView, threadSearchPlugin, fileSorting)
 {
-    ColourManager *colours = Manager::Get()->GetColourManager();
-
     m_stc = new wxScintilla(this, id, wxDefaultPosition, wxDefaultSize);
     m_stc->SetCaretLineVisible(true);
-    m_stc->SetCaretLineBackground(colours->GetColour(wxT("thread_search_selected_line_back")));
     m_stc->SetCaretWidth(0);
     m_stc->SetReadOnly(true);
     m_stc->UsePopUp(false);
@@ -73,36 +70,7 @@ ThreadSearchLoggerSTC::ThreadSearchLoggerSTC(ThreadSearchView& threadSearchView,
         cb::SetFoldingMarkers(m_stc, id);
     }
 
-    // Setup styles
-    {
-        m_stc->StyleSetForeground(wxSCI_STYLE_DEFAULT,
-                                  colours->GetColour(wxT("thread_search_text_fore")));
-        m_stc->StyleSetBackground(wxSCI_STYLE_DEFAULT,
-                                  colours->GetColour(wxT("thread_search_text_back")));
-
-        // Spread the default colours to all styles.
-        m_stc->StyleClearAll();
-
-        m_stc->StyleSetForeground(STCStyles::File,
-                                  colours->GetColour(wxT("thread_search_file_fore")));
-        m_stc->StyleSetBackground(STCStyles::File,
-                                  colours->GetColour(wxT("thread_search_file_back")));
-
-        m_stc->StyleSetForeground(STCStyles::LineNo,
-                                  colours->GetColour(wxT("thread_search_lineno_fore")));
-        m_stc->StyleSetBackground(STCStyles::LineNo,
-                                  colours->GetColour(wxT("thread_search_lineno_back")));
-
-        m_stc->StyleSetForeground(STCStyles::Text,
-                                  colours->GetColour(wxT("thread_search_text_fore")));
-        m_stc->StyleSetBackground(STCStyles::Text,
-                                  colours->GetColour(wxT("thread_search_text_back")));
-
-        m_stc->StyleSetForeground(STCStyles::TextMatching,
-                                  colours->GetColour(wxT("thread_search_match_fore")));
-        m_stc->StyleSetBackground(STCStyles::TextMatching,
-                                  colours->GetColour(wxT("thread_search_match_back")));
-    }
+    SetupStyles();
 
     SetupSizer(m_stc);
 
@@ -144,6 +112,41 @@ void ThreadSearchLoggerSTC::RegisterColours()
     colours->RegisterColour(wxT("Thread Search"), wxT("Selected line background"),
                             wxT("thread_search_selected_line_back"),
                             wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
+}
+
+void ThreadSearchLoggerSTC::SetupStyles()
+{
+    ColourManager *colours = Manager::Get()->GetColourManager();
+
+    m_stc->SetCaretLineBackground(colours->GetColour(wxT("thread_search_selected_line_back")));
+
+    m_stc->StyleSetForeground(wxSCI_STYLE_DEFAULT,
+                              colours->GetColour(wxT("thread_search_text_fore")));
+    m_stc->StyleSetBackground(wxSCI_STYLE_DEFAULT,
+                              colours->GetColour(wxT("thread_search_text_back")));
+
+    // Spread the default colours to all styles.
+    m_stc->StyleClearAll();
+
+    m_stc->StyleSetForeground(STCStyles::File,
+                              colours->GetColour(wxT("thread_search_file_fore")));
+    m_stc->StyleSetBackground(STCStyles::File,
+                              colours->GetColour(wxT("thread_search_file_back")));
+
+    m_stc->StyleSetForeground(STCStyles::LineNo,
+                              colours->GetColour(wxT("thread_search_lineno_fore")));
+    m_stc->StyleSetBackground(STCStyles::LineNo,
+                              colours->GetColour(wxT("thread_search_lineno_back")));
+
+    m_stc->StyleSetForeground(STCStyles::Text,
+                              colours->GetColour(wxT("thread_search_text_fore")));
+    m_stc->StyleSetBackground(STCStyles::Text,
+                              colours->GetColour(wxT("thread_search_text_back")));
+
+    m_stc->StyleSetForeground(STCStyles::TextMatching,
+                              colours->GetColour(wxT("thread_search_match_fore")));
+    m_stc->StyleSetBackground(STCStyles::TextMatching,
+                              colours->GetColour(wxT("thread_search_match_back")));
 }
 
 ThreadSearchLoggerBase::eLoggerTypes ThreadSearchLoggerSTC::GetLoggerType()
