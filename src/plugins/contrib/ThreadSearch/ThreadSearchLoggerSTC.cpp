@@ -327,6 +327,8 @@ void ThreadSearchLoggerSTC::Clear()
 
 void ThreadSearchLoggerSTC::OnSearchBegin(const ThreadSearchFindData& findData)
 {
+    m_timeBegin = wxGetUTCTimeMillis();
+
     // We have to reset the readonly flag, because Scintilla doesn't allow modifications while the
     // flag is set! Make sure to restore it back upon exit!
     m_stc->SetReadOnly(false);
@@ -388,12 +390,14 @@ void ThreadSearchLoggerSTC::OnSearchBegin(const ThreadSearchFindData& findData)
 
 void ThreadSearchLoggerSTC::OnSearchEnd()
 {
+    const double durationMilliSec = (wxGetUTCTimeMillis() - m_timeBegin).ToDouble();
+
     m_stc->SetReadOnly(false);
 
     const int line = std::max(0, m_stc->LineFromPosition(m_stc->GetLength()));
 
-    wxString message = wxString::Format(_("=> Finished! Found %d matches in %d files\n\n"),
-                                        m_totalCount, m_fileCount);
+    wxString message = wxString::Format(_("=> Finished! Found %d matches in %d files (took %.3f sec)\n\n"),
+                                        m_totalCount, m_fileCount, durationMilliSec * 0.001);
     m_stc->AppendText(message);
     m_stc->SetReadOnly(true);
 
