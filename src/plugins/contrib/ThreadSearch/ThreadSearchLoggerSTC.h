@@ -11,6 +11,8 @@ public:
     ThreadSearchLoggerSTC(ThreadSearchView& threadSearchView, ThreadSearch& threadSearchPlugin,
                           InsertIndexManager::eFileSorting fileSorting, wxWindow* parent, long id);
 
+    static void RegisterColours();
+
     eLoggerTypes GetLoggerType() override;
     void OnThreadSearchEvent(const ThreadSearchEvent& event) override;
     void Clear() override;
@@ -19,10 +21,11 @@ public:
     wxWindow* GetWindow() override;
     void SetFocus() override;
 
-protected:
+private:
     void ConnectEvents(wxEvtHandler* pEvtHandler) override;
     void DisconnectEvents(wxEvtHandler* pEvtHandler) override;
 
+    void AppendStyledText(int style, const wxString &text);
 private:
     wxScintilla *m_stc;
 };

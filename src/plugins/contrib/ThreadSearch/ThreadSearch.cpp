@@ -25,6 +25,7 @@
 #include "ThreadSearchCommon.h"
 #include "ThreadSearchConfPanel.h"
 #include "ThreadSearchControlIds.h"
+#include "ThreadSearchLoggerSTC.h"
 #include "logging.h" //(pecan 2007/7/26)
 
 // Register the plugin with Code::Blocks.
@@ -158,6 +159,9 @@ void ThreadSearch::CreateView(ThreadSearchViewManagerBase::eManagerTypes externa
     LoadConfig(sashPosition, mgrType, searchPatterns, searchDirs, searchMasks);
     if (forceType)
         mgrType = externalMgrType;
+
+    // Register the colours for the STC logger. We do this in case it is not the selected logger.
+    ThreadSearchLoggerSTC::RegisterColours();
 
     // Adds window to the manager
     m_pThreadSearchView = new ThreadSearchView(*this);
