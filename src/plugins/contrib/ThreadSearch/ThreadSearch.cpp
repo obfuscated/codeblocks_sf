@@ -586,8 +586,11 @@ bool ThreadSearch::BuildToolBar(wxToolBar* toolBar)
 
     const wxString &prefix = GetImagePrefix(true);
 
+    wxSize textSize = Manager::Get()->GetAppWindow()->GetTextExtent(wxString(wxT('A'), 20));
+    textSize.y = -1;
+    textSize.x = std::max(textSize.x, 200);
     m_pCboSearchExpr = new wxComboBox(toolBar, controlIDs.Get(ControlIDs::idCboSearchExpr),
-                                      wxEmptyString, wxDefaultPosition, wxSize(130, -1), 0, nullptr,
+                                      wxEmptyString, wxDefaultPosition, textSize, 0, nullptr,
                                       wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
     m_pCboSearchExpr->SetToolTip(_("Text to search"));
 
