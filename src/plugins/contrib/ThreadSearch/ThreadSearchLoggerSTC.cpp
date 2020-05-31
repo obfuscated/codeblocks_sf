@@ -264,6 +264,7 @@ void ThreadSearchLoggerSTC::OnThreadSearchEvent(const ThreadSearchEvent& event)
     }
 
     m_stc->SetReadOnly(true);
+    AutoScroll();
     m_stc->Thaw();
 }
 
@@ -328,6 +329,7 @@ void ThreadSearchLoggerSTC::OnSearchBegin(const ThreadSearchFindData& findData)
 
     m_stc->SetFoldLevel(m_startLine, STCFoldLevels::Search | wxSCI_FOLDLEVELHEADERFLAG);
     m_stc->SetFirstVisibleLine(m_startLine);
+    m_lastVisibleLine = m_stc->GetFirstVisibleLine();
 
     m_stc->SetReadOnly(true);
 }
@@ -346,7 +348,18 @@ void ThreadSearchLoggerSTC::OnSearchEnd()
     m_stc->SetFoldLevel(line + 0, STCFoldLevels::Messages);
     m_stc->SetFoldLevel(line + 1, STCFoldLevels::Messages);
 
-    m_stc->SetFirstVisibleLine(m_startLine);
+    AutoScroll();
+}
+
+void ThreadSearchLoggerSTC::AutoScroll()
+{
+    // Detect if the user has scrolled the view.
+    const int firstVisibleLine = m_stc->GetFirstVisibleLine();
+    if (firstVisibleLine == m_lastVisibleLine && firstVisibleLine != m_startLine)
+    {
+        m_stc->SetFirstVisibleLine(m_startLine);
+        m_lastVisibleLine = m_stc->GetFirstVisibleLine();
+    }
 }
 
 wxWindow* ThreadSearchLoggerSTC::GetWindow()
@@ -536,11 +549,10 @@ static bool FindResultInfoForLine(wxString *outFilepath, int *outLineInFile, wxS
 
 void ThreadSearchLoggerSTC::OnSTCUpdateUI(wxScintillaEvent &event)
 {
+    event.Skip();
+
     if ((event.GetUpdated() & wxSCI_UPDATE_SELECTION) == 0)
-    {
-        event.Skip();
         return;
-    }
 
     const int stcLine = m_stc->GetCurrentLine();
 
@@ -551,8 +563,6 @@ void ThreadSearchLoggerSTC::OnSTCUpdateUI(wxScintillaEvent &event)
     {
         m_ThreadSearchView.OnLoggerClick(filepath, line);
     }
-
-    event.Skip();
 }
 
 void ThreadSearchLoggerSTC::OnDoubleClick(wxScintillaEvent &event)

@@ -49,6 +49,7 @@ private:
     void OnSTCUpdateUI(wxScintillaEvent &event);
 
     void AppendStyledText(int style, const wxString &text);
+    void AutoScroll();
 
     friend class STCList;
 private:
@@ -56,6 +57,7 @@ private:
     int m_fileCount;
     int m_totalCount;
     int m_startLine;
+    int m_lastVisibleLine;
 };
 
 #endif // CB_THREADSEARCH_LOGGER_STC_H
