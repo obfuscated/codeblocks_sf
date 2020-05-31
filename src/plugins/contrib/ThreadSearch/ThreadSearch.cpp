@@ -20,6 +20,7 @@
 #endif
 
 #include "cbstyledtextctrl.h"
+#include "editor_hooks.h"
 #include "ThreadSearch.h"
 #include "ThreadSearchView.h"
 #include "ThreadSearchCommon.h"
@@ -140,7 +141,8 @@ ThreadSearch::ThreadSearch()
               m_AutosizeLogColumns(false),
               m_pCboSearchExpr(nullptr),
               m_SplitterMode(wxSPLIT_VERTICAL),
-              m_FileSorting(InsertIndexManager::SortByFilePath)
+              m_FileSorting(InsertIndexManager::SortByFilePath),
+              m_EditorHookId(-1)
 {
 }
 
@@ -211,6 +213,8 @@ void ThreadSearch::OnAttach()
 
     Manager::Get()->RegisterEventSink(cbEVT_SETTINGS_CHANGED,
                                       new Event(this, &ThreadSearch::OnSettingsChanged));
+    EditorHooks::HookFunctorBase* hook = new EditorHooks::HookFunctor<ThreadSearch>(this, &ThreadSearch::OnEditorHook);
+    m_EditorHookId = EditorHooks::RegisterHook(hook);
 
     // true if it enters in OnRelease for the first time
     m_OnReleased = false;
@@ -230,6 +234,8 @@ void ThreadSearch::OnRelease(bool /*appShutDown*/)
     if (m_OnReleased)
         return;
     m_OnReleased = true;
+
+    EditorHooks::UnregisterHook(m_EditorHookId, true);
 
     Manager::Get()->RemoveAllEventSinksFor(this);
 
@@ -986,4 +992,22 @@ void ThreadSearch::OnSettingsChanged(CodeBlocksEvent &event)
     {
         m_pThreadSearchView->UpdateSettings();
     }
+}
+
+void ThreadSearch::OnEditorHook(cbEditor *editor, wxScintillaEvent &event)
+{
+    if (m_pThreadSearchView == nullptr)
+        return;
+
+    const int modificationType = event.GetModificationType();
+    if ((modificationType & (wxSCI_MOD_INSERTTEXT | wxSCI_MOD_DELETETEXT)) == 0)
+        return;
+    const int linesAdded = event.GetLinesAdded();
+    if (linesAdded == 0)
+        return;
+    cbStyledTextCtrl *control = editor->GetControl();
+    if (control != event.GetEventObject())
+        return;
+    const int startLine = control->LineFromPosition(event.GetPosition());
+    m_pThreadSearchView->EditorLinesAddedOrRemoved(editor, startLine + 1, linesAdded);
 }

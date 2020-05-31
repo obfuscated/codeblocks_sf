@@ -296,6 +296,7 @@ private:
     void OnMnuEditPaste(wxCommandEvent& event);
 
     void OnSettingsChanged(CodeBlocksEvent &event);
+    void OnEditorHook(cbEditor *editor, wxScintillaEvent &event);
 
     // Member variables
     wxString                             m_SearchedWord;              // Word under cursor on right click
@@ -321,6 +322,7 @@ private:
     wxSplitMode                          m_SplitterMode;              // Sets vertical or horizontal display for code
                                                                       // preview and search results (logger)
     InsertIndexManager::eFileSorting     m_FileSorting;               // Sorts file by name or by path
+    int m_EditorHookId;
 
     DECLARE_EVENT_TABLE();
 };

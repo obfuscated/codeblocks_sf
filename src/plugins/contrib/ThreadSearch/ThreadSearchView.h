@@ -143,6 +143,7 @@ public:
 
     void FocusSearchCombo(const wxString &searchWord);
     void UpdateSettings();
+    void EditorLinesAddedOrRemoved(cbEditor *editor, int startLine, int linesAdded);
 private:
     // begin wxGlade: ThreadSearchView::methods
     void set_properties();

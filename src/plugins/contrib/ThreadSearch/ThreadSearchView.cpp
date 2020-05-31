@@ -1178,3 +1178,9 @@ void ThreadSearchView::UpdateSettings()
     if (m_pPnlDirParams)
         m_pPnlDirParams->Enable(m_pPnlSearchIn->GetSearchInDirectory());
 }
+
+void ThreadSearchView::EditorLinesAddedOrRemoved(cbEditor *editor, int startLine, int linesAdded)
+{
+    if (m_pLogger)
+        m_pLogger->EditorLinesAddedOrRemoved(editor, startLine, linesAdded);
+}
