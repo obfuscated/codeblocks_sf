@@ -342,8 +342,6 @@ void ThreadSearchLoggerList::DisconnectEvents(wxEvtHandler* pEvtHandler)
 
 void ThreadSearchLoggerList::OnLoggerListContextualMenu(wxContextMenuEvent& event)
 {
-    if (m_pListLog->GetItemCount() == 0)
-        return;
     wxPoint point = event.GetPosition();
     bool hasSelection = false;
 
@@ -364,7 +362,7 @@ void ThreadSearchLoggerList::OnLoggerListContextualMenu(wxContextMenuEvent& even
         if (m_pListLog->HitTest(point, flags, &tmp) != wxNOT_FOUND)
             hasSelection = true;
     }
-    ShowMenu(point, hasSelection);
+    ShowMenu(point, hasSelection, m_pListLog->GetItemCount() > 0);
     // No event skipping, otherwise, Message notebook contextual menu pops up
 }
 
