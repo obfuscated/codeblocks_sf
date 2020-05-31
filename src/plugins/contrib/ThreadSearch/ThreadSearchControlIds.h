@@ -77,6 +77,12 @@ struct ControlIDs
         idConfPanelColorPicker6,
         idConfPanelColorPicker7,
         idConfPanelColorPicker8,
+        idDirDialogCombo,
+        idDirDialogDirButton,
+        idDirDialogAddButton,
+        idDirDialogDeleteButton,
+        idDirDialogDeleteAllButton,
+        idDirDialogCheckSelectedButton,
 
         lastValue
     };
