@@ -95,16 +95,19 @@ void* ThreadSearchThread::Entry()
         const wxString &searchPath = m_FindData.GetSearchPath(true);
         const std::vector<wxString> &paths = GetVectorFromString(searchPath, ";", true);
 
+        wxString failedDirectories;
+        int failedCount = 0;
+
         for (const wxString &path : paths)
         {
             if (!wxDir::Exists(path))
             {
-                ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
-                event.SetString(_("Cannot open folder ") + path);
-
-                // Using wxPostEvent, we avoid multi-threaded memory violation.
-                wxPostEvent(m_pThreadSearchView,event);
-                return 0;
+                if (failedCount > 0)
+                    failedDirectories += ", ";
+                failedDirectories += '\'';
+                failedDirectories += path;
+                failedDirectories += '\'';
+                failedCount++;
             }
             else
             {
@@ -116,6 +119,24 @@ void* ThreadSearchThread::Entry()
         // Tests thread stop (cancel search, app shutdown)
         if (TestDestroy() == true)
             return nullptr;
+
+        if (failedCount > 0)
+        {
+            ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
+
+            wxString msg;
+            if (failedCount == 1)
+                msg = wxString::Format(_("Cannot open folder %s"), failedDirectories.wx_str());
+            else
+            {
+                msg = wxString::Format(_("Cannot open %d folders %s"), failedCount,
+                                       failedDirectories.wx_str());
+            }
+            event.SetString(msg);
+
+            // Using wxPostEvent, we avoid multi-threaded memory violation.
+            wxPostEvent(m_pThreadSearchView, event);
+        }
     }
 
     // Search in workspace files ?
