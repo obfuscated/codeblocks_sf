@@ -612,7 +612,10 @@ inline wxString ConfigManager::GetUserDataFolder()
         return wxStandardPathsBase::Get().GetUserDataDir();
 #else
 #ifdef __linux__
-    return wxString::FromUTF8(g_build_filename (g_get_user_config_dir(), "codeblocks", NULL));
+    gchar *filename = g_build_filename(g_get_user_config_dir(), "codeblocks", nullptr);
+    wxString result=wxString::FromUTF8(filename);
+    g_free(filename);
+    return result;
 #else
     return wxStandardPathsBase::Get().GetUserDataDir();
 #endif // __linux__
@@ -1586,7 +1589,11 @@ void ConfigManager::InitPaths()
     wxString dataPathUser = ConfigManager::config_folder + wxFILE_SEP_PATH + _T("share");
 #ifdef __linux__
     if (!has_alternate_user_data_path)
-      dataPathUser = wxString::FromUTF8(g_build_filename (g_get_user_data_dir(), NULL));
+    {
+        gchar *filename = g_build_filename(g_get_user_data_dir(), nullptr);
+        dataPathUser = wxString::FromUTF8(filename);
+        g_free(filename);
+    }
 #endif // __linux__
 
     ConfigManager::data_path_user = dataPathUser + wxFILE_SEP_PATH + _T("codeblocks");
