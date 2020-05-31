@@ -143,6 +143,16 @@ private:
     int m_index;
 };
 
+static wxString RemovePathSeparatorAtEnd(const wxString &path)
+{
+    if (path.empty())
+        return wxString();
+    if (wxFileName::IsPathSeparator(path[path.length()-1]))
+        return path.substr(0, path.length()-1);
+    else
+        return path;
+}
+
 struct DirectorySelectDialog : wxDialog
 {
     DirectorySelectDialog(wxWindow *parent, const wxString &paths, wxArrayString fullPathList,
@@ -172,12 +182,12 @@ struct DirectorySelectDialog : wxDialog
             {
                 const wxString &path = entryPathList[item];
                 if (path.find(';') == wxString::npos)
-                    AddItemToCombo(m_entry, path);
+                    AddItemToCombo(m_entry, RemovePathSeparatorAtEnd(path));
                 else
                 {
                     const wxArrayString &splitted = GetArrayFromString(path, ";", true);
                     for (const wxString &s : splitted)
-                        AddItemToCombo(m_entry, s);
+                        AddItemToCombo(m_entry, RemovePathSeparatorAtEnd(s));
                 }
             }
 
@@ -194,7 +204,20 @@ struct DirectorySelectDialog : wxDialog
                                         wxLB_EXTENDED);
             m_list->SetMinSize(wxSize(m_list->GetCharWidth() * 70, m_list->GetCharHeight() * 20));
 
-            const std::vector<wxString> &splittedPaths = GetVectorFromString(paths, ";", true);
+            std::vector<wxString> splittedPaths = GetVectorFromString(paths, ";", true);
+
+            // Remove path separators at the end.
+            for (wxString &path : fullPathList)
+            {
+                if (!path.empty() && wxFileName::IsPathSeparator(path[path.length()-1]))
+                    path.Truncate(path.length()-1);
+            }
+            for (wxString &path : splittedPaths)
+            {
+                if (!path.empty() && wxFileName::IsPathSeparator(path[path.length()-1]))
+                    path.Truncate(path.length()-1);
+            }
+
             // Make sure all paths already selected are present in the full path list. If not add
             // the missing ones.
             for (const wxString &selected : splittedPaths)
@@ -347,9 +370,10 @@ private:
 
     void OnEnter(cb_unused wxCommandEvent &event)
     {
-        const wxString &path = m_entry->GetValue();
+        wxString path = m_entry->GetValue();
         if (!path.empty())
         {
+            path = RemovePathSeparatorAtEnd(path);
             AddItemToCombo(m_entry, path);
             InsertItemInList(path);
             m_entry->SetValue(wxString());
@@ -370,7 +394,7 @@ private:
         wxDirDialog dialog(this, _("Select directory"), selectedPath);
         if (dialog.ShowModal() == wxID_OK)
         {
-            const wxString &newPath = dialog.GetPath();
+            const wxString newPath = RemovePathSeparatorAtEnd(dialog.GetPath());
             if (selectedPath != newPath)
             {
                 // We want to keep the sorted property of the list, so we need to remove the old
@@ -403,7 +427,7 @@ private:
         wxDirDialog dialog(this, _("Select directory"), initialPath);
         if (dialog.ShowModal() == wxID_OK)
         {
-            const wxString &newPath = dialog.GetPath();
+            const wxString newPath = RemovePathSeparatorAtEnd(dialog.GetPath());
             AddItemToCombo(m_entry, newPath);
             m_entry->SetValue(wxString()); // this should be after the call to AddItemToCombo
             InsertItemInList(newPath);
