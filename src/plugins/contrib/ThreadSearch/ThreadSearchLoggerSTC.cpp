@@ -104,6 +104,12 @@ ThreadSearchLoggerSTC::ThreadSearchLoggerSTC(ThreadSearchView& threadSearchView,
     // line. When the focus is regained the marker would be removed.
     m_stc->MarkerDefine(MARKER_UNFOCUSED_LINE, wxSCI_MARK_BACKGROUND);
 
+    // Disable modification notifications. We don't need those and they are pretty expensive when
+    // handling EditorLinesAddedOrRemoved.
+    m_stc->SetModEventMask(0);
+    // Also disable undo, there is no user editing allowed, so no point in undo.
+    m_stc->SetUndoCollection(false);
+
     SetupStyles();
 
     SetupSizer(m_stc);
@@ -892,7 +898,9 @@ struct WordRange
 
 static WordRange FindWordForLineNumber(wxScintilla *stc, int lineStart)
 {
-    int start = lineStart;
+    // Use 9 because we know that the end of the number is at position 10. This gives small boost in
+    // performance, because the number of calls to WordEndPosition is minimized.
+    int start = lineStart + 9;
     int end;
     while (1)
     {
