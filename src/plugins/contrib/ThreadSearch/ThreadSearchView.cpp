@@ -262,14 +262,13 @@ void ThreadSearchView::OnShowOptionsDialog(wxCommandEvent &/*event*/)
     // All parameters can be set on this dialog.
     // It is the same as doing 'Settings/environment/Thread search'
     // Settings are updated by the cbConfigurationDialog
-    cbConfigurationDialog* pDlg = new cbConfigurationDialog(Manager::Get()->GetAppWindow(), -1,
-                                                            _("Options"));
+    cbConfigurationDialog dialog(Manager::Get()->GetAppWindow(), -1, _("Options"));
     ThreadSearchConfPanel* pConfPanel = new ThreadSearchConfPanel(m_ThreadSearchPlugin, nullptr,
-                                                                  pDlg);
+                                                                  &dialog);
     pConfPanel->SetSearchAndMaskHistory(GetSearchDirsHistory(), GetSearchMasksHistory());
-    pDlg->AttachConfigurationPanel(pConfPanel);
-    pDlg->ShowModal();
-    pDlg->Destroy();
+    dialog.AttachConfigurationPanel(pConfPanel);
+    if (dialog.ShowModal() == wxID_OK)
+        UpdateSettings();
 }
 
 void ThreadSearchView::OnQuickOptions(wxCommandEvent &event)
