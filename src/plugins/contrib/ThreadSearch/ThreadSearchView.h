@@ -194,6 +194,7 @@ protected:
     wxBoxSizer* m_pSizerSearchItems;
     wxToolBar* m_pToolBar;
     wxWindow *m_LastFocusedWindow;
+    bool m_hasSearchItems;
 
     DECLARE_EVENT_TABLE()
 
