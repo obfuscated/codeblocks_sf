@@ -195,13 +195,16 @@ void ThreadSearchLoggerSTC::OnThreadSearchEvent(const ThreadSearchEvent& event)
 
         AppendStyledText(STCStyles::LineNo, justifier + lineNoStr + wxT(':'));
 
-        const int textStart = m_stc->GetLength() + 1;
+        const int textStartPos = m_stc->GetLength() + 4;
 
-        AppendStyledText(STCStyles::Text, wxT('\t') + words[ii + 1] + wxT('\n'));
+        AppendStyledText(STCStyles::Text, wxT("    ") + words[ii + 1] + wxT('\n'));
 
         {
             const int matchedCount = *matchedIt;
             ++matchedIt;
+
+            const int line = m_stc->LineFromPosition(textStartPos);
+            const int textStartColumn = m_stc->GetColumn(textStartPos);
 
             for (int ii = 0; ii < matchedCount; ++ii)
             {
@@ -210,8 +213,13 @@ void ThreadSearchLoggerSTC::OnThreadSearchEvent(const ThreadSearchEvent& event)
                 const int length = *matchedIt;
                 ++matchedIt;
 
-                m_stc->StartStyling(textStart + start);
-                m_stc->SetStyling(length, STCStyles::TextMatching);
+                // Translate character positions to byte positions.
+                // wxString works with characters, not bytes.
+                const int startPos = m_stc->FindColumn(line, textStartColumn + start);
+                const int endPos = m_stc->FindColumn(line, textStartColumn + start + length);
+
+                m_stc->StartStyling(startPos);
+                m_stc->SetStyling(endPos - startPos, STCStyles::TextMatching);
             }
         }
     }
