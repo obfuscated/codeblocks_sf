@@ -35,9 +35,9 @@ public:
 
     DECLARE_DYNAMIC_CLASS(ThreadSearchEvent);
 
-    wxArrayString GetLineTextArray() const {return m_LineTextArray;};   // Contains a series of string containing
-                                                                        // line index (starting from 1), matching line
-    void SetLineTextArray(const wxArrayString& ArrayString) {m_LineTextArray = ArrayString;};
+    // Contains a series of string containing line index (starting from 1), matching line
+    const wxArrayString& GetLineTextArray() const { return m_LineTextArray; }
+    void SetLineTextArray(const wxArrayString& ArrayString) { m_LineTextArray = ArrayString; }
 
     size_t GetNumberOfMatches() const { return m_LineTextArray.GetCount() / 2; }
 
