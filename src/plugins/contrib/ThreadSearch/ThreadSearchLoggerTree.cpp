@@ -171,7 +171,7 @@ void ThreadSearchLoggerTree::OnLoggerTreeContextualMenu(wxTreeEvent& event)
 {
     wxPoint clientPoint = event.GetPoint();
     m_ToDeleteItemId = event.GetItem();
-    ShowMenu(clientPoint);
+    ShowMenu(clientPoint, true);
     // No event skipping, otherwise, Message notebook contextual menu pops up
 }
 
