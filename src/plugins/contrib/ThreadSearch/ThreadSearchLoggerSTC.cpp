@@ -11,6 +11,7 @@
 #include "cbcolourmanager.h"
 #include "editor_utils.h"
 
+#include "ThreadSearch.h"
 #include "ThreadSearchEvent.h"
 #include "ThreadSearchFindData.h"
 #include "ThreadSearchLoggerSTC.h"
@@ -208,8 +209,17 @@ void ThreadSearchLoggerSTC::Clear()
 
 void ThreadSearchLoggerSTC::OnSearchBegin(const ThreadSearchFindData& findData)
 {
+    // We have to reset the readonly flag, because Scintilla doesn't allow modifications while the
+    // flag is set! Make sure to restore it back upon exit!
+    m_stc->SetReadOnly(false);
+
     m_fileCount = 0;
     m_totalCount = 0;
+
+    if (m_ThreadSearchPlugin.GetDeletePreviousResults())
+    {
+        m_stc->ClearAll();
+    }
 
     m_startLine = m_stc->LineFromPosition(m_stc->GetLength());
 
@@ -247,12 +257,12 @@ void ThreadSearchLoggerSTC::OnSearchBegin(const ThreadSearchFindData& findData)
                                    optionMessage.wx_str());
     }
 
-    m_stc->SetReadOnly(false);
     m_stc->AppendText(message);
-    m_stc->SetReadOnly(true);
 
     m_stc->SetFoldLevel(m_startLine, STCFoldLevels::Search | wxSCI_FOLDLEVELHEADERFLAG);
     m_stc->SetFirstVisibleLine(m_startLine);
+
+    m_stc->SetReadOnly(true);
 }
 
 void ThreadSearchLoggerSTC::OnSearchEnd()
