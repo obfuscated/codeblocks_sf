@@ -21,6 +21,7 @@ class DLLIMPORT ColourManager : public Mgr<ColourManager>
         void RegisterColour(const wxString &category, const wxString &name,
                             const wxString &id, const wxColour &defaultColour);
         wxColour GetColour(const wxString &id) const;
+        wxColour GetDefaultColour(const wxString &id) const;
         void SetColour(const wxString &id, const wxColour &colour);
     public:
         struct ColourDef
