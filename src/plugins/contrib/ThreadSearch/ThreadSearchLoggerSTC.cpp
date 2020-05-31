@@ -63,6 +63,7 @@ ThreadSearchLoggerSTC::ThreadSearchLoggerSTC(ThreadSearchView& threadSearchView,
 
     // Setup folding
     {
+        m_stc->SetMarginCount(1);
         m_stc->SetMarginType(C_FOLDING_MARGIN, wxSCI_MARGIN_SYMBOL);
         m_stc->SetMarginWidth(C_FOLDING_MARGIN, 16);
         m_stc->SetMarginMask(C_FOLDING_MARGIN, wxSCI_MASK_FOLDERS);
@@ -151,6 +152,9 @@ void ThreadSearchLoggerSTC::SetupStyles()
                               colours->GetColour(wxT("thread_search_match_fore")));
     m_stc->StyleSetBackground(STCStyles::TextMatching,
                               colours->GetColour(wxT("thread_search_match_back")));
+
+    m_stc->SetFoldMarginColour(true, colours->GetColour(wxT("editor_margin_chrome")));
+    m_stc->SetFoldMarginHiColour(true, colours->GetColour(wxT("editor_margin_chrome_highlight")));
 }
 
 ThreadSearchLoggerBase::eLoggerTypes ThreadSearchLoggerSTC::GetLoggerType()
