@@ -158,11 +158,13 @@ BEGIN_EVENT_TABLE(ThreadSearchView, wxPanel)
     EVT_MENU(controlIDs.Get(ControlIDs::idOptionStartWord), ThreadSearchView::OnQuickOptions)
     EVT_MENU(controlIDs.Get(ControlIDs::idOptionMatchCase), ThreadSearchView::OnQuickOptions)
     EVT_MENU(controlIDs.Get(ControlIDs::idOptionRegEx), ThreadSearchView::OnQuickOptions)
+    EVT_MENU(controlIDs.Get(ControlIDs::idOptionResetAll), ThreadSearchView::OnQuickOptions)
 
     EVT_UPDATE_UI(controlIDs.Get(ControlIDs::idOptionWholeWord), ThreadSearchView::OnQuickOptionsUpdateUI)
     EVT_UPDATE_UI(controlIDs.Get(ControlIDs::idOptionStartWord), ThreadSearchView::OnQuickOptionsUpdateUI)
     EVT_UPDATE_UI(controlIDs.Get(ControlIDs::idOptionMatchCase), ThreadSearchView::OnQuickOptionsUpdateUI)
     EVT_UPDATE_UI(controlIDs.Get(ControlIDs::idOptionRegEx), ThreadSearchView::OnQuickOptionsUpdateUI)
+    EVT_UPDATE_UI(controlIDs.Get(ControlIDs::idOptionResetAll), ThreadSearchView::OnQuickOptionsUpdateUI)
 
     EVT_BUTTON(controlIDs.Get(ControlIDs::idBtnShowDirItemsClick), ThreadSearchView::OnBtnShowDirItemsClick)
     EVT_SPLITTER_DCLICK(-1, ThreadSearchView::OnSplitterDoubleClick)
@@ -245,6 +247,9 @@ void ThreadSearchView::OnBtnOptionsClick(wxCommandEvent &/*event*/)
     menu.AppendCheckItem(controlIDs.Get(ControlIDs::idOptionMatchCase), _("Match case"), _("Case sensitive search."));
     menu.AppendCheckItem(controlIDs.Get(ControlIDs::idOptionRegEx),
                          _("Regular expression"), _("Search expression is a regular expression"));
+    menu.AppendSeparator();
+    menu.Append(controlIDs.Get(ControlIDs::idOptionResetAll), _("Reset All"),
+                _("Resets all options"));
 
     PopupMenu(&menu);
 }
@@ -287,6 +292,15 @@ void ThreadSearchView::OnQuickOptions(wxCommandEvent &event)
         findData.SetRegEx(event.IsChecked());
         hasChange = true;
     }
+    else if (event.GetId() == controlIDs.Get(ControlIDs::idOptionResetAll))
+    {
+        findData.SetMatchWord(false);
+        findData.SetStartWord(false);
+        findData.SetMatchCase(false);
+        findData.SetRegEx(false);
+        hasChange = true;
+    }
+
     if (hasChange)
     {
         m_ThreadSearchPlugin.SetFindData(findData);
@@ -327,6 +341,15 @@ void ThreadSearchView::OnQuickOptionsUpdateUI(wxUpdateUIEvent &event)
         event.Check(findData.GetMatchCase());
     else if (event.GetId() == controlIDs.Get(ControlIDs::idOptionRegEx))
         event.Check(findData.GetRegEx());
+    else if (event.GetId() == controlIDs.Get(ControlIDs::idOptionResetAll))
+    {
+        bool enabled = findData.GetMatchWord();
+        enabled |= findData.GetStartWord();
+        enabled |= findData.GetMatchCase();
+        enabled |= findData.GetRegEx();
+
+        event.Enable(enabled);
+    }
 }
 
 void ThreadSearchView::OnBtnShowDirItemsClick(wxCommandEvent& WXUNUSED(event))

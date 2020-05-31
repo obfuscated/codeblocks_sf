@@ -29,6 +29,7 @@ struct ControlIDs
         idOptionStartWord,
         idOptionMatchCase,
         idOptionRegEx,
+        idOptionResetAll,
         idMenuViewThreadSearch,
         idMenuViewFocusThreadSearch,
         idMenuSearchThreadSearch,
