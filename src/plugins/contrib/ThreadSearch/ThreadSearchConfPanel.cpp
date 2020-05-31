@@ -12,6 +12,7 @@
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
     #include <wx/checkbox.h>
+    #include <wx/notebook.h>
     #include <wx/radiobox.h>
     #include <wx/sizer.h>
     #include <wx/statbox.h>
@@ -19,7 +20,8 @@
     #include "configmanager.h"
 #endif
 
-#include "wx/clrpicker.h"
+#include <wx/clrpicker.h>
+#include <wx/gbsizer.h>
 #include "cbcolourmanager.h"
 #include "ThreadSearch.h"
 #include "SearchInPanel.h"
@@ -363,22 +365,29 @@ void ThreadSearchConfPanel::do_layout()
     {
         // Sizers for page layout
         wxBoxSizer* SizerTop = new wxBoxSizer(wxVERTICAL);
-        wxFlexGridSizer* SizerThreadSearchGridLayout = new wxFlexGridSizer(4, 2, 0, 0);
+        wxGridBagSizer *SizerThreadSearchGridLayout = new wxGridBagSizer;
+        SizerThreadSearchGridLayout->AddGrowableCol(0);
+        SizerThreadSearchGridLayout->AddGrowableCol(1);
+
         wxStaticBoxSizer* SizerListControlOptions = new wxStaticBoxSizer(SizerListControlOptions_staticbox, wxVERTICAL);
         wxStaticBoxSizer* SizerThreadSearchLayoutGlobal = new wxStaticBoxSizer(SizerThreadSearchLayoutGlobal_staticbox, wxVERTICAL);
         SizerThreadSearchLayoutGlobal->Add(m_pChkShowThreadSearchToolBar, 0, wxALL, 4);
         SizerThreadSearchLayoutGlobal->Add(m_pChkShowThreadSearchWidgets, 0, wxALL, 4);
         SizerThreadSearchLayoutGlobal->Add(m_pChkShowCodePreview, 0, wxALL, 4);
-        SizerThreadSearchGridLayout->Add(SizerThreadSearchLayoutGlobal, 1, wxALL|wxEXPAND, 4);
         SizerListControlOptions->Add(m_pChkDisplayLogHeaders, 0, wxALL, 4);
         SizerListControlOptions->Add(m_pChkDrawLogLines, 0, wxALL, 4);
         SizerListControlOptions->Add(m_pChkAutosizeLogColumns, 0, wxALL, 4);
-        SizerThreadSearchGridLayout->Add(SizerListControlOptions, 1, wxALL|wxEXPAND, 4);
-        SizerThreadSearchGridLayout->Add(m_pRadPanelManagement, 0, wxALL|wxEXPAND, 4);
-        SizerThreadSearchGridLayout->Add(m_pRadLoggerType, 0, wxALL|wxEXPAND, 4);
-        SizerThreadSearchGridLayout->Add(m_pRadSplitterWndMode, 0, wxALL|wxEXPAND, 4);
-        SizerThreadSearchGridLayout->AddGrowableCol(0);
-        SizerThreadSearchGridLayout->AddGrowableCol(1);
+
+        SizerThreadSearchGridLayout->Add(SizerThreadSearchLayoutGlobal, wxGBPosition(0, 0),
+                                         wxDefaultSpan, wxALL|wxEXPAND, 4);
+        SizerThreadSearchGridLayout->Add(SizerListControlOptions, wxGBPosition(0, 1), wxDefaultSpan,
+                                         wxALL|wxEXPAND, 4);
+        SizerThreadSearchGridLayout->Add(m_pRadPanelManagement, wxGBPosition(1, 0), wxDefaultSpan,
+                                         wxALL|wxEXPAND, 4);
+        SizerThreadSearchGridLayout->Add(m_pRadLoggerType, wxGBPosition(2, 0), wxDefaultSpan,
+                                         wxALL|wxEXPAND, 4);
+        SizerThreadSearchGridLayout->Add(m_pRadSplitterWndMode, wxGBPosition(3, 0), wxDefaultSpan,
+                                         wxALL|wxEXPAND, 4);
 
         wxStaticBoxSizer* SizerThreadSearchLayoutSTCColours = new wxStaticBoxSizer(STCColours_staticbox, wxVERTICAL);
         wxFlexGridSizer* SizerThreadSearchLayoutSTCColoursGrid = new wxFlexGridSizer(5, 3, 0, 0);
@@ -393,7 +402,8 @@ void ThreadSearchConfPanel::do_layout()
                 SizerThreadSearchLayoutSTCColoursGrid->Add(m_STCColourPickers[ii * 2 + 1], 1, wxEXPAND | wxLEFT | wxTOP, 4);
         }
 
-        SizerThreadSearchGridLayout->Add(SizerThreadSearchLayoutSTCColours, 1, wxEXPAND | wxALL, 4);
+        SizerThreadSearchGridLayout->Add(SizerThreadSearchLayoutSTCColours, wxGBPosition(1, 1),
+                                         wxGBSpan(3, 1), wxEXPAND | wxALL, 4);
 
         SizerTop->Add(SizerThreadSearchGridLayout, 1, wxALL|wxEXPAND, 4);
 
