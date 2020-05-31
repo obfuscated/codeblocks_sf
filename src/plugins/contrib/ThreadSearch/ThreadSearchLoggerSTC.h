@@ -32,6 +32,8 @@ private:
     void ConnectEvents();
     void DisconnectEvents();
 
+    void OnSTCUpdateUI(wxScintillaEvent &event);
+    void OnDoubleClick(wxScintillaEvent &event);
     void OnMarginClick(wxScintillaEvent &event);
 
     void AppendStyledText(int style, const wxString &text);
