@@ -80,9 +80,10 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, w
     m_pRadPanelManagement = new wxRadioBox(this, wxID_ANY, _("ThreadSearch panel management by"), wxDefaultPosition, wxDefaultSize, 2, m_pRadPanelManagement_choices, 1, wxRA_SPECIFY_ROWS);
     const wxString m_pRadLoggerType_choices[] = {
         _("List"),
-        _("Tree")
+        _("Tree"),
+        _("List STC")
     };
-    m_pRadLoggerType = new wxRadioBox(this, wxID_ANY, _("Logger type"), wxDefaultPosition, wxDefaultSize, 2, m_pRadLoggerType_choices, 1, wxRA_SPECIFY_ROWS);
+    m_pRadLoggerType = new wxRadioBox(this, wxID_ANY, _("Logger type"), wxDefaultPosition, wxDefaultSize, 3, m_pRadLoggerType_choices, 1, wxRA_SPECIFY_ROWS);
     const wxString m_pRadSplitterWndMode_choices[] = {
         _("Horizontal"),
         _("Vertical")
@@ -237,22 +238,7 @@ void ThreadSearchConfPanel::set_properties()
     }
     m_pRadPanelManagement->SetSelection(radIndex);
 
-    radIndex = 0;
-    switch (m_ThreadSearchPlugin.GetLoggerType())
-    {
-        case ThreadSearchLoggerBase::TypeTree:
-        {
-            radIndex = 1;
-            break;
-        }
-        case ThreadSearchLoggerBase::TypeList : // fall through
-        default:
-        {
-            radIndex = 0;
-            break;
-        }
-    }
-    m_pRadLoggerType->SetSelection(radIndex);
+    m_pRadLoggerType->SetSelection(m_ThreadSearchPlugin.GetLoggerType());
 
     radIndex = 0;
     switch (m_ThreadSearchPlugin.GetSplitterMode())
@@ -401,23 +387,15 @@ void ThreadSearchConfPanel::OnApply()
     }
     m_ThreadSearchPlugin.SetManagerType(mgrType);
 
-    radIndex = m_pRadLoggerType->GetSelection();
-    ThreadSearchLoggerBase::eLoggerTypes lgrType;
-    switch (radIndex)
+    const int radioLoggerType = m_pRadLoggerType->GetSelection();
+    if (radioLoggerType >= 0 && radioLoggerType < ThreadSearchLoggerBase::TypeLast)
     {
-        case 1 :
-        {
-            lgrType = ThreadSearchLoggerBase::TypeTree;
-            break;
-        }
-        default:
-        // case 0 :
-        {
-            lgrType = ThreadSearchLoggerBase::TypeList;
-            break;
-        }
+        m_ThreadSearchPlugin.SetLoggerType(ThreadSearchLoggerBase::eLoggerTypes(radioLoggerType));
     }
-    m_ThreadSearchPlugin.SetLoggerType(lgrType);
+    else
+    {
+        m_ThreadSearchPlugin.SetLoggerType(ThreadSearchLoggerBase::TypeList);
+    }
 
     radIndex = m_pRadSortBy->GetSelection();
     InsertIndexManager::eFileSorting sortingType;

@@ -14,6 +14,7 @@
 
 #include "ThreadSearchLoggerBase.h"
 #include "ThreadSearchLoggerList.h"
+#include "ThreadSearchLoggerSTC.h"
 #include "ThreadSearchLoggerTree.h"
 #include "ThreadSearchView.h"
 #include "ThreadSearchControlIds.h"
@@ -25,17 +26,18 @@ ThreadSearchLoggerBase* ThreadSearchLoggerBase::Build(ThreadSearchView &threadSe
                                                       InsertIndexManager::eFileSorting fileSorting,
                                                       wxWindow *pParent, long id)
 {
-    ThreadSearchLoggerBase* pLogger = nullptr;
 
-    if (loggerType == TypeList)
+    switch (loggerType)
     {
-        pLogger = new ThreadSearchLoggerList(threadSearchView, threadSearchPlugin, fileSorting , pParent, id);
+        case TypeList:
+            return new ThreadSearchLoggerList(threadSearchView, threadSearchPlugin, fileSorting , pParent, id);
+        case TypeTree:
+            return new ThreadSearchLoggerTree(threadSearchView, threadSearchPlugin, fileSorting , pParent, id);
+        case TypeSTC:
+            return new ThreadSearchLoggerSTC(threadSearchView, threadSearchPlugin, fileSorting , pParent, id);
+        default:
+            return nullptr;
     }
-    else
-    {
-        pLogger = new ThreadSearchLoggerTree(threadSearchView, threadSearchPlugin, fileSorting , pParent, id);
-    }
-    return pLogger;
 }
 
 ThreadSearchLoggerBase::ThreadSearchLoggerBase(wxWindow *parent,
