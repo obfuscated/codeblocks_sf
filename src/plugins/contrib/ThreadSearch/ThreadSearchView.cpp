@@ -53,11 +53,12 @@ const unsigned int MAX_NB_SEARCH_ITEMS = 20;
 const          int TIMER_PERIOD        = 100;
 
 
-ThreadSearchView::ThreadSearchView(ThreadSearch& threadSearchPlugin)
-                 :wxPanel(Manager::Get()->GetAppWindow())
-                 ,m_ThreadSearchPlugin(threadSearchPlugin)
-                 ,m_Timer(this, controlIDs.Get(ControlIDs::idTmrListCtrlUpdate))
-                 ,m_StoppingThread(0)
+ThreadSearchView::ThreadSearchView(ThreadSearch& threadSearchPlugin) :
+    wxPanel(Manager::Get()->GetAppWindow()),
+    m_ThreadSearchPlugin(threadSearchPlugin),
+    m_Timer(this, controlIDs.Get(ControlIDs::idTmrListCtrlUpdate)),
+    m_StoppingThread(0),
+    m_LastFocusedWindow(nullptr)
 {
     m_pFindThread = NULL;
     m_pToolBar    = NULL;
@@ -831,33 +832,41 @@ void ThreadSearchView::EnableControls(bool enable)
         ControlIDs::idSearchMask
     };
 
-    ControlIDs::IDs toolBarIdsArray[] = {
-        ControlIDs::idCboSearchExpr
-    };
+    wxWindow *focused = wxWindow::FindFocus();
 
-    for ( unsigned int i = 0; i < sizeof(idsArray)/sizeof(idsArray[0]); ++i )
+    // Disabled controls cannot be focussed (at least in GTK), so we store the pointer to the
+    // focussed control, so we could later restore it.
+    if (!enable)
+        m_LastFocusedWindow = focused;
+
+    for (unsigned int i = 0; i < sizeof(idsArray)/sizeof(idsArray[0]); ++i)
     {
         wxWindow* pWnd = wxWindow::FindWindow(controlIDs.Get(idsArray[i]));
-        if ( pWnd != 0 )
+        if (pWnd != nullptr)
         {
             pWnd->Enable(enable);
         }
         else
         {
-            cbMessageBox(wxString::Format(_("Failed to Enable window (id=%ld)"), idsArray[i]).c_str(),
+            cbMessageBox(wxString::Format(_("Failed to Enable window (id=%ld)"), idsArray[i]),
                          _("Error"), wxOK|wxICON_ERROR, this);
         }
     }
 
-    for ( unsigned int i = 0; i < sizeof(toolBarIdsArray)/sizeof(toolBarIdsArray[0]); ++i )
-    {
-        m_pToolBar->FindControl(controlIDs.Get(toolBarIdsArray[i]))->Enable(enable);
-    }
+    wxWindow *tabControl = m_pToolBar->FindControl(controlIDs.Get(ControlIDs::idCboSearchExpr));
+    tabControl->Enable(enable);
 
     m_pToolBar->EnableTool(controlIDs.Get(ControlIDs::idBtnOptions), enable);
     m_pToolBar->Update();
-}
 
+    // When we re-enable the control we want to restore the focus if there is no control with the
+    // focus at the moment and we started with one of our controls focussed.
+    if (enable && focused == nullptr && m_LastFocusedWindow != nullptr)
+    {
+        if (m_LastFocusedWindow == m_pCboSearchExpr || m_LastFocusedWindow == tabControl)
+            m_LastFocusedWindow->SetFocus();
+    }
+}
 
 void ThreadSearchView::PostThreadSearchEvent(const ThreadSearchEvent& event)
 {

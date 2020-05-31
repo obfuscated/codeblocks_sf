@@ -106,7 +106,7 @@ void cbStyledTextCtrl::OnContextMenu(wxContextMenuEvent& event)
 
             const bool is_right_click = event.GetPosition() != wxDefaultPosition;
             const wxPoint mp(is_right_click ? event.GetPosition() : wxDefaultPosition);
-            pParent->DisplayContextMenu(mp, mtEditorManager);
+            pParent->DisplayContextMenu(mp, mtEditorManager, this);
         }
         else
             event.Skip();

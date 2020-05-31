@@ -191,8 +191,9 @@ protected:
     wxSplitterWindow* m_pSplitter;
     // end wxGlade
     wxStaticBoxSizer* m_pSizerSearchDirItems;
-    wxBoxSizer*       m_pSizerSearchItems;
-    wxToolBar*        m_pToolBar;
+    wxBoxSizer* m_pSizerSearchItems;
+    wxToolBar* m_pToolBar;
+    wxWindow *m_LastFocusedWindow;
 
     DECLARE_EVENT_TABLE()
 

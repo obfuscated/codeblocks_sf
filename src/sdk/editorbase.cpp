@@ -268,7 +268,7 @@ void EditorBase::BasicAddToContextMenu(wxMenu* popup, ModuleType type)
     }
 }
 
-void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
+void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type, wxWindow *menuParent)
 {
     bool noeditor = (type != mtEditorManager);
     // noeditor:
@@ -369,7 +369,10 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
     }
 
     m_pData->m_DisplayingPopupMenu = true;
-    PopupMenu(popup, clientpos);
+    if (menuParent)
+        menuParent->PopupMenu(popup, clientpos);
+    else
+        PopupMenu(popup, clientpos);
     delete popup;
     m_pData->m_DisplayingPopupMenu = false;
 

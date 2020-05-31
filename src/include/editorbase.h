@@ -137,8 +137,10 @@ class DLLIMPORT EditorBase : public wxPanel
           * if the user right-clicks in the editor area.
           * @param position The position to popup the context menu.
           * @param type The module's type.
+          * @param menuParent Used to call as this for the PopupMenu call. Can be nullptr.
           */
-        virtual void DisplayContextMenu(const wxPoint& position, ModuleType type = mtUnknown);
+        virtual void DisplayContextMenu(const wxPoint& position, ModuleType type,
+                                        wxWindow *menuParent);
 
         /** Should this kind of editor be visible in the open files tree?
           *
