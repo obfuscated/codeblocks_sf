@@ -171,17 +171,23 @@ void ThreadSearchLoggerSTC::OnSearchBegin(const ThreadSearchFindData& findData)
     m_fileCount = 0;
     m_totalCount = 0;
 
+    m_startLine = std::max(0, m_stc->LineFromPosition(m_stc->GetLength()) - 1);
+
     m_stc->SetReadOnly(false);
     m_stc->AppendText(wxT("=> Searching for ") + findData.GetFindText() + wxT('\n'));
     m_stc->SetReadOnly(true);
+
+    m_stc->SetFirstVisibleLine(m_startLine);
 }
 
 void ThreadSearchLoggerSTC::OnSearchEnd()
 {
     m_stc->SetReadOnly(false);
-    m_stc->AppendText(wxString::Format(wxT("=> Finished! Found: %d in %d files\n"), m_totalCount,
+    m_stc->AppendText(wxString::Format(wxT("=> Finished! Found: %d in %d files\n\n\n"), m_totalCount,
                                        m_fileCount));
     m_stc->SetReadOnly(true);
+
+    m_stc->SetFirstVisibleLine(m_startLine);
 }
 
 wxWindow* ThreadSearchLoggerSTC::GetWindow()
