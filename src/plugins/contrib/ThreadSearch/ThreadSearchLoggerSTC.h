@@ -32,9 +32,17 @@ private:
     void ConnectEvents();
     void DisconnectEvents();
 
-    void OnSTCUpdateUI(wxScintillaEvent &event);
+    void OnContextMenu(wxContextMenuEvent &event);
     void OnDoubleClick(wxScintillaEvent &event);
     void OnMarginClick(wxScintillaEvent &event);
+    void OnMenuCopy(wxCommandEvent &event);
+    void OnMenuCopySelection(wxCommandEvent &event);
+    void OnMenuCollapseFile(wxCommandEvent &event);
+    void OnMenuCollapseSearch(wxCommandEvent &event);
+    void OnMenuCollapseAll(wxCommandEvent &event);
+    void OnMenuDelete(wxCommandEvent &event);
+    void OnMenuDeleteAll(wxCommandEvent &event);
+    void OnSTCUpdateUI(wxScintillaEvent &event);
 
     void AppendStyledText(int style, const wxString &text);
 private:
