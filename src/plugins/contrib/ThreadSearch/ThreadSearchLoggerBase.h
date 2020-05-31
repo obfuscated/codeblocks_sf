@@ -78,11 +78,6 @@ protected:
 
     void SetupSizer(wxWindow *control);
 
-    /** Dynamic events connection. */
-    virtual void ConnectEvents(wxEvtHandler* pEvtHandler) = 0;
-
-    /** Dynamic events disconnection. */
-    virtual void DisconnectEvents(wxEvtHandler* pEvtHandler) = 0;
 
     /** Displays contextual menu. */
     void ShowMenu(const wxPoint& point, bool hasSelection, bool hasItems);
