@@ -107,6 +107,7 @@ void ThreadSearchLoggerSTC::OnThreadSearchEvent(const ThreadSearchEvent& event)
 {
     const wxArrayString& words = event.GetLineTextArray();
     const wxString &filename = event.GetString();
+    const std::vector<int> &matchedPositions = event.GetMatchedPositions();
 
     m_stc->Freeze();
     m_stc->SetReadOnly(false);
@@ -114,6 +115,8 @@ void ThreadSearchLoggerSTC::OnThreadSearchEvent(const ThreadSearchEvent& event)
     AppendStyledText(STCStyles::File, filename + wxT("\n"));
 
     wxString justifier;
+
+    std::vector<int>::const_iterator matchedIt = matchedPositions.begin();
 
     for (size_t ii = 0; ii + 1 < words.GetCount(); ii += 2)
     {
@@ -126,7 +129,26 @@ void ThreadSearchLoggerSTC::OnThreadSearchEvent(const ThreadSearchEvent& event)
         }
 
         AppendStyledText(STCStyles::LineNo, justifier + lineNoStr + wxT(':'));
-        AppendStyledText(STCStyles::Text, wxT('\t') + words[ii + 1].Trim().Trim(false) + wxT('\n'));
+
+        const int textStart = m_stc->GetLength() + 1;
+
+        AppendStyledText(STCStyles::Text, wxT('\t') + words[ii + 1] + wxT('\n'));
+
+        {
+            const int matchedCount = *matchedIt;
+            ++matchedIt;
+
+            for (int ii = 0; ii < matchedCount; ++ii)
+            {
+                const int start = *matchedIt;
+                ++matchedIt;
+                const int length = *matchedIt;
+                ++matchedIt;
+
+                m_stc->StartStyling(textStart + start);
+                m_stc->SetStyling(length, STCStyles::TextMatching);
+            }
+        }
     }
 
     m_stc->SetReadOnly(true);

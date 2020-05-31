@@ -34,7 +34,7 @@ public:
       * @param line : the text line to match.
       * @return true if line matches search text.
       */
-    virtual bool MatchLine(const wxString &line);
+    virtual bool MatchLine(std::vector<int> *outMatchedPositions, const wxString &line);
 };
 
 #endif // TEXT_FILE_SEARCHER_TEXT_H
