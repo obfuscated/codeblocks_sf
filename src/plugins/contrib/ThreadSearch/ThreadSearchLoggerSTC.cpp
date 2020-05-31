@@ -54,6 +54,11 @@ ThreadSearchLoggerSTC::ThreadSearchLoggerSTC(ThreadSearchView& threadSearchView,
     m_stc->SetCaretWidth(0);
     m_stc->SetReadOnly(true);
     m_stc->UsePopUp(false);
+    // Setup horizontal scrolling - scintilla doesn't do horizontal scroll adjustments based on
+    // document content. It could only enlarge the width. So we have to fake it by setting the
+    // initial width to be low and reset it if the document is cleared.
+    m_stc->SetScrollWidth(100);
+    m_stc->SetScrollWidthTracking(true);
 
     // Setup folding
     {
@@ -207,6 +212,7 @@ void ThreadSearchLoggerSTC::OnThreadSearchEvent(const ThreadSearchEvent& event)
 void ThreadSearchLoggerSTC::Clear()
 {
     m_stc->Clear();
+    m_stc->SetScrollWidth(100);
 }
 
 void ThreadSearchLoggerSTC::OnSearchBegin(const ThreadSearchFindData& findData)
@@ -221,6 +227,7 @@ void ThreadSearchLoggerSTC::OnSearchBegin(const ThreadSearchFindData& findData)
     if (m_ThreadSearchPlugin.GetDeletePreviousResults())
     {
         m_stc->ClearAll();
+        m_stc->SetScrollWidth(100);
     }
 
     m_startLine = m_stc->LineFromPosition(m_stc->GetLength());
@@ -621,6 +628,7 @@ void ThreadSearchLoggerSTC::OnMenuDelete(cb_unused wxCommandEvent &event)
             // We have the range for the search, so delete the whole text for it.
             m_stc->SetReadOnly(false);
             m_stc->Remove(startPosition, endPosition);
+            m_stc->SetScrollWidth(100);
             m_stc->SetReadOnly(true);
         }
     }
@@ -630,5 +638,6 @@ void ThreadSearchLoggerSTC::OnMenuDeleteAll(cb_unused wxCommandEvent &event)
 {
     m_stc->SetReadOnly(false);
     m_stc->ClearAll();
+    m_stc->SetScrollWidth(100);
     m_stc->SetReadOnly(true);
 }
