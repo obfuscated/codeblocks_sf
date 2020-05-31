@@ -48,6 +48,8 @@ public:
                           cbConfigurationPanelColoursInterface *coloursInterface,
                           wxWindow* parent);
 
+    void SetSearchAndMaskHistory(const wxArrayString &dirHistory, const wxArrayString &maskHistory);
+
     /** Returns the title displayed in the left column of the "Settings/Environment" dialog. */
     wxString GetTitle() const override { return _("Thread search"); }
 
@@ -76,7 +78,7 @@ private:
     /// Pointer to interface for accessing modified colour in the colour manager.
     /// Can be null if the this is not shown from the Environment Settings dialog.
     cbConfigurationPanelColoursInterface *m_ColoursInterface;
-protected:
+private:
     // begin wxGlade: ThreadSearchConfPanel::attributes
     wxStaticBox* SizerListControlOptions_staticbox;
     wxStaticBox* SizerThreadSearchLayoutGlobal_staticbox;

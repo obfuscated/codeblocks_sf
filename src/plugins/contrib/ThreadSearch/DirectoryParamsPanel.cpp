@@ -30,20 +30,19 @@
 #include "ThreadSearchControlIds.h"
 #include "ThreadSearchFindData.h"
 
-
-namespace
-{
-
 // Max number of items in search history combo box
 const unsigned int MAX_NB_SEARCH_ITEMS = 20;
 
-inline void AddItemToCombo(wxComboBox *combo, const wxString &str)
+void AddItemToCombo(wxComboBox *combo, const wxString &str)
 {
-    int index = combo->FindString(str);
-
-    // Removes item if already in combos box
-    if (index != wxNOT_FOUND)
+    // Removes item if already in the combo box
+    while (1)
+    {
+        const int index = combo->FindString(str);
+        if (index == wxNOT_FOUND)
+            break;
         combo->Delete(index);
+    }
 
     // Removes last item if max nb item is reached
     if (combo->GetCount() >= MAX_NB_SEARCH_ITEMS)
@@ -53,8 +52,6 @@ inline void AddItemToCombo(wxComboBox *combo, const wxString &str)
     combo->Insert(str, 0);
     combo->SetSelection(0);
 }
-
-} // anonymouse namespace
 
 DirectoryParamsPanel::DirectoryParamsPanel(ThreadSearchFindData *findData, wxWindow* parent, int id, const wxPoint& pos,
                                            const wxSize& size, long WXUNUSED(style)):
