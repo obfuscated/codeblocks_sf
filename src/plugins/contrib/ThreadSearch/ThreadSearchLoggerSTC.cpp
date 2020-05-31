@@ -115,13 +115,29 @@ void ThreadSearchLoggerSTC::RegisterColours()
     const wxColour defaultBg = wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX);
     const wxColour defaultFg = wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOXTEXT);
 
+    wxColour fileFg, lineFg, matchingFg, matchingBg;
+    if (cbIsDarkTheme())
+    {
+        fileFg = wxColour(103, 140, 177);
+        lineFg = wxColour(147, 199, 99);
+        matchingFg = wxColour(241, 242, 243);
+        matchingBg = wxColour(131, 38, 23);
+    }
+    else
+    {
+        fileFg = wxColour(0, 0, 160);
+        lineFg = wxColour(240, 0, 240);
+        matchingFg = wxColour(255, 255, 255);
+        matchingBg = wxColour(0, 128, 128);
+    }
+
     colours->RegisterColour(wxT("Thread Search"), wxT("File foreground"),
-                            wxT("thread_search_file_fore"), wxColour(255, 0, 255));
+                            wxT("thread_search_file_fore"), fileFg);
     colours->RegisterColour(wxT("Thread Search"), wxT("File background"),
                             wxT("thread_search_file_back"), defaultBg);
 
     colours->RegisterColour(wxT("Thread Search"), wxT("Line foreground"),
-                            wxT("thread_search_lineno_fore"), wxColour(0, 0, 255));
+                            wxT("thread_search_lineno_fore"), lineFg);
     colours->RegisterColour(wxT("Thread Search"), wxT("Line background"),
                             wxT("thread_search_lineno_back"), defaultBg);
 
@@ -131,9 +147,9 @@ void ThreadSearchLoggerSTC::RegisterColours()
                             wxT("thread_search_text_back"), defaultBg);
 
     colours->RegisterColour(wxT("Thread Search"), wxT("Matching text foreground"),
-                            wxT("thread_search_match_fore"), wxColor(255, 0, 0));
+                            wxT("thread_search_match_fore"), matchingFg);
     colours->RegisterColour(wxT("Thread Search"), wxT("Matching text background"),
-                            wxT("thread_search_match_back"), defaultBg);
+                            wxT("thread_search_match_back"), matchingBg);
 
     colours->RegisterColour(wxT("Thread Search"), wxT("Selected line background"),
                             wxT("thread_search_selected_line_back"),
@@ -173,6 +189,7 @@ void ThreadSearchLoggerSTC::SetupStyles()
                               colours->GetColour(wxT("thread_search_match_fore")));
     m_stc->StyleSetBackground(STCStyles::TextMatching,
                               colours->GetColour(wxT("thread_search_match_back")));
+    m_stc->StyleSetBold(STCStyles::TextMatching, true);
 
     m_stc->SetFoldMarginColour(true, colours->GetColour(wxT("editor_margin_chrome")));
     m_stc->SetFoldMarginHiColour(true, colours->GetColour(wxT("editor_margin_chrome_highlight")));
