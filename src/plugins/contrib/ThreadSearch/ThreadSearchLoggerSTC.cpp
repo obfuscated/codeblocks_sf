@@ -174,7 +174,8 @@ void ThreadSearchLoggerSTC::OnThreadSearchEvent(const ThreadSearchEvent& event)
     m_stc->Freeze();
     m_stc->SetReadOnly(false);
 
-    AppendStyledText(STCStyles::File, wxString::Format(_("%s (%lld matches)\n"), filename.wx_str(),
+    AppendStyledText(STCStyles::File, filename);
+    AppendStyledText(STCStyles::Text, wxString::Format(_(" (%lld matches)\n"),
                                                        static_cast<long long>(words.size() / 2)));
 
     // The only reason it is constructed here is to preserve the allocated space between loop
@@ -299,8 +300,8 @@ void ThreadSearchLoggerSTC::OnSearchEnd()
 
     const int line = std::max(0, m_stc->LineFromPosition(m_stc->GetLength()));
 
-    wxString message = wxString::Format(_("=> Finished! Found: %d in %d files\n\n"), m_totalCount,
-                                        m_fileCount);
+    wxString message = wxString::Format(_("=> Finished! Found %d matches in %d files\n\n"),
+                                        m_totalCount, m_fileCount);
     m_stc->AppendText(message);
     m_stc->SetReadOnly(true);
 
@@ -330,7 +331,8 @@ void ThreadSearchLoggerSTC::AppendStyledText(int style, const wxString &text)
     const int position = m_stc->GetLength();
     m_stc->StartStyling(position);
     m_stc->AppendText(text);
-    m_stc->SetStyling(text.length(), style);
+    const int endPosition = m_stc->GetLength();
+    m_stc->SetStyling(endPosition - position, style);
 
     int foldLevel = -1;
     if (style == STCStyles::File)
