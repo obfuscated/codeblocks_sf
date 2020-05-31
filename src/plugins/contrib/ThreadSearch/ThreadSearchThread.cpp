@@ -72,14 +72,12 @@ ThreadSearchThread::~ThreadSearchThread()
 }
 
 
-void *ThreadSearchThread::Entry()
+void* ThreadSearchThread::Entry()
 {
     // Tests if we have a working searcher object.
     // Cancel search if it is not the case
-    if ( m_pTextFileSearcher == NULL )
-        return 0;
-
-    size_t i = 0;
+    if (m_pTextFileSearcher == nullptr)
+        return nullptr;
 
     // For now, we look for all paths for the different search scopes
     // and store them in a sorted array to avoid pasing several times
@@ -89,7 +87,7 @@ void *ThreadSearchThread::Entry()
     // array for storing items.
 
     // Search in directory files ?
-    if ( m_FindData.MustSearchInDirectory() == true )
+    if (m_FindData.MustSearchInDirectory() == true)
     {
         int flags = wxDIR_FILES | wxDIR_DIRS | wxDIR_DOTDOT;
         flags    |= m_FindData.GetHiddenSearch() ? wxDIR_HIDDEN : 0;
@@ -116,57 +114,62 @@ void *ThreadSearchThread::Entry()
         }
 
         // Tests thread stop (cancel search, app shutdown)
-        if ( TestDestroy() == true ) return 0;
+        if (TestDestroy() == true)
+            return nullptr;
     }
 
     // Search in workspace files ?
-    if ( m_FindData.MustSearchInWorkspace() == true )
+    if (m_FindData.MustSearchInWorkspace() == true)
     {
         ProjectsArray* pProjectsArray = Manager::Get()->GetProjectManager()->GetProjects();
-        for ( size_t j=0; j < pProjectsArray->GetCount(); ++j )
+        for (size_t j=0; j < pProjectsArray->GetCount(); ++j)
         {
             AddProjectFiles(m_FilePaths, *pProjectsArray->Item(j));
-            if ( TestDestroy() == true ) return 0;
+            if (TestDestroy() == true)
+                return nullptr;
         }
     }
-    else if ( m_FindData.MustSearchInProject() == true )
+    else if (m_FindData.MustSearchInProject() == true)
     {
         // Search in project files ?
         // Necessary only if not already parsed in worspace part
         cbProject* pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
-        if ( pProject != NULL )
+        if (pProject != nullptr)
         {
             AddProjectFiles(m_FilePaths, *pProject);
-            if ( TestDestroy() == true ) return 0;
+            if (TestDestroy() == true)
+                return nullptr;
         }
     }
-    else if ( m_FindData.MustSearchInTarget() == true )
+    else if (m_FindData.MustSearchInTarget() == true)
     {
         // Search in target files ?
         // Necessary only if not already parsed in project part
         cbProject* pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
-        if ( pProject != NULL )
+        if (pProject != nullptr)
         {
             ProjectBuildTarget *pTarget = pProject->GetBuildTarget(pProject->GetActiveBuildTarget());
-            if ( pTarget != 0 )
+            if (pTarget != nullptr)
             {
                 AddTargetFiles(m_FilePaths, *pTarget);
-                if ( TestDestroy() == true ) return 0;
+                if (TestDestroy() == true)
+                    return nullptr;
             }
         }
     }
 
     // Tests thread stop (cancel search, app shutdown)
-    if ( TestDestroy() == true ) return 0;
+    if (TestDestroy() == true)
+        return nullptr;
 
     // Open files
-    if ( m_FindData.MustSearchInOpenFiles() == true )
+    if (m_FindData.MustSearchInOpenFiles() == true)
     {
         EditorManager* pEdManager = Manager::Get()->GetEditorManager();
-        for (i = 0; i < (size_t)pEdManager->GetNotebook()->GetPageCount(); ++i)
+        for (size_t i = 0; i < (size_t)pEdManager->GetNotebook()->GetPageCount(); ++i)
         {
             cbEditor* pEditor = pEdManager->GetBuiltinEditor(i);
-            if ( pEditor != NULL )
+            if (pEditor != nullptr)
             {
                 AddNewItem(m_FilePaths, pEditor->GetFilename(), m_Masks);
             }
@@ -174,7 +177,8 @@ void *ThreadSearchThread::Entry()
     }
 
     // Tests thread stop (cancel search, app shutdown)
-    if ( TestDestroy() == true ) return 0;
+    if (TestDestroy() == true)
+        return nullptr;
 
     // if the list is empty, leave
     if (m_FilePaths.GetCount() == 0)
@@ -186,18 +190,19 @@ void *ThreadSearchThread::Entry()
         event.SetString(_("No files to search.\nCheck options "));
         // Using wxPostEvent, we avoid multi-threaded memory violation.
         wxPostEvent(m_pThreadSearchView,event);
-        return 0;
+        return nullptr;
     }
 
-    for ( i = 0; i < m_FilePaths.GetCount(); ++i )
+    for (size_t i = 0; i < m_FilePaths.GetCount(); ++i)
     {
         FindInFile(m_FilePaths[i]);
 
         // Tests thread stop (cancel search, app shutdown)
-        if ( TestDestroy() == true ) return 0;
+        if (TestDestroy() == true)
+            return nullptr;
     }
 
-    return 0;
+    return nullptr;
 }
 
 
