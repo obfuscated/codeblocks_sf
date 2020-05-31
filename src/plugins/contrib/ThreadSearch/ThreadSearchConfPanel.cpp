@@ -366,6 +366,7 @@ void ThreadSearchConfPanel::do_layout()
         // Sizers for page layout
         wxBoxSizer* SizerTop = new wxBoxSizer(wxVERTICAL);
         wxGridBagSizer *SizerThreadSearchGridLayout = new wxGridBagSizer;
+        SizerThreadSearchGridLayout->SetCols(2);
         SizerThreadSearchGridLayout->AddGrowableCol(0);
         SizerThreadSearchGridLayout->AddGrowableCol(1);
 
@@ -391,11 +392,12 @@ void ThreadSearchConfPanel::do_layout()
 
         wxStaticBoxSizer* SizerThreadSearchLayoutSTCColours = new wxStaticBoxSizer(STCColours_staticbox, wxVERTICAL);
         wxFlexGridSizer* SizerThreadSearchLayoutSTCColoursGrid = new wxFlexGridSizer(5, 3, 0, 0);
-        SizerThreadSearchLayoutSTCColoursGrid->AddGrowableCol(0);
         SizerThreadSearchLayoutSTCColours->Add(SizerThreadSearchLayoutSTCColoursGrid, 1, wxEXPAND | wxALL, 4);
-        for (int ii = 0; ii < STCColoursCount/*(cbCountOf(STCColoursLabels) / 2) * 2*/; ii ++)
+        for (int ii = 0; ii < STCColoursCount; ii ++)
         {
-            SizerThreadSearchLayoutSTCColoursGrid->Add(m_STCColoursLabels[ii], 1, wxEXPAND | wxLEFT | wxTOP, 4);
+            SizerThreadSearchLayoutSTCColoursGrid->Add(m_STCColoursLabels[ii], 1,
+                                                       wxEXPAND |wxLEFT | wxTOP | wxALIGN_LEFT| wxALIGN_CENTRE_VERTICAL,
+                                                       4);
             if (m_STCColourPickers[ii * 2] != nullptr)
                 SizerThreadSearchLayoutSTCColoursGrid->Add(m_STCColourPickers[ii * 2], 1, wxEXPAND | wxLEFT | wxTOP, 4);
             if (m_STCColourPickers[ii * 2 + 1] != nullptr)
