@@ -185,7 +185,7 @@ void ThreadSearch::CreateView(ThreadSearchViewManagerBase::eManagerTypes externa
     // Builds manager
     delete m_pViewManager;
     m_pViewManager = ThreadSearchViewManagerBase::BuildThreadSearchViewManagerBase(m_pThreadSearchView, true, mgrType);
-    m_pViewManager->ShowView(true, true);
+    m_pViewManager->ShowView(ThreadSearchViewManagerBase::Show | ThreadSearchViewManagerBase::PreserveFocus);
 }
 
 void ThreadSearch::OnAttach()
@@ -364,18 +364,21 @@ void ThreadSearch::OnMnuViewThreadSearch(wxCommandEvent& event)
     if (!IsAttached())
         return;
 
-    const bool checked = event.IsChecked();
-
-    if (checked && m_pThreadSearchView == nullptr)
+    uint32_t flags = ThreadSearchViewManagerBase::None;
+    if (event.IsChecked())
     {
-        // The view might have been destroyed if the notebook page has been removed.
-        // So we need to recreate it.
-        CreateView(ThreadSearchViewManagerBase::TypeMessagesNotebook, false);
-        m_pThreadSearchView->SetToolBar(m_pToolbar);
-        return;
+        if (m_pThreadSearchView == nullptr)
+        {
+            // The view might have been destroyed if the notebook page has been removed.
+            // So we need to recreate it.
+            CreateView(ThreadSearchViewManagerBase::TypeMessagesNotebook, false);
+            m_pThreadSearchView->SetToolBar(m_pToolbar);
+            return;
+        }
+        flags |= ThreadSearchViewManagerBase::Show;
     }
 
-    m_pViewManager->ShowView(checked, false);
+    m_pViewManager->ShowView(flags);
 }
 
 void ThreadSearch::OnMnuSearchThreadSearch(wxCommandEvent& /*event*/)
@@ -392,7 +395,7 @@ void ThreadSearch::OnMnuSearchThreadSearch(wxCommandEvent& /*event*/)
     else
     {
         // Word is KO, just show the panel
-        m_pViewManager->ShowView(true, false);
+        m_pViewManager->ShowView(ThreadSearchViewManagerBase::Show);
     }
 }
 
@@ -403,7 +406,7 @@ void ThreadSearch::OnMnuViewFocusThreadSearch(wxCommandEvent& /*event*/)
 
     GetCursorWord(m_SearchedWord);
 
-    m_pViewManager->ShowView(true, false);
+    m_pViewManager->ShowView(ThreadSearchViewManagerBase::Show);
     m_pViewManager->Raise();
     m_pThreadSearchView->FocusSearchCombo(m_SearchedWord);
 }
@@ -706,7 +709,7 @@ void ThreadSearch::RunThreadSearch(const wxString& text, bool isCtxSearch/*=fals
     findData.SetFindText(text);
 
     // Displays m_pThreadSearchView in manager
-    m_pViewManager->ShowView(true, true);
+    m_pViewManager->ShowView(ThreadSearchViewManagerBase::Show | ThreadSearchViewManagerBase::PreserveFocus);
 
     // Runs the search through a worker thread
     m_pThreadSearchView->ThreadedSearch(findData);

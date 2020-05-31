@@ -11,6 +11,8 @@
 #ifndef THREAD_SEARCH_VIEW_MANAGER_BASE_H
 #define THREAD_SEARCH_VIEW_MANAGER_BASE_H
 
+#include <stdint.h>
+
 class ThreadSearchView;
 
 class ThreadSearchViewManagerBase
@@ -51,11 +53,18 @@ public:
       */
     virtual void RemoveViewFromManager() = 0;
 
+    enum ShowViewFlags : uint32_t
+    {
+        None = 0,
+        Show = 1, ///< Shows the view
+        PreserveFocus = 2 ///< Tries to preserve the focus after the show operation.
+    };
+
     /** Return true if success. Fails if view is not managed.
-      * @param show : true => show, false => hide
+      * @param flags Specifies the behaviour of the call. @sa ShowViewFlags
       * @return true if success.
       */
-    virtual bool ShowView(bool show, bool preserveFocus) = 0;
+    virtual bool ShowView(uint32_t flags) = 0;
 
     /** Return true if view is visible.
       * @return true if view is visible.

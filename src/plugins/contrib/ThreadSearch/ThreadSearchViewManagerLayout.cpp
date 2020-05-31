@@ -70,13 +70,14 @@ void ThreadSearchViewManagerLayout::RemoveViewFromManager()
 }
 
 
-bool ThreadSearchViewManagerLayout::ShowView(bool show, bool preserveFocus)
+bool ThreadSearchViewManagerLayout::ShowView(uint32_t flags)
 {
+    const bool show = ((flags & ShowViewFlags::Show) == ShowViewFlags::Show);
     if ((m_IsManaged == false) || (show == IsViewShown()))
         return false;
 
     wxWindow *focused = nullptr;
-    if (preserveFocus)
+    if ((flags & ShowViewFlags::PreserveFocus) == ShowViewFlags::PreserveFocus)
         focused = wxWindow::FindFocus();
 
     CodeBlocksDockEvent evt(show ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);

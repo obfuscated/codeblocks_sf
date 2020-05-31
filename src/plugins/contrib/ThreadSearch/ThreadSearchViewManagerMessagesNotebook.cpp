@@ -72,15 +72,16 @@ void ThreadSearchViewManagerMessagesNotebook::RemoveViewFromManager()
 }
 
 
-bool ThreadSearchViewManagerMessagesNotebook::ShowView(bool show, bool preserveFocus)
+bool ThreadSearchViewManagerMessagesNotebook::ShowView(uint32_t flags)
 {
     // m_IsManaged is updated in called methods
-    if (show == true)
+    const bool show = ((flags & ShowViewFlags::Show) == ShowViewFlags::Show);
+    if (show)
     {
         if (m_IsManaged == true)
         {
             wxWindow *focused = nullptr;
-            if (preserveFocus)
+            if ((flags & ShowViewFlags::PreserveFocus) == ShowViewFlags::PreserveFocus)
                 focused = wxWindow::FindFocus();
             CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
             Manager::Get()->ProcessEvent(evtShow);

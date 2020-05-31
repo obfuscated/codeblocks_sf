@@ -27,7 +27,7 @@ public:
     eManagerTypes GetManagerType() override { return TypeLayout; }
     void AddViewToManager() override;
     void RemoveViewFromManager() override;
-    bool ShowView(bool show, bool preserveFocus) override;
+    bool ShowView(uint32_t flags) override;
     bool IsViewShown() override;
     void Raise() override;
 };
