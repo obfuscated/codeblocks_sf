@@ -47,7 +47,7 @@ TextFileSearcherRegEx::TextFileSearcherRegEx(const wxString& searchText, bool ma
 }
 
 
-bool TextFileSearcherRegEx::MatchLine(wxString line)
+bool TextFileSearcherRegEx::MatchLine(const wxString &line)
 {
     bool match = false;
     if ( m_RegEx.IsValid() )

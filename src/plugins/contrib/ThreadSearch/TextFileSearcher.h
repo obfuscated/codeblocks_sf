@@ -48,7 +48,7 @@ public:
       * @param line : the text line to match.
       * @return true if line matches search text.
       */
-    virtual bool MatchLine(wxString line) = 0;
+    virtual bool MatchLine(const wxString &line) = 0;
 
     /** Return true if object is OK.
       * Exists to test validity of the object, mainly for reg ex syntax errors.
