@@ -8,6 +8,8 @@
 
 #include "ThreadSearchLoggerBase.h"
 
+#include <vector>
+
 class wxScintillaEvent;
 
 class STCList;
@@ -40,6 +42,7 @@ private:
     void OnDoubleClick(wxScintillaEvent &event);
     void OnKeyDown(wxKeyEvent &event);
     void OnMarginClick(wxScintillaEvent &event);
+    void OnStyleNeeded(wxScintillaEvent &event);
     void OnMenuCopy(wxCommandEvent &event);
     void OnMenuCopySelection(wxCommandEvent &event);
     void OnMenuCollapseFile(wxCommandEvent &event);
@@ -50,7 +53,7 @@ private:
     void OnSTCUpdateUI(wxScintillaEvent &event);
     void OnSTCFocus(wxFocusEvent &event);
 
-    void AppendStyledText(int style, const wxString &text);
+    void AppendStyleItem(int startPos, int endPos, int style);
     void AutoScroll();
 
     friend class STCList;
@@ -61,6 +64,29 @@ private:
     int m_startLine;
     int m_lastVisibleLine;
     int m_lastLineMarkerHandle = -1;
+
+    struct StyleItem
+    {
+        int startPos;
+        int length;
+        int style;
+
+        static StyleItem make(int startPos)
+        {
+            StyleItem item;
+            item.startPos = startPos;
+            item.style = item.length = 0;
+            return item;
+        }
+
+        bool operator<(const StyleItem &b) const
+        {
+            return startPos < b.startPos;
+        }
+    };
+
+    typedef std::vector<StyleItem> StyleItemVector;
+    StyleItemVector m_styles;
 };
 
 #endif // CB_THREADSEARCH_LOGGER_STC_H
