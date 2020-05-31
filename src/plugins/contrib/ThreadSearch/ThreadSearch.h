@@ -266,6 +266,7 @@ private:
     // Toolbar controls events management
     void OnBtnOptionsClick(wxCommandEvent& event);
     void OnBtnSearchClick (wxCommandEvent& event);
+    void OnUpdateUIBtnSearch(wxUpdateUIEvent &event);
     void OnCboSearchExprEnter(wxCommandEvent &event);
 
     /** Removes the 'Thread search' item added in BuildMenu method.
