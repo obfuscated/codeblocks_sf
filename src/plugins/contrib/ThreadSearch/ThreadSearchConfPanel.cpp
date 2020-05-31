@@ -39,61 +39,67 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, w
     Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL);
 
     // begin wxGlade: ThreadSearchConfPanel::ThreadSearchConfPanel
-    SizerThreadSearchOptions_staticbox = new wxStaticBox(this, -1, _("Thread search options"));
-    SizerThreadSearchLayoutGlobal_staticbox = new wxStaticBox(this, -1, _("Show/Hide"));
-    SizerListControlOptions_staticbox = new wxStaticBox(this, -1, _("List control options"));
-    SizerThreadSearchLayout_staticbox = new wxStaticBox(this, -1, _("Layout"));
-    SizerSearchIn_staticbox = new wxStaticBox(this, -1, _("Search in files:"));
-    m_pPnlSearchIn = new SearchInPanel(this, wxID_ANY);
-    m_pPnlDirParams = new DirectoryParamsPanel(&threadSearchPlugin.GetFindData(), this, wxID_ANY);
-    m_pChkWholeWord = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkWholeWord), _("Whole word"));
-    m_pChkStartWord = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkStartWord), _("Start word"));
-    m_pChkMatchCase = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkMatchCase), _("Match case"));
-    m_pChkRegExp = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkRegularExpression), _("Regular expression"));
-    m_pChkThreadSearchEnable = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkThreadSearchEnable),
+    m_Notebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
+    m_PageGeneral = new wxPanel(m_Notebook, wxID_ANY);
+    m_PageLayout = new wxPanel(m_Notebook, wxID_ANY);
+
+    SizerSearchIn_staticbox = new wxStaticBox(m_PageGeneral, -1, _("Search in files:"));
+    SizerThreadSearchOptions_staticbox = new wxStaticBox(m_PageGeneral, -1, _("Thread search options"));
+
+    m_pPnlSearchIn = new SearchInPanel(m_PageGeneral, wxID_ANY);
+    m_pPnlDirParams = new DirectoryParamsPanel(&threadSearchPlugin.GetFindData(), m_PageGeneral, wxID_ANY);
+    m_pChkWholeWord = new wxCheckBox(m_PageGeneral, controlIDs.Get(ControlIDs::idChkWholeWord), _("Whole word"));
+    m_pChkStartWord = new wxCheckBox(m_PageGeneral, controlIDs.Get(ControlIDs::idChkStartWord), _("Start word"));
+    m_pChkMatchCase = new wxCheckBox(m_PageGeneral, controlIDs.Get(ControlIDs::idChkMatchCase), _("Match case"));
+    m_pChkRegExp = new wxCheckBox(m_PageGeneral, controlIDs.Get(ControlIDs::idChkRegularExpression), _("Regular expression"));
+    m_pChkThreadSearchEnable = new wxCheckBox(m_PageGeneral, controlIDs.Get(ControlIDs::idChkThreadSearchEnable),
                                                                    _("Enable 'Find occurrences' contextual menu item"));
-    m_pChkUseDefaultOptionsForThreadSearch = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkUseDefaultOptionsOnThreadSearch),
+    m_pChkUseDefaultOptionsForThreadSearch = new wxCheckBox(m_PageGeneral, controlIDs.Get(ControlIDs::idChkUseDefaultOptionsOnThreadSearch),
                                                             _("Use default options when running 'Find occurrences' "));
-    m_pChkShowMissingFilesError = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkShowMissingFilesError),
+    m_pChkShowMissingFilesError = new wxCheckBox(m_PageGeneral, controlIDs.Get(ControlIDs::idChkShowMissingFilesError),
                                                  _("Show error message if file is missing"));
-    m_pChkShowCantOpenFileError = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkShowCantOpenFileError),
+    m_pChkShowCantOpenFileError = new wxCheckBox(m_PageGeneral, controlIDs.Get(ControlIDs::idChkShowCantOpenFileError),
                                                  _("Show error message if file cannot be opened"));
-    m_pChkDeletePreviousResults = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkChkDeletePreviousResults),
+    m_pChkDeletePreviousResults = new wxCheckBox(m_PageGeneral, controlIDs.Get(ControlIDs::idChkChkDeletePreviousResults),
                                                  _("Delete previous results at search begin"));
-    m_pChkShowThreadSearchToolBar = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkViewThreadSearchToolBar),
+
+    SizerThreadSearchLayoutGlobal_staticbox = new wxStaticBox(m_PageLayout, -1, _("Show/Hide"));
+    SizerListControlOptions_staticbox = new wxStaticBox(m_PageLayout, -1, _("List control options"));
+
+    m_pChkShowThreadSearchToolBar = new wxCheckBox(m_PageLayout, controlIDs.Get(ControlIDs::idChkViewThreadSearchToolBar),
                                                    _("Show ThreadSearch toolbar"));
-    m_pChkShowThreadSearchWidgets = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkShowThreadSearchWidgets),
+    m_pChkShowThreadSearchWidgets = new wxCheckBox(m_PageLayout, controlIDs.Get(ControlIDs::idChkShowThreadSearchWidgets),
                                                    _("Show search widgets in ThreadSearch Messages panel"));
-    m_pChkShowCodePreview = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkShowCodePreview),
+    m_pChkShowCodePreview = new wxCheckBox(m_PageLayout, controlIDs.Get(ControlIDs::idChkShowCodePreview),
                                            _("Show code preview editor"));
-    m_pChkDisplayLogHeaders = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkDisplayLogHeaders),
+    m_pChkDisplayLogHeaders = new wxCheckBox(m_PageLayout, controlIDs.Get(ControlIDs::idChkDisplayLogHeaders),
                                              _("Display header in log window"));
-    m_pChkDrawLogLines = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkDrawLogLines),
+    m_pChkDrawLogLines = new wxCheckBox(m_PageLayout, controlIDs.Get(ControlIDs::idChkDrawLogLines),
                                         _("Draw lines between log columns"));
-    m_pChkAutosizeLogColumns = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkAutosizeLogColumns),
+    m_pChkAutosizeLogColumns = new wxCheckBox(m_PageLayout, controlIDs.Get(ControlIDs::idChkAutosizeLogColumns),
                                         _("Automatically resize log columns"));
+    const wxString m_pRadSortBy_choices[] = {
+        _("File path"),
+        _("File name")
+    };
+    m_pRadSortBy = new wxRadioBox(m_PageGeneral, wxID_ANY, _("Sort results by"), wxDefaultPosition, wxDefaultSize, 2, m_pRadSortBy_choices, 1, wxRA_SPECIFY_ROWS);
 
     const wxString m_pRadPanelManagement_choices[] = {
         _("Messages notebook"),
         _("Layout")
     };
-    m_pRadPanelManagement = new wxRadioBox(this, wxID_ANY, _("ThreadSearch panel management by"), wxDefaultPosition, wxDefaultSize, 2, m_pRadPanelManagement_choices, 1, wxRA_SPECIFY_ROWS);
+    m_pRadPanelManagement = new wxRadioBox(m_PageLayout, wxID_ANY, _("ThreadSearch panel management by"), wxDefaultPosition, wxDefaultSize, 2, m_pRadPanelManagement_choices, 1, wxRA_SPECIFY_ROWS);
     const wxString m_pRadLoggerType_choices[] = {
         _("List"),
         _("Tree"),
         _("List STC")
     };
-    m_pRadLoggerType = new wxRadioBox(this, wxID_ANY, _("Logger type"), wxDefaultPosition, wxDefaultSize, 3, m_pRadLoggerType_choices, 1, wxRA_SPECIFY_ROWS);
+    m_pRadLoggerType = new wxRadioBox(m_PageLayout, wxID_ANY, _("Logger type"), wxDefaultPosition, wxDefaultSize, 3, m_pRadLoggerType_choices, 1, wxRA_SPECIFY_ROWS);
     const wxString m_pRadSplitterWndMode_choices[] = {
         _("Horizontal"),
         _("Vertical")
     };
-    m_pRadSplitterWndMode = new wxRadioBox(this, wxID_ANY, _("Splitter window mode"), wxDefaultPosition, wxDefaultSize, 2, m_pRadSplitterWndMode_choices, 1, wxRA_SPECIFY_ROWS);
-    const wxString m_pRadSortBy_choices[] = {
-        _("File path"),
-        _("File name")
-    };
-    m_pRadSortBy = new wxRadioBox(this, wxID_ANY, _("Sort results by"), wxDefaultPosition, wxDefaultSize, 2, m_pRadSortBy_choices, 1, wxRA_SPECIFY_ROWS);
+    m_pRadSplitterWndMode = new wxRadioBox(m_PageLayout, wxID_ANY, _("Splitter window mode"), wxDefaultPosition, wxDefaultSize, 2, m_pRadSplitterWndMode_choices, 1, wxRA_SPECIFY_ROWS);
 
     set_properties();
     do_layout();
@@ -179,6 +185,9 @@ void ThreadSearchConfPanel::OnChkShowCantOpenFileErrorClick(wxCommandEvent &even
 void ThreadSearchConfPanel::set_properties()
 {
     // begin wxGlade: ThreadSearchConfPanel::set_properties
+    m_Notebook->AddPage(m_PageGeneral, _("General"), true);
+    m_Notebook->AddPage(m_PageLayout, _("Layout"), false);
+
     m_pChkWholeWord->SetToolTip(_("Search text matches only whole words"));
     m_pChkWholeWord->SetValue(1);
     m_pChkStartWord->SetToolTip(_("Matches only word starting with search expression"));
@@ -292,45 +301,62 @@ void ThreadSearchConfPanel::do_layout()
 {
     // begin wxGlade: ThreadSearchConfPanel::do_layout
     wxBoxSizer* SizerTop = new wxBoxSizer(wxVERTICAL);
-    wxStaticBoxSizer* SizerThreadSearchLayout = new wxStaticBoxSizer(SizerThreadSearchLayout_staticbox, wxVERTICAL);
-    wxFlexGridSizer* SizerThreadSearchGridLayout = new wxFlexGridSizer(4, 2, 0, 0);
-    wxStaticBoxSizer* SizerListControlOptions = new wxStaticBoxSizer(SizerListControlOptions_staticbox, wxVERTICAL);
-    wxStaticBoxSizer* SizerThreadSearchLayoutGlobal = new wxStaticBoxSizer(SizerThreadSearchLayoutGlobal_staticbox, wxVERTICAL);
-    wxStaticBoxSizer* SizerThreadSearchOptions = new wxStaticBoxSizer(SizerThreadSearchOptions_staticbox, wxVERTICAL);
-    wxStaticBoxSizer* SizerSearchIn = new wxStaticBoxSizer(SizerSearchIn_staticbox, wxVERTICAL);
-    SizerSearchIn->Add(m_pPnlSearchIn, 0, wxALL|wxEXPAND, 2);
-    SizerSearchIn->Add(m_pPnlDirParams, 0, wxALL|wxEXPAND, 2);
-    SizerTop->Add(SizerSearchIn, 0, wxALL|wxEXPAND, 4);
-    wxBoxSizer* SizerOptions = new wxBoxSizer(wxHORIZONTAL);
-    SizerOptions->Add(m_pChkWholeWord, 0, wxLEFT | wxRIGHT, 4);
-    SizerOptions->Add(m_pChkStartWord, 0, wxLEFT | wxRIGHT, 4);
-    SizerOptions->Add(m_pChkMatchCase, 0, wxLEFT | wxRIGHT, 4);
-    SizerOptions->Add(m_pChkRegExp, 0, wxLEFT | wxRIGHT, 4);
-    SizerSearchIn->Add(SizerOptions, 0, wxALL|wxEXPAND, 4);
-    SizerThreadSearchOptions->Add(m_pChkThreadSearchEnable, 0, wxALL, 4);
-    SizerThreadSearchOptions->Add(m_pChkUseDefaultOptionsForThreadSearch, 0, wxALL, 4);
-    wxStaticText* m_pStaDefaultOptions = new wxStaticText(this, wxID_ANY, _("       ('Whole word' = true, 'Start word' = false, 'Match case' = true, 'Regular expression' = false)"));
-    SizerThreadSearchOptions->Add(m_pStaDefaultOptions, 0, 0, 0);
-    SizerThreadSearchOptions->Add(m_pChkShowMissingFilesError, 0, wxALL, 4);
-    SizerThreadSearchOptions->Add(m_pChkShowCantOpenFileError, 0, wxALL, 4);
-    SizerThreadSearchOptions->Add(m_pChkDeletePreviousResults, 0, wxALL, 4);
-    SizerTop->Add(SizerThreadSearchOptions, 0, wxALL|wxEXPAND, 4);
-    SizerThreadSearchLayoutGlobal->Add(m_pChkShowThreadSearchToolBar, 0, wxALL, 4);
-    SizerThreadSearchLayoutGlobal->Add(m_pChkShowThreadSearchWidgets, 0, wxALL, 4);
-    SizerThreadSearchLayoutGlobal->Add(m_pChkShowCodePreview, 0, wxALL, 4);
-    SizerThreadSearchGridLayout->Add(SizerThreadSearchLayoutGlobal, 1, wxALL|wxEXPAND, 4);
-    SizerListControlOptions->Add(m_pChkDisplayLogHeaders, 0, wxALL, 4);
-    SizerListControlOptions->Add(m_pChkDrawLogLines, 0, wxALL, 4);
-    SizerListControlOptions->Add(m_pChkAutosizeLogColumns, 0, wxALL, 4);
-    SizerThreadSearchGridLayout->Add(SizerListControlOptions, 1, wxALL|wxEXPAND, 4);
-    SizerThreadSearchGridLayout->Add(m_pRadPanelManagement, 0, wxALL|wxEXPAND, 4);
-    SizerThreadSearchGridLayout->Add(m_pRadLoggerType, 0, wxALL|wxEXPAND, 4);
-    SizerThreadSearchGridLayout->Add(m_pRadSplitterWndMode, 0, wxALL|wxEXPAND, 4);
-    SizerThreadSearchGridLayout->Add(m_pRadSortBy, 0, wxALL|wxEXPAND, 4);
-    SizerThreadSearchGridLayout->AddGrowableCol(0);
-    SizerThreadSearchGridLayout->AddGrowableCol(1);
-    SizerThreadSearchLayout->Add(SizerThreadSearchGridLayout, 1, wxALL|wxEXPAND, 0);
-    SizerTop->Add(SizerThreadSearchLayout, 0, wxALL|wxEXPAND, 4);
+    SizerTop->Add(m_Notebook, 1, wxEXPAND | wxALL, 4);
+
+    {
+        // Sizers for page general
+        wxBoxSizer* SizerTop = new wxBoxSizer(wxVERTICAL);
+
+        wxStaticBoxSizer* SizerSearchIn = new wxStaticBoxSizer(SizerSearchIn_staticbox, wxVERTICAL);
+        wxBoxSizer* SizerOptions = new wxBoxSizer(wxHORIZONTAL);
+        SizerSearchIn->Add(m_pPnlSearchIn, 0, wxALL|wxEXPAND, 2);
+        SizerSearchIn->Add(m_pPnlDirParams, 0, wxALL|wxEXPAND, 2);
+        SizerOptions->Add(m_pChkWholeWord, 0, wxLEFT | wxRIGHT, 4);
+        SizerOptions->Add(m_pChkStartWord, 0, wxLEFT | wxRIGHT, 4);
+        SizerOptions->Add(m_pChkMatchCase, 0, wxLEFT | wxRIGHT, 4);
+        SizerOptions->Add(m_pChkRegExp, 0, wxLEFT | wxRIGHT, 4);
+        SizerSearchIn->Add(SizerOptions, 0, wxALL|wxEXPAND, 4);
+        SizerTop->Add(SizerSearchIn, 0, wxALL|wxEXPAND, 4);
+
+        wxStaticBoxSizer* SizerThreadSearchOptions = new wxStaticBoxSizer(SizerThreadSearchOptions_staticbox, wxVERTICAL);
+        SizerThreadSearchOptions->Add(m_pChkThreadSearchEnable, 0, wxALL, 4);
+        SizerThreadSearchOptions->Add(m_pChkUseDefaultOptionsForThreadSearch, 0, wxALL, 4);
+        wxStaticText* m_pStaDefaultOptions = new wxStaticText(m_PageGeneral, wxID_ANY, _("       ('Whole word' = true, 'Start word' = false, 'Match case' = true, 'Regular expression' = false)"));
+        SizerThreadSearchOptions->Add(m_pStaDefaultOptions, 0, 0, 0);
+        SizerThreadSearchOptions->Add(m_pChkShowMissingFilesError, 0, wxALL, 4);
+        SizerThreadSearchOptions->Add(m_pChkShowCantOpenFileError, 0, wxALL, 4);
+        SizerThreadSearchOptions->Add(m_pChkDeletePreviousResults, 0, wxALL, 4);
+        SizerTop->Add(SizerThreadSearchOptions, 0, wxALL|wxEXPAND, 4);
+
+        SizerTop->Add(m_pRadSortBy, 0, wxALL|wxEXPAND, 4);
+
+        m_PageGeneral->SetSizer(SizerTop);
+    }
+
+    {
+        // Sizers for page layout
+        wxBoxSizer* SizerTop = new wxBoxSizer(wxVERTICAL);
+        wxFlexGridSizer* SizerThreadSearchGridLayout = new wxFlexGridSizer(4, 2, 0, 0);
+        wxStaticBoxSizer* SizerListControlOptions = new wxStaticBoxSizer(SizerListControlOptions_staticbox, wxVERTICAL);
+        wxStaticBoxSizer* SizerThreadSearchLayoutGlobal = new wxStaticBoxSizer(SizerThreadSearchLayoutGlobal_staticbox, wxVERTICAL);
+        SizerThreadSearchLayoutGlobal->Add(m_pChkShowThreadSearchToolBar, 0, wxALL, 4);
+        SizerThreadSearchLayoutGlobal->Add(m_pChkShowThreadSearchWidgets, 0, wxALL, 4);
+        SizerThreadSearchLayoutGlobal->Add(m_pChkShowCodePreview, 0, wxALL, 4);
+        SizerThreadSearchGridLayout->Add(SizerThreadSearchLayoutGlobal, 1, wxALL|wxEXPAND, 4);
+        SizerListControlOptions->Add(m_pChkDisplayLogHeaders, 0, wxALL, 4);
+        SizerListControlOptions->Add(m_pChkDrawLogLines, 0, wxALL, 4);
+        SizerListControlOptions->Add(m_pChkAutosizeLogColumns, 0, wxALL, 4);
+        SizerThreadSearchGridLayout->Add(SizerListControlOptions, 1, wxALL|wxEXPAND, 4);
+        SizerThreadSearchGridLayout->Add(m_pRadPanelManagement, 0, wxALL|wxEXPAND, 4);
+        SizerThreadSearchGridLayout->Add(m_pRadLoggerType, 0, wxALL|wxEXPAND, 4);
+        SizerThreadSearchGridLayout->Add(m_pRadSplitterWndMode, 0, wxALL|wxEXPAND, 4);
+        SizerThreadSearchGridLayout->AddGrowableCol(0);
+        SizerThreadSearchGridLayout->AddGrowableCol(1);
+        SizerTop->Add(SizerThreadSearchGridLayout, 1, wxALL|wxEXPAND, 4);
+
+        m_PageLayout->SetSizer(SizerTop);
+    }
+
     SetSizer(SizerTop);
     SizerTop->Fit(this);
     // end wxGlade
