@@ -24,6 +24,7 @@ libThreadSearch_la_SOURCES = DirectoryParamsPanel.cpp \
 			ThreadSearchFindData.cpp \
 			ThreadSearchLoggerBase.cpp \
 			ThreadSearchLoggerList.cpp \
+			ThreadSearchLoggerSTC.cpp \
 			ThreadSearchLoggerTree.cpp \
 			ThreadSearchThread.cpp \
 			ThreadSearchTrace.cpp \
@@ -47,6 +48,7 @@ noinst_HEADERS =  	DirectoryParamsPanel.h \
 			ThreadSearchFindData.h \
 			ThreadSearchLoggerBase.h \
 			ThreadSearchLoggerList.h \
+			ThreadSearchLoggerSTC.h \
 			ThreadSearchLoggerTree.h \
 			ThreadSearchThread.h \
 			ThreadSearchTrace.h \
