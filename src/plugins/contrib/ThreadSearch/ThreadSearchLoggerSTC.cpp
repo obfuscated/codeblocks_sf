@@ -114,6 +114,8 @@ void ThreadSearchLoggerSTC::OnThreadSearchEvent(const ThreadSearchEvent& event)
 
     AppendStyledText(STCStyles::File, filename + wxT("\n"));
 
+    // The only reason it is constructed here is to preserve the allocated space between loop
+    // iterations.
     wxString justifier;
 
     std::vector<int>::const_iterator matchedIt = matchedPositions.begin();
