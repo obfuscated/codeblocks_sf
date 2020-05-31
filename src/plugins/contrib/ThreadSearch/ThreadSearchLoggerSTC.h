@@ -8,8 +8,9 @@
 
 #include "ThreadSearchLoggerBase.h"
 
-class wxScintilla;
 class wxScintillaEvent;
+
+class STCList;
 
 class ThreadSearchLoggerSTC : public ThreadSearchLoggerBase
 {
@@ -36,6 +37,7 @@ private:
 
     void OnContextMenu(wxContextMenuEvent &event);
     void OnDoubleClick(wxScintillaEvent &event);
+    void OnKeyDown(wxKeyEvent &event);
     void OnMarginClick(wxScintillaEvent &event);
     void OnMenuCopy(wxCommandEvent &event);
     void OnMenuCopySelection(wxCommandEvent &event);
@@ -47,8 +49,10 @@ private:
     void OnSTCUpdateUI(wxScintillaEvent &event);
 
     void AppendStyledText(int style, const wxString &text);
+
+    friend class STCList;
 private:
-    wxScintilla *m_stc;
+    STCList *m_stc;
     int m_fileCount;
     int m_totalCount;
     int m_startLine;
