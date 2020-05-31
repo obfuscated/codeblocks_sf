@@ -47,6 +47,7 @@ private:
     void OnMenuDelete(wxCommandEvent &event);
     void OnMenuDeleteAll(wxCommandEvent &event);
     void OnSTCUpdateUI(wxScintillaEvent &event);
+    void OnSTCFocus(wxFocusEvent &event);
 
     void AppendStyledText(int style, const wxString &text);
     void AutoScroll();
@@ -58,6 +59,7 @@ private:
     int m_totalCount;
     int m_startLine;
     int m_lastVisibleLine;
+    int m_lastLineMarkerHandle = -1;
 };
 
 #endif // CB_THREADSEARCH_LOGGER_STC_H
