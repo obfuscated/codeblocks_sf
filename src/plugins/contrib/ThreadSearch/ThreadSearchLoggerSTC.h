@@ -28,6 +28,8 @@ private:
     void AppendStyledText(int style, const wxString &text);
 private:
     wxScintilla *m_stc;
+    int m_fileCount;
+    int m_totalCount;
 };
 
 #endif // CB_THREADSEARCH_LOGGER_STC_H
