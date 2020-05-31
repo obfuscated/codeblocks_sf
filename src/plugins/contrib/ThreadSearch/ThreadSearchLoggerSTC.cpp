@@ -1,9 +1,15 @@
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
+ * http://www.gnu.org/licenses/lgpl-3.0.html
+ */
+
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
     #include <wx/wxscintilla.h>
 #endif
 
 #include "cbcolourmanager.h"
+#include "editor_utils.h"
 
 #include "ThreadSearchEvent.h"
 #include "ThreadSearchFindData.h"
@@ -19,6 +25,8 @@ enum STCStyles : int
     Text,
     TextMatching
 };
+
+const int C_FOLDING_MARGIN = 0;
 } // anonymous namespace
 
 ThreadSearchLoggerSTC::ThreadSearchLoggerSTC(ThreadSearchView& threadSearchView,
@@ -35,35 +43,58 @@ ThreadSearchLoggerSTC::ThreadSearchLoggerSTC(ThreadSearchView& threadSearchView,
     m_stc->SetCaretWidth(0);
     m_stc->SetReadOnly(true);
 
-    m_stc->StyleSetForeground(wxSCI_STYLE_DEFAULT,
-                              colours->GetColour(wxT("thread_search_text_fore")));
-    m_stc->StyleSetBackground(wxSCI_STYLE_DEFAULT,
-                              colours->GetColour(wxT("thread_search_text_back")));
+    // Setup folding
+    {
+        m_stc->SetMarginType(C_FOLDING_MARGIN, wxSCI_MARGIN_SYMBOL);
+        m_stc->SetMarginWidth(C_FOLDING_MARGIN, 16);
+        m_stc->SetMarginMask(C_FOLDING_MARGIN, wxSCI_MASK_FOLDERS);
+        m_stc->SetMarginSensitive(C_FOLDING_MARGIN, 1);
 
-    // Spread the default colours to all styles.
-    m_stc->StyleClearAll();
+        ConfigManager* config = Manager::Get()->GetConfigManager(_T("editor"));
+        const int id = config->ReadInt(_T("/folding/indicator"), 2);
+        cb::UnderlineFoldedLines(m_stc, config->ReadBool(_T("/folding/underline_folded_line"), true));
+        cb::SetFoldingMarkers(m_stc, id);
+    }
 
-    m_stc->StyleSetForeground(STCStyles::File,
-                              colours->GetColour(wxT("thread_search_file_fore")));
-    m_stc->StyleSetBackground(STCStyles::File,
-                              colours->GetColour(wxT("thread_search_file_back")));
+    // Setup styles
+    {
+        m_stc->StyleSetForeground(wxSCI_STYLE_DEFAULT,
+                                  colours->GetColour(wxT("thread_search_text_fore")));
+        m_stc->StyleSetBackground(wxSCI_STYLE_DEFAULT,
+                                  colours->GetColour(wxT("thread_search_text_back")));
 
-    m_stc->StyleSetForeground(STCStyles::LineNo,
-                              colours->GetColour(wxT("thread_search_lineno_fore")));
-    m_stc->StyleSetBackground(STCStyles::LineNo,
-                              colours->GetColour(wxT("thread_search_lineno_back")));
+        // Spread the default colours to all styles.
+        m_stc->StyleClearAll();
 
-    m_stc->StyleSetForeground(STCStyles::Text,
-                              colours->GetColour(wxT("thread_search_text_fore")));
-    m_stc->StyleSetBackground(STCStyles::Text,
-                              colours->GetColour(wxT("thread_search_text_back")));
+        m_stc->StyleSetForeground(STCStyles::File,
+                                  colours->GetColour(wxT("thread_search_file_fore")));
+        m_stc->StyleSetBackground(STCStyles::File,
+                                  colours->GetColour(wxT("thread_search_file_back")));
 
-    m_stc->StyleSetForeground(STCStyles::TextMatching,
-                              colours->GetColour(wxT("thread_search_match_fore")));
-    m_stc->StyleSetBackground(STCStyles::TextMatching,
-                              colours->GetColour(wxT("thread_search_match_back")));
+        m_stc->StyleSetForeground(STCStyles::LineNo,
+                                  colours->GetColour(wxT("thread_search_lineno_fore")));
+        m_stc->StyleSetBackground(STCStyles::LineNo,
+                                  colours->GetColour(wxT("thread_search_lineno_back")));
+
+        m_stc->StyleSetForeground(STCStyles::Text,
+                                  colours->GetColour(wxT("thread_search_text_fore")));
+        m_stc->StyleSetBackground(STCStyles::Text,
+                                  colours->GetColour(wxT("thread_search_text_back")));
+
+        m_stc->StyleSetForeground(STCStyles::TextMatching,
+                                  colours->GetColour(wxT("thread_search_match_fore")));
+        m_stc->StyleSetBackground(STCStyles::TextMatching,
+                                  colours->GetColour(wxT("thread_search_match_back")));
+    }
 
     SetupSizer(m_stc);
+
+    ConnectEvents(this);
+}
+
+ThreadSearchLoggerSTC::~ThreadSearchLoggerSTC()
+{
+    DisconnectEvents(this);
 }
 
 void ThreadSearchLoggerSTC::RegisterColours()
@@ -171,7 +202,7 @@ void ThreadSearchLoggerSTC::OnSearchBegin(const ThreadSearchFindData& findData)
     m_fileCount = 0;
     m_totalCount = 0;
 
-    m_startLine = std::max(0, m_stc->LineFromPosition(m_stc->GetLength()) - 1);
+    m_startLine = m_stc->LineFromPosition(m_stc->GetLength());
 
     // Create the string depicting selected options.
     wxString optionMessage;
@@ -211,15 +242,23 @@ void ThreadSearchLoggerSTC::OnSearchBegin(const ThreadSearchFindData& findData)
     m_stc->AppendText(message);
     m_stc->SetReadOnly(true);
 
+    m_stc->SetFoldLevel(m_startLine, wxSCI_FOLDLEVELBASE | wxSCI_FOLDLEVELHEADERFLAG);
     m_stc->SetFirstVisibleLine(m_startLine);
 }
 
 void ThreadSearchLoggerSTC::OnSearchEnd()
 {
     m_stc->SetReadOnly(false);
-    m_stc->AppendText(wxString::Format(_("=> Finished! Found: %d in %d files\n\n\n"), m_totalCount,
-                                       m_fileCount));
+
+    const int line = std::max(0, m_stc->LineFromPosition(m_stc->GetLength()));
+
+    wxString message = wxString::Format(_("=> Finished! Found: %d in %d files\n\n"), m_totalCount,
+                                        m_fileCount);
+    m_stc->AppendText(message);
     m_stc->SetReadOnly(true);
+
+    m_stc->SetFoldLevel(line + 0, wxSCI_FOLDLEVELBASE + 1);
+    m_stc->SetFoldLevel(line + 1, wxSCI_FOLDLEVELBASE + 1);
 
     m_stc->SetFirstVisibleLine(m_startLine);
 }
@@ -236,15 +275,50 @@ void ThreadSearchLoggerSTC::SetFocus()
 
 void ThreadSearchLoggerSTC::AppendStyledText(int style, const wxString &text)
 {
-    m_stc->StartStyling(m_stc->GetLength());
+    const int position = m_stc->GetLength();
+    m_stc->StartStyling(position);
     m_stc->AppendText(text);
     m_stc->SetStyling(text.length(), style);
+
+    int foldLevel = -1;
+    if (style == STCStyles::File)
+        foldLevel = (wxSCI_FOLDLEVELBASE + 1) | wxSCI_FOLDLEVELHEADERFLAG;
+    else if (style == STCStyles::LineNo)
+        foldLevel = (wxSCI_FOLDLEVELBASE + 2);
+
+    if (foldLevel != -1)
+    {
+        const int line = m_stc->LineFromPosition(position);
+        m_stc->SetFoldLevel(line, foldLevel);
+    }
 }
 
 void ThreadSearchLoggerSTC::ConnectEvents(wxEvtHandler* pEvtHandler)
 {
+    const wxWindowID stcId = m_stc->GetId();
+
+    Connect(stcId, wxEVT_SCI_MARGINCLICK,
+            wxScintillaEventHandler(ThreadSearchLoggerSTC::OnMarginClick));
 }
 
 void ThreadSearchLoggerSTC::DisconnectEvents(wxEvtHandler* pEvtHandler)
 {
+    const wxWindowID stcId = m_stc->GetId();
+
+    Disconnect(stcId, wxEVT_SCI_MARGINCLICK,
+               wxScintillaEventHandler(ThreadSearchLoggerSTC::OnMarginClick));
+}
+
+void ThreadSearchLoggerSTC::OnMarginClick(wxScintillaEvent &event)
+{
+    switch (event.GetMargin())
+    {
+        case C_FOLDING_MARGIN: // folding margin
+        {
+            const int lineYpix = event.GetPosition();
+            const int line = m_stc->LineFromPosition(lineYpix);
+            m_stc->ToggleFold(line);
+            break;
+        }
+    }
 }

@@ -618,6 +618,9 @@
 		<Unit filename="include/editor_hooks.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/editor_utils.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/editorbase.h">
 			<Option target="sdk" />
 		</Unit>
@@ -2236,6 +2239,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/editor_hooks.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/editor_utils.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/editorbase.cpp">
