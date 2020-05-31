@@ -110,6 +110,8 @@ ThreadSearchView::ThreadSearchView(ThreadSearch& threadSearchPlugin) :
 
     Connect(wxEVT_THREAD_SEARCH_ERROR,
             (wxObjectEventFunction)&ThreadSearchView::OnThreadSearchErrorEvent);
+
+    m_pPnlDirParams->Enable(m_pPnlSearchIn->GetSearchInDirectory());
 }
 
 
@@ -783,7 +785,9 @@ void ThreadSearchView::OnBtnSearchWorkspaceFiles(wxCommandEvent &event)
 
 void ThreadSearchView::OnBtnSearchDirectoryFiles(wxCommandEvent &event)
 {
-    m_ThreadSearchPlugin.GetFindData().UpdateSearchScope(ScopeDirectoryFiles, m_pPnlSearchIn->GetSearchInDirectory());
+    const bool enable = m_pPnlSearchIn->GetSearchInDirectory();
+    m_ThreadSearchPlugin.GetFindData().UpdateSearchScope(ScopeDirectoryFiles, enable);
+    m_pPnlDirParams->Enable(enable);
     event.Skip();
 }
 
@@ -1166,4 +1170,7 @@ void ThreadSearchView::UpdateSettings()
 {
     if (m_pLogger)
         m_pLogger->UpdateSettings();
+
+    if (m_pPnlDirParams)
+        m_pPnlDirParams->Enable(m_pPnlSearchIn->GetSearchInDirectory());
 }
