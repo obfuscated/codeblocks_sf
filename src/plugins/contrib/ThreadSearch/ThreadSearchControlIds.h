@@ -17,7 +17,7 @@
 
 struct ControlIDs
 {
-    enum IDs
+    enum IDs : long
     {
 
         idBtnDirSelectClick = 0,
@@ -68,6 +68,15 @@ struct ControlIDs
         idChkShowMissingFilesError,
         idChkShowCantOpenFileError,
         idChkChkDeletePreviousResults,
+        idConfPanelColorPicker0,
+        idConfPanelColorPicker1,
+        idConfPanelColorPicker2,
+        idConfPanelColorPicker3,
+        idConfPanelColorPicker4,
+        idConfPanelColorPicker5,
+        idConfPanelColorPicker6,
+        idConfPanelColorPicker7,
+        idConfPanelColorPicker8,
 
         lastValue
     };

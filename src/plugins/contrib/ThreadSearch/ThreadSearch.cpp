@@ -456,12 +456,13 @@ void ThreadSearch::BuildModuleMenu(const ModuleType type, wxMenu* pMenu, const F
     }
 }
 
-cbConfigurationPanel* ThreadSearch::GetConfigurationPanel(wxWindow* parent)
+cbConfigurationPanel* ThreadSearch::GetConfigurationPanelEx(wxWindow* parent,
+                                                            cbConfigurationPanelColoursInterface *coloursInterface)
 {
-    if ( !IsAttached() )
+    if (!IsAttached())
         return NULL;
 
-    return new ThreadSearchConfPanel(*this, parent);
+    return new ThreadSearchConfPanel(*this, coloursInterface, parent);
 }
 
 

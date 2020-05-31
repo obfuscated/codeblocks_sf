@@ -26,6 +26,7 @@
 
 class wxCheckBox;
 class wxColourPickerCtrl;
+class wxColourPickerEvent;
 class wxCommandEvent;
 class wxNotebook;
 class wxRadioBox;
@@ -43,23 +44,27 @@ public:
     // end wxGlade
 
     /** Constructor. */
-    ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, wxWindow* parent = NULL, wxWindowID id = -1);
+    ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin,
+                          cbConfigurationPanelColoursInterface *coloursInterface,
+                          wxWindow* parent);
 
     /** Returns the title displayed in the left column of the "Settings/Environment" dialog. */
-    wxString GetTitle()          const {return _("Thread search");}
+    wxString GetTitle() const override { return _("Thread search"); }
 
     /** Returns string used to build active/inactive images path in the left column
       * of the "Settings/Environment" dialog.
       */
-    wxString GetBitmapBaseName() const {return wxT("ThreadSearch");}
+    wxString GetBitmapBaseName() const override { return wxT("ThreadSearch"); }
 
     /** Called automatically when user clicks on OK
       */
-    void OnApply();
+    void OnApply() override;
 
     /** Called automatically when user clicks on Cancel
       */
-    void OnCancel() {}
+    void OnCancel() override {}
+
+    void OnPageChanging() override;
 
 private:
     // begin wxGlade: ThreadSearchConfPanel::methods
@@ -68,7 +73,9 @@ private:
     // end wxGlade
 
     ThreadSearch& m_ThreadSearchPlugin;  // Reference on the ThreadSearch plugin we configure
-
+    /// Pointer to interface for accessing modified colour in the colour manager.
+    /// Can be null if the this is not shown from the Environment Settings dialog.
+    cbConfigurationPanelColoursInterface *m_ColoursInterface;
 protected:
     // begin wxGlade: ThreadSearchConfPanel::attributes
     wxStaticBox* SizerListControlOptions_staticbox;
@@ -120,6 +127,7 @@ public:
     void OnChkShowMissingFilesErrorClick(wxCommandEvent &event); // wxGlade: <event_handler>
     void OnChkShowCantOpenFileErrorClick(wxCommandEvent &event); // wxGlade: <event_handler>
 
+    void OnColourPickerChanged(wxColourPickerEvent &event);
 }; // wxGlade: end class
 
 

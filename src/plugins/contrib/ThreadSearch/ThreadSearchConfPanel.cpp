@@ -36,11 +36,13 @@
 
 // end wxGlade
 
-
-ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, wxWindow* parent,wxWindowID id)
-                      :m_ThreadSearchPlugin(threadSearchPlugin)
+ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin,
+                                             cbConfigurationPanelColoursInterface *coloursInterface,
+                                             wxWindow* parent) :
+    m_ThreadSearchPlugin(threadSearchPlugin),
+    m_ColoursInterface(coloursInterface)
 {
-    Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL);
+    Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
 
     // begin wxGlade: ThreadSearchConfPanel::ThreadSearchConfPanel
     m_Notebook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNB_TOP);
@@ -106,7 +108,6 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, w
     m_pRadSplitterWndMode = new wxRadioBox(m_PageLayout, wxID_ANY, _("Splitter window mode"), wxDefaultPosition, wxDefaultSize, 2, m_pRadSplitterWndMode_choices, 1, wxRA_SPECIFY_ROWS);
 
     {
-        ColourManager *colours = Manager::Get()->GetColourManager();
 
         STCColours_staticbox = new wxStaticBox(m_PageLayout, -1, _("STC Logger colours"));
 
@@ -117,24 +118,48 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, w
         m_STCColoursLabels[ii++] = new wxStaticText(m_PageLayout, wxID_ANY, _("Match (fg/bg)"));
         m_STCColoursLabels[ii++] = new wxStaticText(m_PageLayout, wxID_ANY, _("Selected line background"));
 
-        ii = 0;
-        m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_text_fore")));
-        m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_text_back")));
-        m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_file_fore")));
-        m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_file_back")));
-        m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_lineno_fore")));
-        m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_lineno_back")));
-        m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_match_fore")));
-        m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_match_back")));
-        m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_selected_line_back")));
-        m_STCColourPickers[ii++] = nullptr;
+        if (!m_ColoursInterface)
+        {
+            ColourManager *colours = Manager::Get()->GetColourManager();
+            ii = 0;
+            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_text_fore")));
+            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_text_back")));
+            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_file_fore")));
+            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_file_back")));
+            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_lineno_fore")));
+            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_lineno_back")));
+            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_match_fore")));
+            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_match_back")));
+            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, wxID_ANY, colours->GetColour(wxT("thread_search_selected_line_back")));
+            m_STCColourPickers[ii++] = nullptr;
+        }
+        else
+        {
+            ii = 0;
+            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, controlIDs.Get(ControlIDs::idConfPanelColorPicker0), *wxBLACK);
+            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, controlIDs.Get(ControlIDs::idConfPanelColorPicker1), *wxBLACK);
+            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, controlIDs.Get(ControlIDs::idConfPanelColorPicker2), *wxBLACK);
+            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, controlIDs.Get(ControlIDs::idConfPanelColorPicker3), *wxBLACK);
+            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, controlIDs.Get(ControlIDs::idConfPanelColorPicker4), *wxBLACK);
+            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, controlIDs.Get(ControlIDs::idConfPanelColorPicker5), *wxBLACK);
+            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, controlIDs.Get(ControlIDs::idConfPanelColorPicker6), *wxBLACK);
+            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, controlIDs.Get(ControlIDs::idConfPanelColorPicker7), *wxBLACK);
+            m_STCColourPickers[ii++] = new wxColourPickerCtrl(m_PageLayout, controlIDs.Get(ControlIDs::idConfPanelColorPicker8), *wxBLACK);
+            m_STCColourPickers[ii++] = nullptr;
+
+            for (int jj = 0; jj < ii; ++jj)
+            {
+                ControlIDs::IDs id = ControlIDs::IDs(ControlIDs::idConfPanelColorPicker0 + jj);
+                Connect(controlIDs.Get(id), wxEVT_COLOURPICKER_CHANGED,
+                        wxObjectEventFunction(&ThreadSearchConfPanel::OnColourPickerChanged));
+            }
+        }
     }
 
     set_properties();
     do_layout();
     // end wxGlade
 }
-
 
 BEGIN_EVENT_TABLE(ThreadSearchConfPanel, wxPanel)
     // begin wxGlade: ThreadSearchConfPanel::event_table
@@ -151,13 +176,11 @@ BEGIN_EVENT_TABLE(ThreadSearchConfPanel, wxPanel)
     // end wxGlade
 END_EVENT_TABLE();
 
-
 void ThreadSearchConfPanel::OnThreadSearchEnable(wxCommandEvent &event)
 {
     m_pChkUseDefaultOptionsForThreadSearch->Enable(event.IsChecked());
     event.Skip();
 }
-
 
 void ThreadSearchConfPanel::OnChkShowThreadSearchToolBarClick(wxCommandEvent &event)
 {
@@ -172,13 +195,11 @@ void ThreadSearchConfPanel::OnChkShowThreadSearchToolBarClick(wxCommandEvent &ev
     event.Skip();
 }
 
-
 void ThreadSearchConfPanel::OnChkCodePreview(wxCommandEvent &event)
 {
     m_pRadSplitterWndMode->Enable(event.IsChecked());
     event.Skip();
 }
-
 
 void ThreadSearchConfPanel::OnChkShowThreadSearchWidgetsClick(wxCommandEvent &event)
 {
@@ -193,13 +214,11 @@ void ThreadSearchConfPanel::OnChkShowThreadSearchWidgetsClick(wxCommandEvent &ev
     event.Skip();
 }
 
-
 void ThreadSearchConfPanel::OnChkShowMissingFilesErrorClick(wxCommandEvent &event)
 {
     Manager::Get()->GetConfigManager(_T("ThreadSearch"))->Write(wxT("/ShowFileMissingError"),event.IsChecked());
     event.Skip();
 }
-
 
 void ThreadSearchConfPanel::OnChkShowCantOpenFileErrorClick(wxCommandEvent &event)
 {
@@ -207,10 +226,7 @@ void ThreadSearchConfPanel::OnChkShowCantOpenFileErrorClick(wxCommandEvent &even
     event.Skip();
 }
 
-
 // wxGlade: add ThreadSearchConfPanel event handlers
-
-
 void ThreadSearchConfPanel::set_properties()
 {
     // begin wxGlade: ThreadSearchConfPanel::set_properties
@@ -325,7 +341,6 @@ void ThreadSearchConfPanel::set_properties()
     m_pPnlSearchIn->SetSearchInDirectory(findData.MustSearchInDirectory());
 }
 
-
 void ThreadSearchConfPanel::do_layout()
 {
     // begin wxGlade: ThreadSearchConfPanel::do_layout
@@ -416,7 +431,6 @@ void ThreadSearchConfPanel::do_layout()
     SizerTop->Fit(this);
     // end wxGlade
 }
-
 
 void ThreadSearchConfPanel::OnApply()
 {
@@ -514,6 +528,7 @@ void ThreadSearchConfPanel::OnApply()
     }
     m_ThreadSearchPlugin.SetSplitterMode(splitterMode);
 
+    if (!m_ColoursInterface)
     {
         ColourManager *colours = Manager::Get()->GetColourManager();
         int ii = 0;
@@ -536,4 +551,64 @@ void ThreadSearchConfPanel::OnApply()
     m_ThreadSearchPlugin.Notify();
 }
 
+void ThreadSearchConfPanel::OnPageChanging()
+{
+    if (m_ColoursInterface == nullptr)
+        return;
 
+    int ii = 0;
+    cbConfigurationPanelColoursInterface *colours = m_ColoursInterface;
+    m_STCColourPickers[ii++]->SetColour(colours->GetValue(wxT("thread_search_text_fore")));
+    m_STCColourPickers[ii++]->SetColour(colours->GetValue(wxT("thread_search_text_back")));
+    m_STCColourPickers[ii++]->SetColour(colours->GetValue(wxT("thread_search_file_fore")));
+    m_STCColourPickers[ii++]->SetColour(colours->GetValue(wxT("thread_search_file_back")));
+    m_STCColourPickers[ii++]->SetColour(colours->GetValue(wxT("thread_search_lineno_fore")));
+    m_STCColourPickers[ii++]->SetColour(colours->GetValue(wxT("thread_search_lineno_back")));
+    m_STCColourPickers[ii++]->SetColour(colours->GetValue(wxT("thread_search_match_fore")));
+    m_STCColourPickers[ii++]->SetColour(colours->GetValue(wxT("thread_search_match_back")));
+    m_STCColourPickers[ii++]->SetColour(colours->GetValue(wxT("thread_search_selected_line_back")));
+}
+
+void ThreadSearchConfPanel::OnColourPickerChanged(wxColourPickerEvent &event)
+{
+    if (!m_ColoursInterface)
+        return;
+
+    const long id = event.GetId();
+    if (id == controlIDs.Get(ControlIDs::idConfPanelColorPicker0))
+    {
+        m_ColoursInterface->SetValue(wxT("thread_search_text_fore"), event.GetColour());
+    }
+    else if (id == controlIDs.Get(ControlIDs::idConfPanelColorPicker1))
+    {
+        m_ColoursInterface->SetValue(wxT("thread_search_text_back"), event.GetColour());
+    }
+    else if (id == controlIDs.Get(ControlIDs::idConfPanelColorPicker2))
+    {
+        m_ColoursInterface->SetValue(wxT("thread_search_file_fore"), event.GetColour());
+    }
+    else if (id == controlIDs.Get(ControlIDs::idConfPanelColorPicker3))
+    {
+        m_ColoursInterface->SetValue(wxT("thread_search_file_back"), event.GetColour());
+    }
+    else if (id == controlIDs.Get(ControlIDs::idConfPanelColorPicker4))
+    {
+        m_ColoursInterface->SetValue(wxT("thread_search_lineno_fore"), event.GetColour());
+    }
+    else if (id == controlIDs.Get(ControlIDs::idConfPanelColorPicker5))
+    {
+        m_ColoursInterface->SetValue(wxT("thread_search_lineno_back"), event.GetColour());
+    }
+    else if (id == controlIDs.Get(ControlIDs::idConfPanelColorPicker6))
+    {
+        m_ColoursInterface->SetValue(wxT("thread_search_match_fore"), event.GetColour());
+    }
+    else if (id == controlIDs.Get(ControlIDs::idConfPanelColorPicker7))
+    {
+        m_ColoursInterface->SetValue(wxT("thread_search_match_back"), event.GetColour());
+    }
+    else if (id == controlIDs.Get(ControlIDs::idConfPanelColorPicker8))
+    {
+        m_ColoursInterface->SetValue(wxT("thread_search_selected_line_back"), event.GetColour());
+    }
+}
