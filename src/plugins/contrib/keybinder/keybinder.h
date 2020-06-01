@@ -968,7 +968,7 @@ public:
     //! the text displayed in text ctrl.
     void OnKey(wxKeyEvent &);
 
-    //! Returns TRUE if this window is containing a valid key combination.
+    //! Returns TRUE if this window contains a valid key combination.
     bool IsValidKeyComb() const {
         //-return !GetValue().IsEmpty() && GetValue().Last() != '+';
         if (GetValue().IsEmpty())

@@ -1432,7 +1432,6 @@ bool wxKeyProfileArray::Load(wxConfigBase *p, const wxString &key)
 // ----------------------------------------------------------------------------
 // wxKeyMonitorTextCtrl
 // ----------------------------------------------------------------------------
-
 void wxKeyMonitorTextCtrl::OnKey(wxKeyEvent &event)
 {
     // backspace cannot be used as shortcut key...
@@ -1456,18 +1455,27 @@ void wxKeyMonitorTextCtrl::OnKey(wxKeyEvent &event)
         //-SetInsertionPointEnd();
 
         // Command must begin with 'Ctrl-' 'Alt-' or 'Shift-' F1-F??
-            wxString keyStrokeString = wxKeyBind::GetKeyStrokeString(event);
-            #if defined(LOGGING)
+        wxString keyStrokeString = wxKeyBind::GetKeyStrokeString(event);
+        #if defined(LOGGING)
             wxLogMessage( _T("KeyStrokString[%s]"),keyStrokeString.c_str() );
-            #endif
-        if (not keyStrokeString.IsEmpty() ) do{
-            if (keyStrokeString.Length() <2) { keyStrokeString.Clear(); break;}
+        #endif
+
+        switch (keyStrokeString.IsEmpty())
+        {
+            case true: break;
+            default:
+            if (keyStrokeString.Length() < 2) { keyStrokeString.Clear(); break;}
             if ( (keyStrokeString[0] == 'F') && (keyStrokeString.Mid(1,1).IsNumber()) ) break;
             if ( not (validCmdPrefixes.Contains(keyStrokeString.BeforeFirst('-'))) )
-            {    keyStrokeString.Clear();
-                break;
+            {   keyStrokeString.Clear(); break; }
+            // if not accepted as accelerator, disallow it. 2020/05/30
+            if ( keyStrokeString.AfterLast(wxT('-')).Length() )
+            {
+                wxAcceleratorEntry accelEntry;
+                bool ok = accelEntry.FromString(keyStrokeString);
+                if (not ok) { keyStrokeString.Clear(); break; }
             }
-        }while(0); //ifdo
+        }//switch
         SetValue( keyStrokeString );
         SetInsertionPointEnd();
     }

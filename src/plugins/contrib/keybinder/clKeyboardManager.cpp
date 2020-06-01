@@ -878,6 +878,13 @@ MenuItemDataMap_t clKeyboardManager::DoLoadDefaultAccelerators()
             if(parts.GetCount() == 4) {
                 binding.accel = parts.Item(3);
             }
+
+            // assure accelerator is legal 2020/05/30
+            wxAcceleratorEntry legalAccel;
+            if (binding.accel.Length())
+                if ( not legalAccel.FromString(binding.accel))
+                    continue;
+
             entries.insert(std::make_pair(binding.resourceID, binding));
         }
     }

@@ -23,7 +23,7 @@
 // Modified Keybinder for CodeBlocks KeyBnder v2.0
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "2.0.14 2020/04/9"
+#define VERSION "2.0.15 2020/05/30"
 // -----------------------------------
 class wxKeyConfigPanel;
 class wxKeyProfileArray;
@@ -696,4 +696,9 @@ class cbKeyBinder : public cbPlugin
 //          Changes to fix crash when OnPageChanging() called.
 //          Removed old duplicated configurationpanel.h & cpp causing crash
 //          Removed wxListBook events in lieu of using new OnPageChanging() UI
+// ----------------------------------------------------------------------------
+//  Commit 2.0.15 2020/05/30
+//          Do not allow non-ascii unicode chars in accelerators
+//          see wxKeyMonitorTextCtrl::OnKey()
+//          clKeyboardManager::DoLoadDefaultAccelerators()
 // ----------------------------------------------------------------------------
