@@ -41,7 +41,6 @@
 #include <wx/checklst.h>
 #include <wx/statline.h>
 #include <wx/textcompleter.h>
-#include <mutex>
 
 // Max number of items in search history combo box
 const unsigned int MAX_NB_SEARCH_ITEMS = 20;
@@ -91,7 +90,7 @@ struct DirTextCompleter : wxTextCompleter
 {
     bool Start(const wxString &prefix) override
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
+        wxMutexLocker lock(m_mutex);
 
         wxString directory;
 
@@ -129,7 +128,7 @@ struct DirTextCompleter : wxTextCompleter
 
     wxString GetNext() override
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
+        wxMutexLocker lock(m_mutex);
         if (m_index >= int(m_filesInDir.size()))
             return wxString();
         else
@@ -137,7 +136,7 @@ struct DirTextCompleter : wxTextCompleter
     }
 
 private:
-    std::mutex m_mutex;
+    wxMutex m_mutex;
     wxString m_dirName;
     wxArrayString m_filesInDir;
     int m_index;
