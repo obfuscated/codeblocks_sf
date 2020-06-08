@@ -25,5 +25,5 @@ notifications:
         template:
             - "%{repository_name}/%{branch} (%{commit} - %{author}): %{build_url} : %{message}"
 
-before_script: ./bootstrap
+before_script: ./bootstrap && ./debian/setup_control.sh detect
 script: dpkg-buildpackage -us -uc
