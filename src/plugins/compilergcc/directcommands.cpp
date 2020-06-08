@@ -214,8 +214,7 @@ void DirectCommands::CheckForToLongCommandLine(wxString& executableCmd, wxArrayS
     if (executableCmd.length() > maxLength)
     {
         wxFileName responseFileName(path);
-        const wxString compilerCommand = ""; //executableCmd.BeforeFirst(' ');
-        responseFileName.SetName(compilerCommand + basename);
+        responseFileName.SetName(basename);
         responseFileName.SetExt("respFile");
         // Path handling has to be so complicated because of wxWidgets error https://trac.wxwidgets.org/ticket/831
         // The path for creating the folder structure has to be relative
@@ -231,7 +230,7 @@ void DirectCommands::CheckForToLongCommandLine(wxString& executableCmd, wxArrayS
         outputCommandArray.Add(COMPILER_ONLY_NOTE_LOG + wxString::Format(_("Command line is too long: Using responseFile: %s"), responseFilePath));
         outputCommandArray.Add(COMPILER_ONLY_NOTE_LOG + wxString::Format(_("Complete command line: %s"), executableCmd));
 
-        // Begin from the back of the command line and search for a position to split it. A suitable position is a whitespace
+        // Begin from the back of the command line and search for a position to split it. A suitable position is a white space
         // so that the resulting command line inclusive response file is shorter than the length limit
         const int responseFileLength = responseFilePath.length();
         size_t startPos = executableCmd.rfind(' ', maxLength - responseFileLength);
