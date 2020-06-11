@@ -3633,7 +3633,12 @@ void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTa
         msgInput = message;
 
     if (msgInput.StartsWith(COMPILER_NOTE_ID_LOG, &msg))
-        LogWarningOrError(lt, 0, wxEmptyString, wxEmptyString, msg);
+        LogWarningOrError(lt, nullptr, wxEmptyString, wxEmptyString, msg);
+    else if(msgInput.StartsWith(COMPILER_ONLY_NOTE_ID_LOG, &msg))
+    {
+        LogWarningOrError(lt, nullptr, wxEmptyString, wxEmptyString, msg);
+        updateProgress = false;
+    }
     else if (msgInput.StartsWith(COMPILER_WARNING_ID_LOG, &msg))
     {
         if (lt != cltError)

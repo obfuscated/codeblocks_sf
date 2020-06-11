@@ -15,6 +15,8 @@
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
 #include <wx/regex.h> // used in QUICK hack at line 574
+#include <wx/file.h>
+
 #include <compiler.h>
 #include <cbproject.h>
 #include <projectbuildtarget.h>
@@ -32,6 +34,8 @@
 
 const wxString COMPILER_SIMPLE_LOG(_T("SLOG:"));
 const wxString COMPILER_NOTE_LOG(_T("SLOG:NLOG:"));
+/// Print a NOTE log message to the build log, without advancing the progress counter
+const wxString COMPILER_ONLY_NOTE_LOG(_T("SLOG:ONLOG:"));
 const wxString COMPILER_WARNING_LOG(_T("SLOG:WLOG:"));
 const wxString COMPILER_ERROR_LOG(_T("SLOG:ELOG:"));
 const wxString COMPILER_TARGET_CHANGE(_T("TGT:"));
@@ -39,6 +43,7 @@ const wxString COMPILER_WAIT(_T("WAIT"));
 const wxString COMPILER_WAIT_LINK(_T("LINK"));
 
 const wxString COMPILER_NOTE_ID_LOG = COMPILER_NOTE_LOG.AfterFirst(wxT(':'));
+const wxString COMPILER_ONLY_NOTE_ID_LOG = COMPILER_ONLY_NOTE_LOG.AfterFirst(wxT(':'));
 const wxString COMPILER_WARNING_ID_LOG = COMPILER_WARNING_LOG.AfterFirst(wxT(':'));
 const wxString COMPILER_ERROR_ID_LOG = COMPILER_ERROR_LOG.AfterFirst(wxT(':'));
 
@@ -191,6 +196,68 @@ wxArrayString DirectCommands::CompileFile(ProjectBuildTarget* target, ProjectFil
     return ret;
 }
 
+void DirectCommands::CheckForToLongCommandLine(wxString& executableCmd, wxArrayString& outputCommandArray, const wxString& basename ,const wxString& path) const
+{
+
+#ifndef CB_COMMAND_LINE_MAX_LENGTH
+#ifdef __WXMSW__
+// the actual limit is 32767 (source: https://devblogs.microsoft.com/oldnewthing/20031210-00/?p=41553 )
+#define CB_COMMAND_LINE_MAX_LENGTH 32767
+#else
+// On Linux the limit should be inf
+// List of collected length limits: https://www.in-ulm.de/~mascheck/various/argmax/
+// Actual limit on Linux Mint 18 is 131072 (this is the limit for args + environ for exec())
+#define CB_COMMAND_LINE_MAX_LENGTH 131072
+#endif // __WXMSW__
+#endif // CB_COMMAND_LINE_MAX_LENGTH
+    const int maxLength = CB_COMMAND_LINE_MAX_LENGTH;
+    if (executableCmd.length() > maxLength)
+    {
+        wxFileName responseFileName(path);
+        responseFileName.SetName(basename);
+        responseFileName.SetExt("respFile");
+        // Path handling has to be so complicated because of wxWidgets error https://trac.wxwidgets.org/ticket/831
+        // The path for creating the folder structure has to be relative
+        const wxString responseFilePath = responseFileName.GetFullPath();
+        wxFileName relative = responseFileName;
+        relative.MakeRelativeTo(wxFileName::GetCwd());
+        if (!wxFileName::Mkdir(relative.GetPath(), wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL))
+        {
+            outputCommandArray.Add(COMPILER_ERROR_LOG + _("Could not create directory for ") + responseFilePath);
+            return;
+        }
+
+        outputCommandArray.Add(COMPILER_ONLY_NOTE_LOG + wxString::Format(_("Command line is too long: Using responseFile: %s"), responseFilePath));
+        outputCommandArray.Add(COMPILER_ONLY_NOTE_LOG + wxString::Format(_("Complete command line: %s"), executableCmd));
+
+        // Begin from the back of the command line and search for a position to split it. A suitable position is a white space
+        // so that the resulting command line inclusive response file is shorter than the length limit
+        const int responseFileLength = responseFilePath.length();
+        size_t startPos = executableCmd.rfind(' ', maxLength - responseFileLength);
+        if (startPos == 0 || startPos == wxString::npos)   // Try to find the first command again...
+            startPos = executableCmd.find(' ');
+        if (startPos > maxLength)
+        {
+            outputCommandArray.Add(COMPILER_WARNING_LOG + _("Could not split command line for response file. This probably will lead to failed compiling") );
+        }
+        wxString restCommand = executableCmd.Right(executableCmd.length() - startPos);
+        outputCommandArray.Add(COMPILER_ONLY_NOTE_LOG + wxString::Format(_("Response file: %s"), restCommand));
+        // Path escaping Needed for windows.  '\' has to be '\\' in the response file for mingw-gcc
+        restCommand.Replace("\\", "\\\\");
+        wxFile file(responseFilePath, wxFile::OpenMode::write);
+        if (!file.IsOpened())
+        {
+            outputCommandArray.Add(COMPILER_ERROR_LOG + wxString::Format(_("Could not open response file in %s"), responseFilePath));
+            return;
+        }
+
+        file.Write(restCommand);
+        file.Close();
+        executableCmd = executableCmd.Left(startPos) + " @\"" + responseFilePath + "\"";
+        outputCommandArray.Add(COMPILER_ONLY_NOTE_LOG + wxString::Format(_("New command: %s"), executableCmd));
+    }
+}
+
 wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, ProjectFile* pf) const
 {
     wxArrayString ret;
@@ -300,6 +367,8 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
         default:
             break;
     }
+
+    CheckForToLongCommandLine(compiler_cmd, ret, pf->file.GetFullName() ,object_dir);
 
     AddCommandsToArray(compiler_cmd, ret);
 
@@ -851,6 +920,8 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         // for an explanation of the following, see GetTargetCompileCommands()
         if (target && ret.GetCount() != 0)
             ret.Add(COMPILER_TARGET_CHANGE + target->GetTitle());
+
+        CheckForToLongCommandLine(compilerCmd, ret, target->GetTitle() + "_link" , target->GetObjectOutput());
 
         // the 'true' will make sure all commands will be prepended by
         // COMPILER_WAIT signal
