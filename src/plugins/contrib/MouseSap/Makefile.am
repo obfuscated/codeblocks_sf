@@ -11,9 +11,11 @@ libMouseSap_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefin
 
 libMouseSap_la_LIBADD = ../../../sdk/libcodeblocks.la $(WX_LIBS) $(WX_GTK_LIBS)
 
-libMouseSap_la_SOURCES = MouseSap.cpp
+libMouseSap_la_SOURCES = MouseSap.cpp \
+                         MouseSapCfg.cpp
 
-noinst_HEADERS = MouseSap.h
+noinst_HEADERS = MouseSap.h \
+                 MouseSapCfg.h
 
 EXTRA_DIST = $(srcdir)/*.cbp \
 		manifest.xml

@@ -7,10 +7,12 @@
  **************************************************************/
 // This plugin emulates Linux GPM functions within the editors in linux and msWindows.
 
-// If selected text, paste selected text at current cursor position (ala Linux)
-// If selected text, and user middle-clicks inside selection, copy to clipboard
-// If shift key down, paste clipboard data at cursor position
-// If shift key down and selected text, paste text over selection
+// This plugin adds fuctions within the editors using the shiftKey, ctrlKey and  middleMouse button.
+// If selected text & shift-middleMouse, paste selected text at current cursor position.
+// If selected text & shift-middleMouse inside selection, copy to clipboard.
+// If selected text & shift-switch editor, copy selection to clipboard.
+// If selected text & shift-ctrl-middleMouse, overwrite selection with clipboard data.
+// If no selected text & Shift-middleMouse, paste clipboard data at cursor position(like ctrl-v).
 
 #if defined(__GNUG__) && !defined(__APPLE__)
 	#pragma implementation "MouseSap.h"
@@ -35,26 +37,22 @@
 #include <wx/strconv.h>
 #include "cbstyledtextctrl.h"
 #include "MouseSap.h"
-
-//#if defined(__WXGTK__)
-//    // hack to avoid name-conflict between wxWidgets GSocket and the one defined
-//    // in newer glib-headers
-//    #define GSocket GLibSocket
-//    #include "gtk/gtk.h"
-//    #undef GSocket
-//#endif
+#include "MouseSapCfg.h"
 
 // Register the plugin
+// ----------------------------------------------------------------------------
 namespace
+// ----------------------------------------------------------------------------
 {
     PluginRegistrant<MouseSap> reg(_T("MouseSap"));
+    int ID_DLG_DONE = wxNewId();
 };
 
 int ID_DLG_DONE = wxNewId();
 
 // ----------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(MouseSap, cbPlugin)
-	// add events here...
+//
 END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 //  Statics
@@ -64,12 +62,16 @@ END_EVENT_TABLE()
 MouseSap* MouseSap::pMouseSap;
 
 // ----------------------------------------------------------------------------
-MouseSap::MouseSap() : m_pMyLog(nullptr), m_bEditorsAttached(false), m_bMouseSapEnabled(false), m_pMMSapEvents(nullptr)
+MouseSap::MouseSap()
 // ----------------------------------------------------------------------------
 {
 	//ctor
 	// anchor to this one and only object
-    pMouseSap = this;
+    m_pMyLog            = nullptr;
+    m_bEditorsAttached  = false;
+    m_pMMSapEvents      = nullptr;
+    pMouseSap           = this;
+    m_bMouseSapEnabled  = false;
 }
 // ----------------------------------------------------------------------------
 MouseSap::~MouseSap()
@@ -94,6 +96,7 @@ void MouseSap::OnAttach()
 
     wxWindow* pcbWindow = Manager::Get()->GetAppWindow();
     m_pMS_Window = pcbWindow;
+
     #if defined(LOGGING)
         wxLog::EnableLogging(true);
         /*wxLogWindow**/ m_pMyLog = new wxLogWindow(pcbWindow, wxT("MouseSap"), true, false);
@@ -102,61 +105,6 @@ void MouseSap::OnAttach()
         m_pMyLog->GetFrame()->Move(20,20);
         wxLogMessage(_T("Logging MouseSap version %s"),wxString(wxT(VERSION)).c_str());
 	#endif
-
-    // names of windows we're allowed to attach
-    m_UsableWindows.Add(_T("sciwindow"));
-
-    m_bMouseSapEnabled    = true;
-
-    // Create filename like MouseSap.ini
-    //memorize the key file name as {%HOME%}\MouseSap.ini
-    m_ConfigFolder = ConfigManager::GetConfigFolder();
-    m_DataFolder = ConfigManager::GetDataFolder();
-    m_ExecuteFolder = FindAppPath(wxTheApp->argv[0], ::wxGetCwd(), wxEmptyString);
-
-    //GTK GetConfigFolder is returning double "//?, eg, "/home/pecan//.codeblocks"
-    // remove the double //s from filename //+v0.4.11
-    m_ConfigFolder.Replace(_T("//"),_T("/"));
-    m_ExecuteFolder.Replace(_T("//"),_T("/"));
-
-    // get the CodeBlocks "personality" argument
-    wxString m_Personality = Manager::Get()->GetPersonalityManager()->GetPersonality();
-	if (m_Personality == wxT("default")) m_Personality = wxEmptyString;
-     LOGIT( _T("Personality is[%s]"), m_Personality.GetData() );
-
-    // if MouseSap.ini is in the executable folder, use it
-    // else use the default config folder
-    m_CfgFilenameStr = m_ExecuteFolder + wxFILE_SEP_PATH;
-    if (not m_Personality.IsEmpty()) m_CfgFilenameStr << m_Personality + wxT(".") ;
-    m_CfgFilenameStr << _T("MouseSap.ini");
-
-    if (::wxFileExists(m_CfgFilenameStr)) {;/*OK Use exe path*/}
-    else //use the default.conf folder
-    {   m_CfgFilenameStr = m_ConfigFolder + wxFILE_SEP_PATH;
-        if (not m_Personality.IsEmpty()) m_CfgFilenameStr << m_Personality + wxT(".") ;
-        m_CfgFilenameStr << _T("MouseSap.ini");
-    }
-    //LOGIT(_T("MouseSap Config Filename:[%s]"), m_CfgFilenameStr.GetData());
-    // read configuaton file
-    //wxFileConfig cfgFile(wxEmptyString,     // appname
-    //                    wxEmptyString,      // vendor
-    //                    m_CfgFilenameStr,   // local filename
-    //                    wxEmptyString,      // global file
-    //                    wxCONFIG_USE_LOCAL_FILE);
-    //
-    //cfgFile.Read(_T("MouseSapEnabled"),  &MouseSapEnabled ) ;
-
-    // Pointer to "Search Results" Window (first listCtrl window)
-
-    // Catch creation of windows
-    Connect( wxEVT_CREATE,
-        (wxObjectEventFunction) (wxEventFunction)
-        (wxCommandEventFunction) &MouseSap::OnWindowOpen);
-
-    // Catch Destroyed windows
-    Connect( wxEVT_DESTROY,
-        (wxObjectEventFunction) (wxEventFunction)
-        (wxCommandEventFunction) &MouseSap::OnWindowClose);
 
     // Set current plugin version
 	PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
@@ -178,24 +126,70 @@ void MouseSap::OnRelease(bool /*appShutDown*/)
 	// IsAttached() will be FALSE...
 
 	// Remove all Mouse event handlers
-	DetachAll();
+	DetachAllWindows();
 	#if defined(LOGGING)
-	// deleting the log crashes CB on exit
+	// Reminder: deleting the log crashes CB on exit
 	//-delete pMyLog;
 	//-m_pMyLog = 0;
     #endif
+    // Catch creation of windows
+    Disconnect( wxEVT_CREATE,
+        (wxObjectEventFunction) (wxEventFunction)
+        (wxCommandEventFunction) &MouseSap::OnWindowOpen);
 
-    delete m_pMMSapEvents;
+    // Catch Destroyed windows
+    Disconnect( wxEVT_DESTROY,
+        (wxObjectEventFunction) (wxEventFunction)
+        (wxCommandEventFunction) &MouseSap::OnWindowClose);
+
+    if (m_pMMSapEvents)
+        delete m_pMMSapEvents;
     m_pMMSapEvents = 0;
     m_bMouseSapEnabled = false;
 }
 // ----------------------------------------------------------------------------
-cbConfigurationPanel* MouseSap::GetConfigurationPanel(wxWindow* /*parent*/)
+cbConfigurationPanel* MouseSap::GetConfigurationPanel(wxWindow* parent)
 // ----------------------------------------------------------------------------
 {
 	//create and display the configuration dialog for your plugin
-	return 0;
+    if(not IsAttached()) {	return 0;}
+    // Create a configuration dialogue and hand it off to codeblocks
+
+    m_bPreviousMouseSapEnabled = m_bMouseSapEnabled;
+
+    //cbConfigurationPanel* pDlg = new cbDragScrollCfg(parent, this);
+    cbMouseSapCfg* pDlg = new cbMouseSapCfg(parent, this);
+    // set current mouse scrolling options
+    pDlg->SetMouseSapEnabled( m_bMouseSapEnabled );
+
+    return pDlg;
 }
+// ----------------------------------------------------------------------------
+void MouseSap::OnDialogDone(cbMouseSapCfg* pdlg)
+// ----------------------------------------------------------------------------
+{
+    // The configuration panel has run its OnApply() function.
+
+    m_bMouseSapEnabled  = pdlg->GetMouseSapEnabled();
+
+    #ifdef LOGGING
+     LOGIT(_T("MouseSapEnabled:%d"),    m_bMouseDragScrollEnabled);
+    #endif //LOGGING
+
+    // Preserve setting across runs
+    Manager::Get()->GetConfigManager(_T("mousesap"))->Write(_T("/enabled"), m_bMouseSapEnabled);
+
+    if ( m_bPreviousMouseSapEnabled != m_bMouseSapEnabled)
+    {
+        if (m_bMouseSapEnabled)
+            OnAppStartupDoneInit();
+        else
+            OnRelease(false);
+    }
+
+    // don't delete dlg; Codeblocks should destroy the dialog
+
+}//OnDialogDone
 // ----------------------------------------------------------------------------
 bool MouseSap::IsAttachedTo(wxWindow* p)
 // ----------------------------------------------------------------------------
@@ -206,7 +200,7 @@ bool MouseSap::IsAttachedTo(wxWindow* p)
 
 }//IsAttachedTo
 // ----------------------------------------------------------------------------
-void MouseSap::Attach(wxWindow *p)
+void MouseSap::AttachWindow(wxWindow *p)
 // ----------------------------------------------------------------------------{
 {
 	if (!p || IsAttachedTo(p))
@@ -251,15 +245,14 @@ void MouseSap::Attach(wxWindow *p)
      LOGIT(_T("MMSap:Attach Window:%p Handler:%p"), p,thisEvtHndlr);
     #endif
 }
-
 // ----------------------------------------------------------------------------
-void MouseSap::AttachRecursively(wxWindow *p)
+void MouseSap::AttachWindowsRecursively(wxWindow *p)
 // ----------------------------------------------------------------------------{
 {
  	if (!p)
 		return;
 
-	Attach(p);
+	AttachWindow(p);
 
  	// this is the standard way wxWidgets uses to iterate through children...
 	for (wxWindowList::compatibility_iterator node = p->GetChildren().GetFirst();
@@ -270,7 +263,7 @@ void MouseSap::AttachRecursively(wxWindow *p)
 		wxWindow *win = (wxWindow *)node->GetData();
 
 		if (win)
-			AttachRecursively(win);
+			AttachWindowsRecursively(win);
 	}
 }
 // ----------------------------------------------------------------------------
@@ -300,7 +293,7 @@ wxWindow* MouseSap::FindWindowRecursively(const wxWindow* parent, const wxWindow
     return NULL;
 }
 // ----------------------------------------------------------------------------
-wxWindow* MouseSap::winExists(wxWindow *parent)
+wxWindow* MouseSap::WindowExists(wxWindow *parent)
 // ----------------------------------------------------------------------------{
 {
 
@@ -324,7 +317,7 @@ wxWindow* MouseSap::winExists(wxWindow *parent)
     return NULL;
 }//winExists
 // ----------------------------------------------------------------------------
-void MouseSap::Detach(wxWindow* thisEditor)
+void MouseSap::DetachWindow(wxWindow* thisEditor)
 // ----------------------------------------------------------------------------
 {
     if ( (thisEditor) && (m_EditorPtrs.Index(thisEditor) != wxNOT_FOUND))
@@ -337,7 +330,7 @@ void MouseSap::Detach(wxWindow* thisEditor)
         m_EditorPtrs.Remove(thisEditor);
 
         // If win already deleted, dont worry about receiving events
-	    if ( not winExists(thisEditor) )
+	    if ( not WindowExists(thisEditor) )
 	    {
             #if defined(LOGGING)
 	        LOGIT(_T("MMSap:DetachAll window NOT found %p"), thisEditor);
@@ -364,7 +357,7 @@ void MouseSap::Detach(wxWindow* thisEditor)
     }//if (thisEditor..
 }//Detach
 // ----------------------------------------------------------------------------
-void MouseSap::DetachAll()
+void MouseSap::DetachAllWindows()
 // ----------------------------------------------------------------------------
 {
 	// delete all handlers
@@ -376,7 +369,7 @@ void MouseSap::DetachAll()
     while( m_EditorPtrs.GetCount() )
     {
 	    wxWindow* pw = (wxWindow*)m_EditorPtrs.Item(0);
-        Detach(pw);
+        DetachWindow(pw);
     }//elihw
 
     m_EditorPtrs.Empty();
@@ -459,12 +452,28 @@ void MouseSap::OnAppStartupDone(CodeBlocksEvent& event)
 void MouseSap::OnAppStartupDoneInit()
 // ----------------------------------------------------------------------------
 {
-    if (not GetMouseSapEnabled() )    //v04.14
+    m_bMouseSapEnabled = false;
+    m_bMouseSapEnabled = Manager::Get()->GetConfigManager(_T("mousesap"))->ReadBool(_T("enabled"), false);
+    if (not m_bMouseSapEnabled)
         return;
 
-    if (! m_bEditorsAttached)
+    // names of windows we're allowed to attach
+    m_UsableWindows.Add(_T("sciwindow"));
+
+
+    // Catch creation of windows
+    Connect( wxEVT_CREATE,
+        (wxObjectEventFunction) (wxEventFunction)
+        (wxCommandEventFunction) &MouseSap::OnWindowOpen);
+
+    // Catch Destroyed windows
+    Connect( wxEVT_DESTROY,
+        (wxObjectEventFunction) (wxEventFunction)
+        (wxCommandEventFunction) &MouseSap::OnWindowClose);
+
+    if (not m_bEditorsAttached)
     {
-        AttachRecursively(Manager::Get()->GetAppWindow());
+        AttachWindowsRecursively(Manager::Get()->GetAppWindow());
         m_bEditorsAttached = true;
     }
 }
@@ -494,7 +503,7 @@ void MouseSap::OnWindowOpen(wxEvent& event)
         if (ed)
         {
             if (pWindow->GetParent() ==  ed)
-            {   Attach(pWindow);
+            {   AttachWindow(pWindow);
                 #ifdef LOGGING
                     LOGIT( _T("OnWindowOpen Attached:%p name: %s"),
                             pWindow, pWindow->GetName().GetData() );
@@ -515,7 +524,7 @@ void MouseSap::OnWindowClose(wxEvent& event)
 
     if ( (pWindow) && (m_EditorPtrs.Index(pWindow) != wxNOT_FOUND))
     {   // window is one of ours
-        Detach(pWindow);
+        DetachWindow(pWindow);
         #ifdef LOGGING
          LOGIT( _T("OnWindowClose Detached %p"), pWindow);
         #endif //LOGGING
@@ -555,6 +564,12 @@ void MMSapEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
         {event.Skip(); return;}
     #endif
 
+    if (not MouseSap::pMouseSap->m_bMouseSapEnabled)
+        {event.Skip(); return; }
+
+    if (not ::wxGetKeyState(WXK_SHIFT)) //2020/06/7
+        {event.Skip(); return;}
+
     //remember event window pointer
     //-wxObject* pEvtObject = event.GetEventObject();
     int eventType = event.GetEventType();
@@ -589,6 +604,10 @@ void MMSapEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
 
     if ( eventType == wxEVT_MIDDLE_DOWN)
     {
+        // shift key must be down
+        if (not ::wxGetKeyState(WXK_SHIFT)) //2020/06/7
+            {event.Skip(); return;}
+
         OnMiddleMouseDown( event, pControl );
         return;
     }// if KeyDown
@@ -606,10 +625,16 @@ void MMSapEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
 void MMSapEvents::OnMiddleMouseDown(wxMouseEvent& event, cbStyledTextCtrl* ed)
 // ----------------------------------------------------------------------------
 {
-    // If selected text, paste selected text at current cursor position (ala Linux)
-    // If selected text, and user middle-clicks inside selection, copy to clipboard
-    // If shift key down, paste clipboard data at cursor position
-    // If shift key down and selected text, paste text over selection
+    // If selected text, C
+    // If no selected text, & shift-middleMouse, paste clipboard data at cursor position
+    // If selected text, & shift-middleMouse inside selection, copy to clipboard
+    // If sselected-text & shift-ctrl-middleMouse, paste text over selection
+
+    // MiddleMouse only, paste selected data at cursor position
+    // Shift-MiddleMouse, if no selection, paste clipboard data at cursor.
+    // Shift-MiddleMouse, if inside selection, copy to clipboard
+    // ctrl-shift-middleMouse replace selected text with clipboard.
+
 
     int pos = ed->PositionFromPoint(wxPoint(event.GetX(), event.GetY()));
 
@@ -622,36 +647,29 @@ void MMSapEvents::OnMiddleMouseDown(wxMouseEvent& event, cbStyledTextCtrl* ed)
     const wxString selectedText = ed->GetSelectedText();
 
     bool shiftKeyState = ::wxGetKeyState(WXK_SHIFT);
+    bool ctrlKeyState = ::wxGetKeyState(WXK_CONTROL);
 
     // If no current selection, and shift key is down, use paste from the clipboard
-    if (  shiftKeyState )
+    if ( (0 == selectedText.Length()) and shiftKeyState and (not ctrlKeyState) )
     {
-        PasteFromClipboard( event, ed, shiftKeyState );
+        PasteFromClipboard( event, ed, shiftKeyState, ctrlKeyState );
         return;
     }
 
-    //if user middle-clicked inside the selection, copy to clipboard
-    if ( (not shiftKeyState) && (pos >= start) && (pos <= end) && (start != end))
+    // if selected text and ctrl-shift-middleMouse, overwrite selection from clipboard
+    if (selectedText.Length() and shiftKeyState and ctrlKeyState)
     {
-        #if defined(__WXGTK__)
-//            gtk_clipboard_set_text(
-//                //-gtk_clipboard_get(GDK_SELECTION_PRIMARY),
-//                gtk_clipboard_get(GDK_SELECTION_CLIPBOARD),
-//                selectedText.mb_str(wxConvUTF8),
-//                selectedText.Length() );
-            wxTheClipboard->UsePrimarySelection(false);
-            if (wxTheClipboard->Open())
-            {
-                wxTheClipboard->AddData(new wxTextDataObject(selectedText));
-                wxTheClipboard->Close();
-            }
-        #else //__WXMSW__
-                if (wxTheClipboard->Open())
-                {
-                    wxTheClipboard->AddData(new wxTextDataObject(selectedText));
-                    wxTheClipboard->Close();
-                }
-        #endif
+        PasteFromClipboard( event, ed, shiftKeyState, ctrlKeyState );
+        return;
+    }
+    //if selected text and shift-middleMouse inside the selection, copy to clipboard
+    if ( (shiftKeyState and (not ctrlKeyState)) && (pos >= start) && (pos <= end) && (start != end))
+    {
+        if (wxTheClipboard->Open())
+        {
+            wxTheClipboard->AddData(new wxTextDataObject(selectedText));
+            wxTheClipboard->Close();
+        }
         return;
     }//if
 
@@ -676,11 +694,22 @@ void MMSapEvents::OnMiddleMouseDown(wxMouseEvent& event, cbStyledTextCtrl* ed)
 
 } // end of OnGPM
 // ----------------------------------------------------------------------------
-void MMSapEvents::PasteFromClipboard( wxMouseEvent& event, cbStyledTextCtrl* ed, bool shiftKeyState )
+void MMSapEvents::PasteFromClipboard( wxMouseEvent& event, cbStyledTextCtrl* ed, bool shiftKeyState, bool ctrlKeyState )
 // ----------------------------------------------------------------------------
 {
-    // Set the current position to the mouse click point and
-    // then paste in the PRIMARY selection, if any.
+    // Set the current position to the mouse click point
+    // if ctrl-shift-middleMouse then replace selection with the clipboard, if any.
+    // if shift-middleMouse, paste from the clipboard
+
+    // Info: Selection/Copy/Paste
+    // PRIMARY selection is typically used by e.g. terminals when selecting text
+    //         and pasting it by pressing middle mouse button.
+    //         As in selected text is in Primary Clipboard without any explicit
+    //         copy action taking place. Quick-Copy is a good name for it.
+    //         (Not limited to terminal emulators, but as an example.)
+    // CLIPBOARD
+    //        is primarily used in connection with MS Windows-style clipboard operations.
+    //        Select+Copy. The data resides in the buffer.
 
     #if defined(LOGGING)
     LOGIT( _T("MMSapEvents pasting from Clipboard"));
@@ -697,29 +726,27 @@ void MMSapEvents::PasteFromClipboard( wxMouseEvent& event, cbStyledTextCtrl* ed,
     bool gotData = false;
     if (wxTheClipboard->Open())
     {
-        // If shiftKeyUp, paste marked data from primary clipboard (GDK_PRIMARY_PRIMARY)
-        // If shiftKeyDown, paste like ctrl-V (GDK_SELECTION_CLIPBOARD)
         wxTheClipboard->UsePrimarySelection(true);
-        gotData = wxTheClipboard->GetData(data); //try Primary
+        gotData = wxTheClipboard->GetData(data); //try Primary user text selection
         wxTheClipboard->UsePrimarySelection(false);
-        if ( (not gotData) or (shiftKeyState) ) //(pecan 2019/09/25)
+    if ( (not gotData) or (shiftKeyState and ctrlKeyState)) //try for clipboard
             gotData = wxTheClipboard->GetData(data); //try non-primary
         wxTheClipboard->Close();
     }
     if (gotData)
     {
         wxString text = data.GetText() ;
-        //if shiftstate
-        if (  shiftKeyState
+        //if shiftstate & ctrlState
+        if (  shiftKeyState and ctrlKeyState
                 &&  ((pos >= start) && (pos <= end) ) )
         {
-            //-ed->Paste(); does not work on linux
+            //-ed->Paste(); paste over selection
             ed->SetTargetStart(start);
             ed->SetTargetEnd(end);
             ed->ReplaceTarget(text);
 
         }
-        else
+        else if(shiftKeyState and (not ctrlKeyState))
         {
             ed->InsertText(pos, text);
             ed->SetSelectionVoid(pos, pos + text.Length());
@@ -734,9 +761,17 @@ void MMSapEvents::OnKillFocusEvent( wxFocusEvent& event )
     //For GTK, we copy the selected text to the PRIMARY clipboard
     // when we lose the focus
 
-    #if not defined(__WXGTK__)
-        event.Skip(); return;
-    #endif
+//    #if not defined(__WXGTK__)
+//        event.Skip(); return;
+//    #endif
+
+    if (not platform::windows)
+        { event.Skip(); return; }
+    if (not MouseSap::pMouseSap->m_bMouseSapEnabled)
+        { event.Skip(); return; }
+
+    if (not ::wxGetKeyState(WXK_SHIFT))
+        {event.Skip(); return;}
 
     // If selected text, copy to clipboard
 

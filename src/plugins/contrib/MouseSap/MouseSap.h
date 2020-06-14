@@ -5,11 +5,12 @@
  * Copyright: (c) Pecan
  * License:   GPL
  **************************************************************/
-// This plugin emulates Linux GPM functions within the editors in linux and msWindows.
-// If selected text, paste selected text at current cursor position
-// If selected text, and user middle-clicks inside selection, copy to clipboard
-// If no selected text, paste clipboard data at cursor position
-// If selected text, and user switches editors, copy selection to clipboard
+// This plugin emulates Linux GPM functions within the editors in Windows using the shiftKey  middleMouse button.
+//
+// If selected text & shift-middleMouse-click, paste selected text at current cursor position.
+// If selected text & shift-middleMouse-click inside selection, copy to clipboard.
+// If selected text, & shift user switches editors, copy selection to clipboard.
+// If no selected text & Shift-middleMouse-click, paste clipboard data at cursor position(like ctrl-v).
 
 #ifndef MouseSap_H
 #define MouseSap_H
@@ -35,7 +36,7 @@
 // ---------------------------------------------------------------------------
 
 //----------------------------------------
-#define VERSION "1.1.8 2019/10/1"
+#define VERSION "1.1.10 2020/06/9"
 //----------------------------------------
 
 #undef LOGGING
@@ -49,7 +50,7 @@
 
 // anchor to one and only MouseSap object
 class MMSapEvents;
-class MouseSapCfg;
+class cbMouseSapCfg;
 class wxLogWindow;
 class wxObject;
 class wxScintillaEvent;
@@ -76,25 +77,28 @@ class MouseSap : public cbPlugin
         cbConfigurationPanel* CreatecbCfgPanel(wxWindow* parent);
 
     public:
-        //void OnDialogDone(MouseSapCfg* pdlg);
 
+        void OnDialogDone(cbMouseSapCfg* pdlg);
         bool GetMouseSapEnabled() const { return m_bMouseSapEnabled; }
         bool IsAttachedTo(wxWindow* p);
 
         wxWindow* m_pMS_Window;
+        bool      m_bMouseSapEnabled ;  //Current Enable/Disable plugin state
+        bool      m_bPreviousMouseSapEnabled ;  //Previous Enable/Disable plugin state
+
 
 	private:
         void OnAppStartupDone(CodeBlocksEvent& event);
         void OnAppStartupDoneInit();
         void OnDoConfigRequests(wxUpdateUIEvent& event);
 
-        void AttachRecursively(wxWindow *p);
-        void Detach(wxWindow* thisEditor);
-        void DetachAll();
-        void Attach(wxWindow *p);
+        void AttachWindowsRecursively(wxWindow *p);
+        void DetachWindow(wxWindow* thisEditor);
+        void DetachAllWindows();
+        void AttachWindow(wxWindow *p);
         void DisconnectEvtHandler(MMSapEvents* thisEvtHandler);
 
-        wxWindow* winExists(wxWindow *parent);
+        wxWindow* WindowExists(wxWindow *parent);
         wxWindow* FindWindowRecursively(const wxWindow* parent, const wxWindow* handle);
         wxString  FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
         void      OnWindowOpen(wxEvent& event);
@@ -112,7 +116,6 @@ class MouseSap : public cbPlugin
         wxLogWindow*    m_pMyLog;
         bool            m_bEditorsAttached;
 
-        bool            m_bMouseSapEnabled ;  //Enable/Disable plugin
         MMSapEvents*    m_pMMSapEvents;
 
     private:
@@ -148,7 +151,7 @@ class MMSapEvents : public wxEvtHandler
 
         void OnMouseEvent(wxMouseEvent& event);
         void OnMiddleMouseDown(wxMouseEvent& event, cbStyledTextCtrl* ed);
-        void PasteFromClipboard( wxMouseEvent& event, cbStyledTextCtrl* ed, bool shiftKeyState );
+        void PasteFromClipboard( wxMouseEvent& event, cbStyledTextCtrl* ed, bool shiftKeyState, bool ctrlKeyState );
         void OnKillFocusEvent( wxFocusEvent& event );
         void DumpClipboard();
 
@@ -176,6 +179,11 @@ class MMSapEvents : public wxEvtHandler
 //  Commit  1.1.8 2019/10/1
 //          Remove all direct calls to gtk (use wxWidgets only)
 //          use Editor config ReadBool(_T("/enable_middle_mouse_paste") to enable.
+//  Version 1.1.9 2020/06/7
+//          Do not run on Linux.
+//  Version 1.1.10 2020/06/9
+//          Add configuration dialog
+//          Do not activate unless specifically enabled by config dialog
 //  ToDo
 // ----------------------------------------------------------------------------
 #endif // MouseSap_H

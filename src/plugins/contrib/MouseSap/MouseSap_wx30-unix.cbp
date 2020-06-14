@@ -53,11 +53,9 @@
 		</Compiler>
 		<Unit filename="MouseSap.cpp" />
 		<Unit filename="MouseSap.h" />
+		<Unit filename="MouseSapCfg.cpp" />
+		<Unit filename="MouseSapCfg.h" />
 		<Unit filename="manifest.xml" />
-		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
-		</Extensions>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

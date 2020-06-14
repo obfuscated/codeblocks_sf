@@ -3,15 +3,16 @@
     <SdkVersion major="1" minor="11" release="12" />
     <Plugin name="MouseSap">
         <Value title="MouseSap" />
-        <Value version="0.0 2008/02/13" />
+        <Value version="1.1.9 2020/06/7" />
         <Value description="Middle Mouse Select and Paste
-This plugin emulates Linux GPM functions within the editors in linux and Windows
-using the middle mouse button and shiftKey + middleMouse button.
-If selected text, paste selected text at current cursor position.
-If selected text, and middleMouse-click inside selection, copy to clipboard.
-If no selected text, paste clipboard data at cursor position(like ctrl-v).
-If selected text, and user switches editors, copy selection to clipboard.
-If selected text, and shiftKeyDown, replace selected text with clipboard text."
+
+This plugin adds editor functions using the shiftKey, ctrlKey and  middleMouse button.
+
+If selected text & shift-middleMouse, paste selected text at current cursor position.
+If selected text & shift-middleMouse inside selection, copy to clipboard.
+If selected text & shift-switch editor, copy selection to clipboard.
+If selected text & shift-ctrl-middleMouse, overwrite selection with clipboard data.
+If no selected text & Shift-middleMouse, paste clipboard data at cursor position(like ctrl-v)."
 />
         <Value author="Pecan" />
         <Value authorEmail=" " />
