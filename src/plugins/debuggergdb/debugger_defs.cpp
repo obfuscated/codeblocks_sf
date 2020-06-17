@@ -341,23 +341,99 @@ wxString GDBMemoryRangeWatch::MakeSymbolToAddress() const
     return wxString::FromUTF8(tmpAddress);
 };
 
-bool IsPointerType(wxString type)
+struct PtrTypeToken
 {
-    type.Trim(true);
-    type.Trim(false);
+    bool Match(const wxString &base, const char *term, size_t count) const
+    {
+        return base.compare(start, end - start, term, count) == 0;
+    }
 
-    if (type.Contains(wxT("char *")) || type.Contains(wxT("char const *")))
+    size_t start, end;
+};
+
+/// Extract a token from a C/C++ type definition.
+/// Tokens are things separated by white space.
+/// '*' characters start or end tokens.
+/// C++ template parameters are parsed as a single token.
+static PtrTypeToken ConsumeToken(const wxString &s, size_t pos)
+{
+    while (pos > 0 && (s[pos - 1] == ' ' || s[pos - 1] == '\t'))
+    {
+        --pos;
+    }
+
+    PtrTypeToken result;
+    result.end = pos;
+
+    int openedAngleBrackets = 0;
+
+    while (pos > 0)
+    {
+        const char ch = s[pos - 1];
+        // We want to ignore any '*' inside the angle brackets of a C++ template declaration.
+        // To do so we expand the token until the end of the angle brackets.
+        if (ch == '>')
+            openedAngleBrackets++;
+        else if (ch == '<')
+            openedAngleBrackets--;
+        else if (openedAngleBrackets == 0)
+        {
+            if (ch == ' ' || ch == '\t')
+                break;
+            if (ch == '*')
+            {
+                // If this is the start of the token consume the star and make a single character
+                // token. If this is not the start of the token, just end the token, so the star
+                // could be parsed at a separate token on the next iteration.
+                if (pos == result.end)
+                    --pos;
+                break;
+            }
+        }
+        --pos;
+    }
+
+    result.start = pos;
+    return result;
+}
+
+/// The function expects valid type C/C++ type declarations, so there is no code to detect invalid
+/// ones.
+bool IsPointerType(const wxString &type)
+{
+    if (type.empty())
         return false;
-    else if (type.EndsWith(wxT("*")))
-        return true;
-    else if (type.EndsWith(wxT("* const")))
-        return true;
-    else if (type.EndsWith(wxT("* volatile")))
-        return true;
-    else if (type.EndsWith(wxT("* const volatile")))
-        return true;
-    else if (type.EndsWith(wxT("restrict"))) // restrict is only for pointer types
-        return true;
+
+    int numberOfStars = 0;
+    size_t pos = type.length();
+    do
+    {
+        const PtrTypeToken token = ConsumeToken(type, pos);
+        if (token.start == token.end)
+            return numberOfStars > 0;
+
+        pos = token.start;
+
+        if (token.end - token.start == 1)
+        {
+            if (type[token.start] == '*')
+                numberOfStars++;
+            else if (type[token.start] == '&')
+                return false;
+        }
+        else
+        {
+            // char*, const char*, wchar_t and const wchar* should be treated as string and not as
+            // array. This is some kind of arbitrary decision, I'm not 100% sure that it is useful.
+            if (token.Match(type, "char", cbCountOf("char") - 1))
+                return numberOfStars > 1;
+            else if (token.Match(type, "wchar_t", cbCountOf("wchar_t") - 1))
+                return numberOfStars > 1;
+        }
+
+    } while (true);
+
+    // Should be unreachable
     return false;
 }
 

@@ -302,7 +302,7 @@ enum class WatchType
 
 typedef std::unordered_map<cb::shared_ptr<cbWatch>, WatchType> MapWatchesToType;
 
-bool IsPointerType(wxString type);
+bool IsPointerType(const wxString &type);
 wxString CleanStringValue(wxString value);
 
 enum DebuggerLanguage
