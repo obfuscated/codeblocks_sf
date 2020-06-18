@@ -191,7 +191,7 @@ void EnvVars::OnAttach()
   if (SquirrelVM::GetVMPtr())
   {
     SqPlus::RegisterGlobal(&nsEnvVars::GetEnvvarSetNames,   "EnvvarGetEnvvarSetNames"  );
-    SqPlus::RegisterGlobal(&nsEnvVars::GetEnvvarSetNames,   "EnvvarGetActiveSetName"   );
+    SqPlus::RegisterGlobal(&nsEnvVars::GetActiveSetName,    "EnvvarGetActiveSetName"   );
     SqPlus::RegisterGlobal(&nsEnvVars::GetEnvvarsBySetPath, "EnvVarGetEnvvarsBySetPath");
     SqPlus::RegisterGlobal(&nsEnvVars::EnvvarSetExists,     "EnvvarSetExists"          );
     SqPlus::RegisterGlobal(&nsEnvVars::EnvvarSetApply,      "EnvvarSetApply"           );
