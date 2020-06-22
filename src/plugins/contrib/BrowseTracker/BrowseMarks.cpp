@@ -212,7 +212,7 @@ void BrowseMarks::CopyMarksFrom(const BrowseMarks& otherBrowse_Marks)
 // ----------------------------------------------------------------------------
 {
     #if defined(LOGGING)
-    ///LOGIT( _T("BT CopyMarksFrom BrowseMarks[%p]To[%p]"), &otherBrowse_Marks, this );
+    //LOGIT( _T("BT CopyMarksFrom BrowseMarks[%p]To[%p]"), &otherBrowse_Marks, this );
     #endif
     for (int i=0; i<MaxEntries; ++i)
     {
@@ -235,7 +235,7 @@ void BrowseMarks::ImportBrowse_Marks()
     // rebuild BrowseMarks from scintilla browse marks
 
     #if defined(LOGGING)
-    ///LOGIT( _T("BT ImportBrowse_Marks") );
+    //LOGIT( _T("BT ImportBrowse_Marks") );
     #endif
 
     //-EditorBase* eb = m_pEditorBase ;
@@ -279,7 +279,7 @@ void BrowseMarks::RecordMarksFrom(BrowseMarks& otherBrowse_Marks)
         if ( posn != -1 )
         {
             #if defined(LOGGING)
-            ///LOGIT( _T("RecordMarksFrom for[%d][%d]"),i,posn );
+            //LOGIT( _T("RecordMarksFrom for[%d][%d]"),i,posn );
             #endif
             RecordMark( posn );
             int line = control->LineFromPosition(posn);

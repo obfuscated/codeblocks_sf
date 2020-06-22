@@ -26,7 +26,6 @@ libBrowseTracker_la_SOURCES = BrowseTracker.cpp \
 noinst_HEADERS =  	BrowseTracker.h \
 			BrowseSelector.h \
 			Version.h \
-			wx_pch.h \
 			BrowseMarks.h \
 			BrowseTrackerDefs.h \
 			BrowseTrackerConfPanel.h \

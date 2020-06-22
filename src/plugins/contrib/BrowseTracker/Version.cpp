@@ -18,11 +18,6 @@
 */
 // RCS-ID: $Id$
 
-#ifdef WX_PRECOMP
-    #include "wx_pch.h"
-#else
-#endif
-
 #include "Version.h"
 
    #if LOGGING
@@ -275,6 +270,10 @@ AppVersion::~AppVersion()
 //           Use wxFormBuilder 3.9.0 to fix wxFont deprecation in config.cpp
 //  pecan  1.2.107 2019/07/5
 //           If no <personality.>BrowseTracker.ini use standalone BrowseTracker.ini
+//  pecan  1.2.108 2020/06/16
+//           Fix focusing the wrong editor on active editor being close.
+//           Add config item to enable/disable focusing previously active editor
+//           http://forums.codeblocks.org/index.php?topic=23977.0;topicseen
 // ----------------------------------------------------------------------------
 //  //FIXME: Bugs
 //      01) Requires CB to be restarted after Install before Alt-Left/Right work.

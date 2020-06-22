@@ -23,11 +23,13 @@
 #include <wx/listbox.h>
 #include <wx/image.h>
 #include <wx/dcclient.h>
+#include <wx/kbdstate.h>
 
 #include <wx/sizer.h>
 #include <wx/dcmemory.h>
 #include <wx/font.h>
 #include <wx/settings.h>
+#include "wx/xrc/xmlres.h"
 
 #include "globals.h"
 #include "editorbase.h"
@@ -43,21 +45,22 @@
 wxBitmap BrowseSelector::m_bmp;
 namespace
 {
-      static bool firstPaint = true;
-
+    static bool firstPaint = true;
+    int idMenuTrackerforward        = XRCID("ViewForwardEd");
+    int idMenuTrackerBackward       = XRCID("ViewBackwardEd");
 }
 
 // ----------------------------------------------------------------------------
-BrowseSelector::BrowseSelector(wxWindow* parent, BrowseTracker* pBrowseTracker, bool bDirection)
+BrowseSelector::BrowseSelector(wxWindow* parent, BrowseTracker* pBrowseTracker, int menuID)
 // ----------------------------------------------------------------------------
 : m_listBox(NULL)
 , m_selectedItem(-1)
 , m_panel(NULL)
 , m_pBrowseTracker(pBrowseTracker)
-, m_bDirection(bDirection)
+, m_menuID(menuID)
 {
 
-    Create(parent, pBrowseTracker, m_bDirection);
+    Create(parent, pBrowseTracker, m_menuID);
     GetSizer()->Fit(this);
     GetSizer()->SetSizeHints(this);
     GetSizer()->Layout();
@@ -75,7 +78,14 @@ BrowseSelector::BrowseSelector(wxWindow* parent, BrowseTracker* pBrowseTracker, 
     m_panel->SetSize(rect.width,24);
     m_listBox->SetSize(wxSize(rect.width,rect.height));
     firstPaint = true;
+    m_KeyDownCode = 0;
+    m_KeyDownMods = 0;
 
+    //// put the mouse in this window (debugging)
+    //wxRect dlgRect = this->GetRect();
+    //int mouseX = dlgRect.GetWidth() >> 1;
+    //int mouseY = dlgRect.GetHeight() >> 1;
+    //-this->WarpPointer(mouseX, mouseY);
 }
 // ----------------------------------------------------------------------------
 BrowseSelector::BrowseSelector()
@@ -96,11 +106,11 @@ BrowseSelector::~BrowseSelector()
 }
 
 // ----------------------------------------------------------------------------
-void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, bool bDirection)
+void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, int menuID)
 // ----------------------------------------------------------------------------
 {
     m_pBrowseTracker = pBrowseTracker;
-    m_bDirection = bDirection;
+    m_menuID = menuID;
 
     long style = wxWANTS_CHARS;
     if (!wxScrollingDialog::Create(parent, wxID_ANY, wxEmptyString, wxDefaultPosition,
@@ -149,8 +159,9 @@ void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, boo
 
     // Connect events to the list box
     m_listBox->Connect(wxID_ANY, wxEVT_KEY_UP, wxKeyEventHandler(BrowseSelector::OnKeyUp), NULL, this);
-    m_listBox->Connect(wxID_ANY, wxEVT_CHAR, wxKeyEventHandler(BrowseSelector::OnNavigationKey), NULL, this);
+    m_listBox->Connect(wxID_ANY, wxEVT_KEY_DOWN, wxKeyEventHandler(BrowseSelector::OnKeyDown), NULL, this);
     m_listBox->Connect(wxID_ANY, wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler(BrowseSelector::OnItemSelected), NULL, this);
+    //m_listBox->Connect(wxID_ANY, wxEVT_KILL_FOCUS, wxFocusEventHandler(BrowseSelector::OnWindowKillFocus),NULL,this); //debugging
 
     // Connect paint event to the panel
     m_panel->Connect(wxID_ANY, wxEVT_PAINT, wxPaintEventHandler(BrowseSelector::OnPanelPaint), NULL, this);
@@ -180,34 +191,102 @@ void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, boo
                                                    imageSize, imageSize);
         m_bmp = cbLoadBitmapScaled(filename, wxBITMAP_TYPE_PNG, cbGetContentScaleFactor(*this));
     }
-    m_listBox->SetFocus();
+    //?m_listBox->SetFocus();
+}
+// ----------------------------------------------------------------------------
+void BrowseSelector::OnWindowKillFocus(wxFocusEvent& event) //debugging
+// ----------------------------------------------------------------------------
+{
+    // Once in awhile, the selector dialog hangs until it re-given focus.
+    // Here, trying to figure out who is stealing the focus.
+    event.Skip();
+    return; //<-- remove this for testing
+
+    wxBell();
+    wxWindow* p = (wxWindow*)event.GetEventObject();
+    //if (p == this) asm("int3"); /*trap*/
+    LOGIT( _T("BT SetFocusEvent for[%p]"), p);
+}
+// ----------------------------------------------------------------------------
+void BrowseSelector::OnKeyDown(wxKeyEvent &event)
+// ----------------------------------------------------------------------------
+{
+    //int eventKey = event.GetKeyCode();
+    event.Skip();
+    m_KeyDownCode = 0;
+    m_KeyDownMods = 0;
+    m_KeyDownCode  = event.GetKeyCode();
+    m_KeyDownMods |= event.ControlDown() << 2;
+    m_KeyDownMods |= event.AltDown() << 1;
+    m_KeyDownMods |= event.ShiftDown() << 0;
 }
 // ----------------------------------------------------------------------------
 void BrowseSelector::OnKeyUp(wxKeyEvent &event)
 // ----------------------------------------------------------------------------
 {
-    //FIXME: the key should dynamically match the menuitem cmdkey
-    if( event.GetKeyCode() == WXK_ALT )
-    {
-        CloseDialog();
-    }
-    if( event.GetKeyCode() == WXK_RETURN )
-    {
-        CloseDialog();
-    }
-}
+    int keyUpCode = event.GetKeyCode();
+    int keyUpMods = 0;
+    keyUpMods |= event.ControlDown() << 2;
+    keyUpMods |= event.AltDown() << 1;
+    keyUpMods |= event.ShiftDown() << 0;
 
+    if ((m_KeyDownCode == 0) and (m_KeyDownMods == 0))
+    {
+        //this keyup is from inital menu keydown which we can't see
+        m_KeyDownMods = keyUpMods;
+        keyUpCode = WXK_DOWN;
+        if (m_menuID == idMenuTrackerBackward )
+            keyUpCode = WXK_UP;
+    }
+
+    if( keyUpMods != m_KeyDownMods )
+    {
+        CloseDialog();  //user lifted modifier key
+    }
+    if( m_KeyDownCode == WXK_RETURN )
+    {
+        // if we see a EnterKey keydown, this keyup is ours,
+        // else it's the initial menu item activation.
+        CloseDialog();
+    }
+    if(keyUpCode == WXK_ESCAPE ) //2020/06/19
+    {
+        CloseDialog();
+    }
+    if ( (keyUpCode == WXK_UP ) or (keyUpCode == WXK_LEFT) )
+    {
+        OnNavigationKey(event);
+        return;
+    }
+    if ( (keyUpCode == WXK_DOWN ) or (keyUpCode == WXK_RIGHT) )
+    {
+        OnNavigationKey(event);
+        return;
+    }
+
+    event.Skip();
+    return;
+}
 // ----------------------------------------------------------------------------
 void BrowseSelector::OnNavigationKey(wxKeyEvent &event)
 // ----------------------------------------------------------------------------
 {
-    //FIXME: the keys should dynamically reflect the menu cmdkeys
-
     long selected = m_listBox->GetSelection();
     long maxItems = m_listBox->GetCount();
     long itemToSelect = 0;
-    LOGIT( _T("OnNavigationKey selected[%ld]maxItems[%ld]key[%d]"), selected, maxItems, event.GetKeyCode() );
 
+    #if defined(LOGGING)
+    LOGIT( _T("OnNavigationKey selected[%ld]maxItems[%ld]key[%d]"), selected, maxItems, event.GetKeyCode() );
+    #endif
+
+    if( (event.GetKeyCode() == WXK_LEFT) || (event.GetKeyCode() == WXK_UP) )
+    {
+        //  Select previous page
+        if( selected == 0 )
+            itemToSelect = maxItems - 1;
+        else
+            itemToSelect = selected - 1;
+    }
     if( (event.GetKeyCode() == WXK_RIGHT) || (event.GetKeyCode() == WXK_DOWN) )
     {
         // Select next page
@@ -215,14 +294,6 @@ void BrowseSelector::OnNavigationKey(wxKeyEvent &event)
             itemToSelect = 0;
         else
             itemToSelect = selected + 1;
-    }
-    if( (event.GetKeyCode() == WXK_LEFT) || (event.GetKeyCode() == WXK_UP) )
-    {
-        // Previous page
-        if( selected == 0 )
-            itemToSelect = maxItems - 1;
-        else
-            itemToSelect = selected - 1;
     }
 
     m_listBox->SetSelection( itemToSelect );
@@ -255,16 +326,8 @@ int BrowseSelector::PopulateListControl(EditorBase* /*pEditor*/)
     }//for
 
 
-    //for(int c=0; c < maxCount; c++)
-    //    LOGIT( _T("[%d][%d][%s]"), c, m_indexMap[c], m_pBrowseTracker->GetEditorFilename(m_indexMap[c]).GetData() );
-
     // Select the entry before/after current entry
-    //FIXME: the key should reflect the menu cmdkeys
     m_listBox->SetSelection( selection );
-    wxKeyEvent dummy;
-    dummy.m_keyCode = WXK_LEFT;
-    if (m_bDirection) dummy.m_keyCode = WXK_RIGHT;
-    OnNavigationKey(dummy);
 
     return maxWidth;
 }
@@ -292,9 +355,9 @@ void BrowseSelector::CloseDialog()
         m_pBrowseTracker->m_UpdateUIEditorIndex = iter->second;
     }
 
+    if (not IsModal() ) return; //avoid assert "not modal" error 2020/06/19
     EndModal( wxID_OK );
 }
-
 // ----------------------------------------------------------------------------
 void BrowseSelector::OnPanelPaint(wxPaintEvent &event)
 // ----------------------------------------------------------------------------

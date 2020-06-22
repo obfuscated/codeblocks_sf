@@ -49,6 +49,7 @@ BrowseTrackerConfPanel::BrowseTrackerConfPanel(BrowseTracker& browseTrackerPlugi
 	m_pConfigPanel->Cfg_BrowseMarksEnabled->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( BrowseTrackerConfPanel::OnEnableBrowseMarks ), NULL, this );
 	m_pConfigPanel->Cfg_WrapJumpEntries->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( BrowseTrackerConfPanel::OnWrapJumpEntries ), NULL, this );
 	m_pConfigPanel->Cfg_ShowToolbar->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( BrowseTrackerConfPanel::OnShowToolbar ), NULL, this );
+	m_pConfigPanel->Cfg_ActivatePrevEd->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( BrowseTrackerConfPanel::OnActivatePrevEd ), NULL, this ); //2020/06/15
 	m_pConfigPanel->Cfg_ToggleKey->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( BrowseTrackerConfPanel::OnToggleBrowseMarkKey ), NULL, this );
 	m_pConfigPanel->Cfg_ClearAllKey->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( BrowseTrackerConfPanel::OnClearAllBrowseMarksKey ), NULL, this );
 
@@ -85,6 +86,8 @@ void BrowseTrackerConfPanel::OnApply()
     m_BrowseTrackerPlugin.m_ConfigShowToolbar   = m_pConfigPanel->Cfg_ShowToolbar->GetValue();
     m_BrowseTrackerPlugin.ShowBrowseTrackerToolBar(m_BrowseTrackerPlugin.m_ConfigShowToolbar);
 
+    m_BrowseTrackerPlugin.m_CfgActivatePrevEd      = m_pConfigPanel->Cfg_ActivatePrevEd->GetValue(); //2020/06/15
+
     // write user options to config file
 	m_BrowseTrackerPlugin.SaveUserOptions( m_BrowseTrackerPlugin.GetBrowseTrackerCfgFilename() );
 	// call validation/update routine
@@ -111,7 +114,9 @@ void BrowseTrackerConfPanel::GetUserOptions(wxString configFullPath)
 	m_pConfigPanel->Cfg_LeftMouseDelay->SetValue( m_BrowseTrackerPlugin.m_LeftMouseDelay ) ;
 	m_pConfigPanel->Cfg_ClearAllKey->SetSelection( m_BrowseTrackerPlugin.m_ClearAllKey ) ;
 
-    //-m_pConfigPanel->Cfg_ShowToolbar->SetValue(m_BrowseTrackerPlugin.IsViewToolbarEnabled());
+    m_pConfigPanel->Cfg_ActivatePrevEd->SetValue(m_BrowseTrackerPlugin.m_CfgActivatePrevEd); //2020/06/15
+
+//-m_pConfigPanel->Cfg_ShowToolbar->SetValue(m_BrowseTrackerPlugin.IsViewToolbarEnabled());
     m_pConfigPanel->Cfg_ShowToolbar->SetValue(m_BrowseTrackerPlugin.m_ConfigShowToolbar);
 
 }//Init
@@ -162,6 +167,22 @@ void BrowseTrackerConfPanel::OnWrapJumpEntries( wxCommandEvent& event )
     if ( m_pConfigPanel->Cfg_WrapJumpEntries->IsChecked() )
     {
         m_pConfigPanel->Cfg_WrapJumpEntries->Enable(true);
+    }
+    event.Skip();
+}
+// ----------------------------------------------------------------------------
+void BrowseTrackerConfPanel::OnActivatePrevEd( wxCommandEvent& event ) //2020/06/15
+// ----------------------------------------------------------------------------
+{
+    // Enable switching to previous editor when current closed
+    if ( not m_pConfigPanel->Cfg_ActivatePrevEd->IsChecked() )
+    {
+        m_pConfigPanel->Cfg_ActivatePrevEd->Enable(false);
+    }
+
+    if ( m_pConfigPanel->Cfg_ActivatePrevEd->IsChecked() )
+    {
+        m_pConfigPanel->Cfg_ActivatePrevEd->Enable(true);
     }
     event.Skip();
 }

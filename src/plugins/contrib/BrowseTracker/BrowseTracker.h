@@ -195,6 +195,7 @@ class BrowseTracker : public cbPlugin
         bool            m_WrapJumpEntries;    //wrap jump entries when top or botton reached
         bool            m_ToolbarIsShown;     // Show BrowseTracker toolbar
         bool            m_ConfigShowToolbar;  // Show BrowseTracker toolbar
+        bool            m_CfgActivatePrevEd;     // Activate previously activated editor
 
 	private:
 
@@ -297,6 +298,8 @@ class BrowseTracker : public cbPlugin
         BrowseSelector* m_popupWin;
         EditorBase*     m_UpdateUIFocusEditor;
         EditorBase*     m_LastEbDeactivated;
+        EditorBase*     m_PreviousEbActivated;
+        EditorBase*     m_CurrentEbActivated;
         int             m_nRemoveEditorSentry;
         int             m_nBrowseMarkPreviousSentry;
         int             m_nBrowseMarkNextSentry;

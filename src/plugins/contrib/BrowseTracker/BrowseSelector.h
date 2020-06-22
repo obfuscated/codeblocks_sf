@@ -47,7 +47,7 @@ class BrowseSelector : public wxScrollingDialog
          * Parameterized constructor
          * \param parent dialog parent window
          */
-        BrowseSelector(wxWindow* parent, BrowseTracker* pBrowseTracker, bool bDirection);
+        BrowseSelector(wxWindow* parent, BrowseTracker* pBrowseTracker, int menuID);
 
         /**
          * Destructor
@@ -59,14 +59,16 @@ class BrowseSelector : public wxScrollingDialog
          * dialog
          * \param parent dialog parent window
          */
-        void Create(wxWindow* parent, BrowseTracker* pBrowseTracker, bool bDirection);
+        void Create(wxWindow* parent, BrowseTracker* pBrowseTracker, int menuID);
 
         /// Event handling
         void OnKeyUp(wxKeyEvent &event);
+        void OnKeyDown(wxKeyEvent &event);
         void OnNavigationKey(wxKeyEvent &event);
         void OnItemSelected(wxCommandEvent &event);
         void OnPanelPaint(wxPaintEvent &event);
         void OnPanelEraseBg(wxEraseEvent &event);
+        void OnWindowKillFocus(wxFocusEvent& event);
         int  PopulateListControl(EditorBase* pEditor);
 
     private:
@@ -92,8 +94,10 @@ class BrowseSelector : public wxScrollingDialog
          */
         void PaintStraightGradientBox(wxDC& dc, const wxRect& rect, const wxColour& startColor, const wxColour& endColor, bool  vertical = true);
 
-        BrowseTracker*      m_pBrowseTracker;
-        bool                m_bDirection;
+        BrowseTracker*  m_pBrowseTracker;
+        int             m_menuID;
+        int             m_KeyDownCode;
+        int             m_KeyDownMods;
 
 };
 
