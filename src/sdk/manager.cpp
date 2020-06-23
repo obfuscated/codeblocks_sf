@@ -520,7 +520,8 @@ bool Manager::LoadResource(const wxString& file)
 
     if (wxFile::Access(resourceFile, wxFile::read) == false)
     {
-        Get()->GetLogManager()->LogError(_("Manager failed to access XRC resource '") + resourceFile + _("'."));
+        Get()->GetLogManager()->LogError(wxString::Format(_("Manager failed to access XRC resource '%s'."),
+                                                          resourceFile.wx_str()));
         return false;
     }
 
@@ -547,15 +548,19 @@ bool Manager::LoadResource(const wxString& file)
             wxMemoryFSHandler::AddFile(file, buf, len);
         }
         wxLogNull ln; // avoid warnings about missing xrc files o wx31+ with verbose messages enabled
-        if ( !wxXmlResource::Get()->Load(memoryFile) )
-            Get()->GetLogManager()->LogError(_("Manager failed to load XRC resource '") + resourceFile + _("'."));
+        if (!wxXmlResource::Get()->Load(memoryFile))
+        {
+            Get()->GetLogManager()->LogError(wxString::Format(_("Manager failed to load XRC resource '%s'."),
+                                                              resourceFile.wx_str()));
+        }
         delete[] buf;
         return true;
     }
     catch (...)
     {
         delete[] buf;
-        Get()->GetLogManager()->LogError(_("Manager hardly failed to load XRC resource '") + resourceFile + _("'."));
+        Get()->GetLogManager()->LogError(wxString::Format(_("Manager hardly failed to load XRC resource '%s'."),
+                                                          resourceFile.wx_str()));
         return false;
     }
 }

@@ -120,7 +120,8 @@ class DLLIMPORT EditorColourSet
         void SetKeywords(HighlightLanguage lang, int idx, const wxString& keywords);
 
         const wxArrayString& GetFileMasks(HighlightLanguage lang);
-        void SetFileMasks(HighlightLanguage lang, const wxString& masks, const wxString& = _(","));
+        void SetFileMasks(HighlightLanguage lang, const wxString& masks,
+                          const wxString& separator = ",");
 
         wxString GetSampleCode(HighlightLanguage lang, int* breakLine, int* debugLine, int* errorLine);
         void SetSampleCode(HighlightLanguage lang, const wxString& sample, int breakLine, int debugLine, int errorLine);

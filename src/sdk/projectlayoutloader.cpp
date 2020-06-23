@@ -101,7 +101,7 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
             {
                 msg << _("0.0 (unversioned) to 1.0:\n");
                 msg << _("  * save editor-pane layout and order.\n");
-                msg << _("\n");
+                msg << _T("\n");
             }
 
             if (!msg.IsEmpty())

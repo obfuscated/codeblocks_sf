@@ -3028,7 +3028,7 @@ int CompilerGCC::CompileFile(const wxString& file)
     if (!bt)
     {
         const wxString err(_("error: Cannot find target for file"));
-        LogMessage(pf->relativeToCommonTopLevelPath + _(": ") + err, cltError);
+        LogMessage(pf->relativeToCommonTopLevelPath + ": " + err, cltError);
         LogWarningOrError(cltError, m_pProject, pf->relativeToCommonTopLevelPath, wxEmptyString, err);
         return -2;
     }
@@ -3063,7 +3063,7 @@ int CompilerGCC::CompileFileDefault(cbProject* project, ProjectFile* pf, Project
     {
         const wxString &err = wxString::Format(_("error: Cannot build file for target '%s'. Compiler '%s' cannot be found!"),
                                                bt->GetTitle().wx_str(), bt->GetCompilerID().wx_str());
-        LogMessage(pf->relativeToCommonTopLevelPath + _(": ") + err, cltError);
+        LogMessage(pf->relativeToCommonTopLevelPath + ": " + err, cltError);
         LogWarningOrError(cltError, project, pf->relativeToCommonTopLevelPath, wxEmptyString, err);
         return -3;
     }

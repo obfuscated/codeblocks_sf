@@ -179,7 +179,7 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf) 
         XRCCTRL(*this, "txtAbsName",         wxTextCtrl)->SetValue(m_FileNameStr);
         XRCCTRL(*this, "txtRelName",         wxTextCtrl)->SetValue(pf->relativeFilename);
 
-        SetTitle(_("Properties of ") + wxString(_("\"")) + pf->relativeFilename + wxString(_("\"")));
+        SetTitle(wxString::Format(_("Properties of \"%s\""), pf->relativeFilename.wx_str()));
     }
     XRCCTRL(*this, "txtObjName",               wxTextCtrl)->Enable(false);
     // included files not implemented yet -> hide it

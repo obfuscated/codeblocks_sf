@@ -1716,7 +1716,8 @@ void MainFrame::SaveViewLayout(const wxString& name, const wxString& layout, con
     }
 }
 
-bool MainFrame::LayoutDifferent(const wxString& layout1,const wxString& layout2,const wxString& delimiter)
+bool MainFrame::LayoutDifferent(const wxString& layout1, const wxString& layout2,
+                                const wxString& delimiter)
 {
     wxStringTokenizer strTok;
     unsigned long j;
@@ -1799,9 +1800,25 @@ bool MainFrame::DoCheckCurrentLayoutForChanges(bool canCancel)
     DoFixToolbarsLayout();
     wxString lastlayout = m_LayoutManager.SavePerspective();
     wxString lastmessagepanelayout = m_pInfoPane->SaveTabOrder();
-    if (!m_LastLayoutName.IsEmpty() &&
-        (LayoutDifferent(lastlayout, m_LastLayoutData) ||
-         LayoutMessagePaneDifferent(lastmessagepanelayout, m_LastMessagePaneLayoutData, Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/save_selection_change_in_mp"), true)) ))
+
+    if (m_LastLayoutName.empty())
+        return true;
+
+    bool layoutChanged = false;
+    if (LayoutDifferent(lastlayout, m_LastLayoutData, "|"))
+        layoutChanged = true;
+    else
+    {
+        ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("message_manager"));
+        const bool saveSelection = cfg->ReadBool(_T("/save_selection_change_in_mp"), true);
+        if (LayoutMessagePaneDifferent(lastmessagepanelayout, m_LastMessagePaneLayoutData,
+                                       saveSelection))
+        {
+            layoutChanged = true;
+        }
+    }
+
+    if (layoutChanged)
     {
         AnnoyingDialog dlg(_("Layout changed"),
                             wxString::Format(_("The perspective '%s' has changed. Do you want to save it?"), m_LastLayoutName.wx_str()),

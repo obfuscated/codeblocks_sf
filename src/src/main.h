@@ -71,8 +71,10 @@ class MainFrame : public wxFrame
     private:
         MainFrame(cb_unused const MainFrame& rhs); // prevent copy construction
 
-        bool LayoutDifferent(const wxString& layout1,const wxString& layout2,const wxString& delimiter=_("|"));
-        bool LayoutMessagePaneDifferent(const wxString& layout1,const wxString& layout2, bool checkSelection=false);
+        bool LayoutDifferent(const wxString& layout1, const wxString& layout2,
+                             const wxString& delimiter);
+        bool LayoutMessagePaneDifferent(const wxString& layout1, const wxString& layout2,
+                                        bool checkSelection=false);
     public:
 
         MainFrame(wxWindow* parent = (wxWindow*)NULL);
