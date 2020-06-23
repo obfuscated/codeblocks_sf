@@ -88,7 +88,7 @@ namespace ScriptBindings
     {
         return Manager::Get()->GetPluginManager()->ExecutePlugin(pluginName);
     }
-    int ConfigurePlugin(const wxString& pluginName)
+    int ConfigurePlugin(cb_unused const wxString& pluginName)
     {
         return 0; /* leaving script binding intact for compatibility, but this is factually not implemented at all */
     }
