@@ -403,6 +403,7 @@ namespace ScriptBindings
                 emptyCtor().
                 staticFuncVarArgs(&wxString_OpAdd, "_add", "*").
                 staticFuncVarArgs(&wxString_OpCmp, "_cmp", "*").
+                staticFuncVarArgs(&wxString_OpCmp, "Compare", "*").
                 staticFuncVarArgs(&wxString_OpToString, "_tostring", "").
                 func<WXSTR_FIRST_STR>(&wxString::First, "Find").
                 staticFuncVarArgs(&wxString_Matches, "Matches", "*").
