@@ -94,7 +94,10 @@ void DebuggerSettingsPanel::OnButtonCreate(cb_unused wxCommandEvent& event)
             if (m_dialog->CreateConfig(this, m_plugin, name))
                 break;
             else
-                cbMessageBox(_("Name is not unique! Choose different one."), _("Error"), wxICON_ERROR, this);
+            {
+                cbMessageBox(_("Name is not unique! Choose different one."), _("Error"),
+                             wxICON_ERROR, this);
+            }
         }
     }
 }
@@ -106,8 +109,8 @@ void DebuggerSettingsPanel::OnButtonDelete(cb_unused wxCommandEvent& event)
 
 void DebuggerSettingsPanel::OnButtonReset(cb_unused wxCommandEvent& event)
 {
-    if (cbMessageBox(_("Are you sure you want to reset the settings for the selected plugin?"), _("Reset settings"),
-                     wxICON_QUESTION | wxYES) == wxID_NO)
+    if (cbMessageBox(_("Are you sure you want to reset the settings for the selected plugin?"),
+                     _("Reset settings"), wxICON_QUESTION | wxYES_NO, this) == wxID_NO)
     {
         return;
     }
