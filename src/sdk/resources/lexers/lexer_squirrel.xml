@@ -56,7 +56,7 @@
 				<Keywords>
 						<Language index="0"
 								value="break case catch class clone continue
-										default delegate delete else extends for
+										default delegate delete else enum extends for
 										foreach function if in local null resume
 										return switch this throw try typeof
 										while parent yield constructor vargc vargv
