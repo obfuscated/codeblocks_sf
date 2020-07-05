@@ -438,17 +438,18 @@ void cbDebuggerCommonConfig::SetValueTooltipFont(const wxString &font)
 cbDebuggerCommonConfig::Perspective cbDebuggerCommonConfig::GetPerspective()
 {
     ConfigManager *c = Manager::Get()->GetConfigManager(wxT("debugger_common"));
-    int v = c->ReadInt(wxT("/common/perspective"), static_cast<int>(OnePerDebuggerConfig));
-    if (v < OnlyOne || v > OnePerDebuggerConfig)
-        return OnePerDebuggerConfig;
+    int v = c->ReadInt(wxT("/common/perspective"),
+                       static_cast<int>(Perspective::OnePerDebuggerConfig));
+    if (v < Perspective::OnlyOne || v > Perspective::UseCurrent)
+        return Perspective::OnePerDebuggerConfig;
     return static_cast<Perspective>(v);
 }
 
 void cbDebuggerCommonConfig::SetPerspective(int perspective)
 {
     ConfigManager *c = Manager::Get()->GetConfigManager(wxT("debugger_common"));
-    if (perspective < OnlyOne || perspective > OnePerDebuggerConfig)
-        perspective = OnePerDebuggerConfig;
+    if (perspective < Perspective::OnlyOne || perspective > Perspective::UseCurrent)
+        perspective = Perspective::OnePerDebuggerConfig;
     c->Write(wxT("/common/perspective"), perspective);
 }
 

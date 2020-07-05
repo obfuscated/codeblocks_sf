@@ -36,11 +36,11 @@ END_EVENT_TABLE()
 DebuggerSettingsCommonPanel::DebuggerSettingsCommonPanel(wxWindow* parent)
 {
 	//(*Initialize(DebuggerSettingsCommonPanel)
-	wxFlexGridSizer* flexSizer;
+	wxBoxSizer* BoxSizer1;
 	wxBoxSizer* mainSizer;
 	wxButton* chooseFont;
+	wxFlexGridSizer* flexSizer;
 	wxStaticBoxSizer* valueTooltipSizer;
-	wxBoxSizer* BoxSizer1;
 	wxStaticText* labelPerspective;
 
 	Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
@@ -74,6 +74,8 @@ DebuggerSettingsCommonPanel::DebuggerSettingsCommonPanel(wxWindow* parent)
 	m_perspective->Append(_("Only one perspective"));
 	m_perspective->Append(_("One perspective per Debugger"));
 	m_perspective->SetSelection( m_perspective->Append(_("One perspective per Debugger configuration")) );
+	m_perspective->Append(_("Use current"));
+	m_perspective->SetToolTip(_("When debugging is started the perspective would be changed to a debugging perspective. The name of perspective which will be used is controlled by this option."));
 	BoxSizer1->Add(m_perspective, 1, wxLEFT|wxEXPAND, 5);
 	flexSizer->Add(BoxSizer1, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
 	mainSizer->Add(flexSizer, 1, wxALL|wxALIGN_LEFT, 0);

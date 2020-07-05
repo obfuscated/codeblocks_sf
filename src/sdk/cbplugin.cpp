@@ -578,6 +578,9 @@ void cbDebuggerPlugin::SwitchToDebuggingLayout()
     case cbDebuggerCommonConfig::OnePerDebuggerConfig:
         perspectiveName = GetGUIName() + wxT(":") + config.GetName();
         break;
+    case cbDebuggerCommonConfig::UseCurrent:
+        m_PreviousLayout = wxString();
+        return;
     case cbDebuggerCommonConfig::OnlyOne:
     default:
         perspectiveName = _("Debugging");
@@ -599,6 +602,9 @@ void cbDebuggerPlugin::SwitchToDebuggingLayout()
 
 void cbDebuggerPlugin::SwitchToPreviousLayout()
 {
+    if (m_PreviousLayout.empty())
+        return;
+
     CodeBlocksLayoutEvent switchEvent(cbEVT_SWITCH_VIEW_LAYOUT, m_PreviousLayout);
 
     wxString const &name = !switchEvent.layout.IsEmpty() ? switchEvent.layout : wxString(_("Code::Blocks default"));

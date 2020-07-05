@@ -3,12 +3,12 @@
 
 #ifndef CB_PRECOMP
 	//(*HeadersPCH(DebuggerSettingsCommonPanel)
-	#include <wx/checkbox.h>
-	#include <wx/sizer.h>
 	#include <wx/button.h>
-	#include <wx/panel.h>
-	#include <wx/stattext.h>
+	#include <wx/checkbox.h>
 	#include <wx/choice.h>
+	#include <wx/panel.h>
+	#include <wx/sizer.h>
+	#include <wx/stattext.h>
 	//*)
 #endif
 //(*Headers(DebuggerSettingsCommonPanel)
@@ -28,13 +28,13 @@ class DebuggerSettingsCommonPanel: public wxPanel
 	private:
 
 		//(*Declarations(DebuggerSettingsCommonPanel)
-		wxStaticText* m_valueTooltipLabel;
 		wxCheckBox* m_autoBuild;
-		wxChoice* m_perspective;
-		wxCheckBox* m_requireCtrlForTooltips;
-		wxCheckBox* m_jumpOnDoubleClick;
 		wxCheckBox* m_autoSwitch;
 		wxCheckBox* m_debuggersLog;
+		wxCheckBox* m_jumpOnDoubleClick;
+		wxCheckBox* m_requireCtrlForTooltips;
+		wxChoice* m_perspective;
+		wxStaticText* m_valueTooltipLabel;
 		//*)
     private:
         wxString m_valueTooltipFontInfo;

@@ -204,7 +204,8 @@ struct DLLIMPORT cbDebuggerCommonConfig
     {
         OnlyOne = 0,
         OnePerDebugger,
-        OnePerDebuggerConfig
+        OnePerDebuggerConfig,
+        UseCurrent
     };
 
     static bool GetFlag(Flags flag);

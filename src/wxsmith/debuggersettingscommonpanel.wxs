@@ -86,8 +86,10 @@
 										<item>Only one perspective</item>
 										<item>One perspective per Debugger</item>
 										<item>One perspective per Debugger configuration</item>
+										<item>Use current</item>
 									</content>
 									<selection>2</selection>
+									<tooltip>When debugging is started the perspective would be changed to a debugging perspective. The name of perspective which will be used is controlled by this option.</tooltip>
 								</object>
 								<flag>wxLEFT|wxEXPAND</flag>
 								<border>5</border>
