@@ -1152,7 +1152,7 @@
 																<label>Number of processes for parallel builds:</label>
 																<fg>#800000</fg>
 															</object>
-															<flag>wxTOP|wxRIGHT|wxALIGN_TOP</flag>
+															<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 															<border>4</border>
 														</object>
 														<object class="sizeritem">
@@ -1160,23 +1160,23 @@
 																<value>0</value>
 																<max>65535</max>
 															</object>
-															<flag>wxALIGN_TOP</flag>
+															<flag>wxEXPAND</flag>
 														</object>
 														<object class="sizeritem">
 															<object class="wxStaticText" name="ID_STATICTEXT26">
 																<label>Max nr. of errors to log (0=unlimited):</label>
 															</object>
-															<flag>wxTOP|wxRIGHT|wxALIGN_TOP</flag>
+															<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 															<border>4</border>
 														</object>
 														<object class="sizeritem">
 															<object class="wxSpinCtrl" name="spnMaxErrors">
 																<value>50</value>
 															</object>
-															<flag>wxALIGN_TOP</flag>
+															<flag>wxEXPAND</flag>
 														</object>
 													</object>
-													<flag>wxALL|wxEXPAND</flag>
+													<flag>wxALL</flag>
 													<border>8</border>
 												</object>
 												<object class="sizeritem">
