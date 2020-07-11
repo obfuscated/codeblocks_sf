@@ -94,7 +94,6 @@
 							<object class="sizeritem">
 								<object class="wxNotebook" name="nbMain">
 									<size>600,-1</size>
-									<tooltip>Use a value of 0 if you want to use all available CPU resources. This means that the Code::Blocks build system would try to use all processor threads/cores. For most implementations this means all logical threads. For details see the implementation of wxThread::GetCPUCount for your platform. (On Windows this might be limitted to 64)</tooltip>
 									<object class="notebookpage">
 										<object class="wxPanel" name="tabCompiler">
 											<object class="wxBoxSizer">
@@ -1159,6 +1158,7 @@
 															<object class="wxSpinCtrl" name="spnParallelProcesses">
 																<value>0</value>
 																<max>65535</max>
+																<tooltip>Use a value of 0 if you want to use all available CPU resources. This means that the Code::Blocks build system would try to use all processor threads/cores. For most implementations this means all logical threads. For details see the implementation of wxThread::GetCPUCount for your platform. (On Windows this might be limitted to 64)</tooltip>
 															</object>
 															<flag>wxEXPAND</flag>
 														</object>
