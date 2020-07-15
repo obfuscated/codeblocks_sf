@@ -23,10 +23,10 @@
 // Modified Keybinder for CodeBlocks KeyBnder v2.0
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "2.0.15 2020/05/30"
+#define VERSION "2.0.16 2020/07/14"
+
 // -----------------------------------
 class wxKeyConfigPanel;
-class wxKeyProfileArray;
 class wxWindow;
 class wxEvent;
 class wxMenuBar;
@@ -701,4 +701,9 @@ class cbKeyBinder : public cbPlugin
 //          Do not allow non-ascii unicode chars in accelerators
 //          see wxKeyMonitorTextCtrl::OnKey()
 //          clKeyboardManager::DoLoadDefaultAccelerators()
+// ----------------------------------------------------------------------------
+//  Commit 2.0.16 2020/07/14
+//          Fix duplicate keybindings in internationalizations
+//          Remove duplicate global keybindings
+//          http://forums.codeblocks.org/index.php/topic,23358.msg162587.html#msg162587
 // ----------------------------------------------------------------------------

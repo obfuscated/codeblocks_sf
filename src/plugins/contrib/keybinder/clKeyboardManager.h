@@ -180,7 +180,7 @@ public:
     void     LogAccelerators(MenuItemDataMap_t& menuTable, wxString title);
 
     MenuItemData* FindMenuTableEntryFor(MenuItemDataMap_t& hashTable, MenuItemData* pMenuMapItem);
-    MenuItemData* FindMenuPathEntryFor(MenuItemDataMap_t& hashTable, MenuItemData* pMenuMapItem);
+    MenuItemData* FindEntryByPathAndAccel(MenuItemDataMap_t& hashTable, MenuItemData* pMenuMapItem);
 
     wxString GetTempKeyMnuAccelsFilename() //(2020/02/25)
     {

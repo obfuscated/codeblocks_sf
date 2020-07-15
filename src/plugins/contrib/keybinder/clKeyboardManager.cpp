@@ -426,7 +426,7 @@ void clKeyboardManager::Initialize(bool isRefreshRequest)
             MenuItemData* pMenuItemData = &(mapIter->second);
             if (mapIter->second.parentMenu.Length()) //parent menu must not be blank (global accelerator)
             {
-                MenuItemData* pDftTableEntry = FindMenuPathEntryFor(defaultEntries, pMenuItemData);
+                MenuItemData* pDftTableEntry = FindMenuTableEntryFor(defaultEntries, pMenuItemData);
                 // if the menu tree accel != .conf accel, this must be a user defined accel, set user accel into tree menu item,
                 // else just remove it, it'll be replaced by the actual tree menu later
                 if (pDftTableEntry and (mapIter->second.accel != pDftTableEntry->accel))
@@ -455,22 +455,26 @@ void clKeyboardManager::Initialize(bool isRefreshRequest)
                 continue;
             wxString mapParent = mapIter->second.parentMenu;
             wxString dftMnuParent = dftMnuIter->second.parentMenu;
+
             if (mapParent.empty()) continue;    //skip .conf global accelerators
-            if (dftMnuParent.empty()) continue; //skip global accelerators from default.conf file     //2020/04/6
+            /// error (next stmt) because dftMnuParent was a global and mapParent was not //(2020/07/13)
+            //-if (dftMnuParent.empty()) continue; //skip global accelerators from default.conf file     //2020/04/6
+
 
             if (mapParent.Lower() != dftMnuParent.Lower())
             {
                     wxString mapMnuID  = mapIter->first;
                     wxString mapAccel  = mapIter->second.accel;
                     wxString mapParent = mapIter->second.parentMenu; //2020/04/6
+                    bool isGlobal = (mapParent.empty() or dftMnuParent.empty()); //(2020/07/14)
                 #if defined(LOGGING)
-                    LOGIT( _T("Removing LabelMismatch[%s][%s][%s]"), mapMnuID.wx_str(), mapParent.wx_str(), mapAccel.wx_str());
+                    LOGIT( _T("Removing Label Mismatch[%s][%s][%s][%s]"), mapMnuID.wx_str(), mapParent.wx_str(), mapAccel.wx_str(), (isGlobal? wxT("Global conflict":wxT("Menu mismatch"))) );
                 #endif
-                Manager::Get()->GetLogManager()->DebugLog(F(_T("KeyBinder:Removing LabelMismatch[%s][%s][%s]"), mapMnuID.wx_str(), mapParent.wx_str(), mapAccel.wx_str()));
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("KeyBinder:Removing Label Mismatch[%s][%s][%s][%s]"), mapMnuID.wx_str(), mapParent.wx_str(), mapAccel.wx_str(), (isGlobal? wxT("Global conflict":wxT("Menu mismatch")))  )) ;
 
                 // Find the menu id in the menu tree that matches this user menu title
                 MenuItemData* pMapMenuItemData = &(mapIter->second);
-                MenuItemData* pDftTableEntry = FindMenuPathEntryFor(defaultEntries, pMapMenuItemData);
+                MenuItemData* pDftTableEntry = FindMenuTableEntryFor(defaultEntries, pMapMenuItemData);
 
                 // Change the users menuID to match this menu label/accelerator
                 // if users accel is different than menu structure, update the user map menu //2020/04/6
@@ -499,7 +503,7 @@ void clKeyboardManager::Initialize(bool isRefreshRequest)
     }//endfor mapIter
 
     #if defined(LOGGING)
-        //LogAccelerators(m_menuTable, _T("Log 1"));
+        LogAccelerators(m_menuTable, _T("Log 1"));
     #endif
 
     // ----------------------------------------------------------------------------
@@ -542,7 +546,7 @@ void clKeyboardManager::Initialize(bool isRefreshRequest)
     };
 
     #if defined(LOGGING)
-        //LogAccelerators(m_menuTable, _T("MergedLog 2"));
+        LogAccelerators(m_menuTable, _T("MergedLog 2"));
     #endif
 
     // Warn about duplicate shortcut entries (eg., (Print/PrevCallTip Ctrl-P) and (CC Search/Ctrl-Shift-.) have duplicates) //(2019/04/23)
@@ -555,8 +559,8 @@ void clKeyboardManager::Initialize(bool isRefreshRequest)
     config.SetBindings(m_menuTable, m_globalTable).Save();
 
     #if defined(LOGGING)
-        //LogAccelerators(m_menuTable, _T("MenuLog 3"));
-        //LogAccelerators(m_globalTable, _T("GlobalsLog 3"));
+        LogAccelerators(m_menuTable, _T("MenuLog 3"));
+        LogAccelerators(m_globalTable, _T("GlobalsLog 3"));
     #endif
 
     // And apply the changes
@@ -577,13 +581,25 @@ void clKeyboardManager::SetAccelerators(const MenuItemDataMap_t& accels)
 {
     // separate the globals from the menu accelerators
     // The process is done by checking each item's parentMenu
-    // If the parentMenu is empty -> global accelerator
+    // If the parentMenu is empty, it's a global accelerator
     MenuItemDataMap_t globals, menus;
     MenuItemDataMap_t::const_iterator iter = accels.begin();
-    for(; iter != accels.end(); ++iter) {
-        if(iter->second.parentMenu.IsEmpty()) {
-            globals.insert(std::make_pair(iter->first, iter->second));
-        } else {
+    for(; iter != accels.end(); ++iter)
+    {
+        if(iter->second.parentMenu.IsEmpty())
+        {
+            MenuItemData* pMenuItemData = (MenuItemData*)(&(iter->second));
+            // skip duplicates of previouly entered globals
+            MenuItemData* pGlobalTableEntry = FindEntryByPathAndAccel(globals, pMenuItemData); //(2020/07/14)
+            if (not pGlobalTableEntry)                                          //2020/07/14)
+                globals.insert(std::make_pair(iter->first, iter->second));
+            #if defined(LOGGING)
+            else
+                LOGIT( _T("Keybinder: skipping duplicate global[%s],[%s]"), iter->second.resourceID, iter->second.accel.wx_str());
+            #endif
+        }
+        else
+        {
             menus.insert(std::make_pair(iter->first, iter->second));
         }
     }
@@ -1235,14 +1251,13 @@ MenuItemData* clKeyboardManager::FindMenuTableEntryFor(MenuItemDataMap_t& hashTa
     return nullptr;
 }
 // ----------------------------------------------------------------------------
-MenuItemData* clKeyboardManager::FindMenuPathEntryFor(MenuItemDataMap_t& hashTable, MenuItemData* pMenuMapItem)
+MenuItemData* clKeyboardManager::FindEntryByPathAndAccel(MenuItemDataMap_t& hashTable, MenuItemData* pMenuMapItem)
 // ----------------------------------------------------------------------------
 {
     for (MenuItemDataMap_t::iterator mapIter = hashTable.begin(); mapIter != hashTable.end(); ++mapIter)
     {
-        //if ( (mapIter->second.resourceID == pMenuMapItem->resourceID)
-        //    and (mapIter->second.parentMenu == pMenuMapItem->parentMenu) )
-        if ( (mapIter->second.parentMenu == pMenuMapItem->parentMenu) )
+        if ( (mapIter->second.accel == pMenuMapItem->accel)
+                and (mapIter->second.parentMenu == pMenuMapItem->parentMenu) )
             return  &(mapIter->second);
     }
     return nullptr;
