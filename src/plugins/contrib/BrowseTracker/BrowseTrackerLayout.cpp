@@ -294,9 +294,11 @@ void BrowseTrackerLayout::DumpBrowse_Marks( const wxString /*hashType*/, FileBro
     {
         wxString filename = it->first;
         BrowseMarks* p = it->second;
-        LOGIT( _T("Filename[%s]%s*[%p]name[%s]"), filename.c_str(), hashType.c_str(), p, p->GetFilePath().c_str() );
+        LOGIT( _T("Filename[%s]%s*[%p]name[%s]"), filename.c_str(), hashType.c_str(), p,
+              (p ? p->GetFilePath().c_str() : ""));
         if (p)
-        {   //dump the browse marks
+        {
+            //dump the browse marks
             p->Dump();
         }
     }

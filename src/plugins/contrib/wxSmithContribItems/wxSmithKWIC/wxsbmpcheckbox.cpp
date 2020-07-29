@@ -127,7 +127,7 @@ void wxsBmpCheckbox::OnBuildCreatingCode()
             Codef(_T("%C(%W,%I, %s, %s, %s, %s, %P,%S, %s);\n"), sOn.c_str(), sOff.c_str(), sOnSel.c_str(), sOffSel.c_str(), _T("wxBORDER_NONE"));
 #endif
             // The defaults are border on and wxDOT.
-            if(!m_bBorder || (m_bBorder && m_iBorderStyle != wxDOT)){
+            if(!m_bBorder || m_iBorderStyle != wxDOT){
                 Codef(_T("%ASetBorder(%b, %d);\n"), m_bBorder, m_iBorderStyle);
             }
             if(m_bChecked){
@@ -159,7 +159,7 @@ wxObject *wxsBmpCheckbox::OnBuildPreview(wxWindow *parent, long flags)
     kwxBmpCheckBox *preview = new kwxBmpCheckBox(parent, GetId(), *pbmpOn, *pbmpOff, *pbmpOnSel, *pbmpOffSel, Pos(parent), Size(parent), wxBORDER_NONE);
 
     // The defaults are border on and wxDOT.
-    if(!m_bBorder || (m_bBorder && m_iBorderStyle != wxDOT)){
+    if(!m_bBorder || m_iBorderStyle != wxDOT){
         preview->SetBorder(m_bBorder, m_iBorderStyle);
     }
     if(m_bChecked){

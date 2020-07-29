@@ -314,15 +314,15 @@ bool wxsSizerFlagsProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* E
 
 bool wxsSizerFlagsProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element)
 {
-    if ( Element )
+    if (Element!=nullptr)
     {
         FLAGS &= ~ParentAlignMask;
         FLAGS |= GetParentOrientation(Element);
+
+        FixFlags(FLAGS);
+
+        Element->InsertEndChild(TiXmlText(cbU2C(GetString(FLAGS))));
     }
-
-    FixFlags(FLAGS);
-
-    Element->InsertEndChild(TiXmlText(cbU2C(GetString(FLAGS))));
 
     return true;
 }

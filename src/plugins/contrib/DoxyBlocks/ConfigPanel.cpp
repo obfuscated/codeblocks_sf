@@ -581,6 +581,9 @@ void ConfigPanel::Init()
  */
 void ConfigPanel::InitSTC(cbStyledTextCtrl *stc)
 {
+    if (!stc)
+        return;
+
     stc->SetLexer(wxSCI_LEX_CPP);
     stc->SetMarginType(0, wxSCI_MARGIN_NUMBER);
     stc->SetMarginWidth(0, 32);
@@ -590,22 +593,20 @@ void ConfigPanel::InitSTC(cbStyledTextCtrl *stc)
     stc->SetReadOnly(true);
     stc->SetUseHorizontalScrollBar(false);
 
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(wxT("editor"));
-    wxString sFont = cfg->Read(wxT("/font"), wxEmptyString);
-    wxFont fnt(10, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-    if (!sFont.IsEmpty())
+    // Colourise.
+    EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+    if (colour_set)
     {
-        wxNativeFontInfo nfi;
-        nfi.FromString(sFont);
-        fnt.SetNativeFontInfo(nfi);
-    }
+        ConfigManager* cfg = Manager::Get()->GetConfigManager(wxT("editor"));
+        wxString sFont = cfg->Read(wxT("/font"), wxEmptyString);
+        wxFont fnt(10, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+        if (!sFont.IsEmpty())
+        {
+            wxNativeFontInfo nfi;
+            nfi.FromString(sFont);
+            fnt.SetNativeFontInfo(nfi);
+        }
 
-    if (stc)
-    {
-        // Colourise.
-        EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
-        if (!colour_set)
-            return;
         stc->StyleSetFont(wxSCI_STYLE_DEFAULT, fnt);
         colour_set->Apply(colour_set->GetHighlightLanguage(wxT("C/C++")), stc, false, true);
     }

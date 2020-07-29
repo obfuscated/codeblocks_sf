@@ -55,8 +55,8 @@ ThreadSearchView::ThreadSearchView(ThreadSearch& threadSearchPlugin) :
     m_StoppingThread(0),
     m_LastFocusedWindow(nullptr)
 {
-    m_pFindThread = NULL;
-    m_pToolBar    = NULL;
+    m_pFindThread = nullptr;
+    m_pToolBar = nullptr;
     const wxString &prefix = GetImagePrefix(false, Manager::Get()->GetAppWindow());
     const double scaleFactor = cbGetContentScaleFactor(*Manager::Get()->GetAppWindow());
 
@@ -117,7 +117,7 @@ ThreadSearchView::ThreadSearchView(ThreadSearch& threadSearchPlugin) :
 
 ThreadSearchView::~ThreadSearchView()
 {
-    if ( m_pFindThread != NULL )
+    if (m_pFindThread != nullptr)
     {
         StopThread();
     }
@@ -139,7 +139,7 @@ ThreadSearchView::~ThreadSearchView()
     m_ThreadSearchPlugin.OnThreadSearchViewDestruction();
 
     delete m_pLogger;
-    m_pLogger = NULL;
+    m_pLogger = nullptr;
 }
 
 // As SearchInPanel and DirectoryParamsPanel are generic, their
@@ -212,18 +212,18 @@ void ThreadSearchView::OnBtnSearchClick(wxCommandEvent &/*event*/)
     {
         int nbEvents = m_ThreadSearchEventsArray.GetCount();
         m_MutexSearchEventsArray.Unlock();
-        if ( m_pFindThread != NULL )
+        if (m_pFindThread != nullptr)
         {
             // A threaded search is running...
             UpdateSearchButtons(false);
             StopThread();
         }
-        else if ( nbEvents > 0 )
+        else if (nbEvents > 0)
         {
             // A threaded search has run but the events array is
             // not completely processed...
             UpdateSearchButtons(false);
-            if ( ClearThreadSearchEventsArray() == false )
+            if (ClearThreadSearchEventsArray() == false)
             {
                 cbMessageBox(_("Failed to clear events array."), _("Error"), wxICON_ERROR);
             }
@@ -489,12 +489,9 @@ void ThreadSearchView::OnThreadExit()
     // This method must be called only from ThreadSearchThread::OnExit
     // because delete is performed in the base class.
     // We reset the pointer to be sure it is not used.
-    if ( m_pFindThread != NULL )
-    {
-        m_pFindThread = NULL;
-    }
+    m_pFindThread = nullptr;
 
-    if ( m_StoppingThread > 0 )
+    if (m_StoppingThread > 0)
     {
         m_StoppingThread--;
     }
@@ -504,7 +501,7 @@ void ThreadSearchView::OnThreadExit()
 void ThreadSearchView::ThreadedSearch(const ThreadSearchFindData& aFindData)
 {
     // We don't search empty patterns
-    if ( aFindData.GetFindText() != wxEmptyString )
+    if (aFindData.GetFindText() != wxEmptyString)
     {
         ThreadSearchFindData findData(aFindData);
 
@@ -514,15 +511,15 @@ void ThreadSearchView::ThreadedSearch(const ThreadSearchFindData& aFindData)
 
         // Two steps thread creation
         m_pFindThread = new ThreadSearchThread(this, findData);
-        if ( m_pFindThread != NULL )
+        if (m_pFindThread != nullptr)
         {
-            if ( m_pFindThread->Create() == wxTHREAD_NO_ERROR )
+            if (m_pFindThread->Create() == wxTHREAD_NO_ERROR)
             {
                 // Thread execution
-                if ( m_pFindThread->Run() != wxTHREAD_NO_ERROR )
+                if (m_pFindThread->Run() != wxTHREAD_NO_ERROR)
                 {
                     m_pFindThread->Delete();
-                    m_pFindThread = NULL;
+                    m_pFindThread = nullptr;
                     cbMessageBox(_("Failed to run search thread"));
                 }
                 else
@@ -541,7 +538,7 @@ void ThreadSearchView::ThreadedSearch(const ThreadSearchFindData& aFindData)
             {
                 // Error
                 m_pFindThread->Delete();
-                m_pFindThread = NULL;
+                m_pFindThread = nullptr;
                 cbMessageBox(_("Failed to create search thread (2)"));
             }
         }
@@ -912,7 +909,7 @@ bool ThreadSearchView::ClearThreadSearchEventsArray()
     if ( success == true )
     {
         size_t i                  = m_ThreadSearchEventsArray.GetCount();
-        ThreadSearchEvent* pEvent = NULL;
+        ThreadSearchEvent* pEvent = nullptr;
         while ( i != 0 )
         {
             pEvent = static_cast<ThreadSearchEvent*>(m_ThreadSearchEventsArray[0]);
@@ -931,7 +928,7 @@ bool ThreadSearchView::ClearThreadSearchEventsArray()
 bool ThreadSearchView::StopThread()
 {
     bool success = false;
-    if ( (m_StoppingThread == 0) && (m_pFindThread != NULL) )
+    if ((m_StoppingThread == 0) && (m_pFindThread != nullptr))
     {
         // A search thread is running. We stop it.
         m_StoppingThread++;
@@ -943,7 +940,7 @@ bool ThreadSearchView::StopThread()
         wxThread::Sleep(2*TIMER_PERIOD);
 
         success = ClearThreadSearchEventsArray();
-        if ( success == false )
+        if (success == false)
         {
             cbMessageBox(_("Failed to clear events array."), _("Error"), wxICON_ERROR);
         }

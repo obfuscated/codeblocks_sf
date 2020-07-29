@@ -211,7 +211,7 @@ void ReopenEditor::OnEditorClosed(CodeBlocksEvent& event)
             isPrjClosing = (m_ClosedProjects.Index(prj) != wxNOT_FOUND);
             name = prj->GetTitle();
         }
-        if(!prj || (prj && !isPrjClosing))
+        if(!prj || !isPrjClosing)
         {
             wxArrayString list;
             list.Add(eb->GetFilename());
