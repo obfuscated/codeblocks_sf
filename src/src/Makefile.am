@@ -53,7 +53,6 @@ codeblocks_SOURCES = app.cpp \
 			infopane.cpp \
 			main.cpp \
 			notebookstyles.cpp \
-			prefix.cpp \
 			printdlg.cpp \
 			projectmanagerui.cpp \
 			projectdepsdlg.cpp \
@@ -93,7 +92,6 @@ noinst_HEADERS = app.h \
 			infopane.h \
 			main.h \
 			notebookstyles.h \
-			prefix.h \
 			printdlg.h \
 			projectmanagerui.h \
 			projectdepsdlg.h \

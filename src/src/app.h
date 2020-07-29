@@ -110,7 +110,6 @@ class CodeBlocksApp : public wxApp
         bool OnInit() override;
         int OnExit() override;
         int OnRun() override;
-        wxString GetAppPath() const;
         int ParseCmdLine(MainFrame* handlerFrame, const wxString& CmdLine = wxEmptyString);
         #if wxCHECK_VERSION(3,0,0)
         void OnCloseBatchBuildWindow(wxCloseEvent& evt);
@@ -142,6 +141,7 @@ class CodeBlocksApp : public wxApp
         wxLocale m_locale; // locale we'll be using
         wxArrayString m_DelayedFilesToOpen;
     private:
+        wxString GetAppPath() const;
         void SetupPersonality(const wxString& personality);
         void SetupImageSizes(wxToolBarAddOnXmlHandler *toolbarAddonHandler);
 

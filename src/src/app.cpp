@@ -25,6 +25,7 @@
 #include <wx/debugrpt.h>
 #include <wx/ipc.h>
 #include <wx/msgout.h>
+#include <wx/stdpaths.h>
 
 #include <cbexception.h>
 #include <configmanager.h>
@@ -48,10 +49,6 @@
 #include "crashhandler.h"
 #include "projectmanagerui.h"
 #include "splashscreen.h"
-
-#ifndef __WXMSW__
-    #include "prefix.h"  // binreloc
-#endif
 
 #if defined(__APPLE__) && defined(__MACH__)
 #include <sys/param.h>
@@ -1140,27 +1137,10 @@ wxString CodeBlocksApp::GetAppPath() const
     if (!m_Prefix.IsEmpty())
         return m_Prefix;
 
-#ifdef SELFPATH
-    // SELFPATH is a macro from prefix.h (binreloc)
-    // it returns the absolute filename of us
-    // similar to win32 GetModuleFileName()...
-    base = wxString(SELFPATH,wxConvUTF8);
+    base = wxStandardPaths::Get().GetExecutablePath();
     base = wxFileName(base).GetPath();
-#endif
-#if defined(sun) || defined(__sun)
-    base = wxString(getexecname(),wxConvCurrent);
-    base = wxFileName(base).GetPath();
-#endif
-#if defined(__APPLE__) && defined(__MACH__)
-    char path[MAXPATHLEN+1];
-    uint32_t path_len = MAXPATHLEN;
-    // SPI first appeared in Mac OS X 10.2
-    _NSGetExecutablePath(path, &path_len);
-    base = wxString(path, wxConvUTF8);
-    base = wxFileName(base).GetPath();
-#endif
-    if (base.IsEmpty())
-        base = _T(".");
+    if (base.empty())
+        base = ".";
 #endif
     return base;
 }

@@ -3907,12 +3907,6 @@
 		<Unit filename="src/notebookstyles.h">
 			<Option target="src" />
 		</Unit>
-		<Unit filename="src/prefix.cpp">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/prefix.h">
-			<Option target="src" />
-		</Unit>
 		<Unit filename="src/printdlg.cpp">
 			<Option target="src" />
 		</Unit>
