@@ -18,10 +18,10 @@ class ThreadsDlg : public wxPanel, public cbThreadsDlg
     public:
         ThreadsDlg(wxWindow* parent);
 
-        wxWindow* GetWindow() { return this; }
+        wxWindow* GetWindow() override { return this; }
 
-        void Reload();
-        void EnableWindow(bool enable);
+        void Reload() override;
+        void EnableWindow(bool enable) override;
     protected:
         void OnListRightClick(wxListEvent& event);
         void OnListDoubleClick(wxListEvent& event);

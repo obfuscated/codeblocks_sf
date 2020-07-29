@@ -39,7 +39,7 @@ class Wiz : public cbWizardPlugin
 {
 	public:
 		Wiz();
-		~Wiz();
+		~Wiz() override;
 
         Wiz& operator=(cb_unused const Wiz& rhs)  // prevent assignment operator
         {
@@ -47,14 +47,14 @@ class Wiz : public cbWizardPlugin
         	return *this;
 		}
 
-		int GetCount() const;
-        TemplateOutputType GetOutputType(int index) const;
-		wxString GetTitle(int index) const;
-		wxString GetDescription(int index) const;
-		wxString GetCategory(int index) const;
-		const wxBitmap& GetBitmap(int index) const;
-        wxString GetScriptFilename(int index) const;
-		CompileTargetBase* Launch(int index, wxString* pFilename = 0);
+		int GetCount() const override;
+        TemplateOutputType GetOutputType(int index) const override;
+		wxString GetTitle(int index) const override;
+		wxString GetDescription(int index) const override;
+		wxString GetCategory(int index) const override;
+		const wxBitmap& GetBitmap(int index) const override;
+        wxString GetScriptFilename(int index) const override;
+		CompileTargetBase* Launch(int index, wxString* pFilename = 0) override;
 
 		CompileTargetBase* RunProjectWizard(wxString* pFilename); // called by Launch() for otProject wizards
 		CompileTargetBase* RunTargetWizard(wxString* pFilename); // called by Launch() for otTarget wizards (always returns NULL)
@@ -171,7 +171,7 @@ class Wiz : public cbWizardPlugin
         void RegisterWizard();
         wxString FindTemplateFile(const wxString& filename);
 	protected:
-        void OnAttach();
+        void OnAttach() override;
         void Clear();
         void CopyFiles(cbProject* theproject, const wxString&  prjdir, const wxString& srcdir);
         wxString GenerateFile(const wxString& basePath, const wxString& filename, const wxString& contents);

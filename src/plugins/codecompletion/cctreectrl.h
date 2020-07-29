@@ -105,7 +105,7 @@ protected:
     static int CBLineCompare    (CCTreeCtrlData* lhs, CCTreeCtrlData* rhs);
     static int CBNoCompare      (CCTreeCtrlData* lhs, CCTreeCtrlData* rhs);
 
-    int OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2);
+    int OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2) override;
     int (*Compare)(CCTreeCtrlData* lhs, CCTreeCtrlData* rhs);
 
     DECLARE_DYNAMIC_CLASS(CCTreeCtrl)

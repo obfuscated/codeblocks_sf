@@ -89,40 +89,40 @@ class CompilerGCC : public cbCompilerPlugin
 {
     public:
         CompilerGCC();
-        virtual ~CompilerGCC();
+        ~CompilerGCC() override;
 
-        virtual void OnAttach();
-        virtual void OnRelease(bool appShutDown);
-        virtual void BuildMenu(wxMenuBar* menuBar); // offer for menu space by host
-        virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0); // offer for menu space by a module
-        virtual bool BuildToolBar(wxToolBar* toolBar);
-        virtual int GetToolBarPriority() { return 1; }
+        void OnAttach() override;
+        void OnRelease(bool appShutDown) override;
+        void BuildMenu(wxMenuBar* menuBar) override; // offer for menu space by host
+        void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0) override; // offer for menu space by a module
+        bool BuildToolBar(wxToolBar* toolBar) override;
+        int GetToolBarPriority() override { return 1; }
 
-        virtual int Run(ProjectBuildTarget* target = 0L);
-        virtual int Run(const wxString& target);
+        int Run(ProjectBuildTarget* target = 0L) override;
+        int Run(const wxString& target) override;
         virtual int RunSingleFile(const wxString& filename);
-        virtual int Clean(const wxString& target);
-        virtual int Clean(ProjectBuildTarget* target = 0L);
-        virtual int DistClean(ProjectBuildTarget* target = 0L);
-        virtual int DistClean(const wxString& target);
-        virtual int Build(ProjectBuildTarget* target = 0L);
-        virtual int Build(const wxString& target);
-        virtual int Rebuild(ProjectBuildTarget* target = 0L);
-        virtual int Rebuild(const wxString& target);
-        virtual int CleanWorkspace(const wxString& target = wxEmptyString);
-        virtual int BuildWorkspace(const wxString& target = wxEmptyString);
-        virtual int RebuildWorkspace(const wxString& target = wxEmptyString);
-        virtual int CompileFile(const wxString& file);
+        int Clean(const wxString& target) override;
+        int Clean(ProjectBuildTarget* target = 0L) override;
+        int DistClean(ProjectBuildTarget* target = 0L) override;
+        int DistClean(const wxString& target) override;
+        int Build(ProjectBuildTarget* target = 0L) override;
+        int Build(const wxString& target) override;
+        int Rebuild(ProjectBuildTarget* target = 0L) override;
+        int Rebuild(const wxString& target) override;
+        int CleanWorkspace(const wxString& target = wxEmptyString) override;
+        int BuildWorkspace(const wxString& target = wxEmptyString) override;
+        int RebuildWorkspace(const wxString& target = wxEmptyString) override;
+        int CompileFile(const wxString& file) override;
         virtual int CompileFileWithoutProject(const wxString& file);
         virtual int CompileFileDefault(cbProject* project, ProjectFile* pf, ProjectBuildTarget* bt);
-        virtual int KillProcess();
-        virtual bool IsRunning() const;
-        virtual int GetExitCode() const { return m_LastExitCode; }
-        virtual int Configure(cbProject* project, ProjectBuildTarget* target, wxWindow *parent);
+        int KillProcess() override;
+        bool IsRunning() const override;
+        int GetExitCode() const override { return m_LastExitCode; }
+        int Configure(cbProject* project, ProjectBuildTarget* target, wxWindow *parent) override;
 
-        int GetConfigurationPriority() const { return 0; }
-        int GetConfigurationGroup() const { return cgCompiler; }
-        cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
+        int GetConfigurationPriority() const override { return 0; }
+        int GetConfigurationGroup() const override { return cgCompiler; }
+        cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent) override;
 
         bool IsValidTarget(const wxString& target) const;
 

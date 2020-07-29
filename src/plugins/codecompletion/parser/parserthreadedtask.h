@@ -26,7 +26,7 @@ public:
     // run sequence parsing jobs in a single thread, those include
     // 1, parsing predefined macro buffers
     // 2, parsing project files(mainly the implementation source files)
-    virtual int Execute();
+    int Execute() override;
 
 private:
     Parser*  m_Parser; /// a Parser object which contain TokenTree
@@ -43,7 +43,7 @@ class MarkFileAsLocalThreadedTask : public cbThreadedTask
 public:
     MarkFileAsLocalThreadedTask(Parser* parser, cbProject* project);
 
-    virtual int Execute();
+    int Execute() override;
 
 private:
     Parser*    m_Parser;  /// a Parser object which contain TokenTree

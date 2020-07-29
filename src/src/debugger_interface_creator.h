@@ -17,31 +17,31 @@ class DebugInterfaceFactory : public cbDebugInterfaceFactory
         ~DebugInterfaceFactory();
 
     public:
-        virtual cbBacktraceDlg* CreateBacktrace();
-        virtual void DeleteBacktrace(cbBacktraceDlg *dialog);
+        cbBacktraceDlg* CreateBacktrace() override;
+        void DeleteBacktrace(cbBacktraceDlg *dialog) override;
 
-        virtual cbBreakpointsDlg* CreateBreapoints();
-        virtual void DeleteBreakpoints(cbBreakpointsDlg *dialog);
+        cbBreakpointsDlg* CreateBreapoints() override;
+        void DeleteBreakpoints(cbBreakpointsDlg *dialog) override;
 
-        virtual cbCPURegistersDlg* CreateCPURegisters();
-        virtual void DeleteCPURegisters(cbCPURegistersDlg *dialog);
+        cbCPURegistersDlg* CreateCPURegisters() override;
+        void DeleteCPURegisters(cbCPURegistersDlg *dialog) override;
 
-        virtual cbDisassemblyDlg* CreateDisassembly();
-        virtual void DeleteDisassembly(cbDisassemblyDlg *dialog);
+        cbDisassemblyDlg* CreateDisassembly() override;
+        void DeleteDisassembly(cbDisassemblyDlg *dialog) override;
 
-        virtual cbExamineMemoryDlg* CreateMemory();
-        virtual void DeleteMemory(cbExamineMemoryDlg *dialog);
+        cbExamineMemoryDlg* CreateMemory() override;
+        void DeleteMemory(cbExamineMemoryDlg *dialog) override;
 
-        virtual cbThreadsDlg* CreateThreads();
-        virtual void DeleteThreads(cbThreadsDlg *dialog);
+        cbThreadsDlg* CreateThreads() override;
+        void DeleteThreads(cbThreadsDlg *dialog) override;
 
-        virtual cbWatchesDlg* CreateWatches();
-        virtual void DeleteWatches(cbWatchesDlg *dialog);
+        cbWatchesDlg* CreateWatches() override;
+        void DeleteWatches(cbWatchesDlg *dialog) override;
 
-        virtual bool ShowValueTooltip(const cb::shared_ptr<cbWatch> &watch, const wxRect &rect);
-        virtual void HideValueTooltip();
-        virtual bool IsValueTooltipShown();
-        virtual void UpdateValueTooltip();
+        bool ShowValueTooltip(const cb::shared_ptr<cbWatch> &watch, const wxRect &rect) override;
+        void HideValueTooltip() override;
+        bool IsValueTooltipShown() override;
+        void UpdateValueTooltip() override;
     private:
         void OnEditorDeactivate(CodeBlocksEvent &event);
     private:

@@ -28,29 +28,29 @@ class NbStyleVC71 : public wxAuiDefaultTabArt
 {
 public:
     NbStyleVC71();
-    wxAuiTabArt* Clone();
+    wxAuiTabArt* Clone() override;
 
     void DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& page,
                         const wxRect& in_rect, int close_button_state,
                         wxRect* out_tab_rect, wxRect* out_button_rect,
-                        int* x_extent);
+                        int* x_extent) override;
 
     int GetBestTabCtrlSize(wxWindow* wnd, const wxAuiNotebookPageArray& pages,
-                            const wxSize& required_bmp_size);
+                            const wxSize& required_bmp_size) override;
 };
 
 class NbStyleFF2 : public wxAuiDefaultTabArt
 {
 public:
     NbStyleFF2();
-    wxAuiTabArt* Clone();
+    wxAuiTabArt* Clone() override;
     void DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& page,
                         const wxRect& in_rect, int close_button_state,
                         wxRect* out_tab_rect, wxRect* out_button_rect,
-                        int* x_extent);
+                        int* x_extent) override;
 
     int GetBestTabCtrlSize(wxWindow* wnd, const wxAuiNotebookPageArray& pages,
-                            const wxSize& required_bmp_size);
+                            const wxSize& required_bmp_size) override;
 };
 
 #if defined(__WXGTK__) && (USE_GTK_NOTEBOOK) && !wxCHECK_VERSION(3, 0, 0)

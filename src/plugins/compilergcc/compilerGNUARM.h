@@ -12,10 +12,10 @@ class CompilerGNUARM : public Compiler
 {
     public:
         CompilerGNUARM();
-        virtual ~CompilerGNUARM();
-        virtual AutoDetectResult AutoDetectInstallationDir();
+        ~CompilerGNUARM() override;
+        AutoDetectResult AutoDetectInstallationDir() override;
     protected:
-        virtual Compiler* CreateCopy();
+        Compiler* CreateCopy() override;
     private:
 };
 

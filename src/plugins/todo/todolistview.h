@@ -76,8 +76,8 @@ class ToDoListView : public wxEvtHandler, public ListCtrlLogger
 {
     public:
         ToDoListView(const wxArrayString& titles, const wxArrayInt& widths, const wxArrayString& types);
-        ~ToDoListView();
-        virtual wxWindow* CreateControl(wxWindow* parent);
+        ~ToDoListView() override;
+        wxWindow* CreateControl(wxWindow* parent) override;
         void DestroyControls(bool control);
 
         // parse all the sources

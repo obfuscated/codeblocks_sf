@@ -185,7 +185,7 @@ protected:
       * often happens when user open a project. Every parserthread task will firstly be added to the thread pool, later
       * called automatically from the thread pool.
       */
-    int Execute()
+    int Execute() override
     {
         CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 

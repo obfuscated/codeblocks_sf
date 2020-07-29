@@ -12,10 +12,10 @@ class CompilerIAR : public Compiler
 {
     public:
         CompilerIAR(wxString arch);
-        virtual ~CompilerIAR();
-        virtual AutoDetectResult AutoDetectInstallationDir();
+        ~CompilerIAR() override;
+        AutoDetectResult AutoDetectInstallationDir() override;
     protected:
-        virtual Compiler* CreateCopy();
+        Compiler* CreateCopy() override;
         wxString m_Arch;
     private:
 };

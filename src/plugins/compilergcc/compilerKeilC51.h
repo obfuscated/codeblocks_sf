@@ -12,11 +12,11 @@ class CompilerKeilC51 : public Compiler
 {
     public:
         CompilerKeilC51();
-        virtual ~CompilerKeilC51();
-        virtual AutoDetectResult AutoDetectInstallationDir();
+        ~CompilerKeilC51() override;
+        AutoDetectResult AutoDetectInstallationDir() override;
     protected:
         CompilerKeilC51(const wxString& name, const wxString& ID);
-        virtual Compiler* CreateCopy();
+        Compiler* CreateCopy() override;
         AutoDetectResult AutoDetectInstallationDir(bool keilx);
     private:
 };
@@ -25,9 +25,9 @@ class CompilerKeilCX51 : public CompilerKeilC51
 {
     public:
         CompilerKeilCX51();
-        virtual ~CompilerKeilCX51();
+        ~CompilerKeilCX51() override;
     protected:
-        virtual Compiler* CreateCopy();
+        Compiler* CreateCopy() override;
     private:
 };
 

@@ -12,10 +12,10 @@ class CompilerCYGWIN : public CompilerMINGW
 {
     public:
         CompilerCYGWIN();
-        ~CompilerCYGWIN();
-        virtual AutoDetectResult AutoDetectInstallationDir();
+        ~CompilerCYGWIN() override;
+        AutoDetectResult AutoDetectInstallationDir() override;
     protected:
-        virtual Compiler* CreateCopy();
+        Compiler* CreateCopy() override;
     private:
 
 };

@@ -36,7 +36,7 @@ public:
     ClassBrowserBuilderThread(wxEvtHandler* evtHandler, wxSemaphore& sem);
 
     /** destructor */
-    virtual ~ClassBrowserBuilderThread();
+    ~ClassBrowserBuilderThread() override;
 
     // Called from external:
     void Init(NativeParser* np, CCTreeCtrl* treeTop, CCTreeCtrl* treeBottom,
@@ -68,7 +68,7 @@ public:
     void RequestTermination(bool terminate = true) { m_TerminationRequested = terminate; }
 
 protected:
-    virtual void* Entry();
+     void* Entry() override;
 
     // Called from Entry():
     void BuildTree();

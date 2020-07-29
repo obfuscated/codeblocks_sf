@@ -38,14 +38,14 @@ class OpenFilesListPlugin : public cbPlugin
 {
     public:
         OpenFilesListPlugin();
-        virtual ~OpenFilesListPlugin();
+        ~OpenFilesListPlugin() override;
 
-        virtual int GetConfigurationGroup() const { return cgEditor; }
+        int GetConfigurationGroup() const override { return cgEditor; }
 
-        virtual void BuildMenu(wxMenuBar* menuBar);
+        void BuildMenu(wxMenuBar* menuBar) override;
 
-        virtual void OnAttach();
-        virtual void OnRelease(bool appShutDown);
+        void OnAttach() override;
+        void OnRelease(bool appShutDown) override;
     protected:
         int GetOpenFilesListIcon(EditorBase* ed);
         void RebuildOpenFilesTree();

@@ -319,7 +319,7 @@ class cbMessageOutputNull : public wxMessageOutput
 public:
 
 #if wxCHECK_VERSION(3, 0, 0)
-    virtual void Output(const wxString &str);
+    virtual void Output(const wxString &str) override;
 #else
     #ifdef WX_ATTRIBUTE_PRINTF
     virtual void Printf(const wxChar* format, ...)  WX_ATTRIBUTE_PRINTF_2;

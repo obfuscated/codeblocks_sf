@@ -49,7 +49,7 @@ class CdbCmd_AddSourceDir : public DebuggerCmd
         {
             m_Cmd << _T("directory ") << dir;
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // Output:
             // Warning: C:\Devel\tmp\console\111: No such file or directory.
@@ -71,7 +71,7 @@ class CdbCmd_SetDebuggee : public DebuggerCmd
         {
             m_Cmd << _T("file ") << file;
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // Output:
             // Reading symbols from C:\Devel\tmp\console/console.exe...done.
@@ -95,7 +95,7 @@ class CdbCmd_AddSymbolFile : public DebuggerCmd
         {
             m_Cmd << _T("add-symbol-file ") << file;
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // Output:
             //
@@ -123,7 +123,7 @@ class CdbCmd_SetArguments : public DebuggerCmd
         {
             m_Cmd << _T("set args ") << args;
         }
-        void ParseOutput(cb_unused const wxString& output)
+        void ParseOutput(cb_unused const wxString& output) override
         {
             // No output
         }
@@ -141,7 +141,7 @@ class CdbCmd_GetPID : public DebuggerCmd
         {
             m_Cmd << _T("|.");
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // Output:
             // <decimal process num> id: <hex PID> create name: <process name>
@@ -177,7 +177,7 @@ class CdbCmd_AttachToProcess : public DebuggerCmd
         {
             m_Cmd << _T("attach ") << wxString::Format(_T("%d"), pid);
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // Output:
             // Attaching to process <pid>
@@ -214,7 +214,7 @@ class CdbCmd_Detach : public DebuggerCmd
         {
             m_Cmd << _T(".detach");
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // output any return, usually "Detached"
             m_pDriver->Log(output);
@@ -232,7 +232,7 @@ class CdbCmd_Continue : public DebuggerContinueBaseCmd
             : DebuggerContinueBaseCmd(driver,_T("g"))
         {
         }
-        virtual void Action()
+        void Action() override
         {
             m_pDriver->NotifyDebuggeeContinued();
         }
@@ -269,7 +269,7 @@ class CdbCmd_AddBreakpoint : public DebuggerCmd
                 bp->alreadySet = true;
             }
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // possible outputs (only output lines starting with ***):
             //
@@ -305,7 +305,7 @@ class CdbCmd_RemoveBreakpoint : public DebuggerCmd
             else
                 m_Cmd << _T("bc ") << wxString::Format(_T("%d"), (int) bp->index);
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // usually no output, so display whatever comes in
             if (!output.IsEmpty())
@@ -331,7 +331,7 @@ class CdbCmd_Watch : public DebuggerCmd
             m_Cmd << wxT("?? ") << symbol;
         }
 
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             if(!ParseCDBWatchValue(m_watch, output))
             {
@@ -365,7 +365,7 @@ class CdbCmd_TooltipEvaluation : public DebuggerCmd
         {
             m_Cmd << _T("?? ") << what;
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
 //            struct HWND__ * 0x7ffd8000
 //
@@ -407,7 +407,7 @@ class CdbCmd_Backtrace : public DebuggerCmd
         {
             m_Cmd << _T("k n");
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // output is:
             //  # ChildEBP RetAddr
@@ -486,7 +486,7 @@ class CdbCmd_SwitchFrame : public DebuggerCmd
                 m_Cmd = wxString::Format(wxT(".frame %d"), frameNumber);
         }
 
-        virtual void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             wxArrayString lines = GetArrayFromString(output, wxT('\n'));
 
@@ -529,7 +529,7 @@ class CdbCmd_InfoRegisters : public DebuggerCmd
         {
             m_Cmd << _T("r");
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // output is:
             //
@@ -564,7 +564,7 @@ class CdbCmd_Disassembly : public DebuggerCmd
         {
             m_Cmd << _T("uf ") << StopAddress;
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // output is a series of:
             //
@@ -601,7 +601,7 @@ class CdbCmd_DisassemblyInit : public DebuggerCmd
             // print stack frame and nearest symbol (start of function)
             m_Cmd << _T("k n 1; ln");
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
 //            m_pDriver->QueueCommand(new CdbCmd_Disassembly(m_pDriver, m_pDlg, StopAddress)); // chain call
 

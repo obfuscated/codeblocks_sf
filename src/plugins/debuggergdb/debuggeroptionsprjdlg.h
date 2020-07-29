@@ -21,12 +21,12 @@ class DebuggerOptionsProjectDlg : public cbConfigurationPanel
 {
     public:
         DebuggerOptionsProjectDlg(wxWindow* parent, DebuggerGDB* debugger, cbProject* project);
-        virtual ~DebuggerOptionsProjectDlg();
+        ~DebuggerOptionsProjectDlg() override;
 
-        virtual wxString GetTitle() const { return _("Debugger"); }
-        virtual wxString GetBitmapBaseName() const { return _T("debugger"); }
-        virtual void OnApply();
-        virtual void OnCancel(){}
+        wxString GetTitle() const override { return _("Debugger"); }
+        wxString GetBitmapBaseName() const override { return _T("debugger"); }
+        void OnApply() override;
+        void OnCancel() override {}
     protected:
         void OnTargetSel(wxCommandEvent& event);
         void OnAdd(wxCommandEvent& event);

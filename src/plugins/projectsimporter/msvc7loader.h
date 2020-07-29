@@ -21,10 +21,10 @@ class MSVC7Loader : public IBaseLoader
 {
     public:
         MSVC7Loader(cbProject* project);
-        virtual ~MSVC7Loader();
+        ~MSVC7Loader() override;
 
-        bool Open(const wxString& filename);
-        bool Save(const wxString& filename);
+        bool Open(const wxString& filename) override;
+        bool Save(const wxString& filename) override;
     protected:
         cbProject* m_pProject;
         bool m_ConvertSwitches;

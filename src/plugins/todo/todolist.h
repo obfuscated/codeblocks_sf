@@ -28,12 +28,13 @@ class ToDoList : public cbPlugin
 {
     public:
         ToDoList();
-        ~ToDoList();
-        virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
-        void BuildMenu(wxMenuBar* menuBar);
-        void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
-        void OnAttach(); // fires when the plugin is attached to the application
-        void OnRelease(bool appShutDown); // fires when the plugin is released from the application
+        ~ToDoList() override;
+        cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent) override;
+        void BuildMenu(wxMenuBar* menuBar) override;
+        void BuildModuleMenu(const ModuleType type, wxMenu* menu,
+                             const FileTreeData* data = nullptr) override;
+        void OnAttach() override; // fires when the plugin is attached to the application
+        void OnRelease(bool appShutDown) override; // fires when the plugin is released from the application
     private:
         // only parse files when C::B app is already start up
         void OnAppDoneStartup(CodeBlocksEvent& event);

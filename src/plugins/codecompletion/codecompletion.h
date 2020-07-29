@@ -82,34 +82,34 @@ public:
     /** Constructor */
     CodeCompletion();
     /** Destructor */
-    virtual ~CodeCompletion();
+    ~CodeCompletion() override;
 
     // the function below were virtual functions from the base class
-    virtual void OnAttach();
-    virtual void OnRelease(bool appShutDown);
-    virtual int GetConfigurationGroup() const { return cgEditor; }
+    void OnAttach() override;
+    void OnRelease(bool appShutDown) override;
+    int GetConfigurationGroup() const override { return cgEditor; }
 
     /** CC's config dialog */
-    virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
+    cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent) override;
     /** CC's config dialog which show in the project options panel */
-    virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project);
+    cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project) override;
     /** build menus in the main frame */
-    virtual void BuildMenu(wxMenuBar* menuBar);
+    void BuildMenu(wxMenuBar* menuBar) override;
     /** build context popup menu */
-    virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
+    void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0) override;
     /** build CC Toolbar */
-    virtual bool BuildToolBar(wxToolBar* toolBar);
+    bool BuildToolBar(wxToolBar* toolBar) override;
     /** toolbar priority value */
-    virtual int GetToolBarPriority() { return 10; }
+    int GetToolBarPriority() override { return 10; }
 
     // override virtual functions in cbCodeCompletionPlugin class
-    virtual CCProviderStatus GetProviderStatusFor(cbEditor* ed);
-    virtual std::vector<CCToken> GetAutocompList(bool isAuto, cbEditor* ed, int& tknStart, int& tknEnd);
-    virtual std::vector<CCCallTip> GetCallTips(int pos, int style, cbEditor* ed, int& argsPos);
-    virtual wxString GetDocumentation(const CCToken& token);
-    virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed, bool& allowCallTip);
-    virtual wxString OnDocumentationLink(wxHtmlLinkEvent& event, bool& dismissPopup);
-    virtual void DoAutocomplete(const CCToken& token, cbEditor* ed);
+    CCProviderStatus GetProviderStatusFor(cbEditor* ed) override;
+    std::vector<CCToken> GetAutocompList(bool isAuto, cbEditor* ed, int& tknStart, int& tknEnd) override;
+    std::vector<CCCallTip> GetCallTips(int pos, int style, cbEditor* ed, int& argsPos) override;
+    wxString GetDocumentation(const CCToken& token) override;
+    std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed, bool& allowCallTip) override;
+    wxString OnDocumentationLink(wxHtmlLinkEvent& event, bool& dismissPopup) override;
+    void DoAutocomplete(const CCToken& token, cbEditor* ed) override;
 
     /** Get the include paths setting (usually set by user for each C::B project).
      * If it finds some system level include search dirs which haven't been scanned, it will start a

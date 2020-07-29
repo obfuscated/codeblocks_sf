@@ -13,9 +13,9 @@ class PrintDialog : public wxScrollingDialog
 {
 	public:
 		PrintDialog(wxWindow* parent);
-		virtual ~PrintDialog();
+		~PrintDialog() override;
 
-        virtual void EndModal(int retCode);
+        void EndModal(int retCode) override;
 
 		PrintScope GetPrintScope() const;
 		PrintColourMode GetPrintColourMode() const;

@@ -15,10 +15,10 @@ class DevCppLoader : public IBaseLoader
 {
 	public:
 		DevCppLoader(cbProject* project);
-		virtual ~DevCppLoader();
+		~DevCppLoader() override;
 
-		bool Open(const wxString& filename);
-		bool Save(const wxString& filename);
+		bool Open(const wxString& filename) override;
+		bool Save(const wxString& filename) override;
 	protected:
         cbProject* m_pProject;
 	private:

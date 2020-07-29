@@ -107,17 +107,17 @@ class cbSplashScreen;
 class CodeBlocksApp : public wxApp
 {
     public:
-        virtual bool OnInit();
-        virtual int OnExit();
-        virtual int OnRun();
+        bool OnInit() override;
+        int OnExit() override;
+        int OnRun() override;
         wxString GetAppPath() const;
         int ParseCmdLine(MainFrame* handlerFrame, const wxString& CmdLine = wxEmptyString);
         #if wxCHECK_VERSION(3,0,0)
         void OnCloseBatchBuildWindow(wxCloseEvent& evt);
         #endif // wxCHECK_VERSION
         void OnAppActivate(wxActivateEvent& event);
-        bool OnCmdLineParsed(wxCmdLineParser& parser);
-        void OnFatalException();
+        bool OnCmdLineParsed(wxCmdLineParser& parser) override;
+        void OnFatalException() override;
         void LoadDelayedFiles(MainFrame* frame); // command line or DDE (if available) files
         void SetAutoFile(wxString& file); // method to set m_AutoFile
         void AttachDebugger();

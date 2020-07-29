@@ -15,8 +15,8 @@ class CompilerSettingsDlg : public wxScrollingDialog
 {
 	public:
 		CompilerSettingsDlg(wxWindow* parent);
-		virtual ~CompilerSettingsDlg();
-		virtual void EndModal(int retCode);
+		~CompilerSettingsDlg() override;
+		void EndModal(int retCode) override;
 	protected:
         void OnPageChanging(wxListbookEvent& event);
         void OnPageChanged(wxListbookEvent& event);

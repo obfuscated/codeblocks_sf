@@ -22,13 +22,13 @@ class Autosave : public cbPlugin
 
 	public:
 		Autosave();
-		~Autosave();
-		int GetConfigurationPriority() const{ return  50; }
-		int GetConfigurationGroup() const{ return  cgUnknown; }
-		void OnAttach(); // fires when the plugin is attached to the application
+		~Autosave() override;
+		int GetConfigurationPriority() const override { return  50; }
+		int GetConfigurationGroup() const override { return  cgUnknown; }
+		void OnAttach() override; // fires when the plugin is attached to the application
 		void Start();
-		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-		virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
+		void OnRelease(bool appShutDown) override; // fires when the plugin is released from the application
+		cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent) override;
         void OnTimer(wxTimerEvent& event);
         void SaveProject(cbProject *p, int method);
     DECLARE_EVENT_TABLE()
@@ -43,10 +43,10 @@ class AutosaveConfigDlg : public cbConfigurationPanel
 		AutosaveConfigDlg(wxWindow* parent, Autosave* plug);
 		virtual ~AutosaveConfigDlg(){};
 
-        virtual wxString GetTitle() const { return _("Autosave"); }
-        virtual wxString GetBitmapBaseName() const { return _T("autosave"); }
-        virtual void OnApply(){ SaveSettings(); }
-        virtual void OnCancel(){}
+        wxString GetTitle() const override { return _("Autosave"); }
+        wxString GetBitmapBaseName() const override { return _T("autosave"); }
+        void OnApply() override { SaveSettings(); }
+        void OnCancel() override {}
 	private:
 	    void OnProjectsChecked(wxCommandEvent &event);
 	    void OnSourceChecked(wxCommandEvent &event);

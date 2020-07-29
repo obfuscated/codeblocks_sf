@@ -19,8 +19,8 @@ class EnvironmentSettingsDlg : public wxScrollingDialog, public cbConfigurationP
 {
     public:
 		EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* art);
-		virtual ~EnvironmentSettingsDlg();
-		virtual void EndModal(int retCode);
+		~EnvironmentSettingsDlg() override;
+		void EndModal(int retCode) override;
 
     public:
         // From cbConfigurationPanelColoursInterface

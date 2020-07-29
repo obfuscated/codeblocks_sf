@@ -34,15 +34,15 @@ class WizPageBase : public wxWizardPageSimple
 {
     public:
         WizPageBase(const wxString& pageName, wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
-        ~WizPageBase();
+        ~WizPageBase() override;
 
         virtual bool SkipPage() const { return m_SkipPage; } // default: false
 
         virtual void OnPageChanging(wxWizardEvent& event);
         virtual void OnPageChanged(wxWizardEvent& event);
 
-        virtual wxWizardPage* GetPrev() const;
-        virtual wxWizardPage* GetNext() const;
+        wxWizardPage* GetPrev() const override;
+        wxWizardPage* GetNext() const override;
         wxString GetPageName() const {return m_PageName;}
         bool GetSkipPage() const {return m_SkipPage;}
         void SetSkipPage(bool skip) {m_SkipPage = skip;}
@@ -69,9 +69,9 @@ class WizInfoPanel : public WizPageBase
 {
     public:
         WizInfoPanel(const wxString& pageId, const wxString& intro_msg, wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
-        ~WizInfoPanel();
+        ~WizInfoPanel() override;
 
-        virtual void OnPageChanging(wxWizardEvent& event);
+        void OnPageChanging(wxWizardEvent& event) override;
     private:
         InfoPanel* m_InfoPanel;
 };
@@ -80,7 +80,7 @@ class WizFilePathPanel : public WizPageBase
 {
     public:
         WizFilePathPanel(bool showHeaderGuard, wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
-        ~WizFilePathPanel();
+        ~WizFilePathPanel() override;
 
         wxString GetFilename() const { return m_Filename; }
         wxString GetHeaderGuard() const { return m_HeaderGuard; }
@@ -88,7 +88,7 @@ class WizFilePathPanel : public WizPageBase
         int GetTargetIndex() const;
         void SetFilePathSelectionFilter(const wxString& filter);
 
-        void OnPageChanging(wxWizardEvent& event);
+        void OnPageChanging(wxWizardEvent& event) override;
     private:
         FilePathPanel* m_pFilePathPanel;
         wxString m_Filename;
@@ -100,16 +100,16 @@ class WizProjectPathPanel : public WizPageBase
 {
     public:
         WizProjectPathPanel(wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
-        ~WizProjectPathPanel();
+        ~WizProjectPathPanel() override;
 
         wxString GetPath() const;
-        wxString GetName() const;
+        wxString GetName() const override;
         wxString GetFullFileName() const;
         wxString GetTitle() const;
 
         void OnButton(wxCommandEvent& event);
-        virtual void OnPageChanging(wxWizardEvent& event);
-        virtual void OnPageChanged(wxWizardEvent& event);
+        void OnPageChanging(wxWizardEvent& event) override;
+        void OnPageChanged(wxWizardEvent& event) override;
     private:
         ProjectPathPanel* m_pProjectPathPanel;
 
@@ -121,10 +121,10 @@ class WizGenericSelectPathPanel : public WizPageBase
     public:
         WizGenericSelectPathPanel(const wxString& pageId, const wxString& descr, const wxString& label, const wxString& defValue,
                             wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
-        ~WizGenericSelectPathPanel();
+        ~WizGenericSelectPathPanel() override;
 
         void OnButton(wxCommandEvent& event);
-        virtual void OnPageChanging(wxWizardEvent& event);
+        void OnPageChanging(wxWizardEvent& event) override;
     private:
         GenericSelectPath* m_pGenericSelectPath;
 
@@ -136,7 +136,7 @@ class WizCompilerPanel : public WizPageBase
     public:
         WizCompilerPanel(const wxString& compilerID, const wxString& validCompilerIDs, wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap,
                         bool allowCompilerChange = true, bool allowConfigChange = true);
-        ~WizCompilerPanel();
+        ~WizCompilerPanel() override;
 
         wxString GetCompilerID() const;
         bool GetWantDebug() const;
@@ -148,7 +148,7 @@ class WizCompilerPanel : public WizPageBase
         wxString GetReleaseOutputDir() const;
         wxString GetReleaseObjectOutputDir() const;
 
-        void OnPageChanging(wxWizardEvent& event);
+        void OnPageChanging(wxWizardEvent& event) override;
     private:
         CompilerPanel* m_pCompilerPanel;
         bool m_AllowConfigChange;
@@ -162,7 +162,7 @@ class WizBuildTargetPanel : public WizPageBase
                         bool showCompiler = false,
                         const wxString& compilerID = wxEmptyString, const wxString& validCompilerIDs = _T("*"),
                         bool allowCompilerChange = true);
-        ~WizBuildTargetPanel();
+        ~WizBuildTargetPanel() override;
 
         wxString GetCompilerID() const;
         bool GetEnableDebug() const;
@@ -170,7 +170,7 @@ class WizBuildTargetPanel : public WizPageBase
         wxString GetTargetOutputDir() const;
         wxString GetTargetObjectOutputDir() const;
 
-        void OnPageChanging(wxWizardEvent& event);
+        void OnPageChanging(wxWizardEvent& event) override;
     private:
         BuildTargetPanel* m_pBuildTargetPanel;
 };
@@ -179,12 +179,12 @@ class WizGenericSingleChoiceList : public WizPageBase
 {
     public:
         WizGenericSingleChoiceList(const wxString& pageId, const wxString& descr, const wxArrayString& choices, int defChoice, wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
-        ~WizGenericSingleChoiceList();
+        ~WizGenericSingleChoiceList() override;
 
         int GetChoice() const;
         void SetChoice(int choice);
 
-        void OnPageChanging(wxWizardEvent& event);
+        void OnPageChanging(wxWizardEvent& event) override;
     private:
         GenericSingleChoiceList* m_pGenericSingleChoiceList;
 };

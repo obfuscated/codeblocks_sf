@@ -24,19 +24,20 @@ class OccurrencesHighlighting : public cbPlugin
 {
     public:
         OccurrencesHighlighting();
-        virtual ~OccurrencesHighlighting();
+        ~OccurrencesHighlighting() override;
 
-        virtual void BuildMenu(wxMenuBar* menuBar);
-        virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
-        virtual bool BuildToolBar(cb_unused wxToolBar* toolBar){ return false; }
-        virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
-        virtual int GetConfigurationPriority() const { return 50; }
-        virtual int GetConfigurationGroup() const { return cgEditor; }
+        void BuildMenu(wxMenuBar* menuBar) override;
+        void BuildModuleMenu(const ModuleType type, wxMenu* menu,
+                             const FileTreeData* data = nullptr) override;
+        bool BuildToolBar(cb_unused wxToolBar* toolBar) override { return false; }
+        cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent) override;
+        int GetConfigurationPriority() const override { return 50; }
+        int GetConfigurationGroup() const override { return cgEditor; }
 
 
     protected:
-        virtual void OnAttach();
-        virtual void OnRelease(bool appShutDown);
+        void OnAttach() override;
+        void OnRelease(bool appShutDown) override;
 
     private:
         void OnListKeyDown(wxListEvent &event);

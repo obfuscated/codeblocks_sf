@@ -17,7 +17,7 @@ class AdvancedCompilerOptionsDlg : public wxScrollingDialog
 {
     public:
         AdvancedCompilerOptionsDlg(wxWindow* parent, const wxString& compilerId);
-        virtual ~AdvancedCompilerOptionsDlg();
+        ~AdvancedCompilerOptionsDlg() override;
         bool IsDirty() const {return m_bDirty;}
     private:
         void OnCommandsChange(wxCommandEvent& event);
@@ -32,7 +32,7 @@ class AdvancedCompilerOptionsDlg : public wxScrollingDialog
         void OnRegexUp(wxSpinEvent& event);
         void OnRegexDown(wxSpinEvent& event);
 
-        void EndModal(int retCode);
+        void EndModal(int retCode) override;
         void ReadCompilerOptions();
         void WriteCompilerOptions();
         void ReadExtensions(int nr);

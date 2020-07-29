@@ -19,12 +19,12 @@ class CCOptionsDlg : public cbConfigurationPanel
 {
 public:
     CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* cc, DocumentationHelper* dh);
-    virtual ~CCOptionsDlg();
+    ~CCOptionsDlg() override;
 
-    virtual wxString GetTitle() const          { return _("Code completion"); }
-    virtual wxString GetBitmapBaseName() const { return _T("codecompletion"); }
-    virtual void OnApply();
-    virtual void OnCancel()                    { ; }
+    wxString GetTitle() const override { return _("Code completion"); }
+    wxString GetBitmapBaseName() const override { return _T("codecompletion"); }
+    void OnApply() override;
+    void OnCancel() override {}
 
 protected:
     void OnChooseColour(wxCommandEvent& event);

@@ -12,10 +12,10 @@ class CompilerGDC : public Compiler
 {
     public:
         CompilerGDC();
-        virtual ~CompilerGDC();
-        virtual AutoDetectResult AutoDetectInstallationDir();
+        ~CompilerGDC() override;
+        AutoDetectResult AutoDetectInstallationDir() override;
     protected:
-        virtual Compiler* CreateCopy();
+        Compiler* CreateCopy() override;
     private:
 };
 

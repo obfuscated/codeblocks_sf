@@ -20,43 +20,46 @@ class ProjectManagerUI : public wxEvtHandler, public cbProjectManagerUI
         ProjectManagerUI();
         ~ProjectManagerUI();
 
-        cbAuiNotebook* GetNotebook() { return m_pNotebook; }
+        cbAuiNotebook* GetNotebook() override { return m_pNotebook; }
 
         /** Retrieve a pointer to the project manager's tree (GUI).
           * @return A pointer to a wxTreeCtrl window.
           */
-        cbTreeCtrl* GetTree(){ return m_pTree; }
+        cbTreeCtrl* GetTree() override { return m_pTree; }
 
-        wxTreeItemId GetTreeSelection();
+        wxTreeItemId GetTreeSelection() override;
 
-        void RebuildTree();
-        void FreezeTree();
-        void UnfreezeTree(bool force = false);
+        void RebuildTree() override;
+        void FreezeTree() override;
+        void UnfreezeTree(bool force = false) override;
 
 
-        void UpdateActiveProject(cbProject* oldProject, cbProject* newProject, bool refresh);
-        void RemoveProject(cbProject* project);
-        void BeginLoadingWorkspace();
-        void CloseWorkspace();
-        void FinishLoadingProject(cbProject* project, bool newAddition, cb_unused FilesGroupsAndMasks* fgam);
-        void FinishLoadingWorkspace(cbProject* activeProject, const wxString &workspaceTitle);
+        void UpdateActiveProject(cbProject* oldProject, cbProject* newProject,
+                                 bool refresh) override;
+        void RemoveProject(cbProject* project) override;
+        void BeginLoadingWorkspace() override;
+        void CloseWorkspace() override;
+        void FinishLoadingProject(cbProject* project, bool newAddition,
+                                  cb_unused FilesGroupsAndMasks* fgam) override;
+        void FinishLoadingWorkspace(cbProject* activeProject,
+                                    const wxString &workspaceTitle) override;
 
-        void ShowFileInTree(ProjectFile &projectFile);
+        void ShowFileInTree(ProjectFile &projectFile) override;
 
         void CreateMenu(wxMenuBar* menuBar);
 
-        bool QueryCloseAllProjects();
-        bool QueryCloseProject(cbProject* project, bool dontsavefiles);
-        bool QueryCloseWorkspace();
+        bool QueryCloseAllProjects() override;
+        bool QueryCloseProject(cbProject* project, bool dontsavefiles) override;
+        bool QueryCloseWorkspace() override;
 
-        int AskForBuildTargetIndex(cbProject* project);
-        wxArrayInt AskForMultiBuildTargetIndex(cbProject* project);
-        void ConfigureProjectDependencies(cbProject* base, wxWindow *parent);
+        int AskForBuildTargetIndex(cbProject* project) override;
+        wxArrayInt AskForMultiBuildTargetIndex(cbProject* project) override;
+        void ConfigureProjectDependencies(cbProject* base, wxWindow *parent) override;
         void CheckForExternallyModifiedProjects();
 
     private:
         void InitPane();
-        void SwitchToProjectsPage();
+        void SwitchToProjectsPage() override;
         void ShowMenu(wxTreeItemId id, const wxPoint& pt);
         void CreateMenuTreeProps(wxMenu* menu, bool popup);
 

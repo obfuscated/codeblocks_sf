@@ -34,90 +34,92 @@ class DebuggerGDB : public cbDebuggerPlugin
         DebuggerState m_State;
     public:
         DebuggerGDB();
-        ~DebuggerGDB();
+        ~DebuggerGDB() override;
 
-        cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project);
-        void OnAttachReal(); // fires when the plugin is attached to the application
-        void OnReleaseReal(bool appShutDown); // fires when the plugin is released from the application
+        cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent,
+                                                           cbProject* project) override;
+        void OnAttachReal() override; // fires when the plugin is attached to the application
+        void OnReleaseReal(bool appShutDown) override; // fires when the plugin is released from the application
 
-        bool SupportsFeature(cbDebuggerFeature::Flags flag);
+        bool SupportsFeature(cbDebuggerFeature::Flags flag) override;
 
-        cbDebuggerConfiguration* LoadConfig(const ConfigManagerWrapper &config);
+        cbDebuggerConfiguration* LoadConfig(const ConfigManagerWrapper &config) override;
 
         DebuggerConfiguration& GetActiveConfigEx();
 
         void RunCommand(int cmd);
 
-        cb::shared_ptr<cbBreakpoint> AddBreakpoint(const wxString& filename, int line);
-        cb::shared_ptr<cbBreakpoint> AddDataBreakpoint(const wxString& dataExpression);
-        int GetBreakpointsCount() const;
-        cb::shared_ptr<cbBreakpoint> GetBreakpoint(int index);
-        cb::shared_ptr<const cbBreakpoint> GetBreakpoint(int index) const;
-        void UpdateBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint);
-        void DeleteBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint);
-        void DeleteAllBreakpoints();
-        void ShiftBreakpoint(int index, int lines_to_shift);
-        void EnableBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint, bool enable);
+        cb::shared_ptr<cbBreakpoint> AddBreakpoint(const wxString& filename, int line) override;
+        cb::shared_ptr<cbBreakpoint> AddDataBreakpoint(const wxString& dataExpression) override;
+        int GetBreakpointsCount() const override;
+        cb::shared_ptr<cbBreakpoint> GetBreakpoint(int index) override;
+        cb::shared_ptr<const cbBreakpoint> GetBreakpoint(int index) const override;
+        void UpdateBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint) override;
+        void DeleteBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint) override;
+        void DeleteAllBreakpoints() override;
+        void ShiftBreakpoint(int index, int lines_to_shift) override;
+        void EnableBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint, bool enable) override;
 
         // stack frame calls;
-        int GetStackFrameCount() const;
-        cb::shared_ptr<const cbStackFrame> GetStackFrame(int index) const;
-        void SwitchToFrame(int number);
-        int GetActiveStackFrame() const;
+        int GetStackFrameCount() const override;
+        cb::shared_ptr<const cbStackFrame> GetStackFrame(int index) const override;
+        void SwitchToFrame(int number) override;
+        int GetActiveStackFrame() const override;
 
         // threads
-        int GetThreadsCount() const;
-        cb::shared_ptr<const cbThread> GetThread(int index) const;
-        bool SwitchToThread(int thread_number);
+        int GetThreadsCount() const override;
+        cb::shared_ptr<const cbThread> GetThread(int index) const override;
+        bool SwitchToThread(int thread_number) override;
 
-        bool Debug(bool breakOnEntry);
-        void Continue();
-        void Next();
-        void NextInstruction();
-        void StepIntoInstruction();
-        void Step();
-        void StepOut();
-        bool RunToCursor(const wxString& filename, int line, const wxString& line_text);
-        void SetNextStatement(const wxString& filename, int line);
-        void Break();
-        void Stop();
+        bool Debug(bool breakOnEntry) override;
+        void Continue() override;
+        void Next() override;
+        void NextInstruction() override;
+        void StepIntoInstruction() override;
+        void Step() override;
+        void StepOut() override;
+        bool RunToCursor(const wxString& filename, int line, const wxString& line_text) override;
+        void SetNextStatement(const wxString& filename, int line) override;
+        void Break() override;
+        void Stop() override;
         bool Validate(const wxString& line, const char cb);
-        bool IsRunning() const { return m_pProcess; }
-        bool IsStopped() const;
-        bool IsBusy() const;
+        bool IsRunning() const override { return m_pProcess; }
+        bool IsStopped() const override;
+        bool IsBusy() const override;
         bool IsTemporaryBreak() const {return m_TemporaryBreak;}
-        int GetExitCode() const { return m_LastExitCode; }
+        int GetExitCode() const override { return m_LastExitCode; }
 
-        cb::shared_ptr<cbWatch> AddWatch(const wxString& symbol, bool update);
+        cb::shared_ptr<cbWatch> AddWatch(const wxString& symbol, bool update) override;
         cb::shared_ptr<cbWatch> AddMemoryRange(uint64_t address, uint64_t size,
-                                               const wxString &symbol, bool update);
-        void DeleteWatch(cb::shared_ptr<cbWatch> watch);
-        bool HasWatch(cb::shared_ptr<cbWatch> watch);
+                                               const wxString &symbol, bool update) override;
+        void DeleteWatch(cb::shared_ptr<cbWatch> watch) override;
+        bool HasWatch(cb::shared_ptr<cbWatch> watch) override;
         bool IsMemoryRangeWatch(const cb::shared_ptr<cbWatch> &watch);
-        void ShowWatchProperties(cb::shared_ptr<cbWatch> watch);
-        bool SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString &value);
-        void ExpandWatch(cb::shared_ptr<cbWatch> watch);
-        void CollapseWatch(cb::shared_ptr<cbWatch> watch);
-        void UpdateWatch(cb::shared_ptr<cbWatch> watch);
-        void UpdateWatches(const std::vector<cb::shared_ptr<cbWatch>> &watches);
+        void ShowWatchProperties(cb::shared_ptr<cbWatch> watch) override;
+        bool SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString &value) override;
+        void ExpandWatch(cb::shared_ptr<cbWatch> watch) override;
+        void CollapseWatch(cb::shared_ptr<cbWatch> watch) override;
+        void UpdateWatch(cb::shared_ptr<cbWatch> watch) override;
+        void UpdateWatches(const std::vector<cb::shared_ptr<cbWatch>> &watches) override;
 
         void AddWatchNoUpdate(const cb::shared_ptr<GDBWatch> &watch);
 
-        void OnWatchesContextMenu(wxMenu &menu, const cbWatch &watch, wxObject *property, int &disabledMenus);
+        void OnWatchesContextMenu(wxMenu &menu, const cbWatch &watch, wxObject *property,
+                                  int &disabledMenus) override;
 
-        void GetCurrentPosition(wxString &filename, int &line);
-        void RequestUpdate(DebugWindows window);
+        void GetCurrentPosition(wxString &filename, int &line) override;
+        void RequestUpdate(DebugWindows window) override;
 
-        void AttachToProcess(const wxString& pid);
-        void DetachFromProcess();
-        bool IsAttachedToProcess() const;
+        void AttachToProcess(const wxString& pid) override;
+        void DetachFromProcess() override;
+        bool IsAttachedToProcess() const override;
 
-        void SendCommand(const wxString& cmd, bool debugLog);
+        void SendCommand(const wxString& cmd, bool debugLog) override;
         void DoSendCommand(const wxString& cmd);
 
         DebuggerState& GetState(){ return m_State; }
 
-        void OnConfigurationChange(bool isActive);
+        void OnConfigurationChange(bool isActive) override;
 
         static wxArrayString ParseSearchDirs(const cbProject &project);
         static void SetSearchDirs(cbProject &project, const wxArrayString &dirs);
@@ -125,8 +127,8 @@ class DebuggerGDB : public cbDebuggerPlugin
         static RemoteDebuggingMap ParseRemoteDebuggingMap(cbProject &project);
         static void SetRemoteDebuggingMap(cbProject &project, const RemoteDebuggingMap &map);
 
-        void OnValueTooltip(const wxString &token, const wxRect &evalRect);
-        bool ShowValueTooltip(int style);
+        void OnValueTooltip(const wxString &token, const wxRect &evalRect) override;
+        bool ShowValueTooltip(int style) override;
 
         static void ConvertToGDBFriendly(wxString& str);
         static void ConvertToGDBFile(wxString& str);
@@ -138,11 +140,11 @@ class DebuggerGDB : public cbDebuggerPlugin
         void DetermineLanguage();
 
     protected:
-        cbProject* GetProject() { return m_pProject; }
-        void ResetProject() { m_pProcess = NULL; }
-        void ConvertDirectory(wxString& str, wxString base, bool relative);
-        void CleanupWhenProjectClosed(cbProject *project);
-        bool CompilerFinished(bool compilerFailed, StartType startType);
+        cbProject* GetProject() override { return m_pProject; }
+        void ResetProject() override { m_pProcess = NULL; }
+        void ConvertDirectory(wxString& str, wxString base, bool relative) override;
+        void CleanupWhenProjectClosed(cbProject *project) override;
+        bool CompilerFinished(bool compilerFailed, StartType startType) override;
     protected:
         void AddSourceDir(const wxString& dir);
     private:
@@ -166,7 +168,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         void OnShowFile(wxCommandEvent& event);
         void OnCursorChanged(wxCommandEvent& event);
 
-        void SetupToolsMenu(wxMenu &menu);
+        void SetupToolsMenu(wxMenu &menu) override;
         void KillConsole();
         void CheckIfConsoleIsClosed();
 

@@ -22,7 +22,7 @@ class ProjectPathPanel: public wxPanel
     public:
 
         ProjectPathPanel(wxWindow* parent,wxWindowID id = -1);
-        virtual ~ProjectPathPanel();
+        ~ProjectPathPanel() override;
 
         void SetPath(const wxString& path)
         {
@@ -35,7 +35,7 @@ class ProjectPathPanel: public wxPanel
         //wxString GetName(){ return txtPrjName->GetValue(); }
 // NOTE (Biplab#1#): This is a temporary fix. This function
 // need to be renamed according to it's visual representation
-        wxString GetName() const { return txtPrjTitle->GetValue(); }
+        wxString GetName() const override { return txtPrjTitle->GetValue(); }
         wxString GetFullFileName() const { return txtFinalDir->GetValue(); }
         wxString GetTitle() const { return txtPrjTitle->GetValue(); }
 
@@ -54,7 +54,7 @@ class ProjectPathPanel: public wxPanel
 
     private:
 
-        void Update();
+        void Update() override;
         void UpdateFromResulting();
         bool m_LockUpdates;
 

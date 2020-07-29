@@ -12,14 +12,14 @@ class CompilerOW : public Compiler
 {
 	public:
 		CompilerOW();
-		virtual ~CompilerOW();
-        virtual AutoDetectResult AutoDetectInstallationDir();
+		~CompilerOW() override;
+        AutoDetectResult AutoDetectInstallationDir() override;
 
-        virtual void LoadSettings(const wxString& baseKey);
-		virtual void SetMasterPath(const wxString& path);
-		virtual CompilerCommandGenerator* GetCommandGenerator(cbProject *project);
+        void LoadSettings(const wxString& baseKey) override;
+		void SetMasterPath(const wxString& path) override;
+		CompilerCommandGenerator* GetCommandGenerator(cbProject *project) override;
 	protected:
-        Compiler * CreateCopy();
+        Compiler * CreateCopy() override;
 	private:
 };
 

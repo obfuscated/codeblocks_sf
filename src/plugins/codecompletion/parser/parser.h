@@ -125,82 +125,83 @@ public:
      */
     Parser(wxEvtHandler* parent, cbProject* project);
     /** destructor */
-    virtual ~Parser();
+    ~Parser() override;
 
     /** Add files to batch parse mode, internally. The files will be parsed sequentially.
      * @param filenames input files name array
      */
-    virtual void AddBatchParse(const StringList& filenames);
+    void AddBatchParse(const StringList& filenames) override;
 
     /** Add one file to Batch mode Parsing, this is the bridge between the main thread and the
      * thread pool, after this function call, the file(Parserthread) will be run from the thread
      * pool.
      * @param filenames input file name
      */
-    virtual void AddParse(const wxString& filename);
+    void AddParse(const wxString& filename) override;
 
     /** set the predefined macro definition string was collected from the GCC command line,
      *  this function adds the string to an internal m_PredefinedMacros, and switch the ParserState
      */
-    virtual void AddPredefinedMacros(const wxString& defs);
+    void AddPredefinedMacros(const wxString& defs) override;
 
     /** clears the list of predefined macros after it has been parsed */
     virtual void ClearPredefinedMacros();
 
     /** return the predefined macro definition string that has been collected */
-    virtual const wxString GetPredefinedMacros() const;
+    const wxString GetPredefinedMacros() const override;
 
     /** set the associated C::B project pointer. (only used by one parser for whole workspace)
      *  @return true if it can do the switch, other wise, return false, and print some debug logs.
      */
-    virtual bool UpdateParsingProject(cbProject* project);
+    bool UpdateParsingProject(cbProject* project) override;
 
     /** Must add a locker before call all named ParseBufferXXX functions, ParseBuffer function will
      * directly run the parsing in the same thread as the caller. So, take care if the time is limited.
      * this function usually used to parse the function body to fetch the local variable information.
      */
-    virtual bool ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks = false,
-                             bool isTemp = false, const wxString& filename = wxEmptyString,
-                             int parentIdx = -1, int initLine = 0);
+    bool ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks = false,
+                     bool isTemp = false, const wxString& filename = wxEmptyString,
+                     int parentIdx = -1, int initLine = 0) override;
 
     /** parser the current editor control, this function is used to list all the functions in the
      * current code editor
      */
-    virtual bool ParseBufferForFunctions(const wxString& buffer);
+    bool ParseBufferForFunctions(const wxString& buffer) override;
 
     /** parse the buffer for collecting exposed namespace scopes*/
-    virtual bool ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& result);
+    bool ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& result) override;
 
     /** parse the buffer for collecting using namespace directive*/
-    virtual bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result, bool bufferSkipBlocks = true);
+    bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result,
+                                      bool bufferSkipBlocks = true) override;
 
     /** mark this file to be re-parsed in the TokenTree, tick the reparse timer, note it looks like
      * the isLocal parameter is not used in Parser::Reparse function.
      * A better function name could be: MarkFileNeedToBeReParsed()
      */
-    virtual bool Reparse(const wxString& filename, bool isLocal = true);
+    bool Reparse(const wxString& filename, bool isLocal = true) override;
 
     /** this usually happens when user adds some files to an existing project, it just use AddParse()
      * function internally to add the file. and switch the ParserState to ParserCommon::ptAddFileToParser.
      */
-    virtual bool AddFile(const wxString& filename, cbProject* project, bool isLocal = true);
+    bool AddFile(const wxString& filename, cbProject* project, bool isLocal = true) override;
 
     /** this usually happens when the user removes a file from the existing project, it will remove
      * all the tokens belong to the file.
      */
-    virtual bool RemoveFile(const wxString& filename);
+    bool RemoveFile(const wxString& filename) override;
 
     /** check to see a file is parsed already, it first check the TokenTree to see whether it has
      * the specified file, but if a file is already queued (put in m_BatchParseFiles), we regard it
      * as already parsed.
      */
-    virtual bool IsFileParsed(const wxString& filename);
+    bool IsFileParsed(const wxString& filename) override;
 
     /** check to see whether Parser is in Idle mode, there is no work need to be done in the Parser*/
-    virtual bool     Done();
+    bool Done() override;
 
     /** if the Parser is not in Idle mode, show which need to be done */
-    virtual wxString NotDoneReason();
+    wxString NotDoneReason() override;
 
 protected:
     // used for measuring the batch parsing time
@@ -258,9 +259,9 @@ protected:
     void ProcessParserEvent(ParserCommon::ParserState state, int id, const wxString& info = wxEmptyString);
 
     /** read Parser options from configure file */
-    virtual void            ReadOptions();
+    void ReadOptions() override;
     /** write Parse options to configure file */
-    virtual void            WriteOptions();
+    void WriteOptions() override;
 
 private:
     /** the only usage of this function is in the Parserthread class, when handling include directives
@@ -273,7 +274,7 @@ private:
      * the locked should be set as false, but if you want to recursive parse to an include file
      * the locked value should be set as true.
      */
-    virtual bool ParseFile(const wxString& filename, bool isGlobal, bool locked = false);
+    bool ParseFile(const wxString& filename, bool isGlobal, bool locked = false) override;
 
     /** connect event handlers of the timers and thread pool */
     void ConnectEvents();

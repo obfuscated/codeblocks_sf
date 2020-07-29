@@ -7,14 +7,14 @@ class CompilerLCC : public Compiler
 {
     public:
         CompilerLCC();
-        virtual ~CompilerLCC();
+        ~CompilerLCC() override;
 #ifdef __WXMSW__
-        virtual bool IsValid();
+        bool IsValid() override;
 #endif // __WXMSW__
-        virtual void Reset();
-        virtual AutoDetectResult AutoDetectInstallationDir();
+        void Reset() override;
+        AutoDetectResult AutoDetectInstallationDir() override;
     protected:
-        virtual Compiler* CreateCopy();
+        Compiler* CreateCopy() override;
     private:
         bool m_RegistryUpdated;
 };

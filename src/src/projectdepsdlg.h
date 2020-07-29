@@ -14,8 +14,8 @@ class ProjectDepsDlg : public wxScrollingDialog
 {
     public:
         ProjectDepsDlg(wxWindow* parent, cbProject* sel = nullptr);
-        virtual ~ProjectDepsDlg();
-        virtual void EndModal(int retCode);
+        ~ProjectDepsDlg() override;
+        void EndModal(int retCode) override;
     protected:
         void FillList();
         bool SaveList();

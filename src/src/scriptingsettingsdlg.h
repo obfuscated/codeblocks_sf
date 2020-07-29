@@ -41,9 +41,9 @@ class ScriptingSettingsDlg : public wxScrollingDialog
 {
     public:
         ScriptingSettingsDlg(wxWindow* parent);
-        ~ScriptingSettingsDlg();
+        ~ScriptingSettingsDlg() override;
 
-        void EndModal(int retCode);
+        void EndModal(int retCode) override;
     protected:
         void FillScripts();
         void UpdateState();

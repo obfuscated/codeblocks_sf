@@ -12,11 +12,11 @@ class ProjectsImporter : public cbMimePlugin
 {
     public:
         ProjectsImporter();
-        ~ProjectsImporter();
-        bool HandlesEverything() const { return false; }
-        bool CanHandleFile(const wxString& filename) const;
-        int OpenFile(const wxString& filename);
-        void BuildMenu(wxMenuBar* menuBar);
+        ~ProjectsImporter() override;
+        bool HandlesEverything() const override { return false; }
+        bool CanHandleFile(const wxString& filename) const override;
+        int OpenFile(const wxString& filename) override;
+        void BuildMenu(wxMenuBar* menuBar) override;
     private:
         int LoadProject(const wxString& filename);
         int LoadWorkspace(const wxString& filename);

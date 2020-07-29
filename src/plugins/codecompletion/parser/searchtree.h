@@ -375,10 +375,10 @@ template <class T> class SearchTree : public BasicSearchTree
 {
 public:
     SearchTree();
-    virtual ~SearchTree();
-    virtual void clear(); /// Clears the tree
-    size_t GetCount() const; /// Gets the number of items stored
-    virtual size_t size() const; /// Same as GetCount
+    ~SearchTree() override;
+    void clear() override; /// Clears the tree
+    size_t GetCount() const override; /// Gets the number of items stored
+    size_t size() const override; /// Same as GetCount
     bool SaveCacheTo(const wxString& filename); /// Stores the Tree and items into a file
     bool LoadCacheFrom(const wxString& filename); /// Loads the Tree and items from a file
     wxString Serialize();

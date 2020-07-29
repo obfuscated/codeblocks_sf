@@ -20,10 +20,10 @@ class MSVCLoader : public IBaseLoader
 {
 	public:
 		MSVCLoader(cbProject* project);
-		virtual ~MSVCLoader();
+		~MSVCLoader() override;
 
-		bool Open(const wxString& filename);
-		bool Save(const wxString& filename);
+		bool Open(const wxString& filename) override;
+		bool Save(const wxString& filename) override;
 	protected:
         bool ReadConfigurations();
         bool ParseConfiguration(int index);

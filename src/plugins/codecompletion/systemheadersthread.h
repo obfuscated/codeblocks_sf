@@ -35,9 +35,9 @@ class SystemHeadersThread : public wxThread
 public:
     SystemHeadersThread(wxEvtHandler*     parent,     wxCriticalSection*   critSect,
                         SystemHeadersMap& headersMap, const wxArrayString& incDirs);
-    virtual ~SystemHeadersThread();
+    ~SystemHeadersThread() override;
 
-    virtual void* Entry();
+    void* Entry() override;
 
 private:
     wxEvtHandler*      m_Parent; /// this is the target the thread will sent any event to

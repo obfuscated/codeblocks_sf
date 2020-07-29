@@ -9,12 +9,12 @@ class CompilerXML : public Compiler
 {
     public:
         CompilerXML(const wxString& name, const wxString& ID, const wxString& file);
-        virtual ~CompilerXML();
+        ~CompilerXML() override;
 
-        virtual AutoDetectResult AutoDetectInstallationDir();
+        AutoDetectResult AutoDetectInstallationDir() override;
 
     protected:
-        virtual Compiler* CreateCopy();
+        Compiler* CreateCopy() override;
 
     private:
 

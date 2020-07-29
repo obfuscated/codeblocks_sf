@@ -22,10 +22,10 @@ class AstyleConfigDlg : public cbConfigurationPanel
         void OnBreakLineChange(wxCommandEvent& event);
         void OnBreakBlocksChange(wxCommandEvent& event);
 
-        virtual wxString GetTitle() const { return _("Source formatter"); }
-        virtual wxString GetBitmapBaseName() const { return _T("astyle-plugin"); }
-        virtual void OnApply(){ SaveSettings(); }
-        virtual void OnCancel(){}
+        wxString GetTitle() const  override { return _("Source formatter"); }
+        wxString GetBitmapBaseName() const  override { return _T("astyle-plugin"); }
+        void OnApply() override { SaveSettings(); }
+        void OnCancel() override {}
 
         void LoadSettings();
         void SaveSettings();

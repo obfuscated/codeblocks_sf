@@ -14,12 +14,12 @@ class EditMimeTypesDlg : public cbConfigurationPanel
 {
     public:
         EditMimeTypesDlg(wxWindow* parent, MimeTypesArray& array);
-        virtual ~EditMimeTypesDlg();
+        ~EditMimeTypesDlg() override;
 
-        virtual wxString GetTitle() const { return _("Files extension handling"); }
-        virtual wxString GetBitmapBaseName() const { return _T("extensions"); }
-        virtual void OnApply();
-        virtual void OnCancel(){}
+        wxString GetTitle() const override { return _("Files extension handling"); }
+        wxString GetBitmapBaseName() const override { return _T("extensions"); }
+        void OnApply() override;
+        void OnCancel() override {}
     private:
         void FillList();
         void UpdateDisplay();

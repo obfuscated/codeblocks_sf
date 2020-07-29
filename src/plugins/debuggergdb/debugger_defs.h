@@ -95,9 +95,9 @@ class DebuggerInfoCmd : public DebuggerCmd
         {
             m_Cmd = cmd;
         }
-        virtual ~DebuggerInfoCmd(){}
+        ~DebuggerInfoCmd() override {}
 
-        virtual void ParseOutput(const wxString& output);
+        void ParseOutput(const wxString& output) override;
         wxString m_Title;
 };
 
@@ -110,7 +110,7 @@ class DebuggerContinueBaseCmd : public DebuggerCmd
         {
         }
 
-        bool IsContinueCommand() const { return true; }
+        bool IsContinueCommand() const override { return true; }
 };
 
 /** Action-only debugger command to signal the watches tree to update. */
@@ -160,15 +160,15 @@ struct DebuggerBreakpoint : cbBreakpoint
     {}
 
     // from cbBreakpoint
-    virtual void SetEnabled(bool flag);
-    virtual wxString GetLocation() const;
-    virtual int GetLine() const;
-    virtual wxString GetLineString() const;
-    virtual wxString GetType() const;
-    virtual wxString GetInfo() const;
-    virtual bool IsEnabled() const;
-    virtual bool IsVisibleInEditor() const;
-    virtual bool IsTemporary() const;
+    void SetEnabled(bool flag) override;
+    wxString GetLocation() const override;
+    int GetLine() const override;
+    wxString GetLineString() const override;
+    wxString GetType() const override;
+    wxString GetInfo() const override;
+    bool IsEnabled() const override;
+    bool IsVisibleInEditor() const override;
+    bool IsTemporary() const override;
 
     BreakpointType type; ///< The type of this breakpoint.
     wxString filename; ///< The filename for the breakpoint (kept as relative).
@@ -217,17 +217,17 @@ class GDBWatch : public cbWatch
 {
     public:
         GDBWatch(wxString const &symbol);
-        virtual ~GDBWatch();
+        ~GDBWatch() override;
     public:
 
-        virtual void GetSymbol(wxString &symbol) const;
-        virtual void GetValue(wxString &value) const;
-        virtual bool SetValue(const wxString &value);
-        virtual void GetFullWatchString(wxString &full_watch) const;
-        virtual void GetType(wxString &type) const;
-        virtual void SetType(const wxString &type);
+        void GetSymbol(wxString &symbol) const override;
+        void GetValue(wxString &value) const override;
+        bool SetValue(const wxString &value) override;
+        void GetFullWatchString(wxString &full_watch) const override;
+        void GetType(wxString &type) const override;
+        void SetType(const wxString &type) override;
 
-        virtual wxString GetDebugString() const;
+        wxString GetDebugString() const override;
 
         wxString MakeSymbolToAddress() const override;
         bool IsPointerType() const override;

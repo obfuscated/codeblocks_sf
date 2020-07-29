@@ -14,10 +14,10 @@ class EditWatchDlg : public wxScrollingDialog
 {
     public:
         EditWatchDlg(cb::shared_ptr<GDBWatch> w, wxWindow* parent);
-        virtual ~EditWatchDlg();
+        ~EditWatchDlg() override;
 
     protected:
-        void EndModal(int retCode);
+        void EndModal(int retCode) override;
 
         cb::shared_ptr<GDBWatch> m_watch;
 };

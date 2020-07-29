@@ -232,7 +232,7 @@ class GdbCmd_AddSourceDir : public DebuggerCmd
         {
             m_Cmd << _T("directory ") << dir;
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // Output:
             // Warning: C:\Devel\tmp\console\111: No such file or directory.
@@ -254,7 +254,7 @@ class GdbCmd_SetDebuggee : public DebuggerCmd
         {
             m_Cmd << _T("file ") << file;
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // Output:
             // Reading symbols from C:\Devel\tmp\console/console.exe...done.
@@ -278,7 +278,7 @@ class GdbCmd_AddSymbolFile : public DebuggerCmd
         {
             m_Cmd << _T("add-symbol-file ") << file;
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // Output:
             //
@@ -306,7 +306,7 @@ class GdbCmd_SetArguments : public DebuggerCmd
         {
             m_Cmd << _T("set args ") << args;
         }
-        void ParseOutput(cb_unused const wxString& output)
+        void ParseOutput(cb_unused const wxString& output) override
         {
             // No output
         }
@@ -325,7 +325,7 @@ class GdbCmd_AttachToProcess : public DebuggerCmd
             m_Cmd << _T("attach ") << wxString::Format(_T("%d"), pid);
             m_pDriver->Log(wxString::Format(_("Attaching to program with pid: %d"), pid));
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // Output:
             // Attaching to process <pid>
@@ -364,7 +364,7 @@ class GdbCmd_Detach : public DebuggerCmd
         {
             m_Cmd << _T("detach");
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // Output:
             // Attaching to process <pid>
@@ -397,7 +397,7 @@ class GdbCmd_AddBreakpointCondition : public DebuggerCmd
             if (m_BP->useCondition)
                 m_Cmd << _T(" ") << m_BP->condition;
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             if (output.StartsWith(_T("No symbol ")))
             {
@@ -478,7 +478,7 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
                 // condition and ignore count will be set in ParseOutput, where we 'll have the bp number
             }
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // possible outputs (we 're only interested in 1st and 2nd samples):
             //
@@ -564,7 +564,7 @@ class GdbCmd_AddDataBreakpoint : public DebuggerCmd
             if (m_BP->enabled)
                 m_Cmd << _T("output &") << m_BP->breakAddress;
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // Hardware watchpoint 1: expr
             if (output.StartsWith(_T("No symbol ")) || output.StartsWith(_T("Attempt to ")))
@@ -605,7 +605,7 @@ class GdbCmd_RemoveBreakpoint : public DebuggerCmd
                 m_Cmd << _T("delete breakpoints ") << wxString::Format(_T("%d"), (int) bp->index);
             }
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             if (!m_BP)
                 return;
@@ -643,7 +643,7 @@ class GdbCmd_SetCatch : public DebuggerCmd
             m_Cmd = wxT("catch ") + type;
         }
 
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             if (m_regExp.Matches(output))
             {
@@ -666,7 +666,7 @@ class GdbCmd_Continue : public DebuggerContinueBaseCmd
         {
         }
 
-        virtual void Action()
+        void Action() override
         {
             m_pDriver->NotifyDebuggeeContinued();
         }
@@ -680,7 +680,7 @@ class GdbCmd_Start : public DebuggerContinueBaseCmd
         {
         }
 
-        virtual void ParseOutput(const wxString &output)
+        void ParseOutput(const wxString &output) override
         {
             const wxArrayString &lines = GetArrayFromString(output, _T('\n'));
             for (size_t ii = 0; ii < lines.GetCount(); ++ii)
@@ -710,7 +710,7 @@ class GdbCmd_InfoProgram : public DebuggerCmd
         {
             m_Cmd << _T("info program");
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             wxString pid_str;
             if (reInfoProgramThread.Matches(output))
@@ -739,7 +739,7 @@ class GdbCmd_Threads : public DebuggerCmd
         {
             m_Cmd << _T("info threads");
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             m_pDriver->GetThreads().clear();
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
@@ -831,7 +831,7 @@ class GdbCmd_Watch : public DebuggerCmd
                     m_Cmd << symbol;
             }
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             wxString w = output;
             w.Trim(true);
@@ -873,7 +873,7 @@ class GdbCmd_MemoryRangeWatch : public DebuggerCmd
             m_Cmd  = wxString(wxT("x /")) << wxString::FromUTF8(tmpSize) << wxT("xb ") << wxString::FromUTF8(tmpAddr);
         }
 
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
             wxString addr;
@@ -915,7 +915,7 @@ class GdbCmd_FindWatchType : public DebuggerCmd
             m_watch->GetSymbol(symbol);
             m_Cmd << symbol;
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // happens, when wxString is passed as const reference parameter
             if (m_firstTry && output == wxT("Attempt to take contents of a non-pointer value."))
@@ -988,7 +988,7 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
             m_Cmd << wxT("output ");
             m_Cmd << m_What;
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             wxString contents = output;
             contents.Trim(true);
@@ -1044,7 +1044,7 @@ class GdbCmd_FindTooltipAddress : public DebuggerCmd
                 m_Cmd << _T('&');
             m_Cmd << m_What;
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // examples:
             // type = wxString
@@ -1087,7 +1087,7 @@ class GdbCmd_FindTooltipType : public DebuggerCmd
         {
             singleUsage = false;
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // examples:
             // type = wxString
@@ -1119,7 +1119,7 @@ class GdbCmd_LocalsFuncArgs : public DebuggerCmd
             else
                 m_Cmd = wxT("info args");
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             if ((m_doLocals && output == wxT("No locals.")) || (!m_doLocals && output == wxT("No arguments.")))
             {
@@ -1158,7 +1158,7 @@ class GdbCmd_ChangeFrame : public DebuggerCmd
         {
             m_Cmd << _T("frame ") << frameno;
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             m_pDriver->Log(output);
         }
@@ -1175,7 +1175,7 @@ class GdbCmd_Backtrace : public DebuggerCmd
         {
             m_Cmd << _T("bt 30");
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             int validFrameNumber = -1;
             cbStackFrame validSF;
@@ -1321,7 +1321,7 @@ class GdbCmd_InfoRegisters : public DebuggerCmd
             m_Cmd << _T("info registers");
         };
 
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // output is a series of:
             //
@@ -1468,7 +1468,7 @@ class GdbCmd_Disassembly : public DebuggerCmd
             else
                 m_Cmd << wxT(" 0x") << hexAddrStr;
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // output for "disassemble" is a series of:
             //
@@ -1559,7 +1559,7 @@ class GdbCmd_DisassemblyInit : public DebuggerCmd
             m_Cmd << _T("info frame\n") << _T("end\n");
         };
 
-        void ParseOutput(const wxString& p_output)
+        void ParseOutput(const wxString& p_output) override
         {
             cbDisassemblyDlg *dialog = Manager::Get()->GetDebuggerManager()->GetDisassemblyDialog();
 
@@ -1652,7 +1652,7 @@ class GdbCmd_ExamineMemory : public DebuggerCmd
             const wxString &address = CleanStringValue(dialog->GetBaseAddress());
             m_Cmd.Printf(_T("x/%dxb %s"), dialog->GetBytes(), address.c_str());
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             cbExamineMemoryDlg *dialog = Manager::Get()->GetDebuggerManager()->GetExamineMemoryDialog();
 
@@ -1693,7 +1693,7 @@ class GdbCmd_RemoteBaud : public DebuggerCmd
             m_Cmd << _T("set remotebaud ") << baud;
             driver->Log(_("Setting serial connection speed to ") + baud);
         }
-        void ParseOutput(cb_unused const wxString& output)
+        void ParseOutput(cb_unused const wxString& output) override
         {
         }
 };
@@ -1738,7 +1738,7 @@ class GdbCmd_RemoteTarget : public DebuggerCmd
             else
                 m_pDriver->Log(_("Invalid settings for remote debugging!"));
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             // This command will either output an error or a breakpoint address info
             // Connection errors are of the form:
@@ -1802,7 +1802,7 @@ class GdbCmd_StepOrNextInstruction : public DebuggerContinueBaseCmd
         {
             m_Cmd << command;
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             DebuggerManager *manager = Manager::Get()->GetDebuggerManager();
             if (!manager->UpdateDisassembly())
@@ -1867,7 +1867,7 @@ class GdbCmd_FindCursor : public DebuggerCmd
         {
         }
 
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             const wxArrayString &lines = GetArrayFromString(output, _T('\n'));
             if (lines.Count() <= 2)
@@ -1915,7 +1915,7 @@ class GdbCmd_DebugLanguage : public DebuggerCmd
             m_Cmd << _T("show language");
         }
 
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& output) override
         {
             if (output.Lower().Find(wxT("fortran")) != wxNOT_FOUND)
                 g_DebugLanguage = dl_Fortran;

@@ -24,7 +24,7 @@ class WatchesDlg : public wxPanel, public cbWatchesDlg
     public:
         WatchesDlg();
 
-        wxWindow* GetWindow() { return this; }
+        wxWindow* GetWindow() override { return this; }
 
         void AddWatch(cb::shared_ptr<cbWatch> watch) override;
         void AddSpecialWatch(cb::shared_ptr<cbWatch> watch, bool readonly) override;
@@ -93,7 +93,7 @@ class ValueTooltip :
     protected:
         virtual void OnDismiss();
     private:
-        void Fit();
+        void Fit() override;
         void ClearWatch();
     private:
 

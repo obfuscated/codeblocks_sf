@@ -18,12 +18,12 @@ class CCOptionsProjectDlg : public cbConfigurationPanel
 {
 public:
     CCOptionsProjectDlg(wxWindow* parent, cbProject* project, NativeParser* np);
-    virtual ~CCOptionsProjectDlg();
+    ~CCOptionsProjectDlg() override;
 
-    virtual wxString GetTitle() const          { return _("C/C++ parser options"); }
-    virtual wxString GetBitmapBaseName() const { return _T("generic-plugin"); }
-    virtual void OnApply();
-    virtual void OnCancel(){}
+    wxString GetTitle() const override { return _("C/C++ parser options"); }
+    wxString GetBitmapBaseName() const override { return _T("generic-plugin"); }
+    void OnApply() override;
+    void OnCancel() override {}
 
 protected:
     void OnAdd(wxCommandEvent& event);

@@ -12,11 +12,11 @@ class CompilerMSVC10 : public Compiler
 {
 public:
     CompilerMSVC10();
-    virtual ~CompilerMSVC10();
-    virtual AutoDetectResult AutoDetectInstallationDir();
+    ~CompilerMSVC10() override;
+    AutoDetectResult AutoDetectInstallationDir() override;
 
 protected:
-    Compiler* CreateCopy();
+    Compiler* CreateCopy() override;
 };
 
 #endif // COMPILERMSVC10_H_

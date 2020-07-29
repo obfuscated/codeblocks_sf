@@ -48,7 +48,7 @@ class EditorConfigurationDlg : public wxScrollingDialog
         void OnCaretStyle(wxCommandEvent& event);
         void OnUpdateUIFontQuality(wxUpdateUIEvent& event);
 
-        void EndModal(int retCode);
+        void EndModal(int retCode) override;
     private:
         void OnPageChanging(wxListbookEvent& event);
         void OnPageChanged(wxListbookEvent& event);

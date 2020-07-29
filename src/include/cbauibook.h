@@ -112,7 +112,7 @@ class DLLIMPORT cbAuiNotebook : public wxAuiNotebook
          * \param The index of the tab to be closed
          * \return true if successfull
          */
-        bool DeletePage(size_t page);
+        bool DeletePage(size_t page) override;
         /** \brief Remove Page
          *
          * Calls the base-class function and after that
@@ -122,7 +122,7 @@ class DLLIMPORT cbAuiNotebook : public wxAuiNotebook
          * \param The index of the tab to be closed
          * \return true if successfull
          */
-        bool RemovePage(size_t page);
+        bool RemovePage(size_t page) override;
         /** \brief Move page
          *
          * Moves the tab containing page to new_idx

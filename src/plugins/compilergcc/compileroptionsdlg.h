@@ -29,12 +29,12 @@ class CompilerOptionsDlg : public cbConfigurationPanel
 {
     public:
         CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, cbProject* project = 0L, ProjectBuildTarget* target = 0L);
-        ~CompilerOptionsDlg();
+        ~CompilerOptionsDlg() override;
 
-        virtual wxString GetTitle() const { return _("Global compiler settings"); }
-        virtual wxString GetBitmapBaseName() const { return _T("compiler"); }
-        virtual void OnApply();
-        virtual void OnCancel(){}
+        wxString GetTitle() const override { return _("Global compiler settings"); }
+        wxString GetBitmapBaseName() const override { return _T("compiler"); }
+        void OnApply() override;
+        void OnCancel() override {}
     private:
         enum CustomVarActionType
         {

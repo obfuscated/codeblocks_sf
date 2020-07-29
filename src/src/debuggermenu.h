@@ -21,13 +21,13 @@ class DebuggerMenuHandler : public wxEvtHandler, public cbDebuggerMenuHandler
         void AppendWindowMenuItems(wxMenu &menu);
 
     public: // derived from cbDebuggerMenuHandler
-        virtual void SetActiveDebugger(cbDebuggerPlugin *active);
-        virtual void MarkActiveTargetAsValid(bool valid);
-        virtual void RebuildMenus();
-        virtual void BuildContextMenu(wxMenu &menu, const wxString& word_at_caret, bool is_running);
+        void SetActiveDebugger(cbDebuggerPlugin *active) override;
+        void MarkActiveTargetAsValid(bool valid) override;
+        void RebuildMenus() override;
+        void BuildContextMenu(wxMenu &menu, const wxString& word_at_caret, bool is_running) override;
 
-        virtual bool RegisterWindowMenu(const wxString &name, const wxString &help, cbDebuggerWindowMenuItem *item);
-        virtual void UnregisterWindowMenu(const wxString &name);
+        bool RegisterWindowMenu(const wxString &name, const wxString &help, cbDebuggerWindowMenuItem *item) override;
+        void UnregisterWindowMenu(const wxString &name) override;
     private:
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnUpdateUIActive(wxUpdateUIEvent &event);

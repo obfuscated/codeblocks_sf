@@ -20,10 +20,10 @@ class MSVC10Loader : public IBaseLoader
         // default %(AdditionalDependencies), not sure if "winmm" and "comctl32" are part of them
         static const wxString g_AdditionalDependencies;
         MSVC10Loader(cbProject* project);
-        virtual ~MSVC10Loader();
+        ~MSVC10Loader() override;
 
-        bool Open(const wxString& filename);
-        bool Save(const wxString& filename);
+        bool Open(const wxString& filename) override;
+        bool Save(const wxString& filename) override;
     protected:
         cbProject* m_pProject;
         char m_ConvertSwitches;

@@ -16,10 +16,10 @@ class CompilerICC : public Compiler
 {
     public:
         CompilerICC();
-        virtual ~CompilerICC();
-        virtual AutoDetectResult AutoDetectInstallationDir();
+        ~CompilerICC() override;
+        AutoDetectResult AutoDetectInstallationDir() override;
     protected:
-        virtual Compiler* CreateCopy();
+        Compiler* CreateCopy() override;
     private:
 };
 

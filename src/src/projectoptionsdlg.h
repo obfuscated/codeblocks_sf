@@ -23,9 +23,9 @@ class ProjectOptionsDlg : public wxScrollingDialog
         // class constructor
         ProjectOptionsDlg(wxWindow* parent, cbProject* project);
         // class destructor
-        ~ProjectOptionsDlg();
+        ~ProjectOptionsDlg() override;
 
-        void EndModal(int retCode);
+        void EndModal(int retCode) override;
         void OnFileOptionsClick(wxCommandEvent& event);
         void OnFileToggleMarkClick(wxCommandEvent& event);
         void OnFileMarkOnClick(wxCommandEvent& event);

@@ -26,15 +26,15 @@ class BreakpointsDlg : public wxPanel, public cbBreakpointsDlg
     public:
         BreakpointsDlg();
 
-        wxWindow* GetWindow() { return this; }
+        wxWindow* GetWindow() override { return this; }
 
-        bool AddBreakpoint(cbDebuggerPlugin *plugin, const wxString& filename, int line);
-        bool RemoveBreakpoint(cbDebuggerPlugin *plugin, const wxString& filename, int line);
-        void RemoveAllBreakpoints();
-        void EditBreakpoint(const wxString& filename, int line);
-        void EnableBreakpoint(const wxString& filename, int line, bool enable);
+        bool AddBreakpoint(cbDebuggerPlugin *plugin, const wxString& filename, int line) override;
+        bool RemoveBreakpoint(cbDebuggerPlugin *plugin, const wxString& filename, int line) override;
+        void RemoveAllBreakpoints() override;
+        void EditBreakpoint(const wxString& filename, int line) override;
+        void EnableBreakpoint(const wxString& filename, int line, bool enable) override;
 
-        void Reload();
+        void Reload() override;
     private:
 
         void OnRemove(wxCommandEvent& event);

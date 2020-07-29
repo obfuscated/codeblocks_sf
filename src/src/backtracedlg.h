@@ -21,10 +21,10 @@ class BacktraceDlg : public wxPanel, public cbBacktraceDlg
     public:
         BacktraceDlg(wxWindow* parent);
 
-        wxWindow* GetWindow() { return this; }
+        wxWindow* GetWindow() override { return this; }
 
-        void Reload();
-        void EnableWindow(bool enable);
+        void Reload() override;
+        void EnableWindow(bool enable) override;
     private:
         void OnListRightClick(wxListEvent& event);
         void OnDoubleClick(wxListEvent& event);

@@ -20,16 +20,16 @@ class AbbreviationsConfigPanel: public cbConfigurationPanel
 {
 public:
     AbbreviationsConfigPanel(wxWindow* parent, Abbreviations* plugin);
-    virtual ~AbbreviationsConfigPanel();
+    ~AbbreviationsConfigPanel() override;
 
     /// @return the panel's title.
-    virtual wxString GetTitle() const;
+    wxString GetTitle() const override;
     /// @return the panel's bitmap base name. You must supply two bitmaps: \<basename\>.png and \<basename\>-off.png...
-    virtual wxString GetBitmapBaseName() const;
+    wxString GetBitmapBaseName() const override;
     /// Called when the user chooses to apply the configuration.
-    virtual void OnApply();
+    void OnApply() override;
     /// Called when the user chooses to cancel the configuration.
-    virtual void OnCancel();
+    void OnCancel() override;
 
 private:
     void InitCompText();

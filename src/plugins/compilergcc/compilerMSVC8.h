@@ -12,10 +12,10 @@ class CompilerMSVC8 : public Compiler
 {
     public:
         CompilerMSVC8();
-        virtual ~CompilerMSVC8();
-        virtual AutoDetectResult AutoDetectInstallationDir();
+        ~CompilerMSVC8() override;
+        AutoDetectResult AutoDetectInstallationDir() override;
     protected:
-        Compiler * CreateCopy();
+        Compiler * CreateCopy() override;
     private:
 };
 

@@ -235,7 +235,7 @@ public:
     void OnEraseBackground(wxEraseEvent& event);
 
     // Overrides
-    virtual wxSize DoGetBestSize() const ;
+    wxSize DoGetBestSize() const override;
 
     // Implementation
 

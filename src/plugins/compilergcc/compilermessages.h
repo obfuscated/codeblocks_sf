@@ -20,13 +20,13 @@ class CompilerMessages : public wxEvtHandler, public ListCtrlLogger
         virtual void SetCompilerErrors(CompilerErrors* errors){ m_pErrors = errors; }
         virtual void FocusError(int nr);
 
-        void AutoFitColumns(int column);
+        void AutoFitColumns(int column) override;
 
-        virtual wxWindow* CreateControl(wxWindow* parent);
+        wxWindow* CreateControl(wxWindow* parent) override;
         void DestroyControls();
 
-        virtual bool HasFeature(Feature::Enum feature) const;
-        virtual void AppendAdditionalMenuItems(wxMenu &menu);
+        bool HasFeature(Feature::Enum feature) const override;
+        void AppendAdditionalMenuItems(wxMenu &menu) override;
     private:
         void OnClick(wxCommandEvent& event);
         void OnDoubleClick(wxCommandEvent& event);

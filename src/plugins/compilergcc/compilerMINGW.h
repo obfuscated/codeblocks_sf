@@ -15,12 +15,12 @@ class CompilerMINGW : public Compiler
         // added arguments to ctor so we can derive other gcc-flavours directly
         // from MinGW (e.g. the cygwin compiler is derived from this one).
         CompilerMINGW(const wxString& name = _("GNU GCC Compiler"), const wxString& ID = _T("gcc"));
-        virtual ~CompilerMINGW();
-        virtual AutoDetectResult AutoDetectInstallationDir();
-        virtual CompilerCommandGenerator* GetCommandGenerator(cbProject *project);
+        ~CompilerMINGW() override;
+        AutoDetectResult AutoDetectInstallationDir() override;
+        CompilerCommandGenerator* GetCommandGenerator(cbProject *project) override;
     protected:
-        virtual Compiler* CreateCopy();
-        virtual void SetVersionString();
+        Compiler* CreateCopy() override;
+        void SetVersionString() override;
     private:
 };
 

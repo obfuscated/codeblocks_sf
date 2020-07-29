@@ -16,11 +16,12 @@ class CPURegistersDlg : public wxPanel, public cbCPURegistersDlg
     public:
         CPURegistersDlg(wxWindow* parent);
 
-        wxWindow* GetWindow() { return this; }
+        wxWindow* GetWindow() override { return this; }
 
-        void Clear();
-        void SetRegisterValue(const wxString& reg_name, const wxString& hexValue, const wxString& interpreted);
-        void EnableWindow(bool enable);
+        void Clear() override;
+        void SetRegisterValue(const wxString& reg_name, const wxString& hexValue,
+                              const wxString& interpreted) override;
+        void EnableWindow(bool enable) override;
     protected:
         int RegisterIndex(const wxString& reg_name);
         void OnRefresh(wxCommandEvent& event);

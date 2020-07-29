@@ -20,16 +20,16 @@ class DisassemblyDlg : public wxPanel, public cbDisassemblyDlg
     public:
         DisassemblyDlg(wxWindow* parent);
 
-        wxWindow* GetWindow() { return this; }
+        wxWindow* GetWindow() override { return this; }
 
-        void Clear(const cbStackFrame& frame);
-        void AddAssemblerLine(uint64_t addr, const wxString& line);
-        void AddSourceLine(int lineno, const wxString& line);
-        bool SetActiveAddress(uint64_t addr);
-        void CenterLine(int lineno);
-        void CenterCurrentLine();
-        bool HasActiveAddr() { return m_HasActiveAddr; }
-        void EnableWindow(bool enable);
+        void Clear(const cbStackFrame& frame) override;
+        void AddAssemblerLine(uint64_t addr, const wxString& line) override;
+        void AddSourceLine(int lineno, const wxString& line) override;
+        bool SetActiveAddress(uint64_t addr) override;
+        void CenterLine(int lineno) override;
+        void CenterCurrentLine() override;
+        bool HasActiveAddr() override { return m_HasActiveAddr; }
+        void EnableWindow(bool enable) override;
 
     protected:
         void OnSave(wxCommandEvent& event);

@@ -15,9 +15,9 @@ class DebuggerConfiguration : public cbDebuggerConfiguration
     public:
         explicit DebuggerConfiguration(const ConfigManagerWrapper &config);
 
-        virtual cbDebuggerConfiguration* Clone() const;
-        virtual wxPanel* MakePanel(wxWindow *parent);
-        virtual bool SaveChanges(wxPanel *panel);
+        cbDebuggerConfiguration* Clone() const override;
+        wxPanel* MakePanel(wxWindow *parent) override;
+        bool SaveChanges(wxPanel *panel) override;
     public:
         enum Flags
         {

@@ -12,12 +12,12 @@ class ClassWizard : public cbPlugin
 {
     public:
         ClassWizard();
-        ~ClassWizard();
+        ~ClassWizard() override;
 
-        virtual void OnAttach();
-        virtual void OnRelease(bool appShutDown);
+        void OnAttach() override;
+        void OnRelease(bool appShutDown) override;
 
-        virtual void BuildMenu(wxMenuBar* menuBar);
+        void BuildMenu(wxMenuBar* menuBar) override;
 
 		void OnLaunch(wxCommandEvent& event);
 

@@ -13,10 +13,10 @@ class CompilerG95 : public Compiler
 {
     public:
         CompilerG95();
-        virtual ~CompilerG95();
-        virtual AutoDetectResult AutoDetectInstallationDir();
+        ~CompilerG95() override;
+        AutoDetectResult AutoDetectInstallationDir() override;
     protected:
-        virtual Compiler* CreateCopy();
+        Compiler* CreateCopy() override;
     private:
 };
 

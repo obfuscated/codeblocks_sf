@@ -12,60 +12,61 @@ class CDB_driver : public DebuggerDriver
 {
     public:
         CDB_driver(DebuggerGDB* plugin);
-        virtual ~CDB_driver();
+        ~CDB_driver() override;
 
-        virtual wxString GetCommandLine(const wxString& debugger,
-                                        const wxString& debuggee,
-                                        const wxString &userArguments);
-        virtual wxString GetCommandLine(const wxString& debugger, int pid, const wxString &userArguments);
-        virtual void SetTarget(ProjectBuildTarget* target);
-        virtual void Prepare(bool isConsole, int printElements, const RemoteDebugging &remoteDebugging);
-        virtual void Start(bool breakOnEntry);
-        virtual void Stop();
+        wxString GetCommandLine(const wxString& debugger, const wxString& debuggee,
+                                const wxString &userArguments) override;
+        wxString GetCommandLine(const wxString& debugger, int pid,
+                                const wxString &userArguments) override;
+        void SetTarget(ProjectBuildTarget* target) override;
+        void Prepare(bool isConsole, int printElements,
+                     const RemoteDebugging &remoteDebugging) override;
+        void Start(bool breakOnEntry) override;
+        void Stop() override;
 
-        virtual void Continue();
-        virtual void Step();
-        virtual void StepInstruction();
-        virtual void StepIntoInstruction();
-        virtual void StepIn();
-        virtual void StepOut();
-        virtual void SetNextStatement(const wxString& filename, int line);
-        virtual void Backtrace();
-        virtual void Disassemble();
-        virtual void CPURegisters();
-        virtual void SwitchToFrame(size_t number);
-        virtual void SetVarValue(const wxString& var, const wxString& value);
-        virtual void SetMemoryRangeValue(uint64_t addr, const wxString& value);
-        virtual void MemoryDump();
-        virtual void Attach(int pid);
-        virtual void Detach();
-        virtual void RunningThreads();
+        void Continue() override;
+        void Step() override;
+        void StepInstruction() override;
+        void StepIntoInstruction() override;
+        void StepIn() override;
+        void StepOut() override;
+        void SetNextStatement(const wxString& filename, int line) override;
+        void Backtrace() override;
+        void Disassemble() override;
+        void CPURegisters() override;
+        void SwitchToFrame(size_t number) override;
+        void SetVarValue(const wxString& var, const wxString& value) override;
+        void SetMemoryRangeValue(uint64_t addr, const wxString& value) override;
+        void MemoryDump() override;
+        void Attach(int pid) override;
+        void Detach() override;
+        void RunningThreads() override;
 
-        void InfoFrame();
-        void InfoDLL();
-        void InfoFiles();
-        void InfoFPU();
-        void InfoSignals();
+        void InfoFrame() override;
+        void InfoDLL() override;
+        void InfoFiles() override;
+        void InfoFPU() override;
+        void InfoSignals() override;
 
-        void EnableCatchingThrow(bool enable);
+        void EnableCatchingThrow(bool enable) override;
 
-        virtual void SwitchThread(cb_unused size_t threadIndex){} // not implemented
+        void SwitchThread(cb_unused size_t threadIndex) override {} // not implemented
 
-        virtual void AddBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp);
-        virtual void RemoveBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp);
-        virtual void EvaluateSymbol(const wxString& symbol, const wxRect& tipRect);
-        virtual void UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch,
-                                   cb::shared_ptr<GDBWatch> funcArgsWatch,
-                                   WatchesContainer &watches, bool ignoreAutoUpdate);
-        virtual void UpdateWatch(cb::shared_ptr<GDBWatch> const &watch);
-        virtual void UpdateMemoryRangeWatches(MemoryRangeWatchesContainer &watches,
-                                              bool ignoreAutoUpdate);
-        virtual void UpdateMemoryRangeWatch(const cb::shared_ptr<GDBMemoryRangeWatch> &watch);
-        virtual void UpdateWatchLocalsArgs(cb::shared_ptr<GDBWatch> const &watch, bool locals);
-        virtual void ParseOutput(const wxString& output);
-        virtual bool IsDebuggingStarted() const;
+        void AddBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp) override;
+        void RemoveBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp) override;
+        void EvaluateSymbol(const wxString& symbol, const wxRect& tipRect) override;
+        void UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch,
+                           cb::shared_ptr<GDBWatch> funcArgsWatch,
+                           WatchesContainer &watches, bool ignoreAutoUpdate) override;
+        void UpdateWatch(cb::shared_ptr<GDBWatch> const &watch) override;
+        void UpdateMemoryRangeWatches(MemoryRangeWatchesContainer &watches,
+                                      bool ignoreAutoUpdate) override;
+        void UpdateMemoryRangeWatch(const cb::shared_ptr<GDBMemoryRangeWatch> &watch) override;
+        void UpdateWatchLocalsArgs(cb::shared_ptr<GDBWatch> const &watch, bool locals) override;
+        void ParseOutput(const wxString& output) override;
+        bool IsDebuggingStarted() const override;
 #ifdef __WXMSW__
-        virtual bool UseDebugBreakProcess() { return true; }
+        bool UseDebugBreakProcess() override { return true; }
 #endif
     protected:
     private:

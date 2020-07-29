@@ -12,10 +12,10 @@ class CompilerGNUFortran : public Compiler
 {
     public:
         CompilerGNUFortran();
-        virtual ~CompilerGNUFortran();
-        virtual AutoDetectResult AutoDetectInstallationDir();
+        ~CompilerGNUFortran() override;
+        AutoDetectResult AutoDetectInstallationDir() override;
     protected:
-        virtual Compiler* CreateCopy();
+        Compiler* CreateCopy() override;
     private:
 };
 
