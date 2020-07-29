@@ -30,9 +30,9 @@ public:
     ThreadSearchEvent(const ThreadSearchEvent& event);
 
     /** Destructor. */
-    ~ThreadSearchEvent();
+    ~ThreadSearchEvent() override;
 
-    virtual wxEvent *Clone() const {return new ThreadSearchEvent(*this);}
+    wxEvent *Clone() const override { return new ThreadSearchEvent(*this); }
 
     DECLARE_DYNAMIC_CLASS(ThreadSearchEvent);
 

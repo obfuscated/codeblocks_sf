@@ -87,7 +87,7 @@ public:
     /** Makes instance update its graphical widgets.
       * Should be called by ThreadSearch instance after m_ThreadSearchPlugin modification
       */
-    void Update();
+    void Update() override;
 
     /** Loads file in code preview and makes line visible.
       * @param file : file path

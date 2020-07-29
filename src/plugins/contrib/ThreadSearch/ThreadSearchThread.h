@@ -53,23 +53,23 @@ public:
     /** OnExit wxThread override. Used to inform pThreadSearchView
       * from thread termination.
       */
-    void OnExit();
+    void OnExit() override;
 
 protected:
     /** Entry wxThread override. Entry point of the thread.
       */
-    void *Entry();
+    void *Entry() override;
 
 private:
     /** wxDirTraverser OnDir override.
       * @param dirName : current directory path.
       */
-    wxDirTraverseResult OnDir(const wxString& dirName);
+    wxDirTraverseResult OnDir(const wxString& dirName) override;
 
     /** wxDirTraverser OnFile override.
       * @param fileName : current file path.
       */
-    wxDirTraverseResult OnFile(const wxString& fileName);
+    wxDirTraverseResult OnFile(const wxString& fileName) override;
 
     /** FindInFile
       * Uses the TextFileSearcher to search in the specified file

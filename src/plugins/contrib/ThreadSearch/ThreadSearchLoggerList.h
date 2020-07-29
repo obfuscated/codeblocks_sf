@@ -33,32 +33,32 @@ public:
                             InsertIndexManager::eFileSorting fileSorting, wxWindow* pParent, long id);
 
     /** Destructor. */
-    virtual ~ThreadSearchLoggerList();
+    ~ThreadSearchLoggerList() override;
 
     /** Getter */
-    virtual eLoggerTypes GetLoggerType() {return TypeList;}
+    eLoggerTypes GetLoggerType() override { return TypeList; }
 
     /** Called by ThreadSearchView when new settings are applied. */
-    virtual void Update();
+    void Update() override;
 
     /** Called by ThreadSearchView to process a ThreadSearchEvent
       * sent by worker thread.
       */
-    virtual void OnThreadSearchEvent(const ThreadSearchEvent& event);
+    void OnThreadSearchEvent(const ThreadSearchEvent& event) override;
 
     /** Removes all items from logger. */
-    virtual void Clear();
+    void Clear() override;
 
     /** Called on search begin to prepare logger. */
-    virtual void OnSearchBegin(const ThreadSearchFindData& findData);
+    void OnSearchBegin(const ThreadSearchFindData& findData) override;
     /** Called on search end */
-    virtual void OnSearchEnd();
+    void OnSearchEnd() override;
 
     /** Returns the logger window. */
-    virtual wxWindow* GetWindow();
+    wxWindow* GetWindow() override;
 
     /** Sets focus on list window. */
-    virtual void SetFocus();
+    void SetFocus() override;
 
     /** Single click event handler */
     void OnLoggerListClick(wxListEvent& event);

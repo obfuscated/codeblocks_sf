@@ -24,10 +24,6 @@ public:
     TextFileSearcherRegEx(const wxString& searchText, bool matchCase, bool matchWordBegin,
                           bool matchWord);
 
-
-    /** Destructor. */
-    virtual ~TextFileSearcherRegEx() {};
-
     /** Return true if Line matches search text.
       * This method is inherited from TextFileSearcher and is used to implement
       * different search strategies. In TextFileSearcherRegEx, the searchText provided
@@ -35,12 +31,12 @@ public:
       * @param Line : the text line to match.
       * @return true if line matches search text.
       */
-    virtual bool MatchLine(std::vector<int> *outMatchedPositions, const wxString &line);
+    bool MatchLine(std::vector<int> *outMatchedPositions, const wxString &line) override;
 
     /** Return true if object is OK.
       * @return true if object is Ok, ie usable.
       */
-    virtual bool IsOk(wxString* pErrorMessage = NULL);
+    bool IsOk(wxString* pErrorMessage = nullptr) override;
 
 protected:
     wxRegEx m_RegEx;

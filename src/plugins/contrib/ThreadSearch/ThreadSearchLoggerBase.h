@@ -52,7 +52,7 @@ public:
     eLoggerTypes virtual GetLoggerType() = 0;
 
     /** Called by ThreadSearchView when new settings are applied. */
-    virtual void Update();
+    void Update() override;
 
     /** Called by ThreadSearchView to process a ThreadSearchEvent
       * sent by worker thread.
@@ -72,7 +72,7 @@ public:
     virtual wxWindow* GetWindow() = 0;
 
     /** Sets focus on logger window. */
-    virtual void SetFocus()  = 0;
+    void SetFocus() override = 0;
 
     virtual void UpdateSettings() {}
 

@@ -200,7 +200,7 @@ protected:
       * This means that a plugin might be loaded but <b>not</b> activated...\n
       * Think of this method as the actual constructor...
       */
-    virtual void OnAttach();
+    void OnAttach() override;
 
     /** Any descendent plugin should override this virtual method and
       * perform any necessary de-initialization. This method is called by
@@ -211,7 +211,7 @@ protected:
       *         case *don't* use Manager::Get()->Get...() functions or the
       *         behaviour is undefined...
       */
-    virtual void OnRelease(bool appShutDown);
+    void OnRelease(bool appShutDown) override;
 
     /** This method loads the plugin configuration from default.conf using
       * the standard ConfigManager
