@@ -11,21 +11,21 @@
 #include "app.h"
 
 #include <wx/arrstr.h>
+#include <wx/choicdlg.h>
+#include <wx/clipbrd.h>
+#include <wx/cmdline.h>
+#include <wx/debugrpt.h>
+#include <wx/filefn.h>
 #include <wx/fs_zip.h>
 #include <wx/fs_mem.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/cmdline.h>
-#include <wx/regex.h>
-#include <wx/filefn.h>
+#include <wx/ipc.h>
 #include <wx/log.h> // for wxSafeShowMessage()
 #include <wx/msgdlg.h>
-#include <wx/choicdlg.h>
-#include <wx/notebook.h>
-#include <wx/clipbrd.h>
-#include <wx/debugrpt.h>
-#include <wx/ipc.h>
 #include <wx/msgout.h>
+#include <wx/notebook.h>
+#include <wx/regex.h>
 #include <wx/stdpaths.h>
+#include <wx/xrc/xmlres.h>
 
 #include <cbexception.h>
 #include <configmanager.h>
@@ -51,8 +51,8 @@
 #include "splashscreen.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
-#include <sys/param.h>
-#include <mach-o/dyld.h>
+    #include <sys/param.h>
+    #include <mach-o/dyld.h>
 #endif
 
 #ifndef CB_PRECOMP
@@ -62,12 +62,12 @@
 #endif
 
 #ifndef APP_PREFIX
-#define APP_PREFIX ""
+    #define APP_PREFIX ""
 #endif
 
 #ifdef __WXMSW__
-#include "exchndl.h"         // Crash handler DLL -> includes windows.h, therefore
-#include <wx/msw/winundef.h> // ...include this header file on the NEXT LINE (wxWidgets docs say so)
+    #include "exchndl.h"         // Crash handler DLL -> includes windows.h, therefore
+    #include <wx/msw/winundef.h> // ...include this header file on the NEXT LINE (wxWidgets docs say so)
 #endif
 
 #ifndef __WXMAC__
