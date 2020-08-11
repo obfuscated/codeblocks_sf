@@ -161,21 +161,36 @@ bool DDEConnection::OnExecute(cb_unused const wxString& topic, wxChar *data, int
     }
     else if (strData.StartsWith(_T("[CmdLine({")))
     {
-        int pos = strData.Find(_T("})]"));
-        if (pos!=wxNOT_FOUND)
-        {
-            wxString line = strData.Mid(10, pos-10);
-            line.Replace(_T("\\)"), _T(")"));
-            line.Replace(_T("\\("), _T("("));
-            CodeBlocksApp* cb = (CodeBlocksApp*)wxTheApp;
-            if (m_Frame && !line.empty())
-            {
-                // Manager::Get()->GetLogManager()->Log(wxString::Format(_T("DDEConnection::OnExecute line = ") + line));
-                cb->ParseCmdLine(m_Frame, line);
-                CodeBlocksEvent event(cbEVT_APP_CMDLINE);
-                Manager::Get()->ProcessEvent(event);
-            }
+        wxString cmdLine, cwd;
 
+        const wxString::size_type posCwd = strData.find("})CWD({");
+        if (posCwd != wxString::npos)
+        {
+            const int coundCmdLind = cbCountOf("[CmdLine({") - 1;
+            const int countCWD = cbCountOf("})CWD({") - 1;
+            const int countEnd = cbCountOf("})]") - 1;
+
+            cmdLine = strData.substr(coundCmdLind, posCwd - coundCmdLind);
+            cmdLine.Replace("\\)", ")");
+            cmdLine.Replace("\\(", "(");
+
+            const wxString::size_type posEnd = strData.find("})]", posCwd + countCWD);
+            if (posEnd != wxString::npos)
+            {
+                cwd = strData.substr(posCwd + countCWD, posEnd - (posCwd + countCWD));
+                cwd.Replace("\\)", ")");
+                cwd.Replace("\\(", "(");
+            }
+        }
+
+        if (!cmdLine.empty() && !cwd.empty() && m_Frame)
+        {
+            CodeBlocksApp* cb = (CodeBlocksApp*)wxTheApp;
+            cb->ParseCmdLine(m_Frame, cmdLine, cwd);
+            CodeBlocksEvent event(cbEVT_APP_CMDLINE);
+            event.SetString(cmdLine);
+            event.SetBuildTargetName(cwd);
+            Manager::Get()->ProcessEvent(event);
         }
         return true;
     }
@@ -664,12 +679,12 @@ bool CodeBlocksApp::OnInit()
                 for (int i = 1 ; i < argc; ++i)
                     cmdLine += wxString(argv[i]) + _T(' ');
 
-                if ( !cmdLine.IsEmpty() )
+                if (!cmdLine.IsEmpty())
                 {
                     // escape openings and closings so it is easily possible to find the end on the rx side
                     cmdLine.Replace(_T("("), _T("\\("));
                     cmdLine.Replace(_T(")"), _T("\\)"));
-                    connection->Execute(_T("[CmdLine({") + cmdLine + _T("})]"));
+                    connection->Execute("[CmdLine({" + cmdLine + "})CWD({" + wxGetCwd() + "})]");
                 }
 
                 // On Linux, C::B has to be raised explicitly if it's wanted
@@ -1150,7 +1165,8 @@ void CodeBlocksApp::SetAutoFile(wxString& file)
     m_AutoFile = file;
 }
 
-int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame, const wxString& CmdLineString)
+int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame, const wxString& CmdLineString,
+                                const wxString &CWD)
 {
     // code shamelessely taken from the console wxWindows sample :)
     bool filesInCmdLine = false;
@@ -1180,31 +1196,49 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame, const wxString& CmdLine
 
             parser.Found(_T("file"), &m_AutoFile);
 
+            if (!m_AutoFile.empty() && !CWD.empty())
+            {
+                wxFileName file(m_AutoFile);
+                if (file.IsRelative())
+                {
+                    // Use the CurrentWorkingDirectory of the client instance to restore the
+                    // absolute path to the file.
+                    file.MakeAbsolute(CWD);
+                    m_AutoFile = file.GetFullPath();
+                }
+            }
+
             filesInCmdLine = (count != 0) || (!m_AutoFile.empty());
 
             for (int param = 0; param < count; ++param)
             {
-                // is it a project/workspace?
-                FileType ft = FileTypeOf(parser.GetParam(param));
-                wxFileName fn(parser.GetParam(param));
-                fn.Normalize(); // really important so that two same files with different names are not loaded twice
+                const wxString &strParam = parser.GetParam(param);
+                wxFileName fn(strParam);
+                // Really important so that two same files with different names are not loaded
+                // twice. Use the CurrentWorkingDirectory of the client instance to restore the
+                // absolute path to the file.
+                fn.Normalize(wxPATH_NORM_ALL, CWD);
+                const wxString &paramFullPath = fn.GetFullPath();
+
+                // Is it a project/workspace?
+                const FileType ft = FileTypeOf(strParam);
                 if (ft == ftCodeBlocksProject)
                 {
                     m_HasProject = true;
-                    m_DelayedFilesToOpen.Add(parser.GetParam(param));
+                    m_DelayedFilesToOpen.Add(paramFullPath);
                 }
                 else if (ft == ftCodeBlocksWorkspace)
                 {
                     // only one workspace can be opened
                     m_HasWorkSpace = true;
                     m_DelayedFilesToOpen.Clear(); // remove all other files
-                    m_DelayedFilesToOpen.Add(fn.GetFullPath()); // and add only the workspace
+                    m_DelayedFilesToOpen.Add(paramFullPath); // and add only the workspace
                     break; // and stop processing any more files
                 }
                 //else if (ft == ftSource || ft == ftHeader || ft == ftResource)
-                else if (wxFile::Exists(fn.GetFullPath())) //also try to open non source, header and resource files
+                else if (wxFile::Exists(paramFullPath)) //also try to open non source, header and resource files
                 {
-                    m_DelayedFilesToOpen.Add(fn.GetFullPath());
+                    m_DelayedFilesToOpen.Add(paramFullPath);
                 }
             }
 

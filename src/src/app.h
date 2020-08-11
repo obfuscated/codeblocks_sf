@@ -110,7 +110,8 @@ class CodeBlocksApp : public wxApp
         bool OnInit() override;
         int OnExit() override;
         int OnRun() override;
-        int ParseCmdLine(MainFrame* handlerFrame, const wxString& CmdLine = wxEmptyString);
+        int ParseCmdLine(MainFrame* handlerFrame, const wxString& CmdLine = wxString(),
+                         const wxString &CWD = wxString());
         #if wxCHECK_VERSION(3,0,0)
         void OnCloseBatchBuildWindow(wxCloseEvent& evt);
         #endif // wxCHECK_VERSION
