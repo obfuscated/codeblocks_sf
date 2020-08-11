@@ -241,12 +241,8 @@ void wxsAngularMeter::OnEnumWidgetProperties(cb_unused long Flags)
  */
 void wxsAngularMeter::OnAddExtraProperties(wxsPropertyGridManager *Grid)
 {
-#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
     Grid->SelectPage(0);
-#else
-    Grid->SetTargetPage(0);
-#endif
-    m_SectorCountId =  Grid->GetGrid()->Insert(_("Needle Colour"), NEW_IN_WXPG14X wxIntProperty(_("Number Of Sectors"), wxPG_LABEL, (int)m_arrSectors.Count()));
+    m_SectorCountId =  Grid->GetGrid()->Insert(_("Needle Colour"), new wxIntProperty(_("Number Of Sectors"), wxPG_LABEL, (int)m_arrSectors.Count()));
     for(int i = 0; i < (int)m_arrSectors.Count(); i++){
         InsertPropertyForSector(Grid, i);
     }
@@ -262,11 +258,7 @@ void wxsAngularMeter::OnAddExtraProperties(wxsPropertyGridManager *Grid)
  */
 void wxsAngularMeter::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId id)
 {
-#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
     Grid->SelectPage(0);
-#else
-    Grid->SetTargetPage(0);
-#endif
     if(id == m_SectorCountId){
         int OldValue = (int)m_arrSectors.Count();
         int NewValue = Grid->GetPropertyValueAsInt(id);
@@ -289,11 +281,7 @@ void wxsAngularMeter::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGI
         else if(NewValue < OldValue){
             // We have to remove some entries
             for(int i = NewValue; i < OldValue; i++){
-#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
                 Grid->DeleteProperty(m_arrSectors[i]->id);
-#else
-                Grid->Delete(m_arrSectors[i]->id);
-#endif
                 delete m_arrSectors[i];
             }
 
@@ -387,7 +375,7 @@ void wxsAngularMeter::InsertPropertyForSector(wxsPropertyGridManager *Grid, int 
     wxString SectorName = wxString::Format(_("Sector %d Colour"), Position + 1);
     wxString SectorDataName = wxString::Format(_("sector_%d_colour"), Position + 1);
 
-    Desc->id = Grid->GetGrid()->Insert(_("Needle Colour"), NEW_IN_WXPG14X wxSystemColourProperty(SectorName, wxPG_LABEL, Desc->colour));
+    Desc->id = Grid->GetGrid()->Insert(_("Needle Colour"), new wxSystemColourProperty(SectorName, wxPG_LABEL, Desc->colour));
 
 //    WXS_COLOUR(wxsAngularMeter, m_arrSectors[Position], SectorName, SectorDataName)
 
@@ -416,7 +404,6 @@ bool wxsAngularMeter::HandleChangeInSector(wxsPropertyGridManager *Grid, wxPGId 
 //    if(Global)
     if(Desc->id == id){
 
-#if wxCHECK_VERSION(3, 0, 0)
         wxVariant var = Grid->GetPropertyValue(id);
         wxString sPropType = var.GetType();
         if(sPropType.IsSameAs(wxT("wxColourPropertyValue"))){
@@ -424,17 +411,6 @@ bool wxsAngularMeter::HandleChangeInSector(wxsPropertyGridManager *Grid, wxPGId 
             pcolval << var;
             Desc->colour = pcolval.m_colour;
         }
-#else
-    #if wxCHECK_PROPGRID_VERSION(1, 3, 0)
-        wxString sPropType = Grid->GetPropertyValueType(id);
-        if(sPropType.IsSameAs(wxT("wxColourPropertyValue"))){
-    #else
-        if(Grid->IsPropertyValueType(id, CLASSINFO(wxColourPropertyValue))){
-    #endif
-            wxColourPropertyValue* pcolval = wxDynamicCast(Grid->GetPropertyValueAsWxObjectPtr(id), wxColourPropertyValue);
-            Desc->colour = pcolval->m_colour;
-        }
-#endif
         Changed = true;
     }
 

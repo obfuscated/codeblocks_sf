@@ -154,12 +154,8 @@ void wxsBmpSwitcher::OnEnumWidgetProperties(cb_unused long Flags)
  */
 void wxsBmpSwitcher::OnAddExtraProperties(wxsPropertyGridManager *Grid)
 {
-#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
     Grid->SelectPage(0);
-#else
-    Grid->SetTargetPage(0);
-#endif
-    m_BmpCountId = Grid->GetGrid()->Insert(_("Var name"), NEW_IN_WXPG14X wxIntProperty(_("Number Of Bitmaps"), wxPG_LABEL, (int)m_arrBmps.Count()));
+    m_BmpCountId = Grid->GetGrid()->Insert(_("Var name"), new wxIntProperty(_("Number Of Bitmaps"), wxPG_LABEL, (int)m_arrBmps.Count()));
     for(int i = 0; i < (int)m_arrBmps.Count(); i++){
         InsertPropertyForBmp(Grid, i);
     }
@@ -175,11 +171,7 @@ void wxsBmpSwitcher::OnAddExtraProperties(wxsPropertyGridManager *Grid)
  */
 void wxsBmpSwitcher::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId id)
 {
-#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
     Grid->SelectPage(0);
-#else
-    Grid->SetTargetPage(0);
-#endif
     if(id == m_BmpCountId){
         int OldValue = (int)m_arrBmps.Count();
         int NewValue = Grid->GetPropertyValueAsInt(id);
@@ -199,11 +191,7 @@ void wxsBmpSwitcher::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId
         else if(NewValue < OldValue){
             // We have to remove some entries
             for(int i = NewValue;i < OldValue;i++){
-#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
                 Grid->DeleteProperty(m_arrBmps[i]->id);
-#else
-                Grid->Delete(m_arrBmps[i]->id);
-#endif
                 delete m_arrBmps[i];
             }
 
@@ -288,7 +276,7 @@ void wxsBmpSwitcher::InsertPropertyForBmp(wxsPropertyGridManager *Grid, int Posi
     BmpDesc *Desc = m_arrBmps[Position];
     wxString sBmpName = wxString::Format(_("Bitmap %d"), Position + 1);
 
-    Desc->id = Grid->GetGrid()->Insert(_("Var name"), NEW_IN_WXPG14X wxImageFileProperty(sBmpName, wxPG_LABEL));
+    Desc->id = Grid->GetGrid()->Insert(_("Var name"), new wxImageFileProperty(sBmpName, wxPG_LABEL));
     // Set the property's image path.
     Grid->SetPropertyValueString(Desc->id, Desc->sPath);
 }

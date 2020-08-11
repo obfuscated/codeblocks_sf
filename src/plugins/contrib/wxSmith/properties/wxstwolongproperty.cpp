@@ -81,9 +81,9 @@ wxsTowLongProperty::wxsTowLongProperty(
 
 void wxsTowLongProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
 {
-    wxPGId DefId = Grid->AppendIn(Parent,NEW_IN_WXPG14X wxBoolProperty(GetPGName(),wxPG_LABEL,DEFVALUE));
-    wxPGId V1Id = Grid->AppendIn(Parent,NEW_IN_WXPG14X wxIntProperty(Value1Name,wxPG_LABEL,VALUE1));
-    wxPGId V2Id = Grid->AppendIn(Parent,NEW_IN_WXPG14X wxIntProperty(Value2Name,wxPG_LABEL,VALUE2));
+    wxPGId DefId = Grid->AppendIn(Parent, new wxBoolProperty(GetPGName(),wxPG_LABEL,DEFVALUE));
+    wxPGId V1Id = Grid->AppendIn(Parent, new wxIntProperty(Value1Name,wxPG_LABEL,VALUE1));
+    wxPGId V2Id = Grid->AppendIn(Parent, new wxIntProperty(Value2Name,wxPG_LABEL,VALUE2));
 
     Grid->SetPropertyAttribute(DefId,wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
 

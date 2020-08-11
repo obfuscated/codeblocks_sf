@@ -1568,13 +1568,8 @@ bool wxsImageListEditorDlg::SaveXPM(wxImage *image, wxOutputStream &stream)
     wxString sName;
     if(image->HasOption(wxIMAGE_OPTION_FILENAME))
     {
-#if wxCHECK_VERSION(3, 0, 0)
         wxFileName::SplitPath(image->GetOption(wxIMAGE_OPTION_FILENAME),
                               NULL, &sName, NULL);
-#else
-        wxSplitPath(image->GetOption(wxIMAGE_OPTION_FILENAME),
-                    NULL, &sName, NULL);
-#endif
         sName << wxT("_xpm");
     }
 

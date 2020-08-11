@@ -44,7 +44,7 @@ wxsFlagsProperty::wxsFlagsProperty(const wxString& PGName, const wxString& DataN
 void wxsFlagsProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
 {
     wxPGChoices PGC(Names,Values);
-    wxPGId Id = Grid->AppendIn(Parent,NEW_IN_WXPG14X wxFlagsProperty(GetPGName(),wxPG_LABEL,PGC,VALUE));
+    wxPGId Id = Grid->AppendIn(Parent,new wxFlagsProperty(GetPGName(),wxPG_LABEL,PGC,VALUE));
     Grid->SetPropertyAttribute(Id,wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
     PGRegister(Object,Grid,Id);
 }
@@ -63,11 +63,7 @@ bool wxsFlagsProperty::PGWrite(cb_unused wxsPropertyContainer* Object,
 {
     if ( UpdateEntries )
     {
-        #if wxCHECK_VERSION(3, 0, 0)
         wxPGChoices(Id->GetChoices()).Set(Names,Values);
-        #else
-        Grid->GetPropertyChoices(Id).Set(Names,Values);
-        #endif
     }
     Grid->SetPropertyValue(Id,VALUE);
     return true;

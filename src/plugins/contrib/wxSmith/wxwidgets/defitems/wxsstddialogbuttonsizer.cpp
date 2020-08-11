@@ -262,9 +262,9 @@ void wxsStdDialogButtonSizer::OnAddExtraProperties(wxsPropertyGridManager* Grid 
 {
     for ( int i=0; i<NumButtons; i++ )
     {
-        m_UseId[i] = Grid->Append(NEW_IN_WXPG14X wxBoolProperty(IdNames[i],wxPG_LABEL,m_Use[i]));
+        m_UseId[i] = Grid->Append(new wxBoolProperty(IdNames[i],wxPG_LABEL,m_Use[i]));
         Grid->SetPropertyAttribute(m_UseId[i],wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
-        m_LabelId[i] = Grid->Append(NEW_IN_WXPG14X wxStringProperty(IdLabels[i],wxPG_LABEL,m_Label[i]));
+        m_LabelId[i] = Grid->Append(new wxStringProperty(IdLabels[i],wxPG_LABEL,m_Label[i]));
     }
     wxsItem::OnAddExtraProperties(Grid);
 }

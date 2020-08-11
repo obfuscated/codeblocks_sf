@@ -28,9 +28,6 @@ namespace
 
     WXS_ST_BEGIN(wxsTextCtrlStyles,_T(""))
         WXS_ST(wxTE_NO_VSCROLL)
-#if !wxCHECK_VERSION(3, 0, 0)
-        WXS_ST(wxTE_AUTO_SCROLL)
-#endif
         WXS_ST(wxTE_PROCESS_ENTER)
         WXS_ST(wxTE_PROCESS_TAB)
         WXS_ST(wxTE_MULTILINE)

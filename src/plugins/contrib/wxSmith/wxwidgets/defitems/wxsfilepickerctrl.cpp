@@ -39,9 +39,7 @@ namespace
         WXS_ST(wxFLP_OVERWRITE_PROMPT)
         WXS_ST(wxFLP_SAVE)
         WXS_ST(wxFLP_USE_TEXTCTRL)
-#if wxCHECK_VERSION(3,0,0)
         WXS_ST(wxFLP_SMALL)
-#endif // wxCHECK_VERSION
     WXS_ST_END()
 
 

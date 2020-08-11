@@ -127,11 +127,7 @@ void wxsImagePanel::OnBuildCreatingCode()
         tt.Printf(_("// Set the bitmap for %s.\n"), vname.wx_str());
         AddEventCode(tt);
 
-#if wxCHECK_VERSION(3, 0, 0)
         tt.Printf(_T("%s->SetBitmap(*%s);\n"), vname.wx_str(), iname.wx_str());
-#else
-        tt.Printf(_T("%s->SetBitmap(*%s);\n"), vname.c_str(), iname.c_str());
-#endif
         AddEventCode(tt);
     }
     else if (!mImage.IsEmpty() && mImage != _T("<none>"))

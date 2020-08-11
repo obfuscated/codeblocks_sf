@@ -1112,10 +1112,6 @@ bool wxsItemEditorContent::IsContinousInsert()
 
 void wxsItemEditorContent::OnKeyDown(wxKeyEvent& event)
 {
-    #if wxCHECK_VERSION(3, 0, 0)
     GetParent()->GetEventHandler()->ProcessEvent(event);
-    #else
-    GetParent()->ProcessEvent(event);
-    #endif
 }
 

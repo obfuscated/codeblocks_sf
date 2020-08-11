@@ -41,11 +41,6 @@
 
 class wxsPropertyContainer;
 
-#if wxCHECK_VERSION(3, 0, 0)
-#define wxCHECK_PROPGRID_VERSION(major,minor,release) (0)
-#endif
-
-#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
 #define wxPGVariant                     wxVariant
 #define wxPGId                          wxPGProperty*
 #define wxParentProperty                wxStringProperty
@@ -54,10 +49,6 @@ class wxsPropertyContainer;
 #define wxPG_VALUETYPE(T)               wxT(#T)
 #define wxPGVariantToWxObjectPtr(A,B)   wxDynamicCast(A.GetWxObjectPtr(),B)
 #define wxPG_PROP_UNSPECIFIED           wxPG_EX_AUTO_UNSPECIFIED_VALUES
-#define NEW_IN_WXPG14X                  new
-#else
-#define NEW_IN_WXPG14X
-#endif
 
 
 /** \brief Class representing one property

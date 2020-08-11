@@ -69,12 +69,7 @@ void wxsEventsEditor::BuildEvents(wxsItem* Item,wxsPropertyGridManager* Grid)
 
     int PageIndex = 1;              // TODO: Do not use fixed page number
     Grid->ClearPage(PageIndex);
-    #if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
     Grid->SelectPage(PageIndex);
-    #else
-    Grid->SetTargetPage(PageIndex);
-    #endif
-
 
     if ( !m_Item )
     {
@@ -122,11 +117,10 @@ void wxsEventsEditor::BuildEvents(wxsItem* Item,wxsPropertyGridManager* Grid)
             m_Events->SetHandler(i,_T(""));
         }
 
-        m_Ids.Add(Grid->Append(NEW_IN_WXPG14X wxEnumProperty(Event->Entry,wxPG_LABEL,Const,Index)));
+        m_Ids.Add(Grid->Append(new wxEnumProperty(Event->Entry,wxPG_LABEL,Const,Index)));
     }
-    #if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+
     Grid->SelectPage(0);
-    #endif
 }
 
 void wxsEventsEditor::PGChanged(wxsItem* Item,wxsPropertyGridManager* Grid,wxPGId Id)

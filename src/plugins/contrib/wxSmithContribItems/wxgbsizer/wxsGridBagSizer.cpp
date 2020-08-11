@@ -278,13 +278,8 @@ void wxsGridBagSizer::OnBuildSizerCreatingCode()
 		{
 			AddHeader(_T("<wx/gbsizer.h>"),GetInfo().ClassName,hfInPCH);
 			Codef(_T("%C(%s, %s);\n"),
-				#if wxCHECK_VERSION(3, 0, 0)
 				VGap.GetPixelsCode(GetCoderContext()).wx_str(),
 				HGap.GetPixelsCode(GetCoderContext()).wx_str());
-				#else
-				VGap.GetPixelsCode(GetCoderContext()).c_str(),
-				HGap.GetPixelsCode(GetCoderContext()).c_str());
-				#endif
 
 			return;
 		}

@@ -195,15 +195,9 @@ void wxsSimpleFontEditorDlg::OnButton1Click(cb_unused wxCommandEvent& event)
     if ( !Font.Ok() ) return;
 
     m_WorkingCopy.Size = Font.GetPointSize();
-#if wxCHECK_VERSION(3, 0, 0)
     m_WorkingCopy.Style = Font.GetStyle();
     m_WorkingCopy.Weight = Font.GetWeight();
     m_WorkingCopy.Family = Font.GetFamily();
-#else
-    m_WorkingCopy.Style = static_cast<wxFontStyle>(Font.GetStyle());
-    m_WorkingCopy.Weight = static_cast<wxFontWeight>(Font.GetWeight());
-    m_WorkingCopy.Family = static_cast<wxFontFamily>(Font.GetFamily());
-#endif
     m_WorkingCopy.Underlined = Font.GetUnderlined();
     m_WorkingCopy.Faces.Clear();
     m_WorkingCopy.Faces.Add(Font.GetFaceName());

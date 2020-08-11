@@ -35,7 +35,7 @@ wxsFloatProperty::wxsFloatProperty(const wxString& PGName, const wxString& DataN
 
 void wxsFloatProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
 {
-    PGRegister(Object,Grid,Grid->AppendIn(Parent,NEW_IN_WXPG14X wxFloatProperty(GetPGName(),wxPG_LABEL,VALUE)));
+    PGRegister(Object,Grid,Grid->AppendIn(Parent,new wxFloatProperty(GetPGName(),wxPG_LABEL,VALUE)));
 }
 
 bool wxsFloatProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,

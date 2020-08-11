@@ -66,7 +66,7 @@ void wxsEditEnumProperty::PGCreate(wxsPropertyContainer *Object, wxPropertyGridM
 {
     wxPGChoices PGC(Names, Values);
 
-    PGRegister(Object, Grid, Grid->AppendIn(Parent, NEW_IN_WXPG14X wxEditEnumProperty(GetPGName(), wxPG_LABEL, PGC, VALUE)));
+    PGRegister(Object, Grid, Grid->AppendIn(Parent, new wxEditEnumProperty(GetPGName(), wxPG_LABEL, PGC, VALUE)));
 }
 
 /*! \brief Read a property value.
@@ -108,11 +108,7 @@ bool wxsEditEnumProperty::PGWrite(cb_unused wxsPropertyContainer *Object,
     Fixed.Replace(_T("\n"), _T("\\n"));
    if ( UpdateEntries )
     {
-        #if wxCHECK_VERSION(3, 0, 0)
         wxPGChoices(Id->GetChoices()).Set(Names,Values);
-        #else
-        Grid->GetPropertyChoices(Id).Set(Names,Values);
-        #endif
     }
     Grid->SetPropertyValue(Id, Fixed);
     return true;

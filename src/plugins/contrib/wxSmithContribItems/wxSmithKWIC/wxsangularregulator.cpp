@@ -210,12 +210,8 @@ void wxsAngularRegulator::OnEnumWidgetProperties(cb_unused long Flags)
  */
 void wxsAngularRegulator::OnAddExtraProperties(wxsPropertyGridManager *Grid)
 {
-#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
     Grid->SelectPage(0);
-#else
-    Grid->SetTargetPage(0);
-#endif
-    m_TagCountId = Grid->GetGrid()->Insert(_("External Circle Colour"), NEW_IN_WXPG14X wxIntProperty(_("Number Of Tags"), wxPG_LABEL, (int)m_arrTags.Count()));
+    m_TagCountId = Grid->GetGrid()->Insert(_("External Circle Colour"), new wxIntProperty(_("Number Of Tags"), wxPG_LABEL, (int)m_arrTags.Count()));
     for(int i = 0;i < (int)m_arrTags.Count();i++){
         InsertPropertyForTag(Grid, i);
     }
@@ -231,11 +227,7 @@ void wxsAngularRegulator::OnAddExtraProperties(wxsPropertyGridManager *Grid)
  */
 void wxsAngularRegulator::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId id)
 {
-#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
     Grid->SelectPage(0);
-#else
-    Grid->SetTargetPage(0);
-#endif
     if(id == m_TagCountId){
         int OldValue = (int)m_arrTags.Count();
         int NewValue = Grid->GetPropertyValueAsInt(id);
@@ -255,11 +247,7 @@ void wxsAngularRegulator::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, w
         else if(NewValue < OldValue){
             // We have to remove some entries
             for(int i = NewValue;i < OldValue;i++){
-#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
                 Grid->DeleteProperty(m_arrTags[i]->id);
-#else
-                Grid->Delete(m_arrTags[i]->id);
-#endif
                 delete m_arrTags[i];
             }
 
@@ -344,7 +332,7 @@ void wxsAngularRegulator::InsertPropertyForTag(wxsPropertyGridManager *Grid, int
     TagDesc *Desc = m_arrTags[Position];
     wxString sTagName = wxString::Format(_("Tag %d Value"), Position + 1);
 
-    Desc->id = Grid->GetGrid()->Insert(_("External Circle Colour"), NEW_IN_WXPG14X wxIntProperty(sTagName, wxPG_LABEL, Desc->val));
+    Desc->id = Grid->GetGrid()->Insert(_("External Circle Colour"), new wxIntProperty(sTagName, wxPG_LABEL, Desc->val));
 }
 
 /*! \brief Check whether a tag value property changed.
