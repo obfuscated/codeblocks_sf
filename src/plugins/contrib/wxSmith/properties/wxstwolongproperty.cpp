@@ -61,7 +61,7 @@ namespace
 #define DEFVALUE   (wxsVARIABLE(Object,Offset,wxsTwoLongData).DefValue)
 
 
-wxsTowLongProperty::wxsTowLongProperty(
+wxsTwoLongProperty::wxsTwoLongProperty(
             const wxString& PGName,
             const wxString& PGValue1Name,
             const wxString& PGValue2Name,
@@ -79,7 +79,7 @@ wxsTowLongProperty::wxsTowLongProperty(
 {}
 
 
-void wxsTowLongProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
+void wxsTwoLongProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
 {
     wxPGId DefId = Grid->AppendIn(Parent, new wxBoolProperty(GetPGName(),wxPG_LABEL,DEFVALUE));
     wxPGId V1Id = Grid->AppendIn(Parent, new wxIntProperty(Value1Name,wxPG_LABEL,VALUE1));
@@ -99,7 +99,7 @@ void wxsTowLongProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridMan
 
 }
 
-bool wxsTowLongProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
+bool wxsTwoLongProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
 {
     switch ( Index )
     {
@@ -122,7 +122,7 @@ bool wxsTowLongProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManag
     return true;
 }
 
-bool wxsTowLongProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
+bool wxsTwoLongProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
 {
     switch ( Index )
     {
@@ -160,7 +160,7 @@ bool wxsTowLongProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridMana
     return true;
 }
 
-bool wxsTowLongProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsTwoLongProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element)
 {
     if ( !Element )
     {
@@ -195,7 +195,7 @@ bool wxsTowLongProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Elem
     return true;
 }
 
-bool wxsTowLongProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsTwoLongProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element)
 {
     if ( !DEFVALUE )
     {
@@ -207,7 +207,7 @@ bool wxsTowLongProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Ele
     return false;
 }
 
-bool wxsTowLongProperty::PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsTwoLongProperty::PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
 {
     bool Ret = true;
     Stream->SubCategory(GetDataName());
@@ -221,7 +221,7 @@ bool wxsTowLongProperty::PropStreamRead(wxsPropertyContainer* Object,wxsProperty
     return Ret;
 }
 
-bool wxsTowLongProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsTwoLongProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
 {
     bool Ret = true;
     Stream->SubCategory(GetDataName());

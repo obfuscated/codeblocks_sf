@@ -66,7 +66,7 @@ struct wxsTwoLongData
 };
 
 /** \brief Dimension property (long integer value which may be in pixel or dialog units) */
-class wxsTowLongProperty: public wxsProperty
+class wxsTwoLongProperty: public wxsProperty
 {
     public:
         /** \brief Ctor
@@ -78,7 +78,7 @@ class wxsTowLongProperty: public wxsProperty
          *  \param DefaultValue2        default value 2 applied on read errors
          *  \param Priority             priority of this property
          */
-        wxsTowLongProperty(
+        wxsTwoLongProperty(
             const wxString& PGName,
             const wxString& PGValue1Name,
             const wxString& PGValue2Name,
@@ -89,7 +89,7 @@ class wxsTowLongProperty: public wxsProperty
             int Priority=100);
 
         /** \brief Returning type name */
-        virtual const wxString GetTypeName() { return _T("wxsTowLongProperty"); }
+        virtual const wxString GetTypeName() { return _T("wxsTwoLongProperty"); }
 
     protected:
 
@@ -125,7 +125,7 @@ class wxsTowLongProperty: public wxsProperty
  *  \param Default2 default value 2 (integer)
  */
 #define WXS_TWOLONG(ClassName,VarName,PGName,PGValue1Name,PGValue2Name,DataName,Default1,Default2) \
-    { static wxsTowLongProperty _Property(PGName,PGValue1Name,PGValue2Name,DataName,wxsOFFSET(ClassName,VarName),Default1, Default2); \
+    { static wxsTwoLongProperty _Property(PGName,PGValue1Name,PGValue2Name,DataName,wxsOFFSET(ClassName,VarName),Default1, Default2); \
       Property(_Property); }
 
 /** \brief Macro automatically declaring two long property with custom priority
@@ -140,7 +140,7 @@ class wxsTowLongProperty: public wxsProperty
  *  \param Priority priority of this property
  */
 #define WXS_TWOLONG_P(ClassName,VarName,PGName,PGValue1Name,PGValue2Name,DataName,Default1,Default2,Priority) \
-    { static wxsTowLongProperty _Property(PGName,PGValue1Name,PGValue2Name,DataName,wxsOFFSET(ClassName,VarName),Default1, Default2,Priority); \
+    { static wxsTwoLongProperty _Property(PGName,PGValue1Name,PGValue2Name,DataName,wxsOFFSET(ClassName,VarName),Default1, Default2,Priority); \
       Property(_Property); }
 
 /** \} */
