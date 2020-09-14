@@ -38,16 +38,6 @@
 #include "todolistview.h"
 #include "todosettingsdlg.h"
 
-// arrimpl.cpp says about the usage:
-// 1) #include dynarray.h
-// 2) WX_DECLARE_OBJARRAY
-// ...these two are in todolistview.h
-// 3) #include arrimpl.cpp
-// 4) WX_DEFINE_OBJARRAY
-// ...these come now:
-#include <wx/arrimpl.cpp>
-WX_DEFINE_OBJARRAY(ToDoItems); // TODO: find out why this causes a shadow warning for 'Item'
-
 namespace
 {
     PluginRegistrant<ToDoList> reg(_T("ToDoList"));

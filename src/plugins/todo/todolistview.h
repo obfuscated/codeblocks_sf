@@ -6,13 +6,10 @@
 #ifndef TODOLISTVIEW_H
 #define TODOLISTVIEW_H
 
-#include <wx/dynarray.h> // WX_DECLARE_OBJARRAY
 #include <wx/string.h>
 
-#include <vector>
-#include <map>
-
 #include "loggers.h"
+#include "todo_parser.h"
 
 class cbEditor;
 class wxArrayString;
@@ -22,25 +19,6 @@ class wxComboBox;
 class wxButton;
 class wxPanel;
 class wxStaticText;
-
-// an item is one record in the file, such as a fixme, it can have several properties, such as
-// the type (todo, note, fixme..), the user (who wrote the item) and the date, all its properties
-// are wrappered in the ToDoItem struct
-struct ToDoItem
-{
-    wxString type;
-    wxString text;
-    wxString user;
-    wxString filename;
-    wxString lineStr;
-    wxString priorityStr;
-    wxString date;
-    int line;
-    int priority;
-};
-// each source file can have several ToDoItems, so we use a Map structure to record all the items
-typedef std::map<wxString,std::vector<ToDoItem> > TodoItemsMap;
-WX_DECLARE_OBJARRAY(ToDoItem, ToDoItems);
 
 // when user click the "Types" button on the Todo list control panel, it will show a dialog, the
 // dialog can let user to filter which types will be shown in the Todo list.

@@ -2289,6 +2289,12 @@
 		<Unit filename="plugins/todo/resources/settings.xrc">
 			<Option target="To-do" />
 		</Unit>
+		<Unit filename="plugins/todo/todo_parser.cpp">
+			<Option target="To-do" />
+		</Unit>
+		<Unit filename="plugins/todo/todo_parser.h">
+			<Option target="To-do" />
+		</Unit>
 		<Unit filename="plugins/todo/todolist.cpp">
 			<Option target="To-do" />
 		</Unit>

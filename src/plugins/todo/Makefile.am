@@ -14,12 +14,14 @@ libtodo_la_LIBADD = ../../sdk/libcodeblocks.la $(WX_LIBS)
 
 libtodo_la_SOURCES = addtododlg.cpp \
 			asktypedlg.cpp \
+			todo_parser.cpp \
 			todolist.cpp \
 			todolistview.cpp \
 			todosettingsdlg.cpp
 
 noinst_HEADERS = addtododlg.h \
 			asktypedlg.h \
+			todo_parser.h \
 			todolist.h \
 			todolistview.h \
 			todosettingsdlg.h
