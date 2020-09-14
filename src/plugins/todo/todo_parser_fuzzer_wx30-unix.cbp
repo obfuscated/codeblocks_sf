@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="todo_parser_fuzzer_wx30-unix.cbp" />
+		<Option pch_mode="2" />
+		<Option compiler="afl_gnu_gcc_compiler" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../../devel30/todo_parser_fuzzer_wx30-unix" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../.objs30/plugins/todo/fuzzer" />
+				<Option type="1" />
+				<Option compiler="afl_gnu_gcc_compiler" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add option="-O1" />
+				</Linker>
+			</Target>
+			<Environment>
+				<Variable name="WX_CONFIG" value="wx-config" />
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="`$(WX_CONFIG) --cflags`" />
+			<Add directory="fuzzer" />
+		</Compiler>
+		<Linker>
+			<Add option="`$(WX_CONFIG) --libs`" />
+		</Linker>
+		<Unit filename="fuzzer/main.cpp" />
+		<Unit filename="fuzzer/sdk.h" />
+		<Unit filename="todo_parser.cpp" />
+		<Unit filename="todo_parser.h" />
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>
