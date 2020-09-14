@@ -560,11 +560,11 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
                 // TODO: Implement code to do this and the other...
 
                 // is it ours or generic todo?
-                if (buffer.GetChar(pos) == _T('('))
+                if (pos < buffer.length() && buffer.GetChar(pos) == _T('('))
                 {
                     // it's ours, find user and/or priority
                     ++pos;
-                    while(pos < buffer.length() && buffer.GetChar(pos) != _T('\r') && buffer.GetChar(pos) != _T('\n'))
+                    while (pos < buffer.length())
                     {
                         wxChar c1 = buffer.GetChar(pos);
                         if (c1 != _T('#') && c1 != _T(')'))
@@ -622,10 +622,10 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
                 }
                 // ok, we 've reached the actual todo text :)
                 // take everything up to the end of line
-                if (buffer.GetChar(pos) == _T(':'))
+                if (pos < buffer.length() && buffer.GetChar(pos) == _T(':'))
                     ++pos;
                 size_t idx = pos;
-                while (buffer.GetChar(idx) != _T('\r') && buffer.GetChar(idx) != _T('\n'))
+                while (idx < buffer.length() && buffer.GetChar(idx) != _T('\r') && buffer.GetChar(idx) != _T('\n'))
                     ++idx;
                 item.text = buffer.substr(pos, idx-pos);
 
