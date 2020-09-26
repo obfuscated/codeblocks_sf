@@ -725,8 +725,10 @@ void cbDebuggerPlugin::OnCompilerFinished(cb_unused CodeBlocksEvent& event)
         // only proceed if build succeeded
         if (m_pCompiler && m_pCompiler->GetExitCode() != 0)
         {
-            AnnoyingDialog dlg(_("Debug anyway?"), _("Build failed, do you want to debug the program?"),
-                               wxART_QUESTION, AnnoyingDialog::YES_NO, AnnoyingDialog::rtNO);
+            AnnoyingDialog dlg(_("Debug anyway?"),
+                               _("Build failed, do you want to debug the program?"),
+                               wxART_QUESTION, AnnoyingDialog::YES_NO, AnnoyingDialog::rtNO,
+                               _("&Debug anyway"));
             if (dlg.ShowModal() != AnnoyingDialog::rtYES)
             {
                 ProjectManager *manager = Manager::Get()->GetProjectManager();
