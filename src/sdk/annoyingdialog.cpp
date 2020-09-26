@@ -211,7 +211,7 @@ void AnnoyingDialog::Init(const wxString &caption, const wxString &id, const wxS
     }
 
     outerSizer->Add( mainArea, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-    outerSizer->Add( buttonSizer, 0, wxALIGN_CENTER_HORIZONTAL);
+    outerSizer->Add( buttonSizer, 0, wxEXPAND);
 
     m_CheckBox = new wxCheckBox(this, wxID_ANY, _("Don't annoy me again!"), wxDefaultPosition, wxDefaultSize, 0);
     outerSizer->Add(m_CheckBox, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
