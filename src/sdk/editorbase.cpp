@@ -365,7 +365,10 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type, wx
     }
     else
     {
-        clientpos = ScreenToClient(position);
+        if (menuParent)
+            clientpos = menuParent->ScreenToClient(position);
+        else
+            clientpos = ScreenToClient(position);
     }
 
     m_pData->m_DisplayingPopupMenu = true;
