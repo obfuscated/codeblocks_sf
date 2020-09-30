@@ -2125,6 +2125,12 @@ public:
     wxSCIListBoxWin(wxWindow* parent, wxWindowID id, Point WXUNUSED(location)) :
         wxPopupWindow(parent, wxBORDER_SIMPLE)
     {
+        
+/* C::B begin */
+#ifdef __WXMSW__
+        SetExtraStyle(GetExtraStyle() & ~wxWS_EX_BLOCK_EVENTS);
+#endif // __WXMSW__
+/* C::B end */
 
         lv = new wxSCIListBox(parent, id, wxPoint(-50,-50), wxDefaultSize,
                               wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_NO_HEADER | wxBORDER_NONE);
