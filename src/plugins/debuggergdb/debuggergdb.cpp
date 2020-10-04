@@ -2049,8 +2049,7 @@ void DebuggerGDB::OnIdle(wxIdleEvent& event)
 {
     if (m_pProcess && ((PipedProcess*)m_pProcess)->HasInput())
         event.RequestMore();
-    else
-        event.Skip();
+    event.Skip();
 }
 
 void DebuggerGDB::OnTimer(cb_unused wxTimerEvent& event)

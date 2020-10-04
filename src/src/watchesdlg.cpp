@@ -665,7 +665,7 @@ void WatchesDlg::OnPropertyLableEditEnd(wxPropertyGridEvent &event)
     RenameWatch(event.GetProperty(), label);
 }
 
-void WatchesDlg::OnIdle(cb_unused wxIdleEvent &event)
+void WatchesDlg::OnIdle(wxIdleEvent &event)
 {
     if (m_append_empty_watch)
     {
@@ -677,6 +677,7 @@ void WatchesDlg::OnIdle(cb_unused wxIdleEvent &event)
         m_append_empty_watch = false;
         m_grid->BeginLabelEdit(0);
     }
+    event.Skip();
 }
 
 void WatchesDlg::OnPropertySelected(wxPropertyGridEvent &event)

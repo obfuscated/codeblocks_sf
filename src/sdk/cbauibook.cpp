@@ -239,7 +239,7 @@ void cbAuiNotebook::SetZoom(int zoom)
     m_SetZoomOnIdle = true;
 }
 
-void cbAuiNotebook::OnIdle(cb_unused wxIdleEvent& event)
+void cbAuiNotebook::OnIdle(wxIdleEvent& event)
 {
     if (m_SetZoomOnIdle)
     {
@@ -261,6 +261,7 @@ void cbAuiNotebook::OnIdle(cb_unused wxIdleEvent& event)
             MinimizeFreeSpace(m_TabCtrls[i]);
     }
 
+    event.Skip();
 }
 
 void cbAuiNotebook::OnDragDone(cb_unused wxAuiNotebookEvent& event)

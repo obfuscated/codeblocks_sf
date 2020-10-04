@@ -235,8 +235,9 @@ void PipedProcess::OnTimer(cb_unused wxTimerEvent& event)
     wxWakeUpIdle();
 }
 
-void PipedProcess::OnIdle(cb_unused wxIdleEvent& event)
+void PipedProcess::OnIdle(wxIdleEvent& event)
 {
     while ( HasInput() )
         ;
+    event.Skip();
 }

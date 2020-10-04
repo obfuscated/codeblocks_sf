@@ -376,8 +376,7 @@ void ToolsManager::OnIdle(wxIdleEvent& event)
             event.RequestMore();
         }
     }
-    else
-        event.Skip();
+    event.Skip();
 }
 
 void ToolsManager::OnToolStdOutput(CodeBlocksEvent& event)

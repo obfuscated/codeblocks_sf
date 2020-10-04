@@ -131,21 +131,17 @@ void CodeStatExecDlg::OnSelectProject(wxCommandEvent& evt)
 
 void CodeStatExecDlg::OnIdle(wxIdleEvent& evt)
 {
-    if (!m_changed)
-        return;
-
-    m_changed = false;
-
-    int index = m_choice->GetSelection();
-    if (index == 0)
+    if (m_changed)
     {
-        DoParseWorkspace();
+        m_changed = false;
 
+        int index = m_choice->GetSelection();
+        if (index == 0)
+            DoParseWorkspace();
+        else
+            DoParseProject(index);
+        ShowResults(index);
     }
-    else
-        DoParseProject(index);
-    ShowResults(index);
-
     evt.Skip();
 }
 
