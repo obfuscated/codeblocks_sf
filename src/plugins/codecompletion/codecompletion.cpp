@@ -754,6 +754,7 @@ CodeCompletion::CCProviderStatus CodeCompletion::GetProviderStatusFor(cbEditor* 
             return ccpsActive;
 
         case ParserCommon::ftOther:
+            return ccpsInactive;
         default:
             break;
     }
