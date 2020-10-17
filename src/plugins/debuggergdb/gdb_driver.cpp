@@ -156,6 +156,9 @@ void GDB_driver::Prepare(bool isConsole, int printElements, const RemoteDebuggin
     QueueCommand(new DebuggerCmd(this, "set unwindonsignal on"));
     // disable result string truncations
     QueueCommand(new DebuggerCmd(this, wxString::Format("set print elements %d", printElements)));
+    // Make sure backtraces use absolute paths, so it is more reliable to find where the sources
+    // file when trying to open it in the editor.
+    QueueCommand(new DebuggerCmd(this, "set filename-display absolute"));
 
     if (platform::windows && isConsole)
         QueueCommand(new DebuggerCmd(this, "set new-console on"));
