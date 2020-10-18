@@ -204,6 +204,8 @@ BEGIN_EVENT_TABLE(ProjectManagerUI, wxEvtHandler)
     EVT_UPDATE_UI(idMenuProjectTreeProps,    ProjectManagerUI::OnUpdateUI)
     EVT_UPDATE_UI(idMenuAddVirtualFolder,    ProjectManagerUI::OnUpdateUI)
     EVT_UPDATE_UI(idMenuDeleteVirtualFolder, ProjectManagerUI::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuExecParams,          ProjectManagerUI::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuProjectNotes,        ProjectManagerUI::OnUpdateUI)
 
 END_EVENT_TABLE()
 
@@ -2363,7 +2365,8 @@ void ProjectManagerUI::OnUpdateUI(wxUpdateUIEvent& event)
     else if (event.GetId() == idMenuProjectProperties || event.GetId() == idMenuAddFile
              || event.GetId() == idMenuAddFilesRecursively || event.GetId() == idMenuRemoveFile
              || event.GetId() == idMenuProjectTreeProps || event.GetId() == idMenuAddVirtualFolder
-             || event.GetId() == idMenuDeleteVirtualFolder)
+             || event.GetId() == idMenuDeleteVirtualFolder || event.GetId() == idMenuExecParams
+             || event.GetId() == idMenuProjectNotes)
     {
         ProjectManager *projectManager = Manager::Get()->GetProjectManager();
         if (!projectManager || (projectManager->GetIsRunning() != nullptr))
