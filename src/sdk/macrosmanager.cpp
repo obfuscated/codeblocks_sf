@@ -646,12 +646,19 @@ void MacrosManager::ReplaceMacros(wxString& buffer, const ProjectBuildTarget* ta
             buffer.Replace(search, content, false);
     }
 
-    while (m_RE_Unix.Matches(buffer))
+    index = 0;
+    while (m_RE_Unix.Matches(buffer.Mid(index)))
     {
         replace.Empty();
-        search = m_RE_Unix.GetMatch(buffer, 2);
+        search = m_RE_Unix.GetMatch(buffer.Mid(index), 2);
 
-        wxString var = m_RE_Unix.GetMatch(buffer, 3).Upper();
+        wxString var = m_RE_Unix.GetMatch(buffer.Mid(index), 3).Upper();
+
+        // position to the $variable for later replacement because we may
+        // have a previous $variable that's been kept (not defined by CodeBlocks)
+        // eg.,http://forums.codeblocks.org/index.php/topic,24192
+        if (search.Length() )
+            index += buffer.Mid(index).Find(search);
 
         if (var.GetChar(0) == _T('#'))
             replace = UnixFilename(m_UserVarMan->Replace(var));
@@ -669,14 +676,19 @@ void MacrosManager::ReplaceMacros(wxString& buffer, const ProjectBuildTarget* ta
             }
         }
 
+        //if any replacement chars, append ending char of macro text
         const wxChar l = search.Last(); // make non-braced variables work
-        if (l == _T('/') || l == _T('\\') || l == _T('$') || l == _T(' '))
-            replace.append(l);
+        if (replace.Length()
+            and ( (l == _T('/') || l == _T('\\') || l == _T('$') || l == _T(' '))) )
+                replace.append(l);
 
         if (replace.IsEmpty())
             wxGetEnv(var, &replace);
 
-        buffer.Replace(search, replace, false);
+        if (replace.Length())
+            buffer.replace(index, search.Length(), replace);
+        // set next search position past this (possibly) user (non CodeBlocks) $variable
+        index += replace.Length() ? replace.Length() : search.Length();
     }
 
     while (m_RE_DOS.Matches(buffer))
