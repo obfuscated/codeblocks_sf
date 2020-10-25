@@ -7,9 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="macrosmanager" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\" />
-				<Option type="1" />
+				<Option type="4" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
@@ -36,11 +34,49 @@
 					<Add before="echo $if($tday){true}{false (*** wrong ***)}" />
 					<Add before='echo $if(true){ [[ print(&quot;this is a script running in the &apos;true&apos; clause&quot;); ]] }{&quot;(*** wrong ***) skipped&quot;}' />
 					<Add before='echo $if(false){[[ print(&quot;(*** wrong ***) this should not execute&quot;); ]]}{(skipped &apos;false&apos; clause)}' />
+					<Add before="echo COIN: $(COIN)" />
+					<Add before="echo RANDOM: 1: $(RANDOM) 2: $(RANDOM) 3: $(RANDOM)" />
+					<Add before='echo TO_NATIVE_PATH: $TO_NATIVE_PATH{&quot;C:\Windows&quot;} $TO_NATIVE_PATH{&quot;C:/Windows&quot;}' />
+					<Add before='echo TO_UNIX_PATH: $TO_UNIX_PATH{&quot;C:\Windows&quot;} $TO_NATIVE_PATH{&quot;C:/Windows&quot;}' />
+					<Add before='echo TO_WINDOWS_PATH: $TO_WINDOWS_PATH{&quot;C:\Windows&quot;} $TO_NATIVE_PATH{&quot;C:/Windows&quot;}' />
+					<Add before="echo Platform: $(PLATFORM)" />
+					<Add before="echo Code::Blocks location: $(CODEBLOCKS)" />
+					<Add before="echo Code::Blocks APP_PATH: $(APP_PATH)" />
+					<Add before="echo Code::Blocks DATA_PATH: $(DATA_PATH)" />
+					<Add before="echo Code::Blocks PLUGINS: $(PLUGINS)" />
+					<Add before="echo Code::Blocks LANGUAGE: $(LANGUAGE)" />
+					<Add before="echo Code::Blocks ENCODING: $(ENCODING)" />
+					<Add before="echo CMD_CP: $(CMD_CP)" />
+					<Add before="echo CMD_RM: $(CMD_RM)" />
+					<Add before="echo CMD_MV: $(CMD_MV)" />
+					<Add before="echo CMD_MKDIR: $(CMD_MKDIR)" />
+					<Add before="echo CMD_RMDIR: $(CMD_RMDIR)" />
+					<Add before="echo System GET_DATA_DIR: $(GET_DATA_DIR)" />
+					<Add before="echo System GET_LOCAL_DATA_DIR: $(GET_LOCAL_DATA_DIR)" />
+					<Add before="echo System GET_DOCUMENTS_DIR: $(GET_DOCUMENTS_DIR)" />
+					<Add before="echo System GET_CONFIG_DIR: $(GET_CONFIG_DIR)" />
+					<Add before="echo System GET_USER_CONFIG_DIR: $(GET_USER_CONFIG_DIR)" />
+					<Add before="echo System GET_USER_DATA_DIR: $(GET_USER_DATA_DIR)" />
+					<Add before="echo System GET_USER_LOCAL_DATA_DIR: $(GET_USER_LOCAL_DATA_DIR)" />
+					<Add before="echo System GET_TEMP_DIR: $(GET_TEMP_DIR)" />
+					<Add before="echo Date/Time TDAY: $(TDAY)" />
+					<Add before="echo Date/Time TODAY: $(TODAY)" />
+					<Add before="echo Date/Time NOW: $(NOW)" />
+					<Add before="echo Date/Time NOW_L: $(NOW_L)" />
+					<Add before="echo Date/Time WEEKDAY: $(WEEKDAY)" />
+					<Add before="echo Date/Time TDAY_UTC: $(TDAY_UTC)" />
+					<Add before="echo Date/Time TODAY_UTC: $(TODAY_UTC)" />
+					<Add before="echo Date/Time NOW_UTC: $(NOW_UTC)" />
+					<Add before="echo Date/Time NOW_L_UTC: $(NOW_L_UTC)" />
+					<Add before="echo Date/Time WEEKDAY_UTC: $(WEEKDAY_UTC)" />
+					<Add before="echo Date/Time DAYCOUNT: $(DAYCOUNT)" />
+					<Add before="echo PATH envvar: $(PATH)" />
+					<Mode after="always" />
 				</ExtraCommands>
 				<Environment>
-					<Variable name="zero" value="0" />
 					<Variable name="onetwothree" value="123" />
 					<Variable name="somestr" value="foobar" />
+					<Variable name="zero" value="0" />
 				</Environment>
 			</Target>
 		</Build>
@@ -48,10 +84,6 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="main.cpp" />
-		<Extensions>
-			<code_completion />
-			<debugger />
-		</Extensions>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>
