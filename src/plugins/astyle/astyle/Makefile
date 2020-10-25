@@ -32,13 +32,25 @@ endif
 SYSCONF_PATH=$(prefix)/share/doc/astyle
 
 # define macros
+# CXX defaults to g++
 bindir = bin
 objdir = obj
 ipath=$(prefix)/bin
 CBASEFLAGS = -Wall -Wextra -fno-rtti -fno-exceptions -std=c++11
 JAVAINCS   = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
-CXX = g++
 INSTALL=install -o $(USER) -g $(USER)
+
+# Library's major version number -- Increment in case of incompatible API
+# change.
+MAJORVER = 3
+# Library's minor version number -- Increment when functionnality is added in a
+# backward-compatible manner; reset to 0 when major number changes.
+MINORVER = 2
+# Library's patch version number -- Increment in case of backward-compatible
+# bug fixes or refactoring; reset to 0 when minor number changes.
+PATCHVER = 0
+# Library's full version number.
+SOLIBVER = $(MAJORVER).$(MINORVER).$(PATCHVER)
 
 ##################################################
 
@@ -137,13 +149,21 @@ astyled:  $(OBJd)
 shared:  libastyle.so
 libastyle.so:  $(OBJs)
 	@ mkdir -p $(bindir)
-	$(CXX) -shared $(LDFLAGSr) -o $(bindir)/libastyle-2.7.so $^
+	$(CXX) -shared $(LDFLAGSr) -Wl,-soname,libastyle.so.$(MAJORVER) \
+	-o $(bindir)/libastyle.so.$(SOLIBVER) $^
+	@ln  --symbolic --force  libastyle.so.$(SOLIBVER)  libastyle.so.$(MAJORVER)
+	@ln  --symbolic --force  libastyle.so.$(MAJORVER)  libastyle.so
+	@mv  libastyle.so*  $(bindir)/
 	@ echo
 
 shareddebug:  libastyled.so
 libastyled.so:  $(OBJsd)
 	@ mkdir -p $(bindir)
-	$(CXX) -shared $(LDFLAGSd) -o $(bindir)/libastyle-2.7d.so $^
+	$(CXX) -shared $(LDFLAGSd) -Wl,-soname,libastyled.so.$(MAJORVER) \
+	-o $(bindir)/libastyled.so.$(SOLIBVER) $^
+	@ln  --symbolic --force  libastyled.so.$(SOLIBVER)  libastyled.so.$(MAJORVER)
+	@ln  --symbolic --force  libastyled.so.$(MAJORVER)  libastyled.so
+	@mv  libastyled.so*  $(bindir)/
 	@ echo
 
 static:  libastyle.a
@@ -161,13 +181,21 @@ libastyled.a:  $(OBJad)
 java:  libastylej.so
 libastylej.so:  $(OBJsj)
 	@ mkdir -p $(bindir)
-	$(CXX) -shared $(LDFLAGSr) -o $(bindir)/libastyle-2.7j.so $^
+	$(CXX) -shared $(LDFLAGSr) -Wl,-soname,libastylej.so.$(MAJORVER) \
+	-o $(bindir)/libastylej.so.$(SOLIBVER) $^
+	@ln  --symbolic --force  libastylej.so.$(SOLIBVER)  libastylej.so.$(MAJORVER)
+	@ln  --symbolic --force  libastylej.so.$(MAJORVER)  libastylej.so
+	@mv  libastylej.so*  $(bindir)/
 	@ echo
 
 javadebug:  libastylejd.so
 libastylejd.so:  $(OBJsjd)
 	@ mkdir -p $(bindir)
-	$(CXX) -shared $(LDFLAGSd) -o $(bindir)/libastyle-2.7jd.so $^
+	$(CXX) -shared $(LDFLAGSr) -Wl,-soname,libastylejd.so.$(MAJORVER) \
+	-o $(bindir)/libastylejd.so.$(SOLIBVER) $^
+	@ln  --symbolic --force  libastylejd.so.$(SOLIBVER)  libastylejd.so.$(MAJORVER)
+	@ln  --symbolic --force  libastylejd.so.$(MAJORVER)  libastylejd.so
+	@mv  libastylejd.so*  $(bindir)/
 	@ echo
 
 all:  release debug shared shareddebug static staticdebug
@@ -190,11 +218,37 @@ install:
 
 	$(INSTALL) -m 755 -d $(SYSCONF_PATH)
 	@mkdir -p $(SYSCONF_PATH)/html;
-	@for files in ../../doc/*.html  ../../doc/*.css; \
+	@for files in astyle.html \
+                  install.html \
+                  news.html \
+                  notes.html \
+                  styles.css; \
 	do \
-		$(INSTALL)  -m 644  $$files  $(SYSCONF_PATH)/html; \
+		$(INSTALL)  -m 644  ../../doc/$$files  $(SYSCONF_PATH)/html; \
 	done
 
 uninstall:
 	rm -f $(ipath)/astyle
 	rm -rf $(SYSCONF_PATH)
+
+# copy release files to AStyleDev for testing
+# --force, --preserve, --no-dereference (retain links)
+testlibs:
+	cp  -fpP  $(bindir)/astyle         ../../../AStyleDev/src-p/
+	cp  -fpP  $(bindir)/libastyle.so*  ../../../AStyleDev/src-c/
+	cp  -fpP  $(bindir)/libastyle.so*  ../../../AStyleDev/src-o/
+	cp  -fpP  $(bindir)/libastyle.so*  ../../../AStyleDev/src-p/
+	cp  -fpP  $(bindir)/libastyle.so*  ../../../AStyleDev/src-s/
+	cp  -fpP  $(bindir)/libastyle.so*  ../../../AStyleDev/src-s2/
+	cp  -fpP  $(bindir)/libastylej.so* ../../../AStyleDev/src-j/
+
+# copy debug files to AStyleDev for testing
+# --force, --preserve, --no-dereference (retain links)
+testlibsd:
+	cp  -fpP  $(bindir)/astyled         ../../../AStyleDev/src-p/
+	cp  -fpP  $(bindir)/libastyled.so*  ../../../AStyleDev/src-c/
+	cp  -fpP  $(bindir)/libastyled.so*  ../../../AStyleDev/src-o/
+	cp  -fpP  $(bindir)/libastyled.so*  ../../../AStyleDev/src-p/
+	cp  -fpP  $(bindir)/libastyled.so*  ../../../AStyleDev/src-s/
+	cp  -fpP  $(bindir)/libastyled.so*  ../../../AStyleDev/src-s2/
+	cp  -fpP  $(bindir)/libastylejd.so* ../../../AStyleDev/src-j/

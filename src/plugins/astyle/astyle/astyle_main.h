@@ -12,8 +12,8 @@
 
 #include "astyle.h"
 
-#include <sstream>
 #include <ctime>
+#include <sstream>
 
 #if defined(__BORLANDC__) && __BORLANDC__ < 0x0650
 	// Embarcadero needs this for the following utime.h
@@ -23,11 +23,11 @@
 #endif
 
 #if defined(_MSC_VER)
+	#include <sys/stat.h>
 	#include <sys/utime.h>
-	#include <sys/stat.h>
 #else
-	#include <utime.h>
 	#include <sys/stat.h>
+	#include <utime.h>
 #endif                         // end compiler checks
 
 #ifdef ASTYLE_JNI
@@ -47,19 +47,9 @@
 // declarations
 //-----------------------------------------------------------------------------
 
-// for G++ implementation of string.compare:
-#if defined(__GNUC__) && __GNUC__ < 3
-	#error - Use GNU C compiler release 3 or higher
-#endif
-
 // for getenv and localtime
 #if defined(_MSC_VER)
 	#pragma warning(disable: 4996)  // secure version deprecation warnings
-#endif
-
-// for Visual Studio supported C++11 standard
-#if defined(_MSC_VER) && _MSC_VER < 1600
-	#error Use Microsoft Visual Studio 2010 or higher
 #endif
 
 #ifdef __clang__
@@ -67,16 +57,7 @@
 	#pragma clang diagnostic ignored "-Wmissing-braces"
 #endif
 
-// for mingw BOM, UTF-16, and Unicode functions
-#if defined(__MINGW32__) && !defined(__MINGW64_VERSION_MAJOR)
-	#if (__MINGW32_MAJOR_VERSION > 3) || \
-		((__MINGW32_MAJOR_VERSION == 3) && (__MINGW32_MINOR_VERSION < 16))
-		#error - Use MinGW compiler version 4 or higher
-	#endif
-#endif
-
 #ifdef ASTYLE_LIB
-
 	// define STDCALL and EXPORT for Windows
 	// MINGW defines STDCALL in Windows.h (actually windef.h)
 	// EXPORT has no value if ASTYLE_NO_EXPORT is defined
@@ -100,11 +81,9 @@
 			#define EXPORT
 		#endif
 	#endif	// #ifdef _WIN32
-
 	// define pointers to callback error handler and memory allocation
 	typedef void (STDCALL* fpError)(int errorNumber, const char* errorMessage);
 	typedef char* (STDCALL* fpAlloc)(unsigned long memoryNeeded);
-
 #endif  // #ifdef ASTYLE_LIB
 
 //----------------------------------------------------------------------------
@@ -116,7 +95,7 @@ namespace astyle {
 //----------------------------------------------------------------------------
 // ASStreamIterator class
 // typename will be stringstream for AStyle
-// it could be istream or wxChar for plug-ins
+// it could be istream for plug-ins
 // ASSourceIterator is an inherited abstract class defined in astyle.h
 //----------------------------------------------------------------------------
 
@@ -126,20 +105,18 @@ class ASStreamIterator : public ASSourceIterator
 public:
 	bool checkForEmptyLine;
 
-	// function declarations
+public:	// function declarations
 	explicit ASStreamIterator(T* in);
-	virtual ~ASStreamIterator();
+	~ASStreamIterator() override;
 	bool getLineEndChange(int lineEndFormat) const;
-	int  getStreamLength() const;
-	string nextLine(bool emptyLineWasDeleted);
-	string peekNextLine();
-	void peekReset();
+	int  getStreamLength() const override;
+	string nextLine(bool emptyLineWasDeleted) override;
+	string peekNextLine() override;
+	void peekReset() override;
 	void saveLastInputLine();
-	streamoff tellg();
+	streamoff tellg() override;
 
 private:
-	ASStreamIterator(const ASStreamIterator& copy);       // copy constructor not to be implemented
-	ASStreamIterator& operator=(ASStreamIterator&);       // assignment operator not to be implemented
 	T* inStream;            // pointer to the input stream
 	string buffer;          // current input line
 	string prevBuffer;      // previous input line
@@ -155,8 +132,8 @@ public:	// inline functions
 	bool compareToInputBuffer(const string& nextLine_) const
 	{ return (nextLine_ == prevBuffer); }
 	const string& getOutputEOL() const { return outputEOL; }
-	streamoff getPeekStart() const { return peekStart; }
-	bool hasMoreLines() const { return !inStream->eof(); }
+	streamoff getPeekStart() const override { return peekStart; }
+	bool hasMoreLines() const override { return !inStream->eof(); }
 };
 
 //----------------------------------------------------------------------------
@@ -167,9 +144,9 @@ public:	// inline functions
 class ASEncoding
 {
 private:
-	typedef char16_t utf16;       // 16 bits unsigned
-	typedef unsigned char utf8;   // 8 bits
-	typedef unsigned char ubyte;  // 8 bits
+	using utf16 = char16_t;       // 16 bits unsigned
+	using utf8  = unsigned char;  // 8 bits
+	using ubyte = unsigned char;  // 8 bits
 	enum { SURROGATE_LEAD_FIRST = 0xD800 };
 	enum { SURROGATE_LEAD_LAST = 0xDBFF };
 	enum { SURROGATE_TRAIL_FIRST = 0xDC00 };
@@ -211,12 +188,10 @@ private:
 	ASFormatter& formatter;
 	stringstream optionErrors;		// option error messages
 #ifndef ASTYLE_LIB
-	ASConsole&   console;			// DO NOT USE for ASTYLE_LIB
+	ASConsole& console;				// DO NOT USE for ASTYLE_LIB
 #endif
 
 	// functions
-	ASOptions(const ASOptions&);           // copy constructor not to be implemented
-	ASOptions& operator=(ASOptions&);      // assignment operator not to be implemented
 	string getParam(const string& arg, const char* op);
 	string getParam(const string& arg, const char* op1, const char* op2);
 	bool isOption(const string& arg, const char* op);
@@ -225,6 +200,7 @@ private:
 	bool isParamOption(const string& arg, const char* option);
 	bool isParamOption(const string& arg, const char* option1, const char* option2);
 	void parseOption(const string& arg, const string& errorInfo);
+	bool parseOptionContinued(const string& arg, const string& errorInfo);
 };
 
 #ifndef	ASTYLE_LIB
@@ -263,6 +239,7 @@ private:    // variables
 
 	string outputEOL;                   // current line end
 	string prevEOL;                     // previous line end
+	string astyleExePath;               // absolute executable path and name from argv[0]
 	string optionFileName;              // file path and name of the options file
 	string origSuffix;                  // suffix= option
 	string projectOptionFileName;       // file path and name of the project options file
@@ -281,13 +258,14 @@ private:    // variables
 
 public:     // functions
 	explicit ASConsole(ASFormatter& formatterArg);
-	~ASConsole();
+	ASConsole(const ASConsole&)            = delete;
+	ASConsole& operator=(ASConsole const&) = delete;
 	void convertLineEnds(ostringstream& out, int lineEnd);
 	FileEncoding detectEncoding(const char* data, size_t dataSize) const;
 	void error() const;
 	void error(const char* why, const char* what) const;
 	void formatCinToCout();
-	vector<string> getArgvOptions(int argc, char** argv) const;
+	vector<string> getArgvOptions(int argc, char** argv);
 	bool fileExists(const char* file) const;
 	bool fileNameVectorIsEmpty() const;
 	ostream* getErrorStream() const;
@@ -342,8 +320,6 @@ public:     // functions
 	vector<string> getFileName() const;
 
 private:	// functions
-	ASConsole(const ASConsole&);           // copy constructor not to be implemented
-	ASConsole& operator=(ASConsole&);      // assignment operator not to be implemented
 	void correctMixedLineEnds(ostringstream& out);
 	void formatFile(const string& fileName_);
 	string getParentDirectory(const string& absPath) const;
@@ -352,6 +328,7 @@ private:	// functions
 	void getFileNames(const string& directory, const vector<string>& wildcards);
 	void getFilePaths(const string& filePath);
 	string getFullPathName(const string& relativePath) const;
+	string getHtmlInstallPrefix() const;
 	string getParam(const string& arg, const char* op);
 	bool isHomeOrInvalidAbsPath(const string& absPath) const;
 	void initializeOutputEOL(LineEndFormat lineEndFormat);
@@ -386,8 +363,8 @@ private:	// functions
 class ASLibrary
 {
 public:
-	ASLibrary() {}
-	virtual ~ASLibrary() {}
+	ASLibrary()          = default;
+	virtual ~ASLibrary() = default;
 	// virtual functions are mocked in testing
 	char16_t* formatUtf16(const char16_t*, const char16_t*, fpError, fpAlloc) const;
 	virtual char16_t* convertUtf8ToUtf16(const char* utf8In, fpAlloc fpMemoryAlloc) const;

@@ -92,14 +92,16 @@
         more information.</p>
     <p>
         Since the different builds use the same source files an &quot;out of source&quot; build should be used. The
-        default build is a release version. A debug version must be specifically requested. The
-        the following options are available for building the various configurations.</p>
+        default build is a release version. A debug version must be specifically requested. The following options are
+        available for building the various configurations.</p>
     <ul>
         <li>The default builds the Artistic Style command line executable (astyle). </li>
-        <li>BUILD_SHARED_LIBS builds the Artistic Style program as a shared object (libastyle.so). </li>
-        <li>BUILD_JAVA_LIBS builds the Artistic Style program as a shared object (libastylej.so) that can be called 
-            from a Java program. The Java Development Kit (JDK) must be installed for the project to compile.</li>
-        <li>BUILD_STATIC_LIBS builds the Artistic Style program as a Static Library (libastyle.a) that can be 
+        <li>BUILD_SHARED_LIBS=ON builds the Artistic Style program as a shared object (libastyle.so). </li>
+        <li>BUILD_JAVA_LIBS=ON builds the Artistic Style program as a shared object (libastylej.so) that can be called 
+            from a Java program. The Java Development Kit (JDK) must be installed for the project to compile.  CMake will
+            look for the JDK in the Java default folder or in a system path. If the files cannot be found, use the variable
+            JAVA_HOME=&lt;Java Directory&gt; with the path into the top level Java folder.</li>
+        <li>BUILD_STATIC_LIBS=ON builds the Artistic Style program as a Static Library (libastyle.a) that can be 
             statically linked to a user program.</li>
     </ul>
 
@@ -119,23 +121,35 @@ make
         To build the shared debug version:</p>
     <pre>mkdir  --parents  as-gcc-so
 cd  as-gcc-so
-cmake  -DBUILD_SHARED_LIBS=1  -DCMAKE_BUILD_TYPE=Debug  ../
+cmake  -DBUILD_SHARED_LIBS=ON  -DCMAKE_BUILD_TYPE=Debug  ../
 make
 </pre>
     <p>
-        To build the Java release version using the Clang compiler:</p>
+        To build the Java release version using the Clang compiler and the JAVA_HOME variable:</p>
     <pre>mkdir  as-clang-java
 cd  as-clang-java
-CXX=clang++  CC=clang  cmake  -DBUILD_JAVA_LIBS=1  ../
+CXX=clang++  cmake  -DBUILD_JAVA_LIBS=ON  -DJAVA_HOME=&quot;C:/Programs/Java&quot;  ../
 make
 </pre>
 
     <h5>INSTALL</h5>
 
     <p>
-        The makefile install option installs the astyle executable and documentation files. The default is /usr/bin for
-        the executable and /usr/share/doc/astyle for the documentation. You must have the appropriate permissions to use
-        install. </p>
+        The makefile install option installs the astyle executable and documentation files. The option installs from 
+        the generated makefile, not CMake. You must have the appropriate permissions to use install. </p>
+    <p>
+        To install astyle:</p>
+    <pre>make install</pre>
+    <p>
+        The default install directory is /usr/local/bin for the executable and /usr/local/share/doc/astyle for the
+        documentation. To change the default install directory from /usr/local the CMake must be run with the option 
+        CMAKE_INSTALL_PREFIX. </p>
+    <p>
+        To run CMake and change the install directory:</p>
+    <pre>cmake  -DCMAKE_INSTALL_PREFIX=/usr  ../
+make install</pre>
+
+    <h5>UNINSTALL</h5>
 
     <p>
         There is no uninstall. The easiest way to uninstall is to use the install_manifest.txt file, for example 
@@ -172,9 +186,8 @@ make
             <p>
                 The following Java shared library builds are separate from the above. They include a Java Native Interface (JNI)
                 and require that the Java Development Kit (JDK) be installed. The environment variable JAVA_HOME should be defined.
-                It defines the install directory for the JDK. The makefile also has default install directories for Java 5 and
-                6. If the compile cannot find the file jni.h, either set the variable or change the value in the 
-                makefile.</p>
+                It defines the install directory for the JDK.  If the compile cannot find the file jni.h, either set the JAVA_HOME
+                variable or change the value in the makefile.</p>
         </li>
         <li><strong>java </strong>builds the Artistic Style program as a shared library which includes the JNI (libastylej.so).
         </li>
@@ -272,7 +285,8 @@ make
 
     <p>
         Artistic Style has CMake support for MacOS. It is used the same as <a href="#_CMake_Linux">CMake Linux</a>
-        except the supported compilers are only GCC and Clang.</p>
+        except the supported compilers are only GCC and Clang. The macOS default installs will be to /usr/local instead
+        of /usr.</p>
 
     <h4 id="_MacOS_Makefile">MacOS Makefile</h4>
 
@@ -294,8 +308,8 @@ make
     <pre>cd astyle/build/mac<br />make release shared static
 </pre>
     <p>
-        The <a href="#_Other_Makefile_Targets">Other Makefile Targets</a> section contains additional target 
-        options.</p>
+        The <a href="#_Other_Makefile_Targets">Other Makefile Targets</a> section contains additional target options.
+        The macOS default installs will be to /usr/local instead of /usr.</p>
 
     <h4 id="_Xcode">Xcode</h4>
 
@@ -320,8 +334,9 @@ make
     <p>
         Only the astyle executable is installed. The library project installs are sent to UninstalledProjects in
         the Build directory. The following instructions are for the astyle executable and documentation files. The default
-        install directory is /usr/bin for the executable and /usr/share/doc/astyle for the documentation. You must have
-        the appropriate permissions to use install. If sudo is not used for the install, an error will occur during the
+        install directory is /usr/local/bin for the executable and /usr/local/share/doc/astyle for the documentation.
+        You must have the appropriate permissions to use install. If sudo is not used for the install, an error will occur
+        during the
         build.</p>
     <p>
         To install the astyle executable in the default directory:</p>
@@ -352,7 +367,7 @@ sudo xcodebuild install -project AStyle.xcodeproj
 
     <p>
         In addition to the source files, the Windows distribution package contains an Artistic Style Win32 executable
-        (AStyle.exe). If you prefer to compile the executable yourself, pursue the following instructions.</p>
+        (AStyle.exe). If you prefer to compile the executable yourself, use the following instructions.</p>
 
     <h4 id="_CMake_Windows">CMake Windows</h4>
 
@@ -369,16 +384,17 @@ sudo xcodebuild install -project AStyle.xcodeproj
         Since the different builds use the same source files an &quot;out of source&quot; build should be used. The
         default build for MinGW is a release version. A debug version must be specifically requested. For 
         Borland, a release build may need to be specifically requested, depending on the CMake release used. Borland 
-        has been tested with the bcc32c free compiler. It may or may not work with other Borland compilers. The the following
+        has been tested with the bcc32c free compiler. It may or may not work with other Borland compilers. The following
         options are available for building the various configurations.</p>
     <ul>
         <li>The default builds the Artistic Style command line executable (AStyle.exe). </li>
-        <li>BUILD_SHARED_LIBS builds the Artistic Style program as a DLL (AStylexx.dll, where xx is the astyle release 
+        <li>BUILD_SHARED_LIBS=ON builds the Artistic Style program as a DLL (AStylexx.dll, where xx is the astyle release
             number). </li>
-        <li>BUILD_JAVA_LIBS builds the Artistic Style program as a DLL (AStylexxj.dll, where xx is the astyle release 
+        <li>BUILD_JAVA_LIBS=ON builds the Artistic Style program as a DLL (AStylexxj.dll, where xx is the astyle release 
             number) that can be called from a Java program. The Java Development Kit (JDK) must be installed for the project
-            to compile.</li>
-        <li>BUILD_STATIC_LIBS builds the Artistic Style program as a Static Library (AStyleLib.lib) that can be 
+            to compile. CMake will look for the JDK in the Java default folder or in a system path. If the files cannot be
+            found, use the variable JAVA_HOME=&lt;Java Directory&gt; with the path into the top level Java folder.</li>
+        <li>BUILD_STATIC_LIBS=ON builds the Artistic Style program as a Static Library (AStyleLib.lib) that can be 
             statically linked to a user program.</li>
     </ul>
 
@@ -403,22 +419,26 @@ cmake  -G "Borland Makefiles"  -DCMAKE_BUILD_TYPE=Release  ../
 make
 </pre>
     <p>
-        To build the MinGW console release version:</p>
+        To build the MinGW Java release version using the JAVA_HOME variable:</p>
     <pre>md  as-mingw-exe
 cd  as-mingw-exe
-cmake  -G "MinGW Makefiles"  ../
+cmake  -G "MinGW Makefiles"  -DBUILD_JAVA_LIBS=ON  -DJAVA_HOME="C:/Programs/Java"  ../
 mingw32-make</pre>
 
     <p>As stated previously, the DLL builds may not work with the CMake generated makefiles.</p>
+
     <h5>INSTALL</h5>
 
     <p>
         The makefile install option installs the astyle executable and documentation files. The default is &quot;C:\Program
-        Files (x86)\AStyle&quot; for the executable and &quot;C:\Program Files (x86)\AStyle\doc&quot; for the documentation.
+        Files\AStyle&quot; for the executable and &quot;C:\Program Files\AStyle\doc&quot; for the documentation.
         You may need to run as an administrator to install. </p>
 
+    <h5>UNINSTALL</h5>
+
     <p>
-        There is no uninstall. The uninstall must be done manually. Just remove the two folders indicated in the 
+        There is no uninstall. The uninstall must be done manually. Just remove the 
+        AStyle folder indicated in the 
         Install. </p>
 
     <h4 id="_CodeBlocks_Windows">CodeBlocks Windows</h4>
