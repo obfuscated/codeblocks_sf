@@ -106,6 +106,12 @@ int CConfiguration::InsertBooleanVariable(const CString& Name, const bool Value)
  return GetCount()-1;
 }
 
+int CConfiguration::InsertFlagVariable(const CString& Name, const bool Value)
+{
+ m_Variables.push_back(new CFlagVariable(Name,Value));
+ return GetCount()-1;
+}
+
 int CConfiguration::InsertStringVariable(const CString& Name, const CString& Value)
 {
  m_Variables.push_back(new CStringVariable(Name,Value));
@@ -172,6 +178,25 @@ void CConfiguration::SetBooleanVariable(const CString& Name, const bool Value)
  else
  {
   InsertBooleanVariable(Name,Value);
+ }
+}
+
+void CConfiguration::SetFlagVariable(const CString& Name, const bool Value)
+{
+ int index = VarIndex(Name);
+ if (ValidIndex(index))
+ {
+  if (!Value)
+  {
+   RemoveVariable(index);
+  }
+ }
+ else
+ {
+  if (Value)
+  {
+   InsertFlagVariable(Name,true);
+  }
  }
 }
 
@@ -330,7 +355,7 @@ bool CParameterStringConfiguration::VarDefined(const CString& Name)
 void CParameterStringConfiguration::SetDefined(const CString& Name)
 {
  int index = VarIndex(DefinedPrefix()+Name);
- if (INVALID_INDEX==index) InsertBooleanVariable(DefinedPrefix()+Name,true);
+ if (INVALID_INDEX==index) InsertFlagVariable(DefinedPrefix()+Name,true);
 }
 
 void CParameterStringConfiguration::SetUndefined(const CString& Name)
@@ -349,9 +374,9 @@ void CParameterStringConfiguration::ProcessParameters(const CParameterString& Pa
    CVariable& variable = Variable(i);
    if (variable.GetName()==parameter)
    {
-    if (variable.GetType()==VARIABLE_TYPE_BOOLEAN) variable.SetBoolean(true);
+    if (variable.GetType()==VARIABLE_TYPE_FLAG) variable.SetBoolean(true);
     else { variable.SetString(Parameters.Parameter(++j)); }
-    m_Variables.push_back(new CBooleanVariable(m_DefinedPrefix+variable.GetName(),true));
+    m_Variables.push_back(new CFlagVariable(m_DefinedPrefix+variable.GetName(),true));
     break;
   }}
   j++;

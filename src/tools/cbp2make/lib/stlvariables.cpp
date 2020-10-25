@@ -426,6 +426,18 @@ CBooleanVariable::CBooleanVariable(const CString& Name,const bool Value)
 
 //------------------------------------------------------------------------------
 
+int CFlagVariable::GetType(void) const
+{
+ return VARIABLE_TYPE_FLAG;
+}
+
+CString CFlagVariable::GetTypeName(void) const
+{
+ return "flag";
+}
+
+//------------------------------------------------------------------------------
+
 int CStringVariable::GetType(void) const
 {
  return VARIABLE_TYPE_STRING;

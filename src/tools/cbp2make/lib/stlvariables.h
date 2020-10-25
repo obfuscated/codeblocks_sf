@@ -26,10 +26,11 @@
 const int VARIABLE_TYPE_NONE    = 0;
 const int VARIABLE_TYPE_INTEGER = 1;
 const int VARIABLE_TYPE_FLOAT   = 2;
-const int VARIABLE_TYPE_BOOLEAN = 1;
-const int VARIABLE_TYPE_STRING  = 4;
-const int VARIABLE_TYPE_CHAR    = 5;
-const int VARIABLE_TYPE_COUNT   = 6;
+const int VARIABLE_TYPE_BOOLEAN = 3;
+const int VARIABLE_TYPE_FLAG    = 4;
+const int VARIABLE_TYPE_STRING  = 5;
+const int VARIABLE_TYPE_CHAR    = 6;
+const int VARIABLE_TYPE_COUNT   = 7;
 
 class CVariable
 {
@@ -139,6 +140,16 @@ class CBooleanVariable: public CVariable
  public:
   CBooleanVariable(const CString& Name,const bool Value=false);
   virtual ~CBooleanVariable(void) {};
+};
+
+class CFlagVariable: public CBooleanVariable
+{
+ public:
+  virtual int GetType(void) const;
+  virtual CString GetTypeName(void) const;
+ public:
+  CFlagVariable(const CString& Name,const bool Value=false): CBooleanVariable(Name, Value) {};
+  virtual ~CFlagVariable(void) {};
 };
 
 class CStringVariable: public CVariable

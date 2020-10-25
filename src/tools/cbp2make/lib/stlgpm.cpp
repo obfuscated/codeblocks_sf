@@ -75,14 +75,14 @@ void CGenericProcessingMachine::CreateConfiguration(void)
  PSC().InsertStringVariable(GPM_VAR_NAME_CFG);
  PSC().InsertStringVariable(GPM_VAR_NAME_INDIR);
  PSC().InsertStringVariable(GPM_VAR_NAME_OUTDIR);
- PSC().InsertBooleanVariable(GPM_VAR_NAME_HELP);
- PSC().InsertBooleanVariable(GPM_VAR_NAME_VERBOSE);
- PSC().InsertBooleanVariable(GPM_VAR_NAME_QUIET);
+ PSC().InsertFlagVariable(GPM_VAR_NAME_HELP);
+ PSC().InsertFlagVariable(GPM_VAR_NAME_VERBOSE);
+ PSC().InsertFlagVariable(GPM_VAR_NAME_QUIET);
  if (m_AliasesEnabled)
  {
-  PSC().InsertBooleanVariable(GPM_VAR_NAME_HELP_ALIAS);
-  PSC().InsertBooleanVariable(GPM_VAR_NAME_VERBOSE_ALIAS);
-  PSC().InsertBooleanVariable(GPM_VAR_NAME_QUIET_ALIAS);
+  PSC().InsertFlagVariable(GPM_VAR_NAME_HELP_ALIAS);
+  PSC().InsertFlagVariable(GPM_VAR_NAME_VERBOSE_ALIAS);
+  PSC().InsertFlagVariable(GPM_VAR_NAME_QUIET_ALIAS);
  }
 }
 

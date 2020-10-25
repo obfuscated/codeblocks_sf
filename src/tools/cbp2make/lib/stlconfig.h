@@ -46,6 +46,7 @@ class CConfiguration
   int InsertIntegerVariable(const CString& Name, const int Value=0);
   int InsertFloatVariable(const CString& Name, const double Value=0.0);
   int InsertBooleanVariable(const CString& Name, const bool Value=false);
+  int InsertFlagVariable(const CString& Name, const bool Value=false);
   int InsertStringVariable(const CString& Name, const CString& Value="");
   int InsertCharVariable(const CString& Name, const char Value=char(0));
   void RemoveVariable(const int Index);
@@ -53,6 +54,7 @@ class CConfiguration
   void SetIntegerVariable(const CString& Name, const int Value);
   void SetFloatVariable(const CString& Name, const double Value);
   void SetBooleanVariable(const CString& Name, const bool Value);
+  void SetFlagVariable(const CString& Name, const bool Value);
   void SetStringVariable(const CString& Name, const CString& Value);
   void SetCharVariable(const CString& Name, const char Value);
   void Print(std::ostream& out);
