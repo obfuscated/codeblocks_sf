@@ -158,14 +158,14 @@ private:
 
     #define CC_LOCKER_TRACK_TT_MTX_LOCK(M)      \
         do {                                    \
-            auto result = M.Lock();             \
-            cbAssert(result==wxMUTEX_NO_ERROR); \
+            auto locker_result = M.Lock();             \
+            cbAssert(locker_result==wxMUTEX_NO_ERROR); \
         } while (false);
 
     #define CC_LOCKER_TRACK_TT_MTX_UNLOCK(M)    \
         do {                                    \
-            auto result = M.Unlock();           \
-            cbAssert(result==wxMUTEX_NO_ERROR); \
+            auto locker_result = M.Unlock();           \
+            cbAssert(locker_result==wxMUTEX_NO_ERROR); \
         } while (false);
 
     #define CC_LOCKER_TRACK_CBBT_MTX_LOCK    CC_LOCKER_TRACK_TT_MTX_LOCK
