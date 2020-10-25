@@ -20,7 +20,7 @@
 #include <math.h>
 
 //-------------------------------------------------------------------------------
-// wxPostScriptDC
+// wxPdfDC
 //-------------------------------------------------------------------------------
 
 
@@ -109,6 +109,13 @@ angleByCoords(wxCoord xa, wxCoord ya, wxCoord xc, wxCoord yc)
  *
  */
 
+// Critical section
+#if wxUSE_THREADS
+static wxCriticalSection gs_csImageCounter;
+#endif
+
+int wxPdfDCImpl::ms_imageCount = 0;
+
 IMPLEMENT_ABSTRACT_CLASS(wxPdfDCImpl, wxDCImpl)
 
 wxPdfDCImpl::wxPdfDCImpl(wxPdfDC* owner)
@@ -155,13 +162,21 @@ wxPdfDCImpl::~wxPdfDCImpl()
   }
 }
 
+int
+wxPdfDCImpl::IncreaseImageCounter()
+{
+#if wxUSE_THREADS
+  wxCriticalSectionLocker locker(gs_csImageCounter);
+#endif
+  return ++ms_imageCount;
+}
+
 void
 wxPdfDCImpl::Init()
 {
   m_templateMode = false;
   m_ppi = 72;
   m_pdfDocument = NULL;
-  m_imageCount = 0;
 
   wxScreenDC screendc;
   m_ppiPdfFont = screendc.GetPPI().GetHeight();
@@ -171,10 +186,11 @@ wxPdfDCImpl::Init()
   m_pdfPen = wxNullPen;
   m_pdfBrush = wxNullBrush;
 
+  m_inTransform = false;
+  m_matrix = wxAffineMatrix2D();
+
   m_jpegFormat = false;
   m_jpegQuality = 75;
-
-  SetBackgroundMode(wxSOLID);
 
   m_printData.SetOrientation(wxPORTRAIT);
   m_printData.SetPaperId(wxPAPER_A4);
@@ -356,7 +372,7 @@ void
 wxPdfDCImpl::SetBackgroundMode(int mode)
 {
   // TODO: check implementation
-  m_backgroundMode = (mode == wxTRANSPARENT) ? wxTRANSPARENT : wxSOLID;
+  m_backgroundMode = (mode == wxBRUSHSTYLE_TRANSPARENT) ? wxBRUSHSTYLE_TRANSPARENT : wxBRUSHSTYLE_SOLID;
 }
 
 void
@@ -517,6 +533,66 @@ wxPdfDCImpl::SetAxisOrientation(bool xLeftRight, bool yBottomUp)
   m_signY = (yBottomUp  ? -1 :  1);
   ComputeScaleAndOrigin();
 }
+
+#if wxUSE_DC_TRANSFORM_MATRIX
+bool
+wxPdfDCImpl::CanUseTransformMatrix() const
+{
+  return true;
+}
+
+bool
+wxPdfDCImpl::SetTransformMatrix(const wxAffineMatrix2D& matrix)
+{
+  wxCHECK_MSG(m_pdfDocument, false, wxS("Invalid PDF DC"));
+  // At the moment concatinating the transformation matrix is not supported
+  ResetTransformMatrix();
+
+  // Do nothing, if the transformation matrix equals the identity matrix
+  if (matrix.IsIdentity())
+  {
+    return true;
+  }
+
+  // Retrieve the components of the transformation matrix
+  wxMatrix2D mat;
+  wxPoint2DDouble tr;
+  matrix.Get(&mat, &tr);
+  m_matrix = matrix;
+
+  // Start PDF transformation
+  m_inTransform = true;
+  m_pdfDocument->StartTransform();
+
+  // Scale the translation vector according to PDF resolution
+  double docScale = 72.0 / m_ppi;
+  double scaleX = m_scaleX * docScale;
+  double scaleY = m_scaleY * docScale;
+  m_pdfDocument->Transform(mat.m_11, mat.m_12, mat.m_21, mat.m_22, scaleX * tr.m_x, scaleY * tr.m_y);
+
+  return true;
+}
+
+wxAffineMatrix2D
+wxPdfDCImpl::GetTransformMatrix() const
+{
+  wxCHECK_MSG(m_pdfDocument, wxAffineMatrix2D(), wxS("Invalid PDF DC"));
+  return m_matrix; 
+}
+
+void
+wxPdfDCImpl::ResetTransformMatrix()
+{
+  wxCHECK_RET(m_pdfDocument, wxS("Invalid PDF DC"));
+
+  if (m_inTransform)
+  {
+    m_pdfDocument->StopTransform();
+    m_matrix = wxAffineMatrix2D();
+    m_inTransform = false;
+  }
+}
+#endif // wxUSE_DC_TRANSFORM_MATRIX
 
 void
 wxPdfDCImpl::SetLogicalFunction(wxRasterOperationMode function)
@@ -888,7 +964,8 @@ wxPdfDCImpl::DoDrawBitmap(const wxBitmap& bitmap, wxCoord x, wxCoord y, bool use
   const double xx = ScaleLogicalToPdfX(x);
   const double yy = ScaleLogicalToPdfY(y);
 
-  wxString imgName = wxString::Format(wxS("pdfdcimg%d"), ++m_imageCount);
+  int imageCount = IncreaseImageCounter();
+  wxString imgName = wxString::Format(wxS("pdfdcimg%d"), imageCount);
 
   if (bitmap.GetDepth() == 1)
   {
@@ -975,7 +1052,7 @@ wxPdfDCImpl::DoDrawRotatedText(const wxString& text, wxCoord x, wxCoord y, doubl
   const wxArrayString lines = wxSplit(text, '\n', '\0');
 
   // Draw background for all text lines
-  if (m_backgroundMode != wxTRANSPARENT && m_textBackgroundColour.Ok())
+  if (m_backgroundMode != wxBRUSHSTYLE_TRANSPARENT && m_textBackgroundColour.Ok())
   {
     if (angle != 0)
     {

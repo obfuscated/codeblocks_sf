@@ -38,7 +38,7 @@ public:
   /// Get total height of cell
   double GetHeight() { return m_height; }
 
-  /// Get maximal width of cell
+  /// Get maximum width of cell
   double GetMaxWidth() { return m_maxWidth; }
 
   /// Get horizontal alignment
@@ -125,6 +125,12 @@ public:
   /// Get width of last space character
   double GetLastSpaceWidth() { return m_spaceWidth; }
 
+  /// Remember the width of the last space character
+  void SetCharacterSpacing(double charSpacing) { m_charSpacing = charSpacing; }
+
+  /// Get width of last space character
+  double GetCharacterSpacing() { return m_charSpacing; }
+
   /// Set hyper link reference
   void SetHRef(const wxString& href) { m_href = href; }
 
@@ -138,7 +144,7 @@ public:
   wxPdfTable* GetTable() { return m_table; }
 
 private:
-  double           m_maxWidth;        ///< maximal line width
+  double           m_maxWidth;        ///< maximum line width
   double           m_lineDelta;       ///< line delta measure
   wxPdfAlignment   m_hAlign;          ///< horizontal alignment
   wxPdfAlignment   m_vAlign;          ///< vertical alignment
@@ -152,6 +158,7 @@ private:
   wxArrayInt       m_spaces;          ///< list of space counters
   wxChar           m_lastChar;        ///< last character of a chunk
   double           m_spaceWidth;      ///< width of space character
+  double           m_charSpacing;     ///< extra character spacing (default: 0)
   wxString         m_href;            ///< hyper link reference
   wxPdfTable*      m_table;           ///< table reference
 };
@@ -257,13 +264,16 @@ public:
   /// Destructor
   virtual ~wxPdfTable();
 
-  /// Set minimal required row height
+  /// Set minimum required row height
   void SetMinRowHeight(int row, double height) { m_minHeights[row] = height; }
+
+  /// Set maximum allowed row height
+  void SetMaxRowHeight(int row, double height) { m_maxHeights[row] = height; }
 
   /// Set width of column
   void SetColumnWidth(int col, double width);
 
-  /// Calculate cell dimensions respecting a maximal allowed width
+  /// Calculate cell dimensions respecting a maximum allowed width
   void SetCellDimensions(double maxWidth);
 
   /// Insert a cell into the cell array
@@ -316,12 +326,12 @@ public:
 
 private:
   wxPdfDocument* m_document;     ///< document reference
-  wxPdfDoubleHashMap m_minHeights;   ///< array of minimal row heights
+  wxPdfDoubleHashMap m_minHeights;   ///< array of minimum row heights
   wxPdfDoubleHashMap m_rowHeights;   ///< array of row heights
   wxPdfDoubleHashMap m_colWidths;    ///< array of column widths
-  wxPdfDoubleHashMap m_maxHeights;   ///< array of maximal row heights including row span heights
+  wxPdfDoubleHashMap m_maxHeights;   ///< array of maximum row heights including row span heights
 
-  double             m_maxWidth;     ///< maximal allowed width
+  double             m_maxWidth;     ///< maximum allowed width
   double             m_totalWidth;   ///< total width
   double             m_totalHeight;  ///< total height
   double             m_headHeight;   ///< total height of table header
