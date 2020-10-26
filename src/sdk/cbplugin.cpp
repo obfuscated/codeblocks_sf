@@ -468,9 +468,9 @@ void cbDebuggerPlugin::OnProjectActivated(CodeBlocksEvent& event)
 
     if (event.GetProject() != GetProject() && GetProject())
     {
-        wxString msg = _("You can't change the active project while you 're actively debugging another.\n"
-                        "Do you want to stop debugging?\n\n"
-                        "Click \"Yes\" to stop debugging now or click \"No\" to re-activate the debuggee.");
+        wxString msg = _("You can't change the active project while you're actively debugging another.\n"
+                         "Do you want to stop debugging?\n\n"
+                         "Click \"Yes\" to stop debugging now or click \"No\" to re-activate the debuggee.");
         if (cbMessageBox(msg, _("Warning"), wxICON_WARNING | wxYES_NO) == wxID_YES)
         {
             Stop();
