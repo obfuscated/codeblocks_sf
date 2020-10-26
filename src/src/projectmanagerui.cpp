@@ -1752,14 +1752,14 @@ void ProjectManagerUI::OnProperties(wxCommandEvent& event)
         {
             if (ftd && ftd->GetFileIndex() != -1)
             {
-                if ( ProjectFile* pf = ftd->GetProjectFile() )
+                if (ProjectFile* pf = ftd->GetProjectFile())
                     pf->ShowOptions(Manager::Get()->GetAppWindow());
             }
         }
     }
     else // active editor properties
     {
-        if ( cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() )
+        if (cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor())
         {
             if ( ProjectFile* pf = ed->GetProjectFile() )
                 pf->ShowOptions(Manager::Get()->GetAppWindow());
@@ -2581,11 +2581,11 @@ bool ProjectManagerUI::QueryCloseWorkspace()
 
     // Don't ask to save the default workspace, if blank workspace is used on app startup.
     bool blankWorkspace = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true);
-    if ( !(wkspc->IsDefault() && blankWorkspace) )
+    if (!(wkspc->IsDefault() && blankWorkspace))
     {
         // always save workspace layout
         wkspc->SaveLayout();
-        if ( wkspc->GetModified() )
+        if (wkspc->GetModified())
         {
             // workspace needs save
             wxString msg;
@@ -3297,7 +3297,7 @@ static bool ProjectShowOptions(cbProject* project)
         FilesList &filesList = project->GetFilesList();
         for (FilesList::iterator it = filesList.begin(); it != filesList.end(); ++it)
         {
-            if ( ProjectFile* pf = *it )
+            if (ProjectFile* pf = *it)
                 pf->UpdateFileDetails();
         }
         CodeBlocksEvent event(cbEVT_PROJECT_OPTIONS_CHANGED);
