@@ -1162,7 +1162,7 @@ void ProjectManagerUI::OnSaveAsWorkspace(cb_unused wxCommandEvent& event)
 {
     ProjectManager* pm = Manager::Get()->GetProjectManager();
     if (pm->GetWorkspace())
-        pm->SaveWorkspaceAs(_T(""));
+        pm->SaveWorkspaceAs(wxString());
 }
 
 void ProjectManagerUI::OnCloseWorkspace(cb_unused wxCommandEvent& event)
