@@ -120,14 +120,17 @@ const int idNB_TabBottom = wxNewId();
 
 namespace
 {
-bool ProjectCanDragNode(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node);
-bool ProjectNodeDragged(cbProject* project, wxTreeCtrl* tree, wxArrayTreeItemIds& fromArray, wxTreeItemId to);
-bool ProjectVirtualFolderAdded(cbProject* project, wxTreeCtrl* tree, wxTreeItemId parent_node,
-                               const wxString& virtual_folder);
-void ProjectVirtualFolderDeleted(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node);
-bool ProjectVirtualFolderRenamed(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node, const wxString& new_name);
-bool ProjectVirtualFolderDragged(cbProject* project, wxTreeCtrl* tree, wxTreeItemId from, wxTreeItemId to);
-bool ProjectShowOptions(cbProject* project);
+static bool ProjectCanDragNode(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node);
+static bool ProjectNodeDragged(cbProject* project, wxTreeCtrl* tree, wxArrayTreeItemIds& fromArray,
+                        wxTreeItemId to);
+static bool ProjectVirtualFolderAdded(cbProject* project, wxTreeCtrl* tree,
+                                      wxTreeItemId parent_node, const wxString& virtual_folder);
+static void ProjectVirtualFolderDeleted(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node);
+static bool ProjectVirtualFolderRenamed(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node,
+                                        const wxString& new_name);
+static bool ProjectVirtualFolderDragged(cbProject* project, wxTreeCtrl* tree, wxTreeItemId from,
+                                        wxTreeItemId to);
+static bool ProjectShowOptions(cbProject* project);
 } // anonymous namespace
 
 
@@ -276,7 +279,7 @@ void ProjectManagerUI::RebuildTree()
     FreezeTree();
     ProjectManager* pm = Manager::Get()->GetProjectManager();
     ProjectsArray* pa = pm->GetProjects();
-    int count = pa->GetCount();
+    const int count = pa->GetCount();
     for (int i = 0; i < count; ++i)
     {
         if ( cbProject* prj = pa->Item(i) )
@@ -343,7 +346,8 @@ void ProjectManagerUI::UnfreezeTree(cb_unused bool force)
     }
 }
 
-void ProjectManagerUI::UpdateActiveProject(cbProject* oldProject, cbProject* newProject, bool refresh)
+void ProjectManagerUI::UpdateActiveProject(cbProject* oldProject, cbProject* newProject,
+                                           bool refresh)
 {
     if (oldProject)
         m_pTree->SetItemBold(oldProject->GetProjectNode(), false);
@@ -919,16 +923,16 @@ void ProjectManagerUI::OnTreeBeginDrag(wxTreeEvent& event)
             return;
 
         // allow only if the project approves
-        if ( ! ProjectCanDragNode(prj, m_pTree, id))
+        if (!ProjectCanDragNode(prj, m_pTree, id))
             continue;
 
         // We allow drag and drop for normal files or projects,
         // but not for mixed selection, or any other project items
-        if ( ftd->GetKind() == FileTreeData::ftdkFile )
+        if (ftd->GetKind() == FileTreeData::ftdkFile)
         {
                 fileList.Add(ftd->GetProjectFile()->file.GetLongPath());
         }
-        else if ( ftd->GetKind() == FileTreeData::ftdkProject )
+        else if (ftd->GetKind() == FileTreeData::ftdkProject)
         {
             fileList.Add(ftd->GetProject()->GetFilename());
         }
@@ -945,15 +949,15 @@ void ProjectManagerUI::OnTreeBeginDrag(wxTreeEvent& event)
         wxMilliSleep(100); //wait awhile for possible mouse move outside tree ctrl
         wxWindow* pWin = ::wxFindWindowAtPoint(wxGetMousePosition());
         wxString winName = pWin ? pWin->GetName().Lower(): _T("unkwn");
-        if ( (not pWin) or (_T("treectrl") != winName) )
+        if (!pWin || (_T("treectrl") != winName))
         {
             isExternalDrag = true;
             break;
         }
-        if (not wxGetMouseState().LeftIsDown())
+        if (!wxGetMouseState().LeftIsDown())
             break; //internal tree drag
     }
-    if ( (! fileList.IsEmpty()) and isExternalDrag )
+    if (!fileList.empty() && isExternalDrag)
     {
         // create a drop object of file paths
         wxTextDataObject dropObject( GetStringFromArray(fileList , wxT("\n"), false));
@@ -1534,9 +1538,9 @@ void ProjectManagerUI::OnSaveProject(wxCommandEvent& WXUNUSED(event))
 
     ProjectManager* pm = Manager::Get()->GetProjectManager();
 
-    if ( FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel) )
+    if (FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel))
     {
-        if ( cbProject* prj = ftd->GetProject() )
+        if (cbProject* prj = ftd->GetProject())
         {
             // TODO : does it make sense NOT to save project file while compiling ??
             if (pm->IsLoadingProject() || prj->GetCurrentlyCompilingTarget())
@@ -2247,7 +2251,6 @@ void ProjectManagerUI::OnAddVirtualFolder(cb_unused wxCommandEvent& event)
         return;
 
     ProjectVirtualFolderAdded(prj, m_pTree, sel, fld);
-//    RebuildTree();
 }
 
 void ProjectManagerUI::OnDeleteVirtualFolder(cb_unused wxCommandEvent& event)
@@ -2339,7 +2342,6 @@ void ProjectManagerUI::OnEndEditNode(wxTreeEvent& event)
 
     if (!ProjectVirtualFolderRenamed(prj, m_pTree, event.GetItem(), event.GetLabel()))
         event.Veto();
-//    RebuildTree();
 }
 
 void ProjectManagerUI::OnUpdateUI(wxUpdateUIEvent& event)
@@ -2761,7 +2763,8 @@ static wxString GetRelativeFolderPath(wxTreeCtrl* tree, wxTreeItemId parent)
     return fld;
 }
 
-wxTreeItemId ProjectFindNodeToInsertAfter(wxTreeCtrl* tree, const wxString& text, const wxTreeItemId& parent, bool in_folders)
+static wxTreeItemId ProjectFindNodeToInsertAfter(wxTreeCtrl* tree, const wxString& text,
+                                                 const wxTreeItemId& parent, bool in_folders)
 {
     wxTreeItemId result;
 
@@ -2804,9 +2807,10 @@ wxTreeItemId ProjectFindNodeToInsertAfter(wxTreeCtrl* tree, const wxString& text
     return result;
 }
 
-wxTreeItemId ProjectAddTreeNode(cbProject* project, wxTreeCtrl* tree,  const wxString& text, const wxTreeItemId& parent,
-                                bool useFolders, FileTreeData::FileTreeDataKind folders_kind, bool compiles, int image,
-                                FileTreeData* data)
+static wxTreeItemId ProjectAddTreeNode(cbProject* project, wxTreeCtrl* tree,  const wxString& text,
+                                       const wxTreeItemId& parent, bool useFolders,
+                                       FileTreeData::FileTreeDataKind folders_kind, bool compiles,
+                                       int image, FileTreeData* data)
 {
     // see if the text contains any path info, e.g. plugins/compilergcc/compilergcc.cpp
     // in that case, take the first element (plugins in this example), create a sub-folder
@@ -2892,7 +2896,7 @@ wxTreeItemId ProjectAddTreeNode(cbProject* project, wxTreeCtrl* tree,  const wxS
     return ret;
 }
 
-bool ProjectCanDragNode(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node)
+static bool ProjectCanDragNode(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node)
 {
     // what item do we start dragging?
     if (!node.IsOk())
@@ -2913,7 +2917,8 @@ bool ProjectCanDragNode(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node)
             || (ftd->GetKind() == FileTreeData::ftdkProject) );
 }
 
-void ProjectCopyTreeNodeRecursively(wxTreeCtrl* tree, const wxTreeItemId& item, const wxTreeItemId& new_parent)
+static void ProjectCopyTreeNodeRecursively(wxTreeCtrl* tree, const wxTreeItemId& item,
+                                           const wxTreeItemId& new_parent)
 {
     // first, some sanity checks
     if (!tree || !item.IsOk() || !new_parent.IsOk())
@@ -2948,7 +2953,8 @@ void ProjectCopyTreeNodeRecursively(wxTreeCtrl* tree, const wxTreeItemId& item, 
         ftd_moved->GetProjectFile()->virtual_path = GetRelativeFolderPath(tree, new_parent);
 }
 
-bool ProjectVirtualFolderDragged(cbProject* project, wxTreeCtrl* tree, wxTreeItemId from, wxTreeItemId to)
+static bool ProjectVirtualFolderDragged(cbProject* project, wxTreeCtrl* tree, wxTreeItemId from,
+                                        wxTreeItemId to)
 {
     FileTreeData* ftdFrom = static_cast<FileTreeData*>(tree->GetItemData(from));
     FileTreeData* ftdTo   = static_cast<FileTreeData*>(tree->GetItemData(to)  );
@@ -3074,7 +3080,8 @@ bool ProjectVirtualFolderDragged(cbProject* project, wxTreeCtrl* tree, wxTreeIte
     return true;
 }
 
-bool ProjectNodeDragged(cbProject* project, wxTreeCtrl* tree, wxArrayTreeItemIds& fromArray, wxTreeItemId to)
+static bool ProjectNodeDragged(cbProject* project, wxTreeCtrl* tree, wxArrayTreeItemIds& fromArray,
+                               wxTreeItemId to)
 {
     // what items did we drag?
     if (!to.IsOk())
@@ -3160,7 +3167,7 @@ bool ProjectNodeDragged(cbProject* project, wxTreeCtrl* tree, wxArrayTreeItemIds
     return true;
 }
 
-bool ProjectHasVirtualFolder(const wxString &folderName, const wxArrayString &virtualFolders)
+static bool ProjectHasVirtualFolder(const wxString &folderName, const wxArrayString &virtualFolders)
 {
     for (size_t i = 0; i < virtualFolders.GetCount(); ++i)
     {
@@ -3174,8 +3181,8 @@ bool ProjectHasVirtualFolder(const wxString &folderName, const wxArrayString &vi
     return true;
 }
 
-bool ProjectVirtualFolderAdded(cbProject* project, wxTreeCtrl* tree,
-                               wxTreeItemId parent_node, const wxString& virtual_folder)
+static bool ProjectVirtualFolderAdded(cbProject* project, wxTreeCtrl* tree,
+                                      wxTreeItemId parent_node, const wxString& virtual_folder)
 {
     wxString foldername = GetRelativeFolderPath(tree, parent_node);
     foldername << virtual_folder;
@@ -3206,7 +3213,7 @@ bool ProjectVirtualFolderAdded(cbProject* project, wxTreeCtrl* tree,
     return true;
 }
 
-void ProjectVirtualFolderDeleted(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node)
+static void ProjectVirtualFolderDeleted(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node)
 {
     // what item do we start dragging?
     if (!node.IsOk())
@@ -3230,7 +3237,8 @@ void ProjectVirtualFolderDeleted(cbProject* project, wxTreeCtrl* tree, wxTreeIte
 //    Manager::Get()->GetLogManager()->DebugLog(F(_T("VirtualFolderDeleted: %s: %s"), foldername.c_str(), GetStringFromArray(m_VirtualFolders, _T(";")).c_str()));
 }
 
-bool ProjectVirtualFolderRenamed(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node, const wxString& new_name)
+static bool ProjectVirtualFolderRenamed(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node,
+                                        const wxString& new_name)
 {
     if (new_name.IsEmpty())
         return false;
@@ -3277,7 +3285,7 @@ bool ProjectVirtualFolderRenamed(cbProject* project, wxTreeCtrl* tree, wxTreeIte
 /** Display the project options dialog.
   * @return True if the dialog was closed with "OK", false if closed with "Cancel".
   */
-bool ProjectShowOptions(cbProject* project)
+static bool ProjectShowOptions(cbProject* project)
 {
     if (!project)
         return false;
@@ -3301,7 +3309,9 @@ bool ProjectShowOptions(cbProject* project)
 }
 } // anonymous namespace
 
-void ProjectManagerUI::BuildProjectTree(cbProject* project, cbTreeCtrl* tree, const wxTreeItemId& root, int ptvs, FilesGroupsAndMasks* fgam)
+void ProjectManagerUI::BuildProjectTree(cbProject* project, cbTreeCtrl* tree,
+                                        const wxTreeItemId& root, int ptvs,
+                                        FilesGroupsAndMasks* fgam)
 {
     if (!tree)
         return;
