@@ -541,14 +541,14 @@ bool ProjectManager::SaveActiveProjectAs()
 bool ProjectManager::SaveAllProjects()
 {
     m_ui->FreezeTree();
-    int prjCount = m_pProjects->GetCount();
+    const int prjCount = m_pProjects->GetCount();
     int count = 0;
     for (int i = 0; i < prjCount; ++i)
     {
         cbProject* project = m_pProjects->Item(i);
         if (project)
         {
-            bool isModified = project->GetModified();
+            const bool isModified = project->GetModified();
             if (isModified && SaveProject(project))
                 ++count;
         }

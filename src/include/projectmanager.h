@@ -209,23 +209,23 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 
         /** Save a project to disk.
           * @param project A pointer to the project to save.
-          * @return True if saving was succesful, false if not.
+          * @return True if saving was successful, false if not.
           */
         bool SaveProject(cbProject* project);
         /** Save a project to disk, asking for a filename.
           * @param project A pointer to the project to save.
-          * @return True if saving was succesful, false if not.
+          * @return True if saving was successful, false if not.
           * @note A false return value doesn't necessarily mean failure. The user
           * might have cancelled the SaveAs dialog...
           */
         bool SaveProjectAs(cbProject* project);
         /** Save the active project to disk. Same as SaveProject(GetActiveProject()).
-          * @return True if saving was succesful, false if not.
+          * @return True if saving was successful, false if not.
           */
         bool SaveActiveProject();
         /** Save the active project to disk, asking for a filename.
           * Same as SaveProjectAs(GetActiveProject()).
-          * @return True if saving was succesful, false if not.
+          * @return True if saving was successful, false if not.
           * @note A false return value doesn't necessarily mean failure. The user
           * might have cancelled the SaveAs dialog...
           */
@@ -252,7 +252,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 
         /** Create a new empty project.
           * @param filename the project's filename
-          * @return A pointer to the new project if succesful, or NULL if not.
+          * @return A pointer to the new project if successful, or NULL if not.
           * @note When the new project is created, if no filename parameter was supplied,
           * it asks the user where to save it.
           * If the user cancels the Save dialog, then NULL is returned from this function.
