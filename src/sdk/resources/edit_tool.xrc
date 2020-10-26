@@ -104,6 +104,18 @@
 						<flag>wxEXPAND</flag>
 						<option>1</option>
 					</object>
+					<object class="spacer">
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxHyperlinkCtrl" name="ID_HYPERLINKCTRL1">
+							<label>http://wiki.codeblocks.org/index.php/Variable__expansion</label>
+						</object>
+						<flag>wxALIGN_LEFT</flag>
+						<option>1</option>
+					</object>
 				</object>
 				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
