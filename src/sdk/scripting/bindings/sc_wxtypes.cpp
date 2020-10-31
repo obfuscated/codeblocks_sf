@@ -151,7 +151,7 @@ namespace ScriptBindings
         {
             wxString *str2 = SqPlus::GetInstance<wxString,false>(v, 2);
             if (!str2)
-                return sa.ThrowError("Second paramter is not a wxString instance!");
+                return sa.ThrowError("Second parameter is not a wxString instance!");
             result = str1 + *str2;
         }
         return SqPlus::ReturnCopy(v, result);
