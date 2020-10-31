@@ -416,6 +416,13 @@
 															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 															<border>4</border>
 														</object>
+														<object class="sizeritem">
+															<object class="wxCheckBox" name="chkAutoOpen2">
+																<label>Open first result when finished</label>
+															</object>
+															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+															<border>4</border>
+														</object>
 													</object>
 													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>

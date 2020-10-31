@@ -44,6 +44,7 @@ class DLLIMPORT FindReplaceDlg : public FindReplaceBase
         wxString GetSearchMask() const override; // for find in search path
         int GetProject() const override; // for find in project
         int GetTarget() const override; // for find in project
+        bool GetHasToOpenFirstResult() const override;
 
         bool IsMultiLine() const;
 

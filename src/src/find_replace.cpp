@@ -59,6 +59,8 @@ struct cbFindReplaceData
     void ConvertEOLs(int newmode);
     bool IsMultiLine();
 
+    bool hasToOpenAfterFind;
+
     cbFindReplaceData()
     {
         eolMode = wxSCI_EOL_LF;
@@ -230,6 +232,7 @@ int FindReplace::ShowFindDialog(bool replace, bool explicitly_find_in_files)
     m_LastFindReplaceData->multiLine = dlg->GetMultiLine();
     m_LastFindReplaceData->fixEOLs = dlg->GetFixEOLs();
     m_LastFindReplaceData->startFile = dlg->GetStartFile();
+    m_LastFindReplaceData->hasToOpenAfterFind = dlg->GetHasToOpenFirstResult();
 
     m_LastFindReplaceData->findInFiles = dlg->IsFindInFiles();
     if (!m_LastFindReplaceData->findInFiles)
@@ -1530,7 +1533,8 @@ int FindReplace::FindInFiles(cbFindReplaceData* data)
             Manager::Get()->ProcessEvent(evtSwitch);
             Manager::Get()->ProcessEvent(evtShow);
         }
-        m_pSearchLog->FocusEntry(oldcount);
+        if(data->hasToOpenAfterFind)
+            m_pSearchLog->FocusEntry(oldcount);
     }
     else
     {

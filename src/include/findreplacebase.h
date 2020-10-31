@@ -39,6 +39,7 @@ class FindReplaceBase : public wxScrollingDialog
         virtual wxString GetSearchMask() const = 0; // for find in search path
         virtual int GetProject() const = 0; // for find in project
         virtual int GetTarget() const = 0; // for find in project
+        virtual bool GetHasToOpenFirstResult() const = 0; // for find in files
 };
 
 #endif // FINDREPLACEBASE_H
