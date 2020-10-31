@@ -90,13 +90,44 @@ namespace ScriptBindings
     // wxPoint //
     /////////////
 
+    template<typename UserType>
+    SQInteger wxPointSize_OpToString(HSQUIRRELVM v)
+    {
+        StackHandler sa(v);
+        const UserType *self = SqPlus::GetInstance<UserType, false>(v, 1);
+        if (!self)
+            return sa.ThrowError(_SC("Cannot extract 'this'!"));
+        SQChar buf[100];
+        scsprintf(buf, "[%d,%d]", self->x, self->y);
+        return sa.Return(buf);
+    }
+
     // wxPoint operator==
     SQInteger wxPoint_OpCmp(HSQUIRRELVM v)
     {
         StackHandler sa(v);
-        wxPoint& self = *SqPlus::GetInstance<wxPoint,false>(v, 1);
-        wxPoint& other = *SqPlus::GetInstance<wxPoint,false>(v, 2);
-        return sa.Return(self==other);
+        const wxPoint *self = SqPlus::GetInstance<wxPoint,false>(v, 1);
+        if (!self)
+            return sa.ThrowError(_SC("wxPoint_OpCmp: Cannot extract 'this'!"));
+        const wxPoint *other = SqPlus::GetInstance<wxPoint,false>(v, 2);
+        if (!other)
+            return sa.ThrowError(_SC("wxPoint_OpCmp: Cannot extract 'other!"));
+
+        SQInteger res;
+        if (self->x < other->x)
+            res = -1;
+        else if (self->x > other->x)
+            res = 1;
+        else
+        {
+            if (self->y < other->y)
+                res = -1;
+            else if (self->y > other->y)
+                res = 1;
+            else
+                res = 0;
+        }
+        return sa.Return(res);
     }
     SQInteger wxPoint_x(HSQUIRRELVM v)
     {
@@ -125,6 +156,20 @@ namespace ScriptBindings
     wxString static_T(const SQChar* str)
     {
         return cbC2U(str);
+    }
+
+    SQInteger wxString_Set(HSQUIRRELVM v)
+    {
+        StackHandler sa(v);
+
+        wxString *self = SqPlus::GetInstance<wxString, false>(v, 1);
+        if (!self)
+            return sa.ThrowError(_SC("Cannot extract 'this'!"));
+        const wxString *other = SqPlus::GetInstance<wxString, false>(v, 2);
+        if (!other)
+            return sa.ThrowError(_SC("Cannot extract 'other'!"));
+        self->assign(*other);
+        return sa.Return();
     }
 
     // wxString operator+
@@ -197,69 +242,62 @@ namespace ScriptBindings
         wxString& other = *SqPlus::GetInstance<wxString,false>(v, 2);
         return sa.Return(self.Matches(other));
     }
+
+    static SQChar ExtractChar(HSQUIRRELVM v, StackHandler &sa, SQInteger idx)
+    {
+        switch (sa.GetType(idx))
+        {
+        case OT_INTEGER:
+            return sa.GetInt(idx);
+        case OT_STRING:
+            {
+                const SQChar *str = sa.GetString(idx);
+                if (str && str[0] != _SC('\0'))
+                    return str[0];
+                sa.ThrowError(_SC("Empty string not supported!"));
+                return _SC('\0');
+            }
+        case OT_INSTANCE:
+            {
+                SQChar result = _SC('\0');
+                wxString* arg = SqPlus::GetInstance<wxString, false>(v, idx);
+                if (!arg)
+                    sa.ThrowError(_SC("Can't extract wxString"));
+                else if (arg->empty())
+                    sa.ThrowError(_SC("Empty string not supported!"));
+                else
+                    result = arg->GetChar(0).GetValue();
+                return result;
+            }
+        default:
+            sa.ThrowError(_SC("Unsupported parameter type!"));
+            return _SC('\0');
+        }
+    }
+
     SQInteger wxString_AfterFirst(HSQUIRRELVM v)
     {
         StackHandler sa(v);
         wxString& self = *SqPlus::GetInstance<wxString,false>(v, 1);
-        SQInteger search_char = static_cast<SQInteger>( sa.GetInt(2) );
-        if ( !search_char ) // Probably it's a wxString
-        {
-            wxString& temp = *SqPlus::GetInstance<wxString,false>(v, 2);
-            #if wxCHECK_VERSION(3, 0, 0)
-            search_char = static_cast<SQInteger>( temp.GetChar(0).GetValue() );
-            #else
-            search_char = static_cast<SQInteger>( temp.GetChar(0) );
-            #endif
-        }
-        return SqPlus::ReturnCopy( v, self.AfterFirst( static_cast<wxChar>( search_char ) ) );
+        return SqPlus::ReturnCopy(v, self.AfterFirst(static_cast<wxChar>(ExtractChar(v, sa, 2))));
     }
     SQInteger wxString_AfterLast(HSQUIRRELVM v)
     {
         StackHandler sa(v);
         wxString& self = *SqPlus::GetInstance<wxString,false>(v, 1);
-        SQInteger search_char = static_cast<SQInteger>( sa.GetInt(2) );
-        if ( !search_char ) // Probably it's a wxString
-        {
-            wxString& temp = *SqPlus::GetInstance<wxString,false>(v, 2);
-            #if wxCHECK_VERSION(3, 0, 0)
-            search_char = static_cast<SQInteger>( temp.GetChar(0).GetValue() );
-            #else
-            search_char = static_cast<SQInteger>( temp.GetChar(0) );
-            #endif
-        }
-        return SqPlus::ReturnCopy( v, self.AfterLast( static_cast<wxChar>( search_char ) ) );
+        return SqPlus::ReturnCopy(v, self.AfterLast(static_cast<wxChar>(ExtractChar(v, sa, 2))));
     }
     SQInteger wxString_BeforeFirst(HSQUIRRELVM v)
     {
         StackHandler sa(v);
         wxString& self = *SqPlus::GetInstance<wxString,false>(v, 1);
-        SQInteger search_char = static_cast<SQInteger>( sa.GetInt(2) );
-        if ( !search_char ) // Probably it's a wxString
-        {
-            wxString& temp = *SqPlus::GetInstance<wxString,false>(v, 2);
-            #if wxCHECK_VERSION(3, 0, 0)
-            search_char = static_cast<SQInteger>( temp.GetChar(0).GetValue() );
-            #else
-            search_char = static_cast<SQInteger>( temp.GetChar(0) );
-            #endif
-        }
-        return SqPlus::ReturnCopy( v, self.BeforeFirst( static_cast<wxChar>( search_char ) ) );
+        return SqPlus::ReturnCopy(v, self.BeforeFirst(static_cast<wxChar>(ExtractChar(v, sa, 2))));
     }
     SQInteger wxString_BeforeLast(HSQUIRRELVM v)
     {
         StackHandler sa(v);
         wxString& self = *SqPlus::GetInstance<wxString,false>(v, 1);
-        SQInteger search_char = static_cast<SQInteger>( sa.GetInt(2) );
-        if ( !search_char ) // Probably it's a wxString
-        {
-            wxString& temp = *SqPlus::GetInstance<wxString,false>(v, 2);
-            #if wxCHECK_VERSION(3, 0, 0)
-            search_char = static_cast<SQInteger>( temp.GetChar(0).GetValue() );
-            #else
-            search_char = static_cast<SQInteger>( temp.GetChar(0) );
-            #endif
-        }
-        return SqPlus::ReturnCopy( v, self.BeforeLast( static_cast<wxChar>( search_char ) ) );
+        return SqPlus::ReturnCopy(v, self.BeforeLast(static_cast<wxChar>(ExtractChar(v, sa, 2))));
     }
     SQInteger wxString_Replace(HSQUIRRELVM v)
     {
@@ -316,11 +354,8 @@ namespace ScriptBindings
         typedef void(wxFileName::*WXFN_ASSIGN_FN)(const wxFileName&);
         typedef void(wxFileName::*WXFN_ASSIGN_STR)(const wxString&, wxPathFormat);
         typedef wxString(wxFileName::*WXFN_GETPATH)(int, wxPathFormat)const;
-#if wxCHECK_VERSION(3, 0, 0)
         typedef bool(wxFileName::*WXFN_SETCWD)()const;
-#else
-        typedef bool(wxFileName::*WXFN_SETCWD)();
-#endif
+        typedef bool(wxFileName::*WXFN_SETCWD)()const;
         typedef bool(wxFileName::*WXFN_ISFILEWRITEABLE)()const;
 
         SqPlus::SQClassDef<wxFileName>("wxFileName").
@@ -333,7 +368,7 @@ namespace ScriptBindings
                 func(&wxFileName::AssignHomeDir, "AssignHomeDir").
                 func(&wxFileName::Clear, "Clear").
                 func(&wxFileName::ClearExt, "ClearExt").
-//                func(&wxFileName::GetCwd, "GetCwd").
+                staticFunc(&wxFileName::GetCwd, "GetCwd").
                 func(&wxFileName::GetDirCount, "GetDirCount").
                 func(&wxFileName::GetDirs, "GetDirs").
                 func(&wxFileName::GetExt, "GetExt").
@@ -355,6 +390,7 @@ namespace ScriptBindings
                 func(&wxFileName::MakeAbsolute, "MakeAbsolute").
                 func(&wxFileName::MakeRelativeTo, "MakeRelativeTo").
                 func(&wxFileName::Normalize, "Normalize").
+                func(&wxFileName::AppendDir, "AppendDir").
                 func(&wxFileName::PrependDir, "PrependDir").
                 func(&wxFileName::RemoveDir, "RemoveDir").
                 func(&wxFileName::RemoveLastDir, "RemoveLastDir").
@@ -372,6 +408,7 @@ namespace ScriptBindings
         /////////////
         SqPlus::SQClassDef<wxPoint>("wxPoint").
                 emptyCtor().
+                staticFuncVarArgs(&wxPointSize_OpToString<wxPoint>, "_tostring", "").
                 staticFuncVarArgs(&wxPoint_OpCmp, "_cmp", "*").
                 var(&wxPoint::x, "x").
                 var(&wxPoint::y, "y");
@@ -384,6 +421,7 @@ namespace ScriptBindings
         typedef void(wxSize::*WXS_SETW)(int);
         SqPlus::SQClassDef<wxSize>("wxSize").
                 emptyCtor().
+                staticFuncVarArgs(&wxPointSize_OpToString<wxSize>, "_tostring", "").
                 func(&wxSize::GetWidth, "GetWidth").
                 func(&wxSize::GetHeight, "GetHeight").
                 func<WXS_SET>(&wxSize::Set, "Set").
@@ -401,6 +439,7 @@ namespace ScriptBindings
 
         SqPlus::SQClassDef<wxString>("wxString").
                 emptyCtor().
+                staticFuncVarArgs(&wxString_Set, "Set", "*").
                 staticFuncVarArgs(&wxString_OpAdd, "_add", "*").
                 staticFuncVarArgs(&wxString_OpCmp, "_cmp", "*").
                 staticFuncVarArgs(&wxString_OpCmp, "Compare", "*").
@@ -425,6 +464,7 @@ namespace ScriptBindings
                 func(&wxString::RemoveLast, "RemoveLast").
                 staticFuncVarArgs(&wxString_Replace, "Replace", "*").
                 func(&wxString::Right, "Right").
+                func(&wxString::Left, "Left").
                 staticFuncVarArgs(&wxString_AfterFirst, "AfterFirst", "*").
                 staticFuncVarArgs(&wxString_AfterLast, "AfterLast", "*").
                 staticFuncVarArgs(&wxString_BeforeFirst, "BeforeFirst", "*").
