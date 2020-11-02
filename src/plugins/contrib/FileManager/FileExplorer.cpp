@@ -1280,7 +1280,7 @@ void FileExplorer::OnRightClick(wxTreeEvent &event)
         ftd->SetFolder(filepath);
     }
     if(m_ticount>0)
-        Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtUnknown, Popup, ftd);
+        Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtFileExplorer, Popup, ftd);
     delete ftd;
     Popup->AppendSeparator();
     Popup->AppendSubMenu(viewpop,_("&Settings"));

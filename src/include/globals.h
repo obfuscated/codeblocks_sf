@@ -45,6 +45,7 @@ enum ModuleType
     mtLogManager,
     mtOpenFilesList,
     mtEditorTab,
+    mtFileExplorer,
     mtUnknown
 };
 

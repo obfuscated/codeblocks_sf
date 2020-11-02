@@ -177,6 +177,8 @@ namespace ScriptBindings
         BIND_INT_CONSTANT(mtEditorManager);
         BIND_INT_CONSTANT(mtLogManager);
         BIND_INT_CONSTANT(mtOpenFilesList);
+        BIND_INT_CONSTANT(mtEditorTab);
+        BIND_INT_CONSTANT(mtFileExplorer);
         BIND_INT_CONSTANT(mtUnknown);
 
         // FileTreeDataKind

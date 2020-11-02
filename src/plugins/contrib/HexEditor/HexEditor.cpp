@@ -98,7 +98,7 @@ void HexEditor::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
             }
             break;
 
-        case mtUnknown: //Assuming file explorer -- fileexplorer fills the filetreedata with ftdkFile or ftdkFolder as "kind", the file/folder selected is the "FullPath" of the entry
+        case mtFileExplorer: //filetreedata filled with ftdkFile or ftdkFolder as "kind", the file/folder selected is the "FullPath" of the entry
             if(data && data->GetKind()==FileTreeData::ftdkFile)  //right clicked on folder in file explorer
             {
                 wxFileName f(data->GetFolder());
