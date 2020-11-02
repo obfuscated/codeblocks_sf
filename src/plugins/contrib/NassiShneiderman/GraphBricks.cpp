@@ -405,14 +405,13 @@ void GraphNassiInstructionBrick::CalcMinSize(wxDC *dc, wxPoint &size)
 
 TextGraph *GraphNassiInstructionBrick::IsOverText(const wxPoint &pos)
 {
-    if ( !m_visible ) return 0;
-    if ( !m_visible ) return 0;
+    if ( !m_visible ) return nullptr;
     if (m_view->IsDrawingComment() && comment.HasPoint(pos))
         return &comment;
     if (m_view->IsDrawingSource() && source.HasPoint(pos))
         return &source;
 
-    return 0;
+    return nullptr;
 }
 
 
