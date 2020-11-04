@@ -168,7 +168,6 @@ bool DDEConnection::OnExecute(cb_unused const wxString& topic, wxChar *data, int
         {
             const int coundCmdLind = cbCountOf("[CmdLine({") - 1;
             const int countCWD = cbCountOf("})CWD({") - 1;
-            const int countEnd = cbCountOf("})]") - 1;
 
             cmdLine = strData.substr(coundCmdLind, posCwd - coundCmdLind);
             cmdLine.Replace("\\)", ")");

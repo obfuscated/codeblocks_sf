@@ -587,7 +587,7 @@ namespace
         {
             dc.SetBrush(*wxWHITE);
             dc.DrawRectangle(rect);
-            dc.SetBrush(wxBrush(*wxBLACK,wxHATCHSTYLE_BDIAGONAL));
+            dc.SetBrush(wxBrush(*wxBLACK,wxBRUSHSTYLE_BDIAGONAL_HATCH));
             dc.DrawRectangle(rect);
             return;
         }

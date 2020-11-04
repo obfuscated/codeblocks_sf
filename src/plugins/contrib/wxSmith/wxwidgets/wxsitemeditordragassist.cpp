@@ -71,7 +71,7 @@ void wxsItemEditorDragAssist::DrawExtra(wxsItem* Target,wxsItem* Parent,bool Add
         switch ( AssistType() )
         {
             case dtOutline:
-                DC->SetPen(wxPen(ParentColour(),2,wxSOLID));
+                DC->SetPen(wxPen(ParentColour(),2,wxPENSTYLE_SOLID));
                 DC->DrawRectangle(m_ParentRect.x,m_ParentRect.y,m_ParentRect.width,m_ParentRect.height);
                 break;
 
@@ -90,7 +90,7 @@ void wxsItemEditorDragAssist::DrawExtra(wxsItem* Target,wxsItem* Parent,bool Add
         switch ( AssistType() )
         {
             case dtOutline:
-                DC->SetPen(wxPen(TargetColour(),2,wxSOLID));
+                DC->SetPen(wxPen(TargetColour(),2,wxPENSTYLE_SOLID));
                 DC->DrawRectangle(m_TargetRect.x,m_TargetRect.y,m_TargetRect.width,m_TargetRect.height);
                 break;
 
