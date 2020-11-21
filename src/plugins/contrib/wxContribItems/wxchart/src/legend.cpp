@@ -410,7 +410,7 @@ void wxLegend::WriteLabel(
           iData < iDatas && iData < (page+1) * ROWS_PAGE;
           ++ iData )
     {
-        hp->SetBrush( wxBrush(GetColor(iData), wxSOLID) );
+        hp->SetBrush( wxBrush(GetColor(iData), wxBRUSHSTYLE_SOLID));
         hp->SetPen( *wxTRANSPARENT_PEN );
         hp->DrawRectangle( x, y+2, 10, 10 );
 

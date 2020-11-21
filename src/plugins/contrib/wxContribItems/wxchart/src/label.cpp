@@ -70,8 +70,8 @@ void wxLabel::Draw(
 	//-----------------------------------------------------------------------
 	wxFont font( 8, wxFONTFAMILY_ROMAN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
     hp->SetFont( font );
-    hp->SetBrush( wxBrush(c, wxSOLID) );
-    hp->SetPen( wxPen(LBL_LINE_COL, 1, wxSOLID) );
+    hp->SetBrush( wxBrush(c, wxBRUSHSTYLE_SOLID));
+    hp->SetPen( wxPen(LBL_LINE_COL, 1, wxPENSTYLE_SOLID));
 
 	//-----------------------------------------------------------------------
 	// Get the size of the label for the specify font

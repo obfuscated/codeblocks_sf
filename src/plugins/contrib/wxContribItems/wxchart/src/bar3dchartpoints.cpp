@@ -352,7 +352,7 @@ void wxBar3DChartPoints::Draw(
     if ( ValMax == 0 )
         ValMax = 1;
 
-    hp->SetBrush( wxBrush(GetColor(), wxSOLID) );
+    hp->SetBrush( wxBrush(GetColor(), wxBRUSHSTYLE_SOLID));
     //hp->SetPen( *wxTRANSPARENT_PEN );
     //hp->SetPen( *wxLIGHT_GREY_PEN );
     hp->SetPen( wxPen(wxChartColors::GetDarkColor(GetColor(), 15)) );
@@ -399,7 +399,7 @@ void wxBar3DChartPoints::Draw(
         //-------------------------------------------------------------------
 
         hp->SetBrush( wxBrush(wxChartColors::GetDarkColor(GetColor(),
-            10), wxSOLID) );
+            10), wxBRUSHSTYLE_SOLID));
 
         //-------------------------------------------------------------------
         // Make sure that the difference y and y - h is at lease 1
@@ -449,7 +449,7 @@ void wxBar3DChartPoints::Draw(
 
         hp->DrawPolygon( 4, top );
 
-        hp->SetBrush( wxBrush(GetColor(), wxSOLID) );
+        hp->SetBrush( wxBrush(GetColor(), wxBRUSHSTYLE_SOLID));
 
         //-------------------------------------------------------------------
         // Only draw Label if user wants it

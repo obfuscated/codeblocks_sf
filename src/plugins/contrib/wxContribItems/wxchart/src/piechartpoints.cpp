@@ -369,7 +369,7 @@ void wxPieChartPoints::Draw(
 
             for ( iData = 0, rad = 0; iData < iDatas; ++ iData )
             {
-                hp->SetBrush( wxBrush(GetColor(iData), wxSOLID) );
+                hp->SetBrush( wxBrush(GetColor(iData), wxBRUSHSTYLE_SOLID) );
 
                 // Calc radiants
                 percent = (double)(GetYVal(iData) * 100) / (double)ValTot;

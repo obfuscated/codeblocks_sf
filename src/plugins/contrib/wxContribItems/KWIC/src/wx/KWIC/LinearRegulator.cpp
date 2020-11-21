@@ -87,16 +87,16 @@ void kwxLinearRegulator::OnPaint(wxPaintEvent &WXUNUSED(event))
 	dc.SelectObject(*membitmap);
 
 
-	dc.SetBackground(*wxTheBrushList->FindOrCreateBrush(m_cPassiveBar,wxSOLID));
-	dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cPassiveBar,wxSOLID));
+	dc.SetBackground(*wxTheBrushList->FindOrCreateBrush(m_cPassiveBar, wxBRUSHSTYLE_SOLID));
+	dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cPassiveBar, wxBRUSHSTYLE_SOLID));
 	dc.Clear();
 	///////////////////////////////////////////////////////////////////////////
 
-	dc.SetPen(*wxThePenList->FindOrCreatePen(m_cBorderColour, 1, wxSOLID));
+	dc.SetPen(*wxThePenList->FindOrCreatePen(m_cBorderColour, 1, wxPENSTYLE_SOLID));
 	dc.DrawRectangle(0, 0, w, h);
 
-	dc.SetPen(*wxThePenList->FindOrCreatePen(m_cActiveBar, 1, wxSOLID));
-	dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cActiveBar,wxSOLID));
+	dc.SetPen(*wxThePenList->FindOrCreatePen(m_cActiveBar, 1, wxPENSTYLE_SOLID));
+	dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cActiveBar, wxBRUSHSTYLE_SOLID));
 	dc.SetFont(m_Font);
 
 
@@ -301,8 +301,8 @@ void kwxLinearRegulator::DrawTags(wxDC &dc)
 	else
 		tcoeff = (h - 2) / (double)(m_nMax - m_nMin);
 
-	dc.SetPen(*wxThePenList->FindOrCreatePen(m_cTagsColour, 1, wxSOLID));
-	dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cTagsColour,wxSOLID));
+	dc.SetPen(*wxThePenList->FindOrCreatePen(m_cTagsColour, 1, wxPENSTYLE_SOLID));
+	dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cTagsColour, wxBRUSHSTYLE_SOLID));
 	dc.SetTextForeground(m_cTagsColour);
 
 	while (ntag < m_nTagsNum)

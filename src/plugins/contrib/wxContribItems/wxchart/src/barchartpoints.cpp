@@ -351,7 +351,7 @@ void wxBarChartPoints::Draw(
     if ( ValMax == 0 )
         ValMax = 1;
 
-    hp->SetBrush( wxBrush(GetColor(), wxSOLID) );
+    hp->SetBrush( wxBrush(GetColor(), wxBRUSHSTYLE_SOLID));
     hp->SetPen( *wxTRANSPARENT_PEN );
 
     double x, y;

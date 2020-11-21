@@ -87,18 +87,18 @@ void kwxAngularRegulator::OnPaint(wxPaintEvent& WXUNUSED(event))
 	wxMemoryDC temp_dc;
 	temp_dc.SelectObject(*membitmap);
 
-	temp_dc.SetBackground(*wxTheBrushList->FindOrCreateBrush(GetBackgroundColour(),wxSOLID));
+	temp_dc.SetBackground(*wxTheBrushList->FindOrCreateBrush(GetBackgroundColour(), wxBRUSHSTYLE_SOLID));
 	temp_dc.Clear();
 
 //////////////////////////////////////////////////////
-	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 1, wxSOLID));
-	temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cExtCircle,wxSOLID));
+	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 1, wxPENSTYLE_SOLID));
+	temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cExtCircle, wxBRUSHSTYLE_SOLID));
 
 
 	temp_dc.DrawCircle(m_nClientWidth / 2, m_nClientHeight / 2, m_nClientHeight / 2) ;
 //////////////////////////////////////////////////////
-	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 1, wxSOLID));
-	temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cIntCircle,wxSOLID));
+	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 1, wxPENSTYLE_SOLID));
+	temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cIntCircle, wxBRUSHSTYLE_SOLID));
 
 	temp_dc.DrawCircle(m_nClientWidth / 2, m_nClientHeight / 2, m_nClientHeight / 2 - 10) ;
 
@@ -160,8 +160,8 @@ void kwxAngularRegulator::DrawKnob(wxDC &temp_dc)
 	y = (m_nClientHeight / 2) - m_dyi ;
 
 
-	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cKnobBorderColour, 1, wxSOLID));
-	temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cKnobColour,wxSOLID));
+	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cKnobBorderColour, 1, wxPENSTYLE_SOLID));
+	temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cKnobColour, wxBRUSHSTYLE_SOLID));
 
 	temp_dc.DrawCircle(x, y, 5) ;
 }
@@ -184,7 +184,7 @@ void kwxAngularRegulator::DrawLimit(wxDC &temp_dc)
 	double dy = sin(ang) * ((m_nClientHeight / 2) - 7) ;
 
 
-	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cLimitsColour, 2, wxSOLID));
+	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cLimitsColour, 2, wxPENSTYLE_SOLID));
 
 	temp_dc.DrawLine((m_nClientHeight / 2) - sx,(m_nClientHeight / 2) - sy, (m_nClientHeight / 2) - dx , (m_nClientHeight / 2) - dy ) ;
 
@@ -213,7 +213,7 @@ void kwxAngularRegulator::DrawTags(wxDC &temp_dc)
 
 	double angle ;
 
-	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cTagsColour, 1, wxSOLID));
+	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cTagsColour, 1, wxPENSTYLE_SOLID));
 
 	for (tagCount = 0 ; tagCount < m_nTags ; tagCount++)
 	{

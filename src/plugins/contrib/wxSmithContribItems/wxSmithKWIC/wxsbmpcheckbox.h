@@ -44,7 +44,7 @@ class wxsBmpCheckbox : public wxsWidget
 		wxsBitmapData			m_bdOnSel;				//!< The bitmap shown when the control is checked and the mouse is over it.
 		wxsBitmapData			m_bdOffSel;				//!< The bitmap shown when the control is unchecked and the mouse is over it.
 		bool								m_bBorder;				//!< Whether to show the control border.
-		int									m_iBorderStyle;		//!< The border style.
+		wxPenStyle					m_iBorderStyle;		//!< The border style.
 		bool								m_bChecked;			//!< Whether the control is checked or not.
 };
 

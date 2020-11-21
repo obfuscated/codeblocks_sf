@@ -139,13 +139,13 @@ void wxLCDWindow::DrawTwoDots( wxDC *dc, int digit )
 	int x = DigitX( digit );
 	int y = DigitY( digit );
 
-	wxBrush brushOn( mLightColour, wxSOLID );
+	wxBrush brushOn(mLightColour, wxBRUSHSTYLE_SOLID);
 
 	x += ( sl / 2 ) - sw;
 	y += ( sl / 2 ) - sw;
 
 	dc->SetBrush( brushOn );
-	dc->SetPen( wxPen( GetBackgroundColour(), 1, wxSOLID ) );
+	dc->SetPen(wxPen( GetBackgroundColour(), 1, wxPENSTYLE_SOLID));
 
 	dc->DrawEllipse( x, y, 2 * sw, 2 * sw );
 
@@ -166,8 +166,8 @@ void wxLCDWindow::DrawSegment( wxDC *dc, int digit, int segment, bool state )
 	int x = DigitX( digit );
 	int y = DigitY( digit );
 
-	wxBrush brushOn( mLightColour, wxSOLID );
-	wxBrush brushOff( mGrayColour, wxSOLID );
+	wxBrush brushOn(mLightColour, wxBRUSHSTYLE_SOLID);
+	wxBrush brushOff(mGrayColour, wxBRUSHSTYLE_SOLID);
 
 	if( state )
 	{
@@ -178,7 +178,7 @@ void wxLCDWindow::DrawSegment( wxDC *dc, int digit, int segment, bool state )
 		dc->SetBrush( brushOff );
 	}
 
-	dc->SetPen( wxPen( GetBackgroundColour(), 1, wxSOLID ) );
+	dc->SetPen(wxPen(GetBackgroundColour(), 1, wxPENSTYLE_SOLID));
 
 	wxPoint points[4];
 

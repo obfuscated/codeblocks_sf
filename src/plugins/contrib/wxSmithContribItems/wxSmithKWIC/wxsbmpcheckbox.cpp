@@ -68,7 +68,7 @@ wxsBmpCheckbox::wxsBmpCheckbox(wxsItemResData *Data) :
         NULL,
         flVariable | flId | flPosition | flSize | flEnabled | flFocused | flHidden | flToolTip | flHelpText | flSubclass | flMinMaxSize),
         m_bBorder(true),
-        m_iBorderStyle(wxDOT),
+        m_iBorderStyle(wxPENSTYLE_DOT),
         m_bChecked(false)
 {
 }
@@ -123,7 +123,7 @@ void wxsBmpCheckbox::OnBuildCreatingCode()
             }
             Codef(_T("%C(%W,%I, %s, %s, %s, %s, %P,%S, %s);\n"), sOn.wx_str(), sOff.wx_str(), sOnSel.wx_str(), sOffSel.wx_str(), _T("wxBORDER_NONE"));
             // The defaults are border on and wxDOT.
-            if(!m_bBorder || m_iBorderStyle != wxDOT){
+            if(!m_bBorder || m_iBorderStyle != wxPENSTYLE_DOT){
                 Codef(_T("%ASetBorder(%b, %d);\n"), m_bBorder, m_iBorderStyle);
             }
             if(m_bChecked){
@@ -155,7 +155,7 @@ wxObject *wxsBmpCheckbox::OnBuildPreview(wxWindow *parent, long flags)
     kwxBmpCheckBox *preview = new kwxBmpCheckBox(parent, GetId(), *pbmpOn, *pbmpOff, *pbmpOnSel, *pbmpOffSel, Pos(parent), Size(parent), wxBORDER_NONE);
 
     // The defaults are border on and wxDOT.
-    if(!m_bBorder || m_iBorderStyle != wxDOT){
+    if(!m_bBorder || m_iBorderStyle != wxPENSTYLE_DOT){
         preview->SetBorder(m_bBorder, m_iBorderStyle);
     }
     if(m_bChecked){

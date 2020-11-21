@@ -75,7 +75,7 @@ kwxAngularMeter::kwxAngularMeter(wxWindow* parent, const wxWindowID id, const wx
     m_BackgroundDc.Clear();
     m_BackgroundDc.SetPen(*wxRED_PEN);
     //m_BackgroundDc.SetBrush(*wxTRANSPARENT_BRUSH);
-    m_BackgroundDc.SetBrush(*wxTheBrushList->FindOrCreateBrush(*wxRED,wxSOLID));
+    m_BackgroundDc.SetBrush(*wxTheBrushList->FindOrCreateBrush(*wxRED, wxBRUSHSTYLE_SOLID));
 
     int w,h ;
     GetClientSize(&w,&h);
@@ -200,7 +200,7 @@ void kwxAngularMeter::DrawNeedle(wxDC &dc)
 
 	GetClientSize(&w,&h);
 
-	dc.SetPen(*wxThePenList->FindOrCreatePen(m_cNeedleColour, 1,wxSOLID));
+	dc.SetPen(*wxThePenList->FindOrCreatePen(m_cNeedleColour, 1, wxPENSTYLE_SOLID));
 
 	val = (m_nScaledVal + m_nAngleStart) * m_dPI / 180; //radians angle parameter
 
@@ -245,12 +245,12 @@ void kwxAngularMeter::DrawNeedle(wxDC &dc)
 /////////////////////////
 
 
-	dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cNeedleColour,wxSOLID));
+	dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cNeedleColour,wxBRUSHSTYLE_SOLID));
 
 	dc.DrawPolygon(6, ppoint, 0, 0, wxODDEVEN_RULE);
 
 	//Circle indicator
-	dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(*wxWHITE,wxSOLID));
+	dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(*wxWHITE, wxBRUSHSTYLE_SOLID));
 	dc.DrawCircle(w / 2, h / 2, 4);
 }
 
@@ -274,18 +274,18 @@ void kwxAngularMeter::DrawSectors(wxDC &dc)
 
 	//Arch -> sectors
 	//dc.SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 1, wxSOLID));
-	dc.SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 1, wxTRANSPARENT));
+	dc.SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 1, wxPENSTYLE_TRANSPARENT));
 
 	starc = m_nAngleStart;
 	endarc = starc + ((m_nAngleEnd - m_nAngleStart) / (double)m_nSec);
 	//dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(*wxRED,wxSOLID));
 	for(secount=0;secount<m_nSec;secount++)
 	{
-		dc.SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 1, wxTRANSPARENT));
-		dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_aSectorColor[secount],wxSOLID));
+		dc.SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 1, wxPENSTYLE_TRANSPARENT));
+		dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_aSectorColor[secount], wxBRUSHSTYLE_SOLID));
 		dc.DrawEllipticArc(0,0,w,h,180 - endarc,180 - starc);
 
-		dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cBackColour,wxSOLID));
+		dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cBackColour, wxBRUSHSTYLE_SOLID));
 		dc.DrawEllipticArc(innerRect.x,innerRect.y,innerRect.width,innerRect.height,180 - endarc,180 - starc);
 
 		starc = endarc;
@@ -321,11 +321,11 @@ void kwxAngularMeter::DrawTicks(wxDC &dc)
 
 	GetClientSize(&w, &h);
 
-	dc.SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 2, wxSOLID));
+	dc.SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 2, wxPENSTYLE_SOLID));
 
 	for(n = 0;n < m_nTick+2;n++)
 	{
-		dc.SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 4, wxSOLID));
+		dc.SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 4, wxPENSTYLE_SOLID));
 		val=(valint * m_dPI) / 180;
 		//wxLogTrace("v: %f",valint);
 		dx = cos(val) * (h/2);	//point on the circle
@@ -364,7 +364,7 @@ void kwxAngularMeter::DrawTicks(wxDC &dc)
         double beginSubtick = valint*m_dPI/180.0+stepSubtick;
 		for (int i = 0; i<4; i++)
         {
-            dc.SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 1, wxSOLID));
+            dc.SetPen(*wxThePenList->FindOrCreatePen(*wxBLACK, 1, wxPENSTYLE_SOLID));
 
             dx = cos(beginSubtick) * (h/2);	//point on the circle
             dy = sin(beginSubtick) * (h/2);
@@ -393,7 +393,7 @@ void kwxAngularMeter::ConstructBackground()
     m_BackgroundDc.Clear();
     m_BackgroundDc.SetPen(*wxRED_PEN);
     //m_BackgroundDc.SetBrush(*wxTRANSPARENT_BRUSH);
-    m_BackgroundDc.SetBrush(*wxTheBrushList->FindOrCreateBrush(*wxRED,wxSOLID));
+    m_BackgroundDc.SetBrush(*wxTheBrushList->FindOrCreateBrush(*wxRED, wxBRUSHSTYLE_SOLID));
 
     int w,h ;
     GetClientSize(&w,&h);

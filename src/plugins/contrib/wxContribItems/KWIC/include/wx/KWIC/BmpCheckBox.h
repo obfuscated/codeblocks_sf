@@ -51,7 +51,7 @@ public:
 	virtual ~kwxBmpCheckBox();
 
     void	SetLabel(wxString str); // Change button label.
-	void	SetBorder(bool bord , int style) { m_bBord = bord ; m_nStyle = style ; } ;
+	void	SetBorder(bool bord, wxPenStyle style) { m_bBord = bord ; m_nStyle = style ; } ;
 	bool	GetState() { return m_bPress ; } ;
 	void	SetState(bool newstate) ;
 
@@ -72,7 +72,7 @@ private:
 	int m_oldstato ;
 	bool m_bPress;
 	bool m_bBord;
-	int m_nStyle ;
+	wxPenStyle m_nStyle ;
 
 	wxString mLabelStr ;
     wxBitmap* mOffBitmap ;

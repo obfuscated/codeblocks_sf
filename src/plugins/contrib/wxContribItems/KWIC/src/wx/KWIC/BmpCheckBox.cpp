@@ -76,7 +76,7 @@ kwxBmpCheckBox::kwxBmpCheckBox(wxWindow* parent,
 	m_oldstato = 0;
 	m_bPress = false ;
 	m_bBord = true ;
-	m_nStyle = wxDOT;
+	m_nStyle = wxPENSTYLE_DOT;
 
 	membitmap = new wxBitmap(total_width, total_height) ;
 }
@@ -102,7 +102,7 @@ void kwxBmpCheckBox::OnPaint(wxPaintEvent& WXUNUSED(event))
 	dc.SelectObject(*membitmap);
 
 
-	dc.SetBackground(*wxTheBrushList->FindOrCreateBrush(GetBackgroundColour(),wxSOLID));
+	dc.SetBackground(*wxTheBrushList->FindOrCreateBrush(GetBackgroundColour(), wxBRUSHSTYLE_SOLID));
 	dc.Clear();
 
 	///////////////////
@@ -140,7 +140,7 @@ void kwxBmpCheckBox::OnPaint(wxPaintEvent& WXUNUSED(event))
 		if(bdraw)
 		{
 			// Cornice intorno
-			dc.SetPen(*wxThePenList->FindOrCreatePen(*wxRED, 1, m_nStyle ));
+			dc.SetPen(*wxThePenList->FindOrCreatePen(*wxRED, 1, m_nStyle));
 			dc.DrawLine(0, 0, 0, h - 1);
 			dc.DrawLine(0, 0, w, 0);
 			dc.DrawLine(0, h - 1, w, h - 1);

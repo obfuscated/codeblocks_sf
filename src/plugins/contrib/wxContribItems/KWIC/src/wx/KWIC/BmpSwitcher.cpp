@@ -91,7 +91,7 @@ void kwxBmpSwitcher::OnPaint(wxPaintEvent &WXUNUSED(event))
 	// Create a memory DC
 	wxMemoryDC dc;
 	dc.SelectObject(*membitmap);
-	dc.SetBackground(*wxTheBrushList->FindOrCreateBrush(GetBackgroundColour(),wxSOLID));
+	dc.SetBackground(*wxTheBrushList->FindOrCreateBrush(GetBackgroundColour(), wxBRUSHSTYLE_SOLID));
 	dc.Clear();
 
 	// Cryogen 16/4/10 Fixed to prevent a crash when m_nCount = 0. This is necessary for

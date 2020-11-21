@@ -473,7 +473,7 @@ void wxPie3DChartPoints::Draw(
             for ( iData = 0; iData < iDatas; ++ iData )
             {
                 hp->SetPen( *wxBLACK_PEN );
-                hp->SetBrush( wxBrush(GetColor(iData), wxSOLID) );
+                hp->SetBrush( wxBrush(GetColor(iData), wxBRUSHSTYLE_SOLID));
 
                 // Calc radiants
                 percent = (double)(GetYVal(iData) * 100) / (double)ValTot;
@@ -498,7 +498,7 @@ void wxPie3DChartPoints::Draw(
                     hp->SetBrush(
                         wxBrush(wxChartColors::GetDarkColor(
                             GetColor(iData), 15),
-                        wxSOLID)
+                        wxBRUSHSTYLE_SOLID)
                     );
 
                     // Avoid redraw line

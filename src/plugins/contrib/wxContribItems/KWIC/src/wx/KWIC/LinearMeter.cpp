@@ -115,18 +115,18 @@ void kwxLinearMeter::OnPaint(wxPaintEvent &WXUNUSED(event))
 	temp_dc.SelectObject(*membitmap);
 
 
-	temp_dc.SetBackground(*wxTheBrushList->FindOrCreateBrush(m_cPassiveBar,wxSOLID));
-	temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cPassiveBar,wxSOLID));
+	temp_dc.SetBackground(*wxTheBrushList->FindOrCreateBrush(m_cPassiveBar, wxBRUSHSTYLE_SOLID));
+	temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cPassiveBar, wxBRUSHSTYLE_SOLID));
 	temp_dc.Clear();
 
 
 	///////////////////
 
-	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cBorderColour, 1, wxSOLID));
+	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cBorderColour, 1, wxPENSTYLE_SOLID));
 	temp_dc.DrawRectangle(0, 0, w, h);
 
-	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cActiveBar, 1, wxSOLID));
-	temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cActiveBar,wxSOLID));
+	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cActiveBar, 1, wxPENSTYLE_SOLID));
+	temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cActiveBar, wxBRUSHSTYLE_SOLID));
 	temp_dc.SetFont(m_Font);
 
 	if(m_bDirOrizFlag)
@@ -233,8 +233,8 @@ void kwxLinearMeter::DrawTags(wxDC &temp_dc)
 	else
 		tcoeff = (h - 2) / (double)(m_nMax - m_nMin);
 
-	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cTagsColour, 1, wxSOLID));
-	temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cTagsColour,wxSOLID));
+	temp_dc.SetPen(*wxThePenList->FindOrCreatePen(m_cTagsColour, 1, wxPENSTYLE_SOLID));
+	temp_dc.SetBrush(*wxTheBrushList->FindOrCreateBrush(m_cTagsColour, wxBRUSHSTYLE_SOLID));
 	temp_dc.SetTextForeground(m_cTagsColour);
 
 	while (ntag < m_nTagsNum)
