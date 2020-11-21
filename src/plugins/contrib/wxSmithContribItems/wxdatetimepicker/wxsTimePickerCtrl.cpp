@@ -1,5 +1,5 @@
+#include <wx/timectrl.h>
 #include "wxsTimePickerCtrl.h"
-#include "TimeCtrl.h"
 
 namespace
 {
