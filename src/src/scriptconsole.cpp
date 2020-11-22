@@ -8,9 +8,9 @@
  */
 
 #include <sdk.h>
-#include <sqplus.h>
 
 #include "scriptconsole.h"
+#include "squirrel.h"
 
 #ifndef CB_PRECOMP
     #include <globals.h>
@@ -48,8 +48,13 @@ static void ScriptConsolePrintFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
     static SQChar temp[2048];
     va_list vl;
     va_start(vl,s);
-    scvsprintf( temp,s,vl);
+#if SQUIRREL_VERSION_NUMBER>=300
+    scvsprintf(temp, 2048, s, vl);
+    wxString msg(temp);
+#else
+    scvsprintf(temp, s, vl);
     wxString msg = cbC2U(temp);
+#endif
     va_end(vl);
 
     if (s_Console)
@@ -116,8 +121,12 @@ ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
     if (!s_Console)
     {
         s_Console = this;
-        s_OldPrintFunc = sq_getprintfunc(SquirrelVM::GetVMPtr());
-        sq_setprintfunc(SquirrelVM::GetVMPtr(), ScriptConsolePrintFunc);
+// FIXME (squirrel) Reimplement ScriptConsole replace print func
+/*
+        HSQUIRRELVM vm = ScriptingManager::Get()->GetVM();
+        s_OldPrintFunc = sq_getprintfunc(vm);
+        sq_setprintfunc(vm, ScriptConsolePrintFunc);
+*/
     }
 
     Log(_("Welcome to the script console!"));
@@ -125,13 +134,15 @@ ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
 
 ScriptConsole::~ScriptConsole()
 {
+// FIXME (squirrel) Reimplement ScriptConsole restore print func
+/*
     if (s_Console == this)
     {
         s_Console = nullptr;
         if (SquirrelVM::GetVMPtr())
             sq_setprintfunc(SquirrelVM::GetVMPtr(), s_OldPrintFunc);
     }
-
+*/
     //(*Destroy(ScriptConsole)
     //*)
 }
@@ -164,7 +175,10 @@ void ScriptConsole::OnbtnExecuteClick(cb_unused wxCommandEvent& event)
         txtCommand->SetValue(wxEmptyString);
     }
     else
-        txtConsole->AppendText(Manager::Get()->GetScriptingManager()->GetErrorString());
+    {
+        // FIXME (squirrel) Reimplement ScriptConsole error printing!
+//        txtConsole->AppendText(Manager::Get()->GetScriptingManager()->GetErrorString());
+    }
     txtCommand->SetFocus();
 }
 
@@ -187,7 +201,8 @@ void ScriptConsole::OnbtnLoadClick(cb_unused wxCommandEvent& event)
         else
         {
             Log(_("Loading script failed."));
-            txtConsole->AppendText(Manager::Get()->GetScriptingManager()->GetErrorString());
+// FIXME (squirrel) Reimplement ScriptConsole error printing
+//            txtConsole->AppendText(Manager::Get()->GetScriptingManager()->GetErrorString());
         }
     }
     txtCommand->SetFocus();

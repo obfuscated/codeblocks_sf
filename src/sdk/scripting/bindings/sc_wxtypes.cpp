@@ -7,6 +7,8 @@
  * $HeadURL$
  */
 
+#if 0
+
 #include "sdk_precomp.h"
 #ifndef CB_PRECOMP
     #include <wx/string.h>
@@ -471,3 +473,5 @@ namespace ScriptBindings
                 staticFuncVarArgs(&wxString_BeforeLast, "BeforeLast", "*");
     }
 };
+
+#endif // 0

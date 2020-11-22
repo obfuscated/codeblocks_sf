@@ -25,7 +25,6 @@
 #include "filefilters.h"
 
 #include "scripting/bindings/sc_base_types.h"
-#include "scripting/sqplus/sqplus.h"
 
 // move this to globals if needed
 inline wxString UnquoteStringIfNeeded(const wxString& str)
@@ -612,6 +611,8 @@ void CompilerCommandGenerator::DoBuildScripts(cbProject* project, CompileTargetB
             continue;
         }
 
+        // FIXME (squirrel) Reimplement DoBuildScripts
+/*
         try
         {
             SqPlus::SquirrelFunction<void> f(cbU2C(funcName));
@@ -621,7 +622,7 @@ void CompilerCommandGenerator::DoBuildScripts(cbProject* project, CompileTargetB
         {
             Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
             m_ScriptsWithErrors.Add(script_nomacro);
-        }
+        }*/
     }
 }
 

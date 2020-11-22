@@ -24,6 +24,7 @@
 #include <compiletargetbase.h>
 #include <cbproject.h>
 #include <cbeditor.h>
+/*
 #include <sqplus.h>
 
 // wx primitives and types
@@ -104,5 +105,5 @@ namespace SqPlus
     };
 #endif
 }
-
+*/
 #endif // SC_BASE_TYPES_H

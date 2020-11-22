@@ -31,9 +31,6 @@
 #include <wx/stdpaths.h> // wxStandardPaths
 #include <cstdlib>
 
-#include "scripting/sqplus/sqplus.h"
-#include "scripting/bindings/scriptbindings.h"
-
 #include "cbstyledtextctrl.h"
 
 using namespace std;

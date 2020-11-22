@@ -7,6 +7,8 @@
  * $HeadURL$
  */
 
+#if 0
+
 #include <sdk_precomp.h>
 #ifndef CB_PRECOMP
     #include <settings.h>
@@ -1175,3 +1177,15 @@ namespace ScriptBindings
         Register_ScriptPlugin();
     }
 } // namespace ScriptBindings
+
+
+#else
+
+namespace ScriptBindings
+{
+
+    void RegisterBindings()
+    {
+    }
+} // namespace ScriptBindings
+#endif // 0

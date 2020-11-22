@@ -7,6 +7,8 @@
  * $HeadURL$
  */
 
+#if 0
+
 #include <sdk_precomp.h>
 #include "sc_plugin.h"
 #include <manager.h>
@@ -372,3 +374,33 @@ void Register_ScriptPlugin()
 
 }; // namespace ScriptBindings
 
+
+#else
+
+// FIXME (squirrel) Reimplement sc_plugin
+
+#include "sdk.h"
+#include <wx/dynarray.h>
+namespace ScriptBindings
+{
+namespace ScriptPluginWrapper
+{
+wxArrayInt CreateMenu(const wxString& name)
+{
+    return wxArrayInt();
+}
+wxArrayInt CreateModuleMenu(const ModuleType typ, wxMenu* menu, const FileTreeData* data)
+{
+    return wxArrayInt();
+}
+void OnScriptMenu(int id)
+{
+}
+void OnScriptModuleMenu(int id)
+{
+}
+
+} // namespace ScriptPluginWrapper
+} // namespace ScriptBindings
+
+#endif // 0

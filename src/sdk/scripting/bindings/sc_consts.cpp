@@ -7,6 +7,7 @@
  * $HeadURL$
  */
 
+ /*
 #include <sdk_precomp.h>
 #ifndef CB_PRECOMP
     #include <wx/string.h>
@@ -287,3 +288,4 @@ namespace ScriptBindings
         BIND_INT_CONSTANT_NAMED(int32_t(LinkerExecutableOption::Linker), "leoLinker");
     }
 };
+*/

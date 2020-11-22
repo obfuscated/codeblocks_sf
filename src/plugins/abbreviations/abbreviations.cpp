@@ -20,7 +20,6 @@
 
 #include <ccmanager.h>
 #include <editor_hooks.h>
-#include <sqplus.h>
 #include <sc_base_types.h>
 
 
@@ -103,13 +102,18 @@ void Abbreviations::OnRelease(cb_unused bool appShutDown)
 
 void Abbreviations::RegisterScripting()
 {
+// FIXME (squirrel) Reimplement Abbreviations::RegisterScripting
+/*
     Manager::Get()->GetScriptingManager();
     if (SquirrelVM::GetVMPtr())
         SqPlus::RegisterGlobal(&Abbreviations::AutoComplete, "AutoComplete");
+*/
 }
 
 void Abbreviations::UnregisterScripting()
 {
+// FIXME (squirrel) Reimplement Abbreviations::UnregisterScripting
+/*
     Manager::Get()->GetScriptingManager();
     HSQUIRRELVM v = SquirrelVM::GetVMPtr();
     if (v)
@@ -119,6 +123,7 @@ void Abbreviations::UnregisterScripting()
         sq_deleteslot(v, -2, false);
         sq_poptop(v);
     }
+*/
 }
 
 void Abbreviations::BuildMenu(wxMenuBar* menuBar)

@@ -40,7 +40,6 @@
 #include <projectmanager.h>
 #include <scriptingmanager.h>
 #include <sdk_events.h>
-#include <sqplus.h>
 
 #include "appglobals.h"
 #include "associations.h"
@@ -794,6 +793,8 @@ bool CodeBlocksApp::OnInit()
 
         CheckVersion();
 
+        // FIXME (squirrel) Reimplement run startup script
+/*
         // run startup script
         try
         {
@@ -805,6 +806,8 @@ bool CodeBlocksApp::OnInit()
         {
             Manager::Get()->GetScriptingManager()->DisplayErrors(&exception);
         }
+*/
+
         Manager::ProcessPendingEvents();
 
         // finally, show the app
@@ -837,10 +840,13 @@ bool CodeBlocksApp::OnInit()
     {
         exception.ShowErrorMessage();
     }
+// FIXME (squirrel) Reimplement startup script error printing
+/*
     catch (SquirrelError& exception)
     {
         Manager::Get()->GetScriptingManager()->DisplayErrors(&exception);
     }
+*/
     catch (const char* message)
     {
         wxSafeShowMessage(_T("Exception"), cbC2U(message));
@@ -911,10 +917,13 @@ int CodeBlocksApp::OnRun()
     {
         exception.ShowErrorMessage();
     }
+// FIXME (squirrel) Reimplement OnRun squirrel exceptions? I suppose these don't happen any more!
+/*
     catch (SquirrelError& exception)
     {
         Manager::Get()->GetScriptingManager()->DisplayErrors(&exception);
     }
+*/
     catch (const char* message)
     {
         wxSafeShowMessage(_("Exception"), cbC2U(message));

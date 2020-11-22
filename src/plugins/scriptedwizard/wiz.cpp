@@ -52,8 +52,11 @@ namespace
     PluginRegistrant<Wiz> reg(_T("ScriptedWizard"));
 }
 
+// FIXME (squirrel) Reimplement Binding of Wiz
+/*
 // scripting support
 DECLARE_INSTANCE_TYPE(Wiz);
+*/
 
 Wiz::Wiz()
     : m_pWizard(nullptr),
@@ -76,12 +79,14 @@ void Wiz::OnAttach()
     // make sure the VM is initialized
     Manager::Get()->GetScriptingManager();
 
+// FIXME (squirrel) Reimplement Wiz::OnAttach 1
+/*
     if (!SquirrelVM::GetVMPtr())
     {
         cbMessageBox(_("Project wizard disabled: scripting not initialized"), _("Error"), wxICON_ERROR);
         return;
     }
-
+*/
     // read configuration
     RegisterWizard();
 
@@ -94,6 +99,8 @@ void Wiz::OnAttach()
     if (wxFileExists(script))
     {
         Manager::Get()->GetScriptingManager()->LoadScript(script);
+// FIXME (squirrel) Reimplement Wiz::OnAttach 2
+/*
         try
         {
             SqPlus::SquirrelFunction<void> f("RegisterWizards");
@@ -103,6 +110,7 @@ void Wiz::OnAttach()
         {
             Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
         }
+*/
     }
     else
     {
@@ -112,6 +120,8 @@ void Wiz::OnAttach()
         if (wxFileExists(script))
         {
             Manager::Get()->GetScriptingManager()->LoadScript(script);
+// FIXME (squirrel) Reimplement Wiz::OnAttach 3
+/*
             try
             {
                 SqPlus::SquirrelFunction<void> f("RegisterWizards");
@@ -121,6 +131,7 @@ void Wiz::OnAttach()
             {
                 Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
             }
+*/
         }
     }
 
@@ -289,6 +300,8 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
     if (scriptDirs.GetCount())
         m_WizardScriptFolder = scriptDirs[scriptDirs.GetCount()-1];
 
+// FIXME (squirrel) Reimplement Wiz::Launch
+/*
     // call BeginWizard()
     try
     {
@@ -307,6 +320,7 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
         Clear();
         return nullptr;
     }
+*/
 
     // check if *any* pages were added
     if (m_Pages.GetCount() == 0)
@@ -424,6 +438,8 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
     // add all the template files
     // first get the dirs with the files by calling GetFilesDir()
     wxString srcdir;
+// FIXME (squirrel) Reimplement Wiz::RunProjectWizard
+/*
     try
     {
         SqPlus::SquirrelFunction<wxString&> f("GetFilesDir");
@@ -536,6 +552,7 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
         Clear();
         return nullptr;
     }
+*/
 
     // save the project and...
     theproject->Save();
@@ -563,6 +580,8 @@ CompileTargetBase* Wiz::RunTargetWizard(cb_unused wxString* pFilename)
     }
     else
     {
+// FIXME (squirrel) Reimplement Wiz::RunTargetWizard
+/*
         // Call GetTargetName() to ask the script to tell us
         // the name of the new target that should be added.
         try
@@ -582,6 +601,7 @@ CompileTargetBase* Wiz::RunTargetWizard(cb_unused wxString* pFilename)
             Clear();
             return nullptr;
         }
+*/
         isDebug = false;
     }
 
@@ -657,6 +677,8 @@ CompileTargetBase* Wiz::RunTargetWizard(cb_unused wxString* pFilename)
 //        return nullptr;
 //    }
 
+// FIXME (squirrel) Reimplement Wiz::RunTargetWizard 2
+#if 0
     // ask the script to setup the new target (setup options, etc)
     // call SetupTarget()
     try
@@ -675,12 +697,14 @@ CompileTargetBase* Wiz::RunTargetWizard(cb_unused wxString* pFilename)
         Clear();
         return nullptr;
     }
-
+#endif // 0
     return target;
 }
 
 CompileTargetBase* Wiz::RunFilesWizard(wxString* pFilename)
 {
+// FIXME (squirrel) Reimplement Wiz::RunFilesWizard
+#if 0
     try
     {
         SqPlus::SquirrelFunction<wxString&> f("CreateFiles");
@@ -701,12 +725,16 @@ CompileTargetBase* Wiz::RunFilesWizard(wxString* pFilename)
     {
         Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
     }
+#endif // 0
+
     Clear();
     return nullptr;
 }
 
 CompileTargetBase* Wiz::RunCustomWizard(cb_unused wxString* pFilename)
 {
+// FIXME (squirrel) Reimplement Wiz::RunCustomWizard
+#if 0
     try
     {
         SqPlus::SquirrelFunction<bool> f("SetupCustom");
@@ -717,6 +745,7 @@ CompileTargetBase* Wiz::RunCustomWizard(cb_unused wxString* pFilename)
     {
         Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
     }
+#endif // 0
     Clear();
     return nullptr;
 }
@@ -1726,6 +1755,8 @@ wxString Wiz::GetWizardScriptFolder(void)
 
 void Wiz::RegisterWizard()
 {
+// FIXME (squirrel) Reimplement
+#if 0
     SqPlus::SQClassDef<Wiz>("Wiz").
             // register new wizards
             func(&Wiz::AddWizard, "AddWizard").
@@ -1821,6 +1852,7 @@ void Wiz::RegisterWizard()
             func(&Wiz::GetWizardScriptFolder, "GetWizardScriptFolder");
 
     SqPlus::BindVariable(this, "Wizard", SqPlus::VAR_ACCESS_READ_ONLY);
+#endif // 0
 }
 
 ////////////////////////

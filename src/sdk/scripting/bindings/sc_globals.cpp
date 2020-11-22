@@ -7,6 +7,7 @@
  * $HeadURL$
  */
 
+#if 0
 #include <sdk_precomp.h>
 #ifndef CB_PRECOMP
     #include <wx/string.h>
@@ -256,3 +257,5 @@ namespace ScriptBindings
         SqPlus::RegisterGlobal(wxString_ToLong, "wxString_ToLong");
     }
 }
+
+#endif // 0

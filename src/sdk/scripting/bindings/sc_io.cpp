@@ -7,6 +7,8 @@
  * $HeadURL$
  */
 
+#if 0
+
 #include <sdk_precomp.h>
 #include <manager.h>
 #include <macrosmanager.h>
@@ -262,3 +264,5 @@ namespace ScriptBindings
         #endif // NO_INSECURE_SCRIPTS
     }
 } // namespace ScriptBindings
+
+#endif // 0
