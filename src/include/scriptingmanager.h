@@ -88,31 +88,24 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
           */
         wxString LoadBufferRedirectOutput(const wxString& buffer);
 
-        // FIXME (squirrel) Reimplement or remove ScriptingManager::GetErrorString/DisplayErrors
-#if 0
         /** @brief Returns an accumulated error string.
           *
-          * Returns an error string for the passed exception (if any) plus
-          * any accumulated script engine errors (e.g. from failed function calls).
-          * @param exception A pointer to the exception object containing the error. Can be NULL (default).
+          * Returns an error string any accumulated script engine errors (e.g. from failed function
+          * calls).
           * @param clearErrors If true (default), when this function returns all
           *        accumulated error messages are cleared.
           * @return The error string. If empty, it means "no errors".
           */
-        wxString GetErrorString(SquirrelError* exception = nullptr, bool clearErrors = true);
+        wxString GetErrorString(bool clearErrors = true);
 
         /** @brief Display error dialog.
           *
-          * Displays an error dialog containing exception info and any other
-          * script errors. Calls GetErrorString() internally.
-          * You should normally call this function inside your catch handler for
-          * SquirrelFunction<>() calls.
-          * @param exception A pointer to the exception object containing the error. Can be NULL (default).
+          * Displays an error dialog containing info about script errors. Calls GetErrorString()
+          * internally.
           * @param clearErrors If true (default), when this function returns all
           *        accumulated error messages are cleared.
           */
-        void DisplayErrors(SquirrelError* exception = nullptr, bool clearErrors = true);
-#endif // 0
+        void DisplayErrors(bool clearErrors = true);
 
         /** @brief Injects script output.
           *

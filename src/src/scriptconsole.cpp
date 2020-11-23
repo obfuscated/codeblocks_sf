@@ -42,6 +42,7 @@ const long ScriptConsole::ID_PANEL1 = wxNewId();
 
 static ScriptConsole* s_Console = nullptr;
 static SQPRINTFUNCTION s_OldPrintFunc = nullptr;
+static SQPRINTFUNCTION s_OldErrorFunc = nullptr;
 
 static void ScriptConsolePrintFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
 {
@@ -121,12 +122,10 @@ ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
     if (!s_Console)
     {
         s_Console = this;
-// FIXME (squirrel) Reimplement ScriptConsole replace print func
-/*
         HSQUIRRELVM vm = ScriptingManager::Get()->GetVM();
         s_OldPrintFunc = sq_getprintfunc(vm);
-        sq_setprintfunc(vm, ScriptConsolePrintFunc);
-*/
+        s_OldErrorFunc = sq_geterrorfunc(vm);
+        sq_setprintfunc(vm, ScriptConsolePrintFunc, ScriptConsolePrintFunc);
     }
 
     Log(_("Welcome to the script console!"));
@@ -134,15 +133,13 @@ ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
 
 ScriptConsole::~ScriptConsole()
 {
-// FIXME (squirrel) Reimplement ScriptConsole restore print func
-/*
     if (s_Console == this)
     {
         s_Console = nullptr;
-        if (SquirrelVM::GetVMPtr())
-            sq_setprintfunc(SquirrelVM::GetVMPtr(), s_OldPrintFunc);
+        HSQUIRRELVM vm = ScriptingManager::Get()->GetVM();
+        if (vm)
+            sq_setprintfunc(vm, s_OldPrintFunc, s_OldErrorFunc);
     }
-*/
     //(*Destroy(ScriptConsole)
     //*)
 }
@@ -176,8 +173,7 @@ void ScriptConsole::OnbtnExecuteClick(cb_unused wxCommandEvent& event)
     }
     else
     {
-        // FIXME (squirrel) Reimplement ScriptConsole error printing!
-//        txtConsole->AppendText(Manager::Get()->GetScriptingManager()->GetErrorString());
+        txtConsole->AppendText(Manager::Get()->GetScriptingManager()->GetErrorString());
     }
     txtCommand->SetFocus();
 }
@@ -201,8 +197,7 @@ void ScriptConsole::OnbtnLoadClick(cb_unused wxCommandEvent& event)
         else
         {
             Log(_("Loading script failed."));
-// FIXME (squirrel) Reimplement ScriptConsole error printing
-//            txtConsole->AppendText(Manager::Get()->GetScriptingManager()->GetErrorString());
+            txtConsole->AppendText(Manager::Get()->GetScriptingManager()->GetErrorString());
         }
     }
     txtCommand->SetFocus();
