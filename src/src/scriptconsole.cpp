@@ -49,18 +49,25 @@ static void ScriptConsolePrintFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
     static SQChar temp[2048];
     va_list vl;
     va_start(vl,s);
-#if SQUIRREL_VERSION_NUMBER>=300
     scvsprintf(temp, 2048, s, vl);
     wxString msg(temp);
-#else
-    scvsprintf(temp, s, vl);
-    wxString msg = cbC2U(temp);
-#endif
     va_end(vl);
 
     if (s_Console)
         s_Console->Log(msg);
-    Manager::Get()->GetScriptingManager()->InjectScriptOutput(msg);
+}
+
+static void ScriptConsoleErrorFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
+{
+    static SQChar temp[2048];
+    va_list vl;
+    va_start(vl,s);
+    scvsprintf(temp, 2048, s, vl);
+    wxString msg = cbC2U(temp);
+    va_end(vl);
+
+    if (s_Console)
+        s_Console->LogError(msg);
 }
 
 BEGIN_EVENT_TABLE(ScriptConsole,wxPanel)
@@ -125,7 +132,7 @@ ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
         HSQUIRRELVM vm = ScriptingManager::Get()->GetVM();
         s_OldPrintFunc = sq_getprintfunc(vm);
         s_OldErrorFunc = sq_geterrorfunc(vm);
-        sq_setprintfunc(vm, ScriptConsolePrintFunc, ScriptConsolePrintFunc);
+        sq_setprintfunc(vm, ScriptConsolePrintFunc, ScriptConsoleErrorFunc);
     }
 
     Log(_("Welcome to the script console!"));
@@ -149,7 +156,43 @@ void ScriptConsole::Log(const wxString& msg)
     txtConsole->AppendText(msg);
     if (msg.Last() != _T('\n'))
         txtConsole->AppendText(_T('\n'));
-//    txtConsole->ScrollLines(-1);
+    Manager::ProcessPendingEvents();
+}
+
+void ScriptConsole::LogError(const wxString& msg)
+{
+    if (msg.empty())
+        return;
+
+    wxString::size_type newLinePos = 0;
+    do
+    {
+        const wxString::size_type startPos = newLinePos;
+        newLinePos = msg.find('\n', newLinePos);
+        if (newLinePos != wxString::npos)
+        {
+            if (startPos == newLinePos)
+                txtConsole->AppendText(_("error:\n"));
+            else
+            {
+                const wxString &line = msg.substr(startPos, newLinePos - startPos);
+
+                txtConsole->AppendText(_("error: ") + line + "\n");
+            }
+
+            // Move past the '\n' character, so we won't enter infinite loop.
+            newLinePos = newLinePos + 1;
+        }
+        else
+        {
+            // Not found, append the rest of the string and break the loop.
+            const wxString &line = msg.substr(startPos);
+            if (!line.empty())
+                txtConsole->AppendText(_("error: ") + line + "\n");
+            break;
+        }
+    } while (1);
+
     Manager::ProcessPendingEvents();
 }
 
@@ -171,10 +214,7 @@ void ScriptConsole::OnbtnExecuteClick(cb_unused wxCommandEvent& event)
             txtCommand->Insert(cmd, 1); // right after the blank entry
         txtCommand->SetValue(wxEmptyString);
     }
-    else
-    {
-        txtConsole->AppendText(Manager::Get()->GetScriptingManager()->GetErrorString());
-    }
+
     txtCommand->SetFocus();
 }
 
@@ -195,11 +235,9 @@ void ScriptConsole::OnbtnLoadClick(cb_unused wxCommandEvent& event)
         if (Manager::Get()->GetScriptingManager()->LoadScript(dlg.GetPath()))
             Log(_("Script loaded successfully"));
         else
-        {
-            Log(_("Loading script failed."));
-            txtConsole->AppendText(Manager::Get()->GetScriptingManager()->GetErrorString());
-        }
+            Log(_("error: Loading script failed."));
     }
+
     txtCommand->SetFocus();
 }
 
