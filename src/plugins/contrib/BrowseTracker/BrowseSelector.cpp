@@ -169,7 +169,7 @@ void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, int
 
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
     m_listBox->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
-    int logfontsize = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/log_font_size"), 10);
+    int logfontsize = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/log_font_size"), (platform::macosx ? 10 : 8));
     wxFont cbFont = Manager::Get()->GetAppWindow()->GetFont();
     cbFont.SetPointSize(logfontsize);
     //cbFont.SetWeight( wxFONTWEIGHT_BOLD );

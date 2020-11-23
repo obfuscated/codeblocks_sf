@@ -74,7 +74,7 @@ void TextCtrlLogger::UpdateSettings()
     control->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 
     ConfigManager* cfgman = Manager::Get()->GetConfigManager(_T("message_manager"));
-    int size = cfgman->ReadInt(_T("/log_font_size"), platform::macosx ? 10 : 8);
+    int size = cfgman->ReadInt(_T("/log_font_size"), (platform::macosx ? 10 : 8));
 
     wxFont default_font(size, fixed ? wxFONTFAMILY_MODERN : wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     wxFont bold_font(default_font);
@@ -311,7 +311,7 @@ void ListCtrlLogger::UpdateSettings()
         return;
 
     ConfigManager* cfgman = Manager::Get()->GetConfigManager(_T("message_manager"));
-    int size = cfgman->ReadInt(_T("/log_font_size"), platform::macosx ? 10 : 8);
+    int size = cfgman->ReadInt(_T("/log_font_size"), (platform::macosx ? 10 : 8));
     wxFont default_font(size, fixed ? wxFONTFAMILY_MODERN : wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     wxFont bold_font(default_font);
     wxFont italic_font(default_font);
