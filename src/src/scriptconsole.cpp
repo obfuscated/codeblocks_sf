@@ -22,13 +22,12 @@
 #include <wx/filedlg.h>
 
 //(*InternalHeaders(ScriptConsole)
-#include <wx/settings.h>
-#include <wx/string.h>
-#include <wx/intl.h>
-#include <wx/font.h>
+#include <wx/artprov.h>
 #include <wx/bitmap.h>
 #include <wx/image.h>
-#include <wx/artprov.h>
+#include <wx/intl.h>
+#include <wx/settings.h>
+#include <wx/string.h>
 //*)
 
 //(*IdInit(ScriptConsole)
@@ -66,14 +65,12 @@ END_EVENT_TABLE()
 ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
 {
     //(*Initialize(ScriptConsole)
-    wxBoxSizer* BoxSizer2;
     wxBoxSizer* BoxSizer1;
+    wxBoxSizer* BoxSizer2;
 
     Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
     txtConsole = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL, wxDefaultValidator, _T("ID_TEXTCTRL1"));
-    wxFont txtConsoleFont(10,wxFONTFAMILY_MODERN,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,wxEmptyString,wxFONTENCODING_DEFAULT);
-    txtConsole->SetFont(txtConsoleFont);
     BoxSizer1->Add(txtConsole, 1, wxALL|wxEXPAND, 0);
     Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL1"));
     Panel1->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
@@ -81,8 +78,6 @@ ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
     lblCommand = new wxStaticText(Panel1, ID_STATICTEXT1, _("Command:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
     BoxSizer2->Add(lblCommand, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
     txtCommand = new wxComboBox(Panel1, ID_COMBOBOX1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0, wxCB_DROPDOWN|wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_COMBOBOX1"));
-    wxFont txtCommandFont(10,wxFONTFAMILY_MODERN,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,wxEmptyString,wxFONTENCODING_DEFAULT);
-    txtCommand->SetFont(txtCommandFont);
     BoxSizer2->Add(txtCommand, 1, wxALL|wxALIGN_CENTER_VERTICAL, 0);
     btnExecute = new wxBitmapButton(Panel1, ID_BITMAPBUTTON1, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_EXECUTABLE_FILE")),wxART_BUTTON), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON1"));
     btnExecute->SetToolTip(_("Execute current command"));
@@ -108,6 +103,14 @@ ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
     Connect(ID_BITMAPBUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ScriptConsole::OnbtnLoadClick);
     Connect(ID_BITMAPBUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ScriptConsole::OnbtnClearClick);
     //*)
+
+    {
+        // Use the Messages logs' font size for the console.
+        ConfigManager *mcfg = Manager::Get()->GetConfigManager(_T("message_manager"));
+        const int fontSize = mcfg->ReadInt(_T("/log_font_size"), (platform::macosx ? 10 : 8));
+        wxFont defaultFont(fontSize, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+        txtConsole->SetFont(defaultFont);
+    }
 
     txtCommand->Append(wxEmptyString);
     if (!s_Console)
