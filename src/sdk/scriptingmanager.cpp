@@ -104,6 +104,7 @@ END_EVENT_TABLE()
 namespace ScriptBindings
 {
     void RegisterBindings(HSQUIRRELVM vm);
+    void UnregisterBindings(HSQUIRRELVM vm);
 } // namespace ScriptBindings
 
 ScriptingManager::ScriptingManager()
@@ -149,6 +150,8 @@ ScriptingManager::~ScriptingManager()
 
     if (m_vm)
     {
+        ScriptBindings::UnregisterBindings(m_vm);
+
         sq_close(m_vm);
         m_vm = nullptr;
     }

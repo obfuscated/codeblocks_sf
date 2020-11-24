@@ -20,14 +20,7 @@
 #include "sc_utils.h"
 #include "sc_typeinfo_all.h"
 
-/*
-#include "sc_base_types.h"
-
-// helper macros to bind constants
-#define BIND_INT_CONSTANT(a) SqPlus::BindConstant<SQInteger>(a, #a);
-#define BIND_INT_CONSTANT_NAMED(a,n) SqPlus::BindConstant<SQInteger>(a, n);
-#define BIND_WXSTR_CONSTANT_NAMED(a,n) BindVariable(const_cast<wxString*>(&a), n, SqPlus::VAR_ACCESS_CONSTANT);
-*/
+#include <unordered_map>
 
 namespace ScriptBindings
 {
@@ -35,31 +28,96 @@ namespace ScriptBindings
     #define BIND_INT_CONSTANT_NAMED(a,n) bind_intConstantNamed(v, a, n)
     #define BIND_WXSTR_CONSTANT_NAMED(a,n) bind_wxStringConstantNamed(v, a, n)
 
+    // FIXME (squirrel) Using std::string here is not efficient
+    using IntConstantsMap = std::unordered_map<std::string, SQInteger>;
+    // FIXME (squirrel) Using std::string here is not efficient
+    using wxStringConstantsMap = std::unordered_map<std::string, HSQOBJECT>;
+    IntConstantsMap g_mapIntConstants;
+    wxStringConstantsMap g_mapWxStringConstants;
+
     void bind_intConstantNamed(HSQUIRRELVM v, SQInteger value, const char *name)
     {
-        // FIXME (squirrel) This makes a global variable. More work needs to be done to make it
-        // really a constant...
-        sq_pushstring(v, name, -1);
-        sq_pushinteger(v, value);
-        sq_newslot(v, -3, SQFalse);
+        g_mapIntConstants.insert(IntConstantsMap::value_type(name, value));
     }
 
     void bind_wxStringConstantNamed(HSQUIRRELVM v, const wxString &value, const char *name)
     {
-        // FIXME (squirrel) This makes a global variable. More work needs to be done to make it
-        // really a constant...
-        sq_pushstring(v, name, -1);
+        PreserveTop preserve(v);
+
         UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-        new (&data->userdata) wxString(value);
-        sq_newslot(v, -3, SQFalse);
+        if (data)
+        {
+            new (&data->userdata) wxString(value);
+
+            HSQOBJECT obj;
+            sq_resetobject(&obj);
+            sq_getstackobj(v, -1, &obj);
+            sq_addref(v, &obj);
+            sq_pop(v, 1);
+            g_mapWxStringConstants.insert(wxStringConstantsMap::value_type(name, obj));
+        }
     }
 
     wxString s_PathSep = wxFILE_SEP_PATH;
+
+    static SQInteger constants_get(HSQUIRRELVM v)
+    {
+        ExtractParams2<SkipParam, const SQChar*> extractor(v);
+        if (!extractor.Process("constants_get"))
+            return extractor.ErrorMessage();
+
+        IntConstantsMap::const_iterator intIt = g_mapIntConstants.find(extractor.p1);
+        if (intIt != g_mapIntConstants.end())
+        {
+            sq_pushinteger(v, intIt->second);
+            return 1;
+        }
+
+        wxStringConstantsMap::const_iterator wxStringIt = g_mapWxStringConstants.find(extractor.p1);
+        if (wxStringIt != g_mapWxStringConstants.end())
+        {
+            sq_pushobject(v, wxStringIt->second);
+            return 1;
+        }
+
+        return ThrowIndexNotFound(v);
+    }
+
+    static SQInteger constants_set(HSQUIRRELVM v)
+    {
+        ExtractParamsBase extractor(v);
+        if (!extractor.CheckNumArguments(3, "constants_set"))
+            return extractor.ErrorMessage();
+        const SQChar *name = nullptr;
+        if (!extractor.ProcessParam(name, 2, "constants_set"))
+            return extractor.ErrorMessage();
+
+        IntConstantsMap::const_iterator intIt = g_mapIntConstants.find(name);
+        if (intIt != g_mapIntConstants.end())
+            return sq_throwerror(v, _SC("Trying to modify global constant is not allowed!"));
+        wxStringConstantsMap::const_iterator wxStringIt = g_mapWxStringConstants.find(name);
+        if (wxStringIt != g_mapWxStringConstants.end())
+            return sq_throwerror(v, _SC("Trying to modify global constant is not allowed!"));
+
+        return ThrowIndexNotFound(v);
+    }
 
     void Register_Constants(HSQUIRRELVM v)
     {
         PreserveTop preserveTop(v);
         sq_pushroottable(v);
+
+        {
+            // setup root table delegate which could make constants appear as constants.
+            sq_newtable(v);
+            sq_pushstring(v, _SC("_get"), -1);
+            sq_newclosure(v, constants_get, 0);
+            sq_newslot(v, -3, SQFalse);
+            sq_pushstring(v, _SC("_set"), -1);
+            sq_newclosure(v, constants_set, 0);
+            sq_newslot(v, -3, SQFalse);
+            sq_setdelegate(v, -2);
+        }
 
         // platform constants
         BIND_INT_CONSTANT_NAMED(0,  "PLATFORM_MSW");
@@ -321,4 +379,13 @@ namespace ScriptBindings
 
         sq_pop(v, 1); // pop root table
     }
-};
+
+    void Unregister_Constants(HSQUIRRELVM vm)
+    {
+        for (wxStringConstantsMap::value_type &v : g_mapWxStringConstants)
+        {
+            sq_release(vm, &v.second);
+        }
+        g_mapWxStringConstants.clear();
+    }
+} // namespace ScriptBindings
