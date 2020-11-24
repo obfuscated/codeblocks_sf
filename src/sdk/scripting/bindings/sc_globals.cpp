@@ -18,19 +18,84 @@
 
 namespace ScriptBindings
 {
-    ScriptingManager* getSM()
+    void gDebugLog(const wxString& msg){ Manager::Get()->GetLogManager()->DebugLog(msg); }
+    void gErrorLog(const wxString& msg){ Manager::Get()->GetLogManager()->LogError(msg); }
+    void gWarningLog(const wxString& msg){ Manager::Get()->GetLogManager()->LogWarning(msg); }
+    void gLog(const wxString& msg){ Manager::Get()->GetLogManager()->Log(msg); }
+
+    void gShowMessage(const wxString& msg)
     {
-        return Manager::Get()->GetScriptingManager();
+        cbMessageBox(msg, _("Script message"), wxICON_INFORMATION | wxOK);
+    }
+    void gShowMessageWarn(const wxString& msg)
+    {
+        cbMessageBox(msg, _("Script warning"), wxICON_WARNING | wxOK);
+    }
+    void gShowMessageError(const wxString& msg)
+    {
+        cbMessageBox(msg, _("Script error"), wxICON_ERROR | wxOK);
+    }
+    void gShowMessageInfo(const wxString& msg)
+    {
+        cbMessageBox(msg, _("Script information"), wxICON_INFORMATION | wxOK);
     }
 
-    //void Include(const wxString& filename)
+    template<void (*func)(const wxString &)>
+    SQInteger NoReturnSingleWxStringParam(HSQUIRRELVM v)
+    {
+        ExtractParams2<SkipParam, const wxString *> extractor(v);
+        if (!extractor.Process("NoReturnSingleWxStringParam"))
+            return extractor.ErrorMessage();
+        func(*extractor.p1);
+        return 0;
+    }
+
+    SQInteger MessageBoxFunc(HSQUIRRELVM v)
+    {
+        // env table, msg, caption, buttons
+        ExtractParams4<SkipParam, const wxString *, const wxString *, SQInteger> extractor(v);
+        if (!extractor.Process("MessageBoxFunc"))
+            return extractor.ErrorMessage();
+        const int result = cbMessageBox(*extractor.p1, *extractor.p2, extractor.p3);
+        sq_pushinteger(v, result);
+        return 1;
+    }
+
+    SQInteger gReplaceMacros(HSQUIRRELVM v)
+    {
+        ExtractParams2<SkipParam, const wxString *> extractor(v);
+        if (!extractor.Process("ReplaceMacros"))
+            return extractor.ErrorMessage();
+
+        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
+        if (data == nullptr)
+            return -1; // An error should have been logged already.
+
+        const wxString &result = Manager::Get()->GetMacrosManager()->ReplaceMacros(*extractor.p1);
+        new (&data->userdata) wxString(result);
+        return 1;
+    }
+
+    SQInteger getEM(HSQUIRRELVM v)
+    {
+        ExtractParamsBase extractor(v);
+        if (!extractor.CheckNumArguments(1, "GetEditorManager"))
+            return extractor.ErrorMessage();
+        EditorManager *manager = Manager::Get()->GetEditorManager();
+        UserDataForType<EditorManager> *data = CreateNonOwnedPtrInstance<EditorManager>(v, manager);
+        if (data == nullptr)
+            return -1; // An error should have been logged already.
+        return 1;
+    }
+
     SQInteger Include(HSQUIRRELVM v)
     {
         ExtractParams2<SkipParam, const wxString *> extractor(v);
         if (!extractor.Process("Include"))
             return extractor.ErrorMessage();
 
-        if (!getSM()->LoadScript(*extractor.p1))
+        ScriptingManager *sm = Manager::Get()->GetScriptingManager();
+        if (!sm->LoadScript(*extractor.p1))
         {
             wxString msg = wxString::Format(_("Include: Failed to load required script: '%s'"),
                                             extractor.p1->wx_str());
@@ -44,7 +109,9 @@ namespace ScriptBindings
         ExtractParams2<SkipParam, const wxString *> extractor(v);
         if (!extractor.Process("Require"))
             return extractor.ErrorMessage();
-        if (getSM()->LoadScript(*extractor.p1))
+
+        ScriptingManager *sm = Manager::Get()->GetScriptingManager();
+        if (sm->LoadScript(*extractor.p1))
         {
             sq_pushinteger(v, 0);
             return 1;
@@ -62,6 +129,21 @@ namespace ScriptBindings
         PreserveTop preserve(v);
 
         sq_pushroottable(v);
+
+        BindMethod(v, _SC("Log"), NoReturnSingleWxStringParam<gLog>, nullptr);
+        BindMethod(v, _SC("LogDebug"), NoReturnSingleWxStringParam<&gDebugLog>, nullptr);
+        BindMethod(v, _SC("LogWarning"), NoReturnSingleWxStringParam<&gWarningLog>, nullptr);
+        BindMethod(v, _SC("LogError"), NoReturnSingleWxStringParam<&gErrorLog>, nullptr);
+
+        BindMethod(v, _SC("Message"), MessageBoxFunc, nullptr);
+        BindMethod(v, _SC("ShowMessage"), NoReturnSingleWxStringParam<&gShowMessage>, nullptr);
+        BindMethod(v, _SC("ShowWarning"), NoReturnSingleWxStringParam<&gShowMessageWarn>, nullptr);
+        BindMethod(v, _SC("ShowError"), NoReturnSingleWxStringParam<&gShowMessageError>, nullptr);
+        BindMethod(v, _SC("ShowInfo"), NoReturnSingleWxStringParam<&gShowMessageInfo>, nullptr);
+
+        BindMethod(v, _SC("ReplaceMacros"), gReplaceMacros, nullptr);
+
+        BindMethod(v, _SC("GetEditorManager"), getEM, nullptr);
 
         BindMethod(v, _SC("Include"), Include, nullptr);
         BindMethod(v, _SC("Require"), Require, nullptr);
@@ -317,6 +399,7 @@ namespace ScriptBindings
         SqPlus::RegisterGlobal(wx_GetPasswordFromUser, "wxGetPasswordFromUser");
         SqPlus::RegisterGlobal(wx_GetTextFromUser, "wxGetTextFromUser");
 
+        // FIXME (squirrel) Move to sc_wxtypes.cpp
         SqPlus::RegisterGlobal(wxString_ToLong, "wxString_ToLong");
     }
 }

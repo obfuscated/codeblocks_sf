@@ -28,7 +28,10 @@ enum class TypeTag : uint32_t
     wxPoint,
     wxSize,
     wxArrayString,
-    wxFileName
+    wxFileName,
+    EditorBase,
+    cbEditor,
+    EditorManager
 };
 
 template<>
@@ -70,6 +73,27 @@ template<>
 struct TypeInfo<wxFileName> {
     static const uint32_t typetag = uint32_t(TypeTag::wxFileName);
     static constexpr const SQChar *className = _SC("wxFileName");
+    using baseClass = void;
+};
+
+template<>
+struct TypeInfo<EditorBase> {
+    static const uint32_t typetag = uint32_t(TypeTag::EditorBase);
+    static constexpr const SQChar *className = _SC("EditorBase");
+    using baseClass = void;
+};
+
+template<>
+struct TypeInfo<cbEditor> {
+    static const uint32_t typetag = uint32_t(TypeTag::cbEditor);
+    static constexpr const SQChar *className = _SC("cbEditor");
+    using baseClass = void;
+};
+
+template<>
+struct TypeInfo<EditorManager> {
+    static const uint32_t typetag = uint32_t(TypeTag::EditorManager);
+    static constexpr const SQChar *className = _SC("EditorManager");
     using baseClass = void;
 };
 

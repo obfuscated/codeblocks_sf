@@ -1185,9 +1185,43 @@ namespace ScriptBindings
 #endif // CB_PRECOMP
 
 #include "sc_utils.h"
+#include "sc_typeinfo_all.h"
+
+#include "cbstyledtextctrl.h"
 
 namespace ScriptBindings
 {
+    SQInteger EditorBase_Close(HSQUIRRELVM v)
+    {
+        ExtractParams1<EditorBase*> extractor(v);
+        if (!extractor.Process("EditorBase::Close"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->Close());
+        return 1;
+    }
+
+    SQInteger cbEditor_SetText(HSQUIRRELVM v)
+    {
+        ExtractParams2<cbEditor*, const wxString *> extractor(v);
+        if (!extractor.Process("cbEditor::SetText"))
+            return extractor.ErrorMessage();
+
+        extractor.p0->GetControl()->SetText(*extractor.p1);
+        return 0;
+    }
+
+    SQInteger EditorManager_New(HSQUIRRELVM v)
+    {
+        ExtractParams2<EditorManager*, const wxString *> extractor(v);
+        if (!extractor.Process("EditorManager::New"))
+            return extractor.ErrorMessage();
+        cbEditor *result = extractor.p0->New(*extractor.p1);
+        UserDataForType<cbEditor> *data = CreateNonOwnedPtrInstance<cbEditor>(v, result);
+        if (data == nullptr)
+            return -1; // An error should have been logged already.
+        return 1;
+    }
+
     void Register_Constants(HSQUIRRELVM v);
     void Unregister_Constants(HSQUIRRELVM v);
     void Register_Globals(HSQUIRRELVM v);
@@ -1198,15 +1232,48 @@ namespace ScriptBindings
     void Register_IO(HSQUIRRELVM v);
     void Register_ScriptPlugin(HSQUIRRELVM v);
 
-    void RegisterBindings(HSQUIRRELVM vm)
+    void RegisterBindings(HSQUIRRELVM v)
     {
-        Register_wxTypes(vm);
-        Register_Constants(vm);
-        Register_Globals(vm);
+        Register_wxTypes(v);
+        Register_Constants(v);
+        Register_Globals(v);
 //        Register_IO(); // IO is enabled, but just for harmless functions
 //        Register_Dialog();
 //        Register_ProgressDialog();
 //        Register_UtilDialogs();
+
+        PreserveTop preserveTop(v);
+        sq_pushroottable(v);
+
+        {
+            // Register EditorBase
+            const SQInteger classDecl = CreateClassDecl<EditorBase>(v, _SC("EditorBase"));
+            BindMethod(v, _SC("Close"), EditorBase_Close, _SC("EditorBase::Close"));
+
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
+
+        {
+            // Register cbEditor
+            const SQInteger classDecl = CreateClassDecl<cbEditor>(v, _SC("cbEditor"),
+                                                                  _SC("EditorBase"));
+            BindMethod(v, _SC("SetText"), cbEditor_SetText, _SC("cbEditor::SetText"));
+
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
+
+        {
+            // Register EditorManager
+            const SQInteger classDecl = CreateClassDecl<EditorManager>(v, _SC("EditorManager"));
+            BindMethod(v, _SC("New"), EditorManager_New, _SC("EditorManager::New"));
+
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
+
+        sq_pop(v, 1); // Pop root table.
     }
 
     void UnregisterBindings(HSQUIRRELVM v)

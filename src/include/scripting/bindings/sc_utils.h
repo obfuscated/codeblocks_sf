@@ -106,9 +106,8 @@ SQInteger ReleaseHook(SQUserPointer ptr, cb_unused SQInteger size)
     return 0;
 }
 
-template<typename UserType>
-UserDataForType<UserType>* SetupUserPointer(HSQUIRRELVM vm, SQInteger idx,
-                                            InstanceAllocationMode mode)
+template<typename UserType, InstanceAllocationMode mode>
+UserDataForType<UserType>* SetupUserPointer(HSQUIRRELVM vm, SQInteger idx)
 {
     SQUserPointer ptr = nullptr;
     if (SQ_FAILED(sq_getinstanceup(vm, idx, &ptr,
@@ -121,7 +120,8 @@ UserDataForType<UserType>* SetupUserPointer(HSQUIRRELVM vm, SQInteger idx,
 
     UserDataForType<UserType> *data = reinterpret_cast<UserDataForType<UserType>*>(ptr);
     data->mode = mode;
-    if (mode == InstanceAllocationMode::InstanceIsInline)
+    // FIXME (squirrel) C++17 feature?!!! Could be replaced with a trait, but should we?
+    if constexpr (mode == InstanceAllocationMode::InstanceIsInline)
         sq_setreleasehook(vm, idx, ReleaseHook<UserType>);
     return data;
 }
@@ -462,7 +462,7 @@ inline UserDataForType<UserType>* CreateInlineInstance(HSQUIRRELVM v)
     sq_createinstance(v, -1);
     sq_remove(v, -2); // remove class object
 
-    return SetupUserPointer<UserType>(v, -1, InstanceAllocationMode::InstanceIsInline);
+    return SetupUserPointer<UserType, InstanceAllocationMode::InstanceIsInline>(v, -1);
 }
 
 /// Create an instance of a given type which references some native memory.
@@ -481,7 +481,7 @@ inline UserDataForType<UserType>* CreateNonOwnedPtrInstance(HSQUIRRELVM v, UserT
     sq_remove(v, -2); // remove class object
 
     UserDataForType<UserType> *data;
-    data = SetupUserPointer<UserType>(v, -1, InstanceAllocationMode::InstanceIsNonOwnedPtr);
+    data = SetupUserPointer<UserType, InstanceAllocationMode::InstanceIsNonOwnedPtr>(v, -1);
     if (data)
         data->userptr = value;
     return data;
@@ -526,7 +526,7 @@ SQInteger Generic_DefaultCtor(HSQUIRRELVM v)
         return sq_throwerror(v, _SC("Generic_DefaultCtor: Incorrect number of arguments!"));
 
     UserDataForType<UserType> *data;
-    data = SetupUserPointer<UserType>(v, 1, InstanceAllocationMode::InstanceIsInline);
+    data = SetupUserPointer<UserType, InstanceAllocationMode::InstanceIsInline>(v, 1);
     if (!data)
         return -1; // SetupUserPointer should have called sq_throwerror!
     new (&(data->userdata)) UserType();
