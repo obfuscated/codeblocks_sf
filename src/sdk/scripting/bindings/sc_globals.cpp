@@ -7,7 +7,75 @@
  * $HeadURL$
  */
 
-#if 0
+#if 1
+#include <sdk_precomp.h>
+#ifndef CB_PRECOMP
+    #include <wx/string.h>
+#endif // CB_PRECOMP
+
+#include "sc_utils.h"
+#include "sc_typeinfo_all.h"
+
+namespace ScriptBindings
+{
+    ScriptingManager* getSM()
+    {
+        return Manager::Get()->GetScriptingManager();
+    }
+
+    //void Include(const wxString& filename)
+    SQInteger Include(HSQUIRRELVM v)
+    {
+        ExtractParams2<SkipParam, const wxString *> extractor(v);
+        if (!extractor.Process("Include"))
+            return extractor.ErrorMessage();
+
+        if (!getSM()->LoadScript(*extractor.p1))
+        {
+            wxString msg = wxString::Format(_("Include: Failed to load required script: '%s'"),
+                                            extractor.p1->wx_str());
+            return sq_throwerror(v, cbU2C(msg));
+        }
+
+        return 0;
+    }
+    SQInteger Require(HSQUIRRELVM v)
+    {
+        ExtractParams2<SkipParam, const wxString *> extractor(v);
+        if (!extractor.Process("Require"))
+            return extractor.ErrorMessage();
+        if (getSM()->LoadScript(*extractor.p1))
+        {
+            sq_pushinteger(v, 0);
+            return 1;
+        }
+        else
+        {
+            wxString msg = wxString::Format(_("Require: Failed to load required script: '%s'"),
+                                            extractor.p1->wx_str());
+            return sq_throwerror(v, cbU2C(msg));
+        }
+    }
+
+    void Register_Globals(HSQUIRRELVM v)
+    {
+        PreserveTop preserve(v);
+
+        sq_pushroottable(v);
+
+        sq_pushstring(v, _SC("Include"), -1);
+        sq_newclosure(v, Include, 0);
+        sq_newslot(v, -3, SQFalse);
+
+        sq_pushstring(v, _SC("Require"), -1);
+        sq_newclosure(v, Require, 0);
+        sq_newslot(v, -3, SQFalse);
+
+        sq_pop(v, 1); // root table
+    }
+}
+
+#else // 0
 #include <sdk_precomp.h>
 #ifndef CB_PRECOMP
     #include <wx/string.h>

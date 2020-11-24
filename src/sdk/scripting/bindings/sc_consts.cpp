@@ -7,7 +7,7 @@
  * $HeadURL$
  */
 
- /*
+
 #include <sdk_precomp.h>
 #ifndef CB_PRECOMP
     #include <wx/string.h>
@@ -16,19 +16,51 @@
 #endif
 
 #include <filefilters.h>
+
+#include "sc_utils.h"
+#include "sc_typeinfo_all.h"
+
+/*
 #include "sc_base_types.h"
 
 // helper macros to bind constants
 #define BIND_INT_CONSTANT(a) SqPlus::BindConstant<SQInteger>(a, #a);
 #define BIND_INT_CONSTANT_NAMED(a,n) SqPlus::BindConstant<SQInteger>(a, n);
 #define BIND_WXSTR_CONSTANT_NAMED(a,n) BindVariable(const_cast<wxString*>(&a), n, SqPlus::VAR_ACCESS_CONSTANT);
+*/
 
 namespace ScriptBindings
 {
+    #define BIND_INT_CONSTANT(a) bind_intConstantNamed(v, a, #a)
+    #define BIND_INT_CONSTANT_NAMED(a,n) bind_intConstantNamed(v, a, n)
+    #define BIND_WXSTR_CONSTANT_NAMED(a,n) bind_wxStringConstantNamed(v, a, n)
+
+    void bind_intConstantNamed(HSQUIRRELVM v, SQInteger value, const char *name)
+    {
+        // FIXME (squirrel) This makes a global variable. More work needs to be done to make it
+        // really a constant...
+        sq_pushstring(v, name, -1);
+        sq_pushinteger(v, value);
+        sq_newslot(v, -3, SQFalse);
+    }
+
+    void bind_wxStringConstantNamed(HSQUIRRELVM v, const wxString &value, const char *name)
+    {
+        // FIXME (squirrel) This makes a global variable. More work needs to be done to make it
+        // really a constant...
+        sq_pushstring(v, name, -1);
+        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
+        new (&data->userdata) wxString(value);
+        sq_newslot(v, -3, SQFalse);
+    }
+
     wxString s_PathSep = wxFILE_SEP_PATH;
 
-    void Register_Constants()
+    void Register_Constants(HSQUIRRELVM v)
     {
+        PreserveTop preserveTop(v);
+        sq_pushroottable(v);
+
         // platform constants
         BIND_INT_CONSTANT_NAMED(0,  "PLATFORM_MSW");
         BIND_INT_CONSTANT_NAMED(1,  "PLATFORM_GTK");
@@ -286,6 +318,7 @@ namespace ScriptBindings
         BIND_INT_CONSTANT_NAMED(int32_t(LinkerExecutableOption::CCompiler), "leoCCompiler");
         BIND_INT_CONSTANT_NAMED(int32_t(LinkerExecutableOption::CppCompiler), "leoCppCompiler");
         BIND_INT_CONSTANT_NAMED(int32_t(LinkerExecutableOption::Linker), "leoLinker");
+
+        sq_pop(v, 1); // pop root table
     }
 };
-*/
