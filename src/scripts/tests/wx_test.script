@@ -1,5 +1,5 @@
 
-::Include(_("test_base.script"));
+::Require(_T("test_base.script"));
 
 class wxTest extends script_test_base
 {
@@ -155,6 +155,9 @@ class wxTest extends script_test_base
         }
         if (!hasException)
             failed("ConcatNull");
+
+        test_equal("wxString_ToLong good", wxString_ToLong(_T("102")), 102);
+        test_equal("wxString_ToLong bad", wxString_ToLong(_T("test")), -1);
 
         print_test_result();
         ::print("======= Test wx String END ======= \n");
