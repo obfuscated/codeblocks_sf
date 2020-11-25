@@ -1191,6 +1191,96 @@ namespace ScriptBindings
 
 namespace ScriptBindings
 {
+    SQInteger ConfigManager_Read(HSQUIRRELVM v)
+    {
+        // this, key, default value
+        ExtractParams3<SkipParam, const wxString *, SkipParam> extractor(v);
+        if (!extractor.Process("ConfigManager::Read"))
+            return extractor.ErrorMessage();
+
+        // FIXME (squirrel) We don't use this for some unknown reason.
+        ConfigManager *cfg = Manager::Get()->GetConfigManager("scripts");
+        if (cfg == nullptr)
+            return sq_throwerror(v, _SC("ConfigManager::Read cannot get manager pointer!"));
+
+        const wxString &key = *extractor.p1;
+        const SQObjectType type = sq_gettype(v, 3);
+        switch (type)
+        {
+        case OT_INTEGER:
+            sq_pushinteger(v, cfg->ReadInt(key, extractor.GetParamInt(3)));
+            return 1;
+        case OT_BOOL:
+            sq_pushbool(v, cfg->ReadBool(key, extractor.GetParamBool(3)));
+            return 1;
+        case OT_FLOAT:
+            sq_pushfloat(v, cfg->ReadDouble(key, extractor.GetParamFloat(3)));
+            return 1;
+        case OT_INSTANCE:
+            {
+                const wxString *defaultValue;
+                if (!extractor.ProcessParam(defaultValue, 3, "ConfigManager::Read"))
+                    return extractor.ErrorMessage();
+                const wxString &result = cfg->Read(key, *defaultValue);
+                return ConstructAndReturnInstance(v, result);
+            }
+        default:
+            return sq_throwerror(v, _SC("ConfigManager::Read given unsupported type!"));
+        }
+    }
+
+    SQInteger ConfigManager_Write(HSQUIRRELVM v)
+    {
+        // FIXME (squirrel) We don't use this for some unknown reason.
+        ConfigManager *cfg = Manager::Get()->GetConfigManager("scripts");
+        if (cfg == nullptr)
+            return sq_throwerror(v, _SC("ConfigManager::Write cannot get manager pointer!"));
+
+        const int numArgs = sq_gettop(v);
+        if (numArgs == 4)
+        {
+            // this, key, value, ignoreEmpty
+            ExtractParams4<SkipParam, const wxString*, const wxString*, bool> extractor(v);
+            if (!extractor.Process("ConfigManager::Write"))
+                return extractor.ErrorMessage();
+            cfg->Write(*extractor.p1, *extractor.p2, extractor.p3);
+            return 0;
+        }
+        else
+        {
+            // this, key, value
+            ExtractParams3<SkipParam, const wxString *, SkipParam> extractor(v);
+            if (!extractor.Process("ConfigManager::Write"))
+                return extractor.ErrorMessage();
+
+            const wxString &key = *extractor.p1;
+            const SQObjectType type = sq_gettype(v, 3);
+            switch (type)
+            {
+            case OT_INTEGER:
+                cfg->Write(key, int(extractor.GetParamInt(3)));
+                return 0;
+            case OT_BOOL:
+                cfg->Write(key, extractor.GetParamBool(3));
+                return 0;
+            case OT_FLOAT:
+                cfg->Write(key, extractor.GetParamFloat(3));
+                return 0;
+            case OT_INSTANCE:
+                {
+                    const wxString *value;
+                    if (!extractor.ProcessParam(value, 3, "ConfigManager::Read"))
+                        return extractor.ErrorMessage();
+                    cfg->Write(key, *value);
+                    return 0;
+                }
+            default:
+                ;
+            }
+            return sq_throwerror(v, _SC("ConfigManager::Read given unsupported type!"));
+        }
+    }
+
     SQInteger EditorBase_Close(HSQUIRRELVM v)
     {
         ExtractParams1<EditorBase*> extractor(v);
@@ -1264,6 +1354,16 @@ namespace ScriptBindings
 
         PreserveTop preserveTop(v);
         sq_pushroottable(v);
+
+        {
+            // Register ConfigManager
+            const SQInteger classDecl = CreateClassDecl<ConfigManager>(v, _SC("ConfigManager"));
+            BindMethod(v, _SC("Read"), ConfigManager_Read, _SC("ConfigManager::Read"));
+            BindMethod(v, _SC("Write"), ConfigManager_Write, _SC("ConfigManager::Write"));
+
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
 
         {
             // Register EditorBase
