@@ -468,6 +468,17 @@ inline UserDataForType<UserType>* CreateInlineInstance(HSQUIRRELVM v)
     return SetupUserPointer<UserType, InstanceAllocationMode::InstanceIsInline>(v, -1);
 }
 
+/// Helper used when you need to copy construct new instance and then return it to Squirrel.
+template<typename UserType>
+int ConstructAndReturnInstance(HSQUIRRELVM v, const UserType &value)
+{
+    UserDataForType<UserType> *data = CreateInlineInstance<UserType>(v);
+    if (data == nullptr)
+        return -1; // An error should have been logged already.
+    new (&data->userdata) UserType(value);
+    return 1;
+}
+
 /// Create an instance of a given type which references some native memory.
 /// This creates a unique squirrel object every time the method is called.
 /// The C++ memory is the same for all object and it allows modifications.
@@ -488,6 +499,17 @@ inline UserDataForType<UserType>* CreateNonOwnedPtrInstance(HSQUIRRELVM v, UserT
     if (data)
         data->userptr = value;
     return data;
+}
+
+/// Helper used when you need to create and return a Squirrel instance pointing to some native
+/// object.
+template<typename UserType>
+int ConstructAndReturnNonOwnedPtr(HSQUIRRELVM v, UserType *value)
+{
+    UserDataForType<UserType> *data = CreateNonOwnedPtrInstance<UserType>(v, value);
+    if (data == nullptr)
+        return -1; // An error should have been logged already.
+    return 1;
 }
 
 /// Get a reference to an object in the middle of the stack and copy it at the top.

@@ -68,13 +68,8 @@ namespace ScriptBindings
         if (!extractor.Process("ReplaceMacros"))
             return extractor.ErrorMessage();
 
-        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-        if (data == nullptr)
-            return -1; // An error should have been logged already.
-
         const wxString &result = Manager::Get()->GetMacrosManager()->ReplaceMacros(*extractor.p1);
-        new (&data->userdata) wxString(result);
-        return 1;
+        return ConstructAndReturnInstance(v, result);
     }
 
     template<typename ManagerType, ManagerType* (Manager::*func)() const>
@@ -84,10 +79,7 @@ namespace ScriptBindings
         if (!extractor.CheckNumArguments(1, "GetManager"))
             return extractor.ErrorMessage();
         ManagerType *manager = (Manager::Get()->*func)();
-        UserDataForType<ManagerType> *data = CreateNonOwnedPtrInstance<ManagerType>(v, manager);
-        if (data == nullptr)
-            return -1; // An error should have been logged already.
-        return 1;
+        return ConstructAndReturnNonOwnedPtr(v, manager);
     }
 
     SQInteger gGetArrayFromString(HSQUIRRELVM v)
@@ -96,13 +88,10 @@ namespace ScriptBindings
         ExtractParams4<SkipParam, const wxString *, const wxString *, bool> extractor(v);
         if (!extractor.Process("GetArrayFromString"))
             return extractor.ErrorMessage();
-        UserDataForType<wxArrayString> *data = CreateInlineInstance<wxArrayString>(v);
-        if (data == nullptr)
-            return -1; // An error should have been logged already.
 
-        const wxArrayString &result = GetArrayFromString(*extractor.p1, *extractor.p2, extractor.p3);
-        new (&data->userdata) wxArrayString(result);
-        return 1;
+        const wxArrayString &result = GetArrayFromString(*extractor.p1, *extractor.p2,
+                                                         extractor.p3);
+        return ConstructAndReturnInstance(v, result);
     }
 
     SQInteger gGetStringFromArray(HSQUIRRELVM v)
@@ -111,13 +100,9 @@ namespace ScriptBindings
         ExtractParams4<SkipParam, const wxArrayString *, const wxString *, bool> extractor(v);
         if (!extractor.Process("GetStringFromArray"))
             return extractor.ErrorMessage();
-        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-        if (data == nullptr)
-            return -1; // An error should have been logged already.
 
         const wxString &result = GetStringFromArray(*extractor.p1, *extractor.p2, extractor.p3);
-        new (&data->userdata) wxString(result);
-        return 1;
+        return ConstructAndReturnInstance(v, result);
     }
 
     SQInteger gEscapeSpaces(HSQUIRRELVM v)
@@ -127,11 +112,7 @@ namespace ScriptBindings
         if (!extractor.Process("EscapeSpaces"))
             return extractor.ErrorMessage();
 
-        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-        if (data == nullptr)
-            return -1; // An error should have been logged already.
-        new (&data->userdata) wxString(EscapeSpaces(*extractor.p1));
-        return 1;
+        return ConstructAndReturnInstance(v, EscapeSpaces(*extractor.p1));
     }
 
     SQInteger gUnixFilename(HSQUIRRELVM v)
@@ -144,11 +125,8 @@ namespace ScriptBindings
         if (extractor.p2 < wxPATH_NATIVE || extractor.p2 >= wxPATH_MAX)
             return sq_throwerror(v, _SC("UnixFilename: format out of range!"));
 
-        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-        if (data == nullptr)
-            return -1; // An error should have been logged already.
-        new (&data->userdata) wxString(UnixFilename(*extractor.p1, wxPathFormat(extractor.p2)));
-        return 1;
+        return ConstructAndReturnInstance(v, UnixFilename(*extractor.p1,
+                                                          wxPathFormat(extractor.p2)));
     }
 
     SQInteger gFileTypeOf(HSQUIRRELVM v)
@@ -168,11 +146,8 @@ namespace ScriptBindings
         ExtractParams2<SkipParam, const wxString *> extractor(v);
         if (!extractor.Process("URLEncode"))
             return extractor.ErrorMessage();
-        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-        if (data == nullptr)
-            return -1; // An error should have been logged already.
-        new (&data->userdata) wxString(URLEncode(*extractor.p1));
-        return 1;
+
+        return ConstructAndReturnInstance(v, URLEncode(*extractor.p1));
     }
 
     SQInteger gGetPlatformsFromString(HSQUIRRELVM v)
@@ -192,11 +167,8 @@ namespace ScriptBindings
         ExtractParams3<SkipParam, SQInteger, bool> extractor(v);
         if (!extractor.Process("GetStringFromPlatforms"))
             return extractor.ErrorMessage();
-        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-        if (data == nullptr)
-            return -1; // An error should have been logged already.
-        new (&data->userdata) wxString(GetStringFromPlatforms(extractor.p1, extractor.p2));
-        return 1;
+
+        return ConstructAndReturnInstance(v, GetStringFromPlatforms(extractor.p1, extractor.p2));
     }
 
     SQInteger ConfigManager_GetFolder(HSQUIRRELVM v)
@@ -205,12 +177,8 @@ namespace ScriptBindings
         ExtractParams2<SkipParam, SQInteger> extractor(v);
         if (!extractor.Process("GetFolder"))
             return extractor.ErrorMessage();
-        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-        if (data == nullptr)
-            return -1; // An error should have been logged already.
-        // FIXME (squirrel) We expose an int, but we could expose the actual enum to scripts.
-        new (&data->userdata) wxString(ConfigManager::GetFolder(SearchDirs(extractor.p1)));
-        return 1;
+
+        return ConstructAndReturnInstance(v, ConfigManager::GetFolder(SearchDirs(extractor.p1)));
     }
 
     SQInteger ConfigManager_LocateDataFile(HSQUIRRELVM v)
@@ -219,13 +187,9 @@ namespace ScriptBindings
         ExtractParams3<SkipParam, const wxString *, SQInteger> extractor(v);
         if (!extractor.Process("LocateDataFile"))
             return extractor.ErrorMessage();
-        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-        if (data == nullptr)
-            return -1; // An error should have been logged already.
-        // FIXME (squirrel) We expose an int, but we could expose the actual enum to scripts.
-        new (&data->userdata) wxString(ConfigManager::LocateDataFile(*extractor.p1,
-                                                                     SearchDirs(extractor.p2)));
-        return 1;
+
+        return ConstructAndReturnInstance(v, ConfigManager::LocateDataFile(*extractor.p1,
+                                                                           SearchDirs(extractor.p2)));
     }
 
     SQInteger ExecutePlugin(HSQUIRRELVM v)
@@ -416,12 +380,7 @@ namespace ScriptBindings
         }
 
         const wxColour &result = wxGetColourFromUser(Manager::Get()->GetAppWindow(), *initColour);
-
-        UserDataForType<wxColour> *data = CreateInlineInstance<wxColour>(v);
-        if (data == nullptr)
-            return -1; // An error should have been logged already.
-        new (&data->userdata) wxColour(result);
-        return 1;
+        return ConstructAndReturnInstance(v, result);
     }
 
     SQInteger gWxGetNumberFromUser(HSQUIRRELVM v)
@@ -456,12 +415,7 @@ namespace ScriptBindings
             return extractor.ErrorMessage();
 
         const wxString &result = func(*extractor.p1, *extractor.p2, *extractor.p3);
-
-        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-        if (data == nullptr)
-            return -1; // An error should have been logged already.
-        new (&data->userdata) wxString(result);
-        return 1;
+        return ConstructAndReturnInstance(v, result);
     }
 
     void Register_Globals(HSQUIRRELVM v)

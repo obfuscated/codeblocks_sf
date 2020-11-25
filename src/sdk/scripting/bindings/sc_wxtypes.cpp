@@ -34,13 +34,7 @@ SQInteger static_T(HSQUIRRELVM v)
     if (!extractor.Process("_T"))
         return extractor.ErrorMessage();
 
-    UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-    if (data == nullptr)
-        return -1; // An error should have been logged already.
-
-    new (&data->userdata) wxString(cbC2U(extractor.p1));
-
-    return 1;
+    return ConstructAndReturnInstance(v, cbC2U(extractor.p1));
 }
 
 /// The _() function for scripts
@@ -52,12 +46,7 @@ SQInteger static_(HSQUIRRELVM v)
     if (!extractor.Process("_T"))
         return extractor.ErrorMessage();
 
-    UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-    if (data == nullptr)
-        return -1; // An error should have been logged already.
-    new (&data->userdata) wxString(wxGetTranslation(cbC2U(extractor.p1)));
-
-    return 1;
+    return ConstructAndReturnInstance(v, wxGetTranslation(cbC2U(extractor.p1)));
 }
 
 SQInteger wxString_OpAdd(HSQUIRRELVM v)
@@ -112,11 +101,7 @@ SQInteger wxString_OpAdd(HSQUIRRELVM v)
             return sq_throwerror(v, _SC("Unknown type"));
     }
 
-    UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-    if (data == nullptr)
-        return -1; // An error should have been logged already.
-    new (&data->userdata) wxString(result);
-    return 1;
+    return ConstructAndReturnInstance(v, result);
 }
 
 SQInteger wxString_OpCompare(HSQUIRRELVM v)
@@ -260,12 +245,7 @@ SQInteger wxString_NoParamReturnWxString(HSQUIRRELVM v)
     if (!extractor.Process("wxString_NoParamReturnWxString"))
         return extractor.ErrorMessage();
 
-    UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-    if (data == nullptr)
-        return -1; // An error should have been logged already.
-    new (&data->userdata) wxString((extractor.p0->*func)());
-
-    return 1;
+    return ConstructAndReturnInstance(v, (extractor.p0->*func)());
 }
 
 using wxStringDoSomethingNoReturnFunc = void (wxString::*)();
@@ -286,12 +266,7 @@ SQInteger wxString_Mid(HSQUIRRELVM v)
     if (!extractor.Process("wxString_Mid"))
         return extractor.ErrorMessage();
 
-    UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-    if (data == nullptr)
-        return -1; // An error should have been logged already.
-    new (&data->userdata) wxString(extractor.p0->Mid(extractor.p1, extractor.p2));
-
-    return 1;
+    return ConstructAndReturnInstance(v, extractor.p0->Mid(extractor.p1, extractor.p2));
 }
 
 SQInteger wxString_Remove(HSQUIRRELVM v)
@@ -364,12 +339,7 @@ SQInteger wxString_LeftRight(HSQUIRRELVM v)
     if (extractor.p1 < 0)
         return sq_throwerror(v, _SC("wxString_LeftRight: nCount should be non-negative integer!"));
 
-    UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-    if (data == nullptr)
-        return -1; // An error should have been logged already.
-    new (&data->userdata) wxString((extractor.p0->*func)(extractor.p1));
-
-    return 1;
+    return ConstructAndReturnInstance(v, (extractor.p0->*func)(extractor.p1));
 }
 
 /// Extract parameters for a call to Before/After-First/Last kind of function.
@@ -457,12 +427,7 @@ SQInteger wxString_DoAfterFirstLast(HSQUIRRELVM v)
     if (!SetupFirstLastParams(v, self, searchChar))
         return -1; // An error should have been logged already.
 
-    UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-    if (data == nullptr)
-        return -1; // An error should have been logged already.
-    new (&data->userdata) wxString((self->*func)(searchChar));
-
-    return 1;
+    return ConstructAndReturnInstance(v, (self->*func)(searchChar));
 }
 
 using wxStringDoBeforeFirstLastFunc = wxString (wxString::*)(wxUniChar, wxString *) const;
@@ -475,12 +440,7 @@ SQInteger wxString_DoBeforeFirstLast(HSQUIRRELVM v)
     if (!SetupFirstLastParams(v, self, searchChar))
         return -1; // An error should have been logged already.
 
-    UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-    if (data == nullptr)
-        return -1; // An error should have been logged already.
-    new (&data->userdata) wxString((self->*func)(searchChar, nullptr));
-
-    return 1;
+    return ConstructAndReturnInstance(v, (self->*func)(searchChar, nullptr));
 }
 
 SQInteger wxString_ToLong(HSQUIRRELVM v)
@@ -697,9 +657,7 @@ SQInteger wxArrayString_Item(HSQUIRRELVM v)
 
     // Create an instance for the return value.
     wxString *ref = &((*extractor.p0)[index]);
-    if (CreateNonOwnedPtrInstance<wxString>(v, ref) == nullptr)
-        return -1; // An error should have been logged already.
-    return 1;
+    return ConstructAndReturnNonOwnedPtr(v, ref);
 }
 
 SQInteger wxArrayString_SetItem(HSQUIRRELVM v)
@@ -768,11 +726,8 @@ SQInteger wxFileName_GetCwd(HSQUIRRELVM v)
     ExtractParams2<SkipParam, const wxString *> extractor(v);
     if (!extractor.Process("wxFileName_GetCwd"))
         return extractor.ErrorMessage();
-    UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-    if (data == nullptr)
-        return -1; // An error should have been logged already.
-    new (&data->userdata) wxString(wxFileName::GetCwd(*extractor.p1));
-    return 1;
+
+    return ConstructAndReturnInstance(v, wxFileName::GetCwd(*extractor.p1));
 }
 
 SQInteger wxFileName_tostring(HSQUIRRELVM v)
@@ -789,14 +744,10 @@ SQInteger wxFileName_GetDirs(HSQUIRRELVM v)
     ExtractParams1<const wxFileName*> extractor(v);
     if (!extractor.Process("wxFileName_GetDirs"))
         return extractor.ErrorMessage();
+
     // This doesn't matter much, because squirrel doesn't care for constness.
     wxArrayString *dirs = &const_cast<wxArrayString&>(extractor.p0->GetDirs());
-
-    // Create an instance for the return value.
-    UserDataForType<wxArrayString> *data = CreateNonOwnedPtrInstance<wxArrayString>(v, dirs);
-    if (data == nullptr)
-        return -1; // An error should have been logged already.
-    return 1;
+    return ConstructAndReturnNonOwnedPtr(v, dirs);
 }
 
 /// TODO: Probably simplify by removing the generic ClassType support.
@@ -807,11 +758,7 @@ SQInteger NoParamReturnWxString(HSQUIRRELVM v)
     if (!extractor.Process("NoParamReturnWxString"))
         return extractor.ErrorMessage();
 
-    UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-    if (data == nullptr)
-        return -1; // An error should have been logged already.
-    new (&data->userdata) wxString((extractor.p0->*func)());
-    return 1;
+    return ConstructAndReturnInstance(v, (extractor.p0->*func)());
 }
 
 SQInteger wxFileName_GetFullPath(HSQUIRRELVM v)
@@ -823,11 +770,7 @@ SQInteger wxFileName_GetFullPath(HSQUIRRELVM v)
     if (extractor.p1 < wxPATH_NATIVE || extractor.p1 >= wxPATH_MAX)
         return sq_throwerror(v, _SC("wxFileName_GetFullPath: format out of range!"));
 
-    UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-    if (data == nullptr)
-        return -1; // An error should have been logged already.
-    new (&data->userdata) wxString(extractor.p0->GetFullPath(wxPathFormat(extractor.p1)));
-    return 1;
+    return ConstructAndReturnInstance(v, extractor.p0->GetFullPath(wxPathFormat(extractor.p1)));
 }
 
 SQInteger wxFileName_GetPath(HSQUIRRELVM v)
@@ -839,12 +782,8 @@ SQInteger wxFileName_GetPath(HSQUIRRELVM v)
     if (extractor.p2 < wxPATH_NATIVE || extractor.p2 >= wxPATH_MAX)
         return sq_throwerror(v, _SC("wxFileName_GetPath: format out of range!"));
 
-    UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-    if (data == nullptr)
-        return -1; // An error should have been logged already.
-    new (&data->userdata) wxString(extractor.p0->GetPath(int(extractor.p1),
-                                                         wxPathFormat(extractor.p2)));
-    return 1;
+    return ConstructAndReturnInstance(v, extractor.p0->GetPath(int(extractor.p1),
+                                                               wxPathFormat(extractor.p2)));
 }
 
 SQInteger wxFileName_InsertDir(HSQUIRRELVM v)
