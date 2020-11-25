@@ -77,7 +77,7 @@ class sdkTest extends script_test_base
 
         test_equal("IsNull", IsNull(_T("")), false);
         test_string("EscapeSpaces", EscapeSpaces(_T("test  spaces")), @"test\ \ spaces");
-        test_string("UnixFilename", UnixFilename(_T("\\test\\unix.file"), wxPATH_UNIX),
+        test_string("UnixFilename", UnixFilename(_T("\\test\\unix.file"), ::wxPATH_UNIX),
                     "/test/unix.file");
 
         test_equal("FileTypeOf", FileTypeOf(_T("test.cpp")), 10);
