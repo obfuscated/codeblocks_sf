@@ -8,6 +8,7 @@
  */
 
 #if 0
+// FIXME (squirrel) Reimplement util dialogs
 
 #include <sdk_precomp.h>
 

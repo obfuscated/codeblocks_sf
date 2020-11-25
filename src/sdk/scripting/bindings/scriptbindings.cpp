@@ -8,6 +8,7 @@
  */
 
 #if 0
+// FIXME (squirrel) Reimplement all binding
 
 #include <sdk_precomp.h>
 #ifndef CB_PRECOMP

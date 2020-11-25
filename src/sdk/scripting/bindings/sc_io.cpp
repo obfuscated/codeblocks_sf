@@ -8,6 +8,7 @@
  */
 
 #if 0
+// FIXME (squirrel) Reimplement IO
 
 #include <sdk_precomp.h>
 #include <manager.h>
