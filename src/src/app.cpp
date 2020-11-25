@@ -794,19 +794,14 @@ bool CodeBlocksApp::OnInit()
         CheckVersion();
 
         // FIXME (squirrel) Reimplement run startup script
-/*
         // run startup script
-        try
+        const wxString startup = ConfigManager::LocateDataFile(_T("startup.script"), sdScriptsUser | sdScriptsGlobal);
+        if (!startup.empty())
         {
-            wxString startup = ConfigManager::LocateDataFile(_T("startup.script"), sdScriptsUser | sdScriptsGlobal);
-            if (!startup.IsEmpty())
-                Manager::Get()->GetScriptingManager()->LoadScript(startup);
+            ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
+            if (!scriptMgr->LoadScript(startup))
+                scriptMgr->DisplayErrors();
         }
-        catch (SquirrelError& exception)
-        {
-            Manager::Get()->GetScriptingManager()->DisplayErrors(&exception);
-        }
-*/
 
         Manager::ProcessPendingEvents();
 

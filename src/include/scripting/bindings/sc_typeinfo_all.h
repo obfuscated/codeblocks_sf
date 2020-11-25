@@ -31,7 +31,10 @@ enum class TypeTag : uint32_t
     wxFileName,
     EditorBase,
     cbEditor,
-    EditorManager
+    EditorManager,
+    PluginInfo,
+    ScriptingManager,
+    UserVariableManager
 };
 
 template<>
@@ -94,6 +97,27 @@ template<>
 struct TypeInfo<EditorManager> {
     static const uint32_t typetag = uint32_t(TypeTag::EditorManager);
     static constexpr const SQChar *className = _SC("EditorManager");
+    using baseClass = void;
+};
+
+template<>
+struct TypeInfo<PluginInfo> {
+    static const uint32_t typetag = uint32_t(TypeTag::PluginInfo);
+    static constexpr const SQChar *className = _SC("PluginInfo");
+    using baseClass = void;
+};
+
+template<>
+struct TypeInfo<ScriptingManager> {
+    static const uint32_t typetag = uint32_t(TypeTag::ScriptingManager);
+    static constexpr const SQChar *className = _SC("ScriptingManager");
+    using baseClass = void;
+};
+
+template<>
+struct TypeInfo<UserVariableManager> {
+    static const uint32_t typetag = uint32_t(TypeTag::UserVariableManager);
+    static constexpr const SQChar *className = _SC("UserVariableManager");
     using baseClass = void;
 };
 

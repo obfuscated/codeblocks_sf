@@ -1222,6 +1222,29 @@ namespace ScriptBindings
         return 1;
     }
 
+    SQInteger UserVariableManager_Exists(HSQUIRRELVM v)
+    {
+        // this, variable
+        ExtractParams2<UserVariableManager*, const wxString *> extractor(v);
+        if (!extractor.Process("UserVariableManager::Exists"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->Exists(*extractor.p1));
+        return 1;
+    }
+
+    SQInteger ScriptingManager_RegisterScriptMenu(HSQUIRRELVM v)
+    {
+        // this, menuPath, scriptOrFunc, isFunction
+        ExtractParams4<ScriptingManager*, const wxString *, const wxString*, bool> extractor(v);
+        if (!extractor.Process("ScriptingManager::RegisterScriptMenu"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->RegisterScriptMenu(*extractor.p1, *extractor.p2, extractor.p3));
+        return 1;
+    }
+
+    template<>
+    MembersType<PluginInfo> FindMembers<PluginInfo>::members{};
+
     void Register_Constants(HSQUIRRELVM v);
     void Unregister_Constants(HSQUIRRELVM v);
     void Register_Globals(HSQUIRRELVM v);
@@ -1273,7 +1296,51 @@ namespace ScriptBindings
             sq_newslot(v, classDecl, SQFalse);
         }
 
+        {
+            // Register UserVariableManager
+            const SQInteger classDecl = CreateClassDecl<UserVariableManager>(v, _SC("UserVariableManager"));
+            BindMethod(v, _SC("Exists"), UserVariableManager_Exists, _SC("UserVariableManager::Exists"));
+
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
+
+        {
+            // Register ScriptingManager
+            const SQInteger classDecl = CreateClassDecl<ScriptingManager>(v, _SC("ScriptingManager"));
+            BindMethod(v, _SC("RegisterScriptMenu"), ScriptingManager_RegisterScriptMenu,
+                       _SC("ScriptingManager::RegisterScriptMenu"));
+
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
+
+        {
+            // Register PluginInfo
+            const SQInteger classDecl = CreateClassDecl<PluginInfo>(v, _SC("PluginInfo"));
+            BindEmptyCtor<PluginInfo>(v);
+            BindMethod(v, _SC("_get"), GenericMember_get<PluginInfo>, _SC("PluginInfo::_get"));
+            BindMethod(v, _SC("_set"), GenericMember_set<PluginInfo>, _SC("PluginInfo::_set"));
+
+            MembersType<PluginInfo> &members = FindMembers<PluginInfo>::members;
+            addMemberRef(members, _SC("name"), &PluginInfo::name);
+            addMemberRef(members, _SC("title"), &PluginInfo::title);
+            addMemberRef(members, _SC("version"), &PluginInfo::version);
+            addMemberRef(members, _SC("description"), &PluginInfo::description);
+            addMemberRef(members, _SC("author"), &PluginInfo::author);
+            addMemberRef(members, _SC("authorEmail"), &PluginInfo::authorEmail);
+            addMemberRef(members, _SC("authorWebsite"), &PluginInfo::authorWebsite);
+            addMemberRef(members, _SC("thanksTo"), &PluginInfo::thanksTo);
+            addMemberRef(members, _SC("license"), &PluginInfo::license);
+
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
+
         sq_pop(v, 1); // Pop root table.
+
+        // called last because it needs a few previously registered types
+        Register_ScriptPlugin(v);
     }
 
     void UnregisterBindings(HSQUIRRELVM v)

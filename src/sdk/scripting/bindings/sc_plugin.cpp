@@ -295,6 +295,45 @@ int ExecutePlugin(const wxString& name)
 }
 
 }; // namespace ScriptPluginWrapper
+#else
+
+#include "sdk.h"
+#include <wx/dynarray.h>
+#include "sc_utils.h"
+
+namespace ScriptBindings
+{
+namespace ScriptPluginWrapper
+{
+wxArrayInt CreateMenu(const wxString& name)
+{
+    return wxArrayInt();
+}
+wxArrayInt CreateModuleMenu(const ModuleType typ, wxMenu* menu, const FileTreeData* data)
+{
+    return wxArrayInt();
+}
+void OnScriptMenu(int id)
+{
+}
+void OnScriptModuleMenu(int id)
+{
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// register a script plugin (script-bound function)
+////////////////////////////////////////////////////////////////////////////////
+SQInteger RegisterPlugin(HSQUIRRELVM v)
+{
+    // FIXME (squirrel) Implement me
+
+    // this function returns nothing on the squirrel stack
+    return 0;
+}
+
+} // namespace ScriptPluginWrapper
+#endif // 0
 
 // base script plugin class
 const char* s_cbScriptPlugin =
@@ -335,72 +374,107 @@ const char* s_cbScriptPlugin =
     "    }\n"
     "}\n";
 
+// FIXME (squirrel) This is duplicated! Try to deduplicate.
+static wxString s_ScriptOutput;
+
+// FIXME (squirrel) This is duplicated! Try to deduplicate.
+static void PrintSquirrelToWxString(wxString& msg, const SQChar* s, va_list& vl)
+{
+    int buffer_size = 2048;
+    SQChar* tmp_buffer;
+    for (;;buffer_size*=2)
+    {
+        // FIXME (squirrel) Optimize this
+        tmp_buffer = new SQChar [buffer_size];
+        int retvalue = scvsprintf(tmp_buffer, buffer_size, s, vl);
+        if (retvalue < buffer_size)
+        {
+            // Buffersize was large enough
+            msg = cbC2U(tmp_buffer);
+            delete[] tmp_buffer;
+            break;
+        }
+        // Buffer size was not enough
+        delete[] tmp_buffer;
+    }
+}
+
+// FIXME (squirrel) This is duplicated! Try to deduplicate.
+static void ScriptsPrintFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
+{
+    va_list vl;
+    va_start(vl,s);
+    wxString msg;
+    PrintSquirrelToWxString(msg,s,vl);
+    va_end(vl);
+
+    s_ScriptOutput << msg;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // register the script plugin framework
 ////////////////////////////////////////////////////////////////////////////////
-void Register_ScriptPlugin()
+void Register_ScriptPlugin(HSQUIRRELVM v)
 {
-    SqPlus::RegisterGlobal(&ScriptPluginWrapper::ExecutePlugin, "ExecutePlugin");
-    SquirrelVM::CreateFunctionGlobal(&ScriptPluginWrapper::GetPlugin, "GetPlugin", "*");
-    SquirrelVM::CreateFunctionGlobal(&ScriptPluginWrapper::RegisterPlugin, "RegisterPlugin", "*");
+    PreserveTop preserveTop(v);
+
+    {
+        sq_pushroottable(v);
+
+// FIXME (squirrel) Reimplement sc_plugin
+//    SqPlus::RegisterGlobal(&ScriptPluginWrapper::ExecutePlugin, "ExecutePlugin");
+//    SquirrelVM::CreateFunctionGlobal(&ScriptPluginWrapper::GetPlugin, "GetPlugin", "*");
+        BindMethod(v, "RegisterPlugin", ScriptPluginWrapper::RegisterPlugin, nullptr);
+
+        sq_pop(v, 1); // root table
+    }
 
     // load base script plugin
 
     // WARNING: we CANNOT use ScriptingManager::LoadBuffer() because we have reached here
     // by a call from inside ScriptingManager's constructor. This would cause an infinite
     // loop and the app would die with a stack overflow. We got to load the script manually...
-    // we also have to disable the printfunc for a while
+    // we also have to disable the print and error func for a while
 
-    SQPRINTFUNCTION oldPrintFunc = sq_getprintfunc(SquirrelVM::GetVMPtr());
-    sq_setprintfunc(SquirrelVM::GetVMPtr(), 0);
+    SQPRINTFUNCTION oldPrintFunc = sq_getprintfunc(v);
+    SQPRINTFUNCTION oldErrorFunc = sq_geterrorfunc(v);
+    sq_setprintfunc(v, ScriptsPrintFunc, ScriptsPrintFunc);
 
-    // compile and run script
-    SquirrelObject script;
-    try
+    wxString errorType;
+
+    if (SQ_SUCCEEDED(sq_compilebuffer(v, s_cbScriptPlugin,
+                                      (strlen(s_cbScriptPlugin) + 1) * sizeof(SQChar),
+                                      "cbScriptPlugin", 1)))
     {
-        script = SquirrelVM::CompileBuffer(s_cbScriptPlugin, "cbScriptPlugin");
-        SquirrelVM::RunScript(script);
+        sq_pushroottable(v); // this is the parameter for the script closure
+
+        if (SQ_FAILED(sq_call(v, 1, SQFalse, SQTrue)))
+            errorType = "Call";
+        sq_pop(v, 1); // pop the closure
     }
-    catch (SquirrelError e)
+    else
+        errorType = "Compile";
+
+    if (!errorType.empty())
     {
-        cbMessageBox(wxString::Format(_("Failed to register script plugins framework.\n\n%s"),
-                                        cbC2U(e.desc).c_str()),
-                    _("Script compile error"), wxICON_ERROR);
+        const SQChar *s;
+        sq_getlasterror(v);
+        sq_getstring(v, -1, &s);
+        wxString errorMsg;
+        if (s)
+            errorMsg = wxString(s);
+        else
+            errorMsg = "Unknown error!";
+        sq_pop(v, 1);
+
+        const wxString fullMessage = wxString::Format("Filename: cbScriptPlugin\n%sError: %s\nDetails: %s",
+                                                      errorType.wx_str(), errorMsg.wx_str(),
+                                                      s_ScriptOutput.wx_str());
+        Manager::Get()->GetLogManager()->LogError(fullMessage);
     }
 
-    // restore the printfunc
-    sq_setprintfunc(SquirrelVM::GetVMPtr(), oldPrintFunc);
+    // restore the print and error funcs
+    sq_setprintfunc(v, oldPrintFunc, oldErrorFunc);
 }
 
-}; // namespace ScriptBindings
-
-
-#else
-
-// FIXME (squirrel) Reimplement sc_plugin
-
-#include "sdk.h"
-#include <wx/dynarray.h>
-namespace ScriptBindings
-{
-namespace ScriptPluginWrapper
-{
-wxArrayInt CreateMenu(const wxString& name)
-{
-    return wxArrayInt();
-}
-wxArrayInt CreateModuleMenu(const ModuleType typ, wxMenu* menu, const FileTreeData* data)
-{
-    return wxArrayInt();
-}
-void OnScriptMenu(int id)
-{
-}
-void OnScriptModuleMenu(int id)
-{
-}
-
-} // namespace ScriptPluginWrapper
 } // namespace ScriptBindings
-
-#endif // 0

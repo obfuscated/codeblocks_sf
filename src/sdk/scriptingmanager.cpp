@@ -251,7 +251,7 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
         return false;
     }
 
-    sq_pushroottable(m_vm);
+    sq_pushroottable(m_vm); // this is the parameter for the script closure
     if (SQ_FAILED(sq_call(m_vm, 1, SQFalse, SQTrue)))
     {
         const wxString errorMsg = ExtractLastSquirrelError(m_vm, false);
@@ -264,7 +264,7 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
         return false;
     }
 
-    sq_pop(m_vm, 1);
+    sq_pop(m_vm, 1); // pop the closure
 
     m_IncludeSet.erase(incName);
     return true;
