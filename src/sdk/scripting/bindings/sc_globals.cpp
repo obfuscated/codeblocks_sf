@@ -445,6 +445,8 @@ namespace ScriptBindings
 
         BindMethod(v, _SC("ReplaceMacros"), gReplaceMacros, nullptr);
 
+        BindMethod(v, _SC("GetProjectManager"),
+                   GetManager<ProjectManager, &Manager::GetProjectManager>, nullptr);
         BindMethod(v, _SC("GetEditorManager"),
                    GetManager<EditorManager, &Manager::GetEditorManager>, nullptr);
         BindMethod(v, _SC("GetConfigManager"), GetCM, nullptr);

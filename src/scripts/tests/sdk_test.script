@@ -91,6 +91,11 @@ class sdkTest extends script_test_base
         ::print("======= Test Globals function END ======= \n");
     }
 
+    function makePath(folder, name)
+    {
+        return folder + ::wxFILE_SEP_PATH + name
+    }
+
     function test_classes()
     {
         ::print("======= Test SDK Classes function BEGINN ======= \n");
@@ -98,6 +103,7 @@ class sdkTest extends script_test_base
 
         {
             local cfg = GetConfigManager();
+            test_false("GetConfigManager", IsNull(cfg));
 
             cfg.Write(_T("/test/int"), 10);
             cfg.Write(_T("/test/bool"), false);
@@ -110,29 +116,109 @@ class sdkTest extends script_test_base
             test_string("ConfigManager string", cfg.Read(_T("/test/string"), _T("defstr")), "mystr");
         }
 
+        local projectMgr = GetProjectManager();
+        test_false("GetProjectManager", IsNull(projectMgr));
+
+        // This is here to allow consequtive runs of the suite and also to prevent messing active
+        // projects at the time of the start of the script.
+        test_true("ProjectManager::CloseWorkspace", projectMgr.CloseWorkspace());
+
+        local tempFolder = GetFolder(0x4);
+        print(_T("TEMP folder is=") + tempFolder + _T("\n"));
+
+        local project = projectMgr.NewProject(makePath(tempFolder, _T("NewProject.cbp")));
+        test_false("ProjectManager::NewProject", IsNull(project));
+        // FIXME (squirrel) Add test for parent class of cbProject
+
+        // FIXME (squirrel) Asserts when Project -> Properties with this empty project
+        // FIXME (squirrel) Asserts when Project -> Build options with this empty project
+
+        local debugTarget = project.AddBuildTarget(_T("Debug"));
+        test_false("cbProject::AddBuildTarget non null 0", IsNull(debugTarget));
+        local releaseTarget = project.AddBuildTarget(_T("Release"));
+        test_false("cbProject::AddBuildTarget non null 1", IsNull(releaseTarget));
+
+        test_equal("cbProject::GetFilesCount empty", project.GetFilesCount(), 0);
+
+        projectMgr.AddFileToProject(makePath(tempFolder, _T("file1.cpp")), project, 0);
+        projectMgr.AddFileToProject(makePath(tempFolder, _T("file1.cpp")), project, 1);
+
+        projectMgr.RebuildTree();
+
+        test_equal("cbProject::GetFilesCount after 1 file", project.GetFilesCount(), 1);
+
         {
-            // FIXME (squirrel) Add tests for:
-            //   ProjectFile::AddBuildTarget
-            //   ProjectFile::RenameBuildTarget
-            //   ProjectFile::RemoveBuildTarget
-            //   ProjectFile::GetBuildTargets
-            //   ProjectFile::GetBaseName
-            //   ProjectFile::GetObjName
-            //   ProjectFile::SetObjName
-            //   ProjectFile::GetParentProject
-            //   ProjectFile::SetUseCustomBuildCommand
-            //   ProjectFile::SetCustomBuildCommand
-            //   ProjectFile::GetUseCustomBuildCommand
-            //   ProjectFile::GetCustomBuildCommand
-            //   ProjectFile::file
-            //   ProjectFile::relativeFilename
-            //   ProjectFile::relativeToCommonTopLevelPath
-            //   ProjectFile::compile
-            //   ProjectFile::link
-            //   ProjectFile::weight
-            //   ProjectFile::compilerVar
-            //   ProjectFile::buildTargets
+            local file = project.GetFile(0);
+            test_false("cbProject::GetFile non null", IsNull(file));
+
+            local strTargets = GetStringFromArray(file.GetBuildTargets(), _T(";"), false);
+            test_string("ProjectFile::GetBuildTargets", strTargets, "Debug;Release");
+
+            test_equal("ProjectFile::GetParentProject", file.GetParentProject(), project);
+
+            local test_targets = function(message, file, expected)
+            {
+                local strTargets = GetStringFromArray(file.GetBuildTargets(), _T(";"), false);
+                test_string(message, strTargets, expected);
+            }
+
+            file.RemoveBuildTarget(_T("Debug"));
+            test_targets("ProjectFile::RemoveBuildTarget", file, "Release");
+
+            file.RenameBuildTarget(_T("Release"), _T("Debug"));
+            test_targets("ProjectFile::RenameBuildTarget", file, "Debug");
+
+            file.AddBuildTarget(_T("Release"));
+            test_targets("ProjectFile::AddBuildTarget", file, "Debug;Release");
+
+            local objExt = ".o"; // FIXME (squirrel) Make this Multi-OS/Multi-Compiler
+
+            test_string("ProjectFile::GetBaseName", file.GetBaseName(), "file1");
+            test_string("ProjectFile::GetObjName", file.GetObjName(), "file1" + objExt);
+            file.SetObjName(_T("changed.obj1"));
+            test_string("ProjectFile::SetObjName", file.GetObjName(), "changed" + objExt);
+
+            local compilerId = _T("gcc");
+            test_false("ProjectFile::GetUseCustomBuildCommand",
+                       file.GetUseCustomBuildCommand(compilerId));
+            file.SetUseCustomBuildCommand(compilerId, true);
+            test_true("ProjectFile::SetUseCustomBuildCommand",
+                      file.GetUseCustomBuildCommand(compilerId));
+
+            test_string("ProjectFile::GetCustomBuildCommand",
+                        file.GetCustomBuildCommand(compilerId), "");
+            file.SetCustomBuildCommand(compilerId, _T("<custom command>"));
+            test_string("ProjectFile::SetCustomBuildCommand",
+                        file.GetCustomBuildCommand(compilerId), "<custom command>");
+
+            test_string("ProjectFile::file get", file.file.GetFullPath(::wxPATH_NATIVE),
+                        makePath(tempFolder, _T("file1.cpp")));
+            test_string("ProjectFile::relativeFilename", file.relativeFilename, "file1.cpp");
+            test_string("ProjectFile::relativeToCommonTopLevelPath",
+                        file.relativeToCommonTopLevelPath, "file1.cpp");
+
+            test_true("ProjectFile::compile get", file.compile);
+            file.compile = false;
+            test_false("ProjectFile::compile set", file.compile);
+
+            test_true("ProjectFile::link get", file.link);
+            file.link = false;
+            test_false("ProjectFile::link set", file.link);
+
+            test_equal("ProjectFile::weight get", file.weight, 50);
+            file.weight = 12;
+            test_equal("ProjectFile::weight set", file.weight, 12);
+
+            test_string("ProjectFile::compilerVar get", file.compilerVar, "CPP");
+            file.compilerVar = _T("TEST");
+            test_string("ProjectFile::compilerVar set", file.compilerVar, "TEST");
+
+            local strTargets = GetStringFromArray(file.buildTargets, _T(";"), false);
+            test_string("ProjectFile::buildTargets get", strTargets, "Debug;Release");
         }
+
+        // Cleanup. Must happen here.
+        test_true("ProjectManager::CloseProject", projectMgr.CloseProject(project, true, true));
 
         {
             local info = PluginInfo();
