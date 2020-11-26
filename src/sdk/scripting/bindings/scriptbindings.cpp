@@ -1383,6 +1383,191 @@ namespace ScriptBindings
         return ConstructAndReturnInstance(v, extractor.p0->GetCustomBuildCommand(*extractor.p1));
     }
 
+    template<void (CompileOptionsBase::*func)(int)>
+    SQInteger CompileOptionsBase_Platform(HSQUIRRELVM v)
+    {
+        // this, platform(s)
+        ExtractParams2<CompileOptionsBase*, SQInteger> extractor(v);
+        if (!extractor.Process("CompileOptionsBase_Platform"))
+            return extractor.ErrorMessage();
+        (extractor.p0->*func)(extractor.p1);
+        return 0;
+    }
+
+    SQInteger CompileOptionsBase_GetPlatforms(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<CompileOptionsBase*> extractor(v);
+        if (!extractor.Process("CompileOptionsBase::GetPlatforms"))
+            return extractor.ErrorMessage();
+        sq_pushinteger(v, extractor.p0->GetPlatforms());
+        return 1;
+    }
+
+    SQInteger CompileOptionsBase_SupportsCurrentPlatform(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<CompileOptionsBase*> extractor(v);
+        if (!extractor.Process("CompileOptionsBase::SupportsCurrentPlatform"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->SupportsCurrentPlatform());
+        return 1;
+    }
+
+    template<void (CompileOptionsBase::*func)(const wxArrayString&)>
+    SQInteger CompileOptionsBase_SetArrayString(HSQUIRRELVM v)
+    {
+        // this, linkerOpts
+        ExtractParams2<CompileOptionsBase*, const wxArrayString *> extractor(v);
+        if (!extractor.Process("CompileOptionsBase_SetArrayString"))
+            return extractor.ErrorMessage();
+        (extractor.p0->*func)(*extractor.p1);
+        return 0;
+    }
+
+    template<const wxArrayString& (CompileOptionsBase::*func)() const>
+    SQInteger CompileOptionsBase_GetArrayString(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const CompileOptionsBase*> extractor(v);
+        if (!extractor.Process("CompileOptionsBase_GetArrayString"))
+            return extractor.ErrorMessage();
+
+        // FIXME (squirrel) This doesn't matter much, because squirrel doesn't care for constness.
+        wxArrayString *result = &const_cast<wxArrayString&>((extractor.p0->*func)());
+        return ConstructAndReturnNonOwnedPtr(v, result);
+    }
+
+    template<void (CompileOptionsBase::*func)(const wxString &)>
+    SQInteger CompileOptionsBase_StringParam(HSQUIRRELVM v)
+    {
+        // this, option
+        ExtractParams2<CompileOptionsBase*, const wxString *> extractor(v);
+        if (!extractor.Process("CompileOptionsBase_AddOption"))
+            return extractor.ErrorMessage();
+        (extractor.p0->*func)(*extractor.p1);
+        return 0;
+    }
+
+    template<void (CompileOptionsBase::*func)(const wxString&, const wxString&)>
+    SQInteger CompileOptionsBase_ReplaceOption(HSQUIRRELVM v)
+    {
+        // this, option, new_option
+        ExtractParams3<CompileOptionsBase*, const wxString *, const wxString *> extractor(v);
+        if (!extractor.Process("CompileOptionsBase_ReplaceOption"))
+            return extractor.ErrorMessage();
+        (extractor.p0->*func)(*extractor.p1, *extractor.p2);
+        return 0;
+    }
+
+    SQInteger CompileOptionsBase_SetLinkerExecutable(HSQUIRRELVM v)
+    {
+        // this, option (actual type LinkerExecutableOption)
+        ExtractParams2<CompileOptionsBase*, SQInteger> extractor(v);
+        if (!extractor.Process("CompileOptionsBase::SetLinkerExecutable"))
+            return extractor.ErrorMessage();
+
+        if (extractor.p1 < int32_t(LinkerExecutableOption::First) ||
+            extractor.p1 >= int32_t(LinkerExecutableOption::Last))
+        {
+            return sq_throwerror(v, _SC("CompileOptionsBase::SetLinkerExecutable: option value out of range!"));
+        }
+        extractor.p0->SetLinkerExecutable(LinkerExecutableOption(extractor.p1));
+        return 0;
+    }
+
+    SQInteger CompileOptionsBase_GetLinkerExecutable(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const CompileOptionsBase*> extractor(v);
+        if (!extractor.Process("CompileOptionsBase::GetLinkerExecutable"))
+            return extractor.ErrorMessage();
+        sq_pushinteger(v, int32_t(extractor.p0->GetLinkerExecutable()));
+        return 1;
+    }
+
+    SQInteger CompileOptionsBase_GetModified(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const CompileOptionsBase*> extractor(v);
+        if (!extractor.Process("CompileOptionsBase::GetModified"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->GetModified());
+        return 1;
+    }
+
+    SQInteger CompileOptionsBase_SetModified(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams2<CompileOptionsBase*, bool> extractor(v);
+        if (!extractor.Process("CompileOptionsBase::SetModified"))
+            return extractor.ErrorMessage();
+        extractor.p0->SetModified(extractor.p1);
+        return 0;
+    }
+
+    SQInteger CompileOptionsBase_GetAlwaysRunPostBuildSteps(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const CompileOptionsBase*> extractor(v);
+        if (!extractor.Process("CompileOptionsBase::GetAlwaysRunPostBuildSteps"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->GetAlwaysRunPostBuildSteps());
+        return 1;
+    }
+
+    SQInteger CompileOptionsBase_SetAlwaysRunPostBuildSteps(HSQUIRRELVM v)
+    {
+        // this, always
+        ExtractParams2<CompileOptionsBase*, bool> extractor(v);
+        if (!extractor.Process("CompileOptionsBase::SetAlwaysRunPostBuildSteps"))
+            return extractor.ErrorMessage();
+        extractor.p0->SetAlwaysRunPostBuildSteps(extractor.p1);
+        return 0;
+    }
+
+    SQInteger CompileOptionsBase_SetVar(HSQUIRRELVM v)
+    {
+        // this, key, value, onlyIfExists
+        ExtractParams4<CompileOptionsBase*, const wxString*, const wxString*, bool> extractor(v);
+        if (!extractor.Process("CompileOptionsBase::SetVar"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->SetVar(*extractor.p1, *extractor.p2, extractor.p3));
+        return 1;
+    }
+
+    SQInteger CompileOptionsBase_GetVar(HSQUIRRELVM v)
+    {
+        // this, key
+        ExtractParams2<const CompileOptionsBase*, const wxString*> extractor(v);
+        if (!extractor.Process("CompileOptionsBase::GetVar"))
+            return extractor.ErrorMessage();
+
+        const wxString &result = extractor.p0->GetVar(*extractor.p1);
+        // FIXME (squirrel) This doesn't matter much, because squirrel doesn't care for constness.
+        return ConstructAndReturnNonOwnedPtr(v, &const_cast<wxString&>(result));
+    }
+
+    SQInteger CompileOptionsBase_UnsetVar(HSQUIRRELVM v)
+    {
+        // this, key
+        ExtractParams2<CompileOptionsBase*, const wxString*> extractor(v);
+        if (!extractor.Process("CompileOptionsBase::UnsetVar"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->UnsetVar(*extractor.p1));
+        return 1;
+    }
+
+    SQInteger CompileOptionsBase_UnsetAllVars(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<CompileOptionsBase*> extractor(v);
+        if (!extractor.Process("CompileOptionsBase::UnsetAllVars"))
+            return extractor.ErrorMessage();
+        extractor.p0->UnsetAllVars();
+        return 0;
+    }
+
     SQInteger cbProject_GetFilesCount(HSQUIRRELVM v)
     {
         // this
@@ -1604,6 +1789,189 @@ namespace ScriptBindings
         {
             // Register CompileOptionsBase
             const SQInteger classDecl = CreateClassDecl<CompileOptionsBase>(v, _SC("CompileOptionsBase"));
+            BindMethod(v, _SC("AddPlatform"),
+                       CompileOptionsBase_Platform<&CompileOptionsBase::AddPlatform>,
+                       _SC("CompileOptionsBase::AddPlatform"));
+            BindMethod(v, _SC("RemovePlatform"),
+                       CompileOptionsBase_Platform<&CompileOptionsBase::RemovePlatform>,
+                       _SC("CompileOptionsBase::RemovePlatform"));
+            BindMethod(v, _SC("SetPlatforms"),
+                       CompileOptionsBase_Platform<&CompileOptionsBase::SetPlatforms>,
+                       _SC("CompileOptionsBase::SetPlatforms"));
+            BindMethod(v, _SC("GetPlatforms"), CompileOptionsBase_GetPlatforms,
+                       _SC("CompileOptionsBase::GetPlatforms"));
+            BindMethod(v, _SC("SupportsCurrentPlatform"),
+                         CompileOptionsBase_SupportsCurrentPlatform,
+                         _SC("CompileOptionsBase::SupportsCurrentPlatform"));
+            BindMethod(v, _SC("SetLinkerOptions"),
+                       CompileOptionsBase_SetArrayString<&CompileOptionsBase::SetLinkerOptions>,
+                       _SC("CompileOptionsBase::SetLinkerOptions"));
+            BindMethod(v, _SC("SetLinkLibs"),
+                       CompileOptionsBase_SetArrayString<&CompileOptionsBase::SetLinkLibs>,
+                       _SC("CompileOptionsBase::SetLinkLibs"));
+            BindMethod(v, _SC("SetLinkerExecutable"), CompileOptionsBase_SetLinkerExecutable,
+                       _SC("CompileOptionsBase::SetLinkerExecutable"));
+            BindMethod(v, _SC("GetLinkerExecutable"), CompileOptionsBase_GetLinkerExecutable,
+                       _SC("CompileOptionsBase::GetLinkerExecutable"));
+            BindMethod(v, _SC("SetCompilerOptions"),
+                       CompileOptionsBase_SetArrayString<&CompileOptionsBase::SetCompilerOptions>,
+                       _SC("CompileOptionsBase::SetCompilerOptions"));
+            BindMethod(v, _SC("SetResourceCompilerOptions"),
+                       CompileOptionsBase_SetArrayString<&CompileOptionsBase::SetResourceCompilerOptions>,
+                       _SC("CompileOptionsBase::SetResourceCompilerOptions"));
+            BindMethod(v, _SC("SetIncludeDirs"),
+                       CompileOptionsBase_SetArrayString<&CompileOptionsBase::SetIncludeDirs>,
+                       _SC("CompileOptionsBase::SetIncludeDirs"));
+            BindMethod(v, _SC("SetResourceIncludeDirs"),
+                       CompileOptionsBase_SetArrayString<&CompileOptionsBase::SetResourceIncludeDirs>,
+                       _SC("CompileOptionsBase::SetResourceIncludeDirs"));
+            BindMethod(v, _SC("SetLibDirs"),
+                       CompileOptionsBase_SetArrayString<&CompileOptionsBase::SetLibDirs>,
+                       _SC("CompileOptionsBase::SetLibDirs"));
+            BindMethod(v, _SC("SetCommandsBeforeBuild"),
+                       CompileOptionsBase_SetArrayString<&CompileOptionsBase::SetCommandsBeforeBuild>,
+                       _SC("CompileOptionsBase::SetCommandsBeforeBuild"));
+            BindMethod(v, _SC("SetCommandsAfterBuild"),
+                       CompileOptionsBase_SetArrayString<&CompileOptionsBase::SetCommandsAfterBuild>,
+                       _SC("CompileOptionsBase::SetCommandsAfterBuild"));
+            BindMethod(v, _SC("GetLinkerOptions"),
+                       CompileOptionsBase_GetArrayString<&CompileOptionsBase::GetLinkerOptions>,
+                       _SC("CompileOptionsBase::GetLinkerOptions"));
+            BindMethod(v, _SC("GetLinkLibs"),
+                       CompileOptionsBase_GetArrayString<&CompileOptionsBase::GetLinkLibs>,
+                       _SC("CompileOptionsBase::GetLinkLibs"));
+            BindMethod(v, _SC("GetCompilerOptions"),
+                       CompileOptionsBase_GetArrayString<&CompileOptionsBase::GetCompilerOptions>,
+                       _SC("CompileOptionsBase::GetCompilerOptions"));
+            BindMethod(v, _SC("GetResourceCompilerOptions"),
+                       CompileOptionsBase_GetArrayString<&CompileOptionsBase::GetResourceCompilerOptions>,
+                       _SC("CompileOptionsBase::GetResourceCompilerOptions"));
+            BindMethod(v, _SC("GetIncludeDirs"),
+                       CompileOptionsBase_GetArrayString<&CompileOptionsBase::GetIncludeDirs>,
+                       _SC("CompileOptionsBase::GetIncludeDirs"));
+            BindMethod(v, _SC("GetResourceIncludeDirs"),
+                       CompileOptionsBase_GetArrayString<&CompileOptionsBase::GetResourceIncludeDirs>,
+                       _SC("CompileOptionsBase::GetResourceIncludeDirs"));
+            BindMethod(v, _SC("GetLibDirs"),
+                       CompileOptionsBase_GetArrayString<&CompileOptionsBase::GetLibDirs>,
+                       _SC("CompileOptionsBase::GetLibDirs"));
+            BindMethod(v, _SC("GetCommandsBeforeBuild"),
+                       CompileOptionsBase_GetArrayString<&CompileOptionsBase::GetCommandsBeforeBuild>,
+                       _SC("CompileOptionsBase::GetCommandsBeforeBuild"));
+            BindMethod(v, _SC("GetCommandsAfterBuild"),
+                       CompileOptionsBase_GetArrayString<&CompileOptionsBase::GetCommandsAfterBuild>,
+                       _SC("CompileOptionsBase::GetCommandsAfterBuild"));
+            BindMethod(v, _SC("GetModified"), CompileOptionsBase_GetModified,
+                       _SC("CompileOptionsBase::GetModified"));
+            BindMethod(v, _SC("SetModified"), CompileOptionsBase_SetModified,
+                       _SC("CompileOptionsBase::SetModified"));
+            BindMethod(v, _SC("AddLinkerOption"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::AddLinkerOption>,
+                       _SC("CompileOptionsBase::AddLinkerOption"));
+            BindMethod(v, _SC("AddLinkLib"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::AddLinkLib>,
+                       _SC("CompileOptionsBase::AddLinkLib"));
+            BindMethod(v, _SC("AddCompilerOption"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::AddCompilerOption>,
+                       _SC("CompileOptionsBase::AddCompilerOption"));
+            BindMethod(v, _SC("AddResourceCompilerOption"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::AddResourceCompilerOption>,
+                       _SC("CompileOptionsBase::AddResourceCompilerOption"));
+            BindMethod(v, _SC("AddIncludeDir"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::AddIncludeDir>,
+                       _SC("CompileOptionsBase::AddIncludeDir"));
+            BindMethod(v, _SC("AddResourceIncludeDir"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::AddResourceIncludeDir>,
+                       _SC("CompileOptionsBase::AddResourceIncludeDir"));
+            BindMethod(v, _SC("AddLibDir"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::AddLibDir>,
+                       _SC("CompileOptionsBase::AddLibDir"));
+            BindMethod(v, _SC("AddCommandsBeforeBuild"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::AddCommandsBeforeBuild>,
+                       _SC("CompileOptionsBase::AddCommandsBeforeBuild"));
+            BindMethod(v, _SC("AddCommandsAfterBuild"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::AddCommandsAfterBuild>,
+                       _SC("CompileOptionsBase::AddCommandsAfterBuild"));
+            BindMethod(v, _SC("ReplaceLinkerOption"),
+                       CompileOptionsBase_ReplaceOption<&CompileOptionsBase::ReplaceLinkerOption>,
+                       _SC("CompileOptionsBase::ReplaceLinkerOption"));
+            BindMethod(v, _SC("ReplaceLinkLib"),
+                       CompileOptionsBase_ReplaceOption<&CompileOptionsBase::ReplaceLinkLib>,
+                       _SC("CompileOptionsBase::ReplaceLinkLib"));
+            BindMethod(v, _SC("ReplaceCompilerOption"),
+                       CompileOptionsBase_ReplaceOption<&CompileOptionsBase::ReplaceCompilerOption>,
+                       _SC("CompileOptionsBase::ReplaceCompilerOption"));
+            BindMethod(v, _SC("ReplaceResourceCompilerOption"),
+                       CompileOptionsBase_ReplaceOption<&CompileOptionsBase::ReplaceResourceCompilerOption>,
+                       _SC("CompileOptionsBase::ReplaceResourceCompilerOption"));
+            BindMethod(v, _SC("ReplaceIncludeDir"),
+                       CompileOptionsBase_ReplaceOption<&CompileOptionsBase::ReplaceIncludeDir>,
+                       _SC("CompileOptionsBase::ReplaceIncludeDir"));
+            BindMethod(v, _SC("ReplaceResourceIncludeDir"),
+                       CompileOptionsBase_ReplaceOption<&CompileOptionsBase::ReplaceResourceIncludeDir>,
+                       _SC("CompileOptionsBase::ReplaceResourceIncludeDir"));
+            BindMethod(v, _SC("ReplaceLibDir"),
+                       CompileOptionsBase_ReplaceOption<&CompileOptionsBase::ReplaceLibDir>,
+                       _SC("CompileOptionsBase::ReplaceLibDir"));
+            BindMethod(v, _SC("ReplaceLibDir"),
+                       CompileOptionsBase_ReplaceOption<&CompileOptionsBase::ReplaceLibDir>,
+                       _SC("CompileOptionsBase::ReplaceLibDir"));
+            BindMethod(v, _SC("RemoveLinkerOption"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::RemoveLinkerOption>,
+                       _SC("CompileOptionsBase::RemoveLinkerOption"));
+            BindMethod(v, _SC("RemoveLinkLib"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::RemoveLinkLib>,
+                       _SC("CompileOptionsBase::RemoveLinkLib"));
+            BindMethod(v, _SC("RemoveCompilerOption"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::RemoveCompilerOption>,
+                       _SC("CompileOptionsBase::RemoveCompilerOption"));
+            BindMethod(v, _SC("RemoveCompilerOption"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::RemoveCompilerOption>,
+                       _SC("CompileOptionsBase::RemoveCompilerOption"));
+            BindMethod(v, _SC("RemoveIncludeDir"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::RemoveIncludeDir>,
+                       _SC("CompileOptionsBase::RemoveIncludeDir"));
+            BindMethod(v, _SC("RemoveResourceCompilerOption"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::RemoveResourceCompilerOption>,
+                       _SC("CompileOptionsBase::RemoveResourceCompilerOption"));
+            BindMethod(v, _SC("RemoveResourceIncludeDir"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::RemoveResourceIncludeDir>,
+                       _SC("CompileOptionsBase::RemoveResourceIncludeDir"));
+            BindMethod(v, _SC("RemoveLibDir"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::RemoveLibDir>,
+                       _SC("CompileOptionsBase::RemoveLibDir"));
+            BindMethod(v, _SC("RemoveCommandsBeforeBuild"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::RemoveCommandsBeforeBuild>,
+                       _SC("CompileOptionsBase::RemoveCommandsBeforeBuild"));
+            BindMethod(v, _SC("RemoveCommandsAfterBuild"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::RemoveCommandsAfterBuild>,
+                       _SC("CompileOptionsBase::RemoveCommandsAfterBuild"));
+            BindMethod(v, _SC("GetAlwaysRunPostBuildSteps"),
+                       CompileOptionsBase_GetAlwaysRunPostBuildSteps,
+                       _SC("CompileOptionsBase::GetAlwaysRunPostBuildSteps"));
+            BindMethod(v, _SC("SetAlwaysRunPostBuildSteps"),
+                       CompileOptionsBase_SetAlwaysRunPostBuildSteps,
+                       _SC("CompileOptionsBase::SetAlwaysRunPostBuildSteps"));
+            BindMethod(v, _SC("SetBuildScripts"),
+                       CompileOptionsBase_SetArrayString<&CompileOptionsBase::SetBuildScripts>,
+                       _SC("CompileOptionsBase::SetBuildScripts"));
+            BindMethod(v, _SC("GetBuildScripts"),
+                       CompileOptionsBase_GetArrayString<&CompileOptionsBase::GetBuildScripts>,
+                       _SC("CompileOptionsBase::GetBuildScripts"));
+            BindMethod(v, _SC("AddBuildScript"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::AddBuildScript>,
+                       _SC("CompileOptionsBase::AddBuildScript"));
+            BindMethod(v, _SC("RemoveBuildScript"),
+                       CompileOptionsBase_StringParam<&CompileOptionsBase::RemoveBuildScript>,
+                       _SC("CompileOptionsBase::RemoveBuildScript"));
+            BindMethod(v, _SC("SetVar"), CompileOptionsBase_SetVar,
+                       _SC("CompileOptionsBase::SetVar"));
+            BindMethod(v, _SC("GetVar"), CompileOptionsBase_GetVar,
+                       _SC("CompileOptionsBase::GetVar"));
+            BindMethod(v, _SC("UnsetVar"), CompileOptionsBase_UnsetVar,
+                       _SC("CompileOptionsBase::UnsetVar"));
+            BindMethod(v, _SC("UnsetAllVars"), CompileOptionsBase_UnsetAllVars,
+                       _SC("CompileOptionsBase::UnsetAllVars"));
 
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);

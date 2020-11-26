@@ -139,6 +139,222 @@ class sdkTest extends script_test_base
         local debugTarget = project.AddBuildTarget(_T("Debug"));
         test_false("cbProject::AddBuildTarget non null 0", IsNull(debugTarget));
 
+        {
+            // CompileOptionsBase
+            test_equal("CompileOptionsBase::GetPlatforms", debugTarget.GetPlatforms(), 255);
+            debugTarget.RemovePlatform(2);
+            test_equal("CompileOptionsBase::RemovePlatform", debugTarget.GetPlatforms(), 255 & (~2));
+            debugTarget.SetPlatforms(2);
+            test_equal("CompileOptionsBase::SetPlatforms", debugTarget.GetPlatforms(), 2);
+            debugTarget.AddPlatform(1);
+            test_equal("CompileOptionsBase::AddPlatform", debugTarget.GetPlatforms(), 1 | 2);
+
+            debugTarget.SetPlatforms(255);
+            test_true("CompileOptionsBase::SupportsCurrentPlatform true",
+                      debugTarget.SupportsCurrentPlatform());
+            debugTarget.SetPlatforms(0);
+            test_false("CompileOptionsBase::SupportsCurrentPlatform false",
+                      debugTarget.SupportsCurrentPlatform());
+
+            test_equal("CompileOptionsBase::GetLinkerExecutable default",
+                       debugTarget.GetLinkerExecutable(), leoAutoDetect);
+            debugTarget.SetLinkerExecutable(leoLinker);
+            test_equal("CompileOptionsBase::SetLinkerExecutable",
+                       debugTarget.GetLinkerExecutable(), leoLinker);
+
+            {
+                test_equal("CompileOptionsBase::GetLinkerOptions empty",
+                           debugTarget.GetLinkerOptions().GetCount(), 0);
+                debugTarget.SetLinkerOptions(GetArrayFromString(_T("-pthread;-zdef"), _T(";"), true));
+                local opts = GetStringFromArray(debugTarget.GetLinkerOptions(), _T("<>"), false);
+                test_string("CompileOptionsBase::SetLinkerOptions", opts, "-pthread<>-zdef");
+                debugTarget.AddLinkerOption(_T("-newOpt"));
+                opts = GetStringFromArray(debugTarget.GetLinkerOptions(), _T("<>"), false);
+                test_string("CompileOptionsBase::AddLinkerOption", opts,
+                            "-pthread<>-zdef<>-newOpt");
+                debugTarget.ReplaceLinkerOption(_T("-zdef"), _T("-replaceOpt"));
+                opts = GetStringFromArray(debugTarget.GetLinkerOptions(), _T("<>"), false);
+                test_string("CompileOptionsBase::ReplaceLinkerOption", opts,
+                            "-pthread<>-replaceOpt<>-newOpt");
+                debugTarget.RemoveLinkerOption(_T("-replaceOpt"));
+                opts = GetStringFromArray(debugTarget.GetLinkerOptions(), _T("<>"), false);
+                test_string("CompileOptionsBase::RemoveLinkerOption", opts,
+                            "-pthread<>-newOpt");
+            }
+            {
+                test_equal("CompileOptionsBase::GetLinkLibs empty",
+                           debugTarget.GetLinkLibs().GetCount(), 0);
+                debugTarget.SetLinkLibs(GetArrayFromString(_T("testA;testB"), _T(";"), true));
+                local opts = GetStringFromArray(debugTarget.GetLinkLibs(), _T("<>"), false);
+                test_string("CompileOptionsBase::SetLinkerOptions", opts, "testA<>testB");
+                debugTarget.AddLinkLib(_T("testNew"));
+                opts = GetStringFromArray(debugTarget.GetLinkLibs(), _T("<>"), false);
+                test_string("CompileOptionsBase::AddLinkLib", opts, "testA<>testB<>testNew");
+                debugTarget.ReplaceLinkLib(_T("testB"), _T("testReplace"));
+                opts = GetStringFromArray(debugTarget.GetLinkLibs(), _T("<>"), false);
+                test_string("CompileOptionsBase::ReplaceLinkLib", opts,
+                            "testA<>testReplace<>testNew");
+                debugTarget.RemoveLinkLib(_T("testReplace"));
+                opts = GetStringFromArray(debugTarget.GetLinkLibs(), _T("<>"), false);
+                test_string("CompileOptionsBase::RemoveLinkLib", opts, "testA<>testNew");
+            }
+            {
+                test_equal("CompileOptionsBase::GetCompilerOptions empty",
+                           debugTarget.GetCompilerOptions().GetCount(), 0);
+                debugTarget.SetCompilerOptions(GetArrayFromString(_T("-O0;-g"), _T(";"), true));
+                local opts = GetStringFromArray(debugTarget.GetCompilerOptions(), _T("<>"), false);
+                test_string("CompileOptionsBase::SetCompilerOptions", opts, "-O0<>-g");
+                debugTarget.AddCompilerOption(_T("-newOpt"));
+                opts = GetStringFromArray(debugTarget.GetCompilerOptions(), _T("<>"), false);
+                test_string("CompileOptionsBase::AddCompilerOption", opts, "-O0<>-g<>-newOpt");
+                debugTarget.ReplaceCompilerOption(_T("-g"), _T("-replace"));
+                opts = GetStringFromArray(debugTarget.GetCompilerOptions(), _T("<>"), false);
+                test_string("CompileOptionsBase::ReplaceCompilerOption", opts,
+                            "-O0<>-replace<>-newOpt");
+                debugTarget.RemoveCompilerOption(_T("-replace"));
+                opts = GetStringFromArray(debugTarget.GetCompilerOptions(), _T("<>"), false);
+                test_string("CompileOptionsBase::RemoveCompilerOption", opts, "-O0<>-newOpt");
+            }
+            {
+                test_equal("CompileOptionsBase::GetResourceCompilerOptions empty",
+                           debugTarget.GetResourceCompilerOptions().GetCount(), 0);
+                debugTarget.SetResourceCompilerOptions(GetArrayFromString(_T("-resource1;-resource2"), _T(";"), true));
+                local opts = GetStringFromArray(debugTarget.GetResourceCompilerOptions(), _T("<>"), false);
+                test_string("CompileOptionsBase::SetResourceCompilerOptions", opts,
+                            "-resource1<>-resource2");
+                debugTarget.AddResourceCompilerOption(_T("-resourceNew"));
+                opts = GetStringFromArray(debugTarget.GetResourceCompilerOptions(), _T("<>"), false);
+                test_string("CompileOptionsBase::AddResourceCompilerOption", opts,
+                            "-resource1<>-resource2<>-resourceNew");
+                debugTarget.ReplaceResourceCompilerOption(_T("-resource2"), _T("-resourceReplace"));
+                opts = GetStringFromArray(debugTarget.GetResourceCompilerOptions(), _T("<>"), false);
+                test_string("CompileOptionsBase::ReplaceResourceCompilerOption", opts,
+                            "-resource1<>-resourceReplace<>-resourceNew");
+                debugTarget.RemoveResourceCompilerOption(_T("-resourceReplace"));
+                opts = GetStringFromArray(debugTarget.GetResourceCompilerOptions(), _T("<>"), false);
+                test_string("CompileOptionsBase::RemoveResourceCompilerOption", opts,
+                            "-resource1<>-resourceNew");
+            }
+            {
+                test_equal("CompileOptionsBase::GetIncludeDirs empty",
+                           debugTarget.GetIncludeDirs().GetCount(), 0);
+                debugTarget.SetIncludeDirs(GetArrayFromString(_T("dir1;dir2"), _T(";"), true));
+                local opts = GetStringFromArray(debugTarget.GetIncludeDirs(), _T("<>"), false);
+                test_string("CompileOptionsBase::SetIncludeDirs", opts, "dir1<>dir2");
+                debugTarget.AddIncludeDir(_T("dirNew"));
+                opts = GetStringFromArray(debugTarget.GetIncludeDirs(), _T("<>"), false);
+                test_string("CompileOptionsBase::AddIncludeDir", opts, "dir1<>dir2<>dirNew");
+                debugTarget.ReplaceIncludeDir(_T("dir2"), _T("dirReplace"));
+                opts = GetStringFromArray(debugTarget.GetIncludeDirs(), _T("<>"), false);
+                test_string("CompileOptionsBase::ReplaceIncludeDir", opts, "dir1<>dirReplace<>dirNew");
+                debugTarget.RemoveIncludeDir(_T("dirReplace"));
+                opts = GetStringFromArray(debugTarget.GetIncludeDirs(), _T("<>"), false);
+                test_string("CompileOptionsBase::RemoveIncludeDir", opts, "dir1<>dirNew");
+            }
+            {
+                test_equal("CompileOptionsBase::GetResourceIncludeDirs empty",
+                           debugTarget.GetResourceIncludeDirs().GetCount(), 0);
+                debugTarget.SetResourceIncludeDirs(GetArrayFromString(_T("rdir1;rdir2"), _T(";"),
+                                                                      true));
+                local opts = GetStringFromArray(debugTarget.GetResourceIncludeDirs(), _T("<>"),
+                                                false);
+                test_string("CompileOptionsBase::SetResourceIncludeDirs", opts, "rdir1<>rdir2");
+                debugTarget.AddResourceIncludeDir(_T("rdirNew"));
+                opts = GetStringFromArray(debugTarget.GetResourceIncludeDirs(), _T("<>"), false);
+                test_string("CompileOptionsBase::AddResourceIncludeDir", opts,
+                            "rdir1<>rdir2<>rdirNew");
+                debugTarget.ReplaceResourceIncludeDir(_T("rdir2"), _T("rdirReplace"));
+                opts = GetStringFromArray(debugTarget.GetResourceIncludeDirs(), _T("<>"), false);
+                test_string("CompileOptionsBase::ReplaceResourceIncludeDir", opts,
+                            "rdir1<>rdirReplace<>rdirNew");
+                debugTarget.RemoveResourceIncludeDir(_T("rdirReplace"));
+                opts = GetStringFromArray(debugTarget.GetResourceIncludeDirs(), _T("<>"), false);
+                test_string("CompileOptionsBase::RemoveResourceIncludeDir", opts,
+                            "rdir1<>rdirNew");
+            }
+            {
+                test_equal("CompileOptionsBase::GetLibDirs empty",
+                           debugTarget.GetLibDirs().GetCount(), 0);
+                debugTarget.SetLibDirs(GetArrayFromString(_T("ldir1;ldir2"), _T(";"), true));
+                local opts = GetStringFromArray(debugTarget.GetLibDirs(), _T("<>"), false);
+                test_string("CompileOptionsBase::SetLibDirs", opts, "ldir1<>ldir2");
+                debugTarget.AddLibDir(_T("ldirNew"));
+                opts = GetStringFromArray(debugTarget.GetLibDirs(), _T("<>"), false);
+                test_string("CompileOptionsBase::AddLibDir", opts, "ldir1<>ldir2<>ldirNew");
+                debugTarget.ReplaceLibDir(_T("ldir2"), _T("ldirReplace"));
+                opts = GetStringFromArray(debugTarget.GetLibDirs(), _T("<>"), false);
+                test_string("CompileOptionsBase::ReplaceLibDir", opts,
+                            "ldir1<>ldirReplace<>ldirNew");
+                debugTarget.RemoveLibDir(_T("ldirReplace"));
+                opts = GetStringFromArray(debugTarget.GetLibDirs(), _T("<>"), false);
+                test_string("CompileOptionsBase::RemoveLibDir", opts, "ldir1<>ldirNew");
+            }
+            {
+                test_equal("CompileOptionsBase::GetCommandsBeforeBuild empty",
+                           debugTarget.GetCommandsBeforeBuild().GetCount(), 0);
+                debugTarget.SetCommandsBeforeBuild(GetArrayFromString(_T("cmdBefore1;cmdBefore2"), _T(";"), true));
+                local opts = GetStringFromArray(debugTarget.GetCommandsBeforeBuild(), _T("<>"), false);
+                test_string("CompileOptionsBase::SetCommandsBeforeBuild", opts, "cmdBefore1<>cmdBefore2");
+                debugTarget.AddCommandsBeforeBuild(_T("cmdBeforeNew"));
+                opts = GetStringFromArray(debugTarget.GetCommandsBeforeBuild(), _T("<>"), false);
+                test_string("CompileOptionsBase::AddCommandsBeforeBuild", opts,
+                            "cmdBefore1<>cmdBefore2<>cmdBeforeNew");
+                debugTarget.RemoveCommandsBeforeBuild(_T("cmdBefore2"));
+                opts = GetStringFromArray(debugTarget.GetCommandsBeforeBuild(), _T("<>"), false);
+                test_string("CompileOptionsBase::RemoveCommandsBeforeBuild", opts,
+                            "cmdBefore1<>cmdBeforeNew");
+            }
+            {
+                test_equal("CompileOptionsBase::GetCommandsAfterBuild empty",
+                           debugTarget.GetCommandsAfterBuild().GetCount(), 0);
+                debugTarget.SetCommandsAfterBuild(GetArrayFromString(_T("cmdAfter1;cmdAfter2"), _T(";"), true));
+                local opts = GetStringFromArray(debugTarget.GetCommandsAfterBuild(), _T("<>"), false);
+                test_string("CompileOptionsBase::SetCommandsAfterBuild", opts, "cmdAfter1<>cmdAfter2");
+                debugTarget.AddCommandsAfterBuild(_T("cmdAfterNew"));
+                opts = GetStringFromArray(debugTarget.GetCommandsAfterBuild(), _T("<>"), false);
+                test_string("CompileOptionsBase::AddCommandsAfterBuild", opts,
+                            "cmdAfter1<>cmdAfter2<>cmdAfterNew");
+                debugTarget.RemoveCommandsAfterBuild(_T("cmdAfter2"));
+                opts = GetStringFromArray(debugTarget.GetCommandsAfterBuild(), _T("<>"), false);
+                test_string("CompileOptionsBase::RemoveCommandsAfterBuild", opts,
+                            "cmdAfter1<>cmdAfterNew");
+            }
+            {
+                test_equal("CompileOptionsBase::GetBuildScripts empty",
+                           debugTarget.GetBuildScripts().GetCount(), 0);
+                debugTarget.SetBuildScripts(GetArrayFromString(_T("script1;script2"), _T(";"), true));
+                local opts = GetStringFromArray(debugTarget.GetBuildScripts(), _T("<>"), false);
+                test_string("CompileOptionsBase::SetBuildScripts", opts, "script1<>script2");
+                debugTarget.AddBuildScript(_T("scriptNew"));
+                opts = GetStringFromArray(debugTarget.GetBuildScripts(), _T("<>"), false);
+                test_string("CompileOptionsBase::AddBuildScript", opts,
+                            "script1<>script2<>scriptNew");
+                debugTarget.RemoveBuildScript(_T("script2"));
+                opts = GetStringFromArray(debugTarget.GetBuildScripts(), _T("<>"), false);
+                test_string("CompileOptionsBase::RemoveBuildScript", opts, "script1<>scriptNew");
+            }
+
+            test_true("CompileOptionsBase::GetModified", debugTarget.GetModified());
+            debugTarget.SetModified(false);
+            test_false("CompileOptionsBase::SetModified", debugTarget.GetModified());
+
+            test_false("CompileOptionsBase::GetAlwaysRunPostBuildSteps",
+                       debugTarget.GetAlwaysRunPostBuildSteps());
+            debugTarget.SetAlwaysRunPostBuildSteps(true);
+            test_true("CompileOptionsBase::SetAlwaysRunPostBuildSteps",
+                      debugTarget.GetAlwaysRunPostBuildSteps());
+
+            debugTarget.SetVar(_T("var1"), _T("value1"), false);
+            debugTarget.SetVar(_T("var2"), _T("value2"), false);
+            test_string("CompileOptionsBase::SetVar1", debugTarget.GetVar(_T("var1")), "value1");
+            test_string("CompileOptionsBase::SetVar2", debugTarget.GetVar(_T("var2")), "value2");
+            test_true("CompileOptionsBase::UnsetVar", debugTarget.UnsetVar(_T("var1")));
+            test_string("CompileOptionsBase::GetVar2", debugTarget.GetVar(_T("var2")), "value2");
+            debugTarget.UnsetAllVars();
+            test_string("CompileOptionsBase::GetVar1", debugTarget.GetVar(_T("var1")), "");
+            test_string("CompileOptionsBase::GetVar2", debugTarget.GetVar(_T("var2")), "");
+        }
+
         test_true("ProjectBuildTarget type", debugTarget instanceof ProjectBuildTarget);
         test_true("ProjectBuildTarget base0 type", debugTarget instanceof CompileTargetBase);
         test_true("ProjectBuildTarget base1 type", debugTarget instanceof CompileOptionsBase);
