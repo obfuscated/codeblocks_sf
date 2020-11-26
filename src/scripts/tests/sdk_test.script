@@ -128,13 +128,21 @@ class sdkTest extends script_test_base
 
         local project = projectMgr.NewProject(makePath(tempFolder, _T("NewProject.cbp")));
         test_false("ProjectManager::NewProject", IsNull(project));
-        // FIXME (squirrel) Add test for parent class of cbProject
+
+        test_true("cbProject type", project instanceof cbProject);
+        test_true("cbProject base0 type", project instanceof CompileTargetBase);
+        test_true("cbProject base1 type", project instanceof CompileOptionsBase);
 
         // FIXME (squirrel) Asserts when Project -> Properties with this empty project
         // FIXME (squirrel) Asserts when Project -> Build options with this empty project
 
         local debugTarget = project.AddBuildTarget(_T("Debug"));
         test_false("cbProject::AddBuildTarget non null 0", IsNull(debugTarget));
+
+        test_true("ProjectBuildTarget type", debugTarget instanceof ProjectBuildTarget);
+        test_true("ProjectBuildTarget base0 type", debugTarget instanceof CompileTargetBase);
+        test_true("ProjectBuildTarget base1 type", debugTarget instanceof CompileOptionsBase);
+
         local releaseTarget = project.AddBuildTarget(_T("Release"));
         test_false("cbProject::AddBuildTarget non null 1", IsNull(releaseTarget));
 

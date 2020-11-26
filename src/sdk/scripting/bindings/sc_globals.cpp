@@ -90,6 +90,15 @@ namespace ScriptBindings
         return ConstructAndReturnNonOwnedPtr(v, Manager::Get()->GetConfigManager(_T("scripts")));
     }
 
+    SQInteger GetCF(HSQUIRRELVM v)
+    {
+        static CompilerFactory cf; // all its members are static functions anyway
+        ExtractParams1<SkipParam> extractor(v);
+        if (!extractor.Process("GetCompilerFactory"))
+            return extractor.ErrorMessage();
+        return ConstructAndReturnNonOwnedPtr(v, &cf);
+    }
+
     SQInteger gGetArrayFromString(HSQUIRRELVM v)
     {
         // env table, text, separator, trim spaces
@@ -454,6 +463,7 @@ namespace ScriptBindings
                    GetManager<UserVariableManager, &Manager::GetUserVariableManager>, nullptr);
         BindMethod(v, _SC("GetScriptingManager"),
                    GetManager<ScriptingManager, &Manager::GetScriptingManager>, nullptr);
+        BindMethod(v, _SC("GetCompilerFactory"), GetCF, nullptr);
 
         // from globals.h
         BindMethod(v, _SC("GetArrayFromString"), gGetArrayFromString, nullptr);

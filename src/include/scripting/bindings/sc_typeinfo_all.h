@@ -31,9 +31,13 @@ enum class TypeTag : uint32_t
     wxFileName,
     cbEditor,
     cbProject,
+    CompileOptionsBase,
+    CompileTargetBase,
+    CompilerFactory,
     ConfigManager,
     EditorBase,
     EditorManager,
+    FileTreeData,
     PluginInfo,
     ProjectBuildTarget,
     ProjectFile,
@@ -88,20 +92,41 @@ template<>
 struct TypeInfo<cbEditor> {
     static const uint32_t typetag = uint32_t(TypeTag::cbEditor);
     static constexpr const SQChar *className = _SC("cbEditor");
-    using baseClass = void;
+    using baseClass = EditorBase;
 };
 
 template<>
 struct TypeInfo<cbProject> {
     static const uint32_t typetag = uint32_t(TypeTag::cbProject);
     static constexpr const SQChar *className = _SC("cbProject");
-    using baseClass = void;
+    using baseClass = CompileTargetBase;
 };
 
 template<>
 struct TypeInfo<ConfigManager> {
     static const uint32_t typetag = uint32_t(TypeTag::ConfigManager);
     static constexpr const SQChar *className = _SC("ConfigManager");
+    using baseClass = void;
+};
+
+template<>
+struct TypeInfo<CompileOptionsBase> {
+    static const uint32_t typetag = uint32_t(TypeTag::CompileOptionsBase);
+    static constexpr const SQChar *className = _SC("CompileOptionsBase");
+    using baseClass = void;
+};
+
+template<>
+struct TypeInfo<CompileTargetBase> {
+    static const uint32_t typetag = uint32_t(TypeTag::CompileTargetBase);
+    static constexpr const SQChar *className = _SC("CompileTargetBase");
+    using baseClass = CompileOptionsBase;
+};
+
+template<>
+struct TypeInfo<CompilerFactory> {
+    static const uint32_t typetag = uint32_t(TypeTag::CompilerFactory);
+    static constexpr const SQChar *className = _SC("CompilerFactory");
     using baseClass = void;
 };
 
@@ -120,6 +145,13 @@ struct TypeInfo<EditorManager> {
 };
 
 template<>
+struct TypeInfo<FileTreeData> {
+    static const uint32_t typetag = uint32_t(TypeTag::FileTreeData);
+    static constexpr const SQChar *className = _SC("FileTreeData");
+    using baseClass = void;
+};
+
+template<>
 struct TypeInfo<PluginInfo> {
     static const uint32_t typetag = uint32_t(TypeTag::PluginInfo);
     static constexpr const SQChar *className = _SC("PluginInfo");
@@ -130,7 +162,7 @@ template<>
 struct TypeInfo<ProjectBuildTarget> {
     static const uint32_t typetag = uint32_t(TypeTag::ProjectBuildTarget);
     static constexpr const SQChar *className = _SC("ProjectBuildTarget");
-    using baseClass = void;
+    using baseClass = CompileTargetBase;
 };
 
 template<>
