@@ -34,6 +34,7 @@ enum class TypeTag : uint32_t
     EditorBase,
     EditorManager,
     PluginInfo,
+    ProjectFile,
     ScriptingManager,
     UserVariableManager
 };
@@ -112,6 +113,13 @@ template<>
 struct TypeInfo<PluginInfo> {
     static const uint32_t typetag = uint32_t(TypeTag::PluginInfo);
     static constexpr const SQChar *className = _SC("PluginInfo");
+    using baseClass = void;
+};
+
+template<>
+struct TypeInfo<ProjectFile> {
+    static const uint32_t typetag = uint32_t(TypeTag::ProjectFile);
+    static constexpr const SQChar *className = _SC("ProjectFile");
     using baseClass = void;
 };
 
