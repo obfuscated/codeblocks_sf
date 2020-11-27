@@ -144,7 +144,7 @@ class sdkTest extends script_test_base
         test_true("ProjectBuildTarget base1 type", debugTarget instanceof CompileOptionsBase);
 
         {
-            // CompileOptionsBase
+            // CompileOptionsBase tests
             test_equal("CompileOptionsBase::GetPlatforms", debugTarget.GetPlatforms(), 255);
             debugTarget.RemovePlatform(2);
             test_equal("CompileOptionsBase::RemovePlatform", debugTarget.GetPlatforms(), 255 & (~2));
@@ -360,7 +360,7 @@ class sdkTest extends script_test_base
         }
 
         {
-            // CompileTargetBase
+            // CompileTargetBase tests
             {
                 local policyDefault = debugTarget.GetTargetFilenameGenerationPolicy();
                 test_equal("CompileTargetBase::GetTargetFilenameGenerationPolicy prefix default",
@@ -472,6 +472,59 @@ class sdkTest extends script_test_base
                        debugTarget.MakeCommandsModified());
         }
 
+        {
+            // ProjectBuildTarget tests
+            test_equal("ProjectBuildTarget::GetParentProject", debugTarget.GetParentProject(),
+                       project);
+
+            test_string("ProjectBuildTarget::GetFullTitle", debugTarget.GetFullTitle(),
+                        "NewProject - Debug_New");
+
+            test_string("ProjectBuildTarget::GetExternalDeps", debugTarget.GetExternalDeps(), "");
+            debugTarget.SetExternalDeps(_T("extDep1; extDep2"));
+            test_string("ProjectBuildTarget::SetExternalDeps", debugTarget.GetExternalDeps(),
+                        "extDep1; extDep2");
+
+            test_string("ProjectBuildTarget::GetAdditionalOutputFiles",
+                        debugTarget.GetAdditionalOutputFiles(), "");
+            debugTarget.SetAdditionalOutputFiles(_T("output1; output2"));
+            test_string("ProjectBuildTarget::SetAdditionalOutputFiles",
+                        debugTarget.GetAdditionalOutputFiles(), "output1; output2");
+
+            // FIXME: Deprecated
+            test_false("ProjectBuildTarget::GetIncludeInTargetAll",
+                       debugTarget.GetIncludeInTargetAll());
+            debugTarget.SetIncludeInTargetAll(true);
+            test_true("ProjectBuildTarget::SetIncludeInTargetAll",
+                      debugTarget.GetIncludeInTargetAll());
+
+            test_true("ProjectBuildTarget::GetCreateDefFile",
+                      debugTarget.GetCreateDefFile());
+            debugTarget.SetCreateDefFile(false);
+            test_false("ProjectBuildTarget::SetCreateDefFile",
+                       debugTarget.GetCreateDefFile());
+
+            test_true("ProjectBuildTarget::GetCreateStaticLib",
+                      debugTarget.GetCreateStaticLib());
+            debugTarget.SetCreateStaticLib(false);
+            test_false("ProjectBuildTarget::SetCreateStaticLib",
+                       debugTarget.GetCreateStaticLib());
+
+            {
+                local oldType = debugTarget.GetTargetType();
+
+                test_false("ProjectBuildTarget::GetUseConsoleRunner",
+                           debugTarget.GetUseConsoleRunner());
+                // We need to change the target type, otherwise the SetUseConsoleRunner has no
+                // effect.
+                debugTarget.SetTargetType(ttConsoleOnly);
+                debugTarget.SetUseConsoleRunner(true);
+                test_true("ProjectBuildTarget::SetUseConsoleRunner",
+                          debugTarget.GetUseConsoleRunner());
+
+                debugTarget.SetTargetType(oldType);
+            }
+        }
 
         local releaseTarget = project.AddBuildTarget(_T("Release"));
         test_false("cbProject::AddBuildTarget non null 1", IsNull(releaseTarget));
@@ -486,6 +539,17 @@ class sdkTest extends script_test_base
         test_equal("cbProject::GetFilesCount after 1 file", project.GetFilesCount(), 1);
 
         {
+            // File API calls in ProjectBuildTarget
+            test_equal("ProjectBuildTarget::GetFilesCount after 1 file",
+                       debugTarget.GetFilesCount(), 1);
+            local fileInTarget = debugTarget.GetFile(0);
+            test_false("ProjectBuildTarget::GetFile non null", IsNull(fileInTarget));
+            test_equal("cbProject file == ProjectBuildTarget file", file, fileInTarget);
+            test_string("ProjectBuildTarget ProjectFile::GetBaseName", file.GetBaseName(), "file1");
+        }
+
+        {
+            // ProjectFile tests
             local file = project.GetFile(0);
             test_false("cbProject::GetFile non null", IsNull(file));
 
