@@ -91,7 +91,7 @@ class sdkTest extends script_test_base
         ::print("======= Test Globals function END ======= \n");
     }
 
-    function makePath(folder, name)
+    function MakePath(folder, name)
     {
         return folder + ::wxFILE_SEP_PATH + name
     }
@@ -118,6 +118,7 @@ class sdkTest extends script_test_base
 
         local projectMgr = GetProjectManager();
         test_false("GetProjectManager", IsNull(projectMgr));
+        test_true("ProjectManager type", projectMgr instanceof ProjectManager);
 
         // This is here to allow consequtive runs of the suite and also to prevent messing active
         // projects at the time of the start of the script.
@@ -126,7 +127,7 @@ class sdkTest extends script_test_base
         local tempFolder = GetFolder(0x4);
         print(_T("TEMP folder is=") + tempFolder + _T("\n"));
 
-        local project = projectMgr.NewProject(makePath(tempFolder, _T("NewProject.cbp")));
+        local project = projectMgr.NewProject(MakePath(tempFolder, _T("NewProject.cbp")));
         test_false("ProjectManager::NewProject", IsNull(project));
 
         test_true("cbProject type", project instanceof cbProject);
@@ -138,6 +139,9 @@ class sdkTest extends script_test_base
 
         local debugTarget = project.AddBuildTarget(_T("Debug"));
         test_false("cbProject::AddBuildTarget non null 0", IsNull(debugTarget));
+        test_true("ProjectBuildTarget type", debugTarget instanceof ProjectBuildTarget);
+        test_true("ProjectBuildTarget base0 type", debugTarget instanceof CompileTargetBase);
+        test_true("ProjectBuildTarget base1 type", debugTarget instanceof CompileOptionsBase);
 
         {
             // CompileOptionsBase
@@ -355,17 +359,127 @@ class sdkTest extends script_test_base
             test_string("CompileOptionsBase::GetVar2", debugTarget.GetVar(_T("var2")), "");
         }
 
-        test_true("ProjectBuildTarget type", debugTarget instanceof ProjectBuildTarget);
-        test_true("ProjectBuildTarget base0 type", debugTarget instanceof CompileTargetBase);
-        test_true("ProjectBuildTarget base1 type", debugTarget instanceof CompileOptionsBase);
+        {
+            // CompileTargetBase
+            {
+                local policyDefault = debugTarget.GetTargetFilenameGenerationPolicy();
+                test_equal("CompileTargetBase::GetTargetFilenameGenerationPolicy prefix default",
+                           policyDefault.prefix, tgfpPlatformDefault);
+                test_equal("CompileTargetBase::GetTargetFilenameGenerationPolicy extension default",
+                           policyDefault.extension, tgfpPlatformDefault);
+
+                debugTarget.SetTargetFilenameGenerationPolicy(tgfpNone, tgfpNone);
+                local policy = debugTarget.GetTargetFilenameGenerationPolicy();
+                test_equal("CompileTargetBase::SetTargetFilenameGenerationPolicy prefix",
+                           policy.prefix, tgfpNone);
+                test_equal("CompileTargetBase::SetTargetFilenameGenerationPolicy extension",
+                           policy.extension, tgfpNone);
+
+                debugTarget.SetTargetFilenameGenerationPolicy(policyDefault.prefix,
+                                                              policyDefault.extension);
+            }
+
+            test_equal("CompileTargetBase::GetTargetType", debugTarget.GetTargetType(),
+                       ttExecutable);
+            debugTarget.SetTargetType(ttStaticLib);
+            test_equal("CompileTargetBase::SetTargetType", debugTarget.GetTargetType(),
+                       ttStaticLib);
+
+            // Reset target type, because the tests below depend on it.
+            debugTarget.SetTargetType(ttExecutable);
+
+            test_string("CompileTargetBase::GetFilename", debugTarget.GetFilename(),
+                        MakePath(tempFolder, _T("NewProject.cbp")));
+
+            test_string("CompileTargetBase::GetTitle", debugTarget.GetTitle(), "Debug");
+            debugTarget.SetTitle(_T("Debug_New"));
+            test_string("CompileTargetBase::SetTitle", debugTarget.GetTitle(), "Debug_New");
+
+            test_string("CompileTargetBase::GetOutputFilename", debugTarget.GetOutputFilename(),
+                        "NewProject");
+            test_string("CompileTargetBase::SuggestOutputFilename",
+                        debugTarget.SuggestOutputFilename(), "NewProject");
+            debugTarget.SetOutputFilename(_T("debugOutput"));
+            test_string("CompileTargetBase::SetOutputFilename", debugTarget.GetOutputFilename(),
+                        "debugOutput");
+            test_string("CompileTargetBase::SuggestOutputFilename after set",
+                        debugTarget.SuggestOutputFilename(), "NewProject");
+
+            test_string("CompileTargetBase::GetWorkingDir", debugTarget.GetWorkingDir(), ".");
+            debugTarget.SetWorkingDir(_T("workDir"));
+            test_string("CompileTargetBase::SetWorkingDir", debugTarget.GetWorkingDir(),
+                        "workDir");
+
+            test_string("CompileTargetBase::GetObjectOutput", debugTarget.GetObjectOutput(),
+                        ".objs");
+            debugTarget.SetObjectOutput(MakePath(_T(".objs"), _T("debug")));
+            test_string("CompileTargetBase::SetObjectOutput", debugTarget.GetObjectOutput(),
+                        MakePath(_T(".objs"), _T("debug")));
+
+            test_string("CompileTargetBase::GetDepsOutput", debugTarget.GetDepsOutput(), ".deps");
+            debugTarget.SetDepsOutput(MakePath(_T(".deps"), _T("debug")));
+            test_string("CompileTargetBase::SetDepsOutput", debugTarget.GetDepsOutput(),
+                        MakePath(_T(".deps"), _T("debug")));
+
+            test_equal("CompileTargetBase::GetOptionRelation",
+                        debugTarget.GetOptionRelation(ortLinkerOptions),
+                        orAppendToParentOptions);
+            debugTarget.SetOptionRelation(ortLinkerOptions, orUseTargetOptionsOnly);
+            test_string("CompileTargetBase::SetOptionRelation",
+                        debugTarget.GetOptionRelation(ortLinkerOptions), orUseTargetOptionsOnly);
+
+            test_string("CompileTargetBase::GetExecutableFilename",
+                        debugTarget.GetExecutableFilename(),
+                        MakePath(tempFolder, _T("NewProject")));
+            test_string("CompileTargetBase::GetDynamicLibFilename",
+                        debugTarget.GetDynamicLibFilename(),
+                        MakePath(tempFolder, _T("NewProject")));
+            test_string("CompileTargetBase::GetDynamicLibDefFilename",
+                        debugTarget.GetDynamicLibDefFilename(),
+                        "$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)");
+            test_string("CompileTargetBase::GetStaticLibFilename",
+                        debugTarget.GetStaticLibFilename(),
+                        MakePath(tempFolder, _T("libNewProject.a")));
+            test_string("CompileTargetBase::GetBasePath", debugTarget.GetBasePath(),
+                        tempFolder +::wxFILE_SEP_PATH);
+
+            test_string("CompileTargetBase::GetExecutionParameters",
+                        debugTarget.GetExecutionParameters(), "");
+            debugTarget.SetExecutionParameters(_T("exec params"));
+            test_string("CompileTargetBase::SetExecutionParameters",
+                        debugTarget.GetExecutionParameters(), "exec params");
+
+            test_string("CompileTargetBase::GetHostApplication",
+                        debugTarget.GetHostApplication(), "");
+            debugTarget.SetHostApplication(_T("hostApp"));
+            test_string("CompileTargetBase::SetHostApplication",
+                        debugTarget.GetHostApplication(), "hostApp");
+
+            test_string("CompileTargetBase::GetCompilerID",
+                        debugTarget.GetCompilerID(), "gcc");
+            debugTarget.SetCompilerID(_T("gcc_test"));
+            test_string("CompileTargetBase::SetCompilerID",
+                        debugTarget.GetCompilerID(), "gcc_test");
+
+            test_false("CompileTargetBase::MakeCommandsModified",
+                       debugTarget.MakeCommandsModified());
+            test_string("CompileTargetBase::GetMakeCommandFor",
+                        debugTarget.GetMakeCommandFor(mcBuild), "$make -f $makefile $target");
+            debugTarget.SetMakeCommandFor(mcBuild, _T("make-me"));
+            test_string("CompileTargetBase::SetMakeCommandFor",
+                        debugTarget.GetMakeCommandFor(mcBuild), "make-me");
+            test_true("CompileTargetBase::MakeCommandsModified after",
+                       debugTarget.MakeCommandsModified());
+        }
+
 
         local releaseTarget = project.AddBuildTarget(_T("Release"));
         test_false("cbProject::AddBuildTarget non null 1", IsNull(releaseTarget));
 
         test_equal("cbProject::GetFilesCount empty", project.GetFilesCount(), 0);
 
-        projectMgr.AddFileToProject(makePath(tempFolder, _T("file1.cpp")), project, 0);
-        projectMgr.AddFileToProject(makePath(tempFolder, _T("file1.cpp")), project, 1);
+        projectMgr.AddFileToProject(MakePath(tempFolder, _T("file1.cpp")), project, 0);
+        projectMgr.AddFileToProject(MakePath(tempFolder, _T("file1.cpp")), project, 1);
 
         projectMgr.RebuildTree();
 
@@ -376,7 +490,7 @@ class sdkTest extends script_test_base
             test_false("cbProject::GetFile non null", IsNull(file));
 
             local strTargets = GetStringFromArray(file.GetBuildTargets(), _T(";"), false);
-            test_string("ProjectFile::GetBuildTargets", strTargets, "Debug;Release");
+            test_string("ProjectFile::GetBuildTargets", strTargets, "Debug_New;Release");
 
             test_equal("ProjectFile::GetParentProject", file.GetParentProject(), project);
 
@@ -386,14 +500,14 @@ class sdkTest extends script_test_base
                 test_string(message, strTargets, expected);
             }
 
-            file.RemoveBuildTarget(_T("Debug"));
+            file.RemoveBuildTarget(_T("Debug_New"));
             test_targets("ProjectFile::RemoveBuildTarget", file, "Release");
 
-            file.RenameBuildTarget(_T("Release"), _T("Debug"));
-            test_targets("ProjectFile::RenameBuildTarget", file, "Debug");
+            file.RenameBuildTarget(_T("Release"), _T("Debug_New"));
+            test_targets("ProjectFile::RenameBuildTarget", file, "Debug_New");
 
             file.AddBuildTarget(_T("Release"));
-            test_targets("ProjectFile::AddBuildTarget", file, "Debug;Release");
+            test_targets("ProjectFile::AddBuildTarget", file, "Debug_New;Release");
 
             local objExt = ".o"; // FIXME (squirrel) Make this Multi-OS/Multi-Compiler
 
@@ -416,7 +530,7 @@ class sdkTest extends script_test_base
                         file.GetCustomBuildCommand(compilerId), "<custom command>");
 
             test_string("ProjectFile::file get", file.file.GetFullPath(::wxPATH_NATIVE),
-                        makePath(tempFolder, _T("file1.cpp")));
+                        MakePath(tempFolder, _T("file1.cpp")));
             test_string("ProjectFile::relativeFilename", file.relativeFilename, "file1.cpp");
             test_string("ProjectFile::relativeToCommonTopLevelPath",
                         file.relativeToCommonTopLevelPath, "file1.cpp");
@@ -438,7 +552,7 @@ class sdkTest extends script_test_base
             test_string("ProjectFile::compilerVar set", file.compilerVar, "TEST");
 
             local strTargets = GetStringFromArray(file.buildTargets, _T(";"), false);
-            test_string("ProjectFile::buildTargets get", strTargets, "Debug;Release");
+            test_string("ProjectFile::buildTargets get", strTargets, "Debug_New;Release");
         }
 
         // Cleanup. Must happen here.
