@@ -15,12 +15,11 @@ namespace ScriptBindings
 
 static std::string GetItemString(HSQUIRRELVM vm, SQInteger stackIdx)
 {
-/*    const void *ptr;
+    const void *ptr;
     sq_getvoidptr(vm, stackIdx, &ptr);
     std::stringstream s;
     s << std::hex << ptr;
-    return s.str();*/
-    return "unknown value";
+    return s.str();
 }
 
 DLLIMPORT void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop)
@@ -87,7 +86,7 @@ DLLIMPORT void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop)
             {
                 line+="Table ";
                 const void *ptr;
-                //sq_getvoidptr(vm, stackIdx, &ptr);
+                sq_getvoidptr(vm, stackIdx, &ptr);
                 ptr = (void*)0x01020304;
                 line+=GetItemString(vm, stackIdx);
                 break;
@@ -96,7 +95,7 @@ DLLIMPORT void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop)
             {
                 line+="Array ";
                 const void *ptr;
-                //sq_getvoidptr(vm, stackIdx, &ptr);
+                sq_getvoidptr(vm, stackIdx, &ptr);
                 ptr = (void*)0x01020304;
                 line+=GetItemString(vm, stackIdx);
                 break;

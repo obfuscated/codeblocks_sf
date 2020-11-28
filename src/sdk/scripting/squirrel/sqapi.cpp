@@ -688,6 +688,29 @@ SQRESULT sq_getstring(HSQUIRRELVM v,SQInteger idx,const SQChar **c)
     return SQ_OK;
 }
 
+/* C::B begin */
+SQRESULT sq_getvoidptr(HSQUIRRELVM v, SQInteger idx, const void **ptr)
+{
+    SQObjectPtr &o = stack_get(v, idx);
+    SQObjectType type = sq_type(o);
+    switch(type) {
+    case OT_TABLE:
+        *ptr = _table(o);
+        return SQ_OK;
+    case OT_ARRAY:
+        *ptr = _array(o);
+        return SQ_OK;
+    case OT_USERDATA:
+        *ptr = _userdata(o);
+        return SQ_OK;
+    case OT_INSTANCE:
+        *ptr = _instance(o);
+        return SQ_OK;
+    }
+    return SQ_ERROR;
+}
+/* C::B end */
+
 SQRESULT sq_getthread(HSQUIRRELVM v,SQInteger idx,HSQUIRRELVM *thread)
 {
     SQObjectPtr *o = NULL;
