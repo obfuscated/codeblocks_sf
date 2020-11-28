@@ -125,7 +125,7 @@ struct TiXmlCursor
 
 	@sa TiXmlNode::Accept()
 */
-class TiXmlVisitor
+class DLLIMPORT TiXmlVisitor
 {
 public:
 	virtual ~TiXmlVisitor() {}
@@ -776,7 +776,7 @@ private:
 		  part of the tinyXML document object model. There are other
 		  suggested ways to look at this problem.
 */
-class TiXmlAttribute : public TiXmlBase
+class DLLIMPORT TiXmlAttribute : public TiXmlBase
 {
 	friend class TiXmlAttributeSet;
 
@@ -900,7 +900,7 @@ private:
 		- I like circular lists
 		- it demonstrates some independence from the (typical) doubly linked list.
 */
-class TiXmlAttributeSet
+class DLLIMPORT TiXmlAttributeSet
 {
 public:
 	TiXmlAttributeSet();
@@ -1159,7 +1159,7 @@ private:
 
 /**	An XML comment.
 */
-class TiXmlComment : public TiXmlNode
+class DLLIMPORT TiXmlComment : public TiXmlNode
 {
 public:
 	/// Constructs an empty comment.
@@ -1351,7 +1351,7 @@ private:
 
 	DTD tags get thrown into TiXmlUnknowns.
 */
-class TiXmlUnknown : public TiXmlNode
+class DLLIMPORT TiXmlUnknown : public TiXmlNode
 {
 public:
 	TiXmlUnknown() : TiXmlNode( TiXmlNode::TINYXML_UNKNOWN )	{}
@@ -1635,7 +1635,7 @@ private:
 	}
 	@endverbatim
 */
-class TiXmlHandle
+class DLLIMPORT TiXmlHandle
 {
 public:
 	/// Create a handle from any node (at any depth of the tree.) This can be a null pointer.
