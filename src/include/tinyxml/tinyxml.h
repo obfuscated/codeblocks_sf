@@ -1209,7 +1209,7 @@ private:
 	you generally want to leave it alone, but you can change the output mode with
 	SetCDATA() and query it with CDATA().
 */
-class TiXmlText : public TiXmlNode
+class DLLIMPORT TiXmlText : public TiXmlNode
 {
 	friend class TiXmlElement;
 public:
@@ -1282,7 +1282,7 @@ private:
 	handled as special cases, not generic attributes, simply
 	because there can only be at most 3 and they are always the same.
 */
-class TiXmlDeclaration : public TiXmlNode
+class DLLIMPORT TiXmlDeclaration : public TiXmlNode
 {
 public:
 	/// Construct an empty declaration.
@@ -1734,7 +1734,7 @@ private:
 	fprintf( stdout, "%s", printer.CStr() );
 	@endverbatim
 */
-class TiXmlPrinter : public TiXmlVisitor
+class DLLIMPORT TiXmlPrinter : public TiXmlVisitor
 {
 public:
 	TiXmlPrinter() : depth( 0 ), simpleTextPrint( false ),
