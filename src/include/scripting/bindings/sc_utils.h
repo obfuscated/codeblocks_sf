@@ -329,6 +329,8 @@ struct ExtractParamsBase
         return sq_throwerror(m_vm, m_errorMessage);
     }
 
+    HSQUIRRELVM GetVM() { return m_vm; }
+
 protected:
     HSQUIRRELVM m_vm;
     SQChar m_errorMessage[500];
@@ -517,6 +519,12 @@ int ConstructAndReturnInstance(HSQUIRRELVM v, const UserType &value)
 template<typename UserType>
 inline UserDataForType<UserType>* CreateNonOwnedPtrInstance(HSQUIRRELVM v, UserType *value)
 {
+    if (value == nullptr)
+    {
+        sq_throwerror(v, _SC("CreateNonOwnedPtrInstance given a null pointer. This is invalid!"));
+        return nullptr;
+    }
+
     if (!GetRootTableField(v, TypeInfo<UserType>::className))
     {
         assert(false);
@@ -534,10 +542,29 @@ inline UserDataForType<UserType>* CreateNonOwnedPtrInstance(HSQUIRRELVM v, UserT
 }
 
 /// Helper used when you need to create and return a Squirrel instance pointing to some native
-/// object.
+/// object. The object must not be nullptr. If it is a Squirrel error is thrown.
 template<typename UserType>
 int ConstructAndReturnNonOwnedPtr(HSQUIRRELVM v, UserType *value)
 {
+    if (value == nullptr)
+        return sq_throwerror(v, _SC("Returning an instance to a null pointer. This is invalid!"));
+    UserDataForType<UserType> *data = CreateNonOwnedPtrInstance<UserType>(v, value);
+    if (data == nullptr)
+        return -1; // An error should have been logged already.
+    return 1;
+}
+
+/// Helper used when you need to create and return a Squirrel instance pointing to some native
+/// object. This version must be used when the pointer can be null. In this case "null" is passed to
+/// Squirrel instead of an instance storing nullptr.
+template<typename UserType>
+int ConstructAndReturnNonOwnedPtrOrNull(HSQUIRRELVM v, UserType *value)
+{
+    if (value == nullptr)
+    {
+        sq_pushnull(v);
+        return 1;
+    }
     UserDataForType<UserType> *data = CreateNonOwnedPtrInstance<UserType>(v, value);
     if (data == nullptr)
         return -1; // An error should have been logged already.
