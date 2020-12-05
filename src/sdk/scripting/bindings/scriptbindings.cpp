@@ -1183,6 +1183,10 @@ namespace ScriptBindings
 
 #include <sdk_precomp.h>
 #ifndef CB_PRECOMP
+    #include "configmanager.h"
+    #include "editormanager.h"
+    #include "scriptingmanager.h"
+    #include "uservarmanager.h"
 #endif // CB_PRECOMP
 
 #include "sc_utils.h"

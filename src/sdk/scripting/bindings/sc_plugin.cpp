@@ -301,6 +301,11 @@ int ExecutePlugin(const wxString& name)
 #include <wx/dynarray.h>
 #include "sc_utils.h"
 
+#ifndef CB_PRECOMP
+    #include "cbproject.h"
+    #include "logmanager.h"
+#endif // CB_PRECOMP
+
 namespace ScriptBindings
 {
 namespace ScriptPluginWrapper
