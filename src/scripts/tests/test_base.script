@@ -70,19 +70,24 @@ class script_test_base
         passed(name);
     }
 
-    function failed(name,message)
+    function failed(name, messageGot, messageNeeded)
     {
         //sa.Pause();
         ::failed_tests++;
         ::global_failed_tests++;
-        error(format_output(name,"FAILED " + message +"\n"));//(got " + to_test + " needed "+result+") \n"));
+        error(format_output(name, "FAILED\n"));
+        error("\tgot:    " + messageGot + "\n");
+        error("\tneeded: " + messageNeeded + "\n");
         //sa.Resume();
     }
 
-    function made_failed(name,message)
+    function made_failed(name, message)
     {
         ::global_made_tests++;
-        failed(name,message);
+        ::failed_tests++;
+        ::global_failed_tests++;
+        error(format_output(name, "MADE-FAILED\n"));
+        error("\t" + message + "\n");
     }
 
     function clear_test_result()
@@ -134,7 +139,7 @@ class script_test_base
         }
         else
         {
-            failed(name,"(got " + to_test + " needed "+result+")");
+            failed(name, to_test , result);
         }
         return false;
     }
@@ -150,7 +155,7 @@ class script_test_base
         }
         else
         {
-            failed(name,"(got " + to_test + " needed true)");
+            failed(name, to_test , "true");
         }
         return false;
     }
@@ -166,8 +171,7 @@ class script_test_base
         }
         else
         {
-
-            failed(name,"(got " + to_test + " needed false)");
+            failed(name, to_test, "false");
         }
         return false;
     }
@@ -183,7 +187,7 @@ class script_test_base
         }
         else
         {
-            failed(name,"(got " + typeof to_test + " needed " + typeof type + ")");
+            failed(name, typeof to_test, typeof type);
         }
         return false;
     }
@@ -215,7 +219,7 @@ class script_test_base
             if(tmp_string[i] != result[i])
             {
 
-                failed(name, "(got \"" + to_test + "\" needed \"" + result + "\")");
+                failed(name, "\"" + to_test + "\"", "\"" + result + "\"");
                 return false;
             }
         }
