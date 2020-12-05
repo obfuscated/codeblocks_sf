@@ -17,35 +17,40 @@ global_failed_tests <- 0;
 
 class script_test_base
 {
+    // Stores the last position. It only grows in a section by 4 characters.
+    // This makes it easier to read IMO.
+    lastTarget = 30;
+
+    function StartNewSection(title)
+    {
+        ::print("\n");
+        ::print("--------------- " + title + " ---------------\n");
+        lastTarget = 30;
+    }
+
     function Run()
     {
-
     }
 
     function error(message)
     {
-        ::print("[ERROR] "+ message );
+        ::print("[ERROR] " + message);
     }
 
     function format_output(name, result)
     {
         local name_length = name.len();
-        local needed_tabs = 0;
-        local free_space = 20 - name_length;
-        if(free_space < 0)
-        {
-            free_space = 50 - name_length;
-        }
-        if(free_space < 0)
-            free_space = 4;
 
-        needed_tabs = free_space; //% 8;
-        local output = "Test: " + name;
-        local i = 0;
-        for(;i<needed_tabs;i++)
+        local free_space = lastTarget - name_length;
+        while (free_space <= 0)
         {
-            output += " ";
+            lastTarget += 4;
+            free_space = lastTarget - name_length;
         }
+
+        local output = "Test: " + name;
+        for (local i = 0; i < free_space; i++)
+            output += ".";
         output += result;
         return output;
     }
@@ -82,6 +87,7 @@ class script_test_base
 
     function clear_test_result()
     {
+        lastTarget = 30;
         ::made_tests = 0;
         ::passed_tests = 0;
         ::failed_tests = 0;
