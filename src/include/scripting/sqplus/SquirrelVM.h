@@ -23,7 +23,7 @@ enum SquirrelInitFlags
     sqifAll    = 0xFF
 };
 
-class SquirrelVM
+class SQUIRREL_API SquirrelVM
 {
 	friend class SquirrelObject;
 	friend struct SquirrelError;
