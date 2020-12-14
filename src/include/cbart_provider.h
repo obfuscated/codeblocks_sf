@@ -13,7 +13,7 @@
 /// requested size is ignored. Use <bitmap stock_id="XXX/YYY"/> in the xrc file to load images from
 /// this provider. Plugins can create their own providers (set the XXX part of the resource id to
 /// something meaningful and unique for the plugin).
-class cbArtProvider : public wxArtProvider
+class DLLIMPORT cbArtProvider : public wxArtProvider
 {
 public:
     /// @param prefix Path where to search for images. It must contain folders of the form NNxNN.
