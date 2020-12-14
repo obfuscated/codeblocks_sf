@@ -191,7 +191,7 @@ const TiXmlEncoding TIXML_DEFAULT_ENCODING = TIXML_ENCODING_UNKNOWN;
 	A Decleration contains: Attributes (not on tree)
 	@endverbatim
 */
-class TiXmlBase
+class DLLIMPORT TiXmlBase
 {
 	friend class TiXmlNode;
 	friend class TiXmlElement;

@@ -6,10 +6,10 @@ class TiXmlDocument;
 
 namespace TinyXML
 {
-    bool           LoadDocument(const wxString& filename, TiXmlDocument *doc);
-    TiXmlDocument* LoadDocument(const wxString& filename);
+    extern DLLIMPORT bool           LoadDocument(const wxString& filename, TiXmlDocument *doc);
+    extern DLLIMPORT TiXmlDocument* LoadDocument(const wxString& filename);
 
-    bool SaveDocument(const wxString& filename, TiXmlDocument* doc);
+    extern DLLIMPORT bool SaveDocument(const wxString& filename, TiXmlDocument* doc);
 }
 
 #endif
