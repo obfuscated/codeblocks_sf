@@ -7,7 +7,7 @@
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
-        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTRE|wxADJUST_MINSIZE</flag>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTRE</flag>
         <border>8</border>
         <object class="wxStaticText" name="stxtAbout">
           <style>wxALIGN_CENTRE</style>
@@ -23,7 +23,7 @@
           <label>File: (none selected)</label>
           <style>wxALIGN_CENTRE</style>
         </object>
-        <flag>wxALL|wxEXPAND|wxALIGN_CENTRE|wxADJUST_MINSIZE</flag>
+        <flag>wxALL|wxEXPAND|wxALIGN_CENTRE</flag>
         <border>8</border>
       </object>
       <object class="sizeritem">

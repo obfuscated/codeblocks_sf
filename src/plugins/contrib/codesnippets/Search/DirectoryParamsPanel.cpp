@@ -100,18 +100,15 @@ void DirectoryParamsPanel::set_properties()
 
 void DirectoryParamsPanel::do_layout()
 {
-#if wxCHECK_VERSION(3, 0, 0)
-    #define wxADJUST_MINSIZE 0
-#endif
     // begin wxGlade: DirectoryParamsPanel::do_layout
     wxBoxSizer* SizerTop = new wxBoxSizer(wxHORIZONTAL);
-    SizerTop->Add(m_pTxtSearchDirPath, 2, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
-    SizerTop->Add(m_pBtnSelectDir, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
-    SizerTop->Add(m_pChkSearchDirRecursively, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
-    SizerTop->Add(m_pChkSearchDirHiddenFiles, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
-    SizerTop->Add(m_pTxtMask, 1, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
+    SizerTop->Add(m_pTxtSearchDirPath, 2, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 4);
+    SizerTop->Add(m_pBtnSelectDir, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 4);
+    SizerTop->Add(m_pChkSearchDirRecursively, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 4);
+    SizerTop->Add(m_pChkSearchDirHiddenFiles, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 4);
+    SizerTop->Add(m_pTxtMask, 1, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 4);
     wxStaticText* m_pStatTxtMask = new wxStaticText(this, -1, _("mask"));
-    SizerTop->Add(m_pStatTxtMask, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
+    SizerTop->Add(m_pStatTxtMask, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 4);
     SetAutoLayout(true);
     SetSizer(SizerTop);
     SizerTop->Fit(this);

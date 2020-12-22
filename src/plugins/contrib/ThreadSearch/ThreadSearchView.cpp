@@ -444,31 +444,28 @@ void ThreadSearchView::set_properties()
 
 void ThreadSearchView::do_layout()
 {
-#if wxCHECK_VERSION(3, 0, 0)
-    #define wxADJUST_MINSIZE 0
-#endif
     // begin wxGlade: ThreadSearchView::do_layout
     m_pSizerSearchItems = new wxBoxSizer(wxHORIZONTAL);
-    m_pSizerSearchItems->Add(m_pCboSearchExpr, 2, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
-    m_pSizerSearchItems->Add(m_pBtnSearch, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
-    m_pSizerSearchItems->Add(m_pBtnOptions, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
+    m_pSizerSearchItems->Add(m_pCboSearchExpr, 2, wxALL|wxALIGN_CENTER_VERTICAL, 4);
+    m_pSizerSearchItems->Add(m_pBtnSearch, 0, wxALL|wxALIGN_CENTER_VERTICAL, 4);
+    m_pSizerSearchItems->Add(m_pBtnOptions, 0, wxALL|wxALIGN_CENTER_VERTICAL, 4);
     m_pSizerSearchItems->Add(m_pStaticLine1, 0, wxLEFT|wxRIGHT|wxEXPAND, 2);
-    m_pSizerSearchItems->Add(m_pStaTxtSearchIn, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
-    m_pSizerSearchItems->Add(m_pPnlSearchIn, 0, wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 0);
+    m_pSizerSearchItems->Add(m_pStaTxtSearchIn, 0, wxALL|wxALIGN_CENTER_VERTICAL, 4);
+    m_pSizerSearchItems->Add(m_pPnlSearchIn, 0, wxALIGN_CENTER_VERTICAL, 0);
     m_pSizerSearchItems->Add(m_pStaticLine2, 0, wxLEFT|wxRIGHT|wxEXPAND, 2);
-    m_pSizerSearchItems->Add(m_pBtnShowDirItems, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
+    m_pSizerSearchItems->Add(m_pBtnShowDirItems, 0, wxALL|wxALIGN_CENTER_VERTICAL, 4);
 
     m_pSizerSearchDirItems = new wxStaticBoxSizer(m_pSizerSearchDirItems_staticbox, wxHORIZONTAL);
     m_pSizerSearchDirItems->Add(m_pPnlDirParams, 1, wxALIGN_CENTER_VERTICAL, 0);
 
     wxBoxSizer* m_pSizerSearchPreview = new wxBoxSizer(wxHORIZONTAL);
-    m_pSizerSearchPreview->Add(m_pSearchPreview, 1, wxEXPAND|wxADJUST_MINSIZE, 0);
+    m_pSizerSearchPreview->Add(m_pSearchPreview, 1, wxEXPAND, 0);
     m_pPnlPreview->SetAutoLayout(true);
     m_pPnlPreview->SetSizer(m_pSizerSearchPreview);
 
     m_pSplitter->SplitVertically(m_pPnlPreview, m_pLogger);
     wxBoxSizer* m_pSizerSplitter = new wxBoxSizer(wxHORIZONTAL);
-    m_pSizerSplitter->Add(m_pSplitter, 1, wxEXPAND|wxADJUST_MINSIZE, 0);
+    m_pSizerSplitter->Add(m_pSplitter, 1, wxEXPAND, 0);
 
     wxBoxSizer* m_pSizerTop = new wxBoxSizer(wxVERTICAL);
     m_pSizerTop->Add(m_pSizerSearchItems, 0, wxEXPAND, 0);

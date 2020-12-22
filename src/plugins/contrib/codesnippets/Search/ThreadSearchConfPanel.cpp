@@ -276,9 +276,6 @@ void ThreadSearchConfPanel::set_properties()
 
 void ThreadSearchConfPanel::do_layout()
 {
-#if wxCHECK_VERSION(3, 0, 0)
-    #define wxADJUST_MINSIZE 0
-#endif
     // begin wxGlade: ThreadSearchConfPanel::do_layout
     wxBoxSizer* SizerTop = new wxBoxSizer(wxVERTICAL);
     wxStaticBoxSizer* SizerThreadSearchLayout = new wxStaticBoxSizer(SizerThreadSearchLayout_staticbox, wxVERTICAL);
@@ -291,33 +288,33 @@ void ThreadSearchConfPanel::do_layout()
     SizerSearchIn->Add(m_pPnlSearchIn, 0, wxALL|wxEXPAND, 2);
     SizerSearchIn->Add(m_pPnlDirParams, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 2);
     SizerTop->Add(SizerSearchIn, 0, wxALL|wxEXPAND, 4);
-    SizerOptions->Add(m_pChkWholeWord, 0, wxALL|wxADJUST_MINSIZE, 4);
-    SizerOptions->Add(m_pChkStartWord, 0, wxALL|wxADJUST_MINSIZE, 4);
-    SizerOptions->Add(m_pChkMatchCase, 0, wxALL|wxADJUST_MINSIZE, 4);
-    SizerOptions->Add(m_pChkRegExp, 0, wxALL|wxADJUST_MINSIZE, 4);
+    SizerOptions->Add(m_pChkWholeWord, 0, wxALL, 4);
+    SizerOptions->Add(m_pChkStartWord, 0, wxALL, 4);
+    SizerOptions->Add(m_pChkMatchCase, 0, wxALL, 4);
+    SizerOptions->Add(m_pChkRegExp, 0, wxALL, 4);
     SizerTop->Add(SizerOptions, 0, wxALL|wxEXPAND, 4);
-    SizerThreadSearchOptions->Add(m_pChkThreadSearchEnable, 0, wxALL|wxADJUST_MINSIZE, 4);
-    SizerThreadSearchOptions->Add(m_pChkUseDefaultOptionsForThreadSearch, 0, wxALL|wxADJUST_MINSIZE, 4);
+    SizerThreadSearchOptions->Add(m_pChkThreadSearchEnable, 0, wxALL, 4);
+    SizerThreadSearchOptions->Add(m_pChkUseDefaultOptionsForThreadSearch, 0, wxALL, 4);
     //(pecan 2008/5/22) not supported yet
     //wxStaticText* m_pStaDefaultOptions = new wxStaticText(this, wxID_ANY, wxT("       ('Whole word' = true, 'Start word' = false, 'Match case' = true, 'Regular expression' = false)"));
     wxStaticText* m_pStaDefaultOptions = new wxStaticText(this, wxID_ANY, wxT(" Place holder for yet to be supported context menu option."));
-    SizerThreadSearchOptions->Add(m_pStaDefaultOptions, 0, wxADJUST_MINSIZE, 0);
+    SizerThreadSearchOptions->Add(m_pStaDefaultOptions, 0, 0, 0);
     SizerTop->Add(SizerThreadSearchOptions, 0, wxALL|wxEXPAND, 4);
-    //--moved--belo--SizerThreadSearchLayoutGlobal->Add(m_pChkShowThreadSearchToolBar, 0, wxALL|wxADJUST_MINSIZE, 4);
-    SizerThreadSearchLayoutGlobal->Add(m_pChkShowThreadSearchWidgets, 0, wxALL|wxADJUST_MINSIZE, 4);
-    SizerThreadSearchLayoutGlobal->Add(m_pChkShowCodePreview, 0, wxALL|wxADJUST_MINSIZE, 4);
-    SizerThreadSearchLayoutGlobal->Add(m_pChkShowThreadSearchToolBar, 0, wxALL|wxADJUST_MINSIZE, 4);
-    SizerThreadSearchGridLayout->Add(SizerThreadSearchLayoutGlobal, 1, wxALL|wxEXPAND|wxADJUST_MINSIZE, 4);
-    SizerListControlOptions->Add(m_pChkDisplayLogHeaders, 0, wxALL|wxADJUST_MINSIZE, 4);
-    SizerListControlOptions->Add(m_pChkDrawLogLines, 0, wxALL|wxADJUST_MINSIZE, 4);
-    SizerThreadSearchGridLayout->Add(SizerListControlOptions, 1, wxALL|wxEXPAND|wxADJUST_MINSIZE, 4);
-    SizerThreadSearchGridLayout->Add(m_pRadPanelManagement, 0, wxALL|wxEXPAND|wxADJUST_MINSIZE, 4);
-    SizerThreadSearchGridLayout->Add(m_pRadLoggerType, 0, wxALL|wxEXPAND|wxADJUST_MINSIZE, 4);
+    //--moved--belo--SizerThreadSearchLayoutGlobal->Add(m_pChkShowThreadSearchToolBar, 0, wxALL, 4);
+    SizerThreadSearchLayoutGlobal->Add(m_pChkShowThreadSearchWidgets, 0, wxALL, 4);
+    SizerThreadSearchLayoutGlobal->Add(m_pChkShowCodePreview, 0, wxALL, 4);
+    SizerThreadSearchLayoutGlobal->Add(m_pChkShowThreadSearchToolBar, 0, wxALL, 4);
+    SizerThreadSearchGridLayout->Add(SizerThreadSearchLayoutGlobal, 1, wxALL|wxEXPAND, 4);
+    SizerListControlOptions->Add(m_pChkDisplayLogHeaders, 0, wxALL, 4);
+    SizerListControlOptions->Add(m_pChkDrawLogLines, 0, wxALL, 4);
+    SizerThreadSearchGridLayout->Add(SizerListControlOptions, 1, wxALL|wxEXPAND, 4);
+    SizerThreadSearchGridLayout->Add(m_pRadPanelManagement, 0, wxALL|wxEXPAND, 4);
+    SizerThreadSearchGridLayout->Add(m_pRadLoggerType, 0, wxALL|wxEXPAND, 4);
     SizerThreadSearchGridLayout->Add(m_pRadSplitterWndMode, 0, wxALL|wxEXPAND, 4);
     SizerThreadSearchGridLayout->Add(m_pRadSortBy, 0, wxALL|wxEXPAND, 4);
     SizerThreadSearchGridLayout->AddGrowableCol(0);
     SizerThreadSearchGridLayout->AddGrowableCol(1);
-    SizerThreadSearchLayout->Add(SizerThreadSearchGridLayout, 1, wxALL|wxEXPAND|wxADJUST_MINSIZE, 0);
+    SizerThreadSearchLayout->Add(SizerThreadSearchGridLayout, 1, wxALL|wxEXPAND, 0);
     SizerTop->Add(SizerThreadSearchLayout, 0, wxALL|wxEXPAND, 4);
     SetAutoLayout(true);
     SetSizer(SizerTop);

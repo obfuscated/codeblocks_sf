@@ -109,15 +109,12 @@ void SearchInPanel::set_properties()
 
 void SearchInPanel::do_layout()
 {
-#if wxCHECK_VERSION(3, 0, 0)
-    #define wxADJUST_MINSIZE 0
-#endif
     // begin wxGlade: SearchInPanel::do_layout
     wxBoxSizer* SizerTop = new wxBoxSizer(wxHORIZONTAL);
-    SizerTop->Add(m_pChkSearchOpenFiles, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
-    SizerTop->Add(m_pChkSearchSnippetFiles, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
-    //-SizerTop->Add(m_pChkSearchWorkspaceFiles, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
-    SizerTop->Add(m_pChkSearchDir, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
+    SizerTop->Add(m_pChkSearchOpenFiles, 0, wxALL|wxALIGN_CENTER_VERTICAL, 4);
+    SizerTop->Add(m_pChkSearchSnippetFiles, 0, wxALL|wxALIGN_CENTER_VERTICAL, 4);
+    //-SizerTop->Add(m_pChkSearchWorkspaceFiles, 0, wxALL|wxALIGN_CENTER_VERTICAL, 4);
+    SizerTop->Add(m_pChkSearchDir, 0, wxALL|wxALIGN_CENTER_VERTICAL, 4);
     SetAutoLayout(true);
     SetSizer(SizerTop);
     SizerTop->Fit(this);
