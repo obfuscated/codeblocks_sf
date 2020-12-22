@@ -1232,6 +1232,8 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
         if ( !cmd[0].IsEmpty() ) // should never be empty
             ret = Execute(GetStringFromArray(cmd, wxT(" "), false), cmd);
 
+        wxSetEnv(wxT("PATH"), origPath); // restore path
+
         if (ret != 0) // execution failed
             val = (node->GetAttribute(wxT("default"), wxEmptyString) == wxT("true"));
         else if (node->GetAttribute(wxT("regex"), &test))
@@ -1251,8 +1253,6 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
         }
         else // execution succeeded (and no regex test given)
             val = true;
-
-        wxSetEnv(wxT("PATH"), origPath); // restore path
     }
     return val;
 }
