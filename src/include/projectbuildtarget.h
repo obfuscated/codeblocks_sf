@@ -106,7 +106,7 @@ class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
           * @param useIt If true, ConsoleRunner is used else it is not. */
         virtual void SetUseConsoleRunner(bool useIt);
 
-        void SetTargetType(TargetType pt) override; // overriden
+        void SetTargetType(TargetType pt) override;
 
         /** Provides an easy way to iterate all the files belonging in this target.
           * @return A list of files belonging in this target. */
@@ -114,7 +114,7 @@ class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
         virtual const FilesList& GetFilesList() const { return m_Files; }
 
         /** @return The number of files in the target. */
-        int GetFilesCount(){ return m_Files.size(); }
+        int GetFilesCount() const { return m_Files.size(); }
 
         /** Access a file of the target.
           * @param index The index of the file. Must be greater or equal than zero and less than GetFilesCount().

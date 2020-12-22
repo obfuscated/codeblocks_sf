@@ -141,7 +141,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
         ProjectFile* GetFileByFilename(const wxString& filename, bool isRelative = true, bool isUnixFilename = false);
 
         /** @return The number of files in the project. */
-        int GetFilesCount(){ return m_Files.size(); }
+        int GetFilesCount() const { return m_Files.size(); }
 
         /** Set the Makefile filename used when exporting a Makefile for the project,
           * or when using a custom Makefile to build the project.
@@ -158,7 +158,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
         void SetMakefileCustom(bool custom);
 
         /** @return True if the project is using a custom Makefile for compilation, false if not. */
-        bool IsMakefileCustom(){ return m_CustomMakefile; }
+        bool IsMakefileCustom() const { return m_CustomMakefile; }
 
         /** Allow the specification of specific execution directory if the project use a custom Makefile.
           * Defaults to the projects base path, if no custom makefile is used.
