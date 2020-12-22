@@ -647,7 +647,7 @@ static SQInteger array_find(HSQUIRRELVM v)
     for(SQInteger n = 0; n < size; n++) {
         bool res = false;
         a->Get(n,temp);
-        if(SQVM::IsEqual(temp,val,res) && res) {
+        if(v->IsEqual(temp,val,res) && res) {
             v->Push(n);
             return 1;
         }

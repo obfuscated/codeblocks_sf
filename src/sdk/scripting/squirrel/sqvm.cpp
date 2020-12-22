@@ -639,6 +639,22 @@ bool SQVM::IsEqual(const SQObjectPtr &o1,const SQObjectPtr &o2,bool &res)
 {
     if(type(o1) == type(o2)) {
         res = (_rawval(o1) == _rawval(o2));
+        if (!res && type(o1) == OT_INSTANCE) {
+            if(_delegable(o1)->_delegate) {
+                SQObjectPtr closure;
+                if(_delegable(o1)->GetMetaMethod(nullptr, MT_CMP, closure)) {
+                    Push(o1);Push(o2);
+                    SQObjectPtr cmpResult;
+                    if(CallMetaMethod(closure,MT_CMP,2,cmpResult)) {
+                        if(type(cmpResult) != OT_INTEGER) {
+                            Raise_Error(_SC("_cmp must return an integer"));
+                            return false;
+                        }
+                        res = _integer(cmpResult) == 0;
+                    }
+                }
+            }
+        }
     }
     else {
         if(sq_isnumeric(o1) && sq_isnumeric(o2)) {
@@ -646,6 +662,38 @@ bool SQVM::IsEqual(const SQObjectPtr &o1,const SQObjectPtr &o2,bool &res)
         }
         else {
             res = false;
+            if (type(o1) == OT_INSTANCE) {
+                if(_delegable(o1)->_delegate) {
+                    SQObjectPtr closure;
+                    if(_delegable(o1)->GetMetaMethod(nullptr, MT_CMP, closure)) {
+                        Push(o1);Push(o2);
+                        SQObjectPtr cmpResult;
+                        if(CallMetaMethod(closure,MT_CMP,2,cmpResult)) {
+                            if(type(cmpResult) != OT_INTEGER) {
+                                Raise_Error(_SC("_cmp must return an integer"));
+                                return false;
+                            }
+                            res = _integer(cmpResult) == 0;
+                        }
+                    }
+                }
+            }
+            else if (type(o2) == OT_INSTANCE) {
+                if(_delegable(o2)->_delegate) {
+                    SQObjectPtr closure;
+                    if(_delegable(o2)->GetMetaMethod(nullptr, MT_CMP, closure)) {
+                        Push(o1);Push(o2);
+                        SQObjectPtr cmpResult;
+                        if(CallMetaMethod(closure,MT_CMP,2,cmpResult)) {
+                            if(type(cmpResult) != OT_INTEGER) {
+                                Raise_Error(_SC("_cmp must return an integer"));
+                                return false;
+                            }
+                            res = _integer(cmpResult) == 0;
+                        }
+                    }
+                }
+            }
         }
     }
     return true;
