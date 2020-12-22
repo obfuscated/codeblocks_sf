@@ -25,6 +25,7 @@
 
 #include <wx/wxprec.h>
 
+#include "wxstoolbaritem.h"
 #include "wxstoolbar.h"
 
 //(*Headers(wxsToolBarEditor)
@@ -98,20 +99,11 @@ class wxsToolBarEditor: public wxPanel
         wxTextCtrl* m_Id;
         //*)
 
-        enum ItemType
-        {
-            Normal,
-            Check,
-            Radio,
-            Separator,
-            Control
-        };
-
         class ToolBarItem: public wxClientData
         {
             public:
 
-                ToolBarItem(): m_OriginalPos(-1), m_Type(Normal) {}
+                ToolBarItem(): m_OriginalPos(-1), m_Type(wxsToolBarItem::Normal) {}
 
                 ToolBarItem(const ToolBarItem& CopyFrom):
                     m_OriginalPos(CopyFrom.m_OriginalPos),
@@ -127,7 +119,7 @@ class wxsToolBarEditor: public wxPanel
                     m_Handler2(CopyFrom.m_Handler2) {}
 
                 int m_OriginalPos;
-                ItemType m_Type;
+                wxsToolBarItem::ToolType m_Type;
                 wxString m_Id;
                 wxString m_Variable;
                 wxString m_Label;

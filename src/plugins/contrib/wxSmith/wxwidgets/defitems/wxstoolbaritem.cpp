@@ -62,14 +62,15 @@ namespace
 }
 
 
-wxsToolBarItem::wxsToolBarItem(wxsItemResData* Data,bool IsSeparator):
+wxsToolBarItem::wxsToolBarItem(wxsItemResData* Data, ToolType Tool):
     wxsTool(
         Data,
         &Info,
-        IsSeparator?0:wxsToolBarItemEvents,
+        (Tool == Separator || Tool == Stretchable) ? 0 : wxsToolBarItemEvents,
         0,
-        IsSeparator?0:flVariable|flId),
-    m_Type(IsSeparator?Separator:Normal)
+        (Tool == Separator || Tool == Stretchable) ? 0 : (flVariable|flId)
+    ),
+    m_Type(Tool)
 {
 }
 
@@ -88,11 +89,17 @@ void wxsToolBarItem::OnBuildCreatingCode()
                     const wxChar* ItemType;
                     switch ( m_Type )
                     {
-                        case Normal: ItemType = _T("wxITEM_NORMAL"); break;
-                        case Radio:  ItemType = _T("wxITEM_RADIO");  break;
-                        case Check:     // fall-through
-                        case Separator: // fall-through
-                        default:     ItemType = _T("wxITEM_CHECK");  break;
+                        case Normal:
+                            ItemType = _T("wxITEM_NORMAL");
+                            break;
+                        case Radio:
+                            ItemType = _T("wxITEM_RADIO");
+                            break;
+                        case Check:
+                        case Separator:
+                        case Stretchable: // fall-through
+                        default:
+                            ItemType = _T("wxITEM_CHECK");
                     }
 
                     wxString BitmapCode  = m_Bitmap.BuildCode(true,_T(""),GetCoderContext(),_T("wxART_TOOLBAR"));
@@ -114,6 +121,12 @@ void wxsToolBarItem::OnBuildCreatingCode()
                 case Separator:
                 {
                     Codef(_T("%MAddSeparator();\n"));
+                    break;
+                }
+
+                case Stretchable:
+                {
+                    Codef(_T("%MAddStretchableSpace();\n"));
                     break;
                 }
 
@@ -145,6 +158,7 @@ void wxsToolBarItem::OnEnumToolProperties(cb_unused long Flags)
             break;
 
         case Separator: // fall-through
+        case Stretchable: // fall-through
         default:
             break;
     }
@@ -156,12 +170,16 @@ bool wxsToolBarItem::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
 
     if ( IsXRC )
     {
-        Element->SetAttribute("class","tool");
+        Element->SetAttribute("class", "tool");
 
         switch ( m_Type )
         {
             case Separator:
-                Element->SetAttribute("class","separator");
+                Element->SetAttribute("class", "separator");
+                break;
+
+            case Stretchable:
+                Element->SetAttribute("class", "stretchable");
                 break;
 
             case Radio:
@@ -191,6 +209,10 @@ bool wxsToolBarItem::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
         if ( Class == _T("separator") )
         {
             m_Type = Separator;
+        }
+        else if ( Class == _T("stretchable") )
+        {
+            m_Type = Stretchable;
         }
         else
         {
@@ -235,6 +257,9 @@ wxString wxsToolBarItem::OnGetTreeLabel(cb_unused int& Image)
         case Separator:
             return _T("--------");
 
+        case Stretchable:
+            return _T("<------>");
+
         case Radio:  // fall-through
         case Check:  // fall-through
         case Normal: // fall-through
@@ -245,6 +270,7 @@ wxString wxsToolBarItem::OnGetTreeLabel(cb_unused int& Image)
 
 void wxsToolBarItem::OnBuildDeclarationsCode()
 {
-    if ( m_Type == Separator ) return;
+    if (m_Type == Separator || m_Type == Stretchable)
+        return;
     wxsItem::OnBuildDeclarationsCode();
 }

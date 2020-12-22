@@ -22,7 +22,6 @@
 
 #include "wxstoolbareditor.h"
 
-#include "wxstoolbaritem.h"
 #include "../wxsitemresdata.h"
 #include "../properties/wxsbitmapiconeditordlg.h"
 
@@ -190,25 +189,18 @@ wxsToolBarEditor::wxsToolBarEditor(wxWindow* parent,wxsToolBar* ToolBar):
             if ( Events.GetCount() > 0 ) New->m_Handler1 = Events.GetHandler(0);
             if ( Events.GetCount() > 1 ) New->m_Handler2 = Events.GetHandler(1);
 
-            switch ( Item->m_Type )
+            switch (Item->m_Type)
             {
-                case wxsToolBarItem::Radio:
-                    New->m_Type = Radio;
-                    break;
-
-                case wxsToolBarItem::Check:
-                    New->m_Type = Check;
-                    break;
-
                 case wxsToolBarItem::Separator:
-                    New->m_Type = Separator;
-                    New->m_Id = _T("");
+                case wxsToolBarItem::Stretchable:
+                    New->m_Id = wxString(); // fall-through
+                case wxsToolBarItem::Radio:
+                case wxsToolBarItem::Check:
+                    New->m_Type = Item->m_Type;
                     break;
-
                 case wxsToolBarItem::Normal: // fall-though
                 default:
-                    New->m_Type = Normal;
-                    break;
+                    New->m_Type = wxsToolBarItem::Normal;
             }
 
             m_Content->Append(GetItemLabel(New),New);
@@ -222,7 +214,7 @@ wxsToolBarEditor::wxsToolBarEditor(wxWindow* parent,wxsToolBar* ToolBar):
             {
                 New->m_Label << _T(": ") << Child->GetVarName();
             }
-            New->m_Type = Control;
+            New->m_Type = wxsToolBarItem::Control;
             m_Content->Append(GetItemLabel(New),New);
         }
     }
@@ -282,7 +274,7 @@ void wxsToolBarEditor::ApplyChanges()
         for (int i = 0; i < NewCount; ++i)
         {
             ToolBarItem* Item = (ToolBarItem*)m_Content->GetClientObject(i);
-            if (Item->m_Type == Control)
+            if (Item->m_Type == wxsToolBarItem::Control)
             {
                 const int Index = Item->m_OriginalPos;
                 wxASSERT(ParentChildrenUsed[Index]==false);
@@ -292,26 +284,23 @@ void wxsToolBarEditor::ApplyChanges()
             else
             {
                 wxsToolBarItem* New = new wxsToolBarItem(m_ToolBar->GetResourceData(),
-                                                         Item->m_Type == Separator);
+                                                         Item->m_Type);
                 switch (Item->m_Type)
                 {
-                    case Separator:
-                        New->m_Type = wxsToolBarItem::Separator;
+                    case wxsToolBarItem::Separator:
+                    case wxsToolBarItem::Stretchable:
+                    case wxsToolBarItem::Radio:
+                    case wxsToolBarItem::Check:
+                        New->m_Type = Item->m_Type;
                         break;
-                    case Radio:
-                        New->m_Type = wxsToolBarItem::Radio;
-                        break;
-                    case Check:
-                        New->m_Type = wxsToolBarItem::Check;
-                        break;
-                    case Normal:  // fall-through
-                    case Control: // fall-through
+                    case wxsToolBarItem::Normal:  // fall-through
+                    case wxsToolBarItem::Control: // fall-through
                     default:
                         New->m_Type = wxsToolBarItem::Normal;
-                        break;
                 }
 
-                if (Item->m_Type != Separator)
+                if (Item->m_Type != wxsToolBarItem::Separator
+                    && Item->m_Type != wxsToolBarItem::Stretchable)
                 {
                     New->SetIdName(Item->m_Id);
                     New->SetVarName(Item->m_Variable);
@@ -356,7 +345,10 @@ void wxsToolBarEditor::ApplyChanges()
 
 wxString wxsToolBarEditor::GetItemLabel(ToolBarItem* Item)
 {
-    if ( Item->m_Type == Separator ) return _T("--------");
+    if (Item->m_Type == wxsToolBarItem::Separator)
+        return "--------";
+    if (Item->m_Type == wxsToolBarItem::Stretchable)
+        return "<------>";
     return Item->m_Label;
 }
 
@@ -398,12 +390,12 @@ void wxsToolBarEditor::SelectItem(ToolBarItem* Item)
         // Storing current content
         // If it's control we do not store anything since
         // can not change anything inside external control
-        if ( m_Selected->m_Type != Control )
+        if (m_Selected->m_Type != wxsToolBarItem::Control)
         {
-            m_Selected->m_Type = Normal;
-            if ( m_TypeCheck->GetValue() ) m_Selected->m_Type = Check;
-            if ( m_TypeRadio->GetValue() ) m_Selected->m_Type = Radio;
-            if ( m_TypeSeparator->GetValue() ) m_Selected->m_Type = Separator;
+            m_Selected->m_Type = wxsToolBarItem::Normal;
+            if ( m_TypeCheck->GetValue() ) m_Selected->m_Type = wxsToolBarItem::Check;
+            if ( m_TypeRadio->GetValue() ) m_Selected->m_Type = wxsToolBarItem::Radio;
+            if ( m_TypeSeparator->GetValue() ) m_Selected->m_Type = wxsToolBarItem::Separator;
 
             m_Selected->m_Id = m_Id->GetValue();
             m_Selected->m_Label = m_Label->GetValue();
@@ -421,7 +413,7 @@ void wxsToolBarEditor::SelectItem(ToolBarItem* Item)
 
     if ( m_Selected )
     {
-        if ( m_Selected->m_Type == Control )
+        if ( m_Selected->m_Type == wxsToolBarItem::Control )
         {
             m_TypeNormal->Disable();
             m_TypeNormal->SetValue(false);
@@ -446,15 +438,15 @@ void wxsToolBarEditor::SelectItem(ToolBarItem* Item)
         }
         else
         {
-            bool IsSeparator = m_Selected->m_Type == Separator;
+            const bool IsSeparator = (m_Selected->m_Type == wxsToolBarItem::Separator) || (m_Selected->m_Type == wxsToolBarItem::Stretchable);
             m_TypeNormal->Enable();
-            m_TypeNormal->SetValue(m_Selected->m_Type == Normal);
+            m_TypeNormal->SetValue(m_Selected->m_Type == wxsToolBarItem::Normal);
             m_TypeCheck->Enable();
-            m_TypeCheck->SetValue(m_Selected->m_Type == Check);
+            m_TypeCheck->SetValue(m_Selected->m_Type == wxsToolBarItem::Check);
             m_TypeRadio->Enable();
-            m_TypeRadio->SetValue(m_Selected->m_Type == Radio);
+            m_TypeRadio->SetValue(m_Selected->m_Type == wxsToolBarItem::Radio);
             m_TypeSeparator->Enable();
-            m_TypeSeparator->SetValue(m_Selected->m_Type == Separator);
+            m_TypeSeparator->SetValue(m_Selected->m_Type == wxsToolBarItem::Separator);
             m_Id->Enable(!IsSeparator);
             m_Id->SetValue(m_Selected->m_Id);
             m_Label->Enable(!IsSeparator);

@@ -260,14 +260,19 @@ bool wxsToolBar::OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra)
         wxString ClassName = cbC2U(Elem->Attribute("class"));
         if ( ClassName == _T("separator") )
         {
-            wxsToolBarItem* Child = new wxsToolBarItem(GetResourceData(),true);
+            wxsToolBarItem* Child = new wxsToolBarItem(GetResourceData(), wxsToolBarItem::Separator);
             AddChild(Child);
             return Child->XmlRead(Elem,IsXRC,IsExtra);
         }
-
-        if ( ClassName == _T("tool") )
+        else if ( ClassName == _T("stretchable") )
         {
-            wxsToolBarItem* Child = new wxsToolBarItem(GetResourceData(),false);
+            wxsToolBarItem* Child = new wxsToolBarItem(GetResourceData(), wxsToolBarItem::Stretchable);
+            AddChild(Child);
+            return Child->XmlRead(Elem,IsXRC,IsExtra);
+        }
+        else if ( ClassName == _T("tool") )
+        {
+            wxsToolBarItem* Child = new wxsToolBarItem(GetResourceData(), wxsToolBarItem::Normal);
             AddChild(Child);
             return Child->XmlRead(Elem,IsXRC,IsExtra);
         }

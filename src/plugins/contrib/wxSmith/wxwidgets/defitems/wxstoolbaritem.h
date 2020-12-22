@@ -30,7 +30,17 @@ class wxsToolBarItem : public wxsTool
 {
     public:
 
-        wxsToolBarItem(wxsItemResData* Data,bool IsSeparator);
+        enum ToolType : int32_t
+        {
+            Normal,
+            Radio,
+            Check,
+            Separator,
+            Stretchable,
+            Control
+        };
+
+        wxsToolBarItem(wxsItemResData* Data, ToolType Tool);
 
     private:
 
@@ -44,15 +54,7 @@ class wxsToolBarItem : public wxsTool
         virtual void OnBuildDeclarationsCode();
         virtual wxString OnGetTreeLabel(int& Image);
 
-        enum Type
-        {
-            Separator,
-            Normal,
-            Radio,
-            Check
-        };
-
-        Type          m_Type;
+        ToolType      m_Type;
         wxString      m_Variable;
         wxString      m_Label;
         wxsBitmapData m_Bitmap;
