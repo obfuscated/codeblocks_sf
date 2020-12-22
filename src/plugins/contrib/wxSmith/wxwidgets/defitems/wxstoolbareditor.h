@@ -29,15 +29,15 @@
 #include "wxstoolbar.h"
 
 //(*Headers(wxsToolBarEditor)
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-#include <wx/listbox.h>
-#include <wx/statline.h>
-#include <wx/radiobut.h>
-#include <wx/panel.h>
 #include <wx/bmpbuttn.h>
 #include <wx/button.h>
+#include <wx/choice.h>
+#include <wx/listbox.h>
+#include <wx/panel.h>
+#include <wx/sizer.h>
+#include <wx/statline.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
 //*)
 
 class wxsToolBarEditor: public wxPanel
@@ -53,11 +53,8 @@ class wxsToolBarEditor: public wxPanel
 
         //(*Identifiers(wxsToolBarEditor)
         static const long ID_LISTBOX1;
-        static const long ID_RADIOBUTTON1;
-        static const long ID_RADIOBUTTON2;
-        static const long ID_RADIOBUTTON3;
-        static const long ID_RADIOBUTTON4;
-        static const long ID_STATICLINE1;
+        static const long ID_STATICTEXT1;
+        static const long ID_CHOICE1;
         static const long ID_TEXTCTRL4;
         static const long ID_TEXTCTRL1;
         static const long ID_BITMAPBUTTON1;
@@ -85,18 +82,15 @@ class wxsToolBarEditor: public wxPanel
 
         //(*Declarations(wxsToolBarEditor)
         wxBitmapButton* m_Bitmap2;
-        wxTextCtrl* m_HelpText;
-        wxRadioButton* m_TypeNormal;
-        wxRadioButton* m_TypeRadio;
         wxBitmapButton* m_Bitmap;
-        wxStaticLine* StaticLine2;
-        wxRadioButton* m_TypeCheck;
-        wxRadioButton* m_TypeSeparator;
-        wxStaticLine* StaticLine1;
-        wxTextCtrl* m_ToolTip;
+        wxChoice* m_Type;
         wxListBox* m_Content;
-        wxTextCtrl* m_Label;
+        wxStaticLine* StaticLine2;
+        wxStaticText* StaticText7;
+        wxTextCtrl* m_HelpText;
         wxTextCtrl* m_Id;
+        wxTextCtrl* m_Label;
+        wxTextCtrl* m_ToolTip;
         //*)
 
         class ToolBarItem: public wxClientData

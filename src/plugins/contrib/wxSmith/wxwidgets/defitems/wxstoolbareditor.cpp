@@ -28,18 +28,15 @@
 //(*InternalHeaders(wxsToolBarEditor)
 #include <wx/artprov.h>
 #include <wx/bitmap.h>
-#include <wx/intl.h>
 #include <wx/image.h>
+#include <wx/intl.h>
 #include <wx/string.h>
 //*)
 
 //(*IdInit(wxsToolBarEditor)
 const long wxsToolBarEditor::ID_LISTBOX1 = wxNewId();
-const long wxsToolBarEditor::ID_RADIOBUTTON1 = wxNewId();
-const long wxsToolBarEditor::ID_RADIOBUTTON2 = wxNewId();
-const long wxsToolBarEditor::ID_RADIOBUTTON3 = wxNewId();
-const long wxsToolBarEditor::ID_RADIOBUTTON4 = wxNewId();
-const long wxsToolBarEditor::ID_STATICLINE1 = wxNewId();
+const long wxsToolBarEditor::ID_STATICTEXT1 = wxNewId();
+const long wxsToolBarEditor::ID_CHOICE1 = wxNewId();
 const long wxsToolBarEditor::ID_TEXTCTRL4 = wxNewId();
 const long wxsToolBarEditor::ID_TEXTCTRL1 = wxNewId();
 const long wxsToolBarEditor::ID_BITMAPBUTTON1 = wxNewId();
@@ -64,59 +61,50 @@ wxsToolBarEditor::wxsToolBarEditor(wxWindow* parent,wxsToolBar* ToolBar):
     m_BlockTextChange(false),
     m_BlockSelect(false)
 {
-    wxWindowID id = wxID_ANY;
     //(*Initialize(wxsToolBarEditor)
-    wxStaticBoxSizer* StaticBoxSizer2;
-    wxButton* Button4;
-    wxStaticText* StaticText2;
-    wxButton* Button1;
-    wxStaticText* StaticText6;
-    wxStaticText* StaticText1;
+    wxBoxSizer* BoxSizer1;
     wxBoxSizer* BoxSizer2;
-    wxStaticText* StaticText3;
+    wxBoxSizer* BoxSizer3;
+    wxButton* Button1;
     wxButton* Button2;
     wxButton* Button3;
-    wxGridSizer* GridSizer1;
-    wxStaticText* StaticText5;
-    wxBoxSizer* BoxSizer1;
-    wxStaticBoxSizer* StaticBoxSizer1;
+    wxButton* Button4;
     wxFlexGridSizer* FlexGridSizer1;
-    wxBoxSizer* BoxSizer3;
+    wxStaticBoxSizer* StaticBoxSizer1;
+    wxStaticBoxSizer* StaticBoxSizer2;
+    wxStaticText* StaticText1;
+    wxStaticText* StaticText2;
+    wxStaticText* StaticText3;
     wxStaticText* StaticText4;
+    wxStaticText* StaticText5;
+    wxStaticText* StaticText6;
 
-    Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
+    Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
     BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
-    StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Content"));
+    StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Content"));
     m_Content = new wxListBox(this, ID_LISTBOX1, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_LISTBOX1"));
     StaticBoxSizer1->Add(m_Content, 1, wxEXPAND, 4);
-    BoxSizer1->Add(StaticBoxSizer1, 1, wxEXPAND, 4);
+    BoxSizer1->Add(StaticBoxSizer1, 0, wxEXPAND, 4);
     StaticBoxSizer2 = new wxStaticBoxSizer(wxVERTICAL, this, _("Options"));
-    GridSizer1 = new wxGridSizer(2, 2, 5, 5);
-    m_TypeNormal = new wxRadioButton(this, ID_RADIOBUTTON1, _("Normal"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON1"));
-    m_TypeNormal->Disable();
-    GridSizer1->Add(m_TypeNormal, 1, wxEXPAND, 5);
-    m_TypeSeparator = new wxRadioButton(this, ID_RADIOBUTTON2, _("Separator"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON2"));
-    m_TypeSeparator->Disable();
-    GridSizer1->Add(m_TypeSeparator, 1, wxEXPAND, 5);
-    m_TypeRadio = new wxRadioButton(this, ID_RADIOBUTTON3, _("Radio"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON3"));
-    m_TypeRadio->Disable();
-    GridSizer1->Add(m_TypeRadio, 1, wxEXPAND, 5);
-    m_TypeCheck = new wxRadioButton(this, ID_RADIOBUTTON4, _("Check"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON4"));
-    m_TypeCheck->Disable();
-    GridSizer1->Add(m_TypeCheck, 1, wxEXPAND, 5);
-    StaticBoxSizer2->Add(GridSizer1, 0, wxEXPAND, 5);
-    StaticLine1 = new wxStaticLine(this, ID_STATICLINE1, wxDefaultPosition, wxSize(10,-1), wxLI_HORIZONTAL, _T("ID_STATICLINE1"));
-    StaticBoxSizer2->Add(StaticLine1, 0, wxTOP|wxEXPAND, 5);
     FlexGridSizer1 = new wxFlexGridSizer(0, 2, 0, 0);
     FlexGridSizer1->AddGrowableCol(1);
+    StaticText7 = new wxStaticText(this, ID_STATICTEXT1, _("Tool type:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
+    FlexGridSizer1->Add(StaticText7, 1, wxTOP|wxALIGN_CENTER_VERTICAL, 5);
+    m_Type = new wxChoice(this, ID_CHOICE1, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE1"));
+    m_Type->SetSelection( m_Type->Append(_("Normal")) );
+    m_Type->Append(_("Check"));
+    m_Type->Append(_("Radio"));
+    m_Type->Append(_("Separator"));
+    m_Type->Append(_("Stretchable separator"));
+    FlexGridSizer1->Add(m_Type, 1, wxTOP|wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText6 = new wxStaticText(this, wxID_ANY, _("Id:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-    FlexGridSizer1->Add(StaticText6, 1, wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer1->Add(StaticText6, 1, wxTOP|wxALIGN_CENTER_VERTICAL, 5);
     m_Id = new wxTextCtrl(this, ID_TEXTCTRL4, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL4"));
-    FlexGridSizer1->Add(m_Id, 1, wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer1->Add(m_Id, 1, wxTOP|wxLEFT|wxEXPAND, 5);
     StaticText1 = new wxStaticText(this, wxID_ANY, _("Label:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer1->Add(StaticText1, 1, wxTOP|wxALIGN_CENTER_VERTICAL, 5);
     m_Label = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
-    FlexGridSizer1->Add(m_Label, 1, wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer1->Add(m_Label, 1, wxTOP|wxLEFT|wxEXPAND, 5);
     StaticText4 = new wxStaticText(this, wxID_ANY, _("Bitmap:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer1->Add(StaticText4, 1, wxTOP|wxALIGN_CENTER_VERTICAL, 5);
     m_Bitmap = new wxBitmapButton(this, ID_BITMAPBUTTON1, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_FILE_OPEN")),wxART_TOOLBAR), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON1"));
@@ -130,11 +118,11 @@ wxsToolBarEditor::wxsToolBarEditor(wxWindow* parent,wxsToolBar* ToolBar):
     StaticText2 = new wxStaticText(this, wxID_ANY, _("Tooltip:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer1->Add(StaticText2, 1, wxTOP|wxALIGN_CENTER_VERTICAL, 5);
     m_ToolTip = new wxTextCtrl(this, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL2"));
-    FlexGridSizer1->Add(m_ToolTip, 1, wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer1->Add(m_ToolTip, 1, wxTOP|wxLEFT|wxEXPAND, 5);
     StaticText3 = new wxStaticText(this, wxID_ANY, _("Help text:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer1->Add(StaticText3, 1, wxTOP|wxALIGN_CENTER_VERTICAL, 5);
     m_HelpText = new wxTextCtrl(this, ID_TEXTCTRL3, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL3"));
-    FlexGridSizer1->Add(m_HelpText, 1, wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL, 3);
+    FlexGridSizer1->Add(m_HelpText, 1, wxTOP|wxLEFT|wxEXPAND, 5);
     StaticBoxSizer2->Add(FlexGridSizer1, 0, wxTOP|wxEXPAND, 5);
     StaticLine2 = new wxStaticLine(this, ID_STATICLINE2, wxDefaultPosition, wxSize(10,-1), wxLI_HORIZONTAL, _T("ID_STATICLINE2"));
     StaticBoxSizer2->Add(StaticLine2, 0, wxTOP|wxEXPAND, 5);
@@ -155,18 +143,15 @@ wxsToolBarEditor::wxsToolBarEditor(wxWindow* parent,wxsToolBar* ToolBar):
     BoxSizer1->Fit(this);
     BoxSizer1->SetSizeHints(this);
 
-    Connect(ID_LISTBOX1,wxEVT_COMMAND_LISTBOX_SELECTED,wxCommandEventHandler(wxsToolBarEditor::Onm_ContentSelect));
-    Connect(ID_RADIOBUTTON1,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsToolBarEditor::OnTypeChanged));
-    Connect(ID_RADIOBUTTON2,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsToolBarEditor::OnTypeChanged));
-    Connect(ID_RADIOBUTTON3,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsToolBarEditor::OnTypeChanged));
-    Connect(ID_RADIOBUTTON4,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsToolBarEditor::OnTypeChanged));
-    Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,wxCommandEventHandler(wxsToolBarEditor::Onm_LabelText));
-    Connect(ID_BITMAPBUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsToolBarEditor::OnBitmapClick));
-    Connect(ID_BITMAPBUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsToolBarEditor::OnBitmap2Click));
-    Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsToolBarEditor::OnUpClick));
-    Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsToolBarEditor::OnDownClick));
-    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsToolBarEditor::OnNewClick));
-    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsToolBarEditor::OnDelClick));
+    Connect(ID_LISTBOX1,wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&wxsToolBarEditor::Onm_ContentSelect);
+    Connect(ID_CHOICE1,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&wxsToolBarEditor::OnTypeChanged);
+    Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsToolBarEditor::Onm_LabelText);
+    Connect(ID_BITMAPBUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsToolBarEditor::OnBitmapClick);
+    Connect(ID_BITMAPBUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsToolBarEditor::OnBitmap2Click);
+    Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsToolBarEditor::OnUpClick);
+    Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsToolBarEditor::OnDownClick);
+    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsToolBarEditor::OnNewClick);
+    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsToolBarEditor::OnDelClick);
     //*)
 
     for ( int i=0; i<m_ToolBar->GetChildCount(); i++ )
@@ -392,10 +377,13 @@ void wxsToolBarEditor::SelectItem(ToolBarItem* Item)
         // can not change anything inside external control
         if (m_Selected->m_Type != wxsToolBarItem::Control)
         {
-            m_Selected->m_Type = wxsToolBarItem::Normal;
-            if ( m_TypeCheck->GetValue() ) m_Selected->m_Type = wxsToolBarItem::Check;
-            if ( m_TypeRadio->GetValue() ) m_Selected->m_Type = wxsToolBarItem::Radio;
-            if ( m_TypeSeparator->GetValue() ) m_Selected->m_Type = wxsToolBarItem::Separator;
+            const int SelectedType = m_Type->GetSelection();
+            if (SelectedType < 0)
+                m_Selected->m_Type = wxsToolBarItem::Normal;
+            else if (SelectedType > wxsToolBarItem::ToolType::Control)
+                m_Selected->m_Type = wxsToolBarItem::Control;
+            else
+                m_Selected->m_Type = static_cast<wxsToolBarItem::ToolType>(SelectedType);
 
             m_Selected->m_Id = m_Id->GetValue();
             m_Selected->m_Label = m_Label->GetValue();
@@ -415,14 +403,7 @@ void wxsToolBarEditor::SelectItem(ToolBarItem* Item)
     {
         if ( m_Selected->m_Type == wxsToolBarItem::Control )
         {
-            m_TypeNormal->Disable();
-            m_TypeNormal->SetValue(false);
-            m_TypeCheck->Disable();
-            m_TypeCheck->SetValue(false);
-            m_TypeRadio->Disable();
-            m_TypeRadio->SetValue(false);
-            m_TypeSeparator->Disable();
-            m_TypeSeparator->SetValue(false);
+            m_Type->Disable();
             m_Id->Disable();
             m_Id->SetValue(_T(""));
             m_Label->Disable();
@@ -439,14 +420,8 @@ void wxsToolBarEditor::SelectItem(ToolBarItem* Item)
         else
         {
             const bool IsSeparator = (m_Selected->m_Type == wxsToolBarItem::Separator) || (m_Selected->m_Type == wxsToolBarItem::Stretchable);
-            m_TypeNormal->Enable();
-            m_TypeNormal->SetValue(m_Selected->m_Type == wxsToolBarItem::Normal);
-            m_TypeCheck->Enable();
-            m_TypeCheck->SetValue(m_Selected->m_Type == wxsToolBarItem::Check);
-            m_TypeRadio->Enable();
-            m_TypeRadio->SetValue(m_Selected->m_Type == wxsToolBarItem::Radio);
-            m_TypeSeparator->Enable();
-            m_TypeSeparator->SetValue(m_Selected->m_Type == wxsToolBarItem::Separator);
+            m_Type->Enable();
+            m_Type->SetSelection(m_Selected->m_Type);
             m_Id->Enable(!IsSeparator);
             m_Id->SetValue(m_Selected->m_Id);
             m_Label->Enable(!IsSeparator);

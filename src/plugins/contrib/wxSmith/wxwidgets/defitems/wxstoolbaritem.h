@@ -30,6 +30,7 @@ class wxsToolBarItem : public wxsTool
 {
     public:
 
+        // Order must match that of the m_Type wxChoice in wxsToolBarEditor
         enum ToolType : int32_t
         {
             Normal,
