@@ -60,7 +60,7 @@ BEGIN_EVENT_TABLE(wxsToolBarEditor,wxPanel)
 END_EVENT_TABLE()
 
 wxsToolBarEditor::wxsToolBarEditor(wxWindow* parent,wxsToolBar* ToolBar):
-    m_Selected(0),
+    m_Selected(nullptr),
     m_ToolBar(ToolBar),
     m_BlockTextChange(false),
     m_BlockSelect(false)
@@ -229,7 +229,7 @@ wxsToolBarEditor::wxsToolBarEditor(wxWindow* parent,wxsToolBar* ToolBar):
 
     if ( m_Content->GetCount() == 0 )
     {
-        SelectItem(0);
+        SelectItem(nullptr);
     }
     else
     {
@@ -248,7 +248,7 @@ void wxsToolBarEditor::OnTypeChanged(cb_unused wxCommandEvent& event)
 {
     // Saving data
     ToolBarItem* Selected = m_Selected;
-    SelectItem(0);           // Storing current content
+    SelectItem(nullptr);        // Storing current content
     SelectItem(Selected);       // Updating screen's content
 }
 
@@ -364,10 +364,10 @@ wxString wxsToolBarEditor::GetItemLabel(ToolBarItem* Item)
 void wxsToolBarEditor::Onm_ContentSelect(cb_unused wxCommandEvent& event)
 {
     if ( m_BlockSelect ) return;
-    int Selection = m_Content->GetSelection();
+    const int Selection = m_Content->GetSelection();
     if ( Selection == wxNOT_FOUND )
     {
-        SelectItem(0);
+        SelectItem(nullptr);
     }
     else
     {
@@ -383,7 +383,7 @@ void wxsToolBarEditor::Onm_LabelText(cb_unused wxCommandEvent& event)
     if ( m_Selected )
     {
         m_Selected->m_Label = m_Label->GetValue();
-        int Selection = m_Content->GetSelection();
+        const int Selection = m_Content->GetSelection();
         m_Content->SetString(Selection,GetItemLabel(m_Selected));
         m_Content->SetSelection(Selection);
     }
@@ -393,7 +393,7 @@ void wxsToolBarEditor::Onm_LabelText(cb_unused wxCommandEvent& event)
 void wxsToolBarEditor::SelectItem(ToolBarItem* Item)
 {
     m_BlockTextChange = true;
-    if ( m_Selected != 0 )
+    if (m_Selected != nullptr)
     {
         // Storing current content
         // If it's control we do not store anything since
@@ -492,7 +492,7 @@ void wxsToolBarEditor::OnUpClick(cb_unused wxCommandEvent& event)
 {
     if ( !m_Selected ) return;
     SelectItem(m_Selected);
-    int SelIndex = m_Content->GetSelection();
+    const int SelIndex = m_Content->GetSelection();
     if ( SelIndex == wxNOT_FOUND ) return;
     if ( SelIndex == 0 ) return;
     // We will delete previous item and put it after this one
@@ -505,7 +505,7 @@ void wxsToolBarEditor::OnDownClick(cb_unused wxCommandEvent& event)
 {
     if ( !m_Selected ) return;
     SelectItem(m_Selected);
-    int SelIndex = m_Content->GetSelection();
+    const int SelIndex = m_Content->GetSelection();
     if ( SelIndex == wxNOT_FOUND ) return;
     if ( SelIndex > (int)m_Content->GetCount()-2  ) return;
     // We will delete next item and put it before this one
@@ -519,7 +519,7 @@ void wxsToolBarEditor::OnNewClick(cb_unused wxCommandEvent& event)
     SelectItem(m_Selected);
     ToolBarItem* New = new ToolBarItem();
     New->m_Label = _("New item");
-    int SelIndex = m_Content->GetSelection();
+    const int SelIndex = m_Content->GetSelection();
     if ( SelIndex == wxNOT_FOUND )
     {
         m_Content->SetSelection(m_Content->Append(GetItemLabel(New),New));
@@ -564,7 +564,7 @@ void wxsToolBarEditor::OnBitmapClick(cb_unused wxCommandEvent& event)
     SelectItem(Selected);
     wxsBitmapIconEditorDlg Dlg(this,Selected->m_Bitmap,_T("wxART_TOOLBAR"));
     Dlg.ShowModal();
-    SelectItem(0);
+    SelectItem(nullptr);
     SelectItem(Selected);
 }
 
@@ -576,6 +576,6 @@ void wxsToolBarEditor::OnBitmap2Click(cb_unused wxCommandEvent& event)
     SelectItem(Selected);
     wxsBitmapIconEditorDlg Dlg(this,Selected->m_Bitmap2,_T("wxART_TOOLBAR"));
     Dlg.ShowModal();
-    SelectItem(0);
+    SelectItem(nullptr);
     SelectItem(Selected);
 }
