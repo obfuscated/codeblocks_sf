@@ -1207,6 +1207,9 @@ bool cbProject::QueryCloseAllFiles()
     return true;
 }
 
+// FIXME This call is rather strange. It advertises that it will close the files, but in fact it
+// removes all files from the project, deallocates all ProjectFile instances and returns. This
+// leaves the ProjectBuildTarget ProjectFile instances to be dangling. I don't undestand!!!
 bool cbProject::CloseAllFiles(bool dontsave)
 {
     // first try to close modified editors
