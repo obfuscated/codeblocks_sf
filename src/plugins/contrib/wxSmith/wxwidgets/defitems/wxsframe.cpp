@@ -32,7 +32,6 @@ namespace
 
     WXS_ST_BEGIN(wxsFrameStyles,_T("wxDEFAULT_FRAME_STYLE"))
         WXS_ST_CATEGORY("wxFrame")
-        WXS_ST(wxSTAY_ON_TOP)
         WXS_ST(wxCAPTION)
         WXS_ST(wxDEFAULT_DIALOG_STYLE)
         WXS_ST(wxDEFAULT_FRAME_STYLE)
