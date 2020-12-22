@@ -643,11 +643,7 @@ void ThreadSearchView::OnLoggerDoubleClick(const wxString& file, long line)
 
         wxFocusEvent ev(wxEVT_SET_FOCUS);
         ev.SetWindow(this);
-        #if wxCHECK_VERSION(3, 0, 0)
         control->GetEventHandler()->AddPendingEvent(ev);
-        #else
-        control->AddPendingEvent(ev);
-        #endif
     }
 }
 

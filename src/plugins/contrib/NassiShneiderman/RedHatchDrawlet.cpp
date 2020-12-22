@@ -13,11 +13,7 @@ RedHatchDrawlet::~RedHatchDrawlet()
 
 bool RedHatchDrawlet::Draw(wxDC &dc)
 {
-#if wxCHECK_VERSION(3, 0, 0)
     wxRasterOperationMode old_lf = dc.GetLogicalFunction();
-#else
-    int old_lf = dc.GetLogicalFunction();
-#endif
     dc.SetLogicalFunction(wxXOR);
 
     wxPen old_pen = dc.GetPen();
@@ -26,10 +22,8 @@ bool RedHatchDrawlet::Draw(wxDC &dc)
     wxColor red = wxColor( ~wxRED->Red(), ~wxRED->Green(), ~wxRED->Blue());
 #if wxCHECK_VERSION(3, 1, 0)
     wxBrush brush = wxBrush(red, wxBRUSHSTYLE_CROSSDIAG_HATCH );
-#elif wxCHECK_VERSION(3, 0, 0)
-    wxBrush brush = wxBrush(red, wxHATCHSTYLE_CROSSDIAG );
 #else
-    wxBrush brush = wxBrush(red, wxCROSSDIAG_HATCH );
+    wxBrush brush = wxBrush(red, wxHATCHSTYLE_CROSSDIAG );
 #endif
 
     dc.SetPen(*wxTRANSPARENT_PEN);

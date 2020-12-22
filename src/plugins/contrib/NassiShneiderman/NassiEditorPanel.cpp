@@ -187,12 +187,10 @@ void NassiEditorPanel::ExportVHDLSource()
     m_view->ExportVHDLSource();
 }
 
-#if wxCHECK_VERSION(3, 0, 0)
 void NassiEditorPanel::ExportSVG()
 {
     m_view->ExportSVG();
 }
-#endif
 
 #if wxUSE_POSTSCRIPT
 void NassiEditorPanel::ExportPS()

@@ -462,11 +462,7 @@ void EnvVarsConfigDlg::OnAddEnvVarClick(wxCommandEvent& WXUNUSED(event))
     if (nsEnvVars::EnvvarVetoUI(key, NULL, -1))
       return;
 
-#if CHECK_LIST_BOX_CLIENT_DATA==1
     int  sel     = lstEnvVars->Append(key + _T(" = ") + value, new nsEnvVars::EnvVariableListClientData(key, value));
-#else
-    int  sel     = lstEnvVars->Append(key + _T(" = ") + value);
-#endif
     bool success = nsEnvVars::EnvvarApply(key, value);
     if (sel>=0)
       lstEnvVars->Check(sel, success);
@@ -489,22 +485,14 @@ void EnvVarsConfigDlg::OnEditEnvVarClick(wxCommandEvent& WXUNUSED(event))
   if (sel == -1)
     return;
 
-#if CHECK_LIST_BOX_CLIENT_DATA==1
   nsEnvVars::EnvVariableListClientData *data;
   data = static_cast<nsEnvVars::EnvVariableListClientData*>(lstEnvVars->GetClientObject(sel));
   wxString key = data->key;
-#else
-  wxString key = lstEnvVars->GetStringSelection().BeforeFirst(_T('=')).Trim(true).Trim(false);
-#endif
   if (key.IsEmpty())
     return;
   bool was_checked = lstEnvVars->IsChecked(sel);
 
-#if CHECK_LIST_BOX_CLIENT_DATA==1
   wxString value = data->value;
-#else
-  wxString value     = lstEnvVars->GetStringSelection().AfterFirst(_T('=')).Trim(true).Trim(false);
-#endif
   const wxString &old_key = key;
   const wxString &old_value = value;
 
@@ -549,10 +537,8 @@ void EnvVarsConfigDlg::OnEditEnvVarClick(wxCommandEvent& WXUNUSED(event))
   // update the GUI to the (new/updated/same) key/value pair anyway
   lstEnvVars->SetString(sel, key + _T(" = ") + value);
   lstEnvVars->Check(sel, was_checked);
-#if CHECK_LIST_BOX_CLIENT_DATA==1
   data->key = key;
   data->value = value;
-#endif
 }// OnEditEnvVarClick
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -571,11 +557,7 @@ void EnvVarsConfigDlg::OnDeleteEnvVarClick(wxCommandEvent& WXUNUSED(event))
   if (sel == -1)
     return;
 
-#if CHECK_LIST_BOX_CLIENT_DATA==1
   const wxString &key = static_cast<nsEnvVars::EnvVariableListClientData*>(lstEnvVars->GetClientObject(sel))->key;
-#else
-  const wxString &key = lstEnvVars->GetStringSelection().BeforeFirst(_T('=')).Trim(true).Trim(false);
-#endif
   if (key.IsEmpty())
     return;
 
@@ -636,15 +618,10 @@ void EnvVarsConfigDlg::OnSetEnvVarsClick(wxCommandEvent& WXUNUSED(event))
   {
     if (lstEnvVars->IsChecked(i))
     {
-#if CHECK_LIST_BOX_CLIENT_DATA==1
       nsEnvVars::EnvVariableListClientData *data;
       data = static_cast<nsEnvVars::EnvVariableListClientData*>(lstEnvVars->GetClientObject(i));
       const wxString key   = data->key;
       const wxString value = data->value;
-#else
-      const wxString key   = lstEnvVars->GetString(i).BeforeFirst(_T('=')).Trim(true).Trim(false);
-      const wxString value = lstEnvVars->GetString(i).AfterFirst(_T('=')).Trim(true).Trim(false);
-#endif
       if (!key.IsEmpty())
       {
         if (!nsEnvVars::EnvvarApply(key, value))

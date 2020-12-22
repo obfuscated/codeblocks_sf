@@ -989,13 +989,6 @@ wxString clKeyboardManager::KeyCodeToString(int keyCode) //(2019/02/25)
 		res << wxT("."); break;
 	case WXK_DIVIDE:
 		res << wxT("/"); break;
-
-#if not wxCHECK_VERSION(2, 8, 0)
-	case WXK_PRIOR:
-        res << wxT("PgUp"); break;
-	case WXK_NEXT:
-        res << wxT("PgDn"); break;
-#endif
 	case WXK_PAGEUP:
 		res << wxT("PAGEUP"); break;
 	case WXK_PAGEDOWN:
@@ -1118,12 +1111,6 @@ wxString clKeyboardManager::NumpadKeyCodeToString(int keyCode) //(2019/02/25)
 		res << wxT("DOWN"); break;
 	case WXK_NUMPAD_HOME:
 		res << wxT("HOME"); break;
-#if not wxCHECK_VERSION(2, 8, 0)
-	case WXK_NUMPAD_PRIOR:
-		res << wxT("PgUp"); break;
-	case WXK_NUMPAD_NEXT:
-		res << wxT("PgDn"); break;
-#endif
 	case WXK_NUMPAD_PAGEUP:
 		res << wxT("PAGEUP"); break;
 	case WXK_NUMPAD_PAGEDOWN:

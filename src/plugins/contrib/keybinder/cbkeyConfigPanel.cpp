@@ -30,7 +30,7 @@
     #include "personalitymanager.h"
 #endif
 
-#if defined(__WXMSW__) && wxCHECK_VERSION(3, 0, 0)
+#if defined(__WXMSW__)
     #include <wx/msw/private/keyboard.h>
 #endif
 #include <wx/textfile.h>

@@ -881,11 +881,7 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
             //   menu items will never match causing constant update overhead
             AddShortcut(nMenuItemID, menuItemKeyStr, true );
             #ifdef LOGGING
-                #if wxCHECK_VERSION(3, 0, 0)
                 wxLogMessage(_("Merge change type[%d]:item[%lu]:id[%d]:@[%p]text[%s]key[%s]"), changed, static_cast<unsigned long>(j), nMenuItemID, pMenuItem, pMenuItem->GetItemLabel().wx_str(), menuItemKeyStr.wx_str() );
-                #else
-                wxLogMessage(_("Merge change type[%d]:item[%lu]:id[%d]:@[%p]text[%s]key[%s]"), changed, static_cast<unsigned long>(j), nMenuItemID, pMenuItem, pMenuItem->GetText().wx_str(), menuItemKeyStr.wx_str() );
-                #endif
             #endif
         }//if changed
         else
@@ -983,17 +979,9 @@ void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)
                 && (not wxMenuCmd::IsNumericMenuItem(pMenuItem)) )
             {
                 #ifdef LOGGING
-                 #if wxCHECK_VERSION(3, 0, 0)
                  wxLogMessage(_("UpdateAllCmd ById Failed on:[%d][%s]"), pMenuItem->GetId(), pMenuItem->GetItemLabel().GetData() );
-                 #else
-                 wxLogMessage(_("UpdateAllCmd ById Failed on:[%d][%s]"), pMenuItem->GetId(), pMenuItem->GetText().GetData() );
-                 #endif
                 #else
-                 #if wxCHECK_VERSION(3, 0, 0)
                  Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_("KeyBinder failed UpdateByID on[%d][%s]"), nMenuItemID, pMenuItem->GetItemLabel().GetData()));
-                 #else
-                 Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_("KeyBinder failed UpdateByID on[%d][%s]"), nMenuItemID, pMenuItem->GetText().GetData()));
-                 #endif
                 #endif
 ////                // When a .ini id cannot be found: (menu ids have shifted)
 ////                // The following code causes real problems when menu labels are duplicates

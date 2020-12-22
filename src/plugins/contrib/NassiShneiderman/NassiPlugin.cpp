@@ -224,10 +224,8 @@ void NassiPlugin::BuildMenu(wxMenuBar* menuBar)
         exportmenu->Append(NASSI_ID_EXPORT_STRUKTEX, _T("StrukTeX"), _("export to StrukTeX format"));
 
 // TODO (danselmi#1#): check why svg export crashes on wx30; fix and enable feature again
-        //    #if wxCHECK_VERSION(3, 0, 0)
 //    if ( !exportmenu->FindItem(NASSI_ID_EXPORT_SVG) )
 //        exportmenu->Append(NASSI_ID_EXPORT_SVG, _T("SVG"), _("export to SVG format"));
-//    #endif
 
     if ( !exportmenu->FindItem(NASSI_ID_EXPORT_BITMAP) )
         exportmenu->Append(NASSI_ID_EXPORT_BITMAP, _T("PNG"), _("export to PNG format"));
@@ -557,16 +555,14 @@ void NassiPlugin::OnExport(wxCommandEvent &event)
     NassiEditorPanel *ed = (NassiEditorPanel *)Manager::Get()->GetEditorManager()->GetActiveEditor();
 
     int id = event.GetId();
-    if( id == NASSI_ID_EXPORT_SOURCE )        ed->ExportCSource();
-    #if wxCHECK_VERSION(3, 0, 0)
-        else if ( id == NASSI_ID_EXPORT_SVG ) ed->ExportSVG();
-    #endif
-    else if( id == NASSI_ID_EXPORT_VHDL )     ed->ExportVHDLSource();
+    if( id == NASSI_ID_EXPORT_SOURCE )            ed->ExportCSource();
+        else if( id == NASSI_ID_EXPORT_SVG )      ed->ExportSVG();
+        else if( id == NASSI_ID_EXPORT_VHDL )     ed->ExportVHDLSource();
     #if wxUSE_POSTSCRIPT
-        else if( id == NASSI_ID_EXPORT_PS )   ed->ExportPS();
+        else if( id == NASSI_ID_EXPORT_PS )       ed->ExportPS();
     #endif
-    else if( id == NASSI_ID_EXPORT_STRUKTEX ) ed->ExportStrukTeX();
-    else /*NASSI_ID_EXPORT_BITMAP*/           ed->ExportBitmap();
+        else if( id == NASSI_ID_EXPORT_STRUKTEX ) ed->ExportStrukTeX();
+        else /*NASSI_ID_EXPORT_BITMAP*/           ed->ExportBitmap();
 }
 
 //} export end

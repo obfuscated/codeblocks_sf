@@ -369,9 +369,6 @@ bool IncrementalSearch::BuildToolBar(wxToolBar* toolBar)
                                    wxSize(160,-1), wxTE_PROCESS_ENTER);
     if (m_pComboCtrl)
     {
-#if !wxCHECK_VERSION(3, 0, 0) || WXWIN_COMPATIBILITY_2_8
-        m_pComboCtrl->SetTextIndent(0);
-#endif // !wxCHECK_VERSION(3, 0, 0) || WXWIN_COMPATIBILITY_2_8
         m_pToolbar->InsertControl(1, m_pComboCtrl);
         m_pToolbar->Realize();
         m_pTextCtrl = m_pComboCtrl->GetTextCtrl();

@@ -57,7 +57,7 @@ void nsEnvVars::EnvVarsDebugLog(const wxChar* msg, ...)
   va_list  arg_list;
 
   va_start(arg_list, msg);
-#if wxCHECK_VERSION(3, 0, 0) && wxUSE_UNICODE
+#if wxUSE_UNICODE
 // in wx >=  3 unicode-build (default) we need the %ls here, or the strings get
 // cut after the first character
     log_msg = msg;
@@ -87,7 +87,7 @@ void nsEnvVars::EnvVarsDebugLog(const wxString &msg, ...)
   va_list  arg_list;
 
   va_start(arg_list, msg);
-#if wxCHECK_VERSION(2,9,0) && wxUSE_UNICODE
+#if wxUSE_UNICODE
 // in wx >=  2.9 unicode-build (default) we need the %ls here, or the strings get
 // cut after the first character
     log_msg = msg;
@@ -506,11 +506,7 @@ bool nsEnvVars::EnvvarArrayApply(const wxArrayString& envvar,
     int sel = -1;
     if (lstEnvVars)
     {
-#if CHECK_LIST_BOX_CLIENT_DATA==1
       sel = lstEnvVars->Append(key + _T(" = ") + value, new EnvVariableListClientData(key, value));
-#else
-      sel = lstEnvVars->Append(key + _T(" = ") + value);
-#endif
       lstEnvVars->Check(sel, bCheck);
     }
 

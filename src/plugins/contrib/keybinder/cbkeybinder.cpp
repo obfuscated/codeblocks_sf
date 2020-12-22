@@ -33,7 +33,7 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/fileconf.h>
 #include <wx/event.h>
-#if defined(__WXMSW__) && wxCHECK_VERSION(3, 0, 0)
+#if defined(__WXMSW__)
     #include <wx/msw/private/keyboard.h>
 #endif
 #include <wx/listbook.h>

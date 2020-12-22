@@ -14,9 +14,7 @@
 #include "TextCtrl.h"
 
 #include <wx/clipbrd.h>
-#if wxCHECK_VERSION(3, 0, 0)
-    #include <wx/dcsvg.h>
-#endif
+#include <wx/dcsvg.h>
 #include <wx/wfstream.h>
 
 #if wxUSE_POSTSCRIPT
@@ -1433,7 +1431,6 @@ void NassiView::ExportPS()
 }
 #endif
 
-#if wxCHECK_VERSION(3, 0, 0)
 void NassiView::ExportSVG()
 {
     wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"),_T(""),_T(""),_("SVG files (*.SVG)|*.SVG"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
@@ -1515,7 +1512,6 @@ void NassiView::ExportSVG()
     }
     delete graphFabric;
 }
-#endif
 
 void NassiView::ExportBitmap()
 {

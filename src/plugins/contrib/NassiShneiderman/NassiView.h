@@ -199,9 +199,7 @@ class NassiView : public FileContentObserver
         void OnDragEnter();
 
     public:
-        #if wxCHECK_VERSION(3, 0, 0)
-            void ExportSVG();
-        #endif
+        void ExportSVG();
         void ExportCSource();
         bool ExportCSource(wxTextOutputStream &text_stream, wxUint32 n = 4);
         void ExportVHDLSource();

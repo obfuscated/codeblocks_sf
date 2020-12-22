@@ -115,11 +115,7 @@ void avChangesDlg::OnBtnDeleteClick(wxCommandEvent& /*event*/)
 {
     if (grdChanges->GetNumberRows() > 0)
     {
-#if wxCHECK_VERSION(3, 0, 0)
         int row = grdChanges->GetGridCursorRow();
-#else
-        int row = grdChanges->GetCursorRow();
-#endif
         grdChanges->SelectRow(row);
         if (wxMessageBox(_("You are about to delete the selected row"), _("Warning"), wxICON_EXCLAMATION|wxOK|wxCANCEL, this) == wxOK)
         {

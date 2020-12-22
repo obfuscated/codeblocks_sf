@@ -26,17 +26,9 @@ wxObject *wxStateLedXmlHandler ::DoCreateResource()
     control->Create(m_parentAsWindow, GetID(), GetColour(wxT("disable_colour")));
     wxXmlNode* attr = GetParamNode(wxT("colour"));
     wxString temp;
-#if wxCHECK_VERSION(3, 0, 0)
     attr->GetAttribute(wxT("count"), &temp);
-#else
-    attr->GetPropVal(wxT("count"), &temp);
-#endif
     int numberOfState = wxAtoi(temp);
-#if wxCHECK_VERSION(3, 0, 0)
     attr->GetAttribute(wxT("current"), &temp);
-#else
-    attr->GetPropVal(wxT("current"), &temp);
-#endif
     int state = wxAtoi(temp);
     attr = attr->GetChildren();
     for( int i = 0; i < numberOfState; i++, attr = attr->GetNext())

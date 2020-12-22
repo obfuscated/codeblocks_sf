@@ -170,11 +170,7 @@ wxString GetFullMenuPath(int id)
         wxMenu* pBarMenu = pbar->GetMenu(i);
         if ( pBarMenu == pMenu)
         {
-            #if wxCHECK_VERSION(3, 0, 0)
             fullMenuPath.Prepend( pbar->GetMenuLabel(i) + wxT("\\"));
-            #else
-            fullMenuPath.Prepend( pbar->GetLabelTop(i) + wxT("\\"));
-            #endif
             //wxLogMessage( _T("ParentMenu[%s]"),pbar->GetLabelTop(i).c_str() );
         }
     }
@@ -297,11 +293,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
     if (IsNumericMenuItem(pLclMnuItem))
       return;
 
-#if wxCHECK_VERSION(3, 0, 0)
     wxString strText = pLclMnuItem->GetItemLabel();
-#else
-    wxString strText = pLclMnuItem->GetText();
-#endif
 
     // *bug* 2007/01/19 v1.0.15
     // Dont use  GetLabel to re-establish the menu text. It doesn't
@@ -334,11 +326,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
 
         // no more shortcuts for this menuitem: SetText()
         // will delete the hotkeys associated...
-#if wxCHECK_VERSION(3, 0, 0)
         pLclMnuItem->SetItemLabel(str);
-#else
-        pLclMnuItem->SetText(str);
-#endif
         return;
     }
 
@@ -347,14 +335,8 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
     wxLogMessage(_("wxMenuCmd::Update - setting the new text to [%s]"), newtext.c_str());
     #endif
 
-
     // on GTK, the SetAccel() function doesn't have any effect...
-#if wxCHECK_VERSION(3, 0, 0)
     pLclMnuItem->SetItemLabel(newtext);
-#else
-    pLclMnuItem->SetText(newtext);
-#endif
-
 #ifdef __WXGTK20__
 
     //   gtk_menu_item_set_accel_path(GTK_MENU_ITEM(m_pItem), wxGTK_CONV(newtext));
@@ -388,11 +370,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
     if (IsNumericMenuItem(pLclMnuItem))
       return;
 
-    #if wxCHECK_VERSION(3, 0, 0)
     wxString strText = pLclMnuItem->GetItemLabel();
-    #else
-    wxString strText = pLclMnuItem->GetText();
-    #endif
     //use full text to get label in order to preserve mnemonics/accelerators
     wxString strLabel = strText.BeforeFirst(_T('\t'));
     wxString newtext = strLabel; //no accel, contains mnemonic
@@ -405,14 +383,10 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
          wxLogMessage(_("wxMenuCmd::Update - Removing shortcuts [%d][%s] for [%d][%s]"),pLclMnuItem->GetId(), strText.wx_str(), m_nId, newtext.wx_str());
         #endif
         // set "non bitmapped" text to preserve menu width
-        #if wxCHECK_VERSION(3, 0, 0)
         pLclMnuItem->SetItemLabel(newtext);
-        #else
-        pLclMnuItem->SetText(newtext);
-        #endif
-         //now rebuild the menuitem if bitmapped
-         if (pLclMnuItem->GetBitmap().GetWidth())
-             pLclMnuItem = RebuildMenuitem(pLclMnuItem); //+v0.4.6
+        //now rebuild the menuitem if bitmapped
+        if (pLclMnuItem->GetBitmap().GetWidth())
+            pLclMnuItem = RebuildMenuitem(pLclMnuItem); //+v0.4.6
         return;
     }
 
@@ -429,11 +403,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
     #if LOGGING
      wxLogMessage(_("wxMenuCmd::Update - Setting shortcuts for [%d][%s]"), pLclMnuItem->GetId(), newtext.wx_str());
     #endif
-    #if wxCHECK_VERSION(3, 0, 0)
     pLclMnuItem->SetItemLabel(newtext);
-    #else
-    pLclMnuItem->SetText(newtext);
-    #endif
     //now rebuild the menuitem if bitmapped
     if (pLclMnuItem->GetBitmap().GetWidth())
         pLclMnuItem = RebuildMenuitem(pLclMnuItem); //+v0.4.6
@@ -467,11 +437,7 @@ wxMenuItem* wxMenuCmd::RebuildMenuitem(wxMenuItem* pMnuItem)
     int pos = items.IndexOf(pMnuItem);
    // rebuild the menuitem
     wxMenuItem* pnewitem = new wxMenuItem(pMenu, m_nId,
-        #if wxCHECK_VERSION(3, 0, 0)
                 pMnuItem->GetItemLabel(),
-        #else
-                pMnuItem->GetText(),
-        #endif
                 pMnuItem->GetHelp(), pMnuItem->GetKind(),
                 pMnuItem->GetSubMenu() );
     pnewitem->SetBitmap(pMnuItem->GetBitmap() );
@@ -503,11 +469,7 @@ wxMenuItem* wxMenuCmd::RebuildMenuitem(wxMenuItem* pMnuItem)
 bool wxMenuCmd::IsNumericMenuItem(wxMenuItem* pwxMenuItem)   //v0.2
 // ----------------------------------------------------------------------------
 {//v0.2
-    #if wxCHECK_VERSION(3, 0, 0)
     wxString str = pwxMenuItem->GetItemLabel();
-    #else
-    wxString str = pwxMenuItem->GetText();
-    #endif
     if (str.Length() <2) return false;
     if (str.Left(1).IsNumber()) return true;
     if ( (str[0] == '&') && (str.Mid(1,1).IsNumber()) )
@@ -605,11 +567,7 @@ wxCmd *wxMenuCmd::CreateNew(wxString sCmdName, int id)
 bool wxMenuWalker::IsNumericMenuItem(wxMenuItem* pwxMenuItem)   //v0.2
 // ----------------------------------------------------------------------------
 {//v0.2
-    #if wxCHECK_VERSION(3, 0, 0)
     wxString str = pwxMenuItem->GetItemLabel();
-    #else
-    wxString str = pwxMenuItem->GetText();
-    #endif
     if (str.Length() <2) return false;
     if (str.Left(1).IsNumber()) return true;
     if ( (str[0] == '&') && (str.Mid(1,1).IsNumber()) )
@@ -742,11 +700,7 @@ void* wxMenuTreeWalker::OnMenuWalk(wxMenuBar *p, wxMenu *m, void *data)
 
         // and append a new tree branch with the appropriate label
         wxTreeItemId newId = m_pTreeCtrl->AppendItem(*id,
-        #if wxCHECK_VERSION(3, 0, 0)
             wxMenuItem::GetLabelText(p->GetMenuLabel(i)));
-        #else
-            wxMenuItem::GetLabelFromText(p->GetLabelTop(i)));
-        #endif
 
         // menu items contained in the given menu must be added
         // to the just created branch
@@ -819,12 +773,7 @@ void *wxMenuComboListWalker::OnMenuWalk(wxMenuBar *p, wxMenu *m, void *)
             if (p->GetMenu(i) == m)
                 break;
         wxASSERT(i != (int)p->GetMenuCount());
-        #if wxCHECK_VERSION(3, 0, 0)
         toadd = wxMenuItem::GetLabelText(p->GetMenuLabel(i));
-        #else
-        toadd = wxMenuItem::GetLabelFromText(p->GetLabelTop(i));
-        #endif
-
         m_strAcc = toadd;
 
     } else {

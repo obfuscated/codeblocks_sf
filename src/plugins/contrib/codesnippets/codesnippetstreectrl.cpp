@@ -92,10 +92,6 @@ CodeSnippetsTreeCtrl::CodeSnippetsTreeCtrl(wxWindow *parent, const wxWindowID id
     m_mimeDatabase = 0;
     m_bBeginInternalDrag = false;
     m_LastXmlModifiedTime = time_t(0);            //2009/03/15
-    #if !wxCHECK_VERSION(2, 8, 12)
-    m_itemAtKeyUp = m_itemAtKeyDown = 0;
-    #endif
-
 
     m_pSnippetsTreeCtrl = this;
     GetConfig()->SetSnippetsTreeCtrl(this);
@@ -966,10 +962,6 @@ void CodeSnippetsTreeCtrl::EndInternalTreeItemDrag()
     }
 
     delete pDoc; pDoc = 0;
-    #if !wxCHECK_VERSION(2, 8, 12)
-    m_itemAtKeyDown = 0;
-    m_itemAtKeyUp = 0;
-    #endif
 }//OnEndTreeItemDrag
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::OnEnterWindow(wxMouseEvent& event)
@@ -1131,10 +1123,6 @@ void CodeSnippetsTreeCtrl::FinishExternalDrag()
     delete textData; //wxTextDataObject
     delete fileData; //wxFileDataObject
     m_TreeText = wxEmptyString;
-    #if !wxCHECK_VERSION(2, 8, 12)
-    m_itemAtKeyDown = 0;
-    m_itemAtKeyUp = 0;
-    #endif
 
 }
 // ----------------------------------------------------------------------------
@@ -1146,9 +1134,6 @@ void CodeSnippetsTreeCtrl::OnEndTreeItemDrag(wxTreeEvent& event)
     m_MouseUpX = event.GetPoint().x;
     m_MouseUpY = event.GetPoint().y;
 
-    #if !wxCHECK_VERSION(2, 8, 12)
-    m_itemAtKeyUp = 0;
-    #endif
     int hitFlags = 0;
     wxTreeItemId id = HitTest(wxPoint(m_MouseUpX, m_MouseUpY), hitFlags);
     if (id.IsOk() and (hitFlags & (wxTREE_HITTEST_ONITEMICON | wxTREE_HITTEST_ONITEMLABEL )))
@@ -1696,11 +1681,7 @@ void CodeSnippetsTreeCtrl::EditSnippetWithMIME()
     if ( not ::wxFileExists(fileName) ) return;
 
     wxString fileNameExt;
-    #if wxCHECK_VERSION(3, 0, 0)
     wxFileName::SplitPath( fileName, /*volume*/0, /*path*/0, /*name*/0, &fileNameExt);
-    #else
-    ::wxSplitPath( fileName, /*path*/0, /*name*/0, &fileNameExt);
-    #endif
     if ( fileNameExt.IsEmpty() ) return;
 
     wxString s_defaultExt = _T("xyz");
@@ -1765,11 +1746,7 @@ void CodeSnippetsTreeCtrl::EditSnippetWithMIME()
            #endif
 
             delete filetype;
-            #if wxCHECK_VERSION(3, 0, 0)
             if ( !open.IsEmpty() )
-            #else
-            if ( open )
-            #endif
                 ::wxExecute( open, wxEXEC_ASYNC);
         }
     }
