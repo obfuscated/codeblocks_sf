@@ -53,6 +53,7 @@ namespace
 
     WXS_EV_BEGIN(wxsFrameEvents)
         WXS_EVI(EVT_CLOSE,wxEVT_CLOSE_WINDOW,wxCloseEvent,Close)
+        WXS_EVI(EVT_ACTIVATE,wxEVT_ACTIVATE,wxActivateEvent,Activate)
         WXS_EV_DEFAULTS()
     WXS_EV_END()
 
