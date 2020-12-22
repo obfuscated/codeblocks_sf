@@ -526,23 +526,25 @@ void wxsToolBarEditor::OnNewClick(cb_unused wxCommandEvent& event)
 void wxsToolBarEditor::OnDelClick(cb_unused wxCommandEvent& event)
 {
     int Selection = m_Content->GetSelection();
-    if ( Selection == wxNOT_FOUND ) return;
-    if ( cbMessageBox(_("Are you sure to delete this item?"),
-                      _("Deleting wxToolBar item"),
-                      wxYES_NO) == wxID_YES )
+    if (Selection == wxNOT_FOUND)
+        return;
+    if (cbMessageBox(_("Are you sure to delete this item?"), _("Deleting wxToolBar item"),
+                     wxYES_NO) == wxID_YES)
     {
+        // Clear m_Selected, because it will be invalid after the call to Delete.
+        SelectItem(nullptr);
         m_Content->Delete(Selection);
-        if ( (int)m_Content->GetCount() == Selection ) Selection--;
-        if ( Selection > 0 )
+        const int NewCount = m_Content->GetCount();
+        if (NewCount > 0)
         {
+            if (Selection == NewCount)
+               --Selection;
+
             m_Content->SetSelection(Selection);
             SelectItem((ToolBarItem*)m_Content->GetClientObject(Selection));
         }
         else
-        {
             m_Content->SetSelection(wxNOT_FOUND);
-            SelectItem(0);
-        }
     }
 }
 
