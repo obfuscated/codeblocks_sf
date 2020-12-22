@@ -41,10 +41,12 @@ namespace
                 wxScrollingDialog(0,-1,_("ToolBar editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
             {
                 wxBoxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
-                Sizer->Add(Editor = new wxsToolBarEditor(this,ToolBar),1,wxEXPAND,0);
+                Editor = new wxsToolBarEditor(this,ToolBar);
+                Sizer->Add(Editor, 1, wxEXPAND|wxBOTTOM, 5);
                 Sizer->Add(CreateButtonSizer(wxOK|wxCANCEL),0,wxEXPAND,15);
                 SetSizer(Sizer);
                 Sizer->SetSizeHints(this);
+                Fit();
                 PlaceWindow(this,pdlCentre,true);
             }
 
