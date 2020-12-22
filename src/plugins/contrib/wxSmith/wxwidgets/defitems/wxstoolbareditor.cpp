@@ -262,86 +262,95 @@ void wxsToolBarEditor::ApplyChanges()
     SelectItem(m_Selected); // Store changes
 
     m_ToolBar->GetResourceData()->BeginChange();
-    int NewCount = m_Content->GetCount();
-    if ( NewCount == 0 )
+    const int NewCount = m_Content->GetCount();
+
+    // If all items have been removed just remove everything from toolbar
+    if (NewCount == 0)
     {
-        // Simply removing everything from toolbar
-        for ( int i = m_ToolBar->GetChildCount(); i-->0; )
+        for (int i = m_ToolBar->GetChildCount(); i-- > 0;)
         {
             wxsItem* Child = m_ToolBar->GetChild(i);
             m_ToolBar->UnbindChild(i);
             delete Child;
         }
     }
-
-    wxsItemP* NewChildrenArray = new wxsItemP[NewCount];
-    wxArrayBool ParentChildrenUsed;
-    ParentChildrenUsed.Add(false,m_ToolBar->GetChildCount());
-
-    for ( int i=0; i<NewCount; i++ )
+    else
     {
-        ToolBarItem* Item = (ToolBarItem*)m_Content->GetClientObject(i);
-        if ( Item->m_Type == Control )
+        wxsItemP* NewChildrenArray = new wxsItemP[NewCount];
+        wxArrayBool ParentChildrenUsed;
+        ParentChildrenUsed.Add(false,m_ToolBar->GetChildCount());
+        for (int i = 0; i < NewCount; ++i)
         {
-            int Index = Item->m_OriginalPos;
-            wxASSERT(ParentChildrenUsed[Index]==false);
-            NewChildrenArray[i] = m_ToolBar->GetChild(Index);
-            ParentChildrenUsed[Index] = true;
-        }
-        else
-        {
-            wxsToolBarItem* New = new wxsToolBarItem(m_ToolBar->GetResourceData(),Item->m_Type==Separator);
-            switch ( Item->m_Type )
+            ToolBarItem* Item = (ToolBarItem*)m_Content->GetClientObject(i);
+            if (Item->m_Type == Control)
             {
-                case Separator: New->m_Type = wxsToolBarItem::Separator; break;
-                case Radio:     New->m_Type = wxsToolBarItem::Radio; break;
-                case Check:     New->m_Type = wxsToolBarItem::Check; break;
-
-                case Normal:  // fall-through
-                case Control: // fall-through
-                default:        New->m_Type = wxsToolBarItem::Normal; break;
+                const int Index = Item->m_OriginalPos;
+                wxASSERT(ParentChildrenUsed[Index]==false);
+                NewChildrenArray[i] = m_ToolBar->GetChild(Index);
+                ParentChildrenUsed[Index] = true;
             }
-
-            if ( Item->m_Type != Separator )
+            else
             {
-                New->SetIdName(Item->m_Id);
-                New->SetVarName(Item->m_Variable);
-                New->m_Label = Item->m_Label;
-                New->m_Bitmap = Item->m_Bitmap;
-                New->m_Bitmap2 = Item->m_Bitmap2;
-                New->m_ToolTip = Item->m_ToolTip;
-                New->m_HelpText = Item->m_HelpText;
+                wxsToolBarItem* New = new wxsToolBarItem(m_ToolBar->GetResourceData(),
+                                                         Item->m_Type == Separator);
+                switch (Item->m_Type)
+                {
+                    case Separator:
+                        New->m_Type = wxsToolBarItem::Separator;
+                        break;
+                    case Radio:
+                        New->m_Type = wxsToolBarItem::Radio;
+                        break;
+                    case Check:
+                        New->m_Type = wxsToolBarItem::Check;
+                        break;
+                    case Normal:  // fall-through
+                    case Control: // fall-through
+                    default:
+                        New->m_Type = wxsToolBarItem::Normal;
+                        break;
+                }
 
-                wxsEvents& Events = New->GetEvents();
-                if ( Events.GetCount() > 0 ) Events.SetHandler(0,Item->m_Handler1);
-                if ( Events.GetCount() > 1 ) Events.SetHandler(1,Item->m_Handler2);
+                if (Item->m_Type != Separator)
+                {
+                    New->SetIdName(Item->m_Id);
+                    New->SetVarName(Item->m_Variable);
+                    New->m_Label = Item->m_Label;
+                    New->m_Bitmap = Item->m_Bitmap;
+                    New->m_Bitmap2 = Item->m_Bitmap2;
+                    New->m_ToolTip = Item->m_ToolTip;
+                    New->m_HelpText = Item->m_HelpText;
+
+                    wxsEvents& Events = New->GetEvents();
+                    if (Events.GetCount() > 0)
+                        Events.SetHandler(0,Item->m_Handler1);
+                    if (Events.GetCount() > 1)
+                        Events.SetHandler(1,Item->m_Handler2);
+                }
+
+                NewChildrenArray[i] = New;
             }
-
-            NewChildrenArray[i] = New;
         }
-    }
 
-    // Removing items from toolbar which are not reused
-    for ( int i=m_ToolBar->GetChildCount(); i-->0; )
-    {
-        wxsItem* Child = m_ToolBar->GetChild(i);
-        m_ToolBar->UnbindChild(Child);
-        if ( !ParentChildrenUsed[i] )
+        // Removing items from toolbar which are not reused
+        for (int i = m_ToolBar->GetChildCount(); i-- > 0;)
         {
-            delete Child;
+            wxsItem* Child = m_ToolBar->GetChild(i);
+            m_ToolBar->UnbindChild(Child);
+            if (!ParentChildrenUsed[i])
+                delete Child;
         }
-    }
 
-    // Adding new items into toolbar
-    for ( int i=0; i<NewCount; i++ )
-    {
-        if ( !m_ToolBar->AddChild(NewChildrenArray[i]) )
+        // Adding new items into toolbar
+        for (int i = 0; i < NewCount; ++i)
         {
-            delete NewChildrenArray[i];
+            if (!m_ToolBar->AddChild(NewChildrenArray[i]))
+                delete NewChildrenArray[i];
         }
+
+        delete[] NewChildrenArray;
     }
 
-    delete[] NewChildrenArray;
     m_ToolBar->GetResourceData()->EndChange();
 }
 
