@@ -44,25 +44,21 @@
 #include <wx/versioninfo.h>
 #endif
 
-// this workarounds an issue that in some build configuration of wx library, WXEXPORT is defined as empty,
-// as WXDLLIMPEXP_SCI is defined as WXEXPORT below, this may cause wxScintilla class not be exported from
-// the codeblocks.dll
-#ifdef __WXMSW__
-    #ifdef WXEXPORT
-        #undef WXEXPORT
-        #define WXEXPORT __declspec(dllexport)
-    #else // WXEXPORT not defined
-        #define WXEXPORT __declspec(dllexport)
-    #endif // WXEXPORT
-#endif // __WXMSW__
-
 #ifdef WXMAKINGDLL_SCI
-    #define WXDLLIMPEXP_SCI WXEXPORT
+    // this workarounds an issue that in some build configuration of wx library, WXEXPORT is defined as empty,
+    // as WXDLLIMPEXP_SCI is defined as WXEXPORT below, this may cause wxScintilla class not be exported from
+    // the codeblocks.dll
+    #ifdef __WXMSW__
+        #define WXDLLIMPEXP_SCI __declspec(dllexport)
+    #else
+        #define WXDLLIMPEXP_SCI WXEXPORT
+    #endif
 #elif defined(WXUSINGDLL_SCI) || defined(WXUSINGDLL)
     #define WXDLLIMPEXP_SCI WXIMPORT
 #else // not making nor using DLL
     #define WXDLLIMPEXP_SCI
 #endif
+
 /* C::B end */
 
 class WXDLLIMPEXP_FWD_CORE wxScrollBar;
