@@ -161,28 +161,28 @@ void BrowseTrackerConfPanel::OnWrapJumpEntries( wxCommandEvent& event )
     // Enable Jump entry wraps if "Wrap Jum0 Entries" is checked
     if ( not m_pConfigPanel->Cfg_WrapJumpEntries->IsChecked() )
     {
-        m_pConfigPanel->Cfg_WrapJumpEntries->Enable(false);
+        //-?m_pConfigPanel->Cfg_WrapJumpEntries->Enable(false); //dont disable 2020/12/22
     }
 
     if ( m_pConfigPanel->Cfg_WrapJumpEntries->IsChecked() )
     {
-        m_pConfigPanel->Cfg_WrapJumpEntries->Enable(true);
+        //_m_pConfigPanel->Cfg_WrapJumpEntries->Enable(true);   //dont disable 2020/12/22
     }
     event.Skip();
 }
 // ----------------------------------------------------------------------------
-void BrowseTrackerConfPanel::OnActivatePrevEd( wxCommandEvent& event ) //2020/06/15
+void BrowseTrackerConfPanel::OnActivatePrevEd( wxCommandEvent& event ) //2020/12/22
 // ----------------------------------------------------------------------------
 {
     // Enable switching to previous editor when current closed
     if ( not m_pConfigPanel->Cfg_ActivatePrevEd->IsChecked() )
     {
-        m_pConfigPanel->Cfg_ActivatePrevEd->Enable(false);
+       //- m_pConfigPanel->Cfg_ActivatePrevEd->Enable(false); dont do this
     }
 
     if ( m_pConfigPanel->Cfg_ActivatePrevEd->IsChecked() )
     {
-        m_pConfigPanel->Cfg_ActivatePrevEd->Enable(true);
+        //-m_pConfigPanel->Cfg_ActivatePrevEd->Enable(true); dont do this
     }
     event.Skip();
 }

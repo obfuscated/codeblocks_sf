@@ -30,6 +30,7 @@
 #include <wx/font.h>
 #include <wx/settings.h>
 #include "wx/xrc/xmlres.h"
+#include "wx/event.h"
 
 #include "globals.h"
 #include "editorbase.h"
@@ -122,7 +123,7 @@ void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, int
     wxBoxSizer *sz = new wxBoxSizer(wxVERTICAL);
     SetSizer(sz);
 
-    const long flags = wxLB_SINGLE | wxNO_BORDER | wxWANTS_CHARS;
+    const long flags = wxLB_SINGLE | wxNO_BORDER | wxWANTS_CHARS | wxTE_PROCESS_ENTER;
     m_listBox = new wxListBox(this, wxID_ANY, wxDefaultPosition, wxSize(400, 150), 0, NULL, flags);
 
     static int panelHeight = 0;
@@ -158,14 +159,15 @@ void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, int
     SetSizer(sz);
 
     // Connect events to the list box
-    m_listBox->Connect(wxID_ANY, wxEVT_KEY_UP, wxKeyEventHandler(BrowseSelector::OnKeyUp), NULL, this);
-    m_listBox->Connect(wxID_ANY, wxEVT_KEY_DOWN, wxKeyEventHandler(BrowseSelector::OnKeyDown), NULL, this);
-    m_listBox->Connect(wxID_ANY, wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler(BrowseSelector::OnItemSelected), NULL, this);
+    m_listBox->GetEventHandler()->Connect(wxID_ANY, wxEVT_KEY_UP,   wxKeyEventHandler(BrowseSelector::OnKeyUp), NULL, this);
+    m_listBox->GetEventHandler()->Connect(wxID_ANY, wxEVT_KEY_DOWN, wxKeyEventHandler(BrowseSelector::OnKeyDown), NULL, this);
+    m_listBox->GetEventHandler()->Connect(wxID_ANY, wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler(BrowseSelector::OnItemSelected), NULL, this);
+
     //m_listBox->Connect(wxID_ANY, wxEVT_KILL_FOCUS, wxFocusEventHandler(BrowseSelector::OnWindowKillFocus),NULL,this); //debugging
 
     // Connect paint event to the panel
-    m_panel->Connect(wxID_ANY, wxEVT_PAINT, wxPaintEventHandler(BrowseSelector::OnPanelPaint), NULL, this);
-    m_panel->Connect(wxID_ANY, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(BrowseSelector::OnPanelEraseBg), NULL, this);
+    m_panel->GetEventHandler()->Connect(wxID_ANY, wxEVT_PAINT, wxPaintEventHandler(BrowseSelector::OnPanelPaint), NULL, this);
+    m_panel->GetEventHandler()->Connect(wxID_ANY, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(BrowseSelector::OnPanelEraseBg), NULL, this);
 
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
     m_listBox->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));

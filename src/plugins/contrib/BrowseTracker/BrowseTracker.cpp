@@ -1509,23 +1509,23 @@ void BrowseTracker::OnEditorActivated(CodeBlocksEvent& event)
                 cbStyledTextCtrl* control = cbed->GetControl();
                 // Setting the initial browsemark(s)
                 //Connect to mouse to see user setting/clearing browse marks
-                control->Connect(wxEVT_LEFT_UP,
+                control->GetEventHandler()->Connect(wxEVT_LEFT_UP,
                                 (wxObjectEventFunction)(wxEventFunction)
                                 (wxMouseEventFunction)&BrowseTracker::OnMouseKeyEvent,
                                  NULL, this);
-                control->Connect(wxEVT_LEFT_DOWN,
+                control->GetEventHandler()->Connect(wxEVT_LEFT_DOWN,
                                 (wxObjectEventFunction)(wxEventFunction)
                                 (wxMouseEventFunction)&BrowseTracker::OnMouseKeyEvent,
                                  NULL, this);
-                control->Connect(wxEVT_LEFT_DCLICK,
+                control->GetEventHandler()->Connect(wxEVT_LEFT_DCLICK,
                                 (wxObjectEventFunction)(wxEventFunction)
                                 (wxMouseEventFunction)&BrowseTracker::OnMouseKeyEvent,
                                  NULL, this);
-                control->Connect(wxEVT_MOTION,
+                control->GetEventHandler()->Connect(wxEVT_MOTION,
                                 (wxObjectEventFunction)(wxEventFunction)
                                 (wxMouseEventFunction)&BrowseTracker::OnMouseKeyEvent,
                                  NULL, this);
-                control->Connect(wxEVT_CONTEXT_MENU,
+                control->GetEventHandler()->Connect(wxEVT_CONTEXT_MENU,
                                 (wxObjectEventFunction)(wxEventFunction)
                                 (wxContextMenuEventFunction)&BrowseTracker::OnMarginContextMenu,
                                  NULL, this);
@@ -2003,23 +2003,23 @@ void BrowseTracker::RemoveEditor(EditorBase* eb)
                 wxWindow* win = wxWindow::FindWindowByName(wxT("SCIwindow"),eb);
                 if ( win )
                 {
-                    win->Disconnect(wxEVT_LEFT_UP,
+                    win->GetEventHandler()->Disconnect(wxEVT_LEFT_UP,
                                     (wxObjectEventFunction)(wxEventFunction)
                                     (wxMouseEventFunction)&BrowseTracker::OnMouseKeyEvent,
                                      NULL, this);
-                    win->Disconnect(wxEVT_LEFT_DOWN,
+                    win->GetEventHandler()->Disconnect(wxEVT_LEFT_DOWN,
                                     (wxObjectEventFunction)(wxEventFunction)
                                     (wxMouseEventFunction)&BrowseTracker::OnMouseKeyEvent,
                                      NULL, this);
-                    win->Disconnect(wxEVT_LEFT_DCLICK,
+                    win->GetEventHandler()->Disconnect(wxEVT_LEFT_DCLICK,
                                     (wxObjectEventFunction)(wxEventFunction)
                                     (wxMouseEventFunction)&BrowseTracker::OnMouseKeyEvent,
                                      NULL, this);
-                    win->Disconnect(wxEVT_MOTION,
+                    win->GetEventHandler()->Disconnect(wxEVT_MOTION,
                                     (wxObjectEventFunction)(wxEventFunction)
                                     (wxMouseEventFunction)&BrowseTracker::OnMouseKeyEvent,
                                      NULL, this);
-                    win->Disconnect(wxEVT_CONTEXT_MENU,
+                    win->GetEventHandler()->Disconnect(wxEVT_CONTEXT_MENU,
                                     (wxObjectEventFunction)(wxEventFunction)
                                     (wxCommandEventFunction)&BrowseTracker::OnMarginContextMenu,
                                      NULL, this);
