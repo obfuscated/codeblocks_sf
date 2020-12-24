@@ -1053,7 +1053,7 @@ class PLUGIN_EXPORT cbWizardPlugin : public cbPlugin
   * The hook gets installed during OnAttach.
   */
 class cbStyledTextCtrl;
-class cbSmartIndentPlugin : public cbPlugin
+class PLUGIN_EXPORT cbSmartIndentPlugin : public cbPlugin
 {
     public:
         cbSmartIndentPlugin();
