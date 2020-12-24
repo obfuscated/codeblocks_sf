@@ -1324,76 +1324,77 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
         val = true;
         for (wxXmlAttribute *attr = node->GetAttributes(); attr && val; attr = attr->GetNext())
         {
-            const wxString Test(attr->GetName());
+            const wxString &name = attr->GetName();
 
             // Not really tests
-            if ((Test == "exec") || (Test == "default"))
-              continue;
+            if ((name == "exec") || (name == "default"))
+                continue;
 
-            if (Test == "regex")
+            if (name == "regex")
             {
-                const wxString Value(attr->GetValue());
                 wxRegEx re;
-                if (re.Compile(Value))
+                if (re.Compile(attr->GetValue()))
                 {
-                    bool Found = false;
+                    bool found = false;
                     for (size_t i = 0; i < cmd.GetCount(); ++i)
                     {
                         if (re.Matches(cmd[i]))
                         {
-                            Found = true;
+                            found = true;
                             break;
                         }
                     }
-                    val = Found;
+                    val = found;
                 }
                 else
                 {
                     val = false;
-                    Manager::Get()->GetLogManager()->DebugLog(wxString::Format("Can not compile regex \"%s\" in compiler test", Value));
+                    const wxString msg = wxString::Format("Can not compile regex \"%s\" in compiler test",
+                                                          attr->GetValue().wx_str());
+                    Manager::Get()->GetLogManager()->DebugLog(msg);
                 }
 
                 continue;
             }
 
-            if (Test[0] == 'v')
+            if (!name.empty() && name[0] == 'v')
             {
-                if (Test == "version_greater")
+                if (name == "version_greater")
                 {
                     const int Check = CmpVersion(cmd[0], attr->GetValue());
                     val = (Check > 0);
                     continue;
                 }
 
-                if (Test == "version_greater_equal")
+                if (name == "version_greater_equal")
                 {
                     const int Check = CmpVersion(cmd[0], attr->GetValue());
                     val = (Check >= 0);
                     continue;
                 }
 
-                if (Test == "version_equal")
+                if (name == "version_equal")
                 {
                     const int Check = CmpVersion(cmd[0], attr->GetValue());
                     val = (Check == 0);
                     continue;
                 }
 
-                if (Test == "version_not_equal")
+                if (name == "version_not_equal")
                 {
                     const int Check = CmpVersion(cmd[0], attr->GetValue());
                     val = (Check != 0);
                     continue;
                 }
 
-                if (Test == "version_less_equal")
+                if (name == "version_less_equal")
                 {
                     const int Check = CmpVersion(cmd[0], attr->GetValue());
                     val = (Check <= 0);
                     continue;
                 }
 
-                if (Test == "version_less")
+                if (name == "version_less")
                 {
                     const int Check = CmpVersion(cmd[0], attr->GetValue());
                     val = (Check < 0);
@@ -1403,7 +1404,9 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
 
             // Unknown test
             val = false;
-            Manager::Get()->GetLogManager()->DebugLog(wxString::Format("Unknown compiler test \"%s\"", Test));
+            LogManager *log = Manager::Get()->GetLogManager();
+            log ->DebugLog(wxString::Format(_("EvalXMLCondition: Unknown compiler test \"%s\""),
+                                            name.wx_str()));
         }
     }
     return val;
