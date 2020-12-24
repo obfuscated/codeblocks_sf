@@ -52,6 +52,8 @@ distribution.
         #define DLLIMPORT
     #endif // EXPORT_LIB
 #endif // DLLIMPORT
+#else
+    #define DLLIMPORT
 #endif // _WIN32
 
 /*
