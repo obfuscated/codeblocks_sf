@@ -2553,6 +2553,149 @@ namespace ScriptBindings
         return 1;
     }
 
+    SQInteger ProjectManager_GetDefaultPath(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<ProjectManager*> extractor(v);
+        if (!extractor.Process("ProjectManager::GetDefaultPath"))
+            return extractor.ErrorMessage();
+        return ConstructAndReturnInstance(v, extractor.p0->GetDefaultPath());
+    }
+
+    SQInteger ProjectManager_SetDefaultPath(HSQUIRRELVM v)
+    {
+        // this, path
+        ExtractParams2<ProjectManager*, const wxString *> extractor(v);
+        if (!extractor.Process("ProjectManager::SetDefaultPath"))
+            return extractor.ErrorMessage();
+        extractor.p0->SetDefaultPath(*extractor.p1);
+        return 0;
+    }
+
+    SQInteger ProjectManager_GetActiveProject(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<ProjectManager*> extractor(v);
+        if (!extractor.Process("ProjectManager::GetActiveProject"))
+            return extractor.ErrorMessage();
+        return ConstructAndReturnNonOwnedPtrOrNull(v, extractor.p0->GetActiveProject());
+    }
+
+    SQInteger ProjectManager_GetProjectCount(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<ProjectManager*> extractor(v);
+        if (!extractor.Process("ProjectManager::GetProjectCount"))
+            return extractor.ErrorMessage();
+        sq_pushinteger(v, extractor.p0->GetProjects()->GetCount());
+        return 1;
+    }
+
+    SQInteger ProjectManager_GetProject(HSQUIRRELVM v)
+    {
+        // this, index
+        ExtractParams2<ProjectManager*, SQInteger> extractor(v);
+        if (!extractor.Process("ProjectManager::GetProject"))
+            return extractor.ErrorMessage();
+
+        ProjectsArray *projects = extractor.p0->GetProjects();
+        if (extractor.p1 < 0 || extractor.p1>= projects->GetCount())
+            return sq_throwerror(v, _SC("ProjectManager::GetProject: Index out of bounds!"));
+        cbProject *project = (*projects)[extractor.p1];
+        return ConstructAndReturnNonOwnedPtr(v, project);
+    }
+
+    SQInteger ProjectManager_SetProject(HSQUIRRELVM v)
+    {
+        // this, project, refresh
+        ExtractParams3<ProjectManager*, cbProject*, bool> extractor(v);
+        if (!extractor.Process("ProjectManager::SetProject"))
+            return extractor.ErrorMessage();
+        extractor.p0->SetProject(extractor.p1, extractor.p2);
+        return 0;
+    }
+
+    SQInteger ProjectManager_LoadWorkspace(HSQUIRRELVM v)
+    {
+        // this, filename
+        ExtractParams2<ProjectManager*, const wxString*> extractor(v);
+        if (!extractor.Process("ProjectManager::LoadWorkspace"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->LoadWorkspace(*extractor.p1));
+        return 1;
+    }
+
+    SQInteger ProjectManager_SaveWorkspace(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<ProjectManager*> extractor(v);
+        if (!extractor.Process("ProjectManager::SaveWorkspace"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->SaveWorkspace());
+        return 1;
+    }
+
+    SQInteger ProjectManager_SaveWorkspaceAs(HSQUIRRELVM v)
+    {
+        // this, filename
+        ExtractParams2<ProjectManager*, const wxString*> extractor(v);
+        if (!extractor.Process("ProjectManager::SaveWorkspaceAs"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->SaveWorkspaceAs(*extractor.p1));
+        return 1;
+    }
+
+    SQInteger ProjectManager_CloseWorkspace(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<ProjectManager*> extractor(v);
+        if (!extractor.Process("ProjectManager::CloseWorkspace"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->CloseWorkspace());
+        return 1;
+    }
+
+    SQInteger ProjectManager_IsOpen(HSQUIRRELVM v)
+    {
+        // this, filename
+        ExtractParams2<ProjectManager*, const wxString*> extractor(v);
+        if (!extractor.Process("ProjectManager::IsOpen"))
+            return extractor.ErrorMessage();
+        return ConstructAndReturnNonOwnedPtrOrNull(v, extractor.p0->IsOpen(*extractor.p1));
+    }
+
+    SQInteger ProjectManager_LoadProject(HSQUIRRELVM v)
+    {
+        // this, filename, activateIt
+        ExtractParams3<ProjectManager*, const wxString*, bool> extractor(v);
+        if (!extractor.Process("ProjectManager::LoadProject"))
+            return extractor.ErrorMessage();
+        cbProject *project = extractor.p0->LoadProject(*extractor.p1, extractor.p2);
+        return ConstructAndReturnNonOwnedPtrOrNull(v, project);
+    }
+
+    template<bool (ProjectManager::*func)(cbProject *)>
+    SQInteger ProjectManager_SaveProject(HSQUIRRELVM v)
+    {
+        // this, project
+        ExtractParams2<ProjectManager*, cbProject*> extractor(v);
+        if (!extractor.Process("ProjectManager::SaveProject"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, (extractor.p0->*func)(extractor.p1));
+        return 1;
+    }
+
+    template<bool (ProjectManager::*func)()>
+    SQInteger ProjectManager_DoSomethingReturnBool(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<ProjectManager*> extractor(v);
+        if (!extractor.Process("ProjectManager_DoSomethingReturnBool"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, (extractor.p0->*func)());
+        return 1;
+    }
+
     SQInteger ProjectManager_NewProject(HSQUIRRELVM v)
     {
         // this, filename
@@ -2572,16 +2715,6 @@ namespace ScriptBindings
         return 1;
     }
 
-    SQInteger ProjectManager_CloseWorkspace(HSQUIRRELVM v)
-    {
-        // this
-        ExtractParams1<ProjectManager*> extractor(v);
-        if (!extractor.Process("ProjectManager::CloseWorkspace"))
-            return extractor.ErrorMessage();
-        sq_pushbool(v, extractor.p0->CloseWorkspace());
-        return 1;
-    }
-
     SQInteger ProjectManager_CloseProject(HSQUIRRELVM v)
     {
         // this, project, dontsave, refresh
@@ -2593,9 +2726,93 @@ namespace ScriptBindings
         return 1;
     }
 
+    template<bool (ProjectManager::*func)(bool)>
+    SQInteger ProjectManager_CloseDontSave(HSQUIRRELVM v)
+    {
+        // this, dontsave
+        ExtractParams2<ProjectManager*, bool> extractor(v);
+        if (!extractor.Process("ProjectManager_CloseDontSave"))
+            return extractor.ErrorMessage();
+        const bool result = (extractor.p0->*func)(extractor.p1);
+        sq_pushbool(v, result);
+        return 1;
+    }
+
+    SQInteger ProjectManager_AddProjectDependency(HSQUIRRELVM v)
+    {
+        // this, base, dependsOn
+        ExtractParams3<ProjectManager*, cbProject*, cbProject*> extractor(v);
+        if (!extractor.Process("ProjectManager::AddProjectDependency"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->AddProjectDependency(extractor.p1, extractor.p2));
+        return 1;
+    }
+
+    SQInteger ProjectManager_RemoveProjectDependency(HSQUIRRELVM v)
+    {
+        // this, base, doesNotDependOn
+        ExtractParams3<ProjectManager*, cbProject*, cbProject*> extractor(v);
+        if (!extractor.Process("ProjectManager::RemoveProjectDependency"))
+            return extractor.ErrorMessage();
+        extractor.p0->RemoveProjectDependency(extractor.p1, extractor.p2);
+        return 0;
+    }
+
+    SQInteger ProjectManager_ClearProjectDependencies(HSQUIRRELVM v)
+    {
+        // this, base
+        ExtractParams2<ProjectManager*, cbProject*> extractor(v);
+        if (!extractor.Process("ProjectManager::ClearProjectDependencies"))
+            return extractor.ErrorMessage();
+        extractor.p0->ClearProjectDependencies(extractor.p1);
+        return 0;
+    }
+
+    // FIXME (squirrel) Compress with previous
+    SQInteger ProjectManager_RemoveProjectFromAllDependencies(HSQUIRRELVM v)
+    {
+        // this, base
+        ExtractParams2<ProjectManager*, cbProject*> extractor(v);
+        if (!extractor.Process("ProjectManager::RemoveProjectFromAllDependencies"))
+            return extractor.ErrorMessage();
+        extractor.p0->RemoveProjectFromAllDependencies(extractor.p1);
+        return 0;
+    }
+
+    SQInteger ProjectManager_GetDependenciesForProject(HSQUIRRELVM v)
+    {
+        // this, base
+        ExtractParams2<ProjectManager*, cbProject*> extractor(v);
+        if (!extractor.Process("ProjectManager::GetDependenciesForProject"))
+            return extractor.ErrorMessage();
+        const ProjectsArray *deps = extractor.p0->GetDependenciesForProject(extractor.p1);
+        if (deps)
+        {
+            sq_newarray(v, 0);
+
+            PreserveTop preserver(v);
+
+            const int count = int(deps->GetCount());
+            for (size_t ii = 0; ii < count; ++ii)
+            {
+                // FIXME (squirrel) This doesn't matter much, because squirrel doesn't care for constness.
+                cbProject *project = (*deps)[ii];
+                if (ConstructAndReturnNonOwnedPtrOrNull(v, project) == -1)
+                    return -1; // An error should have been logged already.
+                sq_arrayappend(v, -2);
+            }
+            return 1;
+        }
+        else
+        {
+            sq_pushnull(v);
+            return 1;
+        }
+    }
+
     SQInteger ProjectManager_RebuildTree(HSQUIRRELVM v)
     {
-        // this, project, dontsave, refresh
+        // this
         ExtractParams1<ProjectManager*> extractor(v);
         if (!extractor.Process("ProjectManager::RebuildTree"))
             return extractor.ErrorMessage();
@@ -3237,14 +3454,68 @@ namespace ScriptBindings
         {
             // Register ProjectManager
             const SQInteger classDecl = CreateClassDecl<ProjectManager>(v, _SC("ProjectManager"));
+            BindMethod(v, _SC("GetDefaultPath"), ProjectManager_GetDefaultPath,
+                       _SC("ProjectManager::GetDefaultPath"));
+            BindMethod(v, _SC("SetDefaultPath"), ProjectManager_SetDefaultPath,
+                       _SC("ProjectManager::SetDefaultPath"));
+            BindMethod(v, _SC("GetActiveProject"), ProjectManager_GetActiveProject,
+                       _SC("ProjectManager::GetActiveProject"));
+            BindMethod(v, _SC("GetProjectCount"), ProjectManager_GetProjectCount,
+                       _SC("ProjectManager::GetProjectCount"));
+            BindMethod(v, _SC("GetProject"), ProjectManager_GetProject,
+                       _SC("ProjectManager::GetProject"));
+            BindMethod(v, _SC("SetProject"), ProjectManager_SetProject,
+                       _SC("ProjectManager::SetProject"));
+            BindMethod(v, _SC("LoadWorkspace"), ProjectManager_LoadWorkspace,
+                       _SC("ProjectManager::LoadWorkspace"));
+            BindMethod(v, _SC("SaveWorkspace"), ProjectManager_SaveWorkspace,
+                       _SC("ProjectManager::SaveWorkspace"));
+            BindMethod(v, _SC("SaveWorkspaceAs"), ProjectManager_SaveWorkspaceAs,
+                       _SC("ProjectManager::SaveWorkspaceAs"));
+            BindMethod(v, _SC("CloseWorkspace"), ProjectManager_CloseWorkspace,
+                       _SC("ProjectManager::CloseWorkspace"));
+            BindMethod(v, _SC("IsOpen"), ProjectManager_IsOpen, _SC("ProjectManager::IsOpen"));
+            BindMethod(v, _SC("LoadProject"), ProjectManager_LoadProject,
+                       _SC("ProjectManager::LoadProject"));
+            BindMethod(v, _SC("SaveProject"),
+                       ProjectManager_SaveProject<&ProjectManager::SaveProject>,
+                       _SC("ProjectManager::SaveProject"));
+            BindMethod(v, _SC("SaveProjectAs"),
+                       ProjectManager_SaveProject<&ProjectManager::SaveProjectAs>,
+                       _SC("ProjectManager::SaveProjectAs"));
+            BindMethod(v, _SC("SaveActiveProject"),
+                       ProjectManager_DoSomethingReturnBool<&ProjectManager::SaveActiveProject>,
+                       _SC("ProjectManager::SaveActiveProject"));
+            BindMethod(v, _SC("SaveActiveProjectAs"),
+                       ProjectManager_DoSomethingReturnBool<&ProjectManager::SaveActiveProjectAs>,
+                       _SC("ProjectManager::SaveActiveProjectAs"));
+            BindMethod(v, _SC("SaveAllProjects"),
+                       ProjectManager_DoSomethingReturnBool<&ProjectManager::SaveAllProjects>,
+                       _SC("ProjectManager::SaveAllProjects"));
+            BindMethod(v, _SC("CloseProject"), ProjectManager_CloseProject,
+                       _SC("ProjectManager::CloseProject"));
+            BindMethod(v, _SC("CloseActiveProject"),
+                       ProjectManager_CloseDontSave<&ProjectManager::CloseActiveProject>,
+                       _SC("ProjectManager::CloseActiveProject"));
+            BindMethod(v, _SC("CloseAllProjects"),
+                       ProjectManager_CloseDontSave<&ProjectManager::CloseAllProjects>,
+                       _SC("ProjectManager::CloseAllProjects"));
             BindMethod(v, _SC("NewProject"), ProjectManager_NewProject,
                        _SC("ProjectManager::NewProject"));
             BindMethod(v, _SC("AddFileToProject"), ProjectManager_AddFileToProject,
                        _SC("ProjectManager::AddFileToProject"));
-            BindMethod(v, _SC("CloseWorkspace"), ProjectManager_CloseWorkspace,
-                       _SC("ProjectManager::CloseWorkspace"));
-            BindMethod(v, _SC("CloseProject"), ProjectManager_CloseProject,
-                       _SC("ProjectManager::CloseProject"));
+            BindMethod(v, _SC("AddProjectDependency"), ProjectManager_AddProjectDependency,
+                       _SC("ProjectManager::AddProjectDependency"));
+            BindMethod(v, _SC("RemoveProjectDependency"), ProjectManager_RemoveProjectDependency,
+                       _SC("ProjectManager::RemoveProjectDependency"));
+            BindMethod(v, _SC("ClearProjectDependencies"), ProjectManager_ClearProjectDependencies,
+                       _SC("ProjectManager::ClearProjectDependencies"));
+            BindMethod(v, _SC("RemoveProjectFromAllDependencies"),
+                       ProjectManager_RemoveProjectFromAllDependencies,
+                       _SC("ProjectManager::RemoveProjectFromAllDependencies"));
+            BindMethod(v, _SC("GetDependenciesForProject"),
+                       ProjectManager_GetDependenciesForProject,
+                       _SC("ProjectManager::GetDependenciesForProject"));
             BindMethod(v, _SC("RebuildTree"), ProjectManager_RebuildTree,
                        _SC("ProjectManager::RebuildTree"));
 

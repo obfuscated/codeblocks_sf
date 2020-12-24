@@ -127,7 +127,9 @@ class sdkTest extends script_test_base
         // projects at the time of the start of the script.
         test_true("ProjectManager::CloseWorkspace", projectMgr.CloseWorkspace());
 
-        local tempFolder = GetFolder(0x4);
+        // FIXME (squirrel) Clean up this folder when we have the IO API bound, so tests are less
+        // noisy and produce smaller number of dialogs.
+        local tempFolder = MakePath(GetFolder(0x4), _T("sdk_tests"));
         print(_T("TEMP folder is=") + tempFolder + _T("\n"));
 
         local project = projectMgr.NewProject(MakePath(tempFolder, _T("NewProject.cbp")));
@@ -964,8 +966,154 @@ class sdkTest extends script_test_base
             test_string("ProjectFile::buildTargets get", strTargets, "Debug_New;Release");
         }
 
-        // Cleanup. Must happen here.
-        test_true("ProjectManager::CloseProject", projectMgr.CloseProject(project, true, true));
+        {
+            StartNewSection("ProjectManager");
+
+            projectMgr.SetDefaultPath(tempFolder);
+            test_string("ProjectManager::SetDefaultPath", projectMgr.GetDefaultPath(),
+                        MakePath(tempFolder, _T("")));
+
+            test_equal("ProjedctManager::GetActiveProject", projectMgr.GetActiveProject(), project);
+            test_equal("ProjedctManager::GetProjectCount", projectMgr.GetProjectCount(), 1);
+            test_equal("ProjedctManager::GetProject 0", projectMgr.GetProject(0), project);
+            // FIXME (squirrel) Test this invalid case
+//            test_equal("ProjedctManager::GetProject invalid", projectMgr.GetProject(1000), null);
+
+            // FIXME (squirrel) Test this invalid case
+//            projectMgr.SetProject(null, false);
+//            test_equal("ProjedctManager::SetProject", projectMgr.GetActiveProject(), null);
+
+            local project2 = projectMgr.NewProject(MakePath(tempFolder, _T("NewProject2.cbp")));
+            test_false("ProjectManager::NewProject 2: null", IsNull(project2));
+            test_true("ProjectManager::NewProject 2: equal", project != project2);
+
+            local project3 = projectMgr.NewProject(MakePath(tempFolder, _T("NewProject3.cbp")));
+            test_false("ProjectManager::NewProject 3: null", IsNull(project3));
+            test_true("ProjectManager::NewProject 3: equal", project2 != project3);
+
+            projectMgr.SetProject(project2, false);
+            test_equal("ProjedctManager::SetProject", projectMgr.GetActiveProject(), project2);
+
+            test_equal("ProjectManager::IsOpen not", projectMgr.IsOpen(_T("some/random/path.cbp")),
+                       null);
+            test_equal("ProjectManager::IsOpen NewProject",
+                       projectMgr.IsOpen(MakePath(tempFolder, _T("NewProject.cbp"))), project);
+            test_equal("ProjectManager::IsOpen NewProject2",
+                       projectMgr.IsOpen(MakePath(tempFolder, _T("NewProject2.cbp"))), project2);
+
+            test_equal("ProjectManager::GetDependenciesForProject project: initial",
+                       projectMgr.GetDependenciesForProject(project), null);
+            test_equal("ProjectManager::GetDependenciesForProject project2: initial",
+                       projectMgr.GetDependenciesForProject(project2), null);
+            test_equal("ProjectManager::GetDependenciesForProject project3: initial",
+                       projectMgr.GetDependenciesForProject(project3), null);
+
+            test_true("ProjectManager::AddProjectDependency project -> project2",
+                      projectMgr.AddProjectDependency(project, project2));
+            test_false("ProjectManager::AddProjectDependency project2 -> project",
+                       projectMgr.AddProjectDependency(project2, project));
+            test_true("ProjectManager::AddProjectDependency project3 -> project2",
+                      projectMgr.AddProjectDependency(project3, project2));
+            local depsForProject = projectMgr.GetDependenciesForProject(project);
+            test_equal("ProjectManager::AddProjectDependency project: count", depsForProject.len(),
+                       1);
+            test_equal("ProjectManager::AddProjectDependency project: value", depsForProject[0],
+                       project2);
+            test_equal("ProjectManager::AddProjectDependency project: project2 unchanged",
+                       projectMgr.GetDependenciesForProject(project2), null);
+            local depsForProject3 = projectMgr.GetDependenciesForProject(project3);
+            test_equal("ProjectManager::AddProjectDependency project3: count",
+                       depsForProject3.len(), 1);
+            test_equal("ProjectManager::AddProjectDependency project3: value", depsForProject3[0],
+                       project2);
+
+            projectMgr.RemoveProjectDependency(project, project2);
+
+            test_equal("ProjectManager::RemoveProjectDependency project",
+                       projectMgr.GetDependenciesForProject(project), null);
+            test_equal("ProjectManager::RemoveProjectDependency project2 unchanged",
+                       projectMgr.GetDependenciesForProject(project2), null);
+
+            projectMgr.ClearProjectDependencies(project3);
+            test_equal("ProjectManager::ClearProjectDependencies project3",
+                       projectMgr.GetDependenciesForProject(project3), null);
+
+            test_true("ProjectManager::RemoveProjectFromAllDependencies project -> project2",
+                      projectMgr.AddProjectDependency(project, project2));
+            test_true("ProjectManager::RemoveProjectFromAllDependencies project3 -> project2",
+                      projectMgr.AddProjectDependency(project3, project2));
+            projectMgr.RemoveProjectFromAllDependencies(project2);
+
+            test_equal("ProjectManager::RemoveProjectFromAllDependencies project empty",
+                       projectMgr.GetDependenciesForProject(project), null);
+            test_equal("ProjectManager::RemoveProjectFromAllDependencies project2 empty",
+                       projectMgr.GetDependenciesForProject(project2), null);
+            test_equal("ProjectManager::RemoveProjectFromAllDependencies project3 empty",
+                       projectMgr.GetDependenciesForProject(project3), null);
+
+            project.SetModified(true);
+            project2.SetModified(true);
+            project3.SetModified(true);
+            test_true("ProjectManager::SaveAllProjects", projectMgr.SaveAllProjects());
+
+            project.SetModified(true);
+            test_true("ProjectManager::SaveProject", projectMgr.SaveProject(project));
+
+            test_equal("ProjectManager::GetActiveProject 2", projectMgr.GetActiveProject(),
+                       project2);
+            project2.SetModified(true);
+            test_true("ProjectManager::SaveActiveProject", projectMgr.SaveActiveProject());
+
+            // FIXME (squirrel) Is this really a good idea. Probably in these cases we should just
+            // return a copy!!!
+            local project2Filename = clone project2.GetFilename();
+            test_string("ProjectManager::filename", project2Filename,
+                        MakePath(tempFolder, _T("NewProject2.cbp")));
+
+            projectMgr.CloseActiveProject(true);
+            test_equal("ProjectManager::CloseActiveProject 0", projectMgr.GetProjectCount(), 2);
+            test_equal("ProjectManager::CloseActiveProject 1", projectMgr.GetProject(0), project);
+            test_equal("ProjectManager::CloseActiveProject 2", projectMgr.GetProject(1), project3);
+            project2 = null;
+
+            test_string("ProjectManager::filename after close", project2Filename,
+                        MakePath(tempFolder, _T("NewProject2.cbp")));
+
+            project2 = projectMgr.LoadProject(project2Filename, false);
+            test_false("ProjectManager::LoadProject null", IsNull(project2));
+            test_true("ProjectManager::LoadProject active",
+                      project2 != projectMgr.GetActiveProject());
+
+            // Just test if it will be called.
+            projectMgr.RebuildTree();
+
+            // Cleanup. Must happen here.
+            test_true("ProjectManager::CloseProject project",
+                      projectMgr.CloseProject(project, true, true));
+            test_equal("ProjectManager::CloseProject project count", projectMgr.GetProjectCount(), 2);
+            test_true("ProjectManager::CloseAllProjects", projectMgr.CloseAllProjects(true));
+            test_equal("ProjectManager::CloseAllProjects count", projectMgr.GetProjectCount(), 0);
+            test_true("ProjectManager::CloseWorkspace", projectMgr.CloseWorkspace());
+
+            // Uncomment these to test APIs which require user interaction and which aren't
+            // suitable for automated testing.
+//            {
+//                local workspacePath = MakePath(tempFolder, _T("test.workspace"));
+//
+//                // Add one project to the workspace.
+//                projectMgr.LoadProject(project2Filename, false);
+//
+//                print("ProjectManager::SaveWorkspaceAs: " + projectMgr.SaveWorkspaceAs(workspacePath) + "\n");
+//                print("ProjectManager::SaveWorkspace: " + projectMgr.SaveWorkspace() + "\n");
+//                print("ProjectManager::CloseWorkspace: " + projectMgr.CloseWorkspace() + "\n");
+//                print("ProjectManager::LoadWorkspace: " + projectMgr.LoadWorkspace(workspacePath) + "\n");
+//
+//                local saveResult = projectMgr.SaveProjectAs(projectMgr.GetProject(0));
+//                print("ProjectManager::SaveProjectAs: " + saveResult + "\n");
+//
+//                projectMgr.CloseWorkspace()
+//            }
+        }
 
         {
             StartNewSection("PluginInfo");
