@@ -6,7 +6,8 @@
 #ifndef CB_SC_UTILS_H
 #define CB_SC_UTILS_H
 
-#include <assert.h>
+#include "cbexception.h"
+
 #include <squirrel.h>
 #include <string>
 #include <sstream>
@@ -38,7 +39,7 @@ struct PreserveTop
         if (sq_gettop(m_vm) != m_top)
             PrintStack(m_vm, "PreserveTop::check failure!");
 #endif
-        assert(sq_gettop(m_vm) == m_top);
+        cbAssert(sq_gettop(m_vm) == m_top);
     }
     void noCheck() { m_checkAtDtor = false; }
 private:
@@ -103,7 +104,7 @@ SQInteger ReleaseHook(SQUserPointer ptr, cb_unused SQInteger size)
             break;
         }
     default:
-        assert(false);
+        cbAssert(false);
     }
 
     return 0;
@@ -117,7 +118,7 @@ UserDataForType<UserType>* SetupUserPointer(HSQUIRRELVM vm, SQInteger idx)
                                    SQUserPointer(TypeInfo<UserType>::typetag))))
     {
         sq_throwerror(vm, _SC("SetupUserPointer: Invalid type tag!"));
-        assert(false);
+        cbAssert(false);
         return nullptr;
     }
 
@@ -136,7 +137,7 @@ inline bool ExtractUserPointer(UserType *&self, HSQUIRRELVM vm, SQInteger idx, u
     SQUserPointer ptr = nullptr;
     if (SQ_FAILED(sq_getinstanceup(vm, idx, &ptr, SQUserPointer(uint64_t(tag)))))
     {
-        assert(false);
+        //cbAssert(false);
         return false;
     }
 
@@ -151,7 +152,7 @@ inline bool ExtractUserPointer(UserType *&self, HSQUIRRELVM vm, SQInteger idx, u
     case InstanceAllocationMode::InstanceIsNonOwnedPtr:
         //self = *(UserType**)(ptr + sizeof(InstanceAllocationMode));
         self = data.userptr;
-        assert(data.mode!=InstanceAllocationMode::InstanceIsOwnedPtr);
+        cbAssert(data.mode!=InstanceAllocationMode::InstanceIsOwnedPtr);
         return self != nullptr;
     }
 
@@ -492,7 +493,7 @@ inline UserDataForType<UserType>* CreateInlineInstance(HSQUIRRELVM v)
 {
     if (!GetRootTableField(v, TypeInfo<UserType>::className))
     {
-        assert(false);
+        cbAssert(false);
         sq_throwerror(v, _SC("CreateInlineInstance: Getting class name failed!"));
         return nullptr;
     }
@@ -527,7 +528,7 @@ inline UserDataForType<UserType>* CreateNonOwnedPtrInstance(HSQUIRRELVM v, UserT
 
     if (!GetRootTableField(v, TypeInfo<UserType>::className))
     {
-        assert(false);
+        cbAssert(false);
         sq_throwerror(v, _SC("CreateNonOwnedPtrInstance: Getting class name failed!"));
         return nullptr;
     }
