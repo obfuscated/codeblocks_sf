@@ -1285,6 +1285,66 @@ static bool CmpVersion(int &result, const wxString& first, const wxString& secon
     return true;
 }
 
+static struct TestCmpVersions
+{
+    TestCmpVersions()
+    {
+        struct V
+        {
+            const char *v0;
+            const char *v1;
+            int result;
+            bool error;
+        };
+
+        const V versions[] =
+        {
+            { "10", "10", 0, false },
+            { "10.1", "10.1", 0, false },
+            { "10.1.5", "10.1.5", 0, false },
+            { "10", "10.0.0", 0, false },
+            { "10.1", "10.1.0", 0, false },
+            { "10.1", "10.1.0.0", 0, false },
+            { "10", "10.0.2", -1, false },
+            { "10.0", "10.0.2", -1, false },
+            { "10.0.1", "10.0.2", -1, false },
+            { "10.0.2", "10.0.1", 1, false },
+            { "10.0.2", "10.0", 1, false },
+            { "10.0.2", "10", 1, false },
+            { "10.1.1", "10.0.1", 1, false },
+            { "10.0.1", "10.1.1", -1, false },
+            { "11.0", "10.1", 1, false },
+            { "11", "10.1", 1, false },
+            { "10.1", "11.0", -1, false },
+            { "10.1", "11", -1, false },
+            { "10.1.", "10.1.0", -1000, true },
+            { "10.1", "10.1.", -1000, true },
+            { "10.1", "10..1", -1000, true },
+            { "10..1", "10.1.0", -1000, true },
+            { "10.a1", "10.1.0", -1000, true },
+            { "10.1.0", "10.a1", -1000, true },
+            { "10.1a", "10.1.0", -1000, true },
+            { "10.1.0", "10.1a", -1000, true },
+            { "10.1", "-10.1.0", -1000, true },
+            { "", "", -1000, true },
+            { "", "10.1.0", -1000, true },
+            { "10.1", "", -1000, true }
+        };
+
+        printf("------------------------------------------------\n");
+        for (V v : versions)
+        {
+            bool CmpVersion(int &result, const wxString& First, const wxString& Second);
+
+            int value = -1000;
+            const bool result = CmpVersion(value, v.v0, v.v1);
+            printf("cmp: '%s' '%s' expected %d got %d (result: %d) %s\n", v.v0, v.v1, v.result, value,
+                   int(result), ((v.result == value && result == !v.error) ? "" : "FAILED"));
+        }
+        printf("------------------------------------------------\n");
+    }
+} test;
+
 bool Compiler::EvalXMLCondition(const wxXmlNode* node)
 {
     bool val = false;
@@ -1326,10 +1386,14 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
             if (cfg->Exists(loc + wxT("/name")))
             {
                 masterPath = cfg->Read(loc + wxT("/master_path"), wxEmptyString);
-                extraPaths = MakeUniqueArray(GetArrayFromString(cfg->Read(loc + wxT("/extra_paths"), wxEmptyString)), true);
+                extraPaths = MakeUniqueArray(GetArrayFromString(cfg->Read(loc + wxT("/extra_paths"),
+                                                                          wxEmptyString)),
+                                             true);
             }
+
             for (size_t i = 0; i < extraPaths.GetCount(); ++i)
                 path.Prepend(extraPaths[i] + wxPATH_SEP);
+
             if (!masterPath.IsEmpty())
                 path.Prepend(masterPath + wxPATH_SEP + masterPath + wxFILE_SEP_PATH + wxT("bin") + wxPATH_SEP);
         }
@@ -1337,7 +1401,7 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
         cmd[0] = GetExecName(cmd[0]);
 
         long ret = -1;
-        if ( !cmd[0].IsEmpty() ) // should never be empty
+        if (!cmd[0].IsEmpty()) // should never be empty
             ret = Execute(GetStringFromArray(cmd, wxT(" "), false), cmd);
 
         wxSetEnv(wxT("PATH"), origPath); // restore path
