@@ -346,8 +346,8 @@ inline void getVarNameTag(SQChar * buff,INT_T maxSize,const SQChar * scriptName)
 } // getVarNameTag
 
 // Internal use only.
-SQInteger setVarFunc(HSQUIRRELVM v);
-SQInteger getVarFunc(HSQUIRRELVM v);
+SQUIRREL_API SQInteger setVarFunc(HSQUIRRELVM v);
+SQUIRREL_API SQInteger getVarFunc(HSQUIRRELVM v);
 SQInteger setInstanceVarFunc(HSQUIRRELVM v);
 SQInteger getInstanceVarFunc(HSQUIRRELVM v);
 
@@ -1608,7 +1608,7 @@ struct ReleaseClassPtr {
   } // release
 };
 
-BOOL_T CreateClass(HSQUIRRELVM v,SquirrelObject & newClass,SQUserPointer classType,const SQChar * name,const SQChar * baseName=0);
+SQUIRREL_API BOOL_T CreateClass(HSQUIRRELVM v,SquirrelObject & newClass,SQUserPointer classType,const SQChar * name,const SQChar * baseName=0);
 
 #define SQ_ANCESTOR_CLASS_INDEX sqT("__ci")
 
