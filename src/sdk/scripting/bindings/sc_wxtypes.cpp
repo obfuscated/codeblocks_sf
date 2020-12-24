@@ -903,6 +903,7 @@ void Register_wxTypes(HSQUIRRELVM v)
         const SQInteger classDecl = CreateClassDecl<wxString>(v, _SC("wxString"));
         // FIXME (squirrel) Add string version of the c-tor
         BindEmptyCtor<wxString>(v);
+        BindDefaultClone<wxString>(v);
         BindMethod(v, _SC("_add"), wxString_OpAdd, _SC("wxString::operator+"));
         BindMethod(v, _SC("_cmp"), wxString_OpCompare, _SC("wxString::operator=="));
         BindMethod(v, _SC("Compare"), wxString_OpCompare, _SC("wxString::Compare"));
@@ -960,6 +961,7 @@ void Register_wxTypes(HSQUIRRELVM v)
         const SQInteger classDecl = CreateClassDecl<wxColour>(v, _SC("wxColour"));
         // FIXME (squirrel) Add 3, 4 int version of the c-tor
         BindEmptyCtor<wxColour>(v);
+        BindDefaultClone<wxColour>(v);
 
         BindMethod(v, _SC("_tostring"), wxColour_ToString, _SC("wxColour::_tostring"));
         BindMethod(v, _SC("Blue"), NoParamGetterInt<wxColour::ChannelType, wxColour, &wxColour::Blue>, _SC("wxColour::Blue"));
@@ -975,6 +977,7 @@ void Register_wxTypes(HSQUIRRELVM v)
         // Register wxPoint
         const SQInteger classDecl = CreateClassDecl<wxPoint>(v, _SC("wxPoint"));
         BindEmptyCtor<wxPoint>(v);
+        BindDefaultClone<wxPoint>(v);
         BindMethod(v, _SC("_tostring"), wxPointSize_tostring<wxPoint>, _SC("wxPoint::_tostring"));
         BindMethod(v, _SC("_cmp"), wxPoint_cmp, _SC("wxPoint::_cmp"));
         BindMethod(v, _SC("_get"), wxPoint_get, _SC("wxPoint::_get"));
@@ -987,6 +990,7 @@ void Register_wxTypes(HSQUIRRELVM v)
         // Register wxSize
         const SQInteger classDecl = CreateClassDecl<wxSize>(v, _SC("wxSize"));
         BindEmptyCtor<wxSize>(v);
+        BindDefaultClone<wxSize>(v);
         BindMethod(v, _SC("_tostring"), wxPointSize_tostring<wxSize>, _SC("wxSize::_tostring"));
         BindMethod(v, _SC("GetWidth"), NoParamGetterInt<int, wxSize, &wxSize::GetWidth>,
                    _SC("wxSize::GetWidth"));
@@ -1005,6 +1009,7 @@ void Register_wxTypes(HSQUIRRELVM v)
         // Register wxSize
         const SQInteger classDecl = CreateClassDecl<wxArrayString>(v, _SC("wxArrayString"));
         BindEmptyCtor<wxArrayString>(v);
+        BindDefaultClone<wxArrayString>(v);
         BindMethod(v, _SC("Add"), wxArrayString_Add, _SC("wxArrayString::Add"));
         BindMethod(v, _SC("Clear"), wxArrayString_Clear, _SC("wxArrayString::Clear"));
         BindMethod(v, _SC("Index"), wxArrayString_Index, _SC("wxArrayString::Index"));
@@ -1021,6 +1026,7 @@ void Register_wxTypes(HSQUIRRELVM v)
         // Register wxFileName
         const SQInteger classDecl = CreateClassDecl<wxFileName>(v, _SC("wxFileName"));
         BindEmptyCtor<wxFileName>(v);
+        BindDefaultClone<wxFileName>(v);
         BindMethod(v, _SC("_tostring"), wxFileName_tostring, _SC("wxFileName::_tostring"));
         BindMethod(v, _SC("Assign"), wxFileName_Assign, _SC("wxFileName::Assign"));
         BindMethod(v, _SC("AssignCwd"), wxFileName_SetWxString<&wxFileName::AssignCwd>,

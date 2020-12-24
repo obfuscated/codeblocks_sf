@@ -638,6 +638,22 @@ SQInteger Generic_InstanceCmp(HSQUIRRELVM v)
 }
 
 template<typename UserType>
+SQInteger Generic_InstanceClone(HSQUIRRELVM v)
+{
+    // new object, old object
+    ExtractParams2<SkipParam, const UserType*> extractor(v);
+    if (!extractor.Process("Generic_InstanceClone"))
+        return extractor.ErrorMessage();
+
+    UserDataForType<UserType> *data;
+    data = SetupUserPointer<UserType, InstanceAllocationMode::InstanceIsInline>(v, 1);
+    if (!data)
+        return -1; // SetupUserPointer should have called sq_throwerror!
+    new (&(data->userdata)) UserType(*extractor.p1);
+    return 0;
+}
+
+template<typename UserType>
 void BindEmptyCtor(HSQUIRRELVM v)
 {
     BindMethod(v, _SC("constructor"), Generic_DefaultCtor<UserType>, nullptr);
@@ -647,6 +663,12 @@ template<typename UserType>
 void BindDefaultInstanceCmp(HSQUIRRELVM v)
 {
     BindMethod(v, _SC("_cmp"), Generic_InstanceCmp<UserType>, nullptr);
+}
+
+template<typename UserType>
+void BindDefaultClone(HSQUIRRELVM v)
+{
+    BindMethod(v, _SC("_cloned"), Generic_InstanceClone<UserType>, nullptr);
 }
 
 template<typename ReturnType, typename ClassType, ReturnType (ClassType::*func)() const>
