@@ -30,89 +30,6 @@
 #include <wx/filefn.h>
 #include <wx/xml/xml.h>
 
-// Return true if a number was correctly parsed or the string is exhausted
-// The variable pointed by Value will contain the parsed value or 0
-static bool GetNextValue(int* Value, const wxString& s, size_t* Index, size_t Length)
-{
-    *Value = 0;
-
-    for ( ; *Index < Length; (*Index)++)
-    {
-        const wxUniChar c = s[*Index];
-        if (!wxIsdigit(c))
-            break;
-
-        *Value = *Value*10+(c-'0');
-    }
-
-    // If the string is exhausted return
-    if (*Index == Length)
-        return true;
-
-    // Skip the next character; if it was not a dot return error
-    if (s[(*Index)++] != '.')
-        return false;
-
-    // Check if the dot was the last character, this is a syntax error
-    return (*Index != Length);
-}
-
-// Compares two strings in major[.minor[.patch[.tweak]]] format
-// Returns -1 if First < Second, 0 if they are equal and 1 if First > Second
-static int CmpVersion(const wxString& First, const wxString& Second)
-{
-    // Cache the lengths for speed
-    const size_t LengthFirst = First.length();
-    const size_t LengthSecond = Second.length();
-
-    // Sanity checks
-    if (!LengthFirst && !LengthSecond)
-    {
-        Manager::Get()->GetLogManager()->DebugLog("Both compiler test strings are empty");
-        return 0;
-    }
-
-    if (!LengthFirst)
-    {
-        Manager::Get()->GetLogManager()->DebugLog("The first compiler test string is empty");
-        return -1;
-    }
-
-    if (!LengthSecond)
-    {
-        Manager::Get()->GetLogManager()->DebugLog("The second compiler test string is empty");
-        return 1;
-    }
-
-    // Compare versions
-    size_t IndexFirst = 0, IndexSecond = 0;
-    while ((IndexFirst < LengthFirst) || (IndexSecond < LengthSecond))
-    {
-        int ValueFirst, ValueSecond;
-
-        // Convert to numbers
-        if (!GetNextValue(&ValueFirst, First, &IndexFirst, LengthFirst))
-        {
-            Manager::Get()->GetLogManager()->DebugLog(wxString::Format("Invalid first compiler test string \"%s\"", First));
-            return -1;
-        }
-
-        if (!GetNextValue(&ValueSecond, Second, &IndexSecond, LengthSecond))
-        {
-            Manager::Get()->GetLogManager()->DebugLog(wxString::Format("Invalid second compiler test string \"%s\"", Second));
-            return 1;
-        }
-
-        if (ValueFirst < ValueSecond)
-            return -1;
-
-        if (ValueFirst > ValueSecond)
-            return 1;
-    }
-
-    return 0;
-}
-
 // static
 wxArrayString Compiler::m_CompilerIDs; // map to guarantee unique IDs
 
@@ -1260,6 +1177,114 @@ void Compiler::LoadRegExArray(const wxString& name, bool globalPrecedence, int r
     }
 }
 
+/// Return true if a number was correctly parsed or the string is exhausted
+/// The variable pointed by value will contain the parsed value or 0.
+/// On failure result and index might contain random values.
+static bool GetNextValue(int *result, size_t *index, const wxString &s, size_t length)
+{
+    int value = 0;
+    size_t ii = *index;
+
+    for ( ; ii < length; (ii)++)
+    {
+        const wxUniChar c = s[ii];
+        if (!wxIsdigit(c))
+        {
+            // This should catch '..'.
+            if (ii == *index)
+                return false;
+            else
+                break;
+        }
+
+        value = value * 10 + (c - '0');
+    }
+
+    // If the string is exhausted return
+    if (ii == length)
+    {
+        *index = ii;
+        *result = value;
+        return true;
+    }
+
+    // Skip the next character; if it was not a dot return error
+    if (s[ii++] != '.')
+        return false;
+
+    // Check if the dot was the last character, this is a syntax error
+    *index = ii;
+    *result = value;
+    return (ii != length);
+}
+
+/// Compares two strings in major[.minor[.patch[.tweak]]] format
+/// @param[out] result Set to -1 if first < second, 0 if they are equal and 1 if first > second.
+/// @return true on success and false on invalid input in first or second.
+static bool CmpVersion(int &result, const wxString& first, const wxString& second)
+{
+    // Cache the lengths for speed
+    const size_t lengthFirst = first.length();
+    const size_t lengthSecond = second.length();
+
+    // Sanity checks
+    if (!lengthFirst && !lengthSecond)
+    {
+        Manager::Get()->GetLogManager()->DebugLog(_("CmpVersion: Both compiler test strings are empty"));
+        return false;
+    }
+
+    if (!lengthFirst)
+    {
+        Manager::Get()->GetLogManager()->DebugLog(_("CmpVersion: The first compiler test string is empty"));
+        return false;
+    }
+
+    if (!lengthSecond)
+    {
+        Manager::Get()->GetLogManager()->DebugLog(_("CmpVersion: The second compiler test string is empty"));
+        return false;
+    }
+
+    // Extract version numbers from left to right.
+    // If we've exhausted one of the strings use 0 in the comparisons.
+    size_t indexFirst = 0, indexSecond = 0;
+    while ((indexFirst < lengthFirst) || (indexSecond < lengthSecond))
+    {
+        int valueFirst, valueSecond;
+
+        if (!GetNextValue(&valueFirst, &indexFirst, first, lengthFirst))
+        {
+            const wxString msg = wxString::Format(_("CmpVersion: Invalid first compiler test string \"%s\""),
+                                                  first.wx_str());
+            Manager::Get()->GetLogManager()->DebugLog(msg);
+            return false;
+        }
+
+        if (!GetNextValue(&valueSecond, &indexSecond, second, lengthSecond))
+        {
+            const wxString msg = wxString::Format(_("CmpVersion: Invalid second compiler test string \"%s\""),
+                                                  second.wx_str());
+            Manager::Get()->GetLogManager()->DebugLog(msg);
+            return false;
+        }
+
+        if (valueFirst < valueSecond)
+        {
+            result = -1;
+            return true;
+        }
+        else if (valueFirst > valueSecond)
+        {
+            result = 1;
+            return true;
+        }
+    }
+
+    result = 0;
+    return true;
+}
+
 bool Compiler::EvalXMLCondition(const wxXmlNode* node)
 {
     bool val = false;
@@ -1361,43 +1386,61 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
             {
                 if (name == "version_greater")
                 {
-                    const int Check = CmpVersion(cmd[0], attr->GetValue());
-                    val = (Check > 0);
+                    int check;
+                    if (CmpVersion(check, cmd[0], attr->GetValue()))
+                        val = (check > 0);
+                    else
+                        val = false;
                     continue;
                 }
 
                 if (name == "version_greater_equal")
                 {
-                    const int Check = CmpVersion(cmd[0], attr->GetValue());
-                    val = (Check >= 0);
+                    int check;
+                    if (CmpVersion(check, cmd[0], attr->GetValue()))
+                        val = (check >= 0);
+                    else
+                        val = false;
                     continue;
                 }
 
                 if (name == "version_equal")
                 {
-                    const int Check = CmpVersion(cmd[0], attr->GetValue());
-                    val = (Check == 0);
+                    int check;
+                    if (CmpVersion(check, cmd[0], attr->GetValue()))
+                        val = (check == 0);
+                    else
+                        val = false;
                     continue;
                 }
 
                 if (name == "version_not_equal")
                 {
-                    const int Check = CmpVersion(cmd[0], attr->GetValue());
-                    val = (Check != 0);
+                    int check;
+                    if (CmpVersion(check, cmd[0], attr->GetValue()))
+                        val = (check != 0);
+                    else
+                        val = false;
                     continue;
                 }
 
                 if (name == "version_less_equal")
                 {
-                    const int Check = CmpVersion(cmd[0], attr->GetValue());
-                    val = (Check <= 0);
+                    int check;
+                    if (CmpVersion(check, cmd[0], attr->GetValue()))
+                        val = (check <= 0);
+                    else
+                        val = false;
                     continue;
                 }
 
                 if (name == "version_less")
                 {
-                    const int Check = CmpVersion(cmd[0], attr->GetValue());
-                    val = (Check < 0);
+                    int check;
+                    if (CmpVersion(check, cmd[0], attr->GetValue()))
+                        val = (check < 0);
+                    else
+                        val = false;
                     continue;
                 }
             }
