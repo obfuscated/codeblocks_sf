@@ -44,6 +44,15 @@ distribution.
 	#define TIXML_EXPLICIT
 #endif
 
+#ifdef _WIN32
+#ifndef DLLIMPORT
+    #if defined(EXPORT_LIB)
+        #define DLLIMPORT __declspec (dllexport)
+    #else
+        #define DLLIMPORT
+    #endif // EXPORT_LIB
+#endif // DLLIMPORT
+#endif // _WIN32
 
 /*
    TiXmlString is an emulation of a subset of the std::string template.
