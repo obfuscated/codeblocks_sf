@@ -141,11 +141,11 @@ SQInteger construct_##classname(cppclass *p) \
 	return 1; \
 }
 
-BOOL_T CreateStaticClass(HSQUIRRELVM v,SquirrelClassDecl *cd);
-BOOL_T CreateStaticNamespace(HSQUIRRELVM v,ScriptNamespaceDecl *sn);
-BOOL_T CreateClass(HSQUIRRELVM v,SquirrelClassDecl *cd);
-BOOL_T InitScriptClasses(HSQUIRRELVM v);
-BOOL_T CreateNativeClassInstance(HSQUIRRELVM v,const SQChar *classname,SQUserPointer ud,SQRELEASEHOOK hook);
+SQUIRREL_API BOOL_T CreateStaticClass(HSQUIRRELVM v,SquirrelClassDecl *cd);
+SQUIRREL_API BOOL_T CreateStaticNamespace(HSQUIRRELVM v,ScriptNamespaceDecl *sn);
+SQUIRREL_API BOOL_T CreateClass(HSQUIRRELVM v,SquirrelClassDecl *cd);
+SQUIRREL_API BOOL_T InitScriptClasses(HSQUIRRELVM v);
+SQUIRREL_API BOOL_T CreateNativeClassInstance(HSQUIRRELVM v,const SQChar *classname,SQUserPointer ud,SQRELEASEHOOK hook);
 
 #endif // SQUIRREL_BINDINGS_UTILS_H
 
