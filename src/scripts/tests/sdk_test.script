@@ -104,21 +104,6 @@ class sdkTest extends script_test_base
         ::print("======= Test SDK Project related classes/functions BEGINN ======= \n");
         clear_test_result();
 
-        {
-            local cfg = GetConfigManager();
-            test_false("GetConfigManager", IsNull(cfg));
-
-            cfg.Write(_T("/test/int"), 10);
-            cfg.Write(_T("/test/bool"), false);
-            cfg.Write(_T("/test/float"), 11.2);
-            cfg.Write(_T("/test/string"), _T("mystr"));
-
-            test_equal("ConfigManager int", cfg.Read(_T("/test/int"), 5), 10);
-            test_equal("ConfigManager bool", cfg.Read(_T("/test/bool"), true), false);
-            test_equal("ConfigManager float", cfg.Read(_T("/test/float"), 5.0), 11.2);
-            test_string("ConfigManager string", cfg.Read(_T("/test/string"), _T("defstr")), "mystr");
-        }
-
         local projectMgr = GetProjectManager();
         test_false("GetProjectManager", IsNull(projectMgr));
         test_equal("GetProjectManager equal", projectMgr, GetProjectManager());
@@ -1124,6 +1109,21 @@ class sdkTest extends script_test_base
     {
         ::print("======= Test SDK classes/functions BEGINN ======= \n");
         clear_test_result();
+
+        {
+            local cfg = GetConfigManager();
+            test_false("GetConfigManager", IsNull(cfg));
+
+            cfg.Write(_T("/test/int"), 10);
+            cfg.Write(_T("/test/bool"), false);
+            cfg.Write(_T("/test/float"), 11.2);
+            cfg.Write(_T("/test/string"), _T("mystr"));
+
+            test_equal("ConfigManager int", cfg.Read(_T("/test/int"), 5), 10);
+            test_equal("ConfigManager bool", cfg.Read(_T("/test/bool"), true), false);
+            test_equal("ConfigManager float", cfg.Read(_T("/test/float"), 5.0), 11.2);
+            test_string("ConfigManager string", cfg.Read(_T("/test/string"), _T("defstr")), "mystr");
+        }
 
         {
             StartNewSection("CompilerFactory");
