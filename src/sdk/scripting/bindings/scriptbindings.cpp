@@ -1654,6 +1654,17 @@ namespace ScriptBindings
         return 1;
     }
 
+    template<typename Type, void (Type::*func)()>
+    SQInteger Generic_DoSomethingGetVoid(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<Type*> extractor(v);
+        if (!extractor.Process("Generic_DoSomethingGetVoid"))
+            return extractor.ErrorMessage();
+        (extractor.p0->*func)();
+        return 0;
+    }
+
     template<typename Type, void (Type::*func)(bool)>
     SQInteger Generic_SetBool(HSQUIRRELVM v)
     {
@@ -2820,6 +2831,16 @@ namespace ScriptBindings
         return 0;
     }
 
+    SQInteger EditorBase_Activate(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<EditorBase*> extractor(v);
+        if (!extractor.Process("EditorBase::Activate"))
+            return extractor.ErrorMessage();
+        extractor.p0->Activate();
+        return 0;
+    }
+
     SQInteger EditorBase_Close(HSQUIRRELVM v)
     {
         ExtractParams1<EditorBase*> extractor(v);
@@ -2827,6 +2848,141 @@ namespace ScriptBindings
             return extractor.ErrorMessage();
         sq_pushbool(v, extractor.p0->Close());
         return 1;
+    }
+
+    SQInteger EditorBase_GotoLine(HSQUIRRELVM v)
+    {
+        // this, line, centerOnScreen
+        ExtractParams3<EditorBase*, SQInteger, bool> extractor(v);
+        if (!extractor.Process("EditorBase::GotoLine"))
+            return extractor.ErrorMessage();
+        extractor.p0->GotoLine(extractor.p1, extractor.p2);
+        return 0;
+    }
+
+    SQInteger cbEditor_GetProjectFile(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const cbEditor*> extractor(v);
+        if (!extractor.Process("cbEditor::GetProjectFile"))
+            return extractor.ErrorMessage();
+        ProjectFile *file = extractor.p0->GetProjectFile();
+        return ConstructAndReturnNonOwnedPtrOrNull(v, file);
+    }
+
+    template<void (cbEditor::*func)(int)>
+    SQInteger cbEditor_DoFromLine(HSQUIRRELVM v)
+    {
+        // this, line
+        ExtractParams2<cbEditor*, SQInteger> extractor(v);
+        if (!extractor.Process("cbEditor_DoFromLine"))
+            return extractor.ErrorMessage();
+        (extractor.p0->*func)(extractor.p1);
+        return 0;
+    }
+
+    SQInteger cbEditor_GetLineIndentInSpaces(HSQUIRRELVM v)
+    {
+        // this, line
+        ExtractParams2<const cbEditor*, SQInteger> extractor(v);
+        if (!extractor.Process("cbEditor::GetLineIndentInSpaces"))
+            return extractor.ErrorMessage();
+        sq_pushinteger(v, extractor.p0->GetLineIndentInSpaces(extractor.p1));
+        return 1;
+    }
+
+    SQInteger cbEditor_GetLineIndentString(HSQUIRRELVM v)
+    {
+        // this, line
+        ExtractParams2<const cbEditor*, SQInteger> extractor(v);
+        if (!extractor.Process("cbEditor::GetLineIndentString"))
+            return extractor.ErrorMessage();
+        return ConstructAndReturnInstance(v, extractor.p0->GetLineIndentString(extractor.p1));
+    }
+
+    SQInteger cbEditor_Reload(HSQUIRRELVM v)
+    {
+        // this, detectEncoding
+        ExtractParams2<cbEditor*, bool> extractor(v);
+        if (!extractor.Process("cbEditor::Reload"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->Reload(extractor.p1));
+        return 1;
+    }
+
+    SQInteger cbEditor_Print(HSQUIRRELVM v)
+    {
+        // this, selectionOnly, pcm, line_numbers
+        ExtractParams4<cbEditor*, bool, SQInteger, bool> extractor(v);
+        if (!extractor.Process("cbEditor::Print"))
+            return extractor.ErrorMessage();
+
+        if (extractor.p2 < pcmBlackAndWhite || extractor.p2 > pcmAsIs)
+            return sq_throwerror(v, _SC("cbEditor::Print: The value of the pcm parameter is out of range!"));
+
+        const PrintColourMode pcm = PrintColourMode(extractor.p2);
+        extractor.p0->Print(extractor.p1, pcm, extractor.p3);
+        return 0;
+    }
+
+    SQInteger cbEditor_AddBreakpoint(HSQUIRRELVM v)
+    {
+        // this, line, notifyDebugger
+        ExtractParams3<cbEditor*, SQInteger, bool> extractor(v);
+        if (!extractor.Process("cbEditor::AddBreakpoint"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->AddBreakpoint(extractor.p1, extractor.p2));
+        return 1;
+    }
+
+    SQInteger cbEditor_RemoveBreakpoint(HSQUIRRELVM v)
+    {
+        // this, line, notifyDebugger
+        ExtractParams3<cbEditor*, SQInteger, bool> extractor(v);
+        if (!extractor.Process("cbEditor::RemoveBreakpoint"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->RemoveBreakpoint(extractor.p1, extractor.p2));
+        return 1;
+    }
+
+    SQInteger cbEditor_ToggleBreakpoint(HSQUIRRELVM v)
+    {
+        // this, line, notifyDebugger
+        ExtractParams3<cbEditor*, SQInteger, bool> extractor(v);
+        if (!extractor.Process("cbEditor::ToggleBreakpoint"))
+            return extractor.ErrorMessage();
+        extractor.p0->ToggleBreakpoint(extractor.p1, extractor.p2);
+        return 0;
+    }
+
+    SQInteger cbEditor_HasBreakpoint(HSQUIRRELVM v)
+    {
+        // this, line
+        ExtractParams2<const cbEditor*, SQInteger> extractor(v);
+        if (!extractor.Process("cbEditor::HasBreakpoint"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->HasBreakpoint(extractor.p1));
+        return 1;
+    }
+
+    SQInteger cbEditor_HasBookmark(HSQUIRRELVM v)
+    {
+        // this, line
+        ExtractParams2<const cbEditor*, SQInteger> extractor(v);
+        if (!extractor.Process("cbEditor::HasBookmark"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->HasBookmark(extractor.p1));
+        return 1;
+    }
+
+    SQInteger cbEditor_ToggleBookmark(HSQUIRRELVM v)
+    {
+        // this, line
+        ExtractParams2<cbEditor*, SQInteger> extractor(v);
+        if (!extractor.Process("cbEditor::ToggleBookmark"))
+            return extractor.ErrorMessage();
+        extractor.p0->ToggleBookmark(extractor.p1);
+        return 0;
     }
 
     SQInteger cbEditor_SetText(HSQUIRRELVM v)
@@ -2839,13 +2995,185 @@ namespace ScriptBindings
         return 0;
     }
 
-    SQInteger EditorManager_New(HSQUIRRELVM v)
+    SQInteger cbEditor_GetText(HSQUIRRELVM v)
     {
-        ExtractParams2<EditorManager*, const wxString *> extractor(v);
-        if (!extractor.Process("EditorManager::New"))
+        ExtractParams1<const cbEditor*> extractor(v);
+        if (!extractor.Process("cbEditor::GetText"))
             return extractor.ErrorMessage();
-        cbEditor *result = extractor.p0->New(*extractor.p1);
-        return ConstructAndReturnNonOwnedPtr(v, result);
+        return ConstructAndReturnInstance(v, extractor.p0->GetControl()->GetText());
+    }
+
+    template<cbEditor* (EditorManager::*func)(const wxString &filename)>
+    SQInteger EditorManager_FilenameTocbEditor(HSQUIRRELVM v)
+    {
+        // this, filename
+        ExtractParams2<EditorManager*, const wxString *> extractor(v);
+        if (!extractor.Process("EditorManager_FilenameTocbEditor"))
+            return extractor.ErrorMessage();
+        cbEditor *result = (extractor.p0->*func)(*extractor.p1);
+        return ConstructAndReturnNonOwnedPtrOrNull(v, result);
+    }
+
+    SQInteger EditorManager_Open(HSQUIRRELVM v)
+    {
+        // Cannot be done with EditorManager_FilenameTocbEditor, because the method type won't
+        // match (there are default parameter values).
+        // this, filename
+        ExtractParams2<EditorManager*, const wxString *> extractor(v);
+        if (!extractor.Process("EditorManager::Open"))
+            return extractor.ErrorMessage();
+        cbEditor *result = extractor.p0->Open(*extractor.p1);
+        return ConstructAndReturnNonOwnedPtrOrNull(v, result);
+    }
+
+    SQInteger EditorManager_GetBuiltinEditor(HSQUIRRELVM v)
+    {
+        // this, filename or index
+        ExtractParams2<EditorManager*, SkipParam> extractor(v);
+        if (!extractor.Process("EditorManager::GetBuiltinEditor"))
+            return extractor.ErrorMessage();
+
+        const SQObjectType type = sq_gettype(v, 2);
+        switch (type)
+        {
+        case OT_INTEGER:
+            {
+                const int index = extractor.GetParamInt(2);
+                cbEditor *result = extractor.p0->GetBuiltinEditor(index);
+                return ConstructAndReturnNonOwnedPtrOrNull(v, result);
+            }
+        case OT_INSTANCE:
+            {
+                const wxString *filename;
+                if (!extractor.ProcessParam(filename, 2, "EditorManager::GetBuiltinEditor"))
+                    return extractor.ErrorMessage();
+                cbEditor *result = extractor.p0->GetBuiltinEditor(*filename);
+                return ConstructAndReturnNonOwnedPtrOrNull(v, result);
+            }
+        default:
+            return sq_throwerror(v, _SC("EditorManager::GetBuiltinEditor given unsupported type - takes index or filename!"));
+        }
+    }
+
+    SQInteger EditorManager_GetBuiltinActiveEditor(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<EditorManager*> extractor(v);
+        if (!extractor.Process("EditorManager::GetBuiltinActiveEditor"))
+            return extractor.ErrorMessage();
+        cbEditor *result = extractor.p0->GetBuiltinActiveEditor();
+        return ConstructAndReturnNonOwnedPtrOrNull(v, result);
+    }
+
+    SQInteger EditorManager_GetActiveEditor(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<EditorManager*> extractor(v);
+        if (!extractor.Process("EditorManager::GetActiveEditor"))
+            return extractor.ErrorMessage();
+        EditorBase *result = extractor.p0->GetActiveEditor();
+        return ConstructAndReturnNonOwnedPtrOrNull(v, result);
+    }
+
+    SQInteger EditorManager_SwapActiveHeaderSource(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<EditorManager*> extractor(v);
+        if (!extractor.Process("EditorManager::SwapActiveHeaderSource"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->SwapActiveHeaderSource());
+        return 1;
+    }
+
+    template<bool (EditorManager::*func)(bool)>
+    SQInteger Editor_ParamBoolReturnBool(HSQUIRRELVM v)
+    {
+        // this, dontsave
+        ExtractParams2<EditorManager*, bool> extractor(v);
+        if (!extractor.Process("Editor_ParamBoolReturnBool"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, (extractor.p0->*func)(extractor.p1));
+        return 1;
+    }
+
+    template<bool (EditorManager::*func)()>
+    SQInteger Editor_DoSomethingReturnBool(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<EditorManager*> extractor(v);
+        if (!extractor.Process("Editor_DoSomethingReturnBool"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, (extractor.p0->*func)());
+        return 1;
+    }
+
+    SQInteger EditorManager_SaveAs(HSQUIRRELVM v)
+    {
+        // this, index
+        ExtractParams2<EditorManager*, SQInteger> extractor(v);
+        if (!extractor.Process("EditorManager::SaveAs"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->SaveAs(extractor.p1));
+        return 1;
+    }
+
+    SQInteger EditorManager_Close(HSQUIRRELVM v)
+    {
+        // FIXME (squirrel) Add dontsave=false support
+        // this, filename or index
+        ExtractParams2<EditorManager*, SkipParam> extractor(v);
+        if (!extractor.Process("EditorManager::Close"))
+            return extractor.ErrorMessage();
+
+        const SQObjectType type = sq_gettype(v, 2);
+        switch (type)
+        {
+        case OT_INTEGER:
+            {
+                const int index = extractor.GetParamInt(2);
+                sq_pushbool(v, extractor.p0->Close(index));
+                return 1;
+            }
+        case OT_INSTANCE:
+            {
+                const wxString *filename;
+                if (!extractor.ProcessParam(filename, 2, "EditorManager::Close"))
+                    return extractor.ErrorMessage();
+                sq_pushbool(v, extractor.p0->Close(*filename));
+                return 1;
+            }
+        default:
+            return sq_throwerror(v, _SC("EditorManager::Close given unsupported type - takes index or filename!"));
+        }
+    }
+
+    SQInteger EditorManager_Save(HSQUIRRELVM v)
+    {
+        // this, filename or index
+        ExtractParams2<EditorManager*, SkipParam> extractor(v);
+        if (!extractor.Process("EditorManager::Save"))
+            return extractor.ErrorMessage();
+
+        const SQObjectType type = sq_gettype(v, 2);
+        switch (type)
+        {
+        case OT_INTEGER:
+            {
+                const int index = extractor.GetParamInt(2);
+                sq_pushbool(v, extractor.p0->Save(index));
+                return 1;
+            }
+        case OT_INSTANCE:
+            {
+                const wxString *filename;
+                if (!extractor.ProcessParam(filename, 2, "EditorManager::Save"))
+                    return extractor.ErrorMessage();
+                sq_pushbool(v, extractor.p0->Save(*filename));
+                return 1;
+            }
+        default:
+            return sq_throwerror(v, _SC("EditorManager::Save given unsupported type - takes index or filename!"));
+        }
     }
 
     SQInteger UserVariableManager_Exists(HSQUIRRELVM v)
@@ -3589,8 +3917,61 @@ namespace ScriptBindings
         {
             // Register EditorBase
             const SQInteger classDecl = CreateClassDecl<EditorBase>(v, _SC("EditorBase"));
+            BindMethod(v, _SC("GetFilename"),
+                       Generic_GetCString<EditorBase, &EditorBase::GetFilename>,
+                       _SC("EditorBase::GetFilename"));
+            BindMethod(v, _SC("SetFilename"),
+                       Generic_SetString<EditorBase, &EditorBase::SetFilename>,
+                       _SC("EditorBase::SetFilename"));
+            BindMethod(v, _SC("GetShortName"),
+                       Generic_GetCString<EditorBase, &EditorBase::GetShortName>,
+                       _SC("EditorBase::GetShortName"));
+            BindMethod(v, _SC("GetModified"), Generic_GetBool<EditorBase, &EditorBase::GetModified>,
+                       _SC("EditorBase::GetModified"));
+            BindMethod(v, _SC("SetModified"), Generic_SetBool<EditorBase, &EditorBase::SetModified>,
+                       _SC("EditorBase::SetModified"));
+            BindMethod(v, _SC("GetTitle"), Generic_GetCString<EditorBase, &EditorBase::GetTitle>,
+                       _SC("EditorBase::GetTitle"));
+            BindMethod(v, _SC("SetTitle"), Generic_SetString<EditorBase, &EditorBase::SetTitle>,
+                       _SC("EditorBase::SetTitle"));
+            BindMethod(v, _SC("Activate"), EditorBase_Activate, _SC("EditorBase::Activate"));
             BindMethod(v, _SC("Close"), EditorBase_Close, _SC("EditorBase::Close"));
+            BindMethod(v, _SC("Save"), Generic_DoSomethingGetBool<EditorBase, &EditorBase::Save>,
+                       _SC("EditorBase::Save"));
+            // FIXME (squirrel) Add this in the wiki
+            BindMethod(v, _SC("SaveAs"),
+                       Generic_DoSomethingGetBool<EditorBase, &EditorBase::SaveAs>,
+                       _SC("EditorBase::SaveAs"));
+            BindMethod(v, _SC("IsBuiltinEditor"),
+                       Generic_GetBool<EditorBase, &EditorBase::IsBuiltinEditor>,
+                       _SC("EditorBase::IsBuiltinEditor"));
+            BindMethod(v, _SC("ThereAreOthers"),
+                       Generic_GetBool<EditorBase, &EditorBase::ThereAreOthers>,
+                       _SC("EditorBase::ThereAreOthers"));
+            BindMethod(v, _SC("GotoLine"), EditorBase_GotoLine, _SC("EditorBase::GotoLine"));
+            BindMethod(v, _SC("Undo"), Generic_DoSomethingGetVoid<EditorBase, &EditorBase::Undo>,
+                       _SC("EditorBase::Undo"));
+            BindMethod(v, _SC("Redo"), Generic_DoSomethingGetVoid<EditorBase, &EditorBase::Redo>,
+                       _SC("EditorBase::Redo"));
+            BindMethod(v, _SC("Cut"), Generic_DoSomethingGetVoid<EditorBase, &EditorBase::Cut>,
+                       _SC("EditorBase::Cut"));
+            BindMethod(v, _SC("Copy"), Generic_DoSomethingGetVoid<EditorBase, &EditorBase::Copy>,
+                       _SC("EditorBase::Copy"));
+            BindMethod(v, _SC("Paste"), Generic_DoSomethingGetVoid<EditorBase, &EditorBase::Paste>,
+                       _SC("EditorBase::Paste"));
+            BindMethod(v, _SC("CanUndo"), Generic_GetBool<EditorBase, &EditorBase::CanUndo>,
+                       _SC("EditorBase::CanUndo"));
+            BindMethod(v, _SC("CanRedo"), Generic_GetBool<EditorBase, &EditorBase::CanRedo>,
+                       _SC("EditorBase::CanRedo"));
+            BindMethod(v, _SC("CanPaste"), Generic_GetBool<EditorBase, &EditorBase::CanPaste>,
+                       _SC("EditorBase::CanPaste"));
+            BindMethod(v, _SC("IsReadOnly"), Generic_GetBool<EditorBase, &EditorBase::IsReadOnly>,
+                       _SC("EditorBase::IsReadOnly"));
+            BindMethod(v, _SC("HasSelection"),
+                       Generic_GetBool<EditorBase, &EditorBase::HasSelection>,
+                       _SC("EditorBase::HasSelection"));
 
+            BindDefaultInstanceCmp<EditorBase>(v);
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
         }
@@ -3599,8 +3980,74 @@ namespace ScriptBindings
             // Register cbEditor
             const SQInteger classDecl = CreateClassDecl<cbEditor>(v, _SC("cbEditor"),
                                                                   _SC("EditorBase"));
+            BindMethod(v, _SC("SetEditorTitle"),
+                       Generic_SetString<cbEditor, &cbEditor::SetEditorTitle>,
+                       _SC("cbEditor::SetEditorTitle"));
+            BindMethod(v, _SC("GetProjectFile"), cbEditor_GetProjectFile,
+                       _SC("cbEditor::GetProjectFile"));
+            BindMethod(v, _SC("Save"), Generic_DoSomethingGetBool<cbEditor, &cbEditor::Save>,
+                       _SC("cbEditor::Save"));
+            BindMethod(v, _SC("SaveAs"), Generic_DoSomethingGetBool<cbEditor, &cbEditor::SaveAs>,
+                       _SC("cbEditor::SaveAs"));
+            BindMethod(v, _SC("FoldAll"), Generic_DoSomethingGetVoid<cbEditor, &cbEditor::FoldAll>,
+                       _SC("cbEditor::FoldAll"));
+            BindMethod(v, _SC("UnfoldAll"),
+                       Generic_DoSomethingGetVoid<cbEditor, &cbEditor::UnfoldAll>,
+                       _SC("cbEditor::UnfoldAll"));
+            BindMethod(v, _SC("ToggleAllFolds"),
+                       Generic_DoSomethingGetVoid<cbEditor, &cbEditor::ToggleAllFolds>,
+                       _SC("cbEditor::ToggleAllFolds"));
+            BindMethod(v, _SC("FoldBlockFromLine"),
+                       cbEditor_DoFromLine<&cbEditor::FoldBlockFromLine>,
+                       _SC("cbEditor::FoldBlockFromLine"));
+            BindMethod(v, _SC("UnfoldBlockFromLine"),
+                       cbEditor_DoFromLine<&cbEditor::UnfoldBlockFromLine>,
+                       _SC("cbEditor::UnfoldBlockFromLine"));
+            BindMethod(v, _SC("ToggleFoldBlockFromLine"),
+                       cbEditor_DoFromLine<&cbEditor::ToggleFoldBlockFromLine>,
+                       _SC("cbEditor::ToggleFoldBlockFromLine"));
+            BindMethod(v, _SC("GetLineIndentInSpaces"), cbEditor_GetLineIndentInSpaces,
+                       _SC("cbEditor::GetLineIndentInSpaces"));
+            BindMethod(v, _SC("GetLineIndentString"), cbEditor_GetLineIndentString,
+                       _SC("cbEditor::GetLineIndentString"));
+            BindMethod(v, _SC("Touch"), Generic_DoSomethingGetVoid<cbEditor, &cbEditor::Touch>,
+                       _SC("cbEditor::Touch"));
+            BindMethod(v, _SC("Reload"), cbEditor_Reload, _SC("cbEditor::Reload"));
+            BindMethod(v, _SC("Print"), cbEditor_Print, _SC("cbEditor::Print"));
+            BindMethod(v, _SC("AutoComplete"),
+                       Generic_DoSomethingGetVoid<cbEditor, &cbEditor::AutoComplete>,
+                       _SC("cbEditor::AutoComplete"));
+            BindMethod(v, _SC("AddBreakpoint"), cbEditor_AddBreakpoint,
+                       _SC("cbEditor::AddBreakpoint"));
+            BindMethod(v, _SC("RemoveBreakpoint"), cbEditor_RemoveBreakpoint,
+                       _SC("cbEditor::RemoveBreakpoint"));
+            BindMethod(v, _SC("ToggleBreakpoint"), cbEditor_ToggleBreakpoint,
+                       _SC("cbEditor::ToggleBreakpoint"));
+            BindMethod(v, _SC("HasBreakpoint"), cbEditor_HasBreakpoint,
+                       _SC("cbEditor::HasBreakpoint"));
+            BindMethod(v, _SC("HasBookmark"), cbEditor_HasBookmark, _SC("cbEditor::HasBookmark"));
+            BindMethod(v, _SC("ToggleBookmark"), cbEditor_ToggleBookmark,
+                       _SC("cbEditor::ToggleBookmark"));
+            BindMethod(v, _SC("GotoNextBookmark"),
+                       Generic_DoSomethingGetVoid<cbEditor, &cbEditor::GotoNextBookmark>,
+                       _SC("cbEditor::GotoNextBookmark"));
+            BindMethod(v, _SC("GotoPreviousBookmark"),
+                       Generic_DoSomethingGetVoid<cbEditor, &cbEditor::GotoPreviousBookmark>,
+                       _SC("cbEditor::GotoPreviousBookmark"));
+            BindMethod(v, _SC("ClearAllBookmarks"),
+                       Generic_DoSomethingGetVoid<cbEditor, &cbEditor::ClearAllBookmarks>,
+                       _SC("cbEditor::ClearAllBookmarks"));
+            BindMethod(v, _SC("GotoNextBreakpoint"),
+                       Generic_DoSomethingGetVoid<cbEditor, &cbEditor::GotoNextBreakpoint>,
+                       _SC("cbEditor::GotoNextBreakpoint"));
+            BindMethod(v, _SC("GotoPreviousBreakpoint"),
+                       Generic_DoSomethingGetVoid<cbEditor, &cbEditor::GotoPreviousBreakpoint>,
+                       _SC("cbEditor::GotoPreviousBreakpoint"));
+            // These are not present in cbEditor. Included to help scripts edit text.
             BindMethod(v, _SC("SetText"), cbEditor_SetText, _SC("cbEditor::SetText"));
+            BindMethod(v, _SC("GetText"), cbEditor_GetText, _SC("cbEditor::GetText"));
 
+            BindDefaultInstanceCmp<cbEditor>(v);
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
         }
@@ -3608,7 +4055,43 @@ namespace ScriptBindings
         {
             // Register EditorManager
             const SQInteger classDecl = CreateClassDecl<EditorManager>(v, _SC("EditorManager"));
-            BindMethod(v, _SC("New"), EditorManager_New, _SC("EditorManager::New"));
+            BindMethod(v, _SC("New"), EditorManager_FilenameTocbEditor<&EditorManager::New>,
+                       _SC("EditorManager::New"));
+            BindMethod(v, _SC("Open"), EditorManager_Open, _SC("EditorManager::Open"));
+            BindMethod(v, _SC("IsBuiltinOpen"),
+                       EditorManager_FilenameTocbEditor<&EditorManager::IsBuiltinOpen>,
+                       _SC("EditorManager::IsBuiltinOpen"));
+            BindMethod(v, _SC("GetBuiltinEditor"), EditorManager_GetBuiltinEditor,
+                       _SC("EditorManager::GetBuiltinEditor"));
+            BindMethod(v, _SC("GetBuiltinActiveEditor"), EditorManager_GetBuiltinActiveEditor,
+                       _SC("EditorManager::GetBuiltinActiveEditor"));
+            BindMethod(v, _SC("GetActiveEditor"), EditorManager_GetActiveEditor,
+                       _SC("EditorManager::GetActiveEditor"));
+            BindMethod(v, _SC("ActivateNext"),
+                       Generic_DoSomethingGetVoid<EditorManager, &EditorManager::ActivateNext>,
+                       _SC("EditorManager::ActivateNext"));
+            BindMethod(v, _SC("ActivatePrevious"),
+                       Generic_DoSomethingGetVoid<EditorManager, &EditorManager::ActivatePrevious>,
+                       _SC("EditorManager::ActivatePrevious"));
+            BindMethod(v, _SC("SwapActiveHeaderSource"), EditorManager_SwapActiveHeaderSource,
+                       _SC("EditorManager::SwapActiveHeaderSource"));
+            BindMethod(v, _SC("CloseActive"),
+                       Editor_ParamBoolReturnBool<&EditorManager::CloseActive>,
+                       _SC("EditorManager::CloseActive"));
+            BindMethod(v, _SC("Close"), EditorManager_Close, _SC("EditorManager::Close"));
+            BindMethod(v, _SC("CloseAll"), Editor_ParamBoolReturnBool<&EditorManager::CloseAll>,
+                       _SC("EditorManager::CloseAll"));
+            BindMethod(v, _SC("Save"), EditorManager_Save, _SC("EditorManager::Save"));
+            BindMethod(v, _SC("SaveActive"),
+                       Editor_DoSomethingReturnBool<&EditorManager::SaveActive>,
+                       _SC("EditorManager::SaveActive"));
+            BindMethod(v, _SC("SaveAs"), EditorManager_SaveAs, _SC("EditorManager::SaveAs"));
+            BindMethod(v, _SC("SaveActiveAs"),
+                       Editor_DoSomethingReturnBool<&EditorManager::SaveActiveAs>,
+                       _SC("EditorManager::SaveActiveAs"));
+            BindMethod(v, _SC("SaveAll"),
+                       Editor_DoSomethingReturnBool<&EditorManager::SaveAll>,
+                       _SC("EditorManager::SaveAll"));
 
             BindDefaultInstanceCmp<EditorManager>(v);
             // Put the class in the root table. This must be last!
