@@ -9,6 +9,7 @@ class sdkTest extends script_test_base
 
         test_replace_macros();
         test_globals();
+        test_project_classes();
         test_classes();
 
         ::print("======= Test SDK function END ======= \n");
@@ -98,9 +99,9 @@ class sdkTest extends script_test_base
         return folder + ::wxFILE_SEP_PATH + name
     }
 
-    function test_classes()
+    function test_project_classes()
     {
-        ::print("======= Test SDK Classes function BEGINN ======= \n");
+        ::print("======= Test SDK Project related classes/functions BEGINN ======= \n");
         clear_test_result();
 
         {
@@ -1115,6 +1116,35 @@ class sdkTest extends script_test_base
 //            }
         }
 
+        print_test_result();
+        ::print("======= Test SDK Project related classes/functions END ======= \n");
+    }
+
+    function test_classes()
+    {
+        ::print("======= Test SDK classes/functions BEGINN ======= \n");
+        clear_test_result();
+
+        {
+            StartNewSection("CompilerFactory");
+
+            test_true("IsValidCompilerID 0", CompilerFactory.IsValidCompilerID(_T("gcc")));
+            test_false("IsValidCompilerID 1",
+                       CompilerFactory.IsValidCompilerID(_T("gcc-invalid-not-here")));
+            test_true("GetCompilerIndex 0", CompilerFactory.GetCompilerIndex(_T("gcc")) >= 0);
+            test_equal("GetCompilerIndex 1",
+                       CompilerFactory.GetCompilerIndex(_T("gcc-invalid-not-here")), -1);
+            test_false("GetDefaultCompilerID", CompilerFactory.GetDefaultCompilerID().IsEmpty());
+            local versionStr0 = CompilerFactory.GetCompilerVersionString(_T("gcc"));
+            local versionStr1 = CompilerFactory.GetCompilerVersionString(_T("gcc-invalid-not-here"));
+            test_false("GetCompilerVersionString 0", versionStr0.IsEmpty());
+            test_true("GetCompilerVersionString 1", versionStr1.IsEmpty());
+            test_false("CompilerInheritsFrom",
+                       CompilerFactory.CompilerInheritsFrom(_T("llvm"), _T("gcc")));
+            test_string("GetCompilerIDByName",
+                        CompilerFactory.GetCompilerIDByName(_T("GNU GCC Compiler")), "gcc");
+        }
+
         {
             StartNewSection("PluginInfo");
 
@@ -1141,6 +1171,6 @@ class sdkTest extends script_test_base
         }
 
         print_test_result();
-        ::print("======= Test SDK Classes function END ======= \n");
+        ::print("======= Test SDK classes/functions END ======= \n");
     }
 }

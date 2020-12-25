@@ -2868,6 +2868,68 @@ namespace ScriptBindings
         return 1;
     }
 
+    SQInteger CompilerFactory_IsValidCompilerID(HSQUIRRELVM v)
+    {
+        // env table, id
+        ExtractParams2<SkipParam, const wxString *> extractor(v);
+        if (!extractor.Process("CompilerFactory::IsValidCompilerID"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, CompilerFactory::IsValidCompilerID(*extractor.p1));
+        return 1;
+    }
+
+    SQInteger CompilerFactory_GetCompilerIndex(HSQUIRRELVM v)
+    {
+        // env table, id
+        ExtractParams2<SkipParam, const wxString *> extractor(v);
+        if (!extractor.Process("CompilerFactory::GetCompilerIndex"))
+            return extractor.ErrorMessage();
+        sq_pushinteger(v, CompilerFactory::GetCompilerIndex(*extractor.p1));
+        return 1;
+    }
+
+    SQInteger CompilerFactory_GetDefaultCompilerID(HSQUIRRELVM v)
+    {
+        // env table
+        ExtractParams1<SkipParam> extractor(v);
+        if (!extractor.Process("CompilerFactory::GetDefaultCompilerID"))
+            return extractor.ErrorMessage();
+        // FIXME (squirrel) This doesn't matter much, because squirrel doesn't care for constness.
+        wxString &result = const_cast<wxString&>(CompilerFactory::GetDefaultCompilerID());
+        return ConstructAndReturnNonOwnedPtr(v, &result);
+    }
+
+    SQInteger CompilerFactory_GetCompilerVersionString(HSQUIRRELVM v)
+    {
+        // env table, id
+        ExtractParams2<SkipParam, const wxString *> extractor(v);
+        if (!extractor.Process("CompilerFactory::GetCompilerVersionString"))
+            return extractor.ErrorMessage();
+        const wxString result = CompilerFactory::GetCompilerVersionString(*extractor.p1);
+        return ConstructAndReturnInstance(v, result);
+    }
+
+    SQInteger CompilerFactory_CompilerInheritsFrom(HSQUIRRELVM v)
+    {
+        // env table, id, from_id
+        ExtractParams3<SkipParam, const wxString *, const wxString *> extractor(v);
+        if (!extractor.Process("CompilerFactory::CompilerInheritsFrom"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, CompilerFactory::CompilerInheritsFrom(*extractor.p1, *extractor.p2));
+        return 1;
+    }
+
+    SQInteger CompilerFactory_GetCompilerIDByName(HSQUIRRELVM v)
+    {
+        // env table, name
+        ExtractParams2<SkipParam, const wxString *> extractor(v);
+        if (!extractor.Process("CompilerFactory::GetCompilerIDByName"))
+            return extractor.ErrorMessage();
+        Compiler *compiler = CompilerFactory::GetCompilerByName(*extractor.p1);
+        wxString result = (compiler ? compiler->GetID() : wxString());
+        return ConstructAndReturnInstance(v, result);
+    }
+
     template<>
     MembersType<PluginInfo> FindMembers<PluginInfo>::members{};
     template<>
@@ -3577,6 +3639,19 @@ namespace ScriptBindings
         {
             // Register CompilerFactory
             const SQInteger classDecl = CreateClassDecl<CompilerFactory>(v, _SC("CompilerFactory"));
+            BindStaticMethod(v, _SC("IsValidCompilerID"), CompilerFactory_IsValidCompilerID,
+                             _SC("CompilerFactory::IsValidCompilerID"));
+            BindStaticMethod(v, _SC("GetCompilerIndex"), CompilerFactory_GetCompilerIndex,
+                             _SC("CompilerFactory::GetCompilerIndex"));
+            BindStaticMethod(v, _SC("GetDefaultCompilerID"), CompilerFactory_GetDefaultCompilerID,
+                             _SC("CompilerFactory::GetDefaultCompilerID"));
+            BindStaticMethod(v, _SC("GetCompilerVersionString"),
+                             CompilerFactory_GetCompilerVersionString,
+                             _SC("CompilerFactory::GetCompilerVersionString"));
+            BindStaticMethod(v, _SC("CompilerInheritsFrom"), CompilerFactory_CompilerInheritsFrom,
+                             _SC("CompilerFactory::CompilerInheritsFrom"));
+            BindStaticMethod(v, _SC("GetCompilerIDByName"), CompilerFactory_GetCompilerIDByName,
+                             _SC("CompilerFactory::GetCompilerIDByName"));
 
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
