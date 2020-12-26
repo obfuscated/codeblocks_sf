@@ -76,7 +76,7 @@ class DLLIMPORT EditorBase : public wxPanel
           *
           * @return The editor's title.
           */
-        virtual const wxString& GetTitle();
+        virtual const wxString& GetTitle() const;
 
         /** @brief Set the editor's title.
           *

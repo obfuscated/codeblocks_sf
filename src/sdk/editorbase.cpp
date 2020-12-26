@@ -141,7 +141,7 @@ EditorBase::~EditorBase()
     delete m_pData;
 }
 
-const wxString& EditorBase::GetTitle()
+const wxString& EditorBase::GetTitle() const
 {
     return m_WinTitle;
 }
