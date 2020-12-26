@@ -33,7 +33,7 @@
 							</object>
 							<object class="sizeritem">
 								<object class="wxTextCtrl" name="txtCommand">
-									<style>wxTE_MULTILINE|wxTE_READONLY|wxTE_WORDWRAP|wxNO_BORDER</style>
+									<style>wxTE_MULTILINE|wxTE_READONLY|wxTE_WORDWRAP|wxBORDER_NONE</style>
 								</object>
 								<flag>wxBOTTOM|wxEXPAND</flag>
 								<border>16</border>
@@ -48,7 +48,7 @@
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
-										<object class="wxComboBox" name="cmbAnswer">
+										<object class="wxChoice" name="cmbAnswer">
 											<content>
 												<item>ALLOW execution of this command</item>
 												<item>ALLOW execution of this command for all scripts from now on</item>
@@ -57,7 +57,6 @@
 												<item>Mark this script as TRUSTED permanently</item>
 											</content>
 											<selection>2</selection>
-											<style>wxCB_READONLY</style>
 										</object>
 										<flag>wxALIGN_TOP</flag>
 									</object>

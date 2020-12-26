@@ -40,7 +40,7 @@ ScriptSecurityWarningDlg::~ScriptSecurityWarningDlg()
 
 ScriptSecurityResponse ScriptSecurityWarningDlg::GetResponse()
 {
-    return (ScriptSecurityResponse)XRCCTRL(*this, "cmbAnswer", wxComboBox)->GetSelection();
+    return (ScriptSecurityResponse)XRCCTRL(*this, "cmbAnswer", wxChoice)->GetSelection();
 }
 
 void ScriptSecurityWarningDlg::EndModal(int retCode)
