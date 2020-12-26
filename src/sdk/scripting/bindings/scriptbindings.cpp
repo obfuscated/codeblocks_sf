@@ -2094,7 +2094,6 @@ namespace ScriptBindings
     void Register_Globals(HSQUIRRELVM v);
     void Register_IO(HSQUIRRELVM v);
     void Register_wxTypes(HSQUIRRELVM v);
-    void Register_Dialog(HSQUIRRELVM v);
     void Register_ProgressDialog(HSQUIRRELVM v);
     void Register_UtilDialogs(HSQUIRRELVM v);
     void Register_IO(HSQUIRRELVM v);
@@ -2106,7 +2105,6 @@ namespace ScriptBindings
         Register_Constants(v);
         Register_Globals(v);
         Register_IO(v); // IO is enabled, but just for harmless functions
-//        Register_Dialog();
 //        Register_ProgressDialog();
 //        Register_UtilDialogs();
 
