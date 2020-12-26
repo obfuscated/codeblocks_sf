@@ -22,8 +22,6 @@
     #include <cbexception.h>
 #endif
 
-#include <scripting/bindings/sc_base_types.h>
-
 #include "wizpage.h"
 #include "infopanel.h"
 #include "projectpathpanel.h"

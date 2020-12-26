@@ -24,8 +24,6 @@
 #include "scriptingmanager.h"
 #include "filefilters.h"
 
-#include "scripting/bindings/sc_base_types.h"
-
 // move this to globals if needed
 inline wxString UnquoteStringIfNeeded(const wxString& str)
 {

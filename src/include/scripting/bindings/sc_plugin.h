@@ -6,7 +6,6 @@
 #ifndef SC_PLUGIN_H
 #define SC_PLUGIN_H
 
-#include "sc_base_types.h"
 #include <wx/dynarray.h>
 
 class FileTreeData;

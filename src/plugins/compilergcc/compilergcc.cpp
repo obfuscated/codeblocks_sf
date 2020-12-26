@@ -73,8 +73,6 @@
 #include "compilerG95.h"
 #include "compilerXML.h"
 
-#include <scripting/bindings/sc_base_types.h>
-
 namespace ScriptBindings
 {
     static int gBuildLogId = -1;
