@@ -18,8 +18,10 @@
 #include "parsewatchvalue.h"
 
 static wxRegEx reProcessInf(_T("id:[ \t]+([A-Fa-f0-9]+)[ \t]+create"));
-static wxRegEx reWatch(_T("(\\+0x[A-Fa-f0-9]+ )"));
-static wxRegEx reBT1(_T("([0-9]+) ([A-Fa-f0-9]+) ([A-Fa-f0-9]+) ([^[]*)"));
+// For 64-bit:
+//  # Child-SP          RetAddr           Call Site
+// 00 00000042`85cffde0 00007ff6`4bcbfa3e 111!HELLO+0x24 [C:\tmp\111\main.f90 @ 5]
+static wxRegEx reBT1(_T("([0-9]+) ([A-Fa-f0-9`]+) ([A-Fa-f0-9`]+) ([^[]*)"));
 
 // Match lines like:
 // 0018ff38 004013ef dbgtest!main+0x3 [main.cpp @ 8]
@@ -28,14 +30,23 @@ static wxRegEx reBT2(_T("\\[(.+)[ \\t]@[ \\t]([0-9]+)\\][ \\t]*"));
 //    15 00401020 55               push    ebp
 //    61 004010f9 ff15dcc24000  call dword ptr [Win32GUI!_imp__GetMessageA (0040c2dc)]
 //    71 0040111f c21000           ret     0x10
-static wxRegEx reDisassembly(_T("^[0-9]+[ \t]+([A-Fa-f0-9]+)[ \t]+[A-Fa-f0-9]+[ \t]+(.*)$"));
+// For 64-bit:
+//     2 00007ff6`4bbf921d 4881ec90000000  sub     rsp,90h
+static wxRegEx reDisassembly(_T("^[0-9]+[ \t]+([A-Fa-f0-9`]+)[ \t]+[A-Fa-f0-9]+[ \t]+(.*)$"));
 //  # ChildEBP RetAddr
 // 00 0012fe98 00401426 Win32GUI!WinMain+0x89 [c:\devel\tmp\win32 test\main.cpp @ 55]
-static wxRegEx reDisassemblyFile(_T("[0-9]+[ \t]+([A-Fa-f0-9]+)[ \t]+[A-Fa-f0-9]+[ \t]+(.*)\\[([A-z]:)(.*) @ ([0-9]+)\\]"));
-static wxRegEx reDisassemblyFunc(_T("^\\(([A-Fa-f0-9]+)\\)[ \t]+"));
+// For 64-bit:
+//  # Child-SP          RetAddr           Call Site
+// 00 00000042`85cffde0 00007ff6`4bcbfa3e 111!HELLO+0x24 [C:\tmp\111\main.f90 @ 5]
+// (00007ff6`4bbf921c)   111!HELLO+0x24   |  (00007ff6`4bbf92d0)   111!for_set_reentrancy
+static wxRegEx reDisassemblyFile(_T("[0-9]+[ \t]+([A-Fa-f0-9`]+)[ \t]+[A-Fa-f0-9`]+[ \t]+(.*)\\[([A-z]:)(.*) @ ([0-9]+)\\]"));
+static wxRegEx reDisassemblyFunc(_T("^\\(([A-Fa-f0-9`]+)\\)[ \t]+"));
 
 // 01 0012ff68 00404168 cdb_test!main+0xae [c:\dev\projects\tests\cdb_test\main.cpp @ 21]
-static wxRegEx reSwitchFrame(wxT("[ \\t]*([0-9]+)[ \\t]([0-9a-z]+)[ \\t](.+)[ \\t]\\[(.+)[ \\t]@[ \\t]([0-9]+)\\][ \\t]*"));
+// For 64-bit:
+//  # Child-SP          RetAddr           Call Site
+// 00 000000ab`710dfac0 00007ff6`4bcbfa3e 111!HELLO+0x24 [C:\tmp\111\main.f90 @ 5]
+static wxRegEx reSwitchFrame(wxT("[ \\t]*([0-9]+)[ \\t]([0-9a-z`]+)[ \\t](.+)[ \\t]\\[(.+)[ \\t]@[ \\t]([0-9]+)\\][ \\t]*"));
 
 /**
   * Command to add a search directory for source files in debugger's paths.
@@ -394,6 +405,11 @@ class CdbCmd_TooltipEvaluation : public DebuggerCmd
         }
 };
 
+inline bool CDBHasChild(const wxString &line)
+{
+    return line.Contains("ChildEBP") || line.Contains("Child-SP");
+}
+
 /**
   * Command to run a backtrace.
   */
@@ -420,7 +436,7 @@ class CdbCmd_Backtrace : public DebuggerCmd
             m_pDriver->GetStackFrames().clear();
 
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
-            if (!lines.GetCount() || !lines[0].Contains(_T("ChildEBP")))
+            if (!lines.GetCount() || !CDBHasChild(lines[0]))
                 return;
 
             bool firstValid = true;
@@ -492,7 +508,7 @@ class CdbCmd_SwitchFrame : public DebuggerCmd
 
             for (unsigned ii = 0; ii < lines.GetCount(); ++ii)
             {
-                if (lines[ii].Contains(wxT("ChildEBP")))
+                if (CDBHasChild(lines[ii]))
                     continue;
                 else if (reSwitchFrame.Matches(lines[ii]))
                 {
@@ -611,7 +627,7 @@ class CdbCmd_DisassemblyInit : public DebuggerCmd
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
             for (unsigned int i = 0; i < lines.GetCount(); ++i)
             {
-                if (lines[i].Contains(_T("ChildEBP")))
+                if (CDBHasChild(lines[i]))
                 {
                     if (reDisassemblyFile.Matches(lines[i + 1]))
                     {
