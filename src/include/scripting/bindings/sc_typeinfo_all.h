@@ -44,6 +44,7 @@ enum class TypeTag : uint32_t
     EditorBase,
     EditorManager,
     FileTreeData,
+    IONamespace,
     PluginInfo,
     ProjectBuildTarget,
     ProjectFile,
@@ -51,6 +52,9 @@ enum class TypeTag : uint32_t
     ScriptingManager,
     UserVariableManager
 };
+
+// Dummy type
+struct IONamespace{};
 
 template<>
 struct TypeInfo<wxString> {
@@ -154,6 +158,13 @@ template<>
 struct TypeInfo<FileTreeData> {
     static const uint32_t typetag = uint32_t(TypeTag::FileTreeData);
     static constexpr const SQChar *className = _SC("FileTreeData");
+    using baseClass = void;
+};
+
+template<>
+struct TypeInfo<IONamespace> {
+    static const uint32_t typetag = uint32_t(TypeTag::IONamespace);
+    static constexpr const SQChar *className = _SC("IO");
     using baseClass = void;
 };
 
