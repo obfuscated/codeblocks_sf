@@ -2105,7 +2105,7 @@ namespace ScriptBindings
         Register_Constants(v);
         Register_Globals(v);
         Register_IO(v); // IO is enabled, but just for harmless functions
-//        Register_ProgressDialog();
+        Register_ProgressDialog(v);
 //        Register_UtilDialogs();
 
         PreserveTop preserveTop(v);
