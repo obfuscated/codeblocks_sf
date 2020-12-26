@@ -1,6 +1,8 @@
 #ifndef TINYWXUNI_H
 #define TINYWXUNI_H
 
+#include "settings.h"
+
 class wxString;
 class TiXmlDocument;
 
