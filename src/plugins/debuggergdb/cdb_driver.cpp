@@ -222,7 +222,7 @@ void CDB_driver::SetMemoryRangeValue(cb_unused uint64_t addr, cb_unused const wx
 
 void CDB_driver::MemoryDump()
 {
-    NOT_IMPLEMENTED();
+    QueueCommand(new CdbCmd_ExamineMemory(this));
 }
 
 void CDB_driver::RunningThreads()

@@ -48,6 +48,10 @@ static wxRegEx reDisassemblyFunc(_T("^\\(([A-Fa-f0-9`]+)\\)[ \t]+"));
 // 00 000000ab`710dfac0 00007ff6`4bcbfa3e 111!HELLO+0x24 [C:\tmp\111\main.f90 @ 5]
 static wxRegEx reSwitchFrame(wxT("[ \\t]*([0-9]+)[ \\t]([0-9a-z`]+)[ \\t](.+)[ \\t]\\[(.+)[ \\t]@[ \\t]([0-9]+)\\][ \\t]*"));
 
+// 0012ff74  00 00 00 00 c0 ff 12 00-64 13 40 00 01 00 00 00  ........d.@.....
+static wxRegEx reExamineMemoryLine(wxT("([0-9a-f]+) ((( |-)[0-9a-f]{2}){1,16})"));
+
+
 /**
   * Command to add a search directory for source files in debugger's paths.
   */
@@ -663,5 +667,63 @@ class CdbCmd_DisassemblyInit : public DebuggerCmd
         }
 };
 wxString CdbCmd_DisassemblyInit::LastAddr;
+
+/**
+  * Command to examine a memory region.
+  */
+class CdbCmd_ExamineMemory : public DebuggerCmd
+{
+    public:
+        /** @param dlg The memory dialog. */
+        CdbCmd_ExamineMemory(DebuggerDriver* driver)
+            : DebuggerCmd(driver)
+        {
+            cbExamineMemoryDlg *dialog = Manager::Get()->GetDebuggerManager()->GetExamineMemoryDialog();
+            const wxString &address = CleanStringValue(dialog->GetBaseAddress());
+            m_Cmd.Printf(_T("db %s L%x"), address.c_str(),dialog->GetBytes());
+        }
+        void ParseOutput(const wxString& output)
+        {
+            // output is a series of:
+            //
+            // 0012ff74  00 00 00 00 c0 ff 12 00-64 13 40 00 01 00 00 00  ........d.@.....
+
+            cbExamineMemoryDlg *dialog = Manager::Get()->GetDebuggerManager()->GetExamineMemoryDialog();
+
+            dialog->Begin();
+            dialog->Clear();
+
+            wxArrayString lines = GetArrayFromString(output, _T('\n'));
+            wxString addr, memory;
+            for (unsigned int i = 0; i < lines.GetCount(); ++i)
+            {
+                if (reExamineMemoryLine.Matches(lines[i]))
+                {
+                    addr = reExamineMemoryLine.GetMatch(lines[i], 1);
+                    memory = reExamineMemoryLine.GetMatch(lines[i], 2);
+                    memory.Replace(_T("-"),_T(" "),true);
+                }
+                else
+                {   int pos = lines[i].Find(_T('*'));
+                    if ( pos == wxNOT_FOUND || pos > 0)
+                    {
+                      dialog->AddError(lines[i]);
+                    }
+                    continue;
+                }
+
+                size_t pos = memory.find(_T(' '));
+                while (pos != wxString::npos)
+                {
+                    wxString hexbyte;
+                    hexbyte << memory[pos + 1];
+                    hexbyte << memory[pos + 2];
+                    dialog->AddHexByte(addr, hexbyte);
+                    pos = memory.find(_T(' '), pos + 1); // skip current ' '
+                }
+            }
+            dialog->End();
+        }
+};
 
 #endif // DEBUGGER_COMMANDS_H
