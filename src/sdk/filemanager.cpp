@@ -222,7 +222,7 @@ bool FileManager::SaveUTF8(const wxString& name, const char* data, size_t len)
         wxFile file(name, wxFile::write_excl);
         if (!file.IsOpened())
             return false;
-        if (!data && len > 0)
+        if (!data)
             return false;
         return file.Write(data, len) == len;
     }
@@ -235,7 +235,7 @@ bool FileManager::SaveUTF8(const wxString& name, const char* data, size_t len)
         wxFile file(name, wxFile::write);
         if (!file.IsOpened())
             return false;
-        if (!data && len > 0)
+        if (!data)
             return false;
         return file.Write(data, len) == len;
     }
