@@ -157,7 +157,7 @@ LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
         }
     }
 
-    if (file.StartsWith(_T("http://")))
+    if (file.StartsWith("http://"))
     {
         URLLoader *ul = new URLLoader(file);
         urlLoaderThread.Queue(ul);
@@ -166,7 +166,7 @@ LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
 
     FileLoader *fl = new FileLoader(file);
 
-    if (file.length() > 2 && file[0] == _T('\\') && file[1] == _T('\\'))
+    if (file.length() > 2 && file[0] == '\\' && file[1] == '\\')
     {
         // UNC files behave like "normal" files, but since we know they are served over the network,
         // we can run them independently from local filesystem files for higher concurrency
@@ -226,7 +226,6 @@ bool FileManager::SaveUTF8(const wxString& name, const char* data, size_t len)
             return false;
         return file.Write(data, len) == len;
     }
-#if wxCHECK_VERSION(3, 0, 0)
     else if (wxFileName::Exists(name, wxFILE_EXISTS_SYMLINK))
     {
         // Enable editing symlinks. Do not use temp file->replace procedure
@@ -239,14 +238,13 @@ bool FileManager::SaveUTF8(const wxString& name, const char* data, size_t len)
             return false;
         return file.Write(data, len) == len;
     }
-#endif // wxCHECK_VERSION(3, 0, 0)
     else
     {
         if (!wxFile::Access(name, wxFile::write))
             return false;
 
         wxString temp(name);
-        temp.append(wxT(".temp"));
+        temp.append(".temp");
 
         wxStructStat buff;
         wxLstat( name, &buff );
@@ -265,7 +263,7 @@ bool FileManager::SaveUTF8(const wxString& name, const char* data, size_t len)
             else
             {
                 wxString failed(name);
-                failed.append(wxT(".save-failed"));
+                failed.append(".save-failed");
                 platform::move(temp, failed);
             }
         }
@@ -287,7 +285,6 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
     // If the caller/user doesn't want a robust save operation do a direct write!
     bool directWrite = !robust;
 
-#if wxCHECK_VERSION(3, 0, 0)
     if (wxFileName::Exists(name, wxFILE_EXISTS_SYMLINK))
     {
         // Enable editing symlinks. Do not use temp file->replace procedure
@@ -295,7 +292,6 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
         // edits to reflect to the target file.
         directWrite = true;
     }
-#endif // wxCHECK_VERSION(3, 0, 0)
 
     if (directWrite)
     {
@@ -310,7 +306,7 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
             return false;
 
         wxString temp(name);
-        temp.append(wxT(".temp"));
+        temp.append(".temp");
 
         wxStructStat buff;
         wxLstat( name, &buff );
@@ -329,7 +325,7 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
             else
             {
                 wxString failed(name);
-                failed.append(wxT(".save-failed"));
+                failed.append(".save-failed");
                 platform::move(temp, failed);
             }
         }
@@ -449,12 +445,12 @@ bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEnc
 
         if (!buf || !(size = strlen(buf)))
         {
-            cbMessageBox(_T(    "The file could not be saved because it contains characters "
-                                "that can neither be represented in your current code page, "
-                                "nor be converted to UTF-8.\n"
-                                "The latter should actually not be possible.\n\n"
-                                "Please check your language/encoding settings and try saving again." ),
-                                _("Failure"), wxICON_WARNING | wxOK );
+            cbMessageBox(_("The file could not be saved because it contains characters "
+                           "that can neither be represented in your current code page, "
+                           "nor be converted to UTF-8.\n"
+                           "The latter should actually not be possible.\n\n"
+                           "Please check your language/encoding settings and try saving again."),
+                         _("Failure"), wxICON_WARNING | wxOK );
             return false;
         }
         else
