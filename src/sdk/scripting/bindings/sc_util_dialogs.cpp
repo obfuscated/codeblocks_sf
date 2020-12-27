@@ -7,306 +7,434 @@
  * $HeadURL$
  */
 
-#if 0
-// FIXME (squirrel) Reimplement util dialogs
-
 #include <sdk_precomp.h>
 
 #ifndef CB_PRECOMP
-    #include <globals.h>
-    #include <cbexception.h>
+    #include "globals.h"
+    #include "cbexception.h"
     #include <wx/string.h>
 #endif
 
-#include "sc_base_types.h"
+#include "editarrayfiledlg.h"
+#include "editarrayorderdlg.h"
+#include "editarraystringdlg.h"
+#include "editpairdlg.h"
+#include "editpathdlg.h"
+#include "genericmultilinenotesdlg.h"
 
-#include <editarrayfiledlg.h>
-#include <editarrayorderdlg.h>
-#include <editarraystringdlg.h>
-#include <editpairdlg.h>
-#include <editpathdlg.h>
-#include <genericmultilinenotesdlg.h>
+#include "sc_utils.h"
+#include "sc_typeinfo_all.h"
 
-DECLARE_ENUM_TYPE(EditPairDlg::BrowseMode);
 
 namespace ScriptBindings
 {
-    SQInteger EditArrayFileDlg_Dtor(SQUserPointer up, cb_unused SQInteger size)
-    {
-      SQ_DELETE_CLASS(EditArrayFileDlg);
-    }
+    // Local type traits.
+    // This won't allow other bound functions to extract these types from Squirrel values.
+
+    template<>
+    struct TypeInfo<EditArrayFileDlg> {
+        static const uint32_t typetag = uint32_t(TypeTag::EditArrayFileDlg);
+        static constexpr const SQChar *className = _SC("EditArrayFileDlg");
+        using baseClass = void;
+    };
+
+    template<>
+    struct TypeInfo<EditArrayOrderDlg> {
+        static const uint32_t typetag = uint32_t(TypeTag::EditArrayOrderDlg);
+        static constexpr const SQChar *className = _SC("EditArrayOrderDlg");
+        using baseClass = void;
+    };
+
+    template<>
+    struct TypeInfo<EditArrayStringDlg> {
+        static const uint32_t typetag = uint32_t(TypeTag::EditArrayStringDlg);
+        static constexpr const SQChar *className = _SC("EditArrayStringDlg");
+        using baseClass = void;
+    };
+
+    template<>
+    struct TypeInfo<EditPairDlg> {
+        static const uint32_t typetag = uint32_t(TypeTag::EditPairDlg);
+        static constexpr const SQChar *className = _SC("EditPairDlg");
+        using baseClass = void;
+    };
+
+    template<>
+    struct TypeInfo<EditPathDlg> {
+        static const uint32_t typetag = uint32_t(TypeTag::EditPathDlg);
+        static constexpr const SQChar *className = _SC("EditPathDlg");
+        using baseClass = void;
+    };
+
+    template<>
+    struct TypeInfo<GenericMultiLineNotesDlg> {
+        static const uint32_t typetag = uint32_t(TypeTag::GenericMultiLineNotesDlg);
+        static constexpr const SQChar *className = _SC("GenericMultiLineNotesDlg");
+        using baseClass = void;
+    };
 
     SQInteger EditArrayFileDlg_Ctor(HSQUIRRELVM v)
     {
-        //    (wxWindow* parent,
-        //    wxArrayString& array,
-        //    bool useRelativePaths = false,
-        //    const wxString& basePath = _T(""))
-        StackHandler sa(v);
-        EditArrayFileDlg* dlg = nullptr;
+        // env table, array, useRelativePaths = false, basePath = _T("")
+        ExtractParamsBase extractor(v);
+        if (!extractor.CheckNumArguments(2, 4, "EditArrayFileDlg::contructor"))
+            return extractor.ErrorMessage();
+        const int numArgs = sq_gettop(v);
 
-        if (sa.GetParamCount() > 3)
+        wxString basePath;
+        if (numArgs == 4)
         {
-            dlg = new EditArrayFileDlg(nullptr,
-                                        *SqPlus::GetInstance<wxArrayString,false>(v, 2),
-                                        sa.GetBool(3),
-                                        *SqPlus::GetInstance<wxString,false>(v, 4));
+            const wxString *value;
+            if (!extractor.ProcessParam(value, 4, "EditArrayFileDlg::contructor"))
+                return extractor.ErrorMessage();
+            basePath = *value;
         }
-        else if (sa.GetParamCount() > 2)
+        bool useRelativePaths = false;
+        if (numArgs >= 3)
         {
-            dlg = new EditArrayFileDlg(nullptr,
-                                        *SqPlus::GetInstance<wxArrayString,false>(v, 2),
-                                        sa.GetBool(3));
+            if (!extractor.ProcessParam(useRelativePaths, 3, "EditArrayFileDlg::contructor"))
+                return extractor.ErrorMessage();
         }
-        else if (sa.GetParamCount() > 1)
-        {
-            dlg = new EditArrayFileDlg(nullptr,
-                                        *SqPlus::GetInstance<wxArrayString,false>(v, 2));
-        }
-        else
-            return sa.ThrowError("EditArrayFileDlg needs at least one argument");
+        wxArrayString *array;
+        if (!extractor.ProcessParam(array, 2, "EditArrayFileDlg::contructor"))
+            return extractor.ErrorMessage();
 
-        return SqPlus::PostConstruct<EditArrayFileDlg>(v, dlg, EditArrayFileDlg_Dtor);
-    }
-
-    SQInteger EditArrayOrderDlg_Dtor(SQUserPointer up, cb_unused SQInteger size)
-    {
-      SQ_DELETE_CLASS(EditArrayOrderDlg);
+        UserDataForType<EditArrayFileDlg> *data;
+        data = SetupUserPointer<EditArrayFileDlg, InstanceAllocationMode::InstanceIsInline>(v, 1);
+        if (!data)
+            return -1; // SetupUserPointer should have called sq_throwerror!
+        new (&(data->userdata)) EditArrayFileDlg(Manager::Get()->GetAppWindow(), *array,
+                                                 useRelativePaths, basePath);
+        return 0;
     }
 
     SQInteger EditArrayOrderDlg_Ctor(HSQUIRRELVM v)
     {
-        //    (wxWindow* parent, const wxArrayString& array = 0L)
-        StackHandler sa(v);
-        EditArrayOrderDlg* dlg = nullptr;
+        // env table, array = nullptr
+        ExtractParamsBase extractor(v);
+        if (!extractor.CheckNumArguments(1, 2, "EditArrayOrderDlg::contructor"))
+            return extractor.ErrorMessage();
+        const int numArgs = sq_gettop(v);
+        wxArrayString *array = nullptr;
+        if (numArgs == 2)
+        {
+            if (!extractor.ProcessParam(array, 2, "EditArrayOrderDlg::contructor"))
+                return extractor.ErrorMessage();
+        }
 
-        if (sa.GetParamCount() == 1)
-            dlg = new EditArrayOrderDlg(nullptr, wxArrayString());
-        else if (sa.GetParamCount() == 2)
-            dlg = new EditArrayOrderDlg(nullptr, *SqPlus::GetInstance<wxArrayString,false>(v, 2));
-        else
-            return sa.ThrowError("EditArrayOrderDlg needs at most one argument");
-
-        return SqPlus::PostConstruct<EditArrayOrderDlg>(v, dlg, EditArrayOrderDlg_Dtor);
+        UserDataForType<EditArrayOrderDlg> *data;
+        data = SetupUserPointer<EditArrayOrderDlg, InstanceAllocationMode::InstanceIsInline>(v, 1);
+        if (!data)
+            return -1; // SetupUserPointer should have called sq_throwerror!
+        new (&(data->userdata)) EditArrayOrderDlg(Manager::Get()->GetAppWindow(),
+                                                  (array ? *array : wxArrayString()));
+        return 0;
     }
 
-    SQInteger EditArrayStringDlg_Dtor(SQUserPointer up, cb_unused SQInteger size)
+    SQInteger EditArrayOrderDlg_SetArray(HSQUIRRELVM v)
     {
-      SQ_DELETE_CLASS(EditArrayStringDlg);
+        // this, array
+        ExtractParams2<EditArrayOrderDlg*, const wxArrayString *> extractor(v);
+        if (!extractor.Process("EditArrayOrderDlg::SetArray"))
+            return extractor.ErrorMessage();
+
+        extractor.p0->SetArray(*extractor.p1);
+        return 0;
+    }
+
+    SQInteger EditArrayOrderDlg_GetArray(HSQUIRRELVM v)
+    {
+        // this, array
+        ExtractParams1<EditArrayOrderDlg*> extractor(v);
+        if (!extractor.Process("EditArrayOrderDlg::GetArray"))
+            return extractor.ErrorMessage();
+
+        // FIXME (squirrel) This doesn't matter much, because squirrel doesn't care for constness.
+        wxArrayString &result = const_cast<wxArrayString&>(extractor.p0->GetArray());
+        return ConstructAndReturnNonOwnedPtr(v, &result);
     }
 
     SQInteger EditArrayStringDlg_Ctor(HSQUIRRELVM v)
     {
-        //    (wxWindow* parent, const wxArrayString& array)
-        StackHandler sa(v);
-        EditArrayStringDlg* dlg = nullptr;
+        // env table, array
+        ExtractParams2<SkipParam, wxArrayString *> extractor(v);
+        if (!extractor.Process("EditArrayStringDlg::constructor"))
+            return extractor.ErrorMessage();
 
-        if (sa.GetParamCount() == 2)
-            dlg = new EditArrayStringDlg(nullptr, *SqPlus::GetInstance<wxArrayString,false>(v, 2));
-        else
-            return sa.ThrowError("EditArrayStringDlg needs one argument");
-
-        return SqPlus::PostConstruct<EditArrayStringDlg>(v, dlg, EditArrayStringDlg_Dtor);
-    }
-
-    SQInteger EditPairDlg_Dtor(SQUserPointer up, cb_unused SQInteger size)
-    {
-      SQ_DELETE_CLASS(EditPairDlg);
+        UserDataForType<EditArrayStringDlg> *data;
+        data = SetupUserPointer<EditArrayStringDlg, InstanceAllocationMode::InstanceIsInline>(v, 1);
+        if (!data)
+            return -1; // SetupUserPointer should have called sq_throwerror!
+        new (&(data->userdata)) EditArrayStringDlg(Manager::Get()->GetAppWindow(), *extractor.p1);
+        return 0;
     }
 
     SQInteger EditPairDlg_Ctor(HSQUIRRELVM v)
     {
-        //    (wxWindow* parent,
-        //    wxString& key,
-        //    wxString& value,
-        //    const wxString& title = _("Edit pair"),
-        //    BrowseMode allowBrowse = bmDisable);
-        StackHandler sa(v);
-        EditPairDlg* dlg = nullptr;
+        // env table, key, value, title = _("Edit pair"), allowBrowse = bmDisable
+        ExtractParamsBase extractor(v);
+        if (!extractor.CheckNumArguments(3, 5, "EditPairDlg::contructor"))
+            return extractor.ErrorMessage();
+        const int numArgs = sq_gettop(v);
 
-        if (sa.GetParamCount() > 4)
-        {
-            dlg = new EditPairDlg(nullptr,
-                                    *SqPlus::GetInstance<wxString,false>(v, 2),
-                                    *SqPlus::GetInstance<wxString,false>(v, 3),
-                                    *SqPlus::GetInstance<wxString,false>(v, 4),
-                                    (EditPairDlg::BrowseMode)sa.GetInt(5));
-        }
-        else if (sa.GetParamCount() > 3)
-        {
-            dlg = new EditPairDlg(nullptr,
-                                    *SqPlus::GetInstance<wxString,false>(v, 2),
-                                    *SqPlus::GetInstance<wxString,false>(v, 3),
-                                    *SqPlus::GetInstance<wxString,false>(v, 4));
-        }
-        else if (sa.GetParamCount() > 2)
-        {
-            dlg = new EditPairDlg(nullptr,
-                                    *SqPlus::GetInstance<wxString,false>(v, 2),
-                                    *SqPlus::GetInstance<wxString,false>(v, 3));
-        }
-        else
-            return sa.ThrowError("EditPairDlg needs at least two arguments");
+        wxString *key, *value;
+        if (!extractor.ProcessParam(key, 2, "EditPairDlg::contructor"))
+            return extractor.ErrorMessage();
+        if (!extractor.ProcessParam(value, 3, "EditPairDlg::contructor"))
+            return extractor.ErrorMessage();
 
-        return SqPlus::PostConstruct<EditPairDlg>(v, dlg, EditPairDlg_Dtor);
-    }
+        const wxString *title = nullptr;
+        if (numArgs >= 4)
+        {
+            if (!extractor.ProcessParam(title, 4, "EditPairDlg::contructor"))
+                return extractor.ErrorMessage();
+        }
 
-    SQInteger EditPathDlg_Dtor(SQUserPointer up, cb_unused SQInteger size)
-    {
-      SQ_DELETE_CLASS(EditPathDlg);
+        EditPairDlg::BrowseMode allowBrowse = EditPairDlg::bmDisable;
+        if (numArgs == 5)
+        {
+            SQInteger value;
+            if (!extractor.ProcessParam(value, 5, "EditPairDlg::contructor"))
+                return extractor.ErrorMessage();
+            if (value < EditPairDlg::bmDisable || value > EditPairDlg::bmBrowseForDirectory)
+                return sq_throwerror(v, _SC("EditPairDlg::contructor: Invalid value for parameter 'allowBrowse'"));
+            allowBrowse = EditPairDlg::BrowseMode(value);
+        }
+
+        UserDataForType<EditPairDlg> *data;
+        data = SetupUserPointer<EditPairDlg, InstanceAllocationMode::InstanceIsInline>(v, 1);
+        if (!data)
+            return -1; // SetupUserPointer should have called sq_throwerror!
+        new (&(data->userdata)) EditPairDlg(Manager::Get()->GetAppWindow(), *key, *value,
+                                            (title ? *title : _("Edit pair")), allowBrowse);
+        return 0;
     }
 
     SQInteger EditPathDlg_Ctor(HSQUIRRELVM v)
     {
-        //    (wxWindow* parent,
-        //    const wxString& path,       // initial path
-        //    const wxString& basepath,   // for relative pathes
-        //    const wxString& title = _("Edit Path"),      // title of the dialog
-        //    const wxString& message = _T(""),    // message displayed in the dialogs
-        //    const bool wantDir = true,  // whether to open a dir or a file dialog
-        //    const bool allowMultiSel = false,  // whether to allow for multiple files selection
-        //    const wxString& filter = _("All files(*)|*"));  // wildcard for files
-        StackHandler sa(v);
-        EditPathDlg* dlg = nullptr;
+        // env table, path, basepath, title =_("Edit path"), message = "", wantDir = true, allowMultiSel = false, filter = _("All files(*)|*")
+        ExtractParamsBase extractor(v);
+        if (!extractor.CheckNumArguments(3, 8, "EditPathDlg::contructor"))
+            return extractor.ErrorMessage();
+        const int numArgs = sq_gettop(v);
 
-        if (sa.GetParamCount() > 7)
+        const wxString *filter = nullptr;
+        if (numArgs == 8)
         {
-            dlg = new EditPathDlg(nullptr,
-                                    *SqPlus::GetInstance<wxString,false>(v, 2),
-                                    *SqPlus::GetInstance<wxString,false>(v, 3),
-                                    *SqPlus::GetInstance<wxString,false>(v, 4),
-                                    *SqPlus::GetInstance<wxString,false>(v, 5),
-                                    sa.GetBool(6),
-                                    sa.GetBool(7),
-                                    *SqPlus::GetInstance<wxString,false>(v, 8));
+            if (!extractor.ProcessParam(filter, 8, "EditPathDlg::contructor"))
+                return extractor.ErrorMessage();
         }
-        else if (sa.GetParamCount() > 6)
-        {
-            dlg = new EditPathDlg(nullptr,
-                                    *SqPlus::GetInstance<wxString,false>(v, 2),
-                                    *SqPlus::GetInstance<wxString,false>(v, 3),
-                                    *SqPlus::GetInstance<wxString,false>(v, 4),
-                                    *SqPlus::GetInstance<wxString,false>(v, 5),
-                                    sa.GetBool(6),
-                                    sa.GetBool(7));
-        }
-        else if (sa.GetParamCount() > 5)
-        {
-            dlg = new EditPathDlg(nullptr,
-                                    *SqPlus::GetInstance<wxString,false>(v, 2),
-                                    *SqPlus::GetInstance<wxString,false>(v, 3),
-                                    *SqPlus::GetInstance<wxString,false>(v, 4),
-                                    *SqPlus::GetInstance<wxString,false>(v, 5),
-                                    sa.GetBool(6));
-        }
-        else if (sa.GetParamCount() > 4)
-        {
-            dlg = new EditPathDlg(nullptr,
-                                    *SqPlus::GetInstance<wxString,false>(v, 2),
-                                    *SqPlus::GetInstance<wxString,false>(v, 3),
-                                    *SqPlus::GetInstance<wxString,false>(v, 4),
-                                    *SqPlus::GetInstance<wxString,false>(v, 5));
-        }
-        else if (sa.GetParamCount() > 3)
-        {
-            dlg = new EditPathDlg(nullptr,
-                                    *SqPlus::GetInstance<wxString,false>(v, 2),
-                                    *SqPlus::GetInstance<wxString,false>(v, 3),
-                                    *SqPlus::GetInstance<wxString,false>(v, 4));
-        }
-        else if (sa.GetParamCount() > 2)
-        {
-            dlg = new EditPathDlg(nullptr,
-                                    *SqPlus::GetInstance<wxString,false>(v, 2),
-                                    *SqPlus::GetInstance<wxString,false>(v, 3));
-        }
-        else
-            return sa.ThrowError("EditPathDlg needs at least two arguments");
 
-        return SqPlus::PostConstruct<EditPathDlg>(v, dlg, EditPathDlg_Dtor);
+        bool allowMultiSel = false;
+        if (numArgs >= 7)
+        {
+            if (!extractor.ProcessParam(allowMultiSel, 7, "EditPathDlg::contructor"))
+                return extractor.ErrorMessage();
+        }
+
+        bool wantDir = false;
+        if (numArgs >= 6)
+        {
+            if (!extractor.ProcessParam(wantDir, 6, "EditPathDlg::contructor"))
+                return extractor.ErrorMessage();
+        }
+
+        const wxString *message = nullptr;
+        if (numArgs >= 5)
+        {
+            if (!extractor.ProcessParam(message, 5, "EditPathDlg::contructor"))
+                return extractor.ErrorMessage();
+        }
+
+        const wxString *title = nullptr;
+        if (numArgs >= 4)
+        {
+            if (!extractor.ProcessParam(title, 4, "EditPathDlg::contructor"))
+                return extractor.ErrorMessage();
+        }
+
+        const wxString *basepath;
+        if (!extractor.ProcessParam(basepath, 3, "EditPathDlg::contructor"))
+            return extractor.ErrorMessage();
+        const wxString *path;
+        if (!extractor.ProcessParam(path, 2, "EditPathDlg::contructor"))
+            return extractor.ErrorMessage();
+
+        UserDataForType<EditPathDlg> *data;
+        data = SetupUserPointer<EditPathDlg, InstanceAllocationMode::InstanceIsInline>(v, 1);
+        if (!data)
+            return -1; // SetupUserPointer should have called sq_throwerror!
+        new (&(data->userdata)) EditPathDlg(Manager::Get()->GetAppWindow(), *path, *basepath,
+                                            (title ? *title : _("Edit Path")),
+                                            (message ? *message : wxString()), wantDir,
+                                            allowMultiSel, (filter ? *filter: _("All files(*)|*")));
+        return 0;
     }
 
-    SQInteger GenericMultiLineNotesDlg_Dtor(SQUserPointer up, cb_unused SQInteger size)
+    SQInteger EditPathDlg_GetPath(HSQUIRRELVM v)
     {
-      SQ_DELETE_CLASS(GenericMultiLineNotesDlg);
+        // this, array
+        ExtractParams1<EditPathDlg*> extractor(v);
+        if (!extractor.Process("EditPathDlg::GetPath"))
+            return extractor.ErrorMessage();
+
+        return ConstructAndReturnInstance(v, extractor.p0->GetPath());
     }
 
     SQInteger GenericMultiLineNotesDlg_Ctor(HSQUIRRELVM v)
     {
-        //    (wxWindow* parent,
-        //    const wxString& caption = _("Notes"),
-        //    const wxString& notes = wxEmptyString,
-        //    bool readOnly = true);
-        StackHandler sa(v);
-        GenericMultiLineNotesDlg* dlg = nullptr;
+        // env table, caption = _("Notes"), notes = wxString(), readOnly = true;
+        ExtractParamsBase extractor(v);
+        if (!extractor.CheckNumArguments(1, 4, "GenericMultiLineNotesDlg::contructor"))
+            return extractor.ErrorMessage();
+        const int numArgs = sq_gettop(v);
 
-        if (sa.GetParamCount() > 3)
+        bool readOnly = true;
+        if (numArgs == 4)
         {
-            dlg = new GenericMultiLineNotesDlg(nullptr,
-                                            *SqPlus::GetInstance<wxString,false>(v, 2),
-                                            *SqPlus::GetInstance<wxString,false>(v, 3),
-                                            sa.GetBool(4));
+            if (!extractor.ProcessParam(readOnly, 4, "GenericMultiLineNotesDlg::contructor"))
+                return extractor.ErrorMessage();
         }
-        else if (sa.GetParamCount() > 2)
+        const wxString *notes = nullptr;
+        if (numArgs >= 3)
         {
-            dlg = new GenericMultiLineNotesDlg(nullptr,
-                                            *SqPlus::GetInstance<wxString,false>(v, 2),
-                                            *SqPlus::GetInstance<wxString,false>(v, 3));
+            if (!extractor.ProcessParam(notes, 3, "GenericMultiLineNotesDlg::contructor"))
+                return extractor.ErrorMessage();
         }
-        else if (sa.GetParamCount() > 1)
+        const wxString *caption = nullptr;
+        if (numArgs >= 2)
         {
-            dlg = new GenericMultiLineNotesDlg(nullptr,
-                                            *SqPlus::GetInstance<wxString,false>(v, 2));
+            if (!extractor.ProcessParam(caption, 2, "GenericMultiLineNotesDlg::contructor"))
+                return extractor.ErrorMessage();
         }
-        else
-            dlg = new GenericMultiLineNotesDlg(nullptr);
 
-        return SqPlus::PostConstruct<GenericMultiLineNotesDlg>(v, dlg, GenericMultiLineNotesDlg_Dtor);
+        UserDataForType<GenericMultiLineNotesDlg> *data;
+        data = SetupUserPointer<GenericMultiLineNotesDlg, InstanceAllocationMode::InstanceIsInline>(v, 1);
+        if (!data)
+            return -1; // SetupUserPointer should have called sq_throwerror!
+        new (&(data->userdata)) GenericMultiLineNotesDlg(Manager::Get()->GetAppWindow(),
+                                                         (caption ? *caption : _("Notes")),
+                                                         (notes ? *notes : wxString()),
+                                                         readOnly);
+        return 0;
     }
 
+    SQInteger GenericMultiLineNotesDlg_GetNotes(HSQUIRRELVM v)
+    {
+        // this, array
+        ExtractParams1<GenericMultiLineNotesDlg*> extractor(v);
+        if (!extractor.Process("GenericMultiLineNotesDlg::GetNotes"))
+            return extractor.ErrorMessage();
+
+        return ConstructAndReturnInstance(v, extractor.p0->GetNotes());
+    }
+
+    template<typename DialogType>
     SQInteger ShowModalForDialogs(HSQUIRRELVM v)
     {
-        StackHandler sa(v);
-        SQUserPointer up = nullptr;
-        sq_getinstanceup(v, 1, &up, nullptr);
-        wxScrollingDialog* dlg = (wxScrollingDialog*)up;
-        return sa.Return(static_cast<SQInteger>(dlg->ShowModal()));
+        // this
+        ExtractParams1<DialogType *> extractor(v);
+        if (!extractor.Process("ShowModalForDialogs"))
+            return extractor.ErrorMessage();
+        sq_pushinteger(v, SQInteger(extractor.p0->ShowModal()));
+        return 1;
     }
 
-    void Register_UtilDialogs()
+    void Register_UtilDialogs(HSQUIRRELVM v)
     {
-        SqPlus::BindConstant<SQInteger>(EditPairDlg::bmBrowseForDirectory, "bmBrowseForDirectory");
-        SqPlus::BindConstant<SQInteger>(EditPairDlg::bmBrowseForFile, "bmBrowseForFile");
-        SqPlus::BindConstant<SQInteger>(EditPairDlg::bmDisable, "bmDisable");
+        PreserveTop preserveTop(v);
+        sq_pushroottable(v);
 
-        SqPlus::SQClassDef<EditArrayFileDlg>("EditArrayFileDlg").
-                staticFuncVarArgs(&EditArrayFileDlg_Ctor, "constructor", "*").
-                staticFunc(&ShowModalForDialogs, "ShowModal");
+// FIXME (squirrel) Bind these constants!
+//        SqPlus::BindConstant<SQInteger>(EditPairDlg::bmBrowseForDirectory, "bmBrowseForDirectory");
+//        SqPlus::BindConstant<SQInteger>(EditPairDlg::bmBrowseForFile, "bmBrowseForFile");
+//        SqPlus::BindConstant<SQInteger>(EditPairDlg::bmDisable, "bmDisable");
 
-        SqPlus::SQClassDef<EditArrayOrderDlg>("EditArrayOrderDlg").
-                staticFuncVarArgs(&EditArrayOrderDlg_Ctor, "constructor", "*").
-                staticFunc(&ShowModalForDialogs, "ShowModal").
-                func(&EditArrayOrderDlg::SetArray, "SetArray").
-                func(&EditArrayOrderDlg::GetArray, "GetArray");
+        {
+            // Register EditArrayFileDlg
+            const SQInteger classDecl = CreateClassDecl<EditArrayFileDlg>(v, _SC("EditArrayFileDlg"));
+            BindMethod(v, _SC("constructor"), EditArrayFileDlg_Ctor,
+                       _SC("EditArrayFileDlg::constructor"));
+            BindMethod(v, _SC("ShowModal"), ShowModalForDialogs<EditArrayFileDlg>,
+                       _SC("EditArrayFileDlg::ShowModal"));
 
-        SqPlus::SQClassDef<EditArrayStringDlg>("EditArrayStringDlg").
-                staticFuncVarArgs(&EditArrayStringDlg_Ctor, "constructor", "*").
-                staticFunc(&ShowModalForDialogs, "ShowModal");
+            BindDefaultInstanceCmp<EditArrayFileDlg>(v);
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
 
-        SqPlus::SQClassDef<EditPairDlg>("EditPairDlg").
-                staticFuncVarArgs(&EditPairDlg_Ctor, "constructor", "*").
-                staticFunc(&ShowModalForDialogs, "ShowModal");
+        {
+            // Register EditArrayOrderDlg
+            const SQInteger classDecl = CreateClassDecl<EditArrayOrderDlg>(v, _SC("EditArrayOrderDlg"));
+            BindMethod(v, _SC("constructor"), EditArrayOrderDlg_Ctor,
+                       _SC("EditArrayOrderDlg::constructor"));
+            BindMethod(v, _SC("ShowModal"), ShowModalForDialogs<EditArrayOrderDlg>,
+                       _SC("EditArrayOrderDlg::ShowModal"));
+            BindMethod(v, _SC("SetArray"), EditArrayOrderDlg_SetArray,
+                       _SC("EditArrayOrderDlg::SetArray"));
+            BindMethod(v, _SC("GetArray"), EditArrayOrderDlg_GetArray,
+                       _SC("EditArrayOrderDlg::GetArray"));
 
-        SqPlus::SQClassDef<EditPathDlg>("EditPathDlg").
-                staticFuncVarArgs(&EditPathDlg_Ctor, "constructor", "*").
-                staticFunc(&ShowModalForDialogs, "ShowModal").
-                func(&EditPathDlg::GetPath, "GetPath");
+            BindDefaultInstanceCmp<EditArrayOrderDlg>(v);
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
 
-        SqPlus::SQClassDef<GenericMultiLineNotesDlg>("GenericMultiLineNotesDlg").
-                staticFuncVarArgs(&GenericMultiLineNotesDlg_Ctor, "constructor", "*").
-                staticFunc(&ShowModalForDialogs, "ShowModal").
-                func(&GenericMultiLineNotesDlg::GetNotes, "GetNotes");
+        {
+            // Register EditArrayStringDlg
+            const SQInteger classDecl = CreateClassDecl<EditArrayStringDlg>(v, _SC("EditArrayStringDlg"));
+            BindMethod(v, _SC("constructor"), EditArrayStringDlg_Ctor,
+                       _SC("EditArrayStringDlg::constructor"));
+            BindMethod(v, _SC("ShowModal"), ShowModalForDialogs<EditArrayStringDlg>,
+                       _SC("EditArrayStringDlg::ShowModal"));
+
+            BindDefaultInstanceCmp<EditArrayStringDlg>(v);
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
+
+        {
+            // Register EditPairDlg
+            const SQInteger classDecl = CreateClassDecl<EditPairDlg>(v, _SC("EditPairDlg"));
+            BindMethod(v, _SC("constructor"), EditPairDlg_Ctor,
+                       _SC("EditPairDlg::constructor"));
+            BindMethod(v, _SC("ShowModal"), ShowModalForDialogs<EditPairDlg>,
+                       _SC("EditPairDlg::ShowModal"));
+
+            BindDefaultInstanceCmp<EditPairDlg>(v);
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
+
+        {
+            // Register EditPathDlg
+            const SQInteger classDecl = CreateClassDecl<EditPathDlg>(v, _SC("EditPathDlg"));
+            BindMethod(v, _SC("constructor"), EditPathDlg_Ctor,
+                       _SC("EditPathDlg::constructor"));
+            BindMethod(v, _SC("ShowModal"), ShowModalForDialogs<EditPathDlg>,
+                       _SC("EditPathDlg::ShowModal"));
+            BindMethod(v, _SC("GetPath"), EditPathDlg_GetPath, _SC("EditPathDlg::GetPath"));
+
+            BindDefaultInstanceCmp<EditPairDlg>(v);
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
+
+        {
+            // Register GenericMultiLineNotesDlg
+            const SQInteger classDecl = CreateClassDecl<GenericMultiLineNotesDlg>(v, _SC("GenericMultiLineNotesDlg"));
+            BindMethod(v, _SC("constructor"), GenericMultiLineNotesDlg_Ctor,
+                       _SC("GenericMultiLineNotesDlg::constructor"));
+            BindMethod(v, _SC("ShowModal"), ShowModalForDialogs<GenericMultiLineNotesDlg>,
+                       _SC("GenericMultiLineNotesDlg::ShowModal"));
+            BindMethod(v, _SC("GetNotes"), GenericMultiLineNotesDlg_GetNotes,
+                       _SC("GenericMultiLineNotesDlg::GetNotes"));
+
+            BindDefaultInstanceCmp<EditPairDlg>(v);
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
+
+        sq_pop(v, 1); // pop root table
     }
 } // namespace ScriptBindings
-
-#endif // 0
