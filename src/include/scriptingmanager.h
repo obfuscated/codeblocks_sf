@@ -6,10 +6,6 @@
 #ifndef SCRIPTING_H
 #define SCRIPTING_H
 
-#include <map>
-#include <set>
-#include <unordered_map>
-
 #ifndef CB_PRECOMP
     #include "cbexception.h" // cbThrow
     #include "globals.h" // cbC2U
@@ -53,7 +49,6 @@ struct SquirrelError;
 class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHandler
 {
         friend class Mgr<ScriptingManager>;
-        wxCriticalSection cs;
     public:
         /// Script trusts container struct
         struct TrustedScriptProps
@@ -213,68 +208,16 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
           */
         const TrustedScripts& GetTrustedScripts();
 
-        // needed for SqPlus bindings
-        ScriptingManager& operator=(cb_unused const ScriptingManager& rhs) // prevent assignment operator
-        {
-        	cbThrow(_T("Can't assign a ScriptingManager* !!!"));
-        	return *this;
-		}
+        ScriptingManager(const ScriptingManager& rhs) = delete;
+        ScriptingManager& operator=(const ScriptingManager& rhs) = delete;
+
     private:
-        // needed for SqPlus bindings
-        ScriptingManager(cb_unused const ScriptingManager& rhs); // prevent copy construction
-
-        void OnScriptMenu(wxCommandEvent& event);
-        void OnScriptPluginMenu(wxCommandEvent& event);
-
         ScriptingManager();
         ~ScriptingManager() override;
-
-
     private:
-        /// Container for script menus.
-        /// Maps "script menuitem_ID" to "script_filename"
-        struct MenuBoundScript
-        {
-            wxString scriptOrFunc;
-            bool isFunc;
-        };
-        typedef std::map<int, MenuBoundScript> MenuIDToScript;
-        typedef std::set<wxString> IncludeSet;
+        struct Data;
 
-    private:
-        /// This the Squirrel VM object we will use everywhere.
-        HSQUIRRELVM m_vm;
-
-        TrustedScripts m_TrustedScripts;
-
-        MenuIDToScript m_MenuIDToScript;
-        bool m_AttachedToMainWindow;
-
-        /** \brief This variable stores a stack of currently running script files. The back points to the current running file
-         *
-         * This variable is used to track the current running script for determine the working directory so it is possible to use relative paths with the
-         * "include" script function. This has to be a stack, because includes can go over several levels and every level can use relative paths.
-         * ~~~~~~
-         * main.script  --> include("scripts/include1.script")
-         * scripts
-         *   |----- include1.script     --> include("library/library.script")
-         *   |-----library
-         *            |----- library.script
-         * ~~~~~~
-         * The back of the stack will always point to the current running script and can be used to get the relative path of the include statements.
-         * The stack is pushed and popped in the LoadScript() function
-         */
-        std::vector<wxString> m_RunningScriptFileStack;
-
-        IncludeSet m_IncludeSet;
-        MenuItemsManager m_MenuItemsManager;
-
-        // FIXME (squirrel) Using std::string here is not efficient
-        using IntConstantsMap = std::unordered_map<std::string, SQInteger>;
-        // FIXME (squirrel) Using std::string here is not efficient
-        using wxStringConstantsMap = std::unordered_map<std::string, HSQOBJECT>;
-        IntConstantsMap m_mapIntConstants;
-        wxStringConstantsMap m_mapWxStringConstants;
+        Data *m_data;
 
         friend SQInteger ConstantsGet(HSQUIRRELVM v);
         friend SQInteger ConstantsSet(HSQUIRRELVM v);
