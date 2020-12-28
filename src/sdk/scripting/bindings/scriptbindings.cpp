@@ -2089,24 +2089,23 @@ namespace ScriptBindings
     template<>
     MembersType<ProjectFile> FindMembers<ProjectFile>::members{};
 
-    void Register_Constants(HSQUIRRELVM v);
-    void Unregister_Constants(HSQUIRRELVM v);
+    void Register_Constants(ScriptingManager *manager);
     void Register_Globals(HSQUIRRELVM v);
     void Register_IO(HSQUIRRELVM v);
     void Register_wxTypes(HSQUIRRELVM v);
     void Register_ProgressDialog(HSQUIRRELVM v);
-    void Register_UtilDialogs(HSQUIRRELVM v);
-    void Register_IO(HSQUIRRELVM v);
+    void Register_UtilDialogs(HSQUIRRELVM v, ScriptingManager *manager);
+    void Register_IO(HSQUIRRELVM v, ScriptingManager *manager);
     void Register_ScriptPlugin(HSQUIRRELVM v);
 
-    void RegisterBindings(HSQUIRRELVM v)
+    void RegisterBindings(HSQUIRRELVM v, ScriptingManager *manager)
     {
         Register_wxTypes(v);
-        Register_Constants(v);
+        Register_Constants(manager);
         Register_Globals(v);
-        Register_IO(v); // IO is enabled, but just for harmless functions
+        Register_IO(v, manager); // IO is enabled, but just for harmless functions
         Register_ProgressDialog(v);
-        Register_UtilDialogs(v);
+        Register_UtilDialogs(v, manager);
 
         PreserveTop preserveTop(v);
         sq_pushroottable(v);
@@ -3002,6 +3001,5 @@ namespace ScriptBindings
 
     void UnregisterBindings(HSQUIRRELVM v)
     {
-        Unregister_Constants(v);
     }
 } // namespace ScriptBindings

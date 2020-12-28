@@ -1486,7 +1486,9 @@ class sdkTest extends script_test_base
         test_string("SetCwd", IO.GetCwd(), tempRootFolder);
         test_true("DirectoryExists", IO.DirectoryExists(tempRootFolder));
 
-        //if (allowInsecureScripts)
+        test_true("allowInsecureScripts==true", allowInsecureScripts);
+
+        if (allowInsecureScripts)
         {
             if (IO.DirectoryExists(tempFolder))
             {
@@ -1667,11 +1669,6 @@ class sdkTest extends script_test_base
 
             local key = _T("press");
             local value = _T("cancel");
-
-            // FIXME (squirrel) Bind these constants!
-            local bmDisable=0;
-            local bmBrowseForFile=1;
-            local bmBrowseForDirectory=2;
 
             test_equal("bmDisable", bmDisable, 0);
             test_equal("bmBrowseForFile", bmBrowseForFile, 1);

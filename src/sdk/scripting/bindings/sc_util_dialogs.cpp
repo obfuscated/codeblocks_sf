@@ -340,15 +340,14 @@ namespace ScriptBindings
         return 1;
     }
 
-    void Register_UtilDialogs(HSQUIRRELVM v)
+    void Register_UtilDialogs(HSQUIRRELVM v, ScriptingManager *manager)
     {
+        manager->BindIntConstant("bmBrowseForDirectory", EditPairDlg::bmBrowseForDirectory);
+        manager->BindIntConstant("bmBrowseForFile", EditPairDlg::bmBrowseForFile);
+        manager->BindIntConstant("bmDisable", EditPairDlg::bmDisable);
+
         PreserveTop preserveTop(v);
         sq_pushroottable(v);
-
-// FIXME (squirrel) Bind these constants!
-//        SqPlus::BindConstant<SQInteger>(EditPairDlg::bmBrowseForDirectory, "bmBrowseForDirectory");
-//        SqPlus::BindConstant<SQInteger>(EditPairDlg::bmBrowseForFile, "bmBrowseForFile");
-//        SqPlus::BindConstant<SQInteger>(EditPairDlg::bmDisable, "bmDisable");
 
         {
             // Register EditArrayFileDlg
