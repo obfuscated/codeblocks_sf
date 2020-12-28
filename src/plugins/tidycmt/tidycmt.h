@@ -3,14 +3,8 @@
  * http://www.gnu.org/licenses/gpl-3.0.html
  */
 
-#ifndef HEADER_GUARD_8367E1F8
-#define HEADER_GUARD_8367E1F8
-/*
-* Header guards for the lazy. Adds a header guard to every ".h" file that doesn't have one when saving.
-* Filenames are hashed to a 64-bit hex number to support umlaut characters (and Kanji, Cyrillic, or whatever)
-* regardless of file encoding, and regardless of what's legal as a C/C++ macro name
-* Thomas sez: uz tis at yar own risk, an dun blam me.
-*/
+#ifndef TIDYCMT_H
+#define TIDYCMT_H
 
 class wxMenuBar;
 class wxMenu;
@@ -18,23 +12,33 @@ class FileTreeData;
 
 #include "cbplugin.h"
 
+#include "tidycmtconfig.h"
+
 class TidyCmt : public cbPlugin
 {
-    public:
-        TidyCmt(){};
-        virtual ~TidyCmt(){};
+  public:
+    TidyCmt() { ; }
+    virtual ~TidyCmt() { ; }
 
-        virtual void BuildMenu(cb_unused wxMenuBar* menuBar){}
-        virtual void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0){}
-        virtual bool BuildToolBar(cb_unused wxToolBar* toolBar){ return false; }
+		virtual int GetConfigurationGroup() const { return cgEditor; }
+    virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
+    static void ConfigurePlugin(const TidyCmtConfig& tcc);
 
-    private:
+    // Not used:
+    virtual cbConfigurationPanel* GetProjectConfigurationPanel(cb_unused wxWindow* parent, cb_unused cbProject* prj) { return 0; }
 
-        virtual void OnAttach();
+  protected:
+    virtual void OnAttach();
+    virtual void OnRelease(bool appShutDown);
 
-        void OnSave(CodeBlocksEvent& event);
+    // Not used:
+    virtual void BuildMenu(cb_unused wxMenuBar* menuBar) { ; }
+    virtual void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0) { ; }
+    virtual bool BuildToolBar(cb_unused wxToolBar* toolBar) { return false; }
 
-        virtual void OnRelease(cb_unused bool appShutDown){};
+  private:
+
+    void OnSave(CodeBlocksEvent& event);
 };
 
-#endif // header guard
+#endif // TIDYCMT_H

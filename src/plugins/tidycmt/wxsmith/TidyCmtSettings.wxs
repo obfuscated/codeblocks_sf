@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxPanel" name="TidyCmtSettings">
+		<id_arg>0</id_arg>
+		<object class="wxGridSizer" variable="grdMain" member="no">
+			<cols>2</cols>
+			<rows>4</rows>
+			<vgap>5</vgap>
+			<hgap>5</hgap>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="wxID_ANY" variable="lblEnable" member="no">
+					<label>Enable tidying of comments:</label>
+				</object>
+				<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="ID_CHK_ENABLE" variable="chkEnable" member="yes">
+					<label>OK (enable).</label>
+					<handler function="OnEnableClick" entry="EVT_CHECKBOX" />
+				</object>
+				<flag>wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="wxID_ANY" variable="lblLength" member="no">
+					<label>Select length of comment in file:</label>
+				</object>
+				<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxSpinCtrl" name="ID_SPN_LENGTH" variable="spnLength" member="yes">
+					<value>80</value>
+					<min>16</min>
+					<max>255</max>
+				</object>
+				<flag>wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="wxID_ANY" variable="lblSingleLineCmt" member="no">
+					<label>Single-line comment trigger:</label>
+				</object>
+				<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxTextCtrl" name="ID_TXT_SINGLE_LINE_CMT" variable="txtSingleLineCmt" member="yes">
+					<value>//--</value>
+				</object>
+				<flag>wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="wxID_ANY" variable="lblMultiLineCmt" member="no">
+					<label>Multi-line comment trigger:</label>
+				</object>
+				<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxTextCtrl" name="ID_TXT_MULTI_LINE_CMT" variable="txtMultiLineCmt" member="yes">
+					<value>/*--</value>
+				</object>
+				<flag>wxEXPAND</flag>
+				<border>5</border>
+			</object>
+		</object>
+	</object>
+</wxsmith>
