@@ -33,6 +33,7 @@ struct SquirrelError;
   * And here's an example to call a script function:
   *
   * @code
+  * /// FIXME (squirrel) Change this to the proper example with the new API
   * // int return value
   * // C++ equivalent: int retValue = FunctionName("str_arg", 5, 1.0);
   * SqPlus::SquirrelFunction<int> myfunc("FunctionName");
