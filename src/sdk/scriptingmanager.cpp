@@ -97,12 +97,20 @@ struct ScriptingManager::Data
     IncludeSet m_IncludeSet;
     MenuItemsManager m_MenuItemsManager;
 
+    struct ConstantData
+    {
+        SQObjectType type;
+        union Data
+        {
+            SQInteger intValue;
+            SQBool boolValue;
+            HSQOBJECT objectValue;
+        } data;
+    };
+
     // FIXME (squirrel) Using std::string here is not efficient
-    using IntConstantsMap = std::unordered_map<std::string, SQInteger>;
-    // FIXME (squirrel) Using std::string here is not efficient
-    using wxStringConstantsMap = std::unordered_map<std::string, HSQOBJECT>;
-    IntConstantsMap m_mapIntConstants;
-    wxStringConstantsMap m_mapWxStringConstants;
+    using ConstantsMap = std::unordered_map<std::string, ConstantData>;
+    ConstantsMap m_mapConstants;
 
     friend SQInteger ConstantsGet(HSQUIRRELVM v);
     friend SQInteger ConstantsSet(HSQUIRRELVM v);
@@ -171,20 +179,23 @@ SQInteger ConstantsGet(HSQUIRRELVM v)
     ScriptingManager::Data *data = reinterpret_cast<ScriptingManager*>(sq_getforeignptr(v))->m_data;
     cbAssert(data);
 
-    ScriptingManager::Data::IntConstantsMap::const_iterator intIt = data->m_mapIntConstants.find(extractor.p1);
-    if (intIt != data->m_mapIntConstants.end())
+    ScriptingManager::Data::ConstantsMap::const_iterator it = data->m_mapConstants.find(extractor.p1);
+    if (it != data->m_mapConstants.end())
     {
-        sq_pushinteger(v, intIt->second);
-        return 1;
+        const ScriptingManager::Data::ConstantData &constant = it->second;
+        switch (constant.type)
+        {
+        case OT_INTEGER:
+            sq_pushinteger(v, constant.data.intValue);
+            return 1;
+        case OT_BOOL:
+            sq_pushbool(v, constant.data.boolValue);
+            return 1;
+        case OT_INSTANCE:
+            sq_pushobject(v, constant.data.objectValue);
+            return 1;
+        }
     }
-
-    ScriptingManager::Data::wxStringConstantsMap::const_iterator wxStringIt = data->m_mapWxStringConstants.find(extractor.p1);
-    if (wxStringIt != data->m_mapWxStringConstants.end())
-    {
-        sq_pushobject(v, wxStringIt->second);
-        return 1;
-    }
-
     return ScriptBindings::ThrowIndexNotFound(v);
 }
 
@@ -200,11 +211,8 @@ SQInteger ConstantsSet(HSQUIRRELVM v)
     ScriptingManager::Data *data = reinterpret_cast<ScriptingManager*>(sq_getforeignptr(v))->m_data;
     cbAssert(data);
 
-    ScriptingManager::Data::IntConstantsMap::const_iterator intIt = data->m_mapIntConstants.find(name);
-    if (intIt != data->m_mapIntConstants.end())
-        return sq_throwerror(v, _SC("Trying to modify global constant is not allowed!"));
-    ScriptingManager::Data::wxStringConstantsMap::const_iterator wxStringIt = data->m_mapWxStringConstants.find(name);
-    if (wxStringIt != data->m_mapWxStringConstants.end())
+    ScriptingManager::Data::ConstantsMap::const_iterator it = data->m_mapConstants.find(name);
+    if (it != data->m_mapConstants.end())
         return sq_throwerror(v, _SC("Trying to modify global constant is not allowed!"));
 
     return ScriptBindings::ThrowIndexNotFound(v);
@@ -277,12 +285,12 @@ ScriptingManager::~ScriptingManager()
 
     if (m_data->m_vm)
     {
-        for (Data::wxStringConstantsMap::value_type &v : m_data->m_mapWxStringConstants)
+        for (Data::ConstantsMap::value_type &v : m_data->m_mapConstants)
         {
-            sq_release(m_data->m_vm, &v.second);
+            if (v.second.type == OT_INSTANCE)
+                sq_release(m_data->m_vm, &v.second.data.objectValue);
         }
-        m_data->m_mapWxStringConstants.clear();
-        m_data->m_mapIntConstants.clear();
+        m_data->m_mapConstants.clear();
 
         ScriptBindings::UnregisterBindings(m_data->m_vm);
 
@@ -539,15 +547,26 @@ bool ScriptingManager::UnRegisterAllScriptMenus()
 
 void ScriptingManager::BindIntConstant(const char *name, SQInteger value)
 {
-    std::pair<Data::IntConstantsMap::iterator, bool> result;
-    result = m_data->m_mapIntConstants.insert(Data::IntConstantsMap::value_type(name, value));
+    std::pair<Data::ConstantsMap::iterator, bool> result;
+
+    Data::ConstantData v;
+    v.type = OT_INTEGER;
+    v.data.intValue = value;
+
+    result = m_data->m_mapConstants.insert(Data::ConstantsMap::value_type(name, v));
     cbAssert(result.second);
 }
 
 void ScriptingManager::BindBoolConstant(const char *name, bool value)
 {
-    // FIXME (squirrel) Add proper support for bool constants
-    BindIntConstant(name, value);
+    std::pair<Data::ConstantsMap::iterator, bool> result;
+
+    Data::ConstantData v;
+    v.type = OT_BOOL;
+    v.data.boolValue = value;
+
+    result = m_data->m_mapConstants.insert(Data::ConstantsMap::value_type(name, v));
+    cbAssert(result.second);
 }
 
 void ScriptingManager::BindWxStringConstant(const char *name, const wxString &value)
@@ -560,14 +579,15 @@ void ScriptingManager::BindWxStringConstant(const char *name, const wxString &va
     {
         new (&data->userdata) wxString(value);
 
-        HSQOBJECT obj;
-        sq_resetobject(&obj);
-        sq_getstackobj(m_data->m_vm, -1, &obj);
-        sq_addref(m_data->m_vm, &obj);
+        Data::ConstantData v;
+        v.type = OT_INSTANCE;
+        sq_resetobject(&v.data.objectValue);
+        sq_getstackobj(m_data->m_vm, -1, &v.data.objectValue);
+        sq_addref(m_data->m_vm, &v.data.objectValue);
         sq_pop(m_data->m_vm, 1);
 
-        std::pair<Data::wxStringConstantsMap::iterator, bool> result;
-        result = m_data->m_mapWxStringConstants.insert(Data::wxStringConstantsMap::value_type(name, obj));
+        std::pair<Data::ConstantsMap::iterator, bool> result;
+        result = m_data->m_mapConstants.insert(Data::ConstantsMap::value_type(name, v));
         cbAssert(result.second);
     }
 }
