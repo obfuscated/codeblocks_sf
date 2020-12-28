@@ -41,6 +41,12 @@ EditArrayOrderDlg::~EditArrayOrderDlg()
 {
 }
 
+void EditArrayOrderDlg::SetArray(const wxArrayString& array)
+{
+    m_Array = array;
+    DoFillList();
+}
+
 void EditArrayOrderDlg::DoFillList()
 {
     wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
