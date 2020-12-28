@@ -706,6 +706,9 @@ SQRESULT sq_getvoidptr(HSQUIRRELVM v, SQInteger idx, const void **ptr)
     case OT_INSTANCE:
         *ptr = _instance(o);
         return SQ_OK;
+    case OT_CLOSURE:
+        *ptr = _closure(o);
+        return SQ_OK;
     }
     return SQ_ERROR;
 }

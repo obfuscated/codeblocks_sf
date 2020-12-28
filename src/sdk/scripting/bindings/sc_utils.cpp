@@ -104,7 +104,8 @@ DLLIMPORT void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop)
                 line+="UserData";
                 break;
             case OT_CLOSURE:
-                line+="Closure";
+                line+="Closure ";
+                line+=GetItemString(vm, stackIdx);
                 break;
             case OT_NATIVECLOSURE:
                 line+="NativeClosure";
