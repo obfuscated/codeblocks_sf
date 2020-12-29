@@ -82,6 +82,7 @@ wxsTreeCtrl::wxsTreeCtrl(wxsItemResData *Data):
         wxsTreeCtrlEvents,
         wxsTreeCtrlStyles),
     m_sImageList(_("<none>")),
+    m_imageList(16, 16),
     m_bExpand(false)
 {
     m_arrItems.Clear();

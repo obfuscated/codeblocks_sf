@@ -67,7 +67,8 @@ BEGIN_EVENT_TABLE(wxsImageTreeEditorDlg, wxDialog)
     //*)
 END_EVENT_TABLE()
 
-wxsImageTreeEditorDlg::wxsImageTreeEditorDlg(wxWindow *parent)
+wxsImageTreeEditorDlg::wxsImageTreeEditorDlg(wxWindow *parent) :
+    m_imageList(16, 16)
 {
     //(*Initialize(wxsImageTreeEditorDlg)
     wxBoxSizer* BoxSizer4;
