@@ -12,6 +12,8 @@ Teodor Petrov       : Developer
 Daniel Anselmi      : Developer
 Yuanhui Zhang       : Developer
 Damien Moore        : Developer
+Micah Ng            : Developer
+BlueHazzard         : Developer
 Ricardo Garcia      : All-hands person
 Paul A. Jimenez     : Help and AStyle plugins
 Thomas Lorblanches  : CodeStat and Profiler plugins
@@ -20,13 +22,16 @@ Jerome Antoine      : ThreadSearch plugin
 Pecan Heber         : Keybinder, BrowseTracker, DragScroll
                       CodeSnippets plugins
 Arto Jonsson        : CodeSnippets plugin (passed on to Pecan)
-Mario Cupelli       : User's manual
+Darius Markauskas   : Fortran support
+Mario Cupelli       : Compiler support for embedded systems
+                      User's manual
+Jonas Zinn          : Misc. wxSmith AddOns and plugins
+Mirai Computing     : cbp2make tool
 Anders F Bjoerklund : wxMac compatibility
 
 Contributors (in no special order):
 -----------------------------------
 Daniel Orb          : RPM spec file and packages
-Mario Cupelli       : Compiler support for embedded systems
 byo,elvstone, me22  : Conversion to Unicode
 pasgui              : Providing Ubuntu nightly packages
 Hakki Dogusan       : DigitalMars compiler support
@@ -37,6 +42,10 @@ David Perfors       : Unicode tester and future documentation writer
 Sylvain Prat        : Initial MSVC workspace and project importers
 Chris Raschko       : Design of the 3D logo for Code::Blocks
 J.A. Ortega         : 3D Icon based on the above
+Alexandr Efremo     : Providing OpenSuSe packages
+Huki                : Misc. Code-Completion improvements
+stahta01            : Misc. patches for several enhancements
+Miguel Gimenez      : Misc. patches for several enhancements
 
 All contributors that provided patches.
 

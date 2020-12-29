@@ -84,6 +84,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
     txtDescription->SetValue(description);
 
     wxTextCtrl *txtThanksTo = XRCCTRL(*this, "txtThanksTo", wxTextCtrl);
+    // Note: Keep this is sync with the AUTHORS file in SVN.
     txtThanksTo->SetValue(_(
         "Developers:\n"
         "--------------\n"
@@ -100,6 +101,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Yuanhui Zhang       : Developer\n"
         "Damien Moore        : Developer\n"
         "Micah Ng            : Developer\n"
+        "BlueHazzard         : Developer\n"
         "Ricardo Garcia      : All-hands person\n"
         "Paul A. Jimenez     : Help and AStyle plugins\n"
         "Thomas Lorblanches  : CodeStat and Profiler plugins\n"
@@ -131,7 +133,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Alexandr Efremo     : Providing OpenSuSe packages\n"
         "Huki                : Misc. Code-Completion improvements\n"
         "stahta01            : Misc. patches for several enhancements\n"
-        "BlueHazzard         : Misc. patches for several enhancements\n"
+        "Miguel Gimenez      : Misc. patches for several enhancements\n"
         "\n"
         "All contributors that provided patches.\n"
         "The wxWidgets project (http://www.wxwidgets.org).\n"
