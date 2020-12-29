@@ -2084,6 +2084,111 @@ namespace ScriptBindings
         return ConstructAndReturnInstance(v, result);
     }
 
+    SQInteger FileTreeData_GetKind(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const FileTreeData*> extractor(v);
+        if (!extractor.Process("FileTreeData::GetKind"))
+            return extractor.ErrorMessage();
+        sq_pushinteger(v, SQInteger(extractor.p0->GetKind()));
+        return 1;
+    }
+
+    SQInteger FileTreeData_GetProject(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const FileTreeData*> extractor(v);
+        if (!extractor.Process("FileTreeData::GetProject"))
+            return extractor.ErrorMessage();
+        cbProject *result = extractor.p0->GetProject();
+        return ConstructAndReturnNonOwnedPtr(v, result);
+    }
+
+    SQInteger FileTreeData_GetFileIndex(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const FileTreeData*> extractor(v);
+        if (!extractor.Process("FileTreeData::GetFileIndex"))
+            return extractor.ErrorMessage();
+        sq_pushinteger(v, SQInteger(extractor.p0->GetFileIndex()));
+        return 1;
+    }
+
+    SQInteger FileTreeData_GetProjectFile(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const FileTreeData*> extractor(v);
+        if (!extractor.Process("FileTreeData::GetProjectFile"))
+            return extractor.ErrorMessage();
+        ProjectFile *result = extractor.p0->GetProjectFile();
+        return ConstructAndReturnNonOwnedPtrOrNull(v, result);
+    }
+
+    SQInteger FileTreeData_GetFolder(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const FileTreeData*> extractor(v);
+        if (!extractor.Process("FileTreeData::GetFolder"))
+            return extractor.ErrorMessage();
+        wxString *result = &const_cast<wxString&>(extractor.p0->GetFolder());
+        return ConstructAndReturnNonOwnedPtr(v, result);
+    }
+
+    SQInteger FileTreeData_SetKind(HSQUIRRELVM v)
+    {
+        // this, kind
+        ExtractParams2<FileTreeData*, SQInteger> extractor(v);
+        if (!extractor.Process("FileTreeData::SetKind"))
+            return extractor.ErrorMessage();
+        if (extractor.p1 < FileTreeData::ftdkUndefined
+            || extractor.p1 > FileTreeData::ftdkVirtualFolder)
+        {
+            return sq_throwerror(v, _SC("FileTreeData::SetKind: The value of the 'kind' parameter is out of range!"));
+        }
+        extractor.p0->SetKind(FileTreeData::FileTreeDataKind(extractor.p1));
+        return 0;
+    }
+
+    SQInteger FileTreeData_SetProject(HSQUIRRELVM v)
+    {
+        // this, project
+        ExtractParams2<FileTreeData*, cbProject*> extractor(v);
+        if (!extractor.Process("FileTreeData::SetProject"))
+            return extractor.ErrorMessage();
+        extractor.p0->SetProject(extractor.p1);
+        return 0;
+    }
+
+    SQInteger FileTreeData_SetFileIndex(HSQUIRRELVM v)
+    {
+        // this, index
+        ExtractParams2<FileTreeData*, SQInteger> extractor(v);
+        if (!extractor.Process("FileTreeData::SetFileIndex"))
+            return extractor.ErrorMessage();
+        extractor.p0->SetFileIndex(extractor.p1);
+        return 0;
+    }
+
+    SQInteger FileTreeData_SetProjectFile(HSQUIRRELVM v)
+    {
+        // this, file
+        ExtractParams2<FileTreeData*, ProjectFile*> extractor(v);
+        if (!extractor.Process("FileTreeData::SetProjectFile"))
+            return extractor.ErrorMessage();
+        extractor.p0->SetProjectFile(extractor.p1);
+        return 0;
+    }
+
+    SQInteger FileTreeData_SetFolder(HSQUIRRELVM v)
+    {
+        // this, folder
+        ExtractParams2<FileTreeData*, const wxString*> extractor(v);
+        if (!extractor.Process("FileTreeData::SetFolder"))
+            return extractor.ErrorMessage();
+        extractor.p0->SetFolder(*extractor.p1);
+        return 0;
+    }
+
     template<>
     MembersType<PluginInfo> FindMembers<PluginInfo>::members{};
     template<>
@@ -2989,6 +3094,27 @@ namespace ScriptBindings
             // Register FileTreeData
             const SQInteger classDecl = CreateClassDecl<FileTreeData>(v, _SC("FileTreeData"));
 
+
+            BindMethod(v, _SC("GetKind"), FileTreeData_GetKind, _SC("FileTreeData::GetKind"));
+            BindMethod(v, _SC("GetProject"), FileTreeData_GetProject,
+                       _SC("FileTreeData::GetProject"));
+            BindMethod(v, _SC("GetFileIndex"), FileTreeData_GetFileIndex,
+                       _SC("FileTreeData::GetFileIndex"));
+            BindMethod(v, _SC("GetProjectFile"), FileTreeData_GetProjectFile,
+                       _SC("FileTreeData::GetProjectFile"));
+            BindMethod(v, _SC("GetFolder"), FileTreeData_GetFolder,
+                       _SC("FileTreeData::GetFolder"));
+            BindMethod(v, _SC("SetKind"), FileTreeData_SetKind, _SC("FileTreeData::SetKind"));
+            BindMethod(v, _SC("SetProject"), FileTreeData_SetProject,
+                       _SC("FileTreeData::SetProject"));
+            BindMethod(v, _SC("SetFileIndex"), FileTreeData_SetFileIndex,
+                       _SC("FileTreeData::SetFileIndex"));
+            BindMethod(v, _SC("SetProjectFile"), FileTreeData_SetProjectFile,
+                       _SC("FileTreeData::SetProjectFile"));
+            BindMethod(v, _SC("SetFolder"), FileTreeData_SetFolder,
+                       _SC("FileTreeData::SetFolder"));
+
+            BindDefaultInstanceCmp<FileTreeData>(v);
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
         }
