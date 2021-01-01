@@ -51,10 +51,10 @@ static std::string GetItemString(HSQUIRRELVM vm, SQInteger stackIdx)
     return "unknown value";
 }
 
-void PrintStack(HSQUIRRELVM vm, const char *title)
+void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop)
 {
     SQInteger top = sq_gettop(vm);
-    printf("debug: stack [%s] top=%lld\n", title, (long long)top);
+    printf("debug: stack [%s] top=%lld oldTop=%lld\n", title, (long long)top, (long long)oldTop);
 
     std::string line;
     for (int ii = 0; ii < top; ++ii)
