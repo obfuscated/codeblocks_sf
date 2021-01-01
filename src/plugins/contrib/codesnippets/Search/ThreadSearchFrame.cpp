@@ -288,11 +288,11 @@ bool ThreadSearchFrame::InitThreadSearchFrame(wxFrame* appFrame, const wxString&
         wxMenuBar* pMenuBar = this->GetMenuBar();
         wxMenu* pMenuView = new wxMenu();
         //-wxMenu* pMenuSearch = pMenuBar->GetMenu( pMenuBar->FindMenu(_T("Search")));
-        pMenuBar->Insert( 1, pMenuView, _T("View"));
+        pMenuBar->Insert( 1, pMenuView, _("&View"));
         //-pMenuBar->Insert( 2, pMenuSearch, _T("Search"));
         m_pThreadSearch->BuildMenu( pMenuBar );
         // Change 'View/ThreadSearch' to 'View/Options'
-        int idOptionsThreadSearch = pMenuBar->FindMenuItem(_T("View"),_T("Snippets search"));
+        int idOptionsThreadSearch = pMenuBar->FindMenuItem(_("&View"),_("Snippets search"));
         if (idOptionsThreadSearch not_eq wxNOT_FOUND)
         {   pMenuBar->SetLabel( idOptionsThreadSearch, _T("Options...") );
             m_pThreadSearch->Connect(idOptionsThreadSearch, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(ThreadSearchFrame::OnMenuOptions), NULL, this);
