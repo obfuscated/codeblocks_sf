@@ -33,15 +33,19 @@ struct SquirrelError;
   * And here's an example to call a script function:
   *
   * @code
-  * /// FIXME (squirrel) Change this to the proper example with the new API
   * // int return value
   * // C++ equivalent: int retValue = FunctionName("str_arg", 5, 1.0);
-  * SqPlus::SquirrelFunction<int> myfunc("FunctionName");
-  * int retValue = myfunc(_T("str_arg"), 5, 1.0);
+  * Caller caller(vm);
+  * wxString strArg("str_arg");
+  * SQInteger result;
+  * if (!caller.CallAndReturn3(_SC("FunctionName"), &strArg, 5, 1.0))
+  *     <handleTheErrorAppropriately>
   * // void return
   * // C++ equivalent: FunctionName("str_arg", 5, 1.0);
-  * SqPlus::SquirrelFunction<void> myfunc("FunctionName");
-  * myfunc(_T("str_arg"), 5, 1.0);
+  * Caller caller(vm);
+  * wxString strArg("str_arg");
+  * if (!caller.Call3(_SC("FunctionName"), &strArg, 5, 1.0))
+  *     <handleTheErrorAppropriately>
   * @endcode
   *
   * The templated type denotes the function's return type. Also note that the
