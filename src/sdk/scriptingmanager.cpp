@@ -225,7 +225,7 @@ END_EVENT_TABLE()
 namespace ScriptBindings
 {
     void RegisterBindings(HSQUIRRELVM vm, ScriptingManager *manager);
-    void UnregisterBindings(HSQUIRRELVM vm);
+    void UnregisterBindings();
 } // namespace ScriptBindings
 
 ScriptingManager::ScriptingManager() : m_data(new Data)
@@ -292,7 +292,7 @@ ScriptingManager::~ScriptingManager()
         }
         m_data->m_mapConstants.clear();
 
-        ScriptBindings::UnregisterBindings(m_data->m_vm);
+        ScriptBindings::UnregisterBindings();
 
         sq_close(m_data->m_vm);
         m_data->m_vm = nullptr;
@@ -348,20 +348,6 @@ bool ScriptingManager::LoadScript(const wxString& filename)
     return ret;
 }
 
-static wxString ExtractLastSquirrelError(HSQUIRRELVM vm, bool canBeEmpty)
-{
-    const SQChar *s;
-    sq_getlasterror(vm);
-    sq_getstring(vm, -1, &s);
-    wxString errorMsg;
-    if (s)
-        errorMsg = wxString(s);
-    else if (!canBeEmpty)
-        errorMsg = "Unknown error!";
-    sq_pop(vm, 1);
-    return errorMsg;
-}
-
 bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugName)
 {
     // includes guard to avoid recursion
@@ -382,7 +368,7 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
                                    utf8Buffer.length() * sizeof(SQChar),
                                    cbU2C(debugName), 1)))
     {
-        const wxString errorMsg = ExtractLastSquirrelError(m_data->m_vm, false);
+        const wxString errorMsg = ScriptBindings::ExtractLastSquirrelError(m_data->m_vm, false);
         const wxString fullMessage = wxString::Format("Filename: %s\nError: %s\nDetails: %s",
                                                       debugName.wx_str(), errorMsg.wx_str(),
                                                       s_ScriptErrors.wx_str());
@@ -394,7 +380,7 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
     sq_pushroottable(m_data->m_vm); // this is the parameter for the script closure
     if (SQ_FAILED(sq_call(m_data->m_vm, 1, SQFalse, SQTrue)))
     {
-        const wxString errorMsg = ExtractLastSquirrelError(m_data->m_vm, false);
+        const wxString errorMsg = ScriptBindings::ExtractLastSquirrelError(m_data->m_vm, false);
         const wxString fullMessage = wxString::Format("Filename: %s\nError: %s\nDetails: %s",
                                                       debugName.wx_str(), errorMsg.wx_str(),
                                                       s_ScriptErrors.wx_str());
@@ -441,7 +427,7 @@ wxString ScriptingManager::LoadBufferRedirectOutput(const wxString& buffer)
 
 wxString ScriptingManager::GetErrorString(bool clearErrors)
 {
-    wxString msg = ExtractLastSquirrelError(m_data->m_vm, true);
+    wxString msg = ScriptBindings::ExtractLastSquirrelError(m_data->m_vm, true);
     if (!msg.empty())
         msg << "\n";
     msg << s_ScriptErrors;

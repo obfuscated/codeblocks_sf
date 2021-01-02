@@ -2202,6 +2202,7 @@ namespace ScriptBindings
     void Register_UtilDialogs(HSQUIRRELVM v, ScriptingManager *manager);
     void Register_IO(HSQUIRRELVM v, ScriptingManager *manager);
     void Register_ScriptPlugin(HSQUIRRELVM v);
+    void Unregister_ScriptPlugin();
 
     void RegisterBindings(HSQUIRRELVM v, ScriptingManager *manager)
     {
@@ -3125,7 +3126,8 @@ namespace ScriptBindings
         Register_ScriptPlugin(v);
     }
 
-    void UnregisterBindings(HSQUIRRELVM v)
+    void UnregisterBindings()
     {
+        Unregister_ScriptPlugin();
     }
 } // namespace ScriptBindings

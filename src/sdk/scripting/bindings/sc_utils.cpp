@@ -171,4 +171,18 @@ void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop)
     puts("");
 }
 
+wxString ExtractLastSquirrelError(HSQUIRRELVM vm, bool canBeEmpty)
+{
+    const SQChar *s;
+    sq_getlasterror(vm);
+    sq_getstring(vm, -1, &s);
+    wxString errorMsg;
+    if (s)
+        errorMsg = wxString(s);
+    else if (!canBeEmpty)
+        errorMsg = "Unknown error!";
+    sq_pop(vm, 1);
+    return errorMsg;
+}
+
 } // namespace ScriptBindings
