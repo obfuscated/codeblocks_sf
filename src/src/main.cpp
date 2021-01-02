@@ -72,6 +72,9 @@
 #include "editorconfigurationdlg.h"
 #include "projectmanagerui.h"
 
+#include "scripting/bindings/sc_utils.h"
+#include "scripting/bindings/sc_typeinfo_all.h"
+
 class cbFileDropTarget : public wxFileDropTarget
 {
 public:
@@ -951,20 +954,40 @@ void MainFrame::SetupDebuggerUI()
     }
 }
 
-// FIXME (squirrel) Reimplement register MainFrame
-/*
-DECLARE_INSTANCE_TYPE(MainFrame);
-*/
+SQInteger MainFrame_Open(HSQUIRRELVM v)
+{
+    MainFrame *mainFrame = static_cast<MainFrame*>(Manager::Get()->GetAppFrame());
+    if (!mainFrame)
+        return sq_throwerror(v, _SC("MainFrame::Open: No access to the MainFrame object!"));
 
+    using namespace ScriptBindings;
+    // env table, filename, addToHistory
+    ExtractParams3<SkipParam, const wxString*, bool> extractor(v);
+    if (!extractor.Process("MainFrame::Open"))
+        return extractor.ErrorMessage();
+
+    sq_pushbool(v, mainFrame->Open(*extractor.p1, extractor.p2));
+    return 1;
+}
+
+/// Register a squirrel table 'App' which has a function 'Open' which calls MainFrame::Open.
+/// Used for showing html help files.
 void MainFrame::RegisterScriptFunctions()
 {
-// FIXME (squirrel) Reimplement MainFrame::RegisterScriptFunctions
-/*
-    SqPlus::SQClassDef<MainFrame>("MainFrame").
-                    func(&MainFrame::Open, "Open");
+    ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
+    HSQUIRRELVM v = scriptMgr->GetVM();
 
-    SqPlus::BindVariable(this, "App", SqPlus::VAR_ACCESS_READ_ONLY);
-*/
+    using namespace ScriptBindings;
+
+    PreserveTop preserveTop(v);
+    sq_pushroottable(v);
+
+    sq_pushstring(v, _SC("App"), -1);
+    sq_newtable(v);
+    BindStaticMethod(v, _SC("Open"), MainFrame_Open, _SC("MainFrame::Open"));
+
+    sq_newslot(v, -3, false); // Add the 'App' table to the root table
+    sq_poptop(v); // Pop root table
 }
 
 void MainFrame::RunStartupScripts()
@@ -981,30 +1004,20 @@ void MainFrame::RunStartupScripts()
             se.SerializeIn(ser);
             if (!se.enabled)
                 continue;
-// FIXME (squirrel) Reimplement MainFrame::RunStartupScripts
-/*
-            try
+            wxString startup = se.script;
+            if (wxFileName(se.script).IsRelative())
+                startup = ConfigManager::LocateDataFile(se.script, sdScriptsUser | sdScriptsGlobal);
+            if (!startup.IsEmpty())
             {
-                wxString startup = se.script;
-                if (wxFileName(se.script).IsRelative())
-                    startup = ConfigManager::LocateDataFile(se.script, sdScriptsUser | sdScriptsGlobal);
-                if (!startup.IsEmpty())
-                {
-                    if (!se.registered)
-                        Manager::Get()->GetScriptingManager()->LoadScript(startup);
-                    else if (!se.menu.IsEmpty())
-                        Manager::Get()->GetScriptingManager()->RegisterScriptMenu(se.menu, startup, false);
-                    else
-                        Manager::Get()->GetLogManager()->LogWarning(F(_("Startup script/function '%s' not loaded: invalid configuration"), se.script.wx_str()));
-                }
+                if (!se.registered)
+                    Manager::Get()->GetScriptingManager()->LoadScript(startup);
+                else if (!se.menu.IsEmpty())
+                    Manager::Get()->GetScriptingManager()->RegisterScriptMenu(se.menu, startup, false);
                 else
-                    Manager::Get()->GetLogManager()->LogWarning(F(_("Startup script '%s' not found"), se.script.wx_str()));
+                    Manager::Get()->GetLogManager()->LogWarning(F(_("Startup script/function '%s' not loaded: invalid configuration"), se.script.wx_str()));
             }
-            catch (SquirrelError& exception)
-            {
-                Manager::Get()->GetScriptingManager()->DisplayErrors(&exception);
-            }
-*/
+            else
+                Manager::Get()->GetLogManager()->LogWarning(F(_("Startup script '%s' not found"), se.script.wx_str()));
         }
     }
 }

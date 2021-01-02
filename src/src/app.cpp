@@ -835,13 +835,6 @@ bool CodeBlocksApp::OnInit()
     {
         exception.ShowErrorMessage();
     }
-// FIXME (squirrel) Reimplement startup script error printing
-/*
-    catch (SquirrelError& exception)
-    {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&exception);
-    }
-*/
     catch (const char* message)
     {
         wxSafeShowMessage(_T("Exception"), cbC2U(message));
@@ -912,13 +905,6 @@ int CodeBlocksApp::OnRun()
     {
         exception.ShowErrorMessage();
     }
-// FIXME (squirrel) Reimplement OnRun squirrel exceptions? I suppose these don't happen any more!
-/*
-    catch (SquirrelError& exception)
-    {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&exception);
-    }
-*/
     catch (const char* message)
     {
         wxSafeShowMessage(_("Exception"), cbC2U(message));
