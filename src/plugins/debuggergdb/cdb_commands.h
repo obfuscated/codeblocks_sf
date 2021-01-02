@@ -49,7 +49,7 @@ static wxRegEx reDisassemblyFunc(_T("^\\(([A-Fa-f0-9`]+)\\)[ \t]+"));
 static wxRegEx reSwitchFrame(wxT("[ \\t]*([0-9]+)[ \\t]([0-9a-z`]+)[ \\t](.+)[ \\t]\\[(.+)[ \\t]@[ \\t]([0-9]+)\\][ \\t]*"));
 
 // 0012ff74  00 00 00 00 c0 ff 12 00-64 13 40 00 01 00 00 00  ........d.@.....
-static wxRegEx reExamineMemoryLine(wxT("([0-9a-f]+) ((( |-)[0-9a-f]{2}){1,16})"));
+static wxRegEx reExamineMemoryLine(wxT("([0-9a-f`]+) ((( |-)[0-9a-f]{2}){1,16})"));
 
 
 /**
