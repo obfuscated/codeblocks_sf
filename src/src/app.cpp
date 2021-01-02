@@ -58,6 +58,7 @@
     #include <wx/dir.h>
     #include "xtra_res.h"
     #include "filemanager.h" // LoaderBase
+    #include "cbproject.h"
 #endif
 
 #ifndef APP_PREFIX

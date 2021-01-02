@@ -12,6 +12,7 @@
 #ifndef CB_PRECOMP
     #include "globals.h"
     #include "cbexception.h"
+    #include "scriptingmanager.h"
     #include <wx/string.h>
 #endif
 

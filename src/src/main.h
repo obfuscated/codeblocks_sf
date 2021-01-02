@@ -36,7 +36,7 @@ class DebuggerMenuHandler;
 class DebuggerToolbarHandler;
 class InfoPane;
 class wxGauge;
-class ProjectManagerUI;
+class cbProjectManagerUI;
 
 struct ToolbarInfo
 {

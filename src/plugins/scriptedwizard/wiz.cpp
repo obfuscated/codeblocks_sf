@@ -34,6 +34,7 @@
     #include <filefilters.h>
     #include <globals.h>
     #include <infowindow.h>
+    #include "logmanager.h"
     #include <manager.h>
     #include <projectbuildtarget.h>
     #include <projectmanager.h>

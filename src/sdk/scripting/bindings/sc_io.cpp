@@ -14,7 +14,9 @@
 #include <annoyingdialog.h>
 
 #ifndef CB_PRECOMP
-    #include <globals.h>
+    #include "globals.h"
+    #include "menuitemsmanager.h"
+    #include "scriptingmanager.h"
     #include <wx/string.h>
     #include <wx/filedlg.h>
 #endif
