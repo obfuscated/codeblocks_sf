@@ -63,8 +63,6 @@ noinst_HEADERS = \
 				include/wx/pdfcoonspatchmesh.h \
 				include/wx/pdfcorefontdata.h \
 				include/wx/pdfdc.h \
-				include/wx/pdfdc28.h \
-				include/wx/pdfdc29.h \
 				include/wx/pdfdoc.h \
 				include/wx/pdfdoc_version.h \
 				include/wx/pdfdocdef.h \
@@ -107,7 +105,8 @@ noinst_HEADERS = \
 				include/wx/pdfspotcolour.h \
 				include/wx/pdftemplate.h \
 				include/wx/pdfutility.h \
-				include/wx/pdfxml.h
+				include/wx/pdfxml.h \
+				include/wx/srgb2014icc.h
 
 EXTRA_DIST = \
 				src/pdfcjkfontdata.inc \
@@ -116,6 +115,4 @@ EXTRA_DIST = \
 				src/pdfcolourdata.inc \
 				src/pdfcorefontdata.inc \
 				src/pdfcorefontkerning.inc \
-				src/pdfdc28.inc \
-				src/pdfdc29.inc \
 				src/pdfglyphnames.inc

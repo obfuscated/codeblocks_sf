@@ -745,6 +745,28 @@ wxPdfFontData::WriteUnicodeMap(wxOutputStream* mapData,
   return 0;
 }
 
+size_t
+wxPdfFontData::WriteCIDToGIDMap(wxOutputStream* mapData,
+                                const wxPdfEncoding* encoding, wxPdfSortedArrayInt* usedGlyphs, wxPdfChar2GlyphMap* subsetGlyphs)
+{
+  wxUnusedVar(mapData);
+  wxUnusedVar(encoding);
+  wxUnusedVar(usedGlyphs);
+  wxUnusedVar(subsetGlyphs);
+  return 0;
+}
+
+size_t
+wxPdfFontData::WriteCIDSet(wxOutputStream* setData,
+                           const wxPdfEncoding* encoding, wxPdfSortedArrayInt* usedGlyphs,  wxPdfChar2GlyphMap* subsetGlyphs)
+{
+  wxUnusedVar(setData);
+  wxUnusedVar(encoding);
+  wxUnusedVar(usedGlyphs);
+  wxUnusedVar(subsetGlyphs);
+  return 0;
+}
+
 void
 wxPdfFontData::SetDescription(const wxPdfFontDescription& desc)
 {
@@ -778,7 +800,7 @@ wxPdfFontData::CanShow(const wxString& s, const wxPdfEncoding* encoding) const
 }
 
 wxString
-wxPdfFontData::ConvertToValid(const wxString& s, wxChar replace) const
+wxPdfFontData::ConvertToValid(const wxString& s, wxUniChar replace) const
 {
   wxString t;
   if (m_encodingChecker != NULL)

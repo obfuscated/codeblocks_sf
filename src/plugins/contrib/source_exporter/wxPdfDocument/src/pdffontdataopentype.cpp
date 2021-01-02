@@ -102,28 +102,16 @@ wxPdfFontDataOpenTypeUnicode::LoadFontMetrics(wxXmlNode* root)
     }
     else if (child->GetName() == wxS("file"))
     {
-#if wxCHECK_VERSION(2,9,0)
       value = child->GetAttribute(wxS("ctg"), wxS(""));
-#else
-      value = child->GetPropVal(wxS("ctg"), wxS(""));
-#endif
       if (value.Length() > 0)
       {
         bFile = true;
         m_ctg = value;
-#if wxCHECK_VERSION(2,9,0)
         value = child->GetAttribute(wxS("name"), wxS(""));
-#else
-        value = child->GetPropVal(wxS("name"), wxS(""));
-#endif
         if (value.Length() > 0)
         {
           m_file = value;
-#if wxCHECK_VERSION(2,9,0)
           value = child->GetAttribute(wxS("originalsize"), wxS(""));
-#else
-          value = child->GetPropVal(wxS("originalsize"), wxS(""));
-#endif
           if (value.Length() > 0 && value.ToLong(&number))
           {
             bFile = true;
@@ -145,11 +133,7 @@ wxPdfFontDataOpenTypeUnicode::LoadFontMetrics(wxXmlNode* root)
     }
     else if (child->GetName() == wxS("widths"))
     {
-#if wxCHECK_VERSION(2,9,0)
       wxString subsetting = child->GetAttribute(wxS("subsetting"), wxS("disabled"));
-#else
-      wxString subsetting = child->GetPropVal(wxS("subsetting"), wxS("disabled"));
-#endif
       m_subsetSupported = (subsetting == wxS("enabled"));
       bWidth = true;
       m_cw = new wxPdfGlyphWidthMap();
@@ -164,21 +148,12 @@ wxPdfFontDataOpenTypeUnicode::LoadFontMetrics(wxXmlNode* root)
         long charId, glyph, charWidth;
         if (charNode->GetName() == wxS("char"))
         {
-#if wxCHECK_VERSION(2,9,0)
           strId = charNode->GetAttribute(wxS("id"), wxS(""));
           if (m_subsetSupported)
           {
             strGn = charNode->GetAttribute(wxS("gn"), wxS(""));
           }
           strWidth = charNode->GetAttribute(wxS("width"), wxS(""));
-#else
-          strId = charNode->GetPropVal(wxS("id"), wxS(""));
-          if (m_subsetSupported)
-          {
-            strGn = charNode->GetPropVal(wxS("gn"), wxS(""));
-          }
-          strWidth = charNode->GetPropVal(wxS("width"), wxS(""));
-#endif
           if (strId.Length() > 0 && strId.ToLong(&charId) &&
               strWidth.Length() > 0 && strWidth.ToLong(&charWidth))
           {
@@ -310,7 +285,7 @@ wxPdfFontDataOpenTypeUnicode::GetStringWidth(const wxString& s, const wxPdfEncod
   wxString::const_iterator ch;
   for (ch = s.begin(); ch != s.end(); ++ch)
   {
-    wxChar c = *ch;
+    wxUniChar c = *ch;
     charIter = m_cw->find(c);
     if (charIter != m_cw->end())
     {
@@ -382,19 +357,11 @@ wxPdfFontDataOpenTypeUnicode::ConvertCID2GID(const wxString& s,
           glyph = subsetGlyph;
         }
       }
-#if wxCHECK_VERSION(2,9,0)
       t.Append(wxUniChar(glyph));
-#else
-      t.Append(wxChar(glyph));
-#endif
     }
     else
     {
-#if wxCHECK_VERSION(2,9,0)
       t.Append(wxUniChar(0));
-#else
-      t.Append(wxChar(0));
-#endif
     }
   }
   return t;
@@ -426,19 +393,11 @@ wxPdfFontDataOpenTypeUnicode::ConvertGlyph(wxUint32 glyph,
         glyph = subsetGlyph;
       }
     }
-#if wxCHECK_VERSION(2,9,0)
     t.Append(wxUniChar(glyph));
-#else
-    t.Append(wxChar(glyph));
-#endif
   }
   else
   {
-#if wxCHECK_VERSION(2,9,0)
     t.Append(wxUniChar(0));
-#else
-    t.Append(wxChar(0));
-#endif
   }
   return t;
 }
@@ -501,12 +460,7 @@ wxPdfFontDataOpenTypeUnicode::WriteFontData(wxOutputStream* fontData, wxPdfSorte
 #if wxPDFMACOSX_HAS_CORE_TEXT
     if (m_file.IsEmpty() && m_font.IsOk())
     {
-#if wxCHECK_VERSION(2,9,0)
-      // wxWidgets 2.9.x or higher
       CTFontRef fontRef = m_font.OSXGetCTFont();
-#else // wxWidgets 2.8.x
-      CTFontRef fontRef = (const void*) m_font.MacGetCTFont();
-#endif
       tableRef.reset(CTFontCopyTable(fontRef, kCTFontTableCFF, 0));
       const UInt8* tableData = CFDataGetBytePtr(tableRef);
       CFIndex      tableLen  = CFDataGetLength(tableRef);
@@ -660,6 +614,55 @@ wxPdfFontDataOpenTypeUnicode::WriteUnicodeMap(wxOutputStream* mapData,
   zUnicodeMap.Close();
 
   WX_CLEAR_ARRAY(glyphList);
+
+  return 0;
+}
+
+size_t
+wxPdfFontDataOpenTypeUnicode::WriteCIDSet(wxOutputStream* setData,
+  const wxPdfEncoding* encoding,
+  wxPdfSortedArrayInt* usedGlyphs,
+  wxPdfChar2GlyphMap* subsetGlyphs)
+{
+  wxUnusedVar(encoding);
+  wxUnusedVar(subsetGlyphs);
+
+  size_t gCount = m_gn->size();
+  size_t gExtra = (gCount % 8) ? 1 : 0;
+  size_t gBytes = gCount / 8 + gExtra;
+  unsigned char* cidSet = new unsigned char[8192];
+  size_t j;
+  for (j = 0; j < gBytes; j++)
+  {
+    cidSet[j] = 0x00;
+  }
+  cidSet[0] = 0x80;
+
+  wxPdfChar2GlyphMap::const_iterator c2gMapIter;
+  for (c2gMapIter = m_gn->begin(); c2gMapIter != m_gn->end(); ++c2gMapIter)
+  {
+    wxUint32 cid = c2gMapIter->first;
+    wxUint32 gid = c2gMapIter->second;
+    // All CIDs (= GIDs) will be set, because only the outlines of the unused glyphs are removed from the font data.
+    bool setMap = true;
+    // Set GID
+    // Note: One would expect that cid is used to index the mapping array.
+    // However, wxPdfDocument already replaces CIDs by GIDs on adding text strings
+    // to PDF content. Therefore gid is used as the array index.
+    if (setMap)
+    {
+      size_t bytePos = gid / 8;
+      size_t bitPos = gid % 8;
+      unsigned char mask = (0x80 >> bitPos);
+      cidSet[bytePos] |= mask;
+    }
+  }
+
+  wxZlibOutputStream zCIDSet(*setData);
+  zCIDSet.Write(cidSet, 8192);
+  zCIDSet.Close();
+
+  delete[] cidSet;
 
   return 0;
 }

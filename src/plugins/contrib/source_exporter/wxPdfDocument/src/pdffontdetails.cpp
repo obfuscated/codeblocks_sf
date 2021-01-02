@@ -164,11 +164,7 @@ wxPdfFontDetails::CreateSubsetPrefix() const
   int code = m_index;
   for (k = 0; k < 3; k++)
   {
-#if wxCHECK_VERSION(2,9,0)
     prefix += wxUniChar(wxS('A' + (code % 26)));
-#else
-    prefix += wxChar(wxS('A' + (code % 26)));
-#endif
     code /= 26;
   }
   prefix += wxS("+");
@@ -203,6 +199,18 @@ size_t
 wxPdfFontDetails::WriteUnicodeMap(wxOutputStream* mapData)
 {
   return m_font.WriteUnicodeMap(mapData, m_usedGlyphs, m_subsetGlyphs);
+}
+
+size_t
+wxPdfFontDetails::WriteCIDToGIDMap(wxOutputStream* mapData)
+{
+  return m_font.WriteCIDToGIDMap(mapData, m_usedGlyphs, m_subsetGlyphs);
+}
+
+size_t
+wxPdfFontDetails::WriteCIDSet(wxOutputStream* setData)
+{
+  return m_font.WriteCIDSet(setData, m_usedGlyphs, m_subsetGlyphs);
 }
 
 #if wxUSE_UNICODE

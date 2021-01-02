@@ -193,12 +193,6 @@
 		<Unit filename="wxPdfDocument/include/wx/pdfdc.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument/include/wx/pdfdc28.h">
-			<Option target="wxPdfDocument" />
-		</Unit>
-		<Unit filename="wxPdfDocument/include/wx/pdfdc29.h">
-			<Option target="wxPdfDocument" />
-		</Unit>
 		<Unit filename="wxPdfDocument/include/wx/pdfdoc.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
@@ -326,6 +320,9 @@
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument/include/wx/pdfxml.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument/include/wx/srgb2014icc.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument/makefont/makefont.cpp">
@@ -479,12 +476,6 @@
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument/src/pdfdc.cpp">
-			<Option target="wxPdfDocument" />
-		</Unit>
-		<Unit filename="wxPdfDocument/src/pdfdc28.inc">
-			<Option target="wxPdfDocument" />
-		</Unit>
-		<Unit filename="wxPdfDocument/src/pdfdc29.inc">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument/src/pdfdecode.cpp">

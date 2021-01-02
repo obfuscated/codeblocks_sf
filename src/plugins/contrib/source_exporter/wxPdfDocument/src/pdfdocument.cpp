@@ -261,6 +261,8 @@ wxPdfDocument::Initialize(int orientation)
   m_currentParser = NULL;
   m_currentSource = wxEmptyString;
 
+  m_isPdfA1 = false;
+
   m_translate = false;
 
   m_zapfdingbats = 0;
@@ -503,6 +505,14 @@ wxPdfDocument::SetProtection(int permissions,
 {
   if (m_encryptor == NULL)
   {
+    // Check first whether PDF/A-1b conformance is enabled for this document
+    if (m_isPdfA1)
+    {
+      wxLogError(wxString(wxS("wxPdfDocument::SetProtection: ")) +
+                 wxString(_("Protection can't be enabled for PDF documents conforming to PDF/A-1b.")));
+      return;
+    }
+
     int revision = (keyLength > 0) ? 3 : 2;
     switch (encryptionMethod)
     {
@@ -1239,7 +1249,7 @@ wxPdfDocument::MultiCell(double w, double h, const wxString& txt, int border, in
   double ls = 0;
   int ns = 0;
   int nl = 1;
-  wxChar c;
+  wxUniChar c;
   while (i < nb)
   {
     // Get next character
@@ -1364,7 +1374,7 @@ wxPdfDocument::LineCount(double w, const wxString& txt)
   int j = 0;
   double len = 0;
   int nl = 1;
-  wxChar c;
+  wxUniChar c;
   while (i < nb)
   {
     // Get next character
@@ -1486,7 +1496,7 @@ wxPdfDocument::WriteCell(double h, const wxString& txt, int border, int fill, co
   int j = 0;
   double len=0;
   int nl = 1;
-  wxChar c;
+  wxUniChar c;
   while (i < nb)
   {
     // Get next character
@@ -1658,11 +1668,7 @@ wxPdfDocument::GetImageSize(const wxString& file, const wxString& mimeType)
   }
   if (image.IsOk())
   {
-#if wxCHECK_VERSION(2,9,0)
     imageSize = image.GetSize();
-#else
-    imageSize.Set(image.GetWidth(), image.GetHeight());
-#endif
   }
   return imageSize;
 }
@@ -2376,6 +2382,27 @@ wxPdfDocument::AttachFile(const wxString& fileName, const wxString& attachName, 
     wxLogDebug(wxS("*** Attachment file '%s' does not exist."), fileName.c_str());
   }
   return ok;
+}
+
+void
+wxPdfDocument::SetPdfA1Conformance(bool enable)
+{
+  if (enable)
+  {
+    if (!m_encrypted)
+    {
+      m_isPdfA1 = enable;
+    }
+    else
+    {
+      wxLogError(wxString(wxS("wxPdfDocument::SetPdfA1Conformance: ")) +
+                 wxString(_("PDF/A-1 conformance can't be enabled for protected PDF documents.")));
+    }
+  }
+  else
+  {
+    m_isPdfA1 = enable;
+  }
 }
 
 // ---
