@@ -194,6 +194,8 @@ SQInteger ConstantsGet(HSQUIRRELVM v)
         case OT_INSTANCE:
             sq_pushobject(v, constant.data.objectValue);
             return 1;
+        default:
+            return sq_throwerror(v, _SC("Unsupported type for the constant!"));
         }
     }
     return ScriptBindings::ThrowIndexNotFound(v);
