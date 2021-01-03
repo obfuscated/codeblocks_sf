@@ -26,6 +26,8 @@
 #endif // CB_PRECOMP
 
 #include "filefilters.h"
+#include "scripting/bindings/sc_utils.h"
+#include "scripting/bindings/sc_typeinfo_all.h"
 
 // move this to globals if needed
 inline wxString UnquoteStringIfNeeded(const wxString& str)
@@ -584,46 +586,43 @@ void CompilerCommandGenerator::GenerateCommandLine(Result &result, const Params 
 }
 
 /// Apply pre-build scripts for @c base.
-void CompilerCommandGenerator::DoBuildScripts(cbProject* project, CompileTargetBase* target, const wxString& funcName)
+void CompilerCommandGenerator::DoBuildScripts(cbProject* project, CompileTargetBase* target,
+                                              const wxString& funcName)
 {
     ProjectBuildTarget* bt = dynamic_cast<ProjectBuildTarget*>(target);
-    static const wxString clearout_buildscripts = _T("SetBuildOptions <- null;");
     const wxArrayString& scripts = target->GetBuildScripts();
     for (size_t i = 0; i < scripts.GetCount(); ++i)
     {
-        wxString script_nomacro = scripts[i];
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(script_nomacro, bt);
-        script_nomacro = wxFileName(script_nomacro).IsAbsolute() ? script_nomacro : project->GetBasePath() + wxFILE_SEP_PATH + script_nomacro;
+        wxString scriptNoMacro = scripts[i];
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(scriptNoMacro, bt);
+        if (!wxFileName(scriptNoMacro).IsAbsolute())
+            scriptNoMacro = project->GetBasePath() + wxFILE_SEP_PATH + scriptNoMacro;
 
         // if the script has failed before, skip it
-        if (m_NotLoadedScripts.Index(script_nomacro) != wxNOT_FOUND ||
-            m_ScriptsWithErrors.Index(script_nomacro) != wxNOT_FOUND)
+        if (m_NotLoadedScripts.Index(scriptNoMacro) != wxNOT_FOUND ||
+            m_ScriptsWithErrors.Index(scriptNoMacro) != wxNOT_FOUND)
         {
             continue;
         }
+
+        ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
 
         // clear previous script's context
-        Manager::Get()->GetScriptingManager()->LoadBuffer(clearout_buildscripts);
+        scriptMgr->LoadBuffer("SetBuildOptions <- null;");
 
         // if the script doesn't exist, just return
-        if (!Manager::Get()->GetScriptingManager()->LoadScript(script_nomacro))
+        if (!scriptMgr->LoadScript(scriptNoMacro))
         {
-            m_NotLoadedScripts.Add(script_nomacro);
+            m_NotLoadedScripts.Add(scriptNoMacro);
             continue;
         }
 
-        // FIXME (squirrel) Reimplement DoBuildScripts
-/*
-        try
+        ScriptBindings::Caller caller(scriptMgr->GetVM());
+        if (!caller.Call1(cbU2C(funcName), target))
         {
-            SqPlus::SquirrelFunction<void> f(cbU2C(funcName));
-            f(target);
+            scriptMgr->DisplayErrors(true);
+            m_ScriptsWithErrors.Add(scriptNoMacro);
         }
-        catch (SquirrelError& e)
-        {
-            Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-            m_ScriptsWithErrors.Add(script_nomacro);
-        }*/
     }
 }
 
