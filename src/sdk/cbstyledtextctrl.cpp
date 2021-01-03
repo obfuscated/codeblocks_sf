@@ -66,12 +66,6 @@ cbStyledTextCtrl::~cbStyledTextCtrl()
         RemoveEventHandler(GetEventHandler());
 }
 
-// Script binding support
-void cbStyledTextCtrl::operator=(const cbStyledTextCtrl& /*rhs*/)
-{
-    cbThrow(_T("Can't assign an cbStyledTextCtrl* !!!"));
-}
-
 // events
 
 void cbStyledTextCtrl::OnKillFocus(wxFocusEvent& event)
