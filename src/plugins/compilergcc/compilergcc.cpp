@@ -55,6 +55,8 @@
 #include "cbart_provider.h"
 #include "cbworkspace.h"
 #include "cbstyledtextctrl.h"
+#include "scripting/bindings/sc_utils.h"
+#include "scripting/bindings/sc_typeinfo_all.h"
 
 #include "compilerMINGW.h"
 #include "compilerGNUARM.h"
@@ -78,9 +80,15 @@ namespace ScriptBindings
     static int gBuildLogId = -1;
 
     // global funcs
-    void gBuildLog(const wxString& msg)
+    SQInteger gBuildLog(HSQUIRRELVM v)
     {
-        Manager::Get()->GetLogManager()->Log(msg, gBuildLogId);
+        // env table, msg
+        ExtractParams2<SkipParam, const wxString *> extractor(v);
+        if (!extractor.Process("LogBuild"))
+            return extractor.ErrorMessage();
+
+        Manager::Get()->GetLogManager()->Log(*extractor.p1, gBuildLogId);
+        return 0;
     }
 }
 
@@ -420,19 +428,23 @@ void CompilerGCC::OnAttach()
     CompilerFactory::SetDefaultCompiler(Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/default_compiler"), _T("gcc")));
     LoadOptions();
 
-    // FIXME (squirrel) Compiler's LogBuild function
-/*
-    // register compiler's script functions
-    // make sure the VM is initialized
-    Manager::Get()->GetScriptingManager();
-    if (SquirrelVM::GetVMPtr())
     {
-        ScriptBindings::gBuildLogId = m_PageIndex;
-        SqPlus::RegisterGlobal(ScriptBindings::gBuildLog, "LogBuild");
+        // register compiler's script functions
+        // make sure the VM is initialized
+        ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
+        HSQUIRRELVM vm = scriptMgr->GetVM();
+        if (vm)
+        {
+            // FIXME (squirrel) Write documentation about this in the wiki
+            ScriptBindings::PreserveTop preserveTop(vm);
+            sq_pushroottable(vm);
+            ScriptBindings::gBuildLogId = m_PageIndex;
+            ScriptBindings::BindMethod(vm, _SC("LogBuild"), ScriptBindings::gBuildLog, nullptr);
+            sq_poptop(vm);
+        }
+        else
+            ScriptBindings::gBuildLogId = -1;
     }
-    else
-        ScriptBindings::gBuildLogId = -1;
-*/
 
     // register event sink
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,         new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectActivated));
