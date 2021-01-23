@@ -82,7 +82,7 @@ function OnLeave_DirectXPath(fwd)
     if (fwd)
     {
         local dir            = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
-        local dir_nomacro    = ReplaceMacros(dir, true);
+        local dir_nomacro    = ReplaceMacros(dir);
         local directX_header = _T("/include/d3d") + DirectXVerStr + _T(".h");
         if (!IO.FileExists(dir_nomacro + directX_header))
         {
@@ -93,7 +93,7 @@ function OnLeave_DirectXPath(fwd)
 
         if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
         {
-            local psdk = ReplaceMacros(_T("$(#psdk)"), true);
+            local psdk = ReplaceMacros(_T("$(#psdk)"));
             if (!IO.DirectoryExists(psdk))
             {
                 ShowError(_T("The path to the platform SDK seems not to be valid.\n" +
@@ -120,7 +120,7 @@ function GetFilesDir()
 function SetupProject(project)
 {
     // set project options
-    local gvar = ReplaceMacros(_T("$(#dx)"), true);
+    local gvar = ReplaceMacros(_T("$(#dx)"));
 
     // set compiler/linker search paths
     // see if the Direct/X SDK matches the global var. if it does, use the var instead...
