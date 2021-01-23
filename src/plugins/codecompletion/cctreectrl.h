@@ -71,6 +71,9 @@ public:
     /** the Token's ticket in a TokenTree
      * This is actually a copy of Token::m_Ticket, @sa Token::m_Ticket  */
     unsigned long m_Ticket;
+
+    /** pointer to the mirror node in the non-GUI tree */
+    void*         m_MirrorNode;
 };
 
 class CCTreeCtrlExpandedItemData

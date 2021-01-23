@@ -224,11 +224,7 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     // redirect the wxLogMessage to the text ctrl of the frame
     wxLogTextCtrl* textLog = new wxLogTextCtrl(m_CompletionTestCtrl);
     wxLog::SetActiveTarget(textLog);
-#if wxCHECK_VERSION(3, 0, 0)
     wxLog::DisableTimestamp(); // do not show the time stamp
-#else
-    wxLog::SetTimestamp(NULL); // do not show the time stamp
-#endif
 
     // TODO: Make this base folders configurable
     wxString wx_base (wxT("E:\\code\\cb\\wx\\wxWidgets-2.8.12\\"));

@@ -1073,13 +1073,8 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
 
     // since we are going to access the m_SystemHeadersMap, we add a locker here
     // here we collect all the header files names which is under "system include search dirs"
-#if wxCHECK_VERSION(3, 0, 0)
     if (m_SystemHeadersThreadCS.TryEnter())
     {
-#else
-    {
-        m_SystemHeadersThreadCS.Enter();
-#endif // wxCHECK_VERSION(3, 0, 0)
         // if the project get modified, fetch the dirs again, otherwise, use cached dirs
         wxArrayString& incDirs = GetSystemIncludeDirs(project, project ? project->GetModified() : true);
         for (size_t i = 0; i < incDirs.GetCount(); ++i)
@@ -1110,13 +1105,8 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
     // #include "
     if (project)
     {
-#if wxCHECK_VERSION(3, 0, 0)
         if (m_SystemHeadersThreadCS.TryEnter())
         {
-#else
-        {
-            m_SystemHeadersThreadCS.Enter();
-#endif // wxCHECK_VERSION(3, 0, 0)
             wxArrayString buildTargets;
             ProjectFile* pf = project ? project->GetFileByFilename(curFile, false) : 0;
             if (pf)
@@ -1728,12 +1718,6 @@ void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
 
 void CodeCompletion::OnViewClassBrowser(wxCommandEvent& event)
 {
-#if wxCHECK_VERSION(3, 0, 0)
-    (void)event;
-    cbMessageBox(_("The symbols browser is disabled in wx3.x builds.\n"
-                    "We've done this because it causes crashes."), _("Information"), wxICON_INFORMATION);
-    return;
-#else
     if (!Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/use_symbols_browser"), true))
     {
         cbMessageBox(_("The symbols browser is disabled in code-completion options.\n"
@@ -1743,7 +1727,6 @@ void CodeCompletion::OnViewClassBrowser(wxCommandEvent& event)
     CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
     evt.pWindow = (wxWindow*)m_NativeParser.GetClassBrowser();
     Manager::Get()->ProcessEvent(evt);
-#endif // wxCHECK_VERSION
 }
 
 void CodeCompletion::OnGotoFunction(cb_unused wxCommandEvent& event)

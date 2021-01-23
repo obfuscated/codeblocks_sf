@@ -133,17 +133,7 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     XRCCTRL(*this, "txtCCFileExtSource",       wxTextCtrl)->SetValue(cfg->Read(_T("/source_ext"),    _T("c,cpp,cxx,cc,c++")));
 
     // Page "Symbol browser"
-#if wxCHECK_VERSION(3, 0, 0)
-    // Do not disable the whole page, since there are some toolbar related options
-    // we only need to disable the wxTreeCtrl related options.
-    XRCCTRL(*this, "chkNoSB",        wxCheckBox)->Disable();
-    XRCCTRL(*this, "chkInheritance", wxCheckBox)->Disable();
-    XRCCTRL(*this, "chkExpandNS",    wxCheckBox)->Disable();
-    XRCCTRL(*this, "chkFloatCB",     wxCheckBox)->Disable();
-    XRCCTRL(*this, "chkTreeMembers", wxCheckBox)->Disable();
-#else
     XRCCTRL(*this, "chkNoSB",        wxCheckBox)->SetValue(!cfg->ReadBool(_T("/use_symbols_browser"), true));
-#endif // wxCHECK_VERSION
     XRCCTRL(*this, "chkFloatCB",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/as_floating_window"), false));
 
     // The toolbar section
@@ -238,14 +228,12 @@ void CCOptionsDlg::OnApply()
     cfg->Write(_T("/empty_ext"),  (bool) XRCCTRL(*this, "chkCCFileExtEmpty",  wxCheckBox)->GetValue());
     cfg->Write(_T("/source_ext"),        XRCCTRL(*this, "txtCCFileExtSource", wxTextCtrl)->GetValue());
 
-#if !wxCHECK_VERSION(3, 0, 0)
     // Page "Symbol browser"
     cfg->Write(_T("/use_symbols_browser"),      (bool)!XRCCTRL(*this, "chkNoSB",        wxCheckBox)->GetValue());
     cfg->Write(_T("/browser_show_inheritance"), (bool) XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue());
     cfg->Write(_T("/browser_expand_ns"),        (bool) XRCCTRL(*this, "chkExpandNS",    wxCheckBox)->GetValue());
     cfg->Write(_T("/as_floating_window"),       (bool) XRCCTRL(*this, "chkFloatCB",     wxCheckBox)->GetValue());
     cfg->Write(_T("/browser_tree_members"),     (bool) XRCCTRL(*this, "chkTreeMembers", wxCheckBox)->GetValue());
-#endif // wxCHECK_VERSION
 
     // The toolbar section
     cfg->Write(_T("/scope_filter"), (bool) XRCCTRL(*this, "chkScopeFilter", wxCheckBox)->GetValue());
@@ -373,13 +361,11 @@ void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
     XRCCTRL(*this, "txtCCFileExtSource",      wxTextCtrl)->Enable(en);
 
     // Page "Symbol browser"
-#if !wxCHECK_VERSION(3, 0, 0)
     en = !XRCCTRL(*this, "chkNoSB",           wxCheckBox)->GetValue();
     XRCCTRL(*this, "chkInheritance",          wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkExpandNS",             wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkFloatCB",              wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkTreeMembers",          wxCheckBox)->Enable(en);
-#endif // !wxCHECK_VERSION
 
     // Toolbar section
     wxCheckBox *scopeFilter = XRCCTRL(*this, "chkScopeFilter", wxCheckBox);

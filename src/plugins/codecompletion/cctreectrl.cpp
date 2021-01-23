@@ -29,7 +29,8 @@ CCTreeCtrlData::CCTreeCtrlData(SpecialFolder sf, Token* token, short int kindMas
     m_TokenKind(token ? token->m_TokenKind : tkUndefined),
     m_TokenName(token ? token->m_Name : _T("")),
     m_ParentIndex(parentIdx),
-    m_Ticket(token ? token->GetTicket() : 0)
+    m_Ticket(token ? token->GetTicket() : 0),
+    m_MirrorNode(nullptr)
 {
 }
 

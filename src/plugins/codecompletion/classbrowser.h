@@ -53,6 +53,20 @@ class cbProject;
 class ClassBrowser : public wxPanel
 {
 public:
+    // GUI tree operators
+    enum ETreeOperator
+    {
+        OpClear,         /// Deletes all items after hiding and freezing the tree
+        OpAddRoot,       /// Creates the root node
+        OpAddChild,      /// Adds the node as a child of the current node
+        OpGoUp,          /// Selects parent node as current node
+        OpExpandCurrent, /// Expands items below the current node
+        OpExpandRoot,    /// Expand all items below root
+        OpExpandAll,     /// Expand all items (needed if root it hidden)
+        OpShowFirst,     /// Forces showing the top item
+        OpEnd            /// Thaws and shows the tree
+    };
+
     /** class constructor
      * @param parent the parent window
      * @param np the NativeParser instance, which contains all the images for the wxTreeCtrl
@@ -67,7 +81,7 @@ public:
      *  the browser tree must access to the TokenTree, so it needs a ParserBase pointer
      *  @param parser the Parser instance
      */
-    void  SetParser(ParserBase* parser);
+    void SetParser(ParserBase* parser);
 
     /** update or refresh the symbol browser trees
      *
@@ -79,12 +93,24 @@ public:
      *  in this case, the tree should not be updated, because tokens(symbols) in both files were already
      *  shown. False if you need to update the tree without such optimization.
      */
-    void  UpdateClassBrowserView(bool checkHeaderSwap = false);
+    void UpdateClassBrowserView(bool checkHeaderSwap = false);
 
     /** update the position sash bar between top tree and the bottom tree, the position (percentage)
      *  of the two trees are saved in the C::B's configuration file.
      */
-    void  UpdateSash();
+    void UpdateSash();
+
+    /** Called from the worker thread using CallAfter() */
+    void BuildTreeStartOrStop(bool start);
+    void SelectTargetTree(bool top);
+    void TreeOperation(ETreeOperator op, CCTreeItem* item);
+    void SaveSelectedItem();
+    void SelectSavedItem();
+    void ReselectItem();
+
+#ifndef CC_NO_COLLAPSE_ITEM
+    void CollapseItem(CCTreeItem* item);
+#endif // CC_NO_COLLAPSE_ITEM
 
 private:
     /** handler for the mouse double click on a tree item, we usually make a jump to the
@@ -165,6 +191,9 @@ private:
      */
     void ThreadedBuildTree(cbProject* activeProject);
 
+    /** copy the properties from Item to m_targetNode */
+    void SetNodeProperties(CCTreeItem* Item);
+
     /** expanding one node of top tree
      *  @note that the bottom tree do not actually show a tree structure, it just list the members
      *  of the selected node in the top tree
@@ -179,14 +208,7 @@ private:
     /** item selection changed in the top tree */
     void OnTreeSelChanged(wxTreeEvent& event);
 
-    /** class browser builder thread will send notification event to the parent, this is the event
-     *  handler function
-     *  currently, there are three kinds of events send from the builder thread
-     *  @see EThreadEvent for details.
-     */
-    void OnThreadEvent(wxCommandEvent& event);
-
-private:
+    CCTreeItem* GetItemPtr(wxTreeItemId ItemId);
 
     /** the pointer to parser manager object */
     NativeParser*              m_NativeParser;
@@ -196,6 +218,12 @@ private:
 
     /** the bottom tree control, mainly used to show the member variable and member functions */
     CCTreeCtrl*                m_CCTreeCtrlBottom;
+
+    /** current target for the worker thread */
+    CCTreeCtrl*                m_targetTreeCtrl;
+
+    /** current node for the worker thread */
+    wxTreeItemId               m_targetNode;
 
     /** remember the context menu is created from which tree control, the upper or the bottom */
     wxTreeCtrl*                m_TreeForPopupMenu;
@@ -219,6 +247,9 @@ private:
      *  worker thread.
      */
     ClassBrowserBuilderThread* m_ClassBrowserBuilderThread;
+
+    /** Saves the selected items while the tree changes */
+    SelectedItemPath           m_SelectedPath;
 
     DECLARE_EVENT_TABLE()
 };
