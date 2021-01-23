@@ -2,14 +2,14 @@
 #define ADDR2LINEUIMAIN_H
 
 //(*Headers(Addr2LineUIDialog)
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/dialog.h>
+#include <wx/filepicker.h>
 #include <wx/sizer.h>
+#include <wx/statline.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#include <wx/checkbox.h>
-#include <wx/filepicker.h>
-#include <wx/statline.h>
-#include <wx/button.h>
-#include <wx/dialog.h>
 //*)
 
 #include <wx/arrstr.h>
@@ -50,17 +50,17 @@ private:
   //*)
 
   //(*Declarations(Addr2LineUIDialog)
-  wxDirPickerCtrl* m_DPDirPrepend;
-  wxFilePickerCtrl* m_FPCrashLog;
-  wxFilePickerCtrl* m_FPAddr2Line;
-  wxTextCtrl* txtResult;
-  wxTextCtrl* txtCrashLogContent;
-  wxCheckBox* chkReplace;
-  wxTextCtrl* txtReplaceThis;
   wxButton* btnOperate;
+  wxCheckBox* chkReplace;
   wxCheckBox* chkSkipUnresolvable;
+  wxDirPickerCtrl* m_DPDirPrepend;
+  wxFilePickerCtrl* m_FPAddr2Line;
+  wxFilePickerCtrl* m_FPCrashLog;
   wxStaticText* lblReplace;
+  wxTextCtrl* txtCrashLogContent;
   wxTextCtrl* txtReplaceThat;
+  wxTextCtrl* txtReplaceThis;
+  wxTextCtrl* txtResult;
   //*)
 
   wxFileConfig  mFileConfig;

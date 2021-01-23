@@ -1,9 +1,9 @@
 #include "Addr2LineUIMain.h"
 
 //(*InternalHeaders(Addr2LineUIDialog)
-#include <wx/settings.h>
 #include <wx/font.h>
 #include <wx/intl.h>
+#include <wx/settings.h>
 #include <wx/string.h>
 //*)
 
@@ -41,80 +41,80 @@ Addr2LineUIDialog::Addr2LineUIDialog(wxWindow* parent) :
   mDirPrepend()
 {
   //(*Initialize(Addr2LineUIDialog)
-  wxStaticText* lblDirPrepend;
   wxBoxSizer* bszAddr2Line;
-  wxButton* btnQuit;
-  wxBoxSizer* bszMainV;
-  wxStaticText* lblCrashLog;
-  wxBoxSizer* bszReplace;
   wxBoxSizer* bszMainH;
-  wxStaticText* lblAddr2Line;
+  wxBoxSizer* bszMainV;
+  wxBoxSizer* bszReplace;
+  wxButton* btnQuit;
   wxStaticLine* stlLine;
+  wxStaticText* lblAddr2Line;
+  wxStaticText* lblCrashLog;
+  wxStaticText* lblDirPrepend;
 
   Create(parent, wxID_ANY, _("Addr2LineUI"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX|wxMINIMIZE_BOX, _T("wxID_ANY"));
   bszMainH = new wxBoxSizer(wxHORIZONTAL);
   bszMainV = new wxBoxSizer(wxVERTICAL);
   bszAddr2Line = new wxBoxSizer(wxVERTICAL);
   lblCrashLog = new wxStaticText(this, wxID_ANY, _("Select crash log file:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-  bszAddr2Line->Add(lblCrashLog, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+  bszAddr2Line->Add(lblCrashLog, 0, wxEXPAND, 5);
   m_FPCrashLog = new wxFilePickerCtrl(this, ID_CRASH_LOG, wxEmptyString, _("Select crash log"), _T("Report files (*.rpt)|*.rpt|Log files (*.log)|*.log|All files (*.*)|*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_FILE_MUST_EXIST|wxFLP_OPEN|wxFLP_USE_TEXTCTRL, wxDefaultValidator, _T("ID_CRASH_LOG"));
-  bszAddr2Line->Add(m_FPCrashLog, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+  bszAddr2Line->Add(m_FPCrashLog, 0, wxEXPAND, 5);
   lblAddr2Line = new wxStaticText(this, wxID_ANY, _("Select Addr2Line tool:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-  bszAddr2Line->Add(lblAddr2Line, 0, wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+  bszAddr2Line->Add(lblAddr2Line, 0, wxTOP|wxEXPAND, 5);
   m_FPAddr2Line = new wxFilePickerCtrl(this, ID_ADDR2LINE, wxEmptyString, _("Select addr2line tool"), _T("Executables (*.exe)|*.exe|All files (*.*)|*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_FILE_MUST_EXIST|wxFLP_OPEN|wxFLP_USE_TEXTCTRL, wxDefaultValidator, _T("ID_ADDR2LINE"));
-  bszAddr2Line->Add(m_FPAddr2Line, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+  bszAddr2Line->Add(m_FPAddr2Line, 0, wxEXPAND, 5);
   lblDirPrepend = new wxStaticText(this, wxID_ANY, _("(Optionally) Select directory to prepend:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-  bszAddr2Line->Add(lblDirPrepend, 0, wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+  bszAddr2Line->Add(lblDirPrepend, 0, wxTOP|wxEXPAND, 5);
   m_DPDirPrepend = new wxDirPickerCtrl(this, ID_DIR_PREPEND, wxEmptyString, _("Select directory to prepend"), wxDefaultPosition, wxDefaultSize, wxDIRP_DIR_MUST_EXIST|wxDIRP_USE_TEXTCTRL, wxDefaultValidator, _T("ID_DIR_PREPEND"));
-  bszAddr2Line->Add(m_DPDirPrepend, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-  bszMainV->Add(bszAddr2Line, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
+  bszAddr2Line->Add(m_DPDirPrepend, 0, wxEXPAND, 5);
+  bszMainV->Add(bszAddr2Line, 0, wxALL|wxEXPAND, 5);
   bszReplace = new wxBoxSizer(wxHORIZONTAL);
   chkReplace = new wxCheckBox(this, ID_CHK_REPLACE, _("Replace:"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_REPLACE"));
   chkReplace->SetValue(false);
-  bszReplace->Add(chkReplace, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+  bszReplace->Add(chkReplace, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
   txtReplaceThis = new wxTextCtrl(this, ID_TXT_REPLACE_THIS, _("this"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TXT_REPLACE_THIS"));
   txtReplaceThis->Disable();
-  bszReplace->Add(txtReplaceThis, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
+  bszReplace->Add(txtReplaceThis, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
   lblReplace = new wxStaticText(this, ID_LBL_REPLACE, _("...with:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_LBL_REPLACE"));
   lblReplace->Disable();
   bszReplace->Add(lblReplace, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   txtReplaceThat = new wxTextCtrl(this, ID_TXT_REPLACE_THAT, _("that"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TXT_REPLACE_THAT"));
   txtReplaceThat->Disable();
-  bszReplace->Add(txtReplaceThat, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
+  bszReplace->Add(txtReplaceThat, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
   chkSkipUnresolvable = new wxCheckBox(this, ID_CHK_SKIP_UNRESOLVABLE, _("Skip unresolvable"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_SKIP_UNRESOLVABLE"));
   chkSkipUnresolvable->SetValue(false);
-  bszReplace->Add(chkSkipUnresolvable, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-  bszMainV->Add(bszReplace, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
+  bszReplace->Add(chkSkipUnresolvable, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
+  bszMainV->Add(bszReplace, 0, wxEXPAND, 5);
   txtCrashLogContent = new wxTextCtrl(this, ID_TXT_CRASH_LOG_CONTENT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE, wxDefaultValidator, _T("ID_TXT_CRASH_LOG_CONTENT"));
   txtCrashLogContent->SetMinSize(wxSize(450,200));
   wxFont txtCrashLogContentFont = wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT);
   if ( !txtCrashLogContentFont.Ok() ) txtCrashLogContentFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
   txtCrashLogContent->SetFont(txtCrashLogContentFont);
-  bszMainV->Add(txtCrashLogContent, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
+  bszMainV->Add(txtCrashLogContent, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
   txtResult = new wxTextCtrl(this, ID_TXT_RESULT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE, wxDefaultValidator, _T("ID_TXT_RESULT"));
   txtResult->SetMinSize(wxSize(450,200));
   wxFont txtResultFont = wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT);
   if ( !txtResultFont.Ok() ) txtResultFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
   txtResult->SetFont(txtResultFont);
-  bszMainV->Add(txtResult, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
+  bszMainV->Add(txtResult, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
   stlLine = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxSize(10,-1), wxLI_HORIZONTAL, _T("wxID_ANY"));
-  bszMainV->Add(stlLine, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
+  bszMainV->Add(stlLine, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
   btnOperate = new wxButton(this, ID_BTN_OPERATE, _("Operate"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BTN_OPERATE"));
   btnOperate->Disable();
-  bszMainV->Add(btnOperate, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL, 5);
+  bszMainV->Add(btnOperate, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL, 5);
   btnQuit = new wxButton(this, ID_BTN_QUIT, _("Quit"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BTN_QUIT"));
-  bszMainV->Add(btnQuit, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL, 5);
-  bszMainH->Add(bszMainV, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+  bszMainV->Add(btnQuit, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL, 5);
+  bszMainH->Add(bszMainV, 1, wxEXPAND, 4);
   SetSizer(bszMainH);
   bszMainH->Fit(this);
   bszMainH->SetSizeHints(this);
 
-  Connect(ID_CRASH_LOG,wxEVT_COMMAND_FILEPICKER_CHANGED,wxFileDirPickerEventHandler(Addr2LineUIDialog::OnCrashLogFile));
-  Connect(ID_ADDR2LINE,wxEVT_COMMAND_FILEPICKER_CHANGED,wxFileDirPickerEventHandler(Addr2LineUIDialog::OnAddr2LineFile));
-  Connect(ID_DIR_PREPEND,wxEVT_COMMAND_DIRPICKER_CHANGED,wxFileDirPickerEventHandler(Addr2LineUIDialog::OnDirPrependDir));
-  Connect(ID_CHK_REPLACE,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(Addr2LineUIDialog::OnReplaceClick));
-  Connect(ID_BTN_OPERATE,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(Addr2LineUIDialog::OnOperateClick));
-  Connect(ID_BTN_QUIT,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(Addr2LineUIDialog::OnQuit));
+  Connect(ID_CRASH_LOG,wxEVT_COMMAND_FILEPICKER_CHANGED,(wxObjectEventFunction)&Addr2LineUIDialog::OnCrashLogFile);
+  Connect(ID_ADDR2LINE,wxEVT_COMMAND_FILEPICKER_CHANGED,(wxObjectEventFunction)&Addr2LineUIDialog::OnAddr2LineFile);
+  Connect(ID_DIR_PREPEND,wxEVT_COMMAND_DIRPICKER_CHANGED,(wxObjectEventFunction)&Addr2LineUIDialog::OnDirPrependDir);
+  Connect(ID_CHK_REPLACE,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&Addr2LineUIDialog::OnReplaceClick);
+  Connect(ID_BTN_OPERATE,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Addr2LineUIDialog::OnOperateClick);
+  Connect(ID_BTN_QUIT,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Addr2LineUIDialog::OnQuit);
   //*)
 
   mFileConfig.Read(wxT("CrashLog"),   &mCrashLog,   wxT("")); m_FPCrashLog->SetPath(mCrashLog);
