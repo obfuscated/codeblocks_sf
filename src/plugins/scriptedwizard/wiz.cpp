@@ -632,29 +632,6 @@ CompileTargetBase* Wiz::RunTargetWizard(cb_unused wxString* pFilename)
             pf->AddBuildTarget(targetName);
     }
 
-    // add all the template files (if any)
-    // first get the dirs with the files by calling GetFilesDir()
-//    wxString srcdir;
-//    try
-//    {
-//        SqPlus::SquirrelFunction<wxString&> f("GetFilesDir");
-//        srcdir = f();
-//        if (!srcdir.IsEmpty())
-//        {
-//            // now break them up (remember: semicolon-separated list of dirs)
-//            wxArrayString tmpsrcdirs = GetArrayFromString(srcdir, _T(";"), true);
-//            // and copy files from each source dir we got
-//            for (size_t i = 0; i < tmpsrcdirs.GetCount(); ++i)
-//                CopyFiles(theproject, prjdir, tmpsrcdirs[i]);
-//        }
-//    }
-//    catch (SquirrelError& e)
-//    {
-//        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-//        Clear();
-//        return nullptr;
-//    }
-
     ScriptBindings::Caller caller(scriptMgr->GetVM());
 
     // Ask the script to setup the new target (setup options, etc) by calling its SetupTarget().
