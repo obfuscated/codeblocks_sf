@@ -1183,7 +1183,7 @@ void ClassBrowser::ReselectItem()
 }
 
 #ifndef CC_NO_COLLAPSE_ITEM
-void ClassBrowser:CollapseItem(CCTreeItem* item)
+void ClassBrowser::CollapseItem(CCTreeItem* item)
 {
     wxTreeItemId Id = GetId(item);
     if (Id.IsOk())
