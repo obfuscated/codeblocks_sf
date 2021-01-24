@@ -1147,8 +1147,23 @@ private:
     HSQOBJECT m_object;
 };
 
+/// Simple wrapper for calling Squirrel functions.
+/// It supports passing parameter and extracting results (both basic and instance types are
+/// supported, if something is missing probably it will be easy to add it).
+/// It supports calling global functions and methods.
+///
+/// There are two main modes of operation and one if you really want to have full control:
+/// 1. Checking if the function exists and then call it one or more times. This is achieved by first
+///    calling SetupFunc and then calling one of the CallXXX function which doesn't have a function
+///    name parameter.
+/// 2. Calling functions by name. Call one of the CallByNameXXX functions. It is better to use these
+///    if you're going to call this function once.
+/// 3. Use the SetupFunc, Push, CallRaw, ExtractResult. This should be used only if any of the other
+///    methods is not suitable.
 struct Caller
 {
+    /// Use this if you want to call a global function and pass the root table as the environment
+    /// table parameter.
     Caller(HSQUIRRELVM vm) : m_vm(vm), m_closureStackIdx(-1)
     {
         sq_pushroottable(m_vm);
@@ -1158,6 +1173,8 @@ struct Caller
 
         sq_poptop(m_vm); // pop root table
     }
+
+    /// Use this if you want to call a method on some object.
     Caller(HSQUIRRELVM vm, const HSQOBJECT &object) : m_vm(vm), m_closureStackIdx(-1)
     {
         m_object = object;
@@ -1175,6 +1192,7 @@ struct Caller
         sq_release(m_vm, &m_object);
     }
 
+    /// Call this if you want to reuse the caller object to call another function.
     void Finish()
     {
         // Remove the closure from the stack.
@@ -1185,6 +1203,9 @@ struct Caller
         }
     }
 
+    /// Prepare the function for calling.
+    /// @return true if successful and false if there is a problem (function not found, object not a
+    ///   closure, etc).
     bool SetupFunc(const SQChar *funcName) {
         cbAssert(m_closureStackIdx == -1);
         sq_pushobject(m_vm, m_object);
@@ -1227,6 +1248,11 @@ struct Caller
 
     bool CallRaw(bool hasReturn)
     {
+        if (m_closureStackIdx == -1)
+        {
+            cbAssert(false);
+            return false;
+        }
         sq_reseterror(m_vm);
         if (SQ_FAILED(sq_call(m_vm, sq_gettop(m_vm) - m_closureStackIdx, hasReturn, SQTrue)))
         {
@@ -1237,11 +1263,26 @@ struct Caller
     }
 
     template<typename Return>
-    bool CallAndReturn0(const SQChar *functionName, Return &returnValue)
+    bool CallByNameAndReturn0(const SQChar *functionName, Return &returnValue)
     {
         if (!SetupFunc(functionName))
             return false;
-        sq_pushobject(m_vm, m_object);
+        return CallAndReturn0(returnValue);
+    }
+
+    template<typename Return, typename Arg0>
+    bool CallByNameAndReturn1(const SQChar *functionName, Return &returnValue, Arg0 arg0)
+    {
+        if (!SetupFunc(functionName))
+            return false;
+        return CallAndReturn1(returnValue, arg0);
+    }
+
+    template<typename Return>
+    bool CallAndReturn0(Return &returnValue)
+    {
+        if (!SetupCall())
+            return false;
 
         if (!CallRaw(true))
             return false;
@@ -1249,11 +1290,10 @@ struct Caller
     }
 
     template<typename Return, typename Arg0>
-    bool CallAndReturn1(const SQChar *functionName, Return &returnValue, Arg0 arg0)
+    bool CallAndReturn1(Return &returnValue, Arg0 arg0)
     {
-        if (!SetupFunc(functionName))
+        if (!SetupCall())
             return false;
-        sq_pushobject(m_vm, m_object);
 
         if (!Push(arg0))
             return false;
@@ -1264,11 +1304,12 @@ struct Caller
     }
 
     template<typename Return, typename Arg0, typename Arg1>
-    bool CallAndReturn2(const SQChar *functionName, Return &returnValue, Arg0 arg0, Arg1 arg1)
+    bool CallByNameAndReturn2(const SQChar *functionName, Return &returnValue, Arg0 arg0, Arg1 arg1)
     {
         if (!SetupFunc(functionName))
             return false;
-        sq_pushobject(m_vm, m_object);
+        if (!SetupCall())
+            return false;
 
         if (!Push(arg0))
             return false;
@@ -1281,11 +1322,13 @@ struct Caller
     }
 
     template<typename Return, typename Arg0, typename Arg1, typename Arg2>
-    bool CallAndReturn3(const SQChar *functionName, Return &returnValue, Arg0 arg0, Arg1 arg1, Arg2 arg2)
+    bool CallByNameAndReturn3(const SQChar *functionName, Return &returnValue, Arg0 arg0, Arg1 arg1,
+                              Arg2 arg2)
     {
         if (!SetupFunc(functionName))
             return false;
-        sq_pushobject(m_vm, m_object);
+        if (!SetupCall())
+            return false;
 
         if (!Push(arg0))
             return false;
@@ -1299,21 +1342,30 @@ struct Caller
         return ExtractResult(returnValue);
     }
 
-    bool Call0(const SQChar *functionName)
+    bool CallByName0(const SQChar *functionName)
     {
         if (!SetupFunc(functionName))
             return false;
-        sq_pushobject(m_vm, m_object);
+        if (!SetupCall())
+            return false;
 
         return CallRaw(false);
     }
 
+    bool Call0()
+    {
+        if (!SetupCall())
+            return false;
+        return CallRaw(false);
+    }
+
     template<typename Arg0>
-    bool Call1(const SQChar *functionName, Arg0 arg0)
+    bool CallByName1(const SQChar *functionName, Arg0 arg0)
     {
         if (!SetupFunc(functionName))
             return false;
-        sq_pushobject(m_vm, m_object);
+        if (!SetupCall())
+            return false;
 
         if (!Push(arg0))
             return false;
@@ -1321,12 +1373,23 @@ struct Caller
         return CallRaw(false);
     }
 
+    template<typename Arg0>
+    bool Call1(Arg0 arg0)
+    {
+        if (!SetupCall())
+            return false;
+        if (!Push(arg0))
+            return false;
+        return CallRaw(false);
+    }
+
     template<typename Arg0, typename Arg1>
-    bool Call2(const SQChar *functionName, Arg0 arg0, Arg1 arg1)
+    bool CallByName2(const SQChar *functionName, Arg0 arg0, Arg1 arg1)
     {
         if (!SetupFunc(functionName))
             return false;
-        sq_pushobject(m_vm, m_object);
+        if (!SetupCall())
+            return false;
 
         if (!Push(arg0))
             return false;
@@ -1337,11 +1400,12 @@ struct Caller
     }
 
     template<typename Arg0, typename Arg1, typename Arg2>
-    bool Call3(const SQChar *functionName, Arg0 arg0, Arg1 arg1, Arg2 arg2)
+    bool CallByName3(const SQChar *functionName, Arg0 arg0, Arg1 arg1, Arg2 arg2)
     {
         if (!SetupFunc(functionName))
             return false;
-        sq_pushobject(m_vm, m_object);
+        if (!SetupCall())
+            return false;
 
         if (!Push(arg0))
             return false;
@@ -1361,10 +1425,39 @@ struct Caller
         return true;
     }
 
+    bool ExtractResult(bool &result)
+    {
+        SQBool value;
+        if (SQ_FAILED(sq_getbool(m_vm, -1, &value)))
+            return false;
+        result = value;
+        sq_poptop(m_vm);
+        return true;
+    }
+
     template<typename Arg>
     bool ExtractResult(Arg *&arg)
     {
         return ExtractUserPointer(arg, m_vm, -1, TypeInfo<typename std::remove_cv<Arg>::type>::typetag);
+    }
+
+    /// Call this if you want to be able to call the function again without the need of a SetupFunc
+    /// call. It is an error if you call this after a function call which has no return value.
+    void PopResult()
+    {
+        cbAssert(sq_gettop(m_vm) > m_closureStackIdx);
+        sq_pop(m_vm, sq_gettop(m_vm) - m_closureStackIdx);
+    }
+private:
+    bool SetupCall()
+    {
+        if (m_closureStackIdx != sq_gettop(m_vm))
+        {
+            cbAssert(false);
+            return false;
+        }
+        sq_pushobject(m_vm, m_object);
+        return true;
     }
 private:
     HSQUIRRELVM m_vm;

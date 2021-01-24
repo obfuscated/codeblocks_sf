@@ -67,7 +67,7 @@ wxArrayInt CreateMenu(HSQUIRRELVM v, const wxString& name)
     const ObjectHandle &object = it->second;
     Caller caller(v, object.Get());
     const wxArrayString *menuArray;
-    if (!caller.CallAndReturn0(_SC("GetMenu"), menuArray))
+    if (!caller.CallByNameAndReturn0(_SC("GetMenu"), menuArray))
         return ret;
 
     if (menuArray)
@@ -115,7 +115,7 @@ wxArrayInt CreateModuleMenu(const ModuleType typ, wxMenu* menu, const FileTreeDa
         const ObjectHandle &object = it->second;
         Caller caller(v, object.Get());
         const wxArrayString *menuArray;
-        if (!caller.CallAndReturn2(_SC("GetModuleMenu"), menuArray, SQInteger(typ), data))
+        if (!caller.CallByNameAndReturn2(_SC("GetModuleMenu"), menuArray, SQInteger(typ), data))
         {
             LogManager *log = Manager::Get()->GetLogManager();
             log->LogError(wxString::Format(_("Calling 'GetModuleMenu' for '%s' failed!"), it->first));
@@ -183,7 +183,7 @@ void CallScriptMenu(const SQChar *callbackName, int id, const wxString &errorPre
         PreserveTop preserveTop(v);
 
         Caller caller(v, callback.object.Get());
-        if (!caller.Call1(callbackName, callback.menuIndex))
+        if (!caller.CallByName1(callbackName, callback.menuIndex))
         {
             const wxString errorMsg = ExtractLastSquirrelError(v, false);
             if (!errorMsg.empty())
@@ -243,7 +243,7 @@ SQInteger ExecutePlugin(HSQUIRRELVM v)
         ObjectHandle &object = it->second;
 
         Caller caller(v, object.Get());
-        if (!caller.Call0(_SC("Execute")))
+        if (!caller.CallByName0(_SC("Execute")))
             return sq_throwerror(v, _SC("Can't find 'Execute' in script plugin class!"));
 
         // FIXME (squirrel) Not sure if I need to do better error handling. The original version showed a MessageBox!
@@ -269,7 +269,7 @@ SQInteger RegisterPlugin(HSQUIRRELVM v)
     ObjectHandle object(v, 2);
     Caller caller(v, object.Get());
     const PluginInfo *info;
-    if (!caller.CallAndReturn0(_SC("GetPluginInfo"), info))
+    if (!caller.CallByNameAndReturn0(_SC("GetPluginInfo"), info))
         return sq_throwerror(v, "RegisterPlugin: Call to GetPluginInfo failed!");
 
     Manager *manager = Manager::Get();

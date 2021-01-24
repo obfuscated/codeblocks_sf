@@ -23,13 +23,16 @@
 #endif
 
 #include "wizpage.h"
-#include "infopanel.h"
-#include "projectpathpanel.h"
-#include "compilerpanel.h"
+
 #include "buildtargetpanel.h"
+#include "compilerpanel.h"
 #include "filepathpanel.h"
 #include "genericselectpath.h"
 #include "genericsinglechoicelist.h"
+#include "infopanel.h"
+#include "projectpathpanel.h"
+#include "scripting/bindings/sc_utils.h"
+#include "scripting/bindings/sc_typeinfo_all.h"
 
 namespace Wizard {
 
@@ -113,24 +116,23 @@ WizPageBase::~WizPageBase()
 
 wxWizardPage* WizPageBase::GetPrev() const
 {
-// FIXME (squirrel) Reimplement WizPageBase::GetPrev
-#if 0
-    try
+    ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
+    ScriptBindings::Caller caller(scriptMgr->GetVM());
+
+    const wxString sig = _T("OnGetPrevPage_") + m_PageName;
+    if (caller.SetupFunc(cbU2C(sig)))
     {
-        wxString sig = _T("OnGetPrevPage_") + m_PageName;
-        SqPlus::SquirrelFunction<wxString&> cb(cbU2C(sig));
-        if (cb.func.IsNull())
-            return wxWizardPageSimple::GetPrev();
-        wxString prev = cb();
-        if (prev.IsEmpty())
-            return 0;
-        return s_PagesByName[prev];
+        wxString *result = nullptr;
+        if (caller.CallAndReturn0(result))
+        {
+            if (result->empty())
+                return nullptr;
+            return s_PagesByName[*result];
+        }
+        else
+            scriptMgr->DisplayErrors(true);
     }
-    catch (SquirrelError& e)
-    {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-    }
-#endif // 0
+
     return wxWizardPageSimple::GetPrev();
 }
 
@@ -138,67 +140,60 @@ wxWizardPage* WizPageBase::GetPrev() const
 
 wxWizardPage* WizPageBase::GetNext() const
 {
-// FIXME (squirrel) Reimplement WizPageBase::GetNext
-#if 0
-    try
+    ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
+    ScriptBindings::Caller caller(scriptMgr->GetVM());
+
+    const wxString sig = _T("OnGetNextPage_") + m_PageName;
+    if (caller.SetupFunc(cbU2C(sig)))
     {
-        wxString sig = _T("OnGetNextPage_") + m_PageName;
-        SqPlus::SquirrelFunction<wxString&> cb(cbU2C(sig));
-        if (cb.func.IsNull())
-            return wxWizardPageSimple::GetNext();
-        wxString next = cb();
-        if (next.IsEmpty())
-            return 0;
-        return s_PagesByName[next];
+        wxString *result = nullptr;
+        if (caller.CallAndReturn0(result))
+        {
+            if (result->empty())
+                return nullptr;
+            return s_PagesByName[*result];
+        }
+        else
+            scriptMgr->DisplayErrors(true);
     }
-    catch (SquirrelError& e)
-    {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-    }
-#endif // 0
+
     return wxWizardPageSimple::GetNext();
 }
 
 void WizPageBase::OnPageChanging(wxWizardEvent& event)
 {
     Manager::Get()->GetConfigManager(_T("scripts"))->Write(_T("/generic_wizard/") + m_PageName + _T("/skip"), (bool)m_SkipPage);
-// FIXME (squirrel) Reimplement WizPageBase::OnPageChanging
-#if 0
-    try
+    ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
+    ScriptBindings::Caller caller(scriptMgr->GetVM());
+
+    const wxString sig = _T("OnLeave_") + m_PageName;
+    if (caller.SetupFunc(cbU2C(sig)))
     {
-        wxString sig = _T("OnLeave_") + m_PageName;
-        SqPlus::SquirrelFunction<bool> cb(cbU2C(sig));
-        if (cb.func.IsNull())
-            return;
-        bool allow = cb(event.GetDirection() != 0); // !=0 forward, ==0 backward
-        if (!allow)
-            event.Veto();
+        bool result;
+        const bool forward = (event.GetDirection() != 0); // !=0 forward, ==0 backward
+        if (caller.CallAndReturn1(result, forward))
+        {
+            if (result != true)
+                event.Veto();
+        }
+        else
+            scriptMgr->DisplayErrors(true);
     }
-    catch (SquirrelError& e)
-    {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-    }
-#endif // 0
 }
 
 //------------------------------------------------------------------------------
 void WizPageBase::OnPageChanged(wxWizardEvent& event)
 {
-// FIXME (squirrel) Reimplement WizPageBase::OnPageChanged
-#if 0
-    try
+    ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
+    ScriptBindings::Caller caller(scriptMgr->GetVM());
+
+    const wxString sig = _T("OnEnter_") + m_PageName;
+    if (caller.SetupFunc(cbU2C(sig)))
     {
-        wxString sig = _T("OnEnter_") + m_PageName;
-        SqPlus::SquirrelFunction<void> cb(cbU2C(sig));
-        if (cb.func.IsNull())
-            return;
-        cb(event.GetDirection() != 0); // !=0 forward, ==0 backward
+        const bool forward = (event.GetDirection() != 0); // !=0 forward, ==0 backward
+        if (!caller.Call1(forward))
+            scriptMgr->DisplayErrors(true);
     }
-    catch (SquirrelError& e)
-    {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-    }
-#endif // 0
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -235,21 +230,15 @@ void WizPage::OnButton(wxCommandEvent& event)
         return;
     }
 
-// FIXME (squirrel) Reimplement WizPage::OnButton
-#if 0
-    try
+    ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
+    ScriptBindings::Caller caller(scriptMgr->GetVM());
+
+    const wxString sig = _T("OnClick_") + win->GetName();
+    if (caller.SetupFunc(cbU2C(sig)))
     {
-        wxString sig = _T("OnClick_") + win->GetName();
-        SqPlus::SquirrelFunction<void> cb(cbU2C(sig));
-        if (cb.func.IsNull())
-            return;
-        cb();
+        if (!caller.Call0())
+            scriptMgr->DisplayErrors(true);
     }
-    catch (SquirrelError& e)
-    {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-    }
-#endif // 0
 }
 
 ////////////////////////////////////////////////////////////////////////////////

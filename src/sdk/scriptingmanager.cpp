@@ -687,7 +687,7 @@ void ScriptingManager::Data::OnScriptMenu(wxCommandEvent& event)
     if (mbs.isFunc)
     {
         ScriptBindings::Caller caller(m_vm);
-        if (!caller.Call0(cbU2C(mbs.scriptOrFunc)))
+        if (!caller.CallByName0(cbU2C(mbs.scriptOrFunc)))
             m_ScriptingManager->DisplayErrors();
         return;
     }
