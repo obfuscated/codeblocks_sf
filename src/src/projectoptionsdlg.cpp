@@ -1219,7 +1219,6 @@ void ProjectOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
     bool customMake = XRCCTRL(*this, "chkCustomMakefile", wxCheckBox)->GetValue();
     XRCCTRL(*this, "rbPCHStrategy",       wxRadioBox)->Enable(!customMake);
     XRCCTRL(*this, "txtObjectDir",        wxTextCtrl)->Enable(!customMake && en);
-    XRCCTRL(*this, "txtObjectDir",        wxTextCtrl)->Enable(!customMake && en);
     XRCCTRL(*this, "btnBrowseObjectDir",  wxButton)->Enable(!customMake && en);
     XRCCTRL(*this, "btnToggleCheckmarks", wxButton)->Enable(!customMake && en);
     XRCCTRL(*this, "btnCheckmarksOn",     wxButton)->Enable(!customMake && en);
