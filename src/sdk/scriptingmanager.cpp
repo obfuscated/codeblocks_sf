@@ -43,6 +43,8 @@
 #include "sqstdmath.h"
 #include "sqstdstring.h"
 
+static_assert(std::is_same<cbHSQUIRRELVM, HSQUIRRELVM>::value, "Types don't match");
+
 template<> ScriptingManager* Mgr<ScriptingManager>::instance = nullptr;
 template<> bool  Mgr<ScriptingManager>::isShutdown = false;
 
@@ -118,6 +120,11 @@ struct ScriptingManager::Data : wxEvtHandler
     friend SQInteger ConstantsGet(HSQUIRRELVM v);
     friend SQInteger ConstantsSet(HSQUIRRELVM v);
 
+    static Data* GetData(HSQUIRRELVM v)
+    {
+        ScriptingManager* manager = reinterpret_cast<ScriptingManager*>(sq_getforeignptr(v));
+        return manager->m_data;
+    }
 private:
     DECLARE_EVENT_TABLE()
 };
@@ -184,7 +191,7 @@ SQInteger ConstantsGet(HSQUIRRELVM v)
     if (!extractor.Process("constants_get"))
         return extractor.ErrorMessage();
 
-    ScriptingManager::Data *data = reinterpret_cast<ScriptingManager*>(sq_getforeignptr(v))->m_data;
+    ScriptingManager::Data *data = ScriptingManager::Data::GetData(v);
     cbAssert(data);
 
     ScriptingManager::Data::ConstantsMap::const_iterator it = data->m_mapConstants.find(extractor.p1);
@@ -218,7 +225,7 @@ SQInteger ConstantsSet(HSQUIRRELVM v)
     if (!extractor.ProcessParam(name, 2, "constants_set"))
         return extractor.ErrorMessage();
 
-    ScriptingManager::Data *data = reinterpret_cast<ScriptingManager*>(sq_getforeignptr(v))->m_data;
+    ScriptingManager::Data *data = ScriptingManager::Data::GetData(v);
     cbAssert(data);
 
     ScriptingManager::Data::ConstantsMap::const_iterator it = data->m_mapConstants.find(name);
@@ -536,7 +543,9 @@ bool ScriptingManager::UnRegisterAllScriptMenus()
     return true;
 }
 
-void ScriptingManager::BindIntConstant(const char *name, SQInteger value)
+static_assert(sizeof(int64_t)==sizeof(SQInteger), "Incorrect setup of Squirrel!");
+
+void ScriptingManager::BindIntConstant(const char *name, int64_t value)
 {
     std::pair<Data::ConstantsMap::iterator, bool> result;
 
