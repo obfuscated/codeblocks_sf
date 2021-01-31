@@ -40,15 +40,12 @@
 #include <wx/thread.h>
 #endif
 
-#include <cbstyledtextctrl.h>
-#include <sc_base_types.h>
-#include <sqplus.h>
-
+#include "cbstyledtextctrl.h"
+#include "sc_utils.h"
+#include "sc_typeinfo_all.h"
 
 #include "help_plugin.h"
 #include "MANFrame.h"
-
-
 
 // 20 wasn't enough
 #define MAX_HELP_ITEMS 32
@@ -415,24 +412,19 @@ void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, bool 
   // Support C::B scripts
   if (wxFileName(helpfile).GetExt() == _T("script"))
   {
-      if (Manager::Get()->GetScriptingManager()->LoadScript(helpfile))
-      {
-        // help scripts must contain a function with the following signature:
-        // function SearchHelp(keyword)
-        try
-        {
-            SqPlus::SquirrelFunction<void> f("SearchHelp");
-            f(keyword);
-        }
-        catch (SquirrelError& e)
-        {
-            Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-        }
-      }
-      else
-        Manager::Get()->GetLogManager()->DebugLog(_T("Couldn't run script"));
+    ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
+    if (scriptMgr->LoadScript(helpfile))
+    {
+      // help scripts must contain a function with the following signature:
+      // function SearchHelp(keyword)
+      ScriptBindings::Caller caller(scriptMgr->GetVM());
+      if (!caller.CallByName1(_SC("SearchHelp"), &keyword))
+        scriptMgr->DisplayErrors(true);
+    }
+    else
+      Manager::Get()->GetLogManager()->DebugLog(_T("Couldn't run script"));
 
-      return;
+    return;
   }
 
   // Operate on help html file links inside embedded viewer
