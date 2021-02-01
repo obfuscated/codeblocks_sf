@@ -35,8 +35,9 @@
 #include <configmanager.h>
 #include <projectmanager.h>
 #include <logmanager.h>
-#include <sqplus.h>
-#include <sc_base_types.h>
+#include <scriptingmanager.h>
+#include <sc_utils.h>
+#include <sc_typeinfo_all.h>
 
 namespace
 {
@@ -485,29 +486,8 @@ void wxSmith::ShowResourcesTab()
     Notebook->SetSelection( Notebook->GetPageIndex(m_Splitter) );
 }
 
-void wxSmith::RegisterScripting()
-{
-    Manager::Get()->GetScriptingManager();
-    if ( SquirrelVM::GetVMPtr() )
-    {
-        SqPlus::RegisterGlobal( &wxSmith::RecoverWxsFile, "WxsRecoverWxsFile" );
-    }
-}
-
-void wxSmith::UnregisterScripting()
-{
-    Manager::Get()->GetScriptingManager();
-    HSQUIRRELVM v = SquirrelVM::GetVMPtr();
-    if ( v )
-    {
-        sq_pushroottable(v);
-        sq_pushstring(v,"WxsRecoverWxsFile",-1);
-        sq_deleteslot(v,-2,false);
-        sq_poptop(v);
-    }
-}
-
-bool wxSmith::RecoverWxsFile( const wxString& WxsResourceSettings )
+/** \brief Function allowing to recover invalid wxs file */
+static bool RecoverWxsFile( const wxString& WxsResourceSettings )
 {
     wxSmith* This = wxSmith::Get();
     if ( !This ) return false;
@@ -517,6 +497,48 @@ bool wxSmith::RecoverWxsFile( const wxString& WxsResourceSettings )
     if ( !project ) return false;
 
     return project->RecoverWxsFile( WxsResourceSettings );
+}
+
+namespace ScriptBindings
+{
+
+SQInteger WxsRecoverWxsFile(HSQUIRRELVM v)
+{
+    // evn table, WxsResourceSettings
+    ExtractParams2<SkipParam, const wxString *> extractor(v);
+    if (!extractor.Process("WxsRecoverWxsFile"))
+        return extractor.ErrorMessage();
+    sq_pushbool(v, RecoverWxsFile(*extractor.p1));
+    return 1;
+}
+
+} // namespace ScriptBindings
+
+void wxSmith::RegisterScripting()
+{
+    HSQUIRRELVM vm = Manager::Get()->GetScriptingManager()->GetVM();
+    if (vm)
+    {
+        ScriptBindings::PreserveTop preserveTop(vm);
+
+        sq_pushroottable(vm);
+        ScriptBindings::BindMethod(vm, _SC("WxsRecoverWxsFile"), ScriptBindings::WxsRecoverWxsFile,
+                                   nullptr);
+        sq_poptop(vm); // Pop root table
+    }
+}
+
+void wxSmith::UnregisterScripting()
+{
+    HSQUIRRELVM v = Manager::Get()->GetScriptingManager()->GetVM();
+    if (v)
+    {
+        ScriptBindings::PreserveTop preserveTop(v);
+        sq_pushroottable(v);
+        sq_pushstring(v,"WxsRecoverWxsFile",-1);
+        sq_deleteslot(v,-2,false);
+        sq_poptop(v);
+    }
 }
 
 // TODO: Move to resources\wxwidgets

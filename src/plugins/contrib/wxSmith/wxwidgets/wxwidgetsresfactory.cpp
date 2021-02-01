@@ -32,8 +32,9 @@
 
 #include <wx/choicdlg.h>
 #include <tinywxuni.h>
-#include <sqplus.h>
-#include <sc_base_types.h>
+#include "scriptingmanager.h"
+#include "sc_utils.h"
+#include "sc_typeinfo_all.h"
 
 namespace
 {
@@ -69,7 +70,9 @@ namespace
       * \param MainResHeader - name of header file with main resource (frame/dialog), relative to cbp file's path
       * \param WxsFile - name of wxs file with main resource (frame/dialog), relative to cbp file's path
       */
-    void AddWxExtensions(cbProject* Project,const wxString& AppSource,const wxString& MainResSource,const wxString& MainResHeader,const wxString& WxsFile)
+    static void AddWxExtensions(cbProject* Project, const wxString& AppSource,
+                                const wxString& MainResSource, const wxString& MainResHeader,
+                                const wxString& WxsFile)
     {
         wxsProject* WxsProject = wxSmith::Get()->GetSmithProject(Project);
 
@@ -145,8 +148,21 @@ namespace
         //              and show results of wizard :)
         MainResource->EditOpen();
     }
-}
 
+    SQInteger CallAddWxExtensions(HSQUIRRELVM v)
+    {
+        // env table, Project, AppSource, MainResSource, MainResHeader, WxsFile
+        ScriptBindings::ExtractParams6<
+            ScriptBindings::SkipParam, cbProject *, const wxString *, const wxString *,
+            const wxString *, const wxString *
+        > extractor(v);
+        if (!extractor.Process("WxsAddWxExtensions"))
+            return extractor.ErrorMessage();
+
+        AddWxExtensions(extractor.p1, *extractor.p2, *extractor.p3, *extractor.p4, *extractor.p5);
+        return 0;
+    }
+}
 
 wxWidgetsResFactory::wxWidgetsResFactory()
 {
@@ -156,11 +172,13 @@ void wxWidgetsResFactory::OnAttach()
 {
     // TODO: Call OnAttach for item factories
 
-    // Registering wizard function in scripting manager
-    Manager::Get()->GetScriptingManager();
-    if (SquirrelVM::GetVMPtr())
+    HSQUIRRELVM vm = Manager::Get()->GetScriptingManager()->GetVM();
+    if (vm)
     {
-        SqPlus::RegisterGlobal(AddWxExtensions,"WxsAddWxExtensions");
+        ScriptBindings::PreserveTop preserveTop(vm);
+        sq_pushroottable(vm);
+        ScriptBindings::BindMethod(vm, _SC("WxsAddWxExtensions"), CallAddWxExtensions, nullptr);
+        sq_poptop(vm); // Pop root table
     }
 }
 
@@ -168,11 +186,10 @@ void wxWidgetsResFactory::OnRelease()
 {
     // TODO: Call OnRelease for item factories
 
-    // Unregistering wizard function
-    Manager::Get()->GetScriptingManager();
-    HSQUIRRELVM v = SquirrelVM::GetVMPtr();
-    if ( v )
+    HSQUIRRELVM v = Manager::Get()->GetScriptingManager()->GetVM();
+    if (v)
     {
+        ScriptBindings::PreserveTop preserveTop(v);
         sq_pushroottable(v);
         sq_pushstring(v,"WxsAddWxExtensions",-1);
         sq_deleteslot(v,-2,false);
