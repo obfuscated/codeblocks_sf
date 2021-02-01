@@ -22,10 +22,10 @@
 
 #include "abbreviations.h"
 #include "abbreviationsconfigpanel.h"
-
-#include <ccmanager.h>
-#include <editor_hooks.h>
-
+#include "ccmanager.h"
+#include "editor_hooks.h"
+#include "sc_utils.h"
+#include "sc_typeinfo_all.h"
 
 // Register the plugin with Code::Blocks.
 // We are using an anonymous namespace so we don't litter the global one.
@@ -104,30 +104,57 @@ void Abbreviations::OnRelease(cb_unused bool appShutDown)
     ClearAutoCompLanguageMap();
 }
 
+
+namespace ScriptBindings
+{
+    /** Try to auto-complete the current word.
+      *
+      * This has nothing to do with code-completion plugins. Editor auto-completion
+      * is a feature that saves typing common blocks of code, e.g.
+      *
+      * If you have typed "forb" (no quotes) and select auto-complete, then
+      * it will convert "forb" to "for ( ; ; ){ }".
+      * If the word up to the caret position is an unknown keyword, nothing happens.
+      *
+      * These keywords/code pairs can be edited in the editor configuration
+      * dialog.
+      */
+    SQInteger CallDoAutoComplete(HSQUIRRELVM v)
+    {
+        // this, ed
+        ExtractParams2<SkipParam, cbEditor *> extractor(v);
+        if (!extractor.Process("Abbreviations::AutoComplete"))
+                return extractor.ErrorMessage();
+        if (Abbreviations::Get())
+            Abbreviations::Get()->DoAutoComplete(extractor.p1);
+        return 0;
+    }
+} // namespace ScriptBindings
+
 void Abbreviations::RegisterScripting()
 {
-// FIXME (squirrel) Reimplement Abbreviations::RegisterScripting
-/*
-    Manager::Get()->GetScriptingManager();
-    if (SquirrelVM::GetVMPtr())
-        SqPlus::RegisterGlobal(&Abbreviations::AutoComplete, "AutoComplete");
-*/
+    HSQUIRRELVM vm = Manager::Get()->GetScriptingManager()->GetVM();
+    if (vm)
+    {
+        ScriptBindings::PreserveTop preserveTop(vm);
+        sq_pushroottable(vm);
+        ScriptBindings::BindMethod(vm, _SC("AutoComplete"), ScriptBindings::CallDoAutoComplete,
+                                   nullptr);
+        sq_poptop(vm); // Pop root table.
+    }
 }
 
 void Abbreviations::UnregisterScripting()
 {
-// FIXME (squirrel) Reimplement Abbreviations::UnregisterScripting
-/*
-    Manager::Get()->GetScriptingManager();
-    HSQUIRRELVM v = SquirrelVM::GetVMPtr();
-    if (v)
+    HSQUIRRELVM vm = Manager::Get()->GetScriptingManager()->GetVM();
+    if (vm)
     {
-        sq_pushstring(v, "AutoComplete", -1);
-        sq_pushroottable(v);
-        sq_deleteslot(v, -2, false);
-        sq_poptop(v);
+        ScriptBindings::PreserveTop preserveTop(vm);
+        sq_pushstring(vm, _SC("AutoComplete"), -1);
+        sq_pushroottable(vm);
+        sq_deleteslot(vm, -2, false);
+        sq_poptop(vm);
     }
-*/
 }
 
 void Abbreviations::BuildMenu(wxMenuBar* menuBar)
@@ -216,12 +243,6 @@ void Abbreviations::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     event.Enable(ed != NULL);
-}
-
-void Abbreviations::AutoComplete(cbEditor& ed)
-{
-    if (Abbreviations::Get())
-        Abbreviations::Get()->DoAutoComplete(&ed);
 }
 
 void Abbreviations::DoAutoComplete(cbEditor* ed)
