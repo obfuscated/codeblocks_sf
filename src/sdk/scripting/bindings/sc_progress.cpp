@@ -13,6 +13,7 @@
     #include <globals.h>
     #include <cbexception.h>
     #include <wx/string.h>
+    #include "manager.h"
 #endif
 
 #include <wx/progdlg.h>

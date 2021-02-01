@@ -18,6 +18,7 @@
 
 #ifndef CB_PRECOMP
     #include <wx/string.h>
+    #include "prep.h"
 #endif // CB_PRECOMP
 
 // FIXME (squirrel) Explain how things below actually work.

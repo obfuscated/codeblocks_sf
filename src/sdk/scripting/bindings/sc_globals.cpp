@@ -15,10 +15,13 @@
     #include <wx/textdlg.h>
 
     #include "configmanager.h"
+    #include "compilerfactory.h"
     #include "editormanager.h"
     #include "infowindow.h"
     #include "logmanager.h"
     #include "macrosmanager.h"
+    #include "pluginmanager.h"
+    #include "projectmanager.h"
     #include "scriptingmanager.h"
     #include "uservarmanager.h"
 #endif // CB_PRECOMP

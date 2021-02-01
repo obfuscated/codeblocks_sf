@@ -22,6 +22,7 @@
   #include "manager.h"
   #include "configmanager.h"
   #include "logmanager.h"
+  #include "scriptingmanager.h"
 #endif
 
 #include "projectloader_hooks.h"
