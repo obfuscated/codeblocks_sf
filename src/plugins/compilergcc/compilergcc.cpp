@@ -2947,6 +2947,17 @@ int CompilerGCC::KillProcess()
         wxLogNull nullLog;
         ret = wxProcess::Kill(p.PID, wxSIGKILL, wxKILL_CHILDREN);
 
+        // According wxWidgets Documentation [1] OnTerminate is never called if we use
+        // wxProcess::Kill. The pointer to the wxProcess object is used to check if the
+        // process is still running. It is set to nullptr in the OnTerminate  function
+        // of PipedProcess. But if we use wxProcess::Kill this function is never
+        // called, so we have to set it to nullptr here. The wxProcess object is
+        // deleted by wxWidgets, so we simply can set this pointer to nullptr
+        // after killing the process...
+        //
+        // [1] https://docs.wxwidgets.org/trunk/classwx_process.html#aa378b7e705c9191431cad51a81581836
+        p.pProcess = nullptr;
+
         if (!platform::windows)
         {
             if (ret != wxKILL_OK)
