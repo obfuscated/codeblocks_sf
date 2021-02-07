@@ -45,6 +45,8 @@
 
 #include "parser/ccdebuginfo.h"
 
+#include <stack>
+
 #define CC_CLASS_BROWSER_DEBUG_OUTPUT 0
 
 #if defined(CC_GLOBAL_DEBUG_OUTPUT)
@@ -1185,11 +1187,40 @@ void ClassBrowser::ReselectItem()
 #ifndef CC_NO_COLLAPSE_ITEM
 void ClassBrowser::CollapseItem(CCTreeItem* item)
 {
-    wxTreeItemId Id = GetId(item);
-    if (Id.IsOk())
+    std::stack <wxString> path;
+
+    // Follow the non-GUI tree upwards until root is found, take note of the path
+    while (item->m_parent)
     {
-        m_CCTreeCtrl->DeleteChildren(Id);
-        m_CCTreeCtrl->SetItemHasChildren(Id);
+        path.push(item->m_text);
+        item = item->m_parent;
+    }
+
+    // Walk thru the GUI tree starting on root and following the previous path backwards
+    wxTreeItemId id = m_CCTreeCtrl->GetRootItem();
+    while (!path.empty())
+    {
+        wxTreeItemIdValue cookie;
+        for (id = m_CCTreeCtrl->GetFirstChild(id, cookie); id.IsOk(); id = m_CCTreeCtrl->GetNextChild(id, cookie))
+        {
+            if (m_CCTreeCtrl->GetItemText(id) == path.top())
+            {
+                break;
+            }
+        }
+
+        path.pop();
+        // If the path can not be found stop walking
+        if (!id.IsOk())
+        {
+            break;
+        }
+    }
+
+    if (id.IsOk())
+    {
+        m_CCTreeCtrl->DeleteChildren(id);
+        m_CCTreeCtrl->SetItemHasChildren(id);
     }
 }
-#endif
+#endif // CC_NO_COLLAPSE_ITEM
