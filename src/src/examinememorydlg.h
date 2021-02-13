@@ -17,20 +17,20 @@ class ExamineMemoryDlg : public wxPanel, public cbExamineMemoryDlg
     public:
         ExamineMemoryDlg(wxWindow* parent);
 
-        wxWindow* GetWindow() { return this; }
+        wxWindow* GetWindow() override { return this; }
 
         // used for Freeze()/Thaw() calls
-        void Begin();
-        void End();
+        void Begin() override;
+        void End() override;
 
-        void Clear();
-        wxString GetBaseAddress();
-        void SetBaseAddress(const wxString &addr);
-        int GetBytes();
+        void Clear() override;
+        wxString GetBaseAddress() override;
+        void SetBaseAddress(const wxString &addr) override;
+        int GetBytes() override;
         int GetCols();
-        void AddError(const wxString& err);
-        void AddHexByte(const wxString& addr, const wxString& hexbyte);
-        void EnableWindow(bool enable);
+        void AddError(const wxString& err) override;
+        void AddHexByte(const wxString& addr, const wxString& hexbyte) override;
+        void EnableWindow(bool enable) override;
     protected:
         void OnGo(wxCommandEvent& event);
 

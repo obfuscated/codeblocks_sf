@@ -37,7 +37,7 @@ ExamineMemoryDlg::ExamineMemoryDlg(wxWindow* parent) :
         return;
     m_pText = XRCCTRL(*this, "txtDump", wxTextCtrl);
 
-    wxFont font(12, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+    wxFont font(8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     m_pText->SetFont(font);
 
     ConfigManager *c = Manager::Get()->GetConfigManager(wxT("debugger_common"));
