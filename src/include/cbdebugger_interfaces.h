@@ -85,6 +85,7 @@ class DLLIMPORT cbExamineMemoryDlg
         virtual void Clear() = 0;
         virtual wxString GetBaseAddress() = 0;
         virtual int GetBytes() = 0;
+        virtual int GetCols() = 0;
         virtual void AddError(const wxString& err) = 0;
         virtual void AddHexByte(const wxString& addr, const wxString& hexbyte) = 0;
         virtual void EnableWindow(bool enable) = 0;

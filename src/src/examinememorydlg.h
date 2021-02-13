@@ -27,7 +27,7 @@ class ExamineMemoryDlg : public wxPanel, public cbExamineMemoryDlg
         wxString GetBaseAddress() override;
         void SetBaseAddress(const wxString &addr) override;
         int GetBytes() override;
-        int GetCols();
+        int GetCols() override;
         void AddError(const wxString& err) override;
         void AddHexByte(const wxString& addr, const wxString& hexbyte) override;
         void EnableWindow(bool enable) override;
