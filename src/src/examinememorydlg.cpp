@@ -66,7 +66,7 @@ void ExamineMemoryDlg::Begin()
 void ExamineMemoryDlg::End()
 {
     m_pText->Thaw();
-    m_pText->SetInsertionPoint(0);
+    m_pText->SetInsertionPoint(0); //Scrolling up
 }
 
 void ExamineMemoryDlg::Clear()
@@ -75,10 +75,10 @@ void ExamineMemoryDlg::Clear()
     m_pText->Clear();
     m_LastRowStartingAddress = 0;
     m_ByteCounter = 0;
-
+    //  (4 column * 2) + 4 column =  12,  for 6 is m_PartLength = 18
     m_PartLength = (m_ColumnsCtrl * 2) + m_ColumnsCtrl;
 
-    for (int i = 0; i < 128; ++i)
+    for (int i = 0; i < 128; ++i) //128 is: 32 * 3 + 32
         m_LineText[i] = _T(' ');
 }
 
@@ -135,18 +135,18 @@ void ExamineMemoryDlg::AddHexByte(const wxString& addr, const wxString& hexbyte)
     m_LineText[(m_PartLength + bcmod)] = hb >= 32 ? wxChar(hb) : wxChar(_T('.'));
     ++m_ByteCounter;
 
+     // flush every m_ColumnsCtrl bytes
      if (m_ByteCounter != 0 && m_ByteCounter % m_ColumnsCtrl == 0)
     {
+	     // filled m_ColumnsCtrl bytes window; append text and reset accumulator array
 		 if (m_ByteCounter != m_ColumnsCtrl) // after the first line,
-            m_pText->AppendText(_T('\n')); // prepend a newline
+                    m_pText->AppendText(_T('\n')); // prepend a newline
        
 		 m_pText->AppendText(wxString::Format(_T("0x%lx: "), m_LastRowStartingAddress));
 		 for (unsigned i = 0; i < (m_PartLength + m_ColumnsCtrl); ++i)
 			m_pText->AppendText(m_LineText[i]);
 		
-//		for (int i = 0; i < (m_PartLength + m_ColumnsCtrl); ++i)
-//            m_LineText[i] = _T(' ');
-
+	// update starting address for next row every m_ColumnsCtrl bytes
         m_LastRowStartingAddress += m_ColumnsCtrl;
     }
 }
@@ -155,7 +155,7 @@ void ExamineMemoryDlg::OnGo(cb_unused wxCommandEvent& event)
 {
     cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
 
-    // Save the value of the bytes combo box in the config,
+    // Save the values of the bytes combo box in the config,
     // so it is the same next time the dialog is used.
     ConfigManager *c = Manager::Get()->GetConfigManager(wxT("debugger_common"));
     c->Write(wxT("/common/examine_memory/size_to_show"), GetBytes());
