@@ -39,7 +39,7 @@ class ExamineMemoryDlg : public wxPanel, public cbExamineMemoryDlg
         size_t m_ByteCounter;
         unsigned m_ColumnsCtrl;
         unsigned m_PartLength;
-        wxChar m_LineText[128];
+        wxChar m_LineText[128]; //128 is: 32 * 3 + 32
         uint64_t m_LastRowStartingAddress;
     private:
         DECLARE_EVENT_TABLE()
