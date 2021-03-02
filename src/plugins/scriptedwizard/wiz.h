@@ -10,7 +10,6 @@
 #include <settings.h> // needed to use the Code::Blocks SDK
 #include <cbexception.h>
 #include <wx/bitmap.h>
-#include <squirrel.h>
 
 class wxWizard;
 class wxWizardPageSimple;
@@ -169,10 +168,11 @@ class Wiz : public cbWizardPlugin
         void AddPage(const wxString& panelName);
 
         void Finalize();
-        void RegisterWizard(HSQUIRRELVM v);
+        void RegisterWizard();
         wxString FindTemplateFile(const wxString& filename);
 	protected:
         void OnAttach() override;
+        void OnRelease(bool appShutDown) override;
         void Clear();
         void CopyFiles(cbProject* theproject, const wxString&  prjdir, const wxString& srcdir);
         wxString GenerateFile(const wxString& basePath, const wxString& filename, const wxString& contents);

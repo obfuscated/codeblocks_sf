@@ -214,6 +214,11 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>
           */
         const TrustedScripts& GetTrustedScripts();
 
+        /// Return a type tag which can be used to register a class to squirrel.
+        /// This is not infinite resource, so you have to call this rarely.
+        /// Use TypeTag::Unassigned if you want to reset your type tag.
+        uint32_t RequestClassTypeTag();
+
         ScriptingManager(const ScriptingManager& rhs) = delete;
         ScriptingManager& operator=(const ScriptingManager& rhs) = delete;
 

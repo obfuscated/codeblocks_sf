@@ -38,6 +38,7 @@ namespace ScriptBindings
 
 enum class TypeTag : uint32_t
 {
+    Unassigned = 0,
     wxString = 0x8000,
     wxColour,
     wxPoint,
@@ -66,11 +67,10 @@ enum class TypeTag : uint32_t
     ProjectFile,
     ProjectManager,
     ScriptingManager,
-    UserVariableManager
-};
+    UserVariableManager,
 
-// Dummy type
-struct IONamespace{};
+    Last
+};
 
 template<>
 struct TypeInfo<wxString> {
@@ -174,13 +174,6 @@ template<>
 struct TypeInfo<FileTreeData> {
     static const uint32_t typetag = uint32_t(TypeTag::FileTreeData);
     static constexpr const SQChar *className = _SC("FileTreeData");
-    using baseClass = void;
-};
-
-template<>
-struct TypeInfo<IONamespace> {
-    static const uint32_t typetag = uint32_t(TypeTag::IONamespace);
-    static constexpr const SQChar *className = _SC("IO");
     using baseClass = void;
 };
 
