@@ -186,6 +186,7 @@ class wxsProperty
          */
         virtual const wxString GetTypeName() = 0;
 
+        void SetHelpString(const wxString &helpStr) { m_HelpString = helpStr; }
     protected:
 
         /** \brief Registering property grid identifier
@@ -280,6 +281,9 @@ class wxsProperty
 
         wxString m_PGName;   ///< \brief Name used inside property grid
         wxString m_DataName; ///< \brief Name of data element (xml element)
+    protected:
+        wxString m_HelpString;
+    private:
         int      m_Priority; ///< \brief Priority of this property
 };
 

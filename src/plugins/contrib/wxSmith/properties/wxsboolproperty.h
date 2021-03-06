@@ -82,6 +82,10 @@ class wxsBoolProperty: public wxsProperty
     { static wxsBoolProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Default,Priority); \
       Property(_Property); }
 
+#define WXS_BOOL_PT(ClassName,VarName,PGName,DataName,Default,Priority,HelpString) \
+    { static wxsBoolProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Default,Priority); \
+      _Property.SetHelpString(HelpString); \
+      Property(_Property); }
 /** \} */
 
 #endif
