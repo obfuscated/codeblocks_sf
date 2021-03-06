@@ -103,7 +103,7 @@ Compiler::Compiler(const wxString& name, const wxString& ID, const wxString& par
 
     m_Switches.supportsPCH = false;
     m_Switches.forceFwdSlashes = false;
-    m_VersionString = wxEmptyString;
+    m_VersionString = wxString();
     m_Weight = weight;
     m_RegExes.reserve(100);
     Manager::Get()->GetLogManager()->DebugLog(F(_T("Added compiler \"%s\""), m_Name.wx_str()));
@@ -617,7 +617,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
 
     if (!cfg->Exists(tmp + _T("/name")))
     {
-        tmp.Replace(wxT("-"), wxEmptyString); // try again using previous id format
+        tmp.Replace(wxT("-"), wxString()); // try again using previous id format
         if (!cfg->Exists(tmp + _T("/name")))
             return;
     }
@@ -641,15 +641,15 @@ void Compiler::LoadSettings(const wxString& baseKey)
     // Some MinGW installations do not include "mingw32-gcc" !!
     SetVersionString();
 
-    SetCompilerOptions    (GetArrayFromString(cfg->Read(tmp + _T("/compiler_options"), wxEmptyString)));
-    SetResourceCompilerOptions(GetArrayFromString(cfg->Read(tmp + _T("/resource_compiler_options"), wxEmptyString)));
-    SetLinkerOptions      (GetArrayFromString(cfg->Read(tmp + _T("/linker_options"),   wxEmptyString)));
-    SetIncludeDirs        (GetArrayFromString(cfg->Read(tmp + _T("/include_dirs"),     wxEmptyString)));
-    SetResourceIncludeDirs(GetArrayFromString(cfg->Read(tmp + _T("/res_include_dirs"), wxEmptyString)));
-    SetLibDirs            (GetArrayFromString(cfg->Read(tmp + _T("/library_dirs"),     wxEmptyString)));
-    SetLinkLibs           (GetArrayFromString(cfg->Read(tmp + _T("/libraries"),        wxEmptyString)));
-    SetCommandsBeforeBuild(GetArrayFromString(cfg->Read(tmp + _T("/commands_before"),  wxEmptyString)));
-    SetCommandsAfterBuild (GetArrayFromString(cfg->Read(tmp + _T("/commands_after"),   wxEmptyString)));
+    SetCompilerOptions    (GetArrayFromString(cfg->Read(tmp + _T("/compiler_options"), wxString())));
+    SetResourceCompilerOptions(GetArrayFromString(cfg->Read(tmp + _T("/resource_compiler_options"), wxString())));
+    SetLinkerOptions      (GetArrayFromString(cfg->Read(tmp + _T("/linker_options"),   wxString())));
+    SetIncludeDirs        (GetArrayFromString(cfg->Read(tmp + _T("/include_dirs"),     wxString())));
+    SetResourceIncludeDirs(GetArrayFromString(cfg->Read(tmp + _T("/res_include_dirs"), wxString())));
+    SetLibDirs            (GetArrayFromString(cfg->Read(tmp + _T("/library_dirs"),     wxString())));
+    SetLinkLibs           (GetArrayFromString(cfg->Read(tmp + _T("/libraries"),        wxString())));
+    SetCommandsBeforeBuild(GetArrayFromString(cfg->Read(tmp + _T("/commands_before"),  wxString())));
+    SetCommandsAfterBuild (GetArrayFromString(cfg->Read(tmp + _T("/commands_after"),   wxString())));
 
     for (int i = 0; i < ctCount; ++i)
     {
@@ -839,7 +839,7 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
         cbMessageBox(msg, _("Compiler options"), wxICON_ERROR);
         return;
     }
-    wxString extends = options.GetRoot()->GetAttribute(wxT("extends"), wxEmptyString);
+    wxString extends = options.GetRoot()->GetAttribute(wxT("extends"), wxString());
     if (!extends.IsEmpty())
         LoadDefaultOptions(extends, recursion + 1);
     wxXmlNode* node = options.GetRoot()->GetChildren();
@@ -854,11 +854,11 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
     if (!cfg->Exists(cmpKey + wxT("/name")))
         cmpKey.Printf(wxT("%s/%s"), baseKey.c_str(), m_ID.c_str());
     if (!cfg->Exists(cmpKey + wxT("/name")))
-        cmpKey.Replace(wxT("-"), wxEmptyString);
+        cmpKey.Replace(wxT("-"), wxString());
 
     while (node)
     {
-        const wxString value = node->GetAttribute(wxT("value"), wxEmptyString);
+        const wxString value = node->GetAttribute(wxT("value"), wxString());
         if (node->GetName() == wxT("if") && node->GetChildren())
         {
             if (EvalXMLCondition(node))
@@ -877,7 +877,7 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
         }
         else if (node->GetName() == wxT("Program")) // configuration is read so execution of renamed programs work, m_Mirror is needed to reset before leaving this function
         {
-            wxString prog = node->GetAttribute(wxT("name"), wxEmptyString);
+            wxString prog = node->GetAttribute(wxT("name"), wxString());
             if (prog == wxT("C"))
             {
                 m_Programs.C = cfg->Read(cmpKey + wxT("/c_compiler"), value);
@@ -913,7 +913,7 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
         }
         else if (node->GetName() == wxT("Switch"))
         {
-            wxString swi = node->GetAttribute(wxT("name"), wxEmptyString);
+            wxString swi = node->GetAttribute(wxT("name"), wxString());
             if (swi == wxT("includeDirs"))
                 m_Switches.includeDirs = value;
             else if (swi == wxT("libDirs"))
@@ -980,8 +980,8 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
         }
         else if (node->GetName() == wxT("Category") && node->GetChildren())
         {
-            categ = node->GetAttribute(wxT("name"), wxEmptyString);
-            exclu = (node->GetAttribute(wxT("exclusive"), wxEmptyString) == wxT("true"));
+            categ = node->GetAttribute(wxT("name"), wxString());
+            exclu = (node->GetAttribute(wxT("exclusive"), wxString()) == wxT("true"));
             node = node->GetChildren();
             ++depth;
             continue;
@@ -999,22 +999,22 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
             wxString exclusive;
             if (!node->GetAttribute(wxT("exclusive"), &exclusive))
                 exclusive = (exclu ? wxT("true") : wxT("false"));
-            m_Options.AddOption(wxGetTranslation(node->GetAttribute(wxT("name"), wxEmptyString)),
-                                node->GetAttribute(wxT("option"), wxEmptyString),
+            m_Options.AddOption(wxGetTranslation(node->GetAttribute(wxT("name"), wxString())),
+                                node->GetAttribute(wxT("option"), wxString()),
                                 wxGetTranslation(category),
-                                node->GetAttribute(wxT("additionalLibs"), wxEmptyString),
-                                node->GetAttribute(wxT("checkAgainst"), wxEmptyString),
-                                wxGetTranslation(node->GetAttribute(wxT("checkMessage"), wxEmptyString)),
-                                node->GetAttribute(wxT("supersedes"), wxEmptyString),
+                                node->GetAttribute(wxT("additionalLibs"), wxString()),
+                                node->GetAttribute(wxT("checkAgainst"), wxString()),
+                                wxGetTranslation(node->GetAttribute(wxT("checkMessage"), wxString())),
+                                node->GetAttribute(wxT("supersedes"), wxString()),
                                 exclusive == wxT("true"));
         }
         else if (node->GetName() == wxT("Command"))
         {
-            wxString cmd = node->GetAttribute(wxT("name"), wxEmptyString);
+            wxString cmd = node->GetAttribute(wxT("name"), wxString());
             wxString unEscape = value;
             unEscape.Replace(wxT("\\n"), wxT("\n")); // a single tool can support multiple commands
-            CompilerTool tool(unEscape, node->GetAttribute(wxT("ext"), wxEmptyString),
-                              node->GetAttribute(wxT("gen"), wxEmptyString));
+            CompilerTool tool(unEscape, node->GetAttribute(wxT("ext"), wxString()),
+                              node->GetAttribute(wxT("gen"), wxString()));
             CommandType cmdTp = ctCount;
             if (cmd == wxT("CompileObject"))
                 cmdTp = ctCompileObjectCmd;
@@ -1069,14 +1069,14 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
         }
         else if (node->GetName() == wxT("Common"))
         {
-            LoadDefaultOptions(wxT("common_") + node->GetAttribute(wxT("name"), wxEmptyString), recursion + 1);
+            LoadDefaultOptions(wxT("common_") + node->GetAttribute(wxT("name"), wxString()), recursion + 1);
         }
         while (!node->GetNext() && depth > 0)
         {
             node = node->GetParent();
             if (node->GetName() == wxT("Category"))
             {
-                categ = wxEmptyString;
+                categ = wxString();
                 exclu = false;
             }
             --depth;
@@ -1122,14 +1122,14 @@ void Compiler::LoadRegExArray(const wxString& name, bool globalPrecedence, int r
         Manager::Get()->GetLogManager()->Log(_("Error parsing ") + doc);
         return;
     }
-    wxString extends = options.GetRoot()->GetAttribute(wxT("extends"), wxEmptyString);
+    wxString extends = options.GetRoot()->GetAttribute(wxT("extends"), wxString());
     if (!extends.IsEmpty())
         LoadRegExArray(extends, globalPrecedence, recursion + 1);
     wxXmlNode* node = options.GetRoot()->GetChildren();
     int depth = 0;
     while (node)
     {
-        const wxString value = node->GetAttribute(wxT("value"), wxEmptyString);
+        const wxString value = node->GetAttribute(wxT("value"), wxString());
         if (node->GetName() == wxT("if") && node->GetChildren())
         {
             if (EvalXMLCondition(node))
@@ -1148,7 +1148,7 @@ void Compiler::LoadRegExArray(const wxString& name, bool globalPrecedence, int r
         }
         else if (node->GetName() == wxT("RegEx"))
         {
-            wxString tp = node->GetAttribute(wxT("type"), wxEmptyString);
+            wxString tp = node->GetAttribute(wxT("type"), wxString());
             CompilerLineType clt = cltNormal;
             if      (tp == wxT("warning"))
                 clt = cltWarning;
@@ -1156,8 +1156,8 @@ void Compiler::LoadRegExArray(const wxString& name, bool globalPrecedence, int r
                 clt = cltError;
             else if (tp == wxT("info"))
                 clt = cltInfo;
-            wxArrayString msg = GetArrayFromString(node->GetAttribute(wxT("msg"), wxEmptyString) + wxT(";0;0"));
-            m_RegExes.push_back(RegExStruct(wxGetTranslation(node->GetAttribute(wxT("name"), wxEmptyString)), clt,
+            wxArrayString msg = GetArrayFromString(node->GetAttribute(wxT("msg"), wxString()) + wxT(";0;0"));
+            m_RegExes.push_back(RegExStruct(wxGetTranslation(node->GetAttribute(wxT("name"), wxString())), clt,
                                       node->GetNodeContent().Trim().Trim(false), wxAtoi(msg[0]),
                                       wxAtoi(node->GetAttribute(wxT("file"), wxT("0"))),
                                       wxAtoi(node->GetAttribute(wxT("line"), wxT("0"))),
@@ -1165,7 +1165,7 @@ void Compiler::LoadRegExArray(const wxString& name, bool globalPrecedence, int r
         }
         else if (node->GetName() == wxT("Common"))
         {
-            LoadRegExArray(wxT("common_") + node->GetAttribute(wxT("name"), wxEmptyString),
+            LoadRegExArray(wxT("common_") + node->GetAttribute(wxT("name"), wxString()),
                            globalPrecedence, recursion + 1);
         }
         while (!node->GetNext() && depth > 0)
@@ -1325,8 +1325,10 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
             wxArrayString extraPaths;
             if (cfg->Exists(loc + wxT("/name")))
             {
-                masterPath = cfg->Read(loc + wxT("/master_path"), wxEmptyString);
-                extraPaths = MakeUniqueArray(GetArrayFromString(cfg->Read(loc + wxT("/extra_paths"), wxEmptyString)), true);
+                masterPath = cfg->Read(loc + wxT("/master_path"), wxString());
+                extraPaths = MakeUniqueArray(GetArrayFromString(cfg->Read(loc + wxT("/extra_paths"),
+                                                                          wxString())),
+                                             true);
             }
 
             for (size_t i = 0; i < extraPaths.GetCount(); ++i)
@@ -1345,7 +1347,7 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
         wxSetEnv(wxT("PATH"), origPath); // restore path
 
         if (ret != 0) // execution failed
-            return (node->GetAttribute(wxT("default"), wxEmptyString) == wxT("true"));
+            return (node->GetAttribute(wxT("default"), wxString()) == wxT("true"));
 
         // If multiple tests are specified they will be ANDed; as soon as one fails the loop ends
         val = true;
