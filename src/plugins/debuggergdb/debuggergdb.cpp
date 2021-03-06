@@ -254,9 +254,8 @@ bool DebuggerGDB::SupportsFeature(cbDebuggerFeature::Flags flag)
         case cbDebuggerFeature::Disassembly:
         case cbDebuggerFeature::Watches:
         case cbDebuggerFeature::ValueTooltips:
-        case cbDebuggerFeature::ExamineMemory:
-            return true;
         case cbDebuggerFeature::Threads:
+            return true;
         case cbDebuggerFeature::RunToCursor:
         case cbDebuggerFeature::SetNextStatement:
         default:

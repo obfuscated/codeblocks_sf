@@ -51,6 +51,11 @@ static wxRegEx reSwitchFrame(wxT("[ \\t]*([0-9]+)[ \\t]([0-9a-z`]+)[ \\t](.+)[ \
 // 0012ff74  00 00 00 00 c0 ff 12 00-64 13 40 00 01 00 00 00  ........d.@.....
 static wxRegEx reExamineMemoryLine(wxT("([0-9a-f`]+) ((( |-)[0-9a-f]{2}){1,16})"));
 
+// .  0  Id: 2d84.1ac0 Suspend: 1 Teb: 00fb3000 Unfrozen
+static wxRegEx reThread("([.# ])  ([0-9]+) (.*)");
+
+// prv local  int la = 0n0
+static wxRegEx reLocalsArgs("prv (local|param)  (.+) (.+)=(.+)");
 
 /**
   * Command to add a search directory for source files in debugger's paths.
@@ -723,6 +728,107 @@ class CdbCmd_ExamineMemory : public DebuggerCmd
                 }
             }
             dialog->End();
+        }
+};
+
+/**
+  * Command to get info about running threads.
+  */
+class CdbCmd_Threads : public DebuggerCmd
+{
+    public:
+        CdbCmd_Threads(DebuggerDriver* driver) :
+            DebuggerCmd(driver)
+        {
+            m_Cmd << "~*";
+        }
+
+        void ParseOutput(const wxString& output)
+        {
+            // output is
+            //.  0  Id: 2d84.1ac0 Suspend: 1 Teb: 00fb3000 Unfrozen
+            //      Start: test_vc!ILT+30(_mainCRTStartup) (00c81023)
+            //      Priority: 0  Priority class: 32  Affinity: f
+
+            DebuggerDriver::ThreadsContainer &threads = m_pDriver->GetThreads();
+            threads.clear();
+
+            const wxArrayString lines = GetArrayFromString(output, '\n');
+            for (size_t i = 0; i < lines.GetCount(); ++i)
+            {
+                m_pDriver->Log(lines[i]);
+                if (reThread.Matches(lines[i]))
+                {
+                    wxString active = reThread.GetMatch(lines[i], 1);
+                    wxString num = reThread.GetMatch(lines[i], 2);
+
+#if defined(_WIN64)
+                    long long int number;
+                    num.ToLongLong(&number, 10);
+#else
+                    long number;
+                    num.ToLong(&number, 10);
+#endif
+
+                    const wxString info = reThread.GetMatch(lines[i], 3) + " " + lines[i + 1] +
+                                          " " + lines[2];
+                    threads.push_back(cb::shared_ptr<cbThread>(new cbThread(!active.empty(), number,
+                                                                            info)));
+                }
+            }
+            Manager::Get()->GetDebuggerManager()->GetThreadsDialog()->Reload();
+        }
+};
+
+class CdbCmd_LocalsFuncArgs : public DebuggerCmd
+{
+        cb::shared_ptr<GDBWatch> m_watch;
+        bool m_doLocals;
+    public:
+        CdbCmd_LocalsFuncArgs(DebuggerDriver* driver, cb::shared_ptr<GDBWatch> watch, bool doLocals) :
+            DebuggerCmd(driver),
+            m_watch(watch),
+            m_doLocals(doLocals)
+        {
+            m_Cmd = "dv /i /t";
+        }
+        void ParseOutput(const wxString& output)
+        {
+            //output
+            //prv param  int a = 0n0
+            //prv local  int la = 0n0
+
+            if (output.empty())
+            {
+                m_watch->RemoveChildren();
+                return;
+            }
+
+            m_watch->MarkChildsAsRemoved();
+            wxString symb, wtype, type, value;
+            m_watch->GetSymbol(wtype);
+            const bool locals = (wtype == "Locals");
+
+            wxArrayString lines = GetArrayFromString(output, '\n');
+            for (size_t i = 0; i < lines.GetCount(); ++i)
+            {
+                m_pDriver->Log(lines[i]);
+                if (reLocalsArgs.Matches(lines[i]))
+                {
+                    wtype = reLocalsArgs.GetMatch(lines[i], 1);
+                    if ((locals && wtype == "local") || (!locals && wtype == "param"))
+                    {
+                        m_pDriver->Log(lines[i]);
+                        type = reLocalsArgs.GetMatch(lines[i], 2);
+                        symb = reLocalsArgs.GetMatch(lines[i], 3);
+                        value = reLocalsArgs.GetMatch(lines[i], 4);
+                        cb::shared_ptr<GDBWatch> watch = AddChild(m_watch, symb);
+                        watch->SetValue(value);
+                        watch->SetType(type);
+                    }
+                }
+            }
+            m_watch->RemoveMarkedChildren();
         }
 };
 

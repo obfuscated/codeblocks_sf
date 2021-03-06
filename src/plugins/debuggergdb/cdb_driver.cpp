@@ -227,7 +227,8 @@ void CDB_driver::MemoryDump()
 
 void CDB_driver::RunningThreads()
 {
-    NOT_IMPLEMENTED();
+    if (Manager::Get()->GetDebuggerManager()->UpdateThreads())
+        QueueCommand(new CdbCmd_Threads(this));
 }
 
 void CDB_driver::InfoFrame()
@@ -280,6 +281,17 @@ void CDB_driver::UpdateWatches(cb_unused cb::shared_ptr<GDBWatch> localsWatch,
                                WatchesContainer &watches, bool ignoreAutoUpdate)
 {
     bool updateWatches = false;
+    if (localsWatch && localsWatch->IsAutoUpdateEnabled())
+    {
+        QueueCommand(new CdbCmd_LocalsFuncArgs(this, localsWatch, true));
+        updateWatches = true;
+    }
+    if (funcArgsWatch && funcArgsWatch->IsAutoUpdateEnabled())
+    {
+        QueueCommand(new CdbCmd_LocalsFuncArgs(this, funcArgsWatch, false));
+        updateWatches = true;
+    }
+
     for (WatchesContainer::iterator it = watches.begin(); it != watches.end(); ++it)
     {
         WatchesContainer::reference watch = *it;
