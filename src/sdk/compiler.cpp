@@ -1177,6 +1177,114 @@ void Compiler::LoadRegExArray(const wxString& name, bool globalPrecedence, int r
     }
 }
 
+/// Return true if a number was correctly parsed or the string is exhausted
+/// The variable pointed by value will contain the parsed value or 0.
+/// On failure result and index might contain random values.
+static bool GetNextValue(int *result, size_t *index, const wxString &s, size_t length)
+{
+    int value = 0;
+    size_t ii = *index;
+
+    for ( ; ii < length; (ii)++)
+    {
+        const wxUniChar c = s[ii];
+        if (!wxIsdigit(c))
+        {
+            // This should catch '..'.
+            if (ii == *index)
+                return false;
+            else
+                break;
+        }
+
+        value = value * 10 + (c - '0');
+    }
+
+    // If the string is exhausted return
+    if (ii == length)
+    {
+        *index = ii;
+        *result = value;
+        return true;
+    }
+
+    // Skip the next character; if it was not a dot return error
+    if (s[ii++] != '.')
+        return false;
+
+    // Check if the dot was the last character, this is a syntax error
+    *index = ii;
+    *result = value;
+    return (ii != length);
+}
+
+/// Compares two strings in major[.minor[.patch[.tweak]]] format
+/// @param[out] result Set to -1 if first < second, 0 if they are equal and 1 if first > second.
+/// @return true on success and false on invalid input in first or second.
+static bool CmpVersion(int &result, const wxString& first, const wxString& second)
+{
+    // Cache the lengths for speed
+    const size_t lengthFirst = first.length();
+    const size_t lengthSecond = second.length();
+
+    // Sanity checks
+    if (!lengthFirst && !lengthSecond)
+    {
+        Manager::Get()->GetLogManager()->DebugLog(_("CmpVersion: Both compiler test strings are empty"));
+        return false;
+    }
+
+    if (!lengthFirst)
+    {
+        Manager::Get()->GetLogManager()->DebugLog(_("CmpVersion: The first compiler test string is empty"));
+        return false;
+    }
+
+    if (!lengthSecond)
+    {
+        Manager::Get()->GetLogManager()->DebugLog(_("CmpVersion: The second compiler test string is empty"));
+        return false;
+    }
+
+    // Extract version numbers from left to right.
+    // If we've exhausted one of the strings use 0 in the comparisons.
+    size_t indexFirst = 0, indexSecond = 0;
+    while ((indexFirst < lengthFirst) || (indexSecond < lengthSecond))
+    {
+        int valueFirst, valueSecond;
+
+        if (!GetNextValue(&valueFirst, &indexFirst, first, lengthFirst))
+        {
+            const wxString msg = wxString::Format(_("CmpVersion: Invalid first compiler test string \"%s\""),
+                                                  first);
+            Manager::Get()->GetLogManager()->DebugLog(msg);
+            return false;
+        }
+
+        if (!GetNextValue(&valueSecond, &indexSecond, second, lengthSecond))
+        {
+            const wxString msg = wxString::Format(_("CmpVersion: Invalid second compiler test string \"%s\""),
+                                                  second);
+            Manager::Get()->GetLogManager()->DebugLog(msg);
+            return false;
+        }
+
+        if (valueFirst < valueSecond)
+        {
+            result = -1;
+            return true;
+        }
+        else if (valueFirst > valueSecond)
+        {
+            result = 1;
+            return true;
+        }
+    }
+
+    result = 0;
+    return true;
+}
+
 bool Compiler::EvalXMLCondition(const wxXmlNode* node)
 {
     bool val = false;
@@ -1220,8 +1328,10 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
                 masterPath = cfg->Read(loc + wxT("/master_path"), wxEmptyString);
                 extraPaths = MakeUniqueArray(GetArrayFromString(cfg->Read(loc + wxT("/extra_paths"), wxEmptyString)), true);
             }
+
             for (size_t i = 0; i < extraPaths.GetCount(); ++i)
                 path.Prepend(extraPaths[i] + wxPATH_SEP);
+
             if (!masterPath.IsEmpty())
                 path.Prepend(masterPath + wxPATH_SEP + masterPath + wxFILE_SEP_PATH + wxT("bin") + wxPATH_SEP);
         }
@@ -1229,30 +1339,120 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
         cmd[0] = GetExecName(cmd[0]);
 
         long ret = -1;
-        if ( !cmd[0].IsEmpty() ) // should never be empty
+        if (!cmd[0].IsEmpty()) // should never be empty
             ret = Execute(GetStringFromArray(cmd, wxT(" "), false), cmd);
 
         wxSetEnv(wxT("PATH"), origPath); // restore path
 
         if (ret != 0) // execution failed
-            val = (node->GetAttribute(wxT("default"), wxEmptyString) == wxT("true"));
-        else if (node->GetAttribute(wxT("regex"), &test))
+            return (node->GetAttribute(wxT("default"), wxEmptyString) == wxT("true"));
+
+        // If multiple tests are specified they will be ANDed; as soon as one fails the loop ends
+        val = true;
+        for (wxXmlAttribute *attr = node->GetAttributes(); attr && val; attr = attr->GetNext())
         {
-            wxRegEx re;
-            if (re.Compile(test))
+            const wxString &name = attr->GetName();
+
+            // Not really tests
+            if ((name == "exec") || (name == "default"))
+                continue;
+
+            if (name == "regex")
             {
-                for (size_t i = 0; i < cmd.GetCount(); ++i)
+                wxRegEx re;
+                if (re.Compile(attr->GetValue()))
                 {
-                    if (re.Matches(cmd[i]))
+                    bool found = false;
+                    for (size_t i = 0; i < cmd.GetCount(); ++i)
                     {
-                        val = true;
-                        break;
+                        if (re.Matches(cmd[i]))
+                        {
+                            found = true;
+                            break;
+                        }
                     }
+                    val = found;
+                }
+                else
+                {
+                    val = false;
+                    const wxString msg = wxString::Format(_("Can not compile regex \"%s\" in compiler test"),
+                                                          attr->GetValue());
+                    Manager::Get()->GetLogManager()->DebugLog(msg);
+                }
+
+                continue;
+            }
+
+            if (!name.empty() && name[0] == 'v')
+            {
+                if (name == "version_greater")
+                {
+                    int check;
+                    if (CmpVersion(check, cmd[0], attr->GetValue()))
+                        val = (check > 0);
+                    else
+                        val = false;
+                    continue;
+                }
+
+                if (name == "version_greater_equal")
+                {
+                    int check;
+                    if (CmpVersion(check, cmd[0], attr->GetValue()))
+                        val = (check >= 0);
+                    else
+                        val = false;
+                    continue;
+                }
+
+                if (name == "version_equal")
+                {
+                    int check;
+                    if (CmpVersion(check, cmd[0], attr->GetValue()))
+                        val = (check == 0);
+                    else
+                        val = false;
+                    continue;
+                }
+
+                if (name == "version_not_equal")
+                {
+                    int check;
+                    if (CmpVersion(check, cmd[0], attr->GetValue()))
+                        val = (check != 0);
+                    else
+                        val = false;
+                    continue;
+                }
+
+                if (name == "version_less_equal")
+                {
+                    int check;
+                    if (CmpVersion(check, cmd[0], attr->GetValue()))
+                        val = (check <= 0);
+                    else
+                        val = false;
+                    continue;
+                }
+
+                if (name == "version_less")
+                {
+                    int check;
+                    if (CmpVersion(check, cmd[0], attr->GetValue()))
+                        val = (check < 0);
+                    else
+                        val = false;
+                    continue;
                 }
             }
+
+            // Unknown test
+            val = false;
+            LogManager *log = Manager::Get()->GetLogManager();
+            log ->DebugLog(wxString::Format(_("EvalXMLCondition: Unknown compiler test \"%s\""),
+                                            name));
         }
-        else // execution succeeded (and no regex test given)
-            val = true;
     }
     return val;
 }
