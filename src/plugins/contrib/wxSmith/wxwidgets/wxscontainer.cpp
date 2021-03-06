@@ -202,30 +202,32 @@ void wxsContainer::AddChildrenCode()
                         Data->GetTool(i)->BuildCode(Context);
                     }
                 }
-            }
-
-            for ( int i=0; i<GetChildCount(); i++ )
-            {
-                wxsItem* Child = GetChild(i);
-                if ( Child->GetType() == wxsTSizer )
+                wxsBaseProperties* Props = GetBaseProps();
+                if(GetPropertiesFlags() & flTopLevel &&  Props->m_UseLayout)
                 {
-                    if ( GetBaseProps()->m_Size.IsDefault )
+                    for ( int i=0; i<GetChildCount(); i++ ) //See if item contains a sizer
                     {
-                        wxString ChildAccessPrefix = Child->GetAccessPrefix(GetLanguage());
-                        Codef(_T("%sFit(%O);\n"),ChildAccessPrefix.wx_str());
-
-                        Codef(_T("%sSetSizeHints(%O);\n"),ChildAccessPrefix.wx_str());
-                    }
-                    else
-                    {
-                        wxString ChildVarName = Child->GetVarName();
-                        Codef(_T("SetSizer(%s);\n"), ChildVarName.wx_str());
-
-                        Codef(_T("Layout();\n"));
+                        wxsItem* Child = GetChild(i);
+                        if ( Child->GetType() == wxsTSizer )
+                        {
+                            if ( Props->m_Size.IsDefault && Props->m_MinSize.IsDefault && Props->m_MaxSize.IsDefault)
+                            {
+                                wxString ChildAccessPrefix = Child->GetAccessPrefix(GetLanguage());
+                                Codef(_T("%sSetSizeHints(%O);\n"),ChildAccessPrefix.wx_str());
+                            }
+                            else if ( Props->m_Size.IsDefault )
+                            {
+                                Codef(_T("Fit();\n"));
+                            }
+                            else
+                            {
+                                Codef(_T("Layout();\n"));
+                            }
+                            break;
+                        }
                     }
                 }
             }
-
             Context->m_WindowParent = PreviousParent;
             return;
         }

@@ -63,6 +63,7 @@ void wxsBaseProperties::OnEnumProperties(long Flags)
     if ( Flags & flId         && PSFilter           ) WXS_BOOL_P         (wxsBaseProperties,m_IdFromArg,      _("Use ID from argument"),                                                          _T("id_arg"),        true,         Priority2);
     if ( Flags & flPosition   && PSFilter           ) WXS_BOOL_P         (wxsBaseProperties,m_PositionFromArg,_("Use pos from argument"),                                                         _T("pos_arg"),       false,        Priority2);
     if ( Flags & flSize       && PSFilter           ) WXS_BOOL_P         (wxsBaseProperties,m_SizeFromArg,    _("Use size from argument"),                                                        _T("size_arg"),      false,        Priority2);
+    if ( Flags & flTopLevel   && PSFilter           ) WXS_BOOL_P         (wxsBaseProperties,m_UseLayout,      _("Lay out the window"),                                                            _T("layout_window"), true,         Priority2);
     if ( m_StyleSet                                 ) WXS_STYLE_P        (wxsBaseProperties,m_StyleBits,      _("Style"),                                                                         _T("style"),         m_StyleSet,   Priority2);
     if ( m_StyleSet                                 ) WXS_EXSTYLE_P      (wxsBaseProperties,m_ExStyleBits,    _("Extra style"),                                                                   _T("exstyle"),       m_StyleSet,   Priority2);
 }

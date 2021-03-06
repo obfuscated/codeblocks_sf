@@ -60,6 +60,7 @@ class wxsBaseProperties: public wxsPropertyContainer
         wxString        m_ToolTip;         ///< \brief Tooltip
         wxString        m_HelpText;        ///< \brief Help text
         wxString        m_ExtraCode;       ///< \brief User's extra item initialization code
+        bool            m_UseLayout;       ///< \brief Call SetSizeHints or Layout on the the window
 
         // TODO: Convert these to long long
         long m_StyleBits;                  ///< \brief Internal representation of styles as bit field
@@ -83,6 +84,7 @@ class wxsBaseProperties: public wxsPropertyContainer
             m_ToolTip(wxEmptyString),
             m_HelpText(wxEmptyString),
             m_ExtraCode(wxEmptyString),
+            m_UseLayout(true),
             m_StyleBits(0),
             m_ExStyleBits(0),
             m_StyleSet(0)
