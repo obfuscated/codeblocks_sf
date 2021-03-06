@@ -202,8 +202,9 @@ void wxsContainer::AddChildrenCode()
                         Data->GetTool(i)->BuildCode(Context);
                     }
                 }
+
                 wxsBaseProperties* Props = GetBaseProps();
-                if(GetPropertiesFlags() & flTopLevel &&  Props->m_UseLayout)
+                if ((GetPropertiesFlags() & flTopLevel) &&  Props->m_UseLayout)
                 {
                     for ( int i=0; i<GetChildCount(); i++ ) //See if item contains a sizer
                     {

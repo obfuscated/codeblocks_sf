@@ -33,7 +33,10 @@ class wxsScrollingDialog : public wxsContainer
 
     private:
 
-        virtual long OnGetPropertiesFlags(){return wxsContainer::OnGetPropertiesFlags() | flTopLevel;}
+        virtual long OnGetPropertiesFlags()
+        {
+            return wxsContainer::OnGetPropertiesFlags() | flTopLevel;
+        }
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnBuildCreatingCode();
         virtual void OnEnumContainerProperties(long Flags);
