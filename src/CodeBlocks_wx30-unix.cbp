@@ -92,7 +92,6 @@
 					<Add option="`pkg-config glib-2.0 --cflags`" />
 					<Add directory="include" />
 					<Add directory="include/tinyxml" />
-					<Add directory="include/scripting/bindings" />
 					<Add directory="include/scripting/include" />
 					<Add directory="sdk/mozilla_chardet/include" />
 					<Add directory="sdk/mozilla_chardet/include/mfbt" />
@@ -144,8 +143,6 @@
 				<Compiler>
 					<Add directory="include" />
 					<Add directory="include/scripting/include" />
-					<Add directory="include/scripting/sqplus" />
-					<Add directory="include/scripting/bindings" />
 				</Compiler>
 				<Linker>
 					<Add option="`$(WX_CONFIG) --libs`" />
@@ -218,7 +215,6 @@
 					<Add directory="include" />
 					<Add directory="plugins/compilergcc/depslib/src" />
 					<Add directory="include/scripting/include" />
-					<Add directory="include/scripting/sqplus" />
 				</Compiler>
 				<Linker>
 					<Add option="`$(WX_CONFIG) --libs std,propgrid`" />
@@ -374,7 +370,6 @@
 				<Compiler>
 					<Add directory="include" />
 					<Add directory="include/scripting/include" />
-					<Add directory="include/scripting/sqplus" />
 				</Compiler>
 				<Linker>
 					<Add option="`$(WX_CONFIG) --libs`" />

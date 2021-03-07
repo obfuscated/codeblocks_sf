@@ -10,9 +10,7 @@ endif
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		$(CB_SQUIRREL_CFLAGS) \
 		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include \
-		-I$(top_srcdir)/src/include/scripting/bindings \
-		-I$(top_srcdir)/src/include/scripting/sqplus
+		-I$(top_srcdir)/src/sdk/wxscintilla/include
 
 pluginlibdir = $(pkglibdir)/plugins
 

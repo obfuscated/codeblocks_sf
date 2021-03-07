@@ -33,9 +33,9 @@
 #include "crc32.h"
 #include "menuitemsmanager.h"
 #include "genericmultilinenotesdlg.h"
-#include "sc_plugin.h"
-#include "sc_utils.h"
-#include "sc_typeinfo_all.h"
+#include "scripting/bindings/sc_plugin.h"
+#include "scripting/bindings/sc_utils.h"
+#include "scripting/bindings/sc_typeinfo_all.h"
 
 #include "squirrel.h"
 #include "sqstdaux.h"

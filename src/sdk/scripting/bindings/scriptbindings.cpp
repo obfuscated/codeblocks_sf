@@ -20,8 +20,8 @@
     #include "uservarmanager.h"
 #endif // CB_PRECOMP
 
-#include "sc_utils.h"
-#include "sc_typeinfo_all.h"
+#include "scripting/bindings/sc_utils.h"
+#include "scripting/bindings/sc_typeinfo_all.h"
 
 #include "cbstyledtextctrl.h"
 

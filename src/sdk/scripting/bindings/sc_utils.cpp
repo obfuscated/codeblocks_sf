@@ -7,7 +7,7 @@
 #ifndef CB_PRECOMP
 #endif // CB_PRECOMP
 
-#include "sc_utils.h"
+#include "scripting/bindings/sc_utils.h"
 #include "squirrel.h"
 
 namespace ScriptBindings

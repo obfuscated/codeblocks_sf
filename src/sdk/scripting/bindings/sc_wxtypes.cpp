@@ -14,8 +14,8 @@
     #include <wx/string.h>
 #endif
 
-#include "sc_utils.h"
-#include "sc_typeinfo_all.h"
+#include "scripting/bindings/sc_utils.h"
+#include "scripting/bindings/sc_typeinfo_all.h"
 
 #include <wx/filename.h>
 
