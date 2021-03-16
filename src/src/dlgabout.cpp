@@ -31,6 +31,7 @@
 
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>    // wxMemoryDC
+#include <wx/display.h>
 #include <wx/statbmp.h>
 
 #include "appglobals.h"
@@ -164,9 +165,37 @@ dlgAbout::dlgAbout(wxWindow* parent)
     items.push_back({_("Version"), appglobals::AppActualVersion});
     items.push_back({_("SDK Version"), appglobals::AppSDKVersion});
     items.push_back({_("Scintilla Version"), scintillaStr});
+
     items.push_back({_("Author"), _("The Code::Blocks Team")});
     items.push_back({_("E-mail"), appglobals::AppContactEmail});
     items.push_back({_("Website"), appglobals::AppUrl});
+
+    items.push_back({_("Scaling factor"), wxString::Format("%f", GetContentScaleFactor())});
+    items.push_back({_("Detected scaling factor"),
+                     wxString::Format("%f", cbGetActualContentScaleFactor(*this))});
+    const wxSize displayPPI = wxGetDisplayPPI();
+    items.push_back({_("Display PPI"), wxString::Format("%dx%d", displayPPI.x, displayPPI.y)});
+
+    unsigned displays = wxDisplay::GetCount();
+    items.push_back({_("Display count"), wxString::Format("%u", displays)});
+
+    for (unsigned ii = 0; ii < displays; ++ii)
+    {
+        wxDisplay display(ii);
+
+        Item item;
+        item.name = wxString::Format(_("Display %u"), ii);
+
+        const wxString &name = display.GetName();
+        if (!name.empty())
+            item.name += " (" + name + ")";
+
+        const wxRect geometry = display.GetGeometry();
+        item.value= wxString::Format(_("XY=[%d,%d]; Size=[%d,%d]; %s"), geometry.GetLeft(),
+                                     geometry.GetTop(), geometry.GetWidth(), geometry.GetHeight(),
+                                     (display.IsPrimary() ? _("Primary") : wxString()));
+        items.push_back(item);
+    }
 
     int maxNameLength = 0;
     for (const Item &item : items)
