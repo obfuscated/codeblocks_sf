@@ -162,7 +162,7 @@ void ConfigPanel::OnCppCheckApp(cb_unused wxCommandEvent& event)
                          _("Executable files (*)|*"),
 #endif
                         wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-
+    PlaceWindow(&dialog);
     if (dialog.ShowModal() == wxID_OK)
         txtCppCheckApp->SetValue(dialog.GetPath());
 }
@@ -180,7 +180,7 @@ void ConfigPanel::OnVeraApp(cb_unused wxCommandEvent& event)
                          _("Executable files (*)|*"),
 #endif
                         wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-
+    PlaceWindow(&dialog);
     if (dialog.ShowModal() == wxID_OK)
         txtVeraApp->SetValue(dialog.GetPath());
 }

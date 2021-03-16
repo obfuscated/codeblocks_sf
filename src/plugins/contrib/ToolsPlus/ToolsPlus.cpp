@@ -355,7 +355,9 @@ void ToolsPlus::OnRunTarget(wxCommandEvent& event)
         }
         else
             promptend++;
-        wxTextEntryDialog ted(NULL,commandstr.Mid(promptind+10,promptend-1),consolename,_T(""),wxOK|wxCANCEL);
+        wxTextEntryDialog ted(NULL,commandstr.Mid(promptind+10,promptend-1),consolename,_T(""),
+                              wxOK|wxCANCEL);
+        PlaceWindow(&ted);
         if (ted.ShowModal()==wxID_OK)
             substitution=ted.GetValue();
         else

@@ -275,6 +275,7 @@ void ScriptingManager::DisplayErrors(SquirrelError* exception, bool clearErrors)
                                         _("Script errors"),
                                         msg,
                                         true);
+            PlaceWindow(&dlg);
             dlg.ShowModal();
         }
     }

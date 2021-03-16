@@ -235,6 +235,7 @@ void ProcessingDlg::ApplyResults(bool addOnly)
     }
 
     LibSelectDlg Dlg( this, Names, addOnly );
+    PlaceWindow(&Dlg);
     Dlg.SetSelections( Selected );
 
     if ( Dlg.ShowModal() == wxID_OK )

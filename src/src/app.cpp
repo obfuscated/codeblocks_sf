@@ -1267,7 +1267,7 @@ void CodeBlocksApp::SetupPersonality(const wxString& personality)
         wxSingleChoiceDialog dlg(nullptr, _("Please choose which personality (profile) to load:"),
                                           _("Personalities (profiles)"),
                                           items);
-
+        PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_OK)
             Manager::Get()->GetPersonalityManager()->SetPersonality(dlg.GetStringSelection());
     }

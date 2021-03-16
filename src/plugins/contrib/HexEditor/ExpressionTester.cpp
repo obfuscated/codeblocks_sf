@@ -190,7 +190,8 @@ void ExpressionTester::OnButton2Click(wxCommandEvent& /*event*/)
 void ExpressionTester::OnButton3Click(wxCommandEvent& event)
 {
     SelectStoredExpressionDlg dlg( this, m_Expr->GetValue() );
-    if ( dlg.ShowModal() == wxID_OK )
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() == wxID_OK)
     {
         m_Expr->SetValue( dlg.GetExpression() );
         OnButton1Click(event);
@@ -199,5 +200,7 @@ void ExpressionTester::OnButton3Click(wxCommandEvent& event)
 
 void ExpressionTester::OnButton4Click(wxCommandEvent& /*event*/)
 {
-    TestCasesDlg( this, Expression::GetTests() ).ShowModal();
+    TestCasesDlg dlg(this, Expression::GetTests());
+    PlaceWindow(&dlg);
+    dlg.ShowModal();
 }

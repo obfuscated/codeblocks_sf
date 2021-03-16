@@ -269,6 +269,7 @@ void ThreadSearchView::OnShowOptionsDialog(wxCommandEvent &/*event*/)
                                                                   &dialog);
     pConfPanel->SetSearchAndMaskHistory(GetSearchDirsHistory(), GetSearchMasksHistory());
     dialog.AttachConfigurationPanel(pConfPanel);
+    PlaceWindow(&dialog);
     if (dialog.ShowModal() == wxID_OK)
         UpdateSettings();
 }

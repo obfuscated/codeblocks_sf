@@ -391,6 +391,7 @@ private:
         const wxString &selectedPath = m_list->GetString(selectedItem);
 
         wxDirDialog dialog(this, _("Select directory"), selectedPath);
+        PlaceWindow(&dialog);
         if (dialog.ShowModal() == wxID_OK)
         {
             const wxString newPath = RemovePathSeparatorAtEnd(dialog.GetPath());
@@ -424,6 +425,7 @@ private:
             initialPath = wxGetCwd();
 
         wxDirDialog dialog(this, _("Select directory"), initialPath);
+        PlaceWindow(&dialog);
         if (dialog.ShowModal() == wxID_OK)
         {
             const wxString newPath = RemovePathSeparatorAtEnd(dialog.GetPath());
@@ -572,6 +574,7 @@ void DirectoryParamsPanel::OnBtnDirSelectClick(wxCommandEvent &event)
     DirectorySelectDialog dialog(this, m_pSearchDirPath->GetValue(),
                                  m_pFindData->GetSearchPathFullList(),
                                  m_pSearchDirPath->GetStrings());
+    PlaceWindow(&dialog);
     if (dialog.ShowModal() == wxID_OK)
     {
         const wxString &result = dialog.GetPaths();

@@ -197,6 +197,7 @@ bool wxWidgetsGUI::OnCheckIfApplicationManaged()
 bool wxWidgetsGUI::OnCreateApplicationBinding()
 {
     wxWidgetsGUIAppAdoptingDlg Dlg(0,this);
+    PlaceWindow(&Dlg);
     Dlg.ShowModal();
     return OnCheckIfApplicationManaged();
 }

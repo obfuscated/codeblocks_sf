@@ -1541,6 +1541,7 @@ void CodeSnippetsTreeCtrl::SaveSnippetAsFileLink()
     // move dialog into the parents frame space
     wxPoint mousePosn = ::wxGetMousePosition();
     (&dlg)->Move(mousePosn.x, mousePosn.y);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK) return;
 
     newFileName = dlg.GetPath();

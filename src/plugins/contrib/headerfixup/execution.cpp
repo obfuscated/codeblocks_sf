@@ -315,6 +315,7 @@ void Execution::OnBtnRunClick(wxCommandEvent& /*event*/)
   {
     this->Show(false);
     Protocol Prot(NULL);
+    PlaceWindow(&Prot);
     Prot.SetProtocol(m_Log);
     Prot.ShowModal();
   }

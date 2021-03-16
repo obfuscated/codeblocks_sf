@@ -82,6 +82,7 @@ class DebuggerInfoWindow : public wxScrollingDialog
 void DebuggerInfoCmd::ParseOutput(const wxString& output)
 {
     DebuggerInfoWindow win(Manager::Get()->GetAppWindow(), m_Title.wx_str(), output);
+    PlaceWindow(&win);
     win.ShowModal();
 }
 

@@ -199,6 +199,7 @@ bool CodeRefactoring::Parse()
     else
     {
         ScopeDialog scopeDlg(Manager::Get()->GetAppWindow(), _("Code Refactoring"));
+        PlaceWindow(&scopeDlg);
         const int ret = scopeDlg.ShowModal();
         if (ret == ScopeDialog::ID_OPEN_FILES)
             GetOpenedFiles(files);

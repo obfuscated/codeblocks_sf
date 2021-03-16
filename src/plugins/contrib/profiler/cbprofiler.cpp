@@ -115,6 +115,7 @@ int CBProfiler::Execute()
                                     _("Select Target"),
                                     project->GetBuildTargetsCount(), &choices[0]);
         dialog.SetSelection(selected);
+        PlaceWindow(&dialog);
         if (dialog.ShowModal() != wxID_OK)
             return -1;
         int targetIndex = dialog.GetSelection();
@@ -199,6 +200,7 @@ int CBProfiler::Execute()
                 {
                     wxFileDialog filedialog(Manager::Get()->GetAppWindow(), _("Locate profile information"),
                                             _T(""),_T("gmon.out"),_T("*.*"),wxFD_OPEN|wxFD_FILE_MUST_EXIST|compatibility::wxHideReadonly);
+                    PlaceWindow(&filedialog);
                     if (filedialog.ShowModal() == wxID_OK)
                     {
                         dataname = filedialog.GetPath();

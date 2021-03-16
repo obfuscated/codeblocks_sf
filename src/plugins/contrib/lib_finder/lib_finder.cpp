@@ -128,6 +128,7 @@ void lib_finder::OnRelease(bool /*appShutDown*/)
 int lib_finder::Execute()
 {
     LibrariesDlg m_Dlg(Manager::Get()->GetAppWindow(),m_KnownLibraries);
+    PlaceWindow(&m_Dlg);
     m_Dlg.ShowModal();
 	return -1;
 }
@@ -299,7 +300,9 @@ void lib_finder::SetupTarget(CompileTargetBase* Target,const wxArrayString& Libs
 
         if ( cbMessageBox( Message, _("LibFinder - error"), wxYES_NO|wxICON_EXCLAMATION ) == wxID_YES )
         {
-            ProjectMissingLibs(Manager::Get()->GetAppWindow() ,NotFound,m_KnownLibraries).ShowModal();
+            ProjectMissingLibs dlg(Manager::Get()->GetAppWindow(), NotFound, m_KnownLibraries);
+            PlaceWindow(&dlg);
+            dlg.ShowModal();
         }
     }
 }

@@ -29,6 +29,7 @@
 #include <wx/settings.h>
 
 #include "../wxsflags.h"
+#include "globals.h"
 
 using namespace wxsFlags;
 
@@ -294,6 +295,7 @@ wxsFontProperty::wxsFontProperty(const wxString& PGName,const wxString& DataName
 bool wxsFontProperty::ShowEditor(wxsPropertyContainer* Object)
 {
     wxsSimpleFontEditorDlg Dlg(0,VALUE);
+    PlaceWindow(&Dlg);
     return Dlg.ShowModal() == wxID_OK;
 }
 

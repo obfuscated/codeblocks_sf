@@ -50,6 +50,7 @@ bool wxsImageProperty::ShowEditor(wxsPropertyContainer *Object)
     wxString                                ss;
 
     // show the dialog, exit immediately if cancelled
+    PlaceWindow(&dlg);
     n = dlg.ShowModal();
     if(n != wxID_OK){
         return false;

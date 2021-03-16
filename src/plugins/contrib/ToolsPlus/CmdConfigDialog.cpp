@@ -454,6 +454,7 @@ void CmdConfigDialog::OnImport(wxCommandEvent &/*event*/)
     wxFileDialog fd(NULL, _("Import: Select File"),_T(""),_T(""),_T("*"),wxFD_OPEN|wxFD_FILE_MUST_EXIST);
     #endif
     const int prevlistsize = m_ic.interps.GetCount();
+    PlaceWindow(&fd);
     if(fd.ShowModal()!=wxID_OK)
         return;
     m_ic.ImportConfig(fd.GetPath());
@@ -471,6 +472,7 @@ void CmdConfigDialog::OnExport(wxCommandEvent &/*event*/)
     #else
     wxFileDialog fd(NULL, _("Export: Choose a Filename"),_T(""),_T(""),_T("*"),wxFD_SAVE);
     #endif
+    PlaceWindow(&fd);
     if(fd.ShowModal()!=wxID_OK)
         return;
     m_ic.ExportConfig(fd.GetPath());

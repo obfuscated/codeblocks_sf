@@ -753,6 +753,7 @@ void ProjectOptionsDlg::OnRemoveBuildTargetClick(cb_unused wxCommandEvent& event
 void ProjectOptionsDlg::OnVirtualTargets(cb_unused wxCommandEvent& event)
 {
     VirtualBuildTargetsDlg dlg(this, -1, m_Project);
+    PlaceWindow(&dlg);
     dlg.ShowModal();
 }
 

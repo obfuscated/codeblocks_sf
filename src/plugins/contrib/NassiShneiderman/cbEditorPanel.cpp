@@ -93,7 +93,7 @@ bool cbEditorPanel::SaveAs()
                       fname.GetFullName(),
                       m_filecontent->GetWildcard(),
                       wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK) // cancelled out
     {
         UpdateModified();

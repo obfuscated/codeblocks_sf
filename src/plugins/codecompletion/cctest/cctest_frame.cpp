@@ -538,6 +538,7 @@ void CCTestFrame::OnMenuTokenSelected(wxCommandEvent& /*event*/)
     TokenTree*  tt = m_NativeParser.m_Parser.GetTokenTree();
     if (!pb || !tt) return;
     wxTextEntryDialog dlg(this, _("Enter name of token to debug:"), _("CCTest"));
+    PlaceWindow(&dlg);
     if (dlg.ShowModal()==wxID_OK)
     {
         wxString target = dlg.GetValue().Trim(true).Trim(false);
@@ -550,7 +551,9 @@ void CCTestFrame::OnMenuTokenSelected(wxCommandEvent& /*event*/)
             Token* t = tt->at(i);
             if (t && t->m_Name.Matches(target))
             {
-                CCDebugInfo di(this, pb, t); di.ShowModal();
+                CCDebugInfo di(this, pb, t);
+                PlaceWindow(&di);
+                di.ShowModal();
                 found = true;
                 break; // found, exit for-loop
             }
@@ -754,6 +757,7 @@ void CCTestFrame::OnSaveTestResultClick(wxCommandEvent& event)
                      _T(""), _T(""),
                      _T("Save Files (*.txt)|*.txt|All files(*.*)|*.*"),
                      wxFD_SAVE);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
         wxFile file(dlg.GetPath(), wxFile::write);

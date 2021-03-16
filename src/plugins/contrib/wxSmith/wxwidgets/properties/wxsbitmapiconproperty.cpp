@@ -162,6 +162,7 @@ wxString wxsBitmapIconProperty::GetStr(wxsPropertyContainer* Object)
 bool wxsBitmapIconProperty::ShowEditor(wxsPropertyContainer* Object)
 {
     wxsBitmapIconEditorDlg Dlg(0,VALUE,DefaultClient);
+    PlaceWindow(&Dlg);
     return Dlg.ShowModal() == wxID_OK;
 }
 

@@ -982,6 +982,7 @@ void CompilerOptionsDlg::OptionsToText()
                  "Do you want to enable these flags?");
         AnnoyingDialog dlg(_("Enable compiler flags?"), msg, wxART_QUESTION,
                            AnnoyingDialog::YES_NO, AnnoyingDialog::rtNO);
+        PlaceWindow(&dlg);
         if (dlg.ShowModal() == AnnoyingDialog::rtNO)
         {
             // for disabled options, remove relative text option *and*
@@ -3020,6 +3021,7 @@ void CompilerOptionsDlg::OnFlagsPopup(wxPropertyGridEvent& event)
             dlg.SetSize(dlg.GetPosition().x, dlg.GetPosition().y - (220 - dlg.GetSize().GetHeight()) / 2,
                         dlg.GetSize().GetWidth(), 220);
         }
+        PlaceWindow(&dlg);
         dlg.ShowModal();
         wxString flags = dlg.GetValue();
         flags.Replace(wxT("\n"), wxT(" "));

@@ -173,7 +173,7 @@ int GenericMessageBox(const wxString& messageIn, const wxString& captionIn, long
     wxString caption = captionIn; caption.Replace( _T("\t"), _T("    ") );
 
     GenericMessageDialog dialog(parent, message, caption, decorated_style, wxPoint(x,y));
-
+    PlaceWindow(&dialog);
     int ans = dialog.ShowModal();
     switch ( ans )
     {

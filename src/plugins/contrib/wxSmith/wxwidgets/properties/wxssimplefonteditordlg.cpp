@@ -24,6 +24,7 @@
 #include "wxsfonteditordlg.h"
 
 #include <wx/fontdlg.h>
+#include "globals.h"
 
 //(*InternalHeaders(wxsSimpleFontEditorDlg)
 #include <wx/intl.h>
@@ -217,6 +218,7 @@ void wxsSimpleFontEditorDlg::OnButton1Click(cb_unused wxCommandEvent& event)
 void wxsSimpleFontEditorDlg::OnButton2Click(cb_unused wxCommandEvent& event)
 {
     wxsFontEditorDlg Dlg(this,m_WorkingCopy);
+    PlaceWindow(&Dlg);
     Dlg.ShowModal();
     UpdateFontDescription();
 }

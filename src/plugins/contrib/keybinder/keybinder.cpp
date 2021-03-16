@@ -2512,6 +2512,7 @@ void wxKeyConfigPanel::OnAddProfile(wxCommandEvent &)
           "The new profile will be initially set to a copy of the last selected profile."),
         _("Add new profile"));
     dlg.SetValue(sel->GetName());
+    PlaceWindow(&dlg);
 
     bool valid = FALSE;
     while (!valid) {

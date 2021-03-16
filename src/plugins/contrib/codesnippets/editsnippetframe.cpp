@@ -497,6 +497,7 @@ void EditSnippetFrame::OnFileOpen (wxCommandEvent &WXUNUSED(event))
     wxString fname;
     wxFileDialog dlg (this, _T("Open file"), _T(""), _T(""), _T("Any file (*)|*"),
                       wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK) return;
     fname = dlg.GetPath ();
     ////FileOpen (fname);

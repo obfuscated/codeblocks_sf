@@ -159,7 +159,7 @@ void SymTabExecDlg::OnWriteToFile(wxCommandEvent& WXUNUSED(event))
 
   wxString     es = wxEmptyString;
   wxFileDialog fd(parent, _("Save NM output to file"), es, es, _T("*.*"), wxFD_SAVE);
-
+  PlaceWindow(&fd);
   if (fd.ShowModal() == wxID_OK)
   {
     wxFFile file(fd.GetPath().c_str(), _T("w"));

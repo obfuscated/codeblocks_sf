@@ -1212,7 +1212,9 @@ HooverDrawlet *NassiView::OnDragOver(const wxPoint &pos, wxDragResult &def, bool
 
 void NassiView::ExportCSource()
 {
-    wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"), _T(""), _T(""), _("C sources (*.c)|*.c"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"), _T(""), _T(""),
+                     _("C sources (*.c)|*.c"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    PlaceWindow(&dlg);
     if ( dlg.ShowModal() != wxID_OK ) return;
     wxString filename = dlg.GetPath();
     if ( filename.empty() ) return;
@@ -1273,7 +1275,9 @@ void NassiView::ExportVHDLSource(){}
 
 void NassiView::ExportStrukTeX()
 {
-    wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"), _T(""), _T(""), _("LaTeX files (*.tex)|*.tex"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
+    wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"), _T(""), _T(""),
+                     _("LaTeX files (*.tex)|*.tex"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
+    PlaceWindow(&dlg);
     if ( dlg.ShowModal() != wxID_OK ) return;
     wxString filename = dlg.GetPath();
     if ( filename.empty() ) return;
@@ -1346,7 +1350,9 @@ void NassiView::ExportStrukTeX()
 #if wxUSE_POSTSCRIPT
 void NassiView::ExportPS()
 {
-    wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"), _T(""), _T(""), _("PostScript files (*.ps)|*.ps"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"), _T(""), _T(""),
+                     _("PostScript files (*.ps)|*.ps"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    PlaceWindow(&dlg);
     if ( dlg.ShowModal() != wxID_OK ) return;
     wxString filename = dlg.GetPath();
     if ( filename.empty() ) return;
@@ -1433,7 +1439,9 @@ void NassiView::ExportPS()
 
 void NassiView::ExportSVG()
 {
-    wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"),_T(""),_T(""),_("SVG files (*.SVG)|*.SVG"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
+    wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"),_T(""),_T(""),
+                     _("SVG files (*.SVG)|*.SVG"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
+    PlaceWindow(&dlg);
     if ( dlg.ShowModal() != wxID_OK ) return;
     wxString filename = dlg.GetPath();
     if ( filename.empty() ) return;
@@ -1515,7 +1523,9 @@ void NassiView::ExportSVG()
 
 void NassiView::ExportBitmap()
 {
-    wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"),_T(""),_T(""),_("PNG files (*.png)|*.png"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
+    wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"),_T(""),_T(""),
+                     _("PNG files (*.png)|*.png"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
+    PlaceWindow(&dlg);
     if ( dlg.ShowModal() != wxID_OK ) return;
     wxString filename = dlg.GetPath();
     if ( filename.empty() ) return;

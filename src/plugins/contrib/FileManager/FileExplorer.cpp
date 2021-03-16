@@ -1292,7 +1292,8 @@ void FileExplorer::OnRightClick(wxTreeEvent &event)
 void FileExplorer::OnNewFile(wxCommandEvent &/*event*/)
 {
     wxString workingdir=GetFullPath(m_selectti[0]); //SINGLE: m_Tree->GetSelection()
-    wxTextEntryDialog te(this,_("Name Your New File: "));
+    wxTextEntryDialog te(this, _("Name Your New File: "));
+    PlaceWindow(&te);
     if(te.ShowModal()!=wxID_OK)
         return;
     wxString name=te.GetValue();
@@ -1321,6 +1322,7 @@ void FileExplorer::OnAddFavorite(wxCommandEvent &/*event*/)
     if(fav.path[fav.path.Len()-1]!=wxFileName::GetPathSeparator())
         fav.path=fav.path+wxFileName::GetPathSeparator();
     wxTextEntryDialog ted(NULL,_("Enter an alias for this directory:"),_("Add Favorite Directory"),fav.path);
+    PlaceWindow(&ted);
     if(ted.ShowModal()!=wxID_OK)
         return;
     wxString name=ted.GetValue();
@@ -1333,6 +1335,7 @@ void FileExplorer::OnNewFolder(wxCommandEvent &/*event*/)
 {
     wxString workingdir=GetFullPath(m_selectti[0]); //SINGLE: m_Tree->GetSelection()
     wxTextEntryDialog te(this,_("New Directory Name: "));
+    PlaceWindow(&te);
     if(te.ShowModal()!=wxID_OK)
         return;
     wxString name=te.GetValue();
@@ -1437,6 +1440,7 @@ void FileExplorer::OnCopy(wxCommandEvent &/*event*/)
     {
         selectedfiles.Add(GetFullPath(m_selectti[i]));  //SINGLE: m_Tree->GetSelection()
     }
+    PlaceWindow(&dd);
     if(dd.ShowModal()==wxID_CANCEL)
         return;
     CopyFiles(dd.GetPath(),selectedfiles);
@@ -1475,6 +1479,7 @@ void FileExplorer::OnMove(wxCommandEvent &/*event*/)
     for(int i=0;i<m_ticount;i++)
         selectedfiles.Add(GetFullPath(m_selectti[i]));  //SINGLE: m_Tree->GetSelection()
     dd.SetPath(GetFullPath(m_Tree->GetRootItem()));
+    PlaceWindow(&dd);
     if(dd.ShowModal()==wxID_CANCEL)
         return;
     MoveFiles(dd.GetPath(),selectedfiles);
@@ -1544,6 +1549,7 @@ void FileExplorer::OnRename(wxCommandEvent &/*event*/)
             return;
         }
         wxTextEntryDialog te(this,_("New name:"),_("Rename File"),wxFileName(path).GetFullName());
+        PlaceWindow(&te);
         if(te.ShowModal()==wxID_CANCEL)
             return;
         wxFileName destpath(path);
@@ -1554,6 +1560,7 @@ void FileExplorer::OnRename(wxCommandEvent &/*event*/)
     if(wxFileName::DirExists(path))
     {
         wxTextEntryDialog te(this,_("New name:"),_("Rename File"),wxFileName(path).GetFullName());
+        PlaceWindow(&te);
         if(te.ShowModal()==wxID_CANCEL)
             return;
         wxFileName destpath(path);
@@ -1583,6 +1590,7 @@ void FileExplorer::OnCollapseAll(wxCommandEvent &/*event*/)
 void FileExplorer::OnSettings(wxCommandEvent &/*event*/)
 {
     FileBrowserSettings fbs(m_favdirs,NULL);
+    PlaceWindow(&fbs);
     if(fbs.ShowModal()==wxID_OK)
     {
         size_t count=m_favdirs.GetCount();

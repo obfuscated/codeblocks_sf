@@ -272,6 +272,7 @@ wxsResource* wxWidgetsResFactory::OnBuildExternal(const wxString& FileName)
 bool wxWidgetsResFactory::OnNewWizard(int Number,wxsProject* Project)
 {
     wxsNewWindowDlg Dlg(0,NamesPtr[Number],Project);
+    PlaceWindow(&Dlg);
     return Dlg.ShowModal() == wxID_OK;
 }
 

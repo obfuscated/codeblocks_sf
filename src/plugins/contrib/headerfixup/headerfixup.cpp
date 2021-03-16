@@ -68,6 +68,7 @@ int HeaderFixup::Execute()
   }
 
   Execution Dlg(NULL);
+  PlaceWindow(&Dlg);
   Dlg.ShowModal();
   return 0;
 }// Execute

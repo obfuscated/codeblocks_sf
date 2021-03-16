@@ -112,6 +112,7 @@ bool Thesaurus::GetSynonym(const wxString Word, wxString &Syn)
         {
             Syn = wxEmptyString;
             ThesaurusDialog dlg(m_pDialogsParent, Word, syn);
+            PlaceWindow(&dlg);
             if ( dlg.ShowModal() == wxID_OK )
             {
                 Syn = dlg.GetSelection();

@@ -1945,6 +1945,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
             {
                 // FIXME: this  code can lead to a deadlock (because of double locking from single thread)
                 CCDebugInfo info(nullptr, &m_NativeParser.GetParser(), token);
+                PlaceWindow(&info);
                 info.ShowModal();
             }
             else if (isImpl)
@@ -2640,6 +2641,7 @@ int CodeCompletion::DoAllMethodsImpl()
 
     // select tokens
     MultiSelectDlg dlg(Manager::Get()->GetAppWindow(), arr, true);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
         cbStyledTextCtrl* control = ed->GetControl();

@@ -406,6 +406,7 @@ void ProjectOptionsManipulatorDlg::OnSearchCompilerClick(wxCommandEvent& event)
    }
 
    wxSingleChoiceDialog choose_dlg(this, _T("Available compilers"), _T("Choose a new compiler"), compiler_array);
+   PlaceWindow(&choose_dlg);
    if (choose_dlg.ShowModal() == wxID_OK)
    {
      if      (event.GetId() == ID_BTN_SEARCH_COMPILER_SRC)

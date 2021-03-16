@@ -567,7 +567,9 @@ void ProjectConfigurationPanel::Onm_AddScriptClick(wxCommandEvent& /*event*/)
 void ProjectConfigurationPanel::OnButton2Click(wxCommandEvent& /*event*/)
 {
     wxArrayString HeadersBase;
-    if ( HeadersDetectorDlg(this,m_Project,HeadersBase).ShowModal() != wxID_OK )
+    HeadersDetectorDlg dlg(this,m_Project,HeadersBase);
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() != wxID_OK)
     {
         cbMessageBox( _("Cancelled the search"), _("Cancelled"), wxOK | wxICON_WARNING, this );
         return;

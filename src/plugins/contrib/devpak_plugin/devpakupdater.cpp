@@ -99,6 +99,7 @@ int DevPakUpdater::Execute()
     if (!ConfigurationValid())
         return -1;
     UpdateDlg dlg(Manager::Get()->GetAppWindow());
+    PlaceWindow(&dlg);
     dlg.ShowModal();
     return 0;
 }

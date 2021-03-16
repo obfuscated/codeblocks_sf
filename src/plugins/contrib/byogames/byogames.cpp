@@ -60,6 +60,7 @@ int BYOGames::Execute()
 int BYOGames::SelectGame()
 {
     byoGameSelect Select(0);
+    PlaceWindow(&Select);
     return Select.ShowModal();
 }
 

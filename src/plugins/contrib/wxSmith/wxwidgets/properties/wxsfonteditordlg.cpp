@@ -25,6 +25,7 @@
 #include <wx/fontmap.h>
 #include <wx/fontdlg.h>
 #include <wx/settings.h>
+#include "globals.h"
 
 #define FT_DFAULT   0x00
 #define FT_CUSTOM   0x01
@@ -581,6 +582,7 @@ void wxsFontEditorDlg::OnFaceAddClick(cb_unused wxCommandEvent& event)
 {
     wxString Face;
     wxsFontFaceEditorDlg Dlg(this,Face);
+    PlaceWindow(&Dlg);
     if ( Dlg.ShowModal() == wxID_OK && !Face.empty() )
     {
         FaceList->Append(Face);
@@ -616,6 +618,7 @@ void wxsFontEditorDlg::OnFaceEditClick(cb_unused wxCommandEvent& event)
     {
         wxString Face = FaceList->GetString(Index);
         wxsFontFaceEditorDlg Dlg(this,Face);
+        PlaceWindow(&Dlg);
         if ( Dlg.ShowModal() == wxID_OK )
         {
             FaceList->SetString(Index,Face);

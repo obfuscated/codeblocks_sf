@@ -39,6 +39,7 @@ wxsArrayStringCheckProperty::wxsArrayStringCheckProperty(const wxString& PGName,
 bool wxsArrayStringCheckProperty::ShowEditor(wxsPropertyContainer* Object)
 {
     wxsArrayStringCheckEditorDlg Dlg(0,VALUE,CHECK);
+    PlaceWindow(&Dlg);
     return Dlg.ShowModal() == wxID_OK;
 }
 

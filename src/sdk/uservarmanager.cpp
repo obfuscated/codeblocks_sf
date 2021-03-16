@@ -308,6 +308,7 @@ void UserVariableManager::Migrate()
 wxString UserVariableManager::GetVariable(wxWindow *parent, const wxString &old)
 {
     GetUserVariableDialog dlg(parent, old);
+    PlaceWindow(&dlg);
     dlg.ShowModal();
     return dlg.GetVariable();
 }

@@ -178,6 +178,7 @@ void ScriptConsole::OnbtnLoadClick(cb_unused wxCommandEvent& event)
                      wxEmptyString,
                      _T("Script files (*.script)|*.script"),
                      wxFD_OPEN | compatibility::wxHideReadonly);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
         mgr->Write(_T("/file_dialogs/file_run_script/directory"), dlg.GetDirectory());

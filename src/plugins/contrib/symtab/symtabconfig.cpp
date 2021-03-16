@@ -181,6 +181,7 @@ void SymTabConfigDlg::OnLibraryPath(wxCommandEvent& WXUNUSED(event))
 #endif
 
   wxDirDialog dd(parent, _("Select directory for search"));
+  PlaceWindow(&dd);
   if (dd.ShowModal() == wxID_OK)
   {
     wxString path = dd.GetPath();
@@ -212,6 +213,7 @@ void SymTabConfigDlg::OnLibrary(wxCommandEvent& WXUNUSED(event))
   wxString es       = wxEmptyString;
 
   wxFileDialog fd(parent, caption, es, es, wildcard, wxFD_OPEN|compatibility::wxHideReadonly);
+  PlaceWindow(&fd);
   if (fd.ShowModal() == wxID_OK)
   {
     wxString path = fd.GetPath();
@@ -238,6 +240,7 @@ void SymTabConfigDlg::OnNM(wxCommandEvent& WXUNUSED(event))
   wxString es = wxEmptyString;
 
   wxFileDialog fd(parent, caption, es, es, wildcard, wxFD_OPEN|compatibility::wxHideReadonly);
+  PlaceWindow(&fd);
   if (fd.ShowModal() == wxID_OK)
   {
     wxString path = fd.GetPath();

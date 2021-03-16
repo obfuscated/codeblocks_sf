@@ -93,7 +93,7 @@ void CscopeConfigPanel::OnbtnCscopeAppClick(wxCommandEvent& event)
                          _("Executable files (*)|*"),
 #endif
                         wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-
+    PlaceWindow(&dialog);
     if (dialog.ShowModal() == wxID_OK)
         txtCscopeApp->SetValue(dialog.GetPath());
 }

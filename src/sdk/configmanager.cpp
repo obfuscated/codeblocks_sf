@@ -222,7 +222,7 @@ wxString CfgMgrBldr::FindConfigFile(const wxString& filename)
     return wxEmptyString;
 }
 
-/// Print error message an allow the user to either discard the old config or close the application.
+/// Print error message and allow the user to either discard the old config or close the application.
 /// Call this function when you've detected an error while reading the config.
 static void handleConfigError(TiXmlDocument &doc, const wxString &fileName, const wxString &additionalMessage)
 {
@@ -396,7 +396,6 @@ void CfgMgrBldr::Flush()
                                        F(_T("Could not save config file '%s'!"), cfg.wx_str()),
                                        wxART_ERROR, AnnoyingDialog::TWO_BUTTONS,
                                        AnnoyingDialog::rtTWO, _("&Retry"), _("&Close"));
-                    PlaceWindow(&dlg);
                     switch (dlg.ShowModal())
                     {
                         case AnnoyingDialog::rtONE:

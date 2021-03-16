@@ -305,10 +305,12 @@ void ProjectMissingLibs::OnButton1Click1(wxCommandEvent& /*event*/)
 
     // Getting list of directories to process
     DirListDlg Dlg(this);
+    PlaceWindow(&Dlg);
     if ( Dlg.ShowModal() == wxID_CANCEL ) return;
 
     // Do the processing
     ProcessingDlg PDlg( this, m_DetectionManager, m_CurrentResults );
+    PlaceWindow(&PDlg);
     PDlg.ShowModal();
 
     bool apply = PDlg.ReadDirs(Dlg.Dirs) && PDlg.ProcessLibs(Libs);

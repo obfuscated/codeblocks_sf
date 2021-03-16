@@ -522,6 +522,7 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
     VersionEditorDialog.SetNamespace(cbC2U(GetConfig().Code.NameSpace.c_str()));
     VersionEditorDialog.SetPrefix(cbC2U(GetConfig().Code.Prefix.c_str()));
 
+    PlaceWindow(&VersionEditorDialog);
     VersionEditorDialog.ShowModal();
     // allright let's call all the getters
     avConfig OldConfig = GetConfig();
@@ -833,6 +834,7 @@ void AutoVersioning::GenerateChanges()
 {
     avChangesDlg changesDlg((wxWindow*) Manager::Get()->GetAppWindow(),0L);
     changesDlg.SetTemporaryChangesFile(m_Project->GetBasePath() + _T("changes.tmp"));
+    PlaceWindow(&changesDlg);
     changesDlg.ShowModal();
 
     wxString changes = changesDlg.Changes();

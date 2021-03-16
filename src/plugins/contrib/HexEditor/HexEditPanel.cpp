@@ -1170,7 +1170,7 @@ bool HexEditPanel::SaveAs()
                       fname.GetFullName(),
                       _T("*.*"),//m_filecontent->GetWildcard(),
                       wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK) // cancelled out
     {
         UpdateModified();
@@ -1520,6 +1520,7 @@ void HexEditPanel::ProcessSearch()
     if ( !m_Content->GetSize() ) return;
 
     SearchDialog dlg( this, m_Content, m_Current );
+    PlaceWindow(&dlg);
     if ( dlg.ShowModal() == wxID_OK )
     {
         m_Current = dlg.GetOffset();
@@ -1534,7 +1535,9 @@ void HexEditPanel::ProcessSearch()
 
 void HexEditPanel::OnButton1Click(wxCommandEvent& /*event*/)
 {
-    ExpressionTester( 0, m_Content, m_Current).ShowModal();
+    ExpressionTester dlg(this, m_Content, m_Current);
+    PlaceWindow(&dlg);
+    dlg.ShowModal();
 }
 
 void HexEditPanel::ReparseExpression()
@@ -1577,7 +1580,8 @@ void HexEditPanel::OnExpressionTextEnter(wxCommandEvent& /*event*/)
 void HexEditPanel::OnButton3Click1(wxCommandEvent& event)
 {
     SelectStoredExpressionDlg dlg( this, m_Expression->GetValue() );
-    if ( dlg.ShowModal() == wxID_OK )
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() == wxID_OK)
     {
         m_Expression->SetValue( dlg.GetExpression() );
         OnExpressionTextEnter(event);
@@ -1828,7 +1832,9 @@ void HexEditPanel::OnButton4Click1(wxCommandEvent& /*event*/)
 
     if ( !test ) return;
 
-    TestCasesDlg( this, *test ).ShowModal();
+    TestCasesDlg dlg(this, *test);
+    PlaceWindow(&dlg);
+    dlg.ShowModal();
 }
 
 

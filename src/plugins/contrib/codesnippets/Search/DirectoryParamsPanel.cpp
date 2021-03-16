@@ -66,6 +66,7 @@ void DirectoryParamsPanel::OnTxtTextEvent(wxCommandEvent &event)
 void DirectoryParamsPanel::OnBtnDirSelectClick(wxCommandEvent &event)
 {
     wxDirDialog DlgDir(this, _("Select directory"), wxGetCwd());
+    PlaceWindow(&DlgDir);
     if ( DlgDir.ShowModal() == wxID_OK )
     {
         m_pTxtSearchDirPath->SetValue(DlgDir.GetPath());

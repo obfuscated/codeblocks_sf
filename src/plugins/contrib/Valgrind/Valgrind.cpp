@@ -534,6 +534,7 @@ void Valgrind::OnMemCheckOpenLog(wxCommandEvent& /*event*/)
     wxFileDialog Dialog(Manager::Get()->GetAppFrame(), _("Choose XML log file"),
                         wxEmptyString, wxEmptyString,
                         wxT("*.xml"), wxFD_OPEN);
+    PlaceWindow(&Dialog);
     if (Dialog.ShowModal() == wxID_OK)
     {
         TiXmlDocument Doc;

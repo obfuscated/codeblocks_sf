@@ -3199,6 +3199,7 @@ void CompilerGCC::OnRebuild(wxCommandEvent& event)
                         "and the available system memory.\n\n"
                         "Are you sure you want to rebuild the entire project?"),
                     wxART_QUESTION);
+    PlaceWindow(&dlg);
     if (m_pProject && dlg.ShowModal() == AnnoyingDialog::rtNO)
         return;
 
@@ -3229,6 +3230,7 @@ void CompilerGCC::OnRebuildAll(cb_unused wxCommandEvent& event)
                         "and the available system memory.\n\n"
                         "Are you sure you want to rebuild ALL the projects?"),
                     wxART_QUESTION);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == AnnoyingDialog::rtNO)
         return;
 
@@ -3247,6 +3249,7 @@ void CompilerGCC::OnCleanAll(cb_unused wxCommandEvent& event)
                         "and the available system memory.\n\n"
                         "Are you sure you want to proceed to cleaning?"),
                     wxART_QUESTION);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == AnnoyingDialog::rtNO)
         return;
 
@@ -3266,6 +3269,7 @@ void CompilerGCC::OnClean(wxCommandEvent& event)
                         "and the available system memory.\n\n"
                         "Are you sure you want to proceed to cleaning?"),
                     wxART_QUESTION);
+    PlaceWindow(&dlg);
     if (m_pProject && dlg.ShowModal() == AnnoyingDialog::rtNO)
         return;
 
@@ -3355,6 +3359,7 @@ void CompilerGCC::OnSelectTarget(wxCommandEvent& event)
         IncrementalSelectArrayIterator iterator(m_Targets);
         IncrementalSelectDialog dlg(Manager::Get()->GetAppWindow(), &iterator, _("Select target..."),
                                     _("Choose target:"));
+        PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_OK)
         {
             selection = dlg.GetSelection();

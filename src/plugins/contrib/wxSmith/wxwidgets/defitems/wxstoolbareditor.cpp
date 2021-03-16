@@ -530,6 +530,7 @@ void wxsToolBarEditor::OnBitmapClick(cb_unused wxCommandEvent& event)
     ToolBarItem* Selected = m_Selected;
     SelectItem(Selected);
     wxsBitmapIconEditorDlg Dlg(this,Selected->m_Bitmap,_T("wxART_TOOLBAR"));
+    PlaceWindow(&Dlg);
     Dlg.ShowModal();
     SelectItem(nullptr);
     SelectItem(Selected);
@@ -542,6 +543,7 @@ void wxsToolBarEditor::OnBitmap2Click(cb_unused wxCommandEvent& event)
     ToolBarItem* Selected = m_Selected;
     SelectItem(Selected);
     wxsBitmapIconEditorDlg Dlg(this,Selected->m_Bitmap2,_T("wxART_TOOLBAR"));
+    PlaceWindow(&Dlg);
     Dlg.ShowModal();
     SelectItem(nullptr);
     SelectItem(Selected);

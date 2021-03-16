@@ -560,6 +560,7 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
             CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
             CCDebugInfo info(wx_tree, m_Parser, ctd->m_Token);
+            PlaceWindow(&info);
             info.ShowModal();
 
             CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)

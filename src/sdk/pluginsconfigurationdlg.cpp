@@ -246,6 +246,7 @@ void PluginsConfigurationDlg::OnInstall(cb_unused wxCommandEvent& event)
                         wxEmptyString, wxEmptyString,
                         _T("Code::Blocks Plugins (*.cbplugin)|*.cbplugin"),
                         wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE | compatibility::wxHideReadonly);
+    PlaceWindow(&fd);
     if (fd.ShowModal() != wxID_OK)
         return;
 
@@ -309,6 +310,7 @@ void PluginsConfigurationDlg::OnExport(cb_unused wxCommandEvent& event)
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("plugins_configuration"));
     wxDirDialog dd(this, _("Select directory to export plugin"), cfg->Read(_T("/last_export_path")), wxDD_NEW_DIR_BUTTON);
+    PlaceWindow(&dd);
     if (dd.ShowModal() != wxID_OK)
         return;
     cfg->Write(_T("/last_export_path"), dd.GetPath());

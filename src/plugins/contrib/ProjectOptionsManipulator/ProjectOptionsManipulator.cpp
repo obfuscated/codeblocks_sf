@@ -117,6 +117,7 @@ int ProjectOptionsManipulator::Execute()
   {
     ProjectOptionsManipulatorResultDlg dlg( Manager::Get()->GetAppWindow(), ID_PROJECT_OPTIONS_RESULT_DLG );
     dlg.ApplyResult(result);
+    PlaceWindow(&dlg);
     dlg.ShowModal(); // Don't care about return value
 
     ProjectOptionsManipulatorDlg::EProjectScanOption scan_opt = m_Dlg->GetScanOption();

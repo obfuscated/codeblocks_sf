@@ -493,6 +493,7 @@ namespace
         }
 
         wxColourDialog dialog(propgrid, &data);
+        PlaceWindow(&dialog);
         if ( dialog.ShowModal() == wxID_OK )
         {
             wxColourData retData = dialog.GetColourData();

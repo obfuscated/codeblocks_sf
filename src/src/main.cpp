@@ -5093,6 +5093,7 @@ void MainFrame::OnSettingsPlugins(cb_unused wxCommandEvent& event)
 void MainFrame::OnSettingsScripting(cb_unused wxCommandEvent& event)
 {
     ScriptingSettingsDlg dlg(this);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
         RunStartupScripts();
 }

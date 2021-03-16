@@ -807,6 +807,7 @@ void FindReplaceDlg::OnSelectTarget(cb_unused wxCommandEvent& event)
 
     IncrementalSelectArrayIterator iterator(targetNames);
     IncrementalSelectDialog dlg(this, &iterator, _("Select target..."), _("Choose target:"));
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
         wxChoice *chTarget = XRCCTRL(*this, "chTarget", wxChoice);

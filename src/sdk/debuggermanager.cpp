@@ -677,7 +677,7 @@ public:
 
         wxFileDialog dialog(this, _("Load script"), path, wxEmptyString,
                             _T("Debugger script files (*.gdb)|*.gdb"), wxFD_OPEN | compatibility::wxHideReadonly);
-
+        PlaceWindow(&dialog);
         if (dialog.ShowModal() == wxID_OK)
         {
             manager->Write(_T("/file_dialogs/file_run_dbg_script/directory"), dialog.GetDirectory());

@@ -366,11 +366,13 @@ void LibrariesDlg::OnButton8Click(wxCommandEvent& /*event*/)
 
     // Getting list of directories to process
     DirListDlg Dlg(this);
+    PlaceWindow(&Dlg);
     if ( Dlg.ShowModal() == wxID_CANCEL ) return;
 
     // Do the processing
     FileNamesMap FNMap;
     ProcessingDlg PDlg(Manager::Get()->GetAppWindow(),m_Manager,m_WorkingCopy);
+    PlaceWindow(&PDlg);
     PDlg.ShowModal();
 
     bool apply = PDlg.ReadDirs(Dlg.Dirs) && PDlg.ProcessLibs();
@@ -966,5 +968,7 @@ void LibrariesDlg::Onm_ConfigPosChangeUp(wxCommandEvent& /*event*/)
 
 void LibrariesDlg::OnButton3Click(wxCommandEvent& /*event*/)
 {
-    DefsDownloadDlg(this).ShowModal();
+    DefsDownloadDlg dlg(this);
+    PlaceWindow(&dlg);
+    dlg.ShowModal();
 }

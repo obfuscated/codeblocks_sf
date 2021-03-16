@@ -243,6 +243,7 @@ void ClassWizardDlg::OnCommonDirClick(wxCommandEvent& WXUNUSED(event))
 {
     wxString path = XRCCTRL(*this, "txtCommonDir", wxTextCtrl)->GetValue();
     wxDirDialog dlg (this, _T("Choose a directory"), path);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal()==wxID_OK)
     {
         path = dlg.GetPath();
@@ -264,6 +265,7 @@ void ClassWizardDlg::OnIncludeDirClick(wxCommandEvent& WXUNUSED(event))
 {
     wxString path = XRCCTRL(*this, "txtIncludeDir", wxTextCtrl)->GetValue();
     wxDirDialog dlg (this, _T("Choose a directory"), path);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal()==wxID_OK)
     {
         path = dlg.GetPath();
@@ -275,6 +277,7 @@ void ClassWizardDlg::OnImplDirClick(wxCommandEvent& WXUNUSED(event))
 {
     wxString path = XRCCTRL(*this, "txtImplDir", wxTextCtrl)->GetValue();
     wxDirDialog dlg (this, _T("Choose a directory"), path);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal()==wxID_OK)
     {
         path = dlg.GetPath();

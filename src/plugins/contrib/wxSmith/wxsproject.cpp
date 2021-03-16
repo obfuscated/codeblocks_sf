@@ -304,6 +304,7 @@ void wxsProject::Configure()
         }
         cbConfigurationDialog Dlg(0,-1,_("Configuring wxSmith"));
         Dlg.AttachConfigurationPanel(m_GUI->BuildConfigurationPanel(&Dlg));
+        PlaceWindow(&Dlg);
         Dlg.ShowModal();
     }
 }

@@ -537,6 +537,7 @@ bool wxsItemRes::OnDeleteCleanup(bool ShowDialog)
     if ( ShowDialog )
     {
         wxsDeleteItemRes Dlg;
+        PlaceWindow(&Dlg);
         if ( Dlg.ShowModal() != wxID_OK )
         {
             return false;

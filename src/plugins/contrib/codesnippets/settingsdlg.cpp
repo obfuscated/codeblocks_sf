@@ -152,7 +152,7 @@ void SettingsDlg::GetFileName(wxString& newFileName)
    // move dialog into the parents frame space
     wxPoint mousePosn = ::wxGetMousePosition();
     dlg.Move(mousePosn.x, mousePosn.y);
-
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK) return;
     newFileName = dlg.GetPath();
 
@@ -174,7 +174,7 @@ wxString SettingsDlg::AskForPathName()       //(pecan 2006/10/06)
    // move dialog into the parents frame space
     wxPoint mousePosn = ::wxGetMousePosition();
     dlg.Move(mousePosn.x, mousePosn.y);
-
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK) return wxEmptyString;
     return dlg.GetPath();
 }

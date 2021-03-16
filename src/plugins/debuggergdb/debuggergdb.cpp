@@ -2234,6 +2234,7 @@ void DebuggerGDB::ShowWatchProperties(cb::shared_ptr<cbWatch> watch)
 
     cb::shared_ptr<GDBWatch> real_watch = cb::static_pointer_cast<GDBWatch>(watch);
     EditWatchDlg dlg(real_watch, nullptr);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
         DoWatches();
 }

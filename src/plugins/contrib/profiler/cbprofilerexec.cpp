@@ -426,7 +426,7 @@ void CBProfilerExecDlg::WriteToFile(wxCommandEvent& /*event*/)
                             wxEmptyString,
                             _T("*.*"),
                             wxFD_SAVE);
-
+    PlaceWindow(&filedialog);
     if (filedialog.ShowModal() == wxID_OK)
     {
         wxFFile file(filedialog.GetPath().c_str(), _T("w"));
