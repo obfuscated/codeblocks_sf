@@ -170,6 +170,13 @@ dlgAbout::dlgAbout(wxWindow* parent)
     items.push_back({_("E-mail"), appglobals::AppContactEmail});
     items.push_back({_("Website"), appglobals::AppUrl});
 
+    const wxPlatformInfo &platform = wxPlatformInfo::Get();
+
+    items.push_back({_("OS"), platform.GetOperatingSystemDescription()});
+    const wxString desktopEnv = platform.GetDesktopEnvironment();
+    if (!desktopEnv.empty())
+        items.push_back({_("Desktop environment"), desktopEnv });
+
     items.push_back({_("Scaling factor"), wxString::Format("%f", GetContentScaleFactor())});
     items.push_back({_("Detected scaling factor"),
                      wxString::Format("%f", cbGetActualContentScaleFactor(*this))});
