@@ -169,20 +169,8 @@ void Associations::DoSetAssociation(const wxString& ext, const wxString& descr, 
     key = _T("\"") + exe + _T("\" \"%1\"");
 
     key.SetName(BaseKeyName + node + _T("\\shell\\open\\ddeexec"));
-    key.Create();
-    key = _T("[Open(\"%1\")]");
-
-    key.SetName(BaseKeyName + node + _T("\\shell\\open\\ddeexec\\application"));
-    key.Create();
-    key = DDE_SERVICE;
-
-    key.SetName(BaseKeyName + node + _T("\\shell\\open\\ddeexec\\ifexec"));
-    key.Create();
-    key = _T("[IfExec_Open(\"%1\")]");;
-
-    key.SetName(BaseKeyName + node + _T("\\shell\\open\\ddeexec\\topic"));
-    key.Create();
-    key = DDE_TOPIC;
+    if (key.Exists())
+        key.DeleteSelf();
 
     if (ext.IsSameAs(FileFilters::CODEBLOCKS_EXT) || ext.IsSameAs(FileFilters::WORKSPACE_EXT))
     {
@@ -252,38 +240,6 @@ bool Associations::DoCheckAssociation(const wxString& ext, cb_unused const wxStr
     if (!key.QueryValue(wxEmptyString, strVal))
         return false;
     if (strVal != wxString::Format(_T("\"%s\" \"%%1\""), exe.c_str()))
-        return false;
-
-    key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec"));
-    if (!key.Open())
-        return false;
-    if (!key.QueryValue(wxEmptyString, strVal))
-        return false;
-    if (strVal != _T("[Open(\"%1\")]"))
-        return false;
-
-    key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec\\application"));
-    if (!key.Open())
-        return false;
-    if (!key.QueryValue(wxEmptyString, strVal))
-        return false;
-    if (strVal != DDE_SERVICE)
-        return false;
-
-    key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec\\ifexec"));
-    if (!key.Open())
-        return false;
-    if (!key.QueryValue(wxEmptyString, strVal))
-        return false;
-    if (strVal != _T("[IfExec_Open(\"%1\")]"))
-        return false;
-
-    key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec\\topic"));
-    if (!key.Open())
-        return false;
-    if (!key.QueryValue(wxEmptyString, strVal))
-        return false;
-    if (strVal != DDE_TOPIC)
         return false;
 
     if (ext.IsSameAs(FileFilters::CODEBLOCKS_EXT) || ext.IsSameAs(FileFilters::WORKSPACE_EXT))
