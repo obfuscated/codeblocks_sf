@@ -659,7 +659,7 @@ void GDB_driver::UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch,
     if (updateWatches)
     {
         // run this action-only command to update the tree
-        QueueCommand(new DbgCmd_UpdateWindow(this, cbDebuggerPlugin::DebugWindows::Watches));
+        QueueCommand(new DbgCmd_UpdateWindow(this, DebugWindows::Watches));
     }
 }
 
@@ -677,25 +677,25 @@ void GDB_driver::UpdateMemoryRangeWatches(MemoryRangeWatchesContainer &watches,
     }
 
     if (updateWatches)
-        QueueCommand(new DbgCmd_UpdateWindow(this, cbDebuggerPlugin::DebugWindows::MemoryRange));
+        QueueCommand(new DbgCmd_UpdateWindow(this, DebugWindows::MemoryRange));
 }
 
 void GDB_driver::UpdateWatch(const cb::shared_ptr<GDBWatch> &watch)
 {
     QueueCommand(new GdbCmd_FindWatchType(this, watch));
-    QueueCommand(new DbgCmd_UpdateWindow(this, cbDebuggerPlugin::DebugWindows::Watches));
+    QueueCommand(new DbgCmd_UpdateWindow(this, DebugWindows::Watches));
 }
 
 void GDB_driver::UpdateMemoryRangeWatch(const cb::shared_ptr<GDBMemoryRangeWatch> &watch)
 {
     QueueCommand(new GdbCmd_MemoryRangeWatch(this, watch));
-    QueueCommand(new DbgCmd_UpdateWindow(this, cbDebuggerPlugin::DebugWindows::MemoryRange));
+    QueueCommand(new DbgCmd_UpdateWindow(this, DebugWindows::MemoryRange));
 }
 
 void GDB_driver::UpdateWatchLocalsArgs(cb::shared_ptr<GDBWatch> const &watch, bool locals)
 {
     QueueCommand(new GdbCmd_LocalsFuncArgs(this, watch, locals));
-    QueueCommand(new DbgCmd_UpdateWindow(this, cbDebuggerPlugin::DebugWindows::Watches));
+    QueueCommand(new DbgCmd_UpdateWindow(this, DebugWindows::Watches));
 }
 
 void GDB_driver::Attach(int pid)

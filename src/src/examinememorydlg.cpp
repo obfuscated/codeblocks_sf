@@ -142,7 +142,7 @@ void ExamineMemoryDlg::OnGo(cb_unused wxCommandEvent& event)
     c->Write(wxT("/common/examine_memory/size_to_show"), GetBytes());
 
     if (plugin)
-        plugin->RequestUpdate(cbDebuggerPlugin::ExamineMemory);
+        plugin->RequestUpdate(DebugWindows::ExamineMemory);
 }
 
 void ExamineMemoryDlg::EnableWindow(bool enable)
@@ -156,6 +156,6 @@ void ExamineMemoryDlg::SetBaseAddress(const wxString &addr)
 
     cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
     if (plugin)
-        plugin->RequestUpdate(cbDebuggerPlugin::ExamineMemory);
+        plugin->RequestUpdate(DebugWindows::ExamineMemory);
 
 }

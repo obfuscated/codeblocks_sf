@@ -394,6 +394,17 @@ struct cbDebuggerFeature
     };
 };
 
+enum DebugWindows : int
+{
+        Backtrace,
+        CPURegisters,
+        Disassembly,
+        ExamineMemory,
+        MemoryRange,
+        Threads,
+        Watches
+};
+
 /** @brief Base class for debugger plugins
   *
   * This plugin type must offer some pre-defined debug facilities, on top
@@ -608,16 +619,6 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
         virtual bool CompilerFinished(bool compilerFailed, StartType startType)
         { wxUnusedVar(compilerFailed); wxUnusedVar(startType); return false; }
     public:
-        enum DebugWindows
-        {
-            Backtrace,
-            CPURegisters,
-            Disassembly,
-            ExamineMemory,
-            MemoryRange,
-            Threads,
-            Watches
-        };
 
         virtual void RequestUpdate(DebugWindows window) = 0;
 

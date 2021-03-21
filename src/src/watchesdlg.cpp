@@ -539,7 +539,7 @@ inline void SetValue(WatchesProperty *prop)
 
 void WatchesDlg::OnDebuggerUpdated(CodeBlocksEvent &event)
 {
-    if (cbDebuggerPlugin::DebugWindows(event.GetInt()) != cbDebuggerPlugin::DebugWindows::Watches)
+    if (DebugWindows(event.GetInt()) != DebugWindows::Watches)
         return;
 
     for (WatchItems::iterator it = m_watches.begin(); it != m_watches.end(); ++it)

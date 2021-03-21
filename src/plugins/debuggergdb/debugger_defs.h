@@ -117,11 +117,11 @@ class DebuggerContinueBaseCmd : public DebuggerCmd
 class DbgCmd_UpdateWindow : public DebuggerCmd
 {
     public:
-        DbgCmd_UpdateWindow(DebuggerDriver* driver, cbDebuggerPlugin::DebugWindows windowToUpdate);
+        DbgCmd_UpdateWindow(DebuggerDriver* driver, DebugWindows windowToUpdate);
         void Action() override;
 
     private:
-        cbDebuggerPlugin::DebugWindows m_windowToUpdate;
+        DebugWindows m_windowToUpdate;
 };
 
 /** Debugger breakpoint interface.

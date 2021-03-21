@@ -155,7 +155,7 @@ template<typename DlgType>
 struct CommonItem : cbDebuggerWindowMenuItem
 {
     typedef DlgType* (DebuggerManager::*GetWindowFunc)();
-    CommonItem(cbDebuggerFeature::Flags enableFeature, cbDebuggerPlugin::DebugWindows requestUpdate, GetWindowFunc func) :
+    CommonItem(cbDebuggerFeature::Flags enableFeature, DebugWindows requestUpdate, GetWindowFunc func) :
         m_enableFeature(enableFeature),
         m_requestUpdate(requestUpdate),
         m_getWindowFunc(func)
@@ -186,13 +186,13 @@ struct CommonItem : cbDebuggerWindowMenuItem
     }
 private:
     cbDebuggerFeature::Flags m_enableFeature;
-    cbDebuggerPlugin::DebugWindows m_requestUpdate;
+    DebugWindows m_requestUpdate;
     GetWindowFunc m_getWindowFunc;
 };
 
 template<typename DlgType>
 CommonItem<DlgType>* MakeItem(cbDebuggerFeature::Flags enableFeature,
-                              cbDebuggerPlugin::DebugWindows requestUpdate,
+                              DebugWindows requestUpdate,
                               DlgType* (DebuggerManager::*func)())
 {
     return new CommonItem<DlgType>(enableFeature, requestUpdate, func);
@@ -227,7 +227,7 @@ void DebuggerMenuHandler::RegisterDefaultWindowItems()
     struct Watches : CommonItem<cbWatchesDlg>
     {
         Watches() :
-            CommonItem<cbWatchesDlg>(cbDebuggerFeature::Watches, cbDebuggerPlugin::Watches, &DebuggerManager::GetWatchesDialog)
+            CommonItem<cbWatchesDlg>(cbDebuggerFeature::Watches, DebugWindows::Watches, &DebuggerManager::GetWatchesDialog)
         {
         }
         bool IsEnabled() override
@@ -239,20 +239,20 @@ void DebuggerMenuHandler::RegisterDefaultWindowItems()
     RegisterWindowMenu(_("Breakpoints"), _("Edit breakpoints"), new Breakpoints);
     RegisterWindowMenu(_("Watches"), _("Watch variables"), new Watches);
     RegisterWindowMenu(_("Call stack"), _("Displays the current call stack"),
-                       MakeItem(cbDebuggerFeature::Callstack, cbDebuggerPlugin::Backtrace,
+                       MakeItem(cbDebuggerFeature::Callstack, DebugWindows::Backtrace,
                                 &DebuggerManager::GetBacktraceDialog));
     RegisterWindowMenu(_("CPU Registers"), _("Display the CPU registers"),
-                       MakeItem(cbDebuggerFeature::CPURegisters, cbDebuggerPlugin::CPURegisters,
+                       MakeItem(cbDebuggerFeature::CPURegisters, DebugWindows::CPURegisters,
                                 &DebuggerManager::GetCPURegistersDialog));
     RegisterWindowMenu(_("Disassembly"), _("Disassembles the current stack frame"),
-                       MakeItem(cbDebuggerFeature::Disassembly, cbDebuggerPlugin::Disassembly,
+                       MakeItem(cbDebuggerFeature::Disassembly, DebugWindows::Disassembly,
                                 &DebuggerManager::GetDisassemblyDialog));
     RegisterWindowMenu(_("Memory dump"), _("Displays the contents of a memory location"),
-                       MakeItem(cbDebuggerFeature::ExamineMemory, cbDebuggerPlugin::ExamineMemory,
+                       MakeItem(cbDebuggerFeature::ExamineMemory, DebugWindows::ExamineMemory,
                                 &DebuggerManager::GetExamineMemoryDialog));
     RegisterWindowMenu(_("Running threads"),
                        _("Displays the currently running threads and allows switching between them"),
-                       MakeItem(cbDebuggerFeature::Threads, cbDebuggerPlugin::Threads,
+                       MakeItem(cbDebuggerFeature::Threads, DebugWindows::Threads,
                                 &DebuggerManager::GetThreadsDialog));
 }
 

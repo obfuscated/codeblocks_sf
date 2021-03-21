@@ -43,7 +43,7 @@ void DebuggerCmd::ParseOutput(const wxString& output)
 }
 
 DbgCmd_UpdateWindow::DbgCmd_UpdateWindow(DebuggerDriver* driver,
-                                         cbDebuggerPlugin::DebugWindows windowToUpdate) :
+                                         DebugWindows windowToUpdate) :
     DebuggerCmd(driver),
     m_windowToUpdate(windowToUpdate)
 {

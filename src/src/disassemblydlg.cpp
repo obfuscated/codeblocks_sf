@@ -261,7 +261,7 @@ void DisassemblyDlg::OnRefresh(cb_unused wxCommandEvent& event)
 {
     cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
     cbAssert(plugin);
-    plugin->RequestUpdate(cbDebuggerPlugin::Disassembly);
+    plugin->RequestUpdate(DebugWindows::Disassembly);
 }
 
 void DisassemblyDlg::OnMixedModeCB(cb_unused wxCommandEvent &event)
@@ -273,7 +273,7 @@ void DisassemblyDlg::OnMixedModeCB(cb_unused wxCommandEvent &event)
 
     cbDebuggerPlugin *plugin = manager.GetActiveDebugger();
     cbAssert(plugin);
-    plugin->RequestUpdate(cbDebuggerPlugin::Disassembly);
+    plugin->RequestUpdate(DebugWindows::Disassembly);
 }
 
 void DisassemblyDlg::EnableWindow(bool enable)

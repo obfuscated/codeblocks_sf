@@ -314,7 +314,7 @@ void DebuggerGDB::OnConfigurationChange(cb_unused bool isActive)
         update = true;
 
     if (update)
-        RequestUpdate(cbDebuggerPlugin::Watches);
+        RequestUpdate(DebugWindows::Watches);
 }
 
 wxArrayString DebuggerGDB::ParseSearchDirs(const cbProject &project)
