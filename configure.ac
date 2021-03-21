@@ -108,8 +108,6 @@ ifdef([PKG_CHECK_MODULES],[],[
 ])
 
 PKG_PROG_PKG_CONFIG
-PKG_CHECK_MODULES([SQUIRREL], [squirrel], [HAVE_SQUIRREL=yes], [HAVE_SQUIRREL=no])
-AM_CONDITIONAL([HAVE_SQUIRREL], [test "$HAVE_SQUIRREL" = yes])
 
 PKG_CHECK_MODULES([TINYXML], [tinyxml], [HAVE_TINYXML=yes], [HAVE_TINYXML=no])
 AM_CONDITIONAL([HAVE_TINYXML], [test "$HAVE_TINYXML" = yes])
@@ -307,13 +305,8 @@ WX_LIBS=`$WX_CONFIG_WITH_ARGS --libs std,aui,propgrid,richtext`
 SCINTILLA_GTK_CFLAGS="$WX_GDK_CFLAGS"
 SCINTILLA_GTK_LIBS="$WX_GDK_LIBS"
 
-if test "x$HAVE_SQUIRREL_TRUE" = "x" ; then
-	CB_SQUIRREL_CFLAGS="$SQUIRREL_CFLAGS"
-	CB_SQUIRREL_LIBS="$SQUIRREL_LIBS"
-else
-	CB_SQUIRREL_CFLAGS="-I\$(top_srcdir)/src/include/scripting/include"
-	CB_SQUIRREL_LIBS="\$(top_builddir)/src/sdk/scripting/squirrel/libsquirrel.la \$(top_builddir)/src/sdk/scripting/sqstdlib/libsqstdlib.la"
-fi
+CB_SQUIRREL_CFLAGS="-I\$(top_srcdir)/src/include/scripting/include"
+CB_SQUIRREL_LIBS="\$(top_builddir)/src/sdk/scripting/squirrel/libsquirrel.la \$(top_builddir)/src/sdk/scripting/sqstdlib/libsqstdlib.la"
 
 if test "x$HAVE_TINYXML_TRUE" = "x" ; then
 	CB_TINYXML_CFLAGS="$TINYXML_CFLAGS"
