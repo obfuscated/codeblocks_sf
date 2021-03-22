@@ -262,103 +262,27 @@ void Manager::Shutdown()
 
 bool Manager::ProcessEvent(CodeBlocksEvent& event)
 {
-    if (IsAppShuttingDown())
-        return false;
-
-    EventSinksMap::iterator mit = m_EventSinks.find(event.GetEventType());
-    if (mit != m_EventSinks.end())
-    {
-        for (EventSinksArray::iterator it = mit->second.begin(); it != mit->second.end(); ++it)
-        {
-#ifdef PPRCESS_EVENT_PERFORMANCE_MEASURE
-            wxStopWatch sw;
-#endif // PPRCESS_EVENT_PERFORMANCE_MEASURE
-
-            (*it)->Call(event);
-
-#ifdef PPRCESS_EVENT_PERFORMANCE_MEASURE
-            if(sw.Time() > 10) // only print a handler run longer than 10 ms
-            {
-                // get a mangled C++ name of the function
-                const char *p = (*it)->GetTypeName();
-                int   status;
-                char *realname;
-                realname = abi::__cxa_demangle(p, 0, 0, &status);
-                wxString msg;
-
-                // if the demangled C++ function name success, then realname is not NULL
-                if (realname != 0)
-                {
-                    msg = wxString::FromUTF8(realname);
-                    free(realname);
-                }
-                else
-                    msg = wxString::FromUTF8(p);
-
-                wxEventType type=event.GetEventType();
-                msg << GetCodeblocksEventName(type);
-                Manager::Get()->GetLogManager()->DebugLog(F(_("%s take %ld ms"), msg.wx_str(), sw.Time()));
-            }
-#endif // PPRCESS_EVENT_PERFORMANCE_MEASURE
-        }
-    }
-    return true;
+    return ProcessEvent(event, m_EventSinks);
 }
 
 bool Manager::ProcessEvent(CodeBlocksDebuggerEvent& event)
 {
-    if (IsAppShuttingDown())
-        return false;
-
-    DebuggerEventSinksMap::iterator mit = m_DebuggerEventSinks.find(event.GetEventType());
-    if (mit != m_DebuggerEventSinks.end())
-    {
-        for (DebuggerEventSinksArray::iterator it = mit->second.begin(); it != mit->second.end(); ++it)
-            (*it)->Call(event);
-    }
-    return true;
+    return ProcessEvent(event, m_DebuggerEventSinks);
 }
 
 bool Manager::ProcessEvent(CodeBlocksDockEvent& event)
 {
-    if (IsAppShuttingDown())
-        return false;
-
-    DockEventSinksMap::iterator mit = m_DockEventSinks.find(event.GetEventType());
-    if (mit != m_DockEventSinks.end())
-    {
-        for (DockEventSinksArray::iterator it = mit->second.begin(); it != mit->second.end(); ++it)
-            (*it)->Call(event);
-    }
-    return true;
+    return ProcessEvent(event, m_DockEventSinks);
 }
 
 bool Manager::ProcessEvent(CodeBlocksLayoutEvent& event)
 {
-    if (IsAppShuttingDown())
-        return false;
-
-    LayoutEventSinksMap::iterator mit = m_LayoutEventSinks.find(event.GetEventType());
-    if (mit != m_LayoutEventSinks.end())
-    {
-        for (LayoutEventSinksArray::iterator it = mit->second.begin(); it != mit->second.end(); ++it)
-            (*it)->Call(event);
-    }
-    return true;
+    return ProcessEvent(event, m_LayoutEventSinks);
 }
 
 bool Manager::ProcessEvent(CodeBlocksLogEvent& event)
 {
-    if (IsAppShuttingDown())
-        return false;
-
-    LogEventSinksMap::iterator mit = m_LogEventSinks.find(event.GetEventType());
-    if (mit != m_LogEventSinks.end())
-    {
-        for (LogEventSinksArray::iterator it = mit->second.begin(); it != mit->second.end(); ++it)
-            (*it)->Call(event);
-    }
-    return true;
+    return ProcessEvent(event, m_LogEventSinks);
 }
 
 bool Manager::IsAppShuttingDown()

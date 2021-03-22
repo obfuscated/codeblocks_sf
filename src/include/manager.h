@@ -174,6 +174,58 @@ public:
     void SetSearchResultLogger(cbSearchResultsLog *log) { m_SearchResultLog = log; }
 
 private:
+
+    template<typename EventType>
+    using EventVector = std::vector<IEventFunctorBase<EventType>*>;
+
+    template<typename EventType>
+    bool ProcessEvent(EventType& event, std::map<wxEventType, EventVector<EventType> >& eventSinkMap ) const
+    {
+        if (IsAppShuttingDown())
+            return false;
+
+        typename std::map<wxEventType, EventVector<EventType> >::iterator mit = eventSinkMap.find(event.GetEventType());
+        if (mit != eventSinkMap.end())
+        {
+            for (typename EventVector<EventType>::iterator it = mit->second.begin(); it != mit->second.end(); ++it)
+            {
+#ifdef PPRCESS_EVENT_PERFORMANCE_MEASURE
+                wxStopWatch sw;
+#endif // PPRCESS_EVENT_PERFORMANCE_MEASURE
+
+                (*it)->Call(event);
+
+#ifdef PPRCESS_EVENT_PERFORMANCE_MEASURE
+                if(sw.Time() > 10) // only print a handler run longer than 10 ms
+                {
+                    // get a mangled C++ name of the function
+                    const char *p = (*it)->GetTypeName();
+                    int   status;
+                    char *realname;
+                    realname = abi::__cxa_demangle(p, 0, 0, &status);
+                    wxString msg;
+
+                    // if the demangled C++ function name success, then realname is not NULL
+                    if (realname != 0)
+                    {
+                        msg = wxString::FromUTF8(realname);
+                        free(realname);
+                    }
+                    else
+                        msg = wxString::FromUTF8(p);
+
+                    wxEventType type=event.GetEventType();
+                    msg << GetCodeblocksEventName(type);
+                    Manager::Get()->GetLogManager()->DebugLog(F(_("%s take %ld ms"), msg.wx_str(), sw.Time()));
+                }
+#endif // PPRCESS_EVENT_PERFORMANCE_MEASURE
+            }
+        }
+        return true;
+    }
+
+
+
     wxFrame*               m_pAppWindow;
     static bool            m_AppShuttingDown;
     static bool            m_AppStartedUp;
@@ -186,16 +238,18 @@ private:
     double m_UIScaleFactor[UIComponent::Last];
 
     // event sinks
-    typedef std::vector< IEventFunctorBase<CodeBlocksEvent>* >       EventSinksArray;
-    typedef std::map< wxEventType, EventSinksArray >                 EventSinksMap;
-    typedef std::vector< IEventFunctorBase<CodeBlocksDebuggerEvent>* > DebuggerEventSinksArray;
-    typedef std::map< wxEventType, DebuggerEventSinksArray >         DebuggerEventSinksMap;
-    typedef std::vector< IEventFunctorBase<CodeBlocksDockEvent>* >   DockEventSinksArray;
-    typedef std::map< wxEventType, DockEventSinksArray >             DockEventSinksMap;
-    typedef std::vector< IEventFunctorBase<CodeBlocksLayoutEvent>* > LayoutEventSinksArray;
-    typedef std::map< wxEventType, LayoutEventSinksArray >           LayoutEventSinksMap;
-    typedef std::vector< IEventFunctorBase<CodeBlocksLogEvent>* >    LogEventSinksArray;
-    typedef std::map< wxEventType, LogEventSinksArray >              LogEventSinksMap;
+
+
+    typedef EventVector<CodeBlocksEvent>                EventSinksArray;
+    typedef std::map< wxEventType, EventSinksArray >    EventSinksMap;
+    typedef EventVector<CodeBlocksDebuggerEvent>        DebuggerEventSinksArray;
+    typedef std::map< wxEventType, DebuggerEventSinksArray >  DebuggerEventSinksMap;
+    typedef EventVector<CodeBlocksDockEvent>            DockEventSinksArray;
+    typedef std::map< wxEventType, DockEventSinksArray >  DockEventSinksMap;
+    typedef EventVector<CodeBlocksLayoutEvent>          LayoutEventSinksArray;
+    typedef std::map< wxEventType, LayoutEventSinksArray > LayoutEventSinksMap;
+    typedef EventVector<CodeBlocksLogEvent>             LogEventSinksArray;
+    typedef std::map< wxEventType, LogEventSinksArray > LogEventSinksMap;
 
     EventSinksMap       m_EventSinks;
     DebuggerEventSinksMap m_DebuggerEventSinks;
