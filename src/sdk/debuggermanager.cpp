@@ -42,12 +42,15 @@
 #include "loggers.h"
 #include "manager.h"
 
+std::atomic<int64_t> cbWatch::idCounter(1);
+
 cbWatch::cbWatch() :
     m_changed(true),
     m_removed(false),
     m_expanded(false),
     m_autoUpdate(true)
 {
+    m_id = idCounter.fetch_add(1);
 }
 
 cbWatch::~cbWatch()

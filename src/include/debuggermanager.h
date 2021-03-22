@@ -8,6 +8,7 @@
 
 #include <map>
 #include <vector>
+#include <atomic>
 
 #include <wx/string.h>
 
@@ -49,8 +50,9 @@ class DLLIMPORT cbBreakpoint
 class DLLIMPORT cbWatch
 {
         cbWatch& operator =(cbWatch &);
-        cbWatch(cbWatch &);
+        cbWatch(cbWatch &)  = delete;
 
+        static std::atomic<int64_t> idCounter;
     public:
         cbWatch();
     public:
@@ -67,6 +69,9 @@ class DLLIMPORT cbWatch
         virtual wxString MakeSymbolToAddress() const;
         /// Tells us if the watch is for pointer variable.
         virtual bool IsPointerType() const;
+
+        bool operator==(const cbWatch& lhs) const { return m_id == lhs.m_id;};
+
     protected:
         virtual ~cbWatch();
     public:
@@ -104,9 +109,11 @@ class DLLIMPORT cbWatch
         bool            m_removed;
         bool            m_expanded;
         bool            m_autoUpdate;
+        int64_t         m_id;
 };
 
 cb::shared_ptr<cbWatch> DLLIMPORT cbGetRootWatch(cb::shared_ptr<cbWatch> watch);
+
 
 class DLLIMPORT cbStackFrame
 {
