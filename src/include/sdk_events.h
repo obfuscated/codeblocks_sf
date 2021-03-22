@@ -481,8 +481,10 @@ extern EVTIMPORT const wxEventType cbEVT_DEBUGGER_FINISHED;
 extern EVTIMPORT const wxEventType cbEVT_DEBUGGER_CURSOR_CHANGED;
 #define EVT_DEBUGGER_CURSOR_CHANGED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_CURSOR_CHANGED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksDebuggerEventFunction)&fn, (wxObject *) NULL ),
 /// Event sent when the data for a particular debug window is acquired by the debugger plugin and
-/// can be presented to the user. Calling GetInt on the event object can be used to find out the
-/// type of window which has been updated. The value has type cbDebuggerPlugin::DebugWindows.
+/// can be presented to the user. Calling GetWindow on the event object can be used to find out the
+/// type of window which has been updated.
+/// If the window is DebugWindows::MemoryRange, then the updated watch is returned with GetWatch(). If the
+/// returned shared_ptr is not valid, then multiple watches were updated.
 extern EVTIMPORT const wxEventType cbEVT_DEBUGGER_UPDATED;
 #define EVT_DEBUGGER_UPDATED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_UPDATED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksDebuggerEventFunction)&fn, (wxObject *) NULL ),
 
