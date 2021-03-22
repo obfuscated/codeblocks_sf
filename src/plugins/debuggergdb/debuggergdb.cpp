@@ -1347,7 +1347,7 @@ void DebuggerGDB::RunCommand(int cmd)
     if (debuggerContinued)
     {
         PluginManager *plm = Manager::Get()->GetPluginManager();
-        CodeBlocksEvent evt(cbEVT_DEBUGGER_CONTINUED);
+        CodeBlocksDebuggerEvent evt(cbEVT_DEBUGGER_CONTINUED);
         evt.SetPlugin(this);
         plm->NotifyPlugins(evt);
     }
@@ -1749,7 +1749,7 @@ void DebuggerGDB::DoBreak(bool temporary)
     #endif
         // Notify debugger plugins for end of debug session
         PluginManager *plm = Manager::Get()->GetPluginManager();
-        CodeBlocksEvent evt(cbEVT_DEBUGGER_PAUSED);
+        CodeBlocksDebuggerEvent evt(cbEVT_DEBUGGER_PAUSED);
         plm->NotifyPlugins(evt);
     }
 }
@@ -1956,7 +1956,7 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
 
     // Notify debugger plugins for end of debug session
     PluginManager *plm = Manager::Get()->GetPluginManager();
-    CodeBlocksEvent evt(cbEVT_DEBUGGER_FINISHED);
+    CodeBlocksDebuggerEvent evt(cbEVT_DEBUGGER_FINISHED);
     plm->NotifyPlugins(evt);
 
     // switch to the user-defined layout when finished debugging
@@ -2138,7 +2138,7 @@ void DebuggerGDB::OnCursorChanged(wxCommandEvent& WXUNUSED(event))
             // Notify everybody that the debugger cursor has changed.
             // This might be used by some view windows to request the debugger plugin to update some
             // data.
-            CodeBlocksEvent cursorChangeEvent(cbEVT_DEBUGGER_CURSOR_CHANGED);
+            CodeBlocksDebuggerEvent cursorChangeEvent(cbEVT_DEBUGGER_CURSOR_CHANGED);
             cursorChangeEvent.SetPlugin(this);
             Manager::Get()->ProcessEvent(cursorChangeEvent);
         }

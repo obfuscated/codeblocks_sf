@@ -1524,6 +1524,11 @@ void PluginManager::NotifyPlugins(CodeBlocksEvent& event)
     Manager::Get()->ProcessEvent(event);
 }
 
+void PluginManager::NotifyPlugins(CodeBlocksDebuggerEvent& event)
+{
+    Manager::Get()->ProcessEvent(event);
+}
+
 void PluginManager::NotifyPlugins(CodeBlocksDockEvent& event)
 {
     Manager::Get()->ProcessEvent(event);

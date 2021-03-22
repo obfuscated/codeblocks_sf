@@ -142,6 +142,15 @@ Manager::~Manager()
         }
     }
 
+    for (DebuggerEventSinksMap::iterator mit = m_DebuggerEventSinks.begin(); mit != m_DebuggerEventSinks.end(); ++mit)
+    {
+        while (mit->second.size())
+        {
+            delete (*(mit->second.begin()));
+            mit->second.erase(mit->second.begin());
+        }
+    }
+
     for (DockEventSinksMap::iterator mit = m_DockEventSinks.begin(); mit != m_DockEventSinks.end(); ++mit)
     {
         while (mit->second.size())
@@ -292,6 +301,20 @@ bool Manager::ProcessEvent(CodeBlocksEvent& event)
             }
 #endif // PPRCESS_EVENT_PERFORMANCE_MEASURE
         }
+    }
+    return true;
+}
+
+bool Manager::ProcessEvent(CodeBlocksDebuggerEvent& event)
+{
+    if (IsAppShuttingDown())
+        return false;
+
+    DebuggerEventSinksMap::iterator mit = m_DebuggerEventSinks.find(event.GetEventType());
+    if (mit != m_DebuggerEventSinks.end())
+    {
+        for (DebuggerEventSinksArray::iterator it = mit->second.begin(); it != mit->second.end(); ++it)
+            (*it)->Call(event);
     }
     return true;
 }
@@ -575,6 +598,11 @@ void Manager::RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlo
     m_EventSinks[eventType].push_back(functor);
 }
 
+void Manager::RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksDebuggerEvent>* functor)
+{
+    m_DebuggerEventSinks[eventType].push_back(functor);
+}
+
 void Manager::RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksDockEvent>* functor)
 {
     m_DockEventSinks[eventType].push_back(functor);
@@ -601,6 +629,24 @@ void Manager::RemoveAllEventSinksFor(void* owner)
             if ((*it) && (*it)->GetThis() == owner)
             {
                 EventSinksArray::iterator it2 = it++;
+                endIsInvalid = it == mit->second.end();
+                delete (*it2);
+                mit->second.erase(it2);
+            }
+            else
+                ++it;
+        }
+    }
+
+    for (DebuggerEventSinksMap::iterator mit = m_DebuggerEventSinks.begin(); mit != m_DebuggerEventSinks.end(); ++mit)
+    {
+        DebuggerEventSinksArray::iterator it = mit->second.begin();
+        bool endIsInvalid = false;
+        while (!endIsInvalid && it != mit->second.end())
+        {
+            if ((*it) && (*it)->GetThis() == owner)
+            {
+                DebuggerEventSinksArray::iterator it2 = it++;
                 endIsInvalid = it == mit->second.end();
                 delete (*it2);
                 mit->second.erase(it2);

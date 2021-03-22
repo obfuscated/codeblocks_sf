@@ -19,6 +19,7 @@
 
 
 IMPLEMENT_DYNAMIC_CLASS(CodeBlocksEvent, wxEvent)
+IMPLEMENT_DYNAMIC_CLASS(CodeBlocksDebuggerEvent, wxEvent)
 IMPLEMENT_DYNAMIC_CLASS(CodeBlocksDockEvent, wxEvent)
 IMPLEMENT_DYNAMIC_CLASS(CodeBlocksLayoutEvent, wxEvent)
 IMPLEMENT_DYNAMIC_CLASS(CodeBlocksLogEvent, wxEvent)

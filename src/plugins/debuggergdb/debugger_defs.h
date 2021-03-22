@@ -118,10 +118,12 @@ class DbgCmd_UpdateWindow : public DebuggerCmd
 {
     public:
         DbgCmd_UpdateWindow(DebuggerDriver* driver, DebugWindows windowToUpdate);
+        DbgCmd_UpdateWindow(DebuggerDriver* driver, DebugWindows windowToUpdate, const cb::shared_ptr<cbWatch>& watch);
         void Action() override;
 
     private:
         DebugWindows m_windowToUpdate;
+        cb::shared_ptr<cbWatch> m_watch;
 };
 
 /** Debugger breakpoint interface.
@@ -231,6 +233,7 @@ class GDBWatch : public cbWatch
 
         wxString MakeSymbolToAddress() const override;
         bool IsPointerType() const override;
+
     public:
         void SetDebugValue(wxString const &value);
         void SetSymbol(const wxString& symbol);

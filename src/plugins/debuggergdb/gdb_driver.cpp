@@ -683,13 +683,13 @@ void GDB_driver::UpdateMemoryRangeWatches(MemoryRangeWatchesContainer &watches,
 void GDB_driver::UpdateWatch(const cb::shared_ptr<GDBWatch> &watch)
 {
     QueueCommand(new GdbCmd_FindWatchType(this, watch));
-    QueueCommand(new DbgCmd_UpdateWindow(this, DebugWindows::Watches));
+    QueueCommand(new DbgCmd_UpdateWindow(this, DebugWindows::Watches, watch));
 }
 
 void GDB_driver::UpdateMemoryRangeWatch(const cb::shared_ptr<GDBMemoryRangeWatch> &watch)
 {
     QueueCommand(new GdbCmd_MemoryRangeWatch(this, watch));
-    QueueCommand(new DbgCmd_UpdateWindow(this, DebugWindows::MemoryRange));
+    QueueCommand(new DbgCmd_UpdateWindow(this, DebugWindows::MemoryRange, watch));
 }
 
 void GDB_driver::UpdateWatchLocalsArgs(cb::shared_ptr<GDBWatch> const &watch, bool locals)

@@ -160,6 +160,7 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
         void SetupLocaleDomain(const wxString& DomainName);
 
         void NotifyPlugins(CodeBlocksEvent& event);
+        void NotifyPlugins(CodeBlocksDebuggerEvent& event);
         void NotifyPlugins(CodeBlocksDockEvent& event);
         void NotifyPlugins(CodeBlocksLayoutEvent& event);
 

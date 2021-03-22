@@ -52,7 +52,7 @@ class WatchesDlg : public wxPanel, public cbWatchesDlg
         void OnMenuAutoUpdate(wxCommandEvent &event);
         void OnMenuUpdate(wxCommandEvent &event);
 
-        void OnDebuggerUpdated(CodeBlocksEvent &event);
+        void OnDebuggerUpdated(CodeBlocksDebuggerEvent &event);
 
         DECLARE_EVENT_TABLE()
 

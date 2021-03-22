@@ -429,7 +429,7 @@ WatchesDlg::WatchesDlg() :
     ColourManager *colours = manager->GetColourManager();
     colours->RegisterColour(_("Debugger"), _("Watches changed value"), wxT("dbg_watches_changed"), *wxRED);
 
-    typedef cbEventFunctor<WatchesDlg, CodeBlocksEvent> Functor;
+    typedef cbEventFunctor<WatchesDlg, CodeBlocksDebuggerEvent> Functor;
     manager->RegisterEventSink(cbEVT_DEBUGGER_UPDATED,
                                new Functor(this, &WatchesDlg::OnDebuggerUpdated));
 }
@@ -537,9 +537,9 @@ inline void SetValue(WatchesProperty *prop)
     }
 }
 
-void WatchesDlg::OnDebuggerUpdated(CodeBlocksEvent &event)
+void WatchesDlg::OnDebuggerUpdated(CodeBlocksDebuggerEvent &event)
 {
-    if (DebugWindows(event.GetInt()) != DebugWindows::Watches)
+    if (event.GetWindow() != DebugWindows::Watches)
         return;
 
     for (WatchItems::iterator it = m_watches.begin(); it != m_watches.end(); ++it)

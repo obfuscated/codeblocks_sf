@@ -65,10 +65,10 @@ public:
     static void Shutdown();
 
     bool ProcessEvent(CodeBlocksEvent&       event);
+    bool ProcessEvent(CodeBlocksDebuggerEvent& event);
     bool ProcessEvent(CodeBlocksDockEvent&   event);
     bool ProcessEvent(CodeBlocksLayoutEvent& event);
     bool ProcessEvent(CodeBlocksLogEvent&    event);
-
 
     /** Use Manager::Get() to get a pointer to its instance
      * Manager::Get() is guaranteed to never return an invalid pointer.
@@ -162,6 +162,7 @@ public:
 
     // event sinks
     void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksEvent>*       functor);
+    void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksDebuggerEvent>* functor);
     void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksDockEvent>*   functor);
     void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksLayoutEvent>* functor);
     void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksLogEvent>*    functor);
@@ -187,6 +188,8 @@ private:
     // event sinks
     typedef std::vector< IEventFunctorBase<CodeBlocksEvent>* >       EventSinksArray;
     typedef std::map< wxEventType, EventSinksArray >                 EventSinksMap;
+    typedef std::vector< IEventFunctorBase<CodeBlocksDebuggerEvent>* > DebuggerEventSinksArray;
+    typedef std::map< wxEventType, DebuggerEventSinksArray >         DebuggerEventSinksMap;
     typedef std::vector< IEventFunctorBase<CodeBlocksDockEvent>* >   DockEventSinksArray;
     typedef std::map< wxEventType, DockEventSinksArray >             DockEventSinksMap;
     typedef std::vector< IEventFunctorBase<CodeBlocksLayoutEvent>* > LayoutEventSinksArray;
@@ -195,6 +198,7 @@ private:
     typedef std::map< wxEventType, LogEventSinksArray >              LogEventSinksMap;
 
     EventSinksMap       m_EventSinks;
+    DebuggerEventSinksMap m_DebuggerEventSinks;
     DockEventSinksMap   m_DockEventSinks;
     LayoutEventSinksMap m_LayoutEventSinks;
     LogEventSinksMap    m_LogEventSinks;

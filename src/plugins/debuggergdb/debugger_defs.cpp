@@ -49,11 +49,21 @@ DbgCmd_UpdateWindow::DbgCmd_UpdateWindow(DebuggerDriver* driver,
 {
 }
 
+DbgCmd_UpdateWindow::DbgCmd_UpdateWindow(DebuggerDriver* driver,
+                                         DebugWindows windowToUpdate,
+                                         const cb::shared_ptr<cbWatch>& watch) :
+    DebuggerCmd(driver),
+    m_windowToUpdate(windowToUpdate),
+    m_watch(watch)
+{
+}
+
 void DbgCmd_UpdateWindow::Action()
 {
-    CodeBlocksEvent event(cbEVT_DEBUGGER_UPDATED);
-    event.SetInt(int(m_windowToUpdate));
+    CodeBlocksDebuggerEvent event(cbEVT_DEBUGGER_UPDATED);
+    event.SetWindow(m_windowToUpdate);
     event.SetPlugin(m_pDriver->GetDebugger());
+    event.SetWatch(m_watch);
     Manager::Get()->ProcessEvent(event);
 }
 

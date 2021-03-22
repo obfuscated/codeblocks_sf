@@ -14,7 +14,10 @@
 class cbProject;
 class EditorBase;
 class cbPlugin;
+class cbDebuggerPlugin;
+enum DebugWindows : int;
 class Logger;
+class cbWatch;
 
 /** A generic Code::Blocks event. */
 class EVTIMPORT CodeBlocksEvent : public wxCommandEvent
@@ -78,6 +81,45 @@ class EVTIMPORT CodeBlocksEvent : public wxCommandEvent
 		DECLARE_DYNAMIC_CLASS(CodeBlocksEvent)
 };
 typedef void (wxEvtHandler::*CodeBlocksEventFunction)(CodeBlocksEvent&);
+
+class EVTIMPORT CodeBlocksDebuggerEvent : public wxCommandEvent
+{
+	public:
+		CodeBlocksDebuggerEvent(wxEventType commandType = wxEVT_NULL, int id = 0, cbProject* project = nullptr, cbDebuggerPlugin* plugin = nullptr)
+			: wxCommandEvent(commandType, id),
+			m_pProject(project),
+			m_pPlugin(plugin)
+            {}
+		CodeBlocksDebuggerEvent(const CodeBlocksDebuggerEvent& event)
+			: wxCommandEvent(event),
+			m_pProject(event.m_pProject),
+			m_pPlugin(event.m_pPlugin)
+			{}
+		wxCommandEvent *Clone() const override { return new CodeBlocksDebuggerEvent(*this); }
+
+		cbProject* GetProject() const             { return m_pProject;    }
+		void       SetProject(cbProject* project) { m_pProject = project; }
+
+		cbDebuggerPlugin* GetPlugin() const           { return m_pPlugin;   }
+		void      SetPlugin(cbDebuggerPlugin* plugin) { m_pPlugin = plugin; }
+
+		DebugWindows GetWindow() const    { return m_Window; }
+		void SetWindow(DebugWindows window)   { m_Window = window; }
+
+		cb::shared_ptr<cbWatch> GetWatch() const            { return m_Watch; }
+		void SetWatch(const cb::shared_ptr<cbWatch>& watch) { m_Watch = watch; }
+
+	protected:
+		cbProject*  m_pProject;
+		cbDebuggerPlugin*   m_pPlugin;
+
+		DebugWindows m_Window;
+		cb::shared_ptr<cbWatch> m_Watch;
+
+	private:
+		DECLARE_DYNAMIC_CLASS(CodeBlocksDebuggerEvent)
+};
+typedef void (wxEvtHandler::*CodeBlocksDebuggerEventFunction)(CodeBlocksDebuggerEvent&);
 
 /** Event used to request from the main app to add a window to the docking system. */
 class EVTIMPORT CodeBlocksDockEvent : public wxEvent
@@ -431,18 +473,18 @@ extern EVTIMPORT const wxEventType cbEVT_COMPILE_FILE_REQUEST;
 extern EVTIMPORT const wxEventType cbEVT_DEBUGGER_STARTED;
 #define EVT_DEBUGGER_STARTED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_STARTED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_DEBUGGER_PAUSED;
-#define EVT_DEBUGGER_PAUSED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_PAUSED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+#define EVT_DEBUGGER_PAUSED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_PAUSED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksDebuggerEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_DEBUGGER_CONTINUED;
-#define cbEVT_DEBUGGER_CONTINUED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_CONTINUED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+#define cbEVT_DEBUGGER_CONTINUED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_CONTINUED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksDebuggerEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_DEBUGGER_FINISHED;
-#define EVT_DEBUGGER_FINISHED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_FINISHED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+#define EVT_DEBUGGER_FINISHED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_FINISHED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksDebuggerEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_DEBUGGER_CURSOR_CHANGED;
-#define EVT_DEBUGGER_CURSOR_CHANGED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_CURSOR_CHANGED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+#define EVT_DEBUGGER_CURSOR_CHANGED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_CURSOR_CHANGED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksDebuggerEventFunction)&fn, (wxObject *) NULL ),
 /// Event sent when the data for a particular debug window is acquired by the debugger plugin and
 /// can be presented to the user. Calling GetInt on the event object can be used to find out the
 /// type of window which has been updated. The value has type cbDebuggerPlugin::DebugWindows.
 extern EVTIMPORT const wxEventType cbEVT_DEBUGGER_UPDATED;
-#define EVT_DEBUGGER_UPDATED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_UPDATED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+#define EVT_DEBUGGER_UPDATED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_UPDATED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksDebuggerEventFunction)&fn, (wxObject *) NULL ),
 
 // logger-related events
 
