@@ -71,7 +71,6 @@ struct TypeInfo {};
 enum class InstanceAllocationMode : uint32_t
 {
     InstanceIsInline,
-    InstanceIsOwnedPtr,
     InstanceIsNonOwnedPtr
 };
 
@@ -154,11 +153,8 @@ inline bool ExtractUserPointer(UserType *&self, HSQUIRRELVM vm, SQInteger idx, u
     case InstanceAllocationMode::InstanceIsInline:
         self = reinterpret_cast<UserType*>(&data.userdata);
         return self != nullptr;
-    case InstanceAllocationMode::InstanceIsOwnedPtr:
     case InstanceAllocationMode::InstanceIsNonOwnedPtr:
-        //self = *(UserType**)(ptr + sizeof(InstanceAllocationMode));
         self = data.userptr;
-        cbAssert(data.mode!=InstanceAllocationMode::InstanceIsOwnedPtr);
         return self != nullptr;
     }
 
