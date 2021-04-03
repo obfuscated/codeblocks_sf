@@ -1602,7 +1602,7 @@ void EditorManager::OnPageClose(wxAuiNotebookEvent& event)
     }
 
     if (doClose && eb != nullptr)
-        Close(eb);
+        Close(eb, true); // do not ask again if the file should be saved
     else
         event.Skip(); // allow others to process it too
 }

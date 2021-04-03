@@ -91,12 +91,12 @@ void wxsItemEditor::InitializeResourceData()
 
     if ( GetItemRes()->GetEditMode() == wxsItemRes::File )
     {
-        InitFilename(GetXrcFileName());
+        InitFilename(UnixFilename(m_Data->GetXrcFileName()));
         SetTitle(m_Shortname);
     }
     else
     {
-        InitFilename(GetWxsFileName());
+        InitFilename(UnixFilename(m_Data->GetWxsFileName()));
         SetTitle(m_Shortname);
     }
 
