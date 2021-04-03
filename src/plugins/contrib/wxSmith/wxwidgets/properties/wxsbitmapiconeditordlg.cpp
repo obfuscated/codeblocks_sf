@@ -82,6 +82,14 @@ static const wxChar* PredefinedIds[] =
     _T("wxART_QUIT"),
     _T("wxART_FIND"),
     _T("wxART_FIND_AND_REPLACE"),
+    _T("wxART_GOTO_FIRST"),
+    _T("wxART_GOTO_LAST"),
+    _T("wxART_PLUS"),
+    _T("wxART_MINUS"),
+#if wxCHECK_VERSION(3, 1, 0)
+    _T("wxART_FULL_SCREEN"),
+    _T("wxART_EDIT"),
+#endif
     0
 };
 
