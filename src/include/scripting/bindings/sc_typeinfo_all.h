@@ -228,7 +228,30 @@ struct TypeInfo<UserVariableManager> {
     using baseClass = void;
 };
 
+template<>
+struct ReleaseHookType<cbEditor>
+{
+    using type = void;
+};
+
+template<>
+struct ReleaseHookType<EditorManager>
+{
+    using type = void;
+};
+
+template<>
+struct ReleaseHookType<ProjectManager>
+{
+    using type = void;
+};
+
+template<>
+struct ReleaseHookType<ScriptingManager>
+{
+    using type = void;
+};
+
 } // namespace ScriptBindings
 
 #endif // CB_SC_TYPEINFO_ALL_H
-

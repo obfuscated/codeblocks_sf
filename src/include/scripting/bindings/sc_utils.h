@@ -252,6 +252,15 @@ struct UserDataForType
     };
 };
 
+/// Policy type which select the type used for the release hook.
+/// The default implementation doesn't change the type, but being a template allows specializations
+/// to change the type to void if they want to have an empty ReleaseHook for example.
+template<typename UserType>
+struct ReleaseHookType
+{
+    using type = UserType;
+};
+
 template<typename UserType>
 SQInteger ReleaseHook(SQUserPointer ptr, cb_unused SQInteger size)
 {
@@ -272,6 +281,15 @@ SQInteger ReleaseHook(SQUserPointer ptr, cb_unused SQInteger size)
     return 0;
 }
 
+/// A release hook when we don't have access to the destructor of the given class.
+/// @see ReleaseHookType
+template<>
+inline SQInteger ReleaseHook<void>(cb_unused SQUserPointer ptr, cb_unused SQInteger size)
+{
+    cbAssert(false);
+    return 0;
+}
+
 template<typename UserType, InstanceAllocationMode mode>
 UserDataForType<UserType>* SetupUserPointer(HSQUIRRELVM vm, SQInteger idx)
 {
@@ -286,9 +304,10 @@ UserDataForType<UserType>* SetupUserPointer(HSQUIRRELVM vm, SQInteger idx)
 
     UserDataForType<UserType> *data = reinterpret_cast<UserDataForType<UserType>*>(ptr);
     data->mode = mode;
-    // FIXME (squirrel) C++17 feature?!!! Could be replaced with a trait, but should we?
-    if constexpr (mode == InstanceAllocationMode::InstanceIsInline)
-        sq_setreleasehook(vm, idx, ReleaseHook<UserType>);
+    // Note: When c++17 is availalbel to us we would be able to use "if constexpr" and get rid of
+    // the ReleaseHookType policy.
+    if (mode == InstanceAllocationMode::InstanceIsInline)
+        sq_setreleasehook(vm, idx, ReleaseHook<typename ReleaseHookType<UserType>::type>);
     return data;
 }
 
