@@ -444,7 +444,7 @@ void lib_finder::RegisterScripting()
         PreserveTop preserveTop(v);
 
         sq_pushroottable(v);
-        const SQInteger classDecl = CreateClassDecl<LibFinder>(v, _SC("LibFinder"));
+        const SQInteger classDecl = CreateClassDecl<LibFinder>(v);
         BindStaticMethod(v, _SC("AddLibraryToProject"),
                          LibFinder_LibraryToProject<lib_finder::AddLibraryToProject>,
                          _SC("LibFinder::AddLibraryToProject"));

@@ -60,7 +60,7 @@ namespace ScriptBindings
 
         {
             // Register ProgressDialog
-            const SQInteger classDecl = CreateClassDecl<ProgressDialog>(v, _SC("ProgressDialog"));
+            const SQInteger classDecl = CreateClassDecl<ProgressDialog>(v);
             BindEmptyCtor<ProgressDialog>(v);
             BindMethod(v, _SC("DoUpdate"), ProgressDialog_DoUpdate,
                        _SC("ProgressDialog::DoUpdate"));

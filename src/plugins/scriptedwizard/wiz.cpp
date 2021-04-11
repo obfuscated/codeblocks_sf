@@ -2096,7 +2096,7 @@ void Wiz::RegisterWizard()
     {
         TypeInfo<Wiz>::typetag = scriptMgr->RequestClassTypeTag();
         // Register Wiz
-        const SQInteger classDecl = CreateClassDecl<Wiz>(v, _SC("Wiz"));
+        const SQInteger classDecl = CreateClassDecl<Wiz>(v);
 
         // register new wizards
         BindMethod(v, _SC("AddWizard"), Wiz_AddWizard, _SC("Wiz::AddWizard"));
