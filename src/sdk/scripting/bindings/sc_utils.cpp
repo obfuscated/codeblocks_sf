@@ -23,7 +23,7 @@ static std::string GetItemString(HSQUIRRELVM vm, SQInteger stackIdx)
     return "unknown value";
 }
 
-void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop)
+DLLIMPORT void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop)
 {
     SQInteger top = sq_gettop(vm);
     printf("debug: stack [%s] top=%lld oldTop=%lld\n", title, (long long)top, (long long)oldTop);
@@ -142,7 +142,7 @@ void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop)
     puts("");
 }
 
-wxString ExtractLastSquirrelError(HSQUIRRELVM vm, bool canBeEmpty)
+DLLIMPORT wxString ExtractLastSquirrelError(HSQUIRRELVM vm, bool canBeEmpty)
 {
     const SQChar *s;
     sq_getlasterror(vm);
