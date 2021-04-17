@@ -26,9 +26,21 @@ THE SOFTWARE.
 extern "C" {
 #endif
 
+// C::B start
+// We need to export the squirrel functions, so we can call them in plugins.
+// They would be exposed by the codeblocks.dll/libcodeblocks.so
 #ifndef SQUIRREL_API
-#define SQUIRREL_API extern
-#endif
+    #if defined(__WXMSW__)
+        #if defined(EXPORT_LIB)
+            #define SQUIRREL_API __declspec (dllexport)
+        #else
+            #define SQUIRREL_API __declspec (dllimport)
+        #endif // EXPORT_LIB
+    #else
+        #define SQUIRREL_API extern
+    #endif // defined(__WXMSW__)
+#endif // SQUIRREL_API
+// C::B end
 
 #if (defined(_WIN64) || defined(_LP64))
 #ifndef _SQ64
