@@ -13,13 +13,19 @@
 namespace ScriptBindings
 {
 
+static std::string PtrToHexString(const void *ptr)
+{
+    std::stringstream s;
+    s << std::hex << ptr;
+    return s.str();
+}
+
 static std::string GetItemString(HSQUIRRELVM vm, SQInteger stackIdx)
 {
     const void *ptr;
     sq_getvoidptr(vm, stackIdx, &ptr);
-    std::stringstream s;
-    s << std::hex << ptr;
-    return s.str();
+    return PtrToHexString(ptr);
+
 }
 
 DLLIMPORT void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop)
@@ -129,6 +135,13 @@ DLLIMPORT void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop)
             {
                 line+="Instance ";
                 line+=GetItemString(vm, stackIdx);
+
+                SQUserPointer ptr;
+                if (SQ_SUCCEEDED(sq_getinstanceup(vm, stackIdx, &ptr, 0)))
+                {
+                    line+=" UserPtr: ";
+                    line+=PtrToHexString(ptr);
+                }
                 break;
             }
             case OT_WEAKREF:
