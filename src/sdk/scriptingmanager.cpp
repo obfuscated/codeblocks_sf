@@ -547,7 +547,8 @@ bool ScriptingManager::UnRegisterAllScriptMenus()
     return true;
 }
 
-static_assert(sizeof(int64_t)==sizeof(SQInteger), "Incorrect setup of Squirrel!");
+static_assert(sizeof(int64_t) >= sizeof(SQInteger),
+              "We need to be able to store as much info in int64_t as in SQInteger!");
 
 void ScriptingManager::BindIntConstant(const char *name, int64_t value)
 {
