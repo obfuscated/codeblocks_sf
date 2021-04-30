@@ -102,9 +102,6 @@ BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_TREE_ITEM_ACTIVATED  (XRCID("treeAll"),          ClassBrowser::OnTreeItemDoubleClick)
     EVT_TREE_ITEM_RIGHT_CLICK(XRCID("treeAll"),          ClassBrowser::OnTreeItemRightClick)
     EVT_TREE_ITEM_EXPANDING  (XRCID("treeAll"),          ClassBrowser::OnTreeItemExpanding)
-#ifndef CC_NO_COLLAPSE_ITEM
-    EVT_TREE_ITEM_COLLAPSING (XRCID("treeAll"),          ClassBrowser::OnTreeItemCollapsing)
-#endif // CC_NO_COLLAPSE_ITEM
     EVT_TREE_SEL_CHANGED     (XRCID("treeAll"),          ClassBrowser::OnTreeSelChanged)
 
     EVT_TEXT_ENTER(XRCID("cmbSearch"),                   ClassBrowser::OnSearch)
@@ -958,26 +955,7 @@ void ClassBrowser::OnTreeItemExpanding(wxTreeEvent& event)
             m_ClassBrowserSemaphore.Post();
         }
     }
-
-#ifndef CC_NO_COLLAPSE_ITEM
-    event.Allow();
-#endif // CC_NO_COLLAPSE_ITEM
 }
-
-#ifndef CC_NO_COLLAPSE_ITEM
-void ClassBrowser::OnTreeItemCollapsing(wxTreeEvent& event)
-{
-    if (m_ClassBrowserBuilderThread && !m_ClassBrowserBuilderThread->IsBusy())
-    {
-        m_targetNode = event.GetItem();
-        m_targetTreeCtrl = m_CCTreeCtrl;
-        m_ClassBrowserBuilderThread->SetNextJob(JobCollapseItem, GetItemPtr(m_targetNode));
-        m_ClassBrowserSemaphore.Post();
-    }
-
-    event.Allow();
-}
-#endif // CC_NO_COLLAPSE_ITEM
 
 void ClassBrowser::OnTreeSelChanged(wxTreeEvent& event)
 {
@@ -986,10 +964,6 @@ void ClassBrowser::OnTreeSelChanged(wxTreeEvent& event)
         m_ClassBrowserBuilderThread->SetNextJob(JobSelectTree, GetItemPtr(event.GetItem()));
         m_ClassBrowserSemaphore.Post();
     }
-
-#ifndef CC_NO_COLLAPSE_ITEM
-    event.Allow();
-#endif // CC_NO_COLLAPSE_ITEM
 }
 
 void ClassBrowser::SetNodeProperties(CCTreeItem* Item)
@@ -1184,44 +1158,3 @@ void ClassBrowser::ReselectItem()
             m_CCTreeCtrlBottom->DeleteAllItems();
     }
 }
-
-#ifndef CC_NO_COLLAPSE_ITEM
-void ClassBrowser::CollapseItem(CCTreeItem* item)
-{
-    std::stack <wxString> path;
-
-    // Follow the non-GUI tree upwards until root is found, take note of the path
-    while (item->m_parent)
-    {
-        path.push(item->m_text);
-        item = item->m_parent;
-    }
-
-    // Walk thru the GUI tree starting on root and following the previous path backwards
-    wxTreeItemId id = m_CCTreeCtrl->GetRootItem();
-    while (!path.empty())
-    {
-        wxTreeItemIdValue cookie;
-        for (id = m_CCTreeCtrl->GetFirstChild(id, cookie); id.IsOk(); id = m_CCTreeCtrl->GetNextChild(id, cookie))
-        {
-            if (m_CCTreeCtrl->GetItemText(id) == path.top())
-            {
-                break;
-            }
-        }
-
-        path.pop();
-        // If the path can not be found stop walking
-        if (!id.IsOk())
-        {
-            break;
-        }
-    }
-
-    if (id.IsOk())
-    {
-        m_CCTreeCtrl->DeleteChildren(id);
-        m_CCTreeCtrl->SetItemHasChildren(id);
-    }
-}
-#endif // CC_NO_COLLAPSE_ITEM

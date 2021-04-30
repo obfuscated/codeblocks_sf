@@ -224,11 +224,6 @@ void* ClassBrowserBuilderThread::Entry()
           case JobExpandItem: // add child items on the fly
               ExpandGUIItem();
               break;
-#ifndef CC_NO_COLLAPSE_ITEM
-          case JobCollapseItem: // collapse current item
-              CollapseItem(m_targetItem);
-              break;
-#endif
           default:
               ;
           }
@@ -357,30 +352,6 @@ void ClassBrowserBuilderThread::ExpandItem(CCTreeItem* item)
         CC_LOCKER_TRACK_CBBT_MTX_UNLOCK(m_ClassBrowserBuilderThreadMutex)
 }
 
-#ifndef CC_NO_COLLAPSE_ITEM
-void ClassBrowserBuilderThread::CollapseItem(CCTreeItem* item)
-{
-    TRACE("ClassBrowserBuilderThread::CollapseItem");
-
-    if (CBBT_SANITY_CHECK || !item)
-        return;
-
-    bool locked = false;
-    if (m_InitDone)
-    {
-        CC_LOCKER_TRACK_CBBT_MTX_LOCK(m_ClassBrowserBuilderThreadMutex)
-        locked = true;
-    }
-
-    m_CCTreeTop->DeleteChildren(item);
-    m_CCTreeTop->SetItemHasChildren(item);
-    m_Parent->CallAfter(&ClassBrowser::CollapseItem, item);
-
-    if (locked)
-        CC_LOCKER_TRACK_CBBT_MTX_UNLOCK(m_ClassBrowserBuilderThreadMutex)
-}
-#endif // CC_NO_COLLAPSE_ITEM
-
 void ClassBrowserBuilderThread::SelectGUIItem()
 {
     TRACE("ClassBrowserBuilderThread::SelectItem");
@@ -464,22 +435,6 @@ void ClassBrowserBuilderThread::BuildTree()
 #ifdef CC_BUILDTREE_MEASURING
     CCLogger::Get()->DebugLog(F("TestDestroy() took : %ld ms", sw.Time()));
     sw.Start();
-#endif
-
-#ifndef CC_NO_COLLAPSE_ITEM
-    // the tree is completely dynamic: it is populated when a node expands/collapses.
-    // so, by expanding the root node, we already instruct it to fill the top level :)
-    //
-    // this technique makes it really fast to draw (we only draw what's expanded) and
-    // has very minimum memory overhead since it contains as few items as possible.
-    // plus, it doesn't flicker because we're not emptying it and re-creating it each time ;)
-
-    // 5.) Collapse item. This removes all children
-    CollapseItem(root);
-#ifdef CC_BUILDTREE_MEASURING
-    CCLogger::Get()->DebugLog(F("Collapsing root item took : %ld ms", sw.Time()));
-    sw.Start();
-#endif
 #endif
 
     // 6.) Expand item
@@ -567,13 +522,6 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(CCTree* tree, CCTreeItem* par
             CCTreeItem* next = tree->GetPrevSibling(existing);
             if (!next && (tree == m_CCTreeTop) && (tree->GetChildrenCount(parent, false) == 1))
             {
-#ifndef CC_NO_COLLAPSE_ITEM
-                CollapseItem(parent);
-                // existing is the last item an gets deleted in CollapseItem and at least on 64-bit linux it can
-                // lead to a crash, because we use it again some lines later, but m_Item is not 0 in some rare cases,
-                // and therefore IsOk returns true !!
-                // so we leave the function here
-#endif // CC_NO_COLLAPSE_ITEM
                 return;
             }
             else

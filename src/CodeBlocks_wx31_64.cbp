@@ -397,7 +397,6 @@
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
-					<Add option="-DCC_NO_COLLAPSE_ITEM" />
 					<Add directory="include" />
 				</Compiler>
 				<Linker>

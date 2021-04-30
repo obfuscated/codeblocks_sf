@@ -108,10 +108,6 @@ public:
     void SelectSavedItem();
     void ReselectItem();
 
-#ifndef CC_NO_COLLAPSE_ITEM
-    void CollapseItem(CCTreeItem* item);
-#endif // CC_NO_COLLAPSE_ITEM
-
 private:
     /** handler for the mouse double click on a tree item, we usually make a jump to the
      *  associated token's position.
@@ -199,11 +195,6 @@ private:
      *  of the selected node in the top tree
      */
     void OnTreeItemExpanding(wxTreeEvent& event);
-
-#ifndef CC_NO_COLLAPSE_ITEM
-    /** collapse one node of the top tree */
-    void OnTreeItemCollapsing(wxTreeEvent& event);
-#endif // CC_NO_COLLAPSE_ITEM
 
     /** item selection changed in the top tree */
     void OnTreeSelChanged(wxTreeEvent& event);

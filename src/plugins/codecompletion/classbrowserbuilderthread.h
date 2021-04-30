@@ -57,8 +57,7 @@ enum EThreadJob
 {
     JobBuildTree,
     JobSelectTree,
-    JobExpandItem,
-    JobCollapseItem
+    JobExpandItem
 };
 
 class CCTree;
@@ -212,9 +211,6 @@ protected:
 
     /** Construct the children of the tree item */
     void ExpandItem(CCTreeItem* item);
-#ifndef CC_NO_COLLAPSE_ITEM
-    void CollapseItem(CCTreeItem* item);
-#endif // CC_NO_COLLAPSE_ITEM
 
     /** Copy the internal (top or bottom) tree to the GUI tree
      * @param top \a true to copy the top tree

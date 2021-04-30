@@ -288,7 +288,6 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
-					<Add option="-DCC_NO_COLLAPSE_ITEM" />
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
