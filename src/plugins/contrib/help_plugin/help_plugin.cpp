@@ -70,34 +70,6 @@ END_EVENT_TABLE()
 #ifdef __WXMSW__
 namespace
 {
-#ifndef UNICODE
-  typedef HWND (WINAPI *HTMLHELP)(HWND, LPCSTR, UINT, DWORD);
-  #define HTMLHELP_NAME "HtmlHelpA"
-#else // ANSI
-  typedef HWND (WINAPI *HTMLHELP)(HWND, LPCWSTR, UINT, DWORD);
-  #define HTMLHELP_NAME "HtmlHelpW"
-#endif
-
-  // ocx symbol handle
-  HTMLHELP fp_htmlHelp = 0;
-  HMODULE ocx_module = 0;
-
-  // it's used to search by keyword
-  struct cbHH_AKLINK
-  {
-    int      cbStruct;
-    BOOL     fReserved;
-    LPCTSTR  pszKeywords;
-    LPCTSTR  pszUrl;
-    LPCTSTR  pszMsgText;
-    LPCTSTR  pszMsgTitle;
-    LPCTSTR  pszWindow;
-    BOOL     fIndexOnFail;
-  };
-
-  // the command to search by keyword
-  const UINT cbHH_KEYWORD_LOOKUP = 0x000D;
-
   // This little class helps to fix a problem when the help file is CHM and the
   // keyword throws many results
   class LaunchCHMThread : public wxThread
@@ -120,30 +92,7 @@ namespace
 
   wxThread::ExitCode LaunchCHMThread::Entry()
   {
-    if (fp_htmlHelp) // do it our way if we can
-    {
-      cbHH_AKLINK link;
-
-      link.cbStruct     = sizeof(cbHH_AKLINK);
-      link.fReserved    = FALSE;
-      link.pszKeywords  = m_keyword.c_str();
-      link.pszUrl       = NULL;
-      link.pszMsgText   = NULL;
-      link.pszMsgTitle  = NULL;
-      link.pszWindow    = NULL;
-      link.fIndexOnFail = TRUE;
-
-      #if defined(_WIN64) | defined(WIN64)
-      fp_htmlHelp(0L, (const wxChar*)m_filename, cbHH_KEYWORD_LOOKUP, (DWORDLONG)&link);
-      #else
-      fp_htmlHelp(0L, (const wxChar*)m_filename, cbHH_KEYWORD_LOOKUP, (DWORD)&link);
-      #endif
-    }
-    else // do it the wx way then (which is the same thing, except for the 0L in the call to fp_htmlHelp)
-    {
-      m_helpctl.KeywordSearch(m_keyword);
-    }
-
+    m_helpctl.KeywordSearch(m_keyword);
     return 0;
   }
 }
@@ -168,21 +117,10 @@ HelpPlugin::HelpPlugin()
   }
 
   m_LastId = idHelpMenus[0];
-
-#ifdef __WXMSW__
-  ocx_module = LoadLibrary(_T("HHCTRL.OCX"));
-
-  if (ocx_module)
-    fp_htmlHelp = (HTMLHELP)GetProcAddress(ocx_module, HTMLHELP_NAME);
-#endif
 }
 
 HelpPlugin::~HelpPlugin()
 {
-#ifdef __WXMSW__
-  if (ocx_module)
-    FreeLibrary(ocx_module);
-#endif
 }
 
 void HelpPlugin::SetManPageDirs(MANFrame *manFrame)
