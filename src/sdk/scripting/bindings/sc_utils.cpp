@@ -156,4 +156,37 @@ DLLIMPORT wxString ExtractLastSquirrelError(HSQUIRRELVM vm, bool canBeEmpty)
     return errorMsg;
 }
 
+DLLIMPORT void PrintSquirrelToWxString(wxString& msg, const SQChar* s, va_list& vl)
+{
+    SQChar localBuffer[2048];
+
+    va_list tmpVL;
+    va_copy(tmpVL, vl);
+    const int retvalue = scvsprintf(localBuffer, cbCountOf(localBuffer), s, tmpVL);
+    va_end(tmpVL);
+    cbAssert(retvalue != -1);
+
+    if (retvalue < cbCountOf(localBuffer))
+        msg = cbC2U(localBuffer);
+    else
+    {
+        // The buffer is not large enough, so we need to allocate new one on the heap.
+        const int bufferSize = retvalue + 20;
+        std::unique_ptr<SQChar[]> tmpBuffer(new SQChar[bufferSize]);
+
+        va_list tmpVL;
+        va_copy(tmpVL, vl);
+        const int retvalue2 = scvsprintf(tmpBuffer.get(), bufferSize, s, tmpVL);
+        va_end(tmpVL);
+        cbAssert(retvalue2 != -1);
+        if (retvalue2 >= bufferSize)
+        {
+            cbAssert(false);
+            return;
+        }
+
+        msg = cbC2U(tmpBuffer.get());
+    }
+}
+
 } // namespace ScriptBindings
