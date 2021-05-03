@@ -1859,7 +1859,7 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
     Compiler* compiler = CompilerFactory::GetCompiler(project->GetCompilerID());
     cb::shared_ptr<CompilerCommandGenerator> generator(compiler ? compiler->GetCommandGenerator(project) : nullptr);
 
-    // get project include dirs
+    // get project include search dirs
     if (   !parser->Options().platformCheck
         || (parser->Options().platformCheck && project->SupportsCurrentPlatform()) )
     {

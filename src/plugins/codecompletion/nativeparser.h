@@ -48,7 +48,7 @@ enum BrowserViewMode
 /** @brief NativeParser class is just like a manager class to control Parser objects.
  *
  * Normally, Each C::B Project (cbp) will have an associated Parser object.
- * In another mode, all C::B project belong to a C::B workspace share a single Parser object.
+ * In another mode, all C::B projects belong to a C::B workspace share a single Parser object.
  * Nativeparser will manage all the Parser objects.
  */
 class NativeParser : public wxEvtHandler, NativeParserBase
@@ -60,19 +60,19 @@ public:
     /** Destructor */
     ~NativeParser();
 
-    /** return a reference to the currently active Parser object */
+    /** return a reference to the current active Parser object */
     ParserBase& GetParser() { return *m_Parser; }
 
     /** return the Parser pointer corresponding to the input C::B project
      * @param project input C::B project pointer
-     * @return a pointer to parser object
+     * @return a pointer to Parser object
      */
     ParserBase* GetParserByProject(cbProject* project);
 
     /** return the Parser pointer associated with the input file
-     * If a file belongs to several Parser objects, the first found Parser will returned.
+     * If a file belongs to several Parser objects, the first found Parser will be returned.
      * @param filename filename with full path.
-     * @return Parser pointer
+     * @return a Parser pointer
      */
     ParserBase* GetParserByFilename(const wxString& filename);
 
@@ -87,12 +87,12 @@ public:
      * projects opened, If the file exists in several projects, the first matched project will be
      * returned.
      * @param filename input filename
-     * @return project pointer containing the file
+     * @return a project pointer containing the file
      */
     cbProject* GetProjectByFilename(const wxString& filename);
 
     /** return the C::B project containing the cbEditor pointer
-     * @param editor Any valid cbEditor pointer
+     * @param editor any valid cbEditor pointer
      * @return project pointer
      */
     cbProject* GetProjectByEditor(cbEditor* editor);
@@ -100,10 +100,10 @@ public:
     /** Get current project by active editor or just return active project */
     cbProject* GetCurrentProject();
 
-    /** Return true if use one Parser per whole workspace */
+    /** Return true if one Parser per whole workspace option is selected */
     bool IsParserPerWorkspace() const { return m_ParserPerWorkspace; }
 
-    /** Return true if all the parser's batch-parse stages are finished, otherwise return false*/
+    /** Return true if all the Parser's batch-parse stages are finished, otherwise return false */
     bool Done();
 
     /** Provides images for the Symbol browser (for tree node images) and AutoCompletion list.
@@ -123,7 +123,7 @@ public:
     wxArrayString GetAllPathsByFilename(const wxString& filename);
 
     /** Add the paths to path array, and this will be used in GetAllPathsByFilename() function.
-     *  internally, all the folder paths were recorded in UNIX format.
+     *  internally, all the folder paths were recorded in UNIX format(path separator is '/').
      * @param dirs the target dir collection
      * @param path the new added path
      * @param hasExt the file path has extensions, such as C:/aaa/bbb.cpp
@@ -132,8 +132,8 @@ public:
 
     // the functions below are handling and managing Parser object
 
-    /** Dynamically allocate a Parser object for the input C::B project, note that while create a
-     * new Parser object, the DoFullParsing() function will be called, which collect the macro
+    /** Dynamically allocate a Parser object for the input C::B project, note that when creating a
+     * new Parser object, the DoFullParsing() function will be called, which collects the macro
      * definitions, and start the batch parsing from the thread pool.
      * @param project C::B project
      * @return Parser pointer of the project.
@@ -147,7 +147,7 @@ public:
     bool DeleteParser(cbProject* project);
 
     /** Single file re-parse.
-     * This was happening when you add a single file to project, or a file was modified.
+     * This is called when you add a single file to project, or a file was modified.
      * the main logic of this function call is:
      * 1, once this function is called, the file will be marked as "need to be reparsed" in the
      *    token tree, and a timer(reparse timer) is started.
@@ -178,7 +178,7 @@ public:
     /** when user changes the CC option, we should re-read the option */
     void RereadParserOptions();
 
-    /** re-parse the active Parser (the project associated with m_Parser member variable */
+    /** re-parse the active Parser (the project associated with m_Parser member variable) */
     void ReparseCurrentProject();
 
     /** re-parse the project select by context menu in projects management panel */
@@ -207,7 +207,7 @@ public:
     /** Call tips are tips when you are typing function arguments
      * these tips information could be:
      * the prototypes information of the current function,
-     * the type information of the variable.
+     * the type information of the argument.
      * Here are the basic algorithm
      *
      * if you have a function declaration like this: int fun(int a, float b, char c);
@@ -226,12 +226,17 @@ public:
      */
     int GetCallTips(wxArrayString& items, int& typedCommas, cbEditor* ed, int pos = wxNOT_FOUND);
 
-    /** project search path is used for auto completion for #include <> */
+    /** project search path is used for auto completion for #include <>
+     * there is an "code_completion" option for each cbp, where user can specify
+     * addtional C++ search paths
+     */
     wxArrayString ParseProjectSearchDirs(const cbProject &project);
+
+    /** set the addtional C++ search paths in the C::B project's code_completion setting */
     void SetProjectSearchDirs(cbProject &project, const wxArrayString &dirs);
 
     // The function below is used to manage symbols browser
-    /** return active class browser pointer*/
+    /** return active class browser pointer */
     ClassBrowser* GetClassBrowser() const { return m_ClassBrowser; }
 
     /** create the class browser */
@@ -240,7 +245,7 @@ public:
     /** remove the class browser */
     void RemoveClassBrowser(bool appShutDown = false);
 
-    /** update the class browser tree*/
+    /** update the class browser tree */
     void UpdateClassBrowser();
 
 protected:
@@ -261,7 +266,7 @@ protected:
      */
     void SetParser(ParserBase* parser);
 
-    /** Clear all Parser object*/
+    /** Clear all Parser object */
     void ClearParsers();
 
     /** Remove all the obsolete Parser object
@@ -321,7 +326,7 @@ private:
                                  int*          functionIndex = 0L,
                                  int           caretPos = -1);
 
-    /** used in CodeCompletion suggestion list to boost the performance, we use a caches */
+    /** used in CodeCompletion suggestion list to boost the performance, we use a cache */
     bool LastAISearchWasGlobal() const { return m_LastAISearchWasGlobal; }
 
     /** The same as above */
@@ -335,7 +340,7 @@ private:
     bool ParseUsingNamespace(ccSearchData* searchData, TokenIdxSet& search_scope, int caretPos = -1);
 
     /** collect the using namespace directive in the buffer specified by searchData
-     * @param buffer code to parse
+     * @param buffer code snippet to be parsed
      * @param search_scope resulting tokens collection
      * @param bufferSkipBlocks skip brace sets { }
      */
@@ -347,7 +352,7 @@ private:
      */
     bool ParseFunctionArguments(ccSearchData* searchData, int caretPos = -1);
 
-    /** parses from the start of function up to the cursor, this is used to collect local variables.
+    /** parse the contents from the start of function body to the cursor, this is used to collect local variables.
      * @param searchData search location
      * @param search_scope resulting tokens collection of local using namespace
      * @param caretPos caret position, if not specified, we use the current caret position
@@ -355,10 +360,11 @@ private:
     bool ParseLocalBlock(ccSearchData* searchData, TokenIdxSet& search_scope, int caretPos = -1);
 
     /** collect the header file search directories, those dirs include:
+     * todo: a better name could be: AddHeaderFileSearchDirs
      *  1, project's base dir, e.g. if you cbp file was c:/bbb/aaa.cbp, then c:/bbb is added.
      *  2, project's setting search dirs, for a wx project, then c:/wxWidgets2.8.12/include is added.
      *  3, a project may has some targets, so add search dirs for those targets
-     *  4, compiler's own search path, like: c:/mingw/include
+     *  4, compiler's own search path(system include search paths), like: c:/mingw/include
      */
     bool AddCompilerDirs(cbProject* project, ParserBase* parser);
 
@@ -371,7 +377,9 @@ private:
     /** collect GCC compiler predefined preprocessor definition */
     bool AddCompilerPredefinedMacrosGCC(const wxString& compilerId, cbProject* project, wxString& defs, ParserBase* parser);
 
-    /** lookup GCC compiler -std=XXX option */
+    /** lookup GCC compiler -std=XXX option
+     * return a string such as "c++11" or "c++17" or "gnu++17"
+     */
     wxString GetCompilerStandardGCC(Compiler* compiler, cbProject* project);
 
     /** lookup GCC compiler -std=XXX option for specific GCC options*/
@@ -382,21 +390,28 @@ private:
 
     /** collect project (user) defined preprocessor definition, such as for wxWidgets project, the
      * macro may have "#define wxUSE_UNICODE" defined in its project file.
-     * @return true if there are some macro definition added, else it is false
+     * @return true if there are some macro definition added, return false if nothing added
      */
     bool AddProjectDefinedMacros(cbProject* project, ParserBase* parser);
 
     /** Add compiler include directories (from search paths) to a parser */
     void AddCompilerIncludeDirsToParser(const Compiler* compiler, ParserBase* parser);
 
-    /** Collect the default compiler include file search paths. called by AddCompilerDirs() function*/
+    /** Collect the default compiler include file search paths. called by AddCompilerDirs() function
+     * @return compiler's own search path(system include search paths), like: c:/mingw/include
+     */
     const wxArrayString& GetGCCCompilerDirs(const wxString& cpp_path, const wxString& cpp_executable);
 
-    /** Add the collected default GCC compiler include search paths to a parser */
+    /** Add the collected default GCC compiler include search paths to a parser
+     * todo: document this
+     */
     void AddGCCCompilerDirs(const wxString& masterPath, const wxString& compilerCpp, ParserBase* parser);
 
     /** Add a list of directories to the parser's search directories, normalise to "base" path, if
      * "base" is not empty. Replaces macros.
+     * @param dirs user defined search path, such as a sub folder named "inc"
+     * @param base the base folder of the "dirs", for example, if base is "d:/abc", then the search
+     * path "d:/abc/inc" is added to the parser
      */
     void AddIncludeDirsToParser(const wxArrayString& dirs, const wxString& base, ParserBase* parser);
 
@@ -416,7 +431,7 @@ private:
      * the whole workspace, we first parse A.cbp, after that we should continue to parse B.cbp. When
      * finishing parsing B.cbp, we need the timer again to parse the C.cbp.
      * If we are in the mode of one parser for one project, then after parsing A.cbp, the timer is
-     * kicked, so there is a chance to parse the B.cbp or C.cbp, but only when user opened some file
+     * kicked, so there is a chance to parse the B.cbp or C.cbp, but only when user opened some files
      * of B.cbp or C.cbp when the timer event arrived.
      */
     void OnParsingOneByOneTimer(wxTimerEvent& event);
@@ -451,9 +466,9 @@ private:
      * m_ParserList.begin()->second is the common parser for all the projects in workspace.
      */
     ParserList                   m_ParserList;
-    /** a temp parser object pointer */
+    /** a temp Parser object pointer */
     ParserBase*                  m_TempParser;
-    /** active parser object pointer */
+    /** active Parser object pointer */
     ParserBase*                  m_Parser;
 
     /** a delay timer to parser every project in sequence */
@@ -467,9 +482,9 @@ private:
     typedef std::unordered_map<int, std::unique_ptr<wxImageList>> SizeToImageList;
     SizeToImageList m_ImageListMap;
 
-    /** all the files which opened, but does not belong to any cbp */
+    /** all the files which opened in editors, but do not belong to any cbp */
     wxArrayString                m_StandaloneFiles;
-    /**  if true, which means the parser hold tokens of the whole workspace's project, if false
+    /** if true, which means the parser hold tokens of the whole workspace's project, if false
      * then one parser per a cbp
      */
     bool                         m_ParserPerWorkspace;
@@ -482,7 +497,7 @@ private:
     cbStyledTextCtrl* m_LastControl;
     wxString          m_LastFile;
     int               m_LastFunctionIndex;
-    int               m_LastFuncTokenIdx;      //!< saved the function token's index, for remove all local variable
+    int               m_LastFuncTokenIdx;      //!< saved the function token's index, for remove all local variable tokens
     int               m_LastLine;
     wxString          m_LastNamespace;
     wxString          m_LastPROC;
