@@ -87,17 +87,17 @@ ProjectFile::ProjectFile(cbProject* prj, const ProjectFile &pf) :
 {
 }
 
-void ProjectFile::Rename(const wxString& new_name)
+void ProjectFile::Rename(const wxString& newName)
 {
-    wxString path = file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-
-    file.Assign(path + new_name);
+    const wxString oldName(file.GetFullName());
+    const wxString path(file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
+    file.Assign(path + newName);
     relativeFilename = relativeFilename.BeforeLast(wxFILE_SEP_PATH);
-    if (!relativeFilename.IsEmpty())
+    if (!relativeFilename.empty())
     {
         relativeFilename.Append(wxFILE_SEP_PATH);
     }
-    relativeFilename.Append(new_name);
+    relativeFilename.Append(newName);
 
     if (project)
     {
@@ -105,7 +105,16 @@ void ProjectFile::Rename(const wxString& new_name)
         project->CalculateCommonTopLevelPath();
         project->SetModified(true);
     }
+
     UpdateFileDetails();
+
+    // Send event
+    CodeBlocksEvent event(cbEVT_PROJECT_FILE_RENAMED);
+    event.SetProject(project);
+    event.SetString(path);
+    event.SetOldFileName(oldName);
+    event.SetNewFileName(newName);
+    Manager::Get()->GetPluginManager()->NotifyPlugins(event);
 }
 
 void ProjectFile::AddBuildTarget(const wxString& targetName)

@@ -615,3 +615,35 @@ bool wxsItemRes::OnPopupMenu(long Id)
     }
     return false;
 }
+
+bool wxsItemRes::Rename(const wxString& oldName, const wxString& newName)
+{
+    const bool caseSensitive = wxFileName::IsCaseSensitive();
+    bool renamed = false;
+
+    if (m_WxsFileName.IsSameAs(oldName, caseSensitive))
+    {
+        m_WxsFileName = newName;
+        renamed = true;
+    }
+
+    if (m_SrcFileName.IsSameAs(oldName, caseSensitive))
+    {
+        m_SrcFileName = newName;
+        renamed = true;
+    }
+
+    if (m_HdrFileName.IsSameAs(oldName, caseSensitive))
+    {
+        m_HdrFileName = newName;
+        renamed = true;
+    }
+
+    if (m_XrcFileName.IsSameAs(oldName, caseSensitive))
+    {
+        m_XrcFileName = newName;
+        renamed = true;
+    }
+
+    return renamed;
+}

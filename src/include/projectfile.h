@@ -48,9 +48,10 @@ class DLLIMPORT ProjectFile
           * the internal variables. It does NOT rename the file on disk...
           * It updates @c file, @c relativeFilename, @c relativeToCommonTopLevelPath
           * and finally marks the parent project as modified.
-          * @note This allows renaming only the LAST part of the filename (the name and extension)
+          * @note This allows renaming only the LAST part of the filename (the name and extension).
+          * @note It will send the cbEVT_PROJECT_FILE_RENAMED event.
           */
-        void Rename(const wxString& new_name);
+        void Rename(const wxString& newName);
 
         /** Make this file belong to an additional build target.
           * @param targetName The build target to add this file to. */

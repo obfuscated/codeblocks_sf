@@ -117,6 +117,7 @@ void wxSmith::OnAttach()
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN, new cbEventFunctor<wxSmith, CodeBlocksEvent>(this, &wxSmith::OnProjectOpened));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<wxSmith, CodeBlocksEvent>(this, &wxSmith::OnProjectClose));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_RENAMED, new cbEventFunctor<wxSmith, CodeBlocksEvent>(this, &wxSmith::OnProjectRenamed));
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_FILE_RENAMED, new cbEventFunctor<wxSmith, CodeBlocksEvent>(this, &wxSmith::OnProjectFileRenamed));
 
     // register scripting stuff
     RegisterScripting();
@@ -347,19 +348,64 @@ void wxSmith::OnProjectOpened(CodeBlocksEvent& event)
 void wxSmith::OnProjectClose(CodeBlocksEvent& event)
 {
     cbProject* Proj = event.GetProject();
-    ProjectMapI i = m_ProjectMap.find(Proj);
-    if ( i == m_ProjectMap.end() ) return;
-    delete i->second;
-    m_ProjectMap.erase(i);
+    ProjectMapI it = m_ProjectMap.find(Proj);
+    if (it != m_ProjectMap.end())
+    {
+        delete it->second;
+        m_ProjectMap.erase(it);
+    }
+
     event.Skip();
 }
 
-void wxSmith::OnProjectRenamed(cb_unused CodeBlocksEvent& event)
+void wxSmith::OnProjectRenamed(CodeBlocksEvent& event)
 {
     cbProject* Proj = event.GetProject();
-    ProjectMapI i = m_ProjectMap.find(Proj);
-    if ( i == m_ProjectMap.end() ) return;
-    i->second->UpdateName();
+    ProjectMapI it = m_ProjectMap.find(Proj);
+    if (it != m_ProjectMap.end())
+        it->second->UpdateName();
+
+    event.Skip();
+}
+
+void wxSmith::OnProjectFileRenamed(CodeBlocksEvent& event)
+{
+    cbProject *projectCB = event.GetProject();
+    ProjectMapI it = m_ProjectMap.find(projectCB);
+    if (it == m_ProjectMap.end())
+    {
+        event.Skip();
+        return;
+    }
+
+    wxsProject *projectWX = it->second;
+    if (projectWX)
+    {
+        const wxString projectPath(projectCB->GetCommonTopLevelPath());
+
+        // Get absolute old file name
+        wxFileName oldFileName(event.GetString(), event.GetOldFileName());
+        // Get relative (to project) old file name
+        oldFileName.MakeRelativeTo(projectPath);
+        const wxString relativeOldFullPath(oldFileName.GetFullPath(wxPATH_UNIX));
+
+        // Get absolute new file name
+        wxFileName newFileName(event.GetString(), event.GetNewFileName());
+        // Get relative (to project) new file name
+        newFileName.MakeRelativeTo(projectPath);
+        const wxString relativeNewFullPath(newFileName.GetFullPath(wxPATH_UNIX));
+
+        // Scan all resources looking if the renamed file belongs to any of them
+        // The file should not belong to more than one resource, but better safe than sorry...
+        const int resourceCount = projectWX->GetResourcesCount();
+        for (int resourceIndex = 0; resourceIndex < resourceCount; ++resourceIndex)
+        {
+            wxsResource *resource = projectWX->GetResource(resourceIndex);
+            if (resource->Rename(relativeOldFullPath, relativeNewFullPath))
+                projectWX->NotifyChange();
+        }
+    }
+
     event.Skip();
 }
 

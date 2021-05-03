@@ -56,13 +56,20 @@ class EVTIMPORT CodeBlocksEvent : public wxCommandEvent
 		int  GetY() const { return m_Y; }
 		void SetY(int y)  { m_Y = y;    }
 
-		const wxString& GetBuildTargetName() const                 { return m_TargetName;   }
-		void            SetBuildTargetName(const wxString& target) { m_TargetName = target; }
+		const wxString& GetBuildTargetName() const                 { return m_NewName;   }
+		void            SetBuildTargetName(const wxString& target) { m_NewName = target; }
 
 		// the following two functions are only valid for EVT_BUILDTARGET_RENAMED
 		// and EVT_BUILDTARGET_SELECTED events
-		const wxString& GetOldBuildTargetName() const                 { return m_OldTargetName;   }
-		void            SetOldBuildTargetName(const wxString& target) { m_OldTargetName = target; }
+		const wxString& GetOldBuildTargetName() const                 { return m_OldName;   }
+		void            SetOldBuildTargetName(const wxString& target) { m_OldName = target; }
+
+		// the following four functions are only valid for EVT_PROJECT_FILE_RENAMED event
+		const wxString& GetNewFileName() const                 { return m_NewName;   }
+		void            SetNewFileName(const wxString& target) { m_NewName = target; }
+		const wxString& GetOldFileName() const                 { return m_OldName;   }
+		void            SetOldFileName(const wxString& target) { m_OldName = target; }
+
 	protected:
 		cbProject*  m_pProject;
 		EditorBase* m_pEditor;
@@ -72,8 +79,8 @@ class EVTIMPORT CodeBlocksEvent : public wxCommandEvent
 		int m_X;
 		int m_Y;
 
-		wxString m_TargetName;
-		wxString m_OldTargetName;
+		wxString m_NewName;
+		wxString m_OldName;
 	private:
 		DECLARE_DYNAMIC_CLASS(CodeBlocksEvent)
 };
@@ -328,6 +335,8 @@ extern EVTIMPORT const wxEventType cbEVT_PROJECT_FILE_REMOVED;
 #define EVT_PROJECT_FILE_REMOVED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PROJECT_FILE_REMOVED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_PROJECT_FILE_CHANGED;
 #define EVT_PROJECT_FILE_CHANGED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PROJECT_FILE_CHANGED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+extern EVTIMPORT const wxEventType cbEVT_PROJECT_FILE_RENAMED;
+#define EVT_PROJECT_FILE_RENAMED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PROJECT_FILE_RENAMED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_PROJECT_POPUP_MENU;
 #define EVT_PROJECT_POPUP_MENU(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PROJECT_POPUP_MENU, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_PROJECT_TARGETS_MODIFIED;

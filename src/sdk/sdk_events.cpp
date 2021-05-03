@@ -104,6 +104,7 @@ const wxEventType cbEVT_PROJECT_END_REMOVE_FILES = wxNewEventType();
 const wxEventType cbEVT_PROJECT_FILE_ADDED = wxNewEventType();
 const wxEventType cbEVT_PROJECT_FILE_REMOVED = wxNewEventType();
 const wxEventType cbEVT_PROJECT_FILE_CHANGED = wxNewEventType();
+const wxEventType cbEVT_PROJECT_FILE_RENAMED = wxNewEventType();
 const wxEventType cbEVT_PROJECT_POPUP_MENU = wxNewEventType();
 const wxEventType cbEVT_PROJECT_TARGETS_MODIFIED = wxNewEventType();
 const wxEventType cbEVT_PROJECT_RENAMED = wxNewEventType();

@@ -116,6 +116,12 @@ class wxsResource: public wxObject
         /** \brief Cleaning up before deleting this resource from project */
         inline bool DeleteCleanup(bool ShowDialog=true) { return OnDeleteCleanup(ShowDialog); }
 
+        /** \brief Rename components (if any)
+         * \retval true If something has being renamed
+         * \retval false Nothing has changed
+         */
+        virtual bool Rename(const wxString &oldName, const wxString &newName) { return false; }
+
     protected:
 
         /** \brief Function called when there's need to create new editor

@@ -119,10 +119,13 @@ class wxsItemRes: public wxWidgetsRes, public wxsItemResFunctions
         /** \brief Creating new resource and building files if necessarry */
         virtual bool CreateNewResource(NewResourceParams& Params);
 
+        /* Getters */
         inline const wxString& GetWxsFileName() { return m_WxsFileName; }
         inline const wxString& GetSrcFileName() { return m_SrcFileName; }
         inline const wxString& GetHdrFileName() { return m_HdrFileName; }
         inline const wxString& GetXrcFileName() { return m_XrcFileName; }
+
+        bool Rename(const wxString& oldName, const wxString& newName) override;
 
         /** \brief Getting current edit mode */
         EditMode GetEditMode();
