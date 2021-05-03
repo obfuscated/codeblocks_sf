@@ -114,7 +114,6 @@ struct ScriptingManager::Data : wxEvtHandler
         } data;
     };
 
-    // FIXME (squirrel) Using std::string here is not efficient
     using ConstantsMap = std::unordered_map<std::string, ConstantData>;
     ConstantsMap m_mapConstants;
 
