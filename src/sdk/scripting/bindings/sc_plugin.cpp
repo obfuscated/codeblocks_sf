@@ -336,47 +336,10 @@ class cbScriptPlugin
 
 )";
 
-// FIXME (squirrel) This is duplicated! Try to deduplicate.
-static wxString s_ScriptOutput;
-
-// FIXME (squirrel) This is duplicated! Try to deduplicate.
-static void PrintSquirrelToWxString(wxString& msg, const SQChar* s, va_list& vl)
-{
-    int buffer_size = 2048;
-    SQChar* tmp_buffer;
-    for (;;buffer_size*=2)
-    {
-        // FIXME (squirrel) Optimize this
-        tmp_buffer = new SQChar [buffer_size];
-        int retvalue = scvsprintf(tmp_buffer, buffer_size, s, vl);
-        if (retvalue < buffer_size)
-        {
-            // Buffersize was large enough
-            msg = cbC2U(tmp_buffer);
-            delete[] tmp_buffer;
-            break;
-        }
-        // Buffer size was not enough
-        delete[] tmp_buffer;
-    }
-}
-
-// FIXME (squirrel) This is duplicated! Try to deduplicate.
-static void ScriptsPrintFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
-{
-    va_list vl;
-    va_start(vl,s);
-    wxString msg;
-    PrintSquirrelToWxString(msg,s,vl);
-    va_end(vl);
-
-    s_ScriptOutput << msg;
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // register the script plugin framework
 ////////////////////////////////////////////////////////////////////////////////
-void Register_ScriptPlugin(HSQUIRRELVM v)
+void Register_ScriptPlugin(HSQUIRRELVM v, ScriptingManager *manager)
 {
     PreserveTop preserveTop(v);
 
@@ -391,42 +354,7 @@ void Register_ScriptPlugin(HSQUIRRELVM v)
     }
 
     // load base script plugin
-
-    // WARNING: we CANNOT use ScriptingManager::LoadBuffer() because we have reached here
-    // by a call from inside ScriptingManager's constructor. This would cause an infinite
-    // loop and the app would die with a stack overflow. We got to load the script manually...
-    // we also have to disable the print and error func for a while
-
-    SQPRINTFUNCTION oldPrintFunc = sq_getprintfunc(v);
-    SQPRINTFUNCTION oldErrorFunc = sq_geterrorfunc(v);
-    sq_setprintfunc(v, ScriptsPrintFunc, ScriptsPrintFunc);
-
-    wxString errorType;
-
-    if (SQ_SUCCEEDED(sq_compilebuffer(v, s_cbScriptPlugin,
-                                      (strlen(s_cbScriptPlugin) + 1) * sizeof(SQChar),
-                                      _SC("cbScriptPlugin"), 1)))
-    {
-        sq_pushroottable(v); // this is the parameter for the script closure
-
-        if (SQ_FAILED(sq_call(v, 1, SQFalse, SQTrue)))
-            errorType = "Call";
-        sq_pop(v, 1); // pop the closure
-    }
-    else
-        errorType = "Compile";
-
-    if (!errorType.empty())
-    {
-        wxString errorMsg = ExtractLastSquirrelError(v, false);
-        const wxString fullMessage = wxString::Format("Filename: cbScriptPlugin\n%sError: %s\nDetails: %s",
-                                                      errorType.wx_str(), errorMsg.wx_str(),
-                                                      s_ScriptOutput.wx_str());
-        Manager::Get()->GetLogManager()->LogError(fullMessage);
-    }
-
-    // restore the print and error funcs
-    sq_setprintfunc(v, oldPrintFunc, oldErrorFunc);
+    manager->LoadBuffer(s_cbScriptPlugin, "cbScriptPlugin");
 }
 
 void Unregister_ScriptPlugin()
