@@ -271,11 +271,10 @@ void wxsCoder::FlushFile(const wxString& FileName)
 
     if ( Editor )
     {
-        wxString EOL;
         while ( Changes )
         {
             CodeChange* Next = Changes->Next;
-            ApplyChangesEditor(Editor,Changes->Header,Changes->End,Changes->Code,Changes->CodeHasHeader,Changes->CodeHasEnd,EOL);
+            ApplyChangesEditor(Editor,Changes->Header,Changes->End,Changes->Code,Changes->CodeHasHeader,Changes->CodeHasEnd);
             delete Changes;
             Changes = Next;
         }
@@ -283,7 +282,6 @@ void wxsCoder::FlushFile(const wxString& FileName)
     else
     {
         // Reading file content
-        wxString EOL;
         bool HasChanged = false;
 
         //wxStopWatch SW;
@@ -299,7 +297,7 @@ void wxsCoder::FlushFile(const wxString& FileName)
         while ( Changes )
         {
             CodeChange* Next = Changes->Next;
-            ApplyChangesString(Content,Changes->Header,Changes->End,Changes->Code,Changes->CodeHasHeader,Changes->CodeHasEnd,HasChanged,EOL);
+            ApplyChangesString(Content,Changes->Header,Changes->End,Changes->Code,Changes->CodeHasHeader,Changes->CodeHasEnd,HasChanged);
             delete Changes;
             Changes = Next;
         }
@@ -325,32 +323,65 @@ void wxsCoder::FlushFile(const wxString& FileName)
     CodeChanges[Index] = 0;
 }
 
-bool wxsCoder::ApplyChangesEditor(cbEditor* Editor,const wxString& Header,const wxString& End,wxString& Code,bool CodeHasHeader,bool CodeHasEnd,wxString& EOL)
+void wxsCoder::GetLineEndingIndentation(const wxString& line, wxString& indentation, wxString& lineending)
 {
-    cbStyledTextCtrl* Ctrl = Editor->GetControl();
-    int FullLength = Ctrl->GetLength();
+    const size_t length = line.length();
+    // Fetching indentation
+    if(cbDetectTabStrAutomatically() && !line.IsEmpty() )
+    {
+        wxString BaseIndentation;
 
-    if ( EOL.IsEmpty() )
+        size_t IndentPos = length;
+        while ( --IndentPos >= 0 )
+        {
+            wxChar ch = line.GetChar(IndentPos);
+            if ( (ch == _T('\n')) || (ch == _T('\r')) ) break;
+        }
+        while ( ++IndentPos < length )
+        {
+            wxChar ch = line.GetChar(IndentPos);
+            BaseIndentation.Append(
+                ( ch == _T('\t') ) ? _T('\t') : _T(' '));
+        }
+
+        indentation = BaseIndentation;
+    }
+    else {
+        indentation = cbGetTabStr();
+    }
+
+    if ( cbEnsureLineEndingConsistency() && !line.IsEmpty()  )
     {
         // Detecting EOL style in source
-        for ( int i=0; i<FullLength; i++ )
+        for ( int i=0; i<length; i++ )
         {
-            wxChar ch = Ctrl->GetCharAt(i);
+            wxChar ch = line.GetChar(i);
             if ( ch==_T('\n') || ch==_T('\r') )
             {
-                EOL = ch;
-                if ( ++i < FullLength )
+                lineending = ch;
+                if ( ++i < length )
                 {
-                    wxChar ch2 = Ctrl->GetCharAt(i);
+                    wxChar ch2 = line.GetChar(i);
                     if ( (ch2==_T('\n') || ch2==_T('\r')) && ch!=ch2 )
                     {
-                        EOL.Append(ch2);
+                        lineending.Append(ch2);
                     }
                 }
                 break;
             }
         }
     }
+    else
+    {
+        lineending = GetEOLStr(-1);
+    }
+}
+
+
+bool wxsCoder::ApplyChangesEditor(cbEditor* Editor,const wxString& Header,const wxString& End,wxString& Code,bool CodeHasHeader,bool CodeHasEnd)
+{
+    cbStyledTextCtrl* Ctrl = Editor->GetControl();
+    int FullLength = Ctrl->GetLength();
 
     // Searching for beginning of section to replace
     Ctrl->SetSearchFlags(wxSCI_FIND_MATCHCASE);
@@ -366,6 +397,10 @@ bool wxsCoder::ApplyChangesEditor(cbEditor* Editor,const wxString& Header,const 
         return false;
     }
 
+    wxString EOL;
+    wxString tab;
+    GetLineEndingIndentation(Ctrl->GetLine(Ctrl->LineFromPosition(Position)) , tab, EOL);
+
     // Beginning of this code block is in Position, now searching for end
     Ctrl->SetTargetStart(Position);
     Ctrl->SetTargetEnd(FullLength);
@@ -378,7 +413,6 @@ bool wxsCoder::ApplyChangesEditor(cbEditor* Editor,const wxString& Header,const 
 
         return false;
     }
-
     // Fetching indentation
     wxString BaseIndentation;
     int IndentPos = Position;
@@ -393,8 +427,7 @@ bool wxsCoder::ApplyChangesEditor(cbEditor* Editor,const wxString& Header,const 
         BaseIndentation.Append(
             ( ch == _T('\t') ) ? _T('\t') : _T(' '));
     }
-
-    Code = RebuildCode(BaseIndentation,Code.c_str(),(int)Code.Length(),EOL);
+    Code = RebuildCode(BaseIndentation, Code.c_str(),(int)Code.Length(), EOL, tab);
 
     // Fixing up positions to contain or not header / ending sequence
     if ( !CodeHasHeader ) Position += Header.Length();
@@ -423,32 +456,11 @@ bool wxsCoder::ApplyChangesEditor(cbEditor* Editor,const wxString& Header,const 
     return true;
 }
 
-bool wxsCoder::ApplyChangesString(wxString& BaseContent,const wxString& Header,const wxString& End,wxString& Code,bool CodeHasHeader,bool CodeHasEnd,bool& HasChanged,wxString& EOL)
+bool wxsCoder::ApplyChangesString(wxString& BaseContent,const wxString& Header,const wxString& End,wxString& Code,bool CodeHasHeader,bool CodeHasEnd,bool& HasChanged)
 {
     wxString Content = BaseContent;
-    if ( EOL.IsEmpty() )
-    {
-        // Detecting EOL in this sources
-        for ( size_t i=0; i<Content.Length(); i++ )
-        {
-            wxChar ch = Content.GetChar(i);
-            if ( ch==_T('\n') || ch==_T('\r') )
-            {
-                EOL = ch;
-                if ( ++i < Content.Length() )
-                {
-                    wxChar ch2 = Content.GetChar(i);
-                    if ( (ch2==_T('\n') || ch2==_T('\r')) && ch!=ch2 )
-                    {
-                        EOL.Append(ch2);
-                    }
-                }
-                break;
-            }
-        }
-    }
 
-    // Search for header
+     // Search for header
     int Position = Content.First(Header);
 
     if ( Position == -1 )
@@ -456,6 +468,11 @@ bool wxsCoder::ApplyChangesString(wxString& BaseContent,const wxString& Header,c
         Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Couldn't find code with header:\n\t\"%s\""),Header.wx_str()));
         return false;
     }
+
+    wxString EOL;
+    wxString tab;
+    int start = BaseContent.rfind('\n', Position);
+    GetLineEndingIndentation(BaseContent.substr(start < 0 ? 0 : start) , tab, EOL);
 
     // Skipping header if necessary
     int IndentPos = Position;
@@ -489,7 +506,7 @@ bool wxsCoder::ApplyChangesString(wxString& BaseContent,const wxString& Header,c
             ( ch == _T('\t') ) ? _T('\t') : _T(' '));
     }
 
-    Code = RebuildCode(BaseIndentation,Code.c_str(),Code.Length(),EOL);
+    Code = RebuildCode(BaseIndentation,Code.c_str(), Code.Length(), EOL, tab);
 
     // Checking if code has really changed
     if ( Content.Mid(0,EndPosition) == Code )
@@ -505,15 +522,9 @@ bool wxsCoder::ApplyChangesString(wxString& BaseContent,const wxString& Header,c
     return true;
 }
 
-wxString wxsCoder::RebuildCode(wxString& BaseIndentation,const wxChar* Code,int CodeLen,wxString& EOL)
+wxString wxsCoder::RebuildCode(wxString& BaseIndentation, const wxChar* Code, int CodeLen, wxString EOL, const wxString& tab)
 {
-    wxString Tab;
-    bool UseTab = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_tab"), false);
-    int TabSize = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/tab_size"), 4);
-    if ( !UseTab )
-    {
-        Tab.Append(_T(' '),TabSize);
-    }
+    const bool UseTab = tab == _("\t");
 
     if ( EOL.IsEmpty() )
         EOL = GetEOLStr();
@@ -535,7 +546,7 @@ wxString wxsCoder::RebuildCode(wxString& BaseIndentation,const wxChar* Code,int 
                     Result << BaseIndentation;
                     break;
                 }
-            case _T('\t'): if ( UseTab ) { Result << Tab; break; }
+            case _T('\t'): if ( !UseTab ) { Result << tab; break; }
 
             default:       Result << *Code;
         }

@@ -375,9 +375,9 @@ bool wxsItemRes::CreateNewResource(NewResourceParams& Params)
                     }
                 }
                 Header.Replace(_T("$(HandlersScope)"),Scope);
-
-                // TODO: Use wxsCoder to save file's content, so it will
-                //       have proper encoding and EOL stuff
+                wxString Indentation, EOL, tab;
+                wxsCoder::GetLineEndingIndentation(wxEmptyString, tab, EOL);
+                Header = wxsCoder::RebuildCode(Indentation, Header.c_str(), Header.length(), EOL, tab);
                 if ( !HdrFile.Write(Header) ) return false;
             }
 
@@ -422,8 +422,9 @@ bool wxsItemRes::CreateNewResource(NewResourceParams& Params)
                 SourceStr.Replace(_T("$(BaseClassName)"),Params.BaseClass);
                 SourceStr.Replace(_T("$(CtorInit)"),CtorInitCode);
                 SourceStr.Replace(_T("$(InternalHeadersPch)"),IntHeadersPch);
-                // TODO: Use wxsCoder to save file's content, so it will
-                //       have proper encoding and EOL stuff
+                wxString Indentation, EOL, tab;
+                wxsCoder::GetLineEndingIndentation(wxEmptyString, tab, EOL);
+                SourceStr = wxsCoder::RebuildCode(Indentation, SourceStr.c_str(), SourceStr.length(), EOL, tab);
                 if ( !SrcFile.Write(SourceStr) ) return false;
             }
 
