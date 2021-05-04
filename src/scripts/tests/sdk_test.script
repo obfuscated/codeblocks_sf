@@ -124,13 +124,13 @@ class sdkTest extends script_test_base
         clear_test_result();
 
         test_string("MakePath 0", MakePath(_T(""), _T("name")), "name");
-        test_string("MakePath 1", MakePath(_T("path"), _T("name")), "path/name");
-        test_string("MakePath 2", MakePath(_T("path/"), _T("name")), "path/name");
+        test_string("MakePath 1", MakePath(_T("path"), _T("name")), "path" + ::wxFILE_SEP_PATH + "name");
+        test_string("MakePath 2", MakePath(_T("path") + ::wxFILE_SEP_PATH, _T("name")), "path" + ::wxFILE_SEP_PATH + "name");
 
-        test_string("MakeDir 0", MakeDir(_T(""), _T("name")), "name/");
-        test_string("MakeDir 1", MakeDir(_T(""), _T("name/")), "name/");
-        test_string("MakeDir 2", MakeDir(_T("path"), _T("name/")), "path/name/");
-        test_string("MakeDir 3", MakeDir(_T("path/"), _T("name/")), "path/name/");
+        test_string("MakeDir 0", MakeDir(_T(""), _T("name")), "name" + ::wxFILE_SEP_PATH);
+        test_string("MakeDir 1", MakeDir(_T(""), _T("name") + ::wxFILE_SEP_PATH), "name" + ::wxFILE_SEP_PATH);
+        test_string("MakeDir 2", MakeDir(_T("path"), _T("name") + ::wxFILE_SEP_PATH), "path" + ::wxFILE_SEP_PATH + "name" + ::wxFILE_SEP_PATH);
+        test_string("MakeDir 3", MakeDir(_T("path") + ::wxFILE_SEP_PATH, _T("name") + ::wxFILE_SEP_PATH), "path" + ::wxFILE_SEP_PATH + "name" + ::wxFILE_SEP_PATH);
 
         print_test_result();
         ::print("======= Test helpers END ======= \n");
@@ -140,6 +140,10 @@ class sdkTest extends script_test_base
     {
         ::print("======= Test SDK Project related classes/functions BEGINN ======= \n");
         clear_test_result();
+
+        local outputExt = wxString();
+        if (::PLATFORM == ::PLATFORM_MSW)
+            outputExt = _T(".exe");
 
         local projectMgr = GetProjectManager();
         test_false("GetProjectManager", IsNull(projectMgr));
@@ -439,14 +443,14 @@ class sdkTest extends script_test_base
             test_string("CompileTargetBase::SetTitle", debugTarget.GetTitle(), "Debug_New");
 
             test_string("CompileTargetBase::GetOutputFilename", debugTarget.GetOutputFilename(),
-                        "NewProject");
+                        "NewProject" + outputExt);
             test_string("CompileTargetBase::SuggestOutputFilename",
-                        debugTarget.SuggestOutputFilename(), "NewProject");
+                        debugTarget.SuggestOutputFilename(), "NewProject" + outputExt);
             debugTarget.SetOutputFilename(_T("debugOutput"));
             test_string("CompileTargetBase::SetOutputFilename", debugTarget.GetOutputFilename(),
-                        "debugOutput");
+                        "debugOutput" + outputExt);
             test_string("CompileTargetBase::SuggestOutputFilename after set",
-                        debugTarget.SuggestOutputFilename(), "NewProject");
+                        debugTarget.SuggestOutputFilename(), "NewProject" + outputExt);
 
             test_string("CompileTargetBase::GetWorkingDir", debugTarget.GetWorkingDir(), ".");
             debugTarget.SetWorkingDir(_T("workDir"));
@@ -473,10 +477,10 @@ class sdkTest extends script_test_base
 
             test_string("CompileTargetBase::GetExecutableFilename",
                         debugTarget.GetExecutableFilename(),
-                        MakePath(tempFolder, _T("NewProject")));
+                        MakePath(tempFolder, _T("NewProject") + outputExt));
             test_string("CompileTargetBase::GetDynamicLibFilename",
                         debugTarget.GetDynamicLibFilename(),
-                        MakePath(tempFolder, _T("NewProject")));
+                        MakePath(tempFolder, _T("NewProject") + outputExt));
             test_string("CompileTargetBase::GetDynamicLibDefFilename",
                         debugTarget.GetDynamicLibDefFilename(),
                         "$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)");
@@ -948,7 +952,7 @@ class sdkTest extends script_test_base
             file.AddBuildTarget(_T("Release"));
             test_targets("ProjectFile::AddBuildTarget", file, "Debug_New;Release");
 
-            local objExt = ".o"; // FIXME (squirrel) Make this Multi-OS/Multi-Compiler
+            local objExt = ".o";
 
             test_string("ProjectFile::GetBaseName", file.GetBaseName(), "file1");
             test_string("ProjectFile::GetObjName", file.GetObjName(), "file1" + objExt);
@@ -1460,22 +1464,21 @@ class sdkTest extends script_test_base
 
     function FolderCleanup(folder)
     {
-        if(::PLATFORM == ::PLATFORM_GTK)
+        if (IO.DirectoryExists(folder))
         {
-            // FIXME (squirrel) Make this cross platform!
-            if (IO.DirectoryExists(folder))
-            {
-                print("Note: Deleting recursively '" + folder + "'\n");
+            print("Note: Deleting recursively '" + folder + "'\n");
+            if (::PLATFORM != ::PLATFORM_MSW)
                 IO.Execute(_T("rm -rf \"") + folder + _T("\""));
-                if (IO.DirectoryExists(folder))
-                    throw "Cannot delete folder: '" + folder + "'! Aborting!";
-            }
-
-            print("Note: Creating '" + folder + "'\n");
-            IO.CreateDirectory(folder, 0755);
-            if (!IO.DirectoryExists(folder))
-                throw "Cannot create folder: '" + folder + "'! Aborting!";
+            else
+                IO.Execute(_T("cmd /c rd /s /q \"") + folder + _T("\""));
+            if (IO.DirectoryExists(folder))
+                throw "Cannot delete folder: '" + folder + "'! Aborting!";
         }
+
+        print("Note: Creating '" + folder + "'\n");
+        IO.CreateDirectory(folder, 0755);
+        if (!IO.DirectoryExists(folder))
+            throw "Cannot create folder: '" + folder + "'! Aborting!";
     }
 
     function test_io()
@@ -1499,14 +1502,11 @@ class sdkTest extends script_test_base
         {
             if (IO.DirectoryExists(tempFolder))
             {
-                if(::PLATFORM == ::PLATFORM_GTK)
-                {
-                    test_equal("Execute rm -rf",
-                               IO.Execute(_T("rm -rf \"") + tempFolder + _T("\"")), 0);
-                }
-                else
-                    made_failed("Execute rm -rf", "unsupported platform");
-
+                local cmd = _T("rm -rf ");
+                if(::PLATFORM == ::PLATFORM_MSW)
+                    cmd = _T("cmd /c rd /q /s ")
+                cmd += _T("\"") + tempFolder + _T("\"");
+                test_equal("Execute cmd: " + cmd, IO.Execute(cmd), 0);
                 test_false("RemoveDirectory start", IO.DirectoryExists(tempFolder));
             }
 
@@ -1548,7 +1548,7 @@ class sdkTest extends script_test_base
             test_false("RemoveFile exists", IO.FileExists(renamepath1));
 
 
-            if(::PLATFORM == ::PLATFORM_GTK)
+            if(::PLATFORM != ::PLATFORM_MSW)
             {
                 test_equal("Execute 0", IO.Execute(_T("echo 1")), 0);
                 test_equal("Execute 1", IO.Execute(_T("sh -c \"exit 10\"")), 10);
