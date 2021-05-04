@@ -812,7 +812,7 @@ void FileExplorer::WriteConfig()
         wxString ref=wxString::Format(_T("FileExplorer/RootList/I%i"),i);
         cfg->Write(ref, m_Loc->GetString(m_favdirs.GetCount()+i));
     }
-    count=static_cast<int>(m_Loc->GetCount());
+    count=static_cast<int>(m_WildCards->GetCount());
     cfg->Write(_T("FileExplorer/WildMask/Len"), count);
     for(int i=0;i<count;i++)
     {
