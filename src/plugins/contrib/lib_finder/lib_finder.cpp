@@ -445,6 +445,7 @@ void lib_finder::RegisterScripting()
 
         sq_pushroottable(v);
         const SQInteger classDecl = CreateClassDecl<LibFinder>(v);
+        BindDisabledCtor(v);
         BindStaticMethod(v, _SC("AddLibraryToProject"),
                          LibFinder_LibraryToProject<lib_finder::AddLibraryToProject>,
                          _SC("LibFinder::AddLibraryToProject"));
