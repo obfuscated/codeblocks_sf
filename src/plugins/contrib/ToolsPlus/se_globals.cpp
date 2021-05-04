@@ -2,7 +2,7 @@
 
 wxString GetParentDir(const wxString &path)
 {
-    wxString parent=wxFileName(parent).GetPath(0);
+    wxString parent=wxFileName(path).GetPath(0);
     if(path==parent||parent.IsEmpty())
         return wxEmptyString;
     else
