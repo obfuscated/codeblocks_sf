@@ -6,7 +6,7 @@
         <Program name="CPP"       value="sdcc.exe"/>
         <Program name="LD"        value="sdcc.exe"/>
         <Program name="DBGconfig" value=""/>
-        <Program name="LIB"       value="sdcclib.exe"/>
+        <Program name="LIB"       value="sdar.exe"/>
         <Program name="WINDRES"   value=""/>
         <Program name="MAKE"      value="make.exe"/>
     </if>
@@ -15,7 +15,7 @@
         <Program name="CPP"       value="sdcc"/>
         <Program name="LD"        value="sdcc"/>
         <Program name="DBGconfig" value=""/>
-        <Program name="LIB"       value="sdcclib"/>
+        <Program name="LIB"       value="sdar"/>
         <Program name="WINDRES"   value=""/>
         <Program name="MAKE"      value="make"/>
     </else>
