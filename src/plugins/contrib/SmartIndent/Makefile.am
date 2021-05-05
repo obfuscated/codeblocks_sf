@@ -104,35 +104,35 @@ CLEANFILES = $(pkgdata_DATA)
 SmartIndentHDL.zip: manifest_hdl.xml
 	PWD=`pwd` cd $(srcdir) && \
 	cp manifest_hdl.xml ./manifest.xml && \
-	zip -R $(PWD)/SmartIndentHDL.zip manifest.xml
+	zip -Rm $(PWD)/SmartIndentHDL.zip manifest.xml
 
 SmartIndentPascal.zip: manifest_pascal.xml
 	PWD=`pwd` cd $(srcdir) && \
 	cp manifest_pascal.xml ./manifest.xml && \
-	zip -R $(PWD)/SmartIndentPascal.zip manifest.xml
+	zip -Rm $(PWD)/SmartIndentPascal.zip manifest.xml
 
 SmartIndentCpp.zip: manifest_cpp.xml
 	PWD=`pwd` cd $(srcdir) && \
 	cp manifest_cpp.xml ./manifest.xml && \
-	zip -R $(PWD)/SmartIndentCpp.zip manifest.xml
+	zip -Rm $(PWD)/SmartIndentCpp.zip manifest.xml
 
 SmartIndentPython.zip: manifest_python.xml
 	PWD=`pwd` cd $(srcdir) && \
 	cp manifest_python.xml ./manifest.xml && \
-	zip -R $(PWD)/SmartIndentPython.zip manifest.xml
+	zip -Rm $(PWD)/SmartIndentPython.zip manifest.xml
 
 SmartIndentLua.zip: manifest_lua.xml
 	PWD=`pwd` cd $(srcdir) && \
 	cp manifest_lua.xml ./manifest.xml && \
-	zip -R $(PWD)/SmartIndentLua.zip manifest.xml
+	zip -Rm $(PWD)/SmartIndentLua.zip manifest.xml
 
 SmartIndentFortran.zip: manifest_fortran.xml
 	PWD=`pwd` cd $(srcdir) && \
 	cp manifest_fortran.xml ./manifest.xml && \
-	zip -R $(PWD)/SmartIndentFortran.zip manifest.xml
+	zip -Rm $(PWD)/SmartIndentFortran.zip manifest.xml
 
 SmartIndentXML.zip: manifest_xml.xml
 	PWD=`pwd` cd $(srcdir) && \
 	cp manifest_xml.xml ./manifest.xml && \
-	zip -R $(PWD)/SmartIndentXML.zip manifest.xml
+	zip -Rm $(PWD)/SmartIndentXML.zip manifest.xml
 

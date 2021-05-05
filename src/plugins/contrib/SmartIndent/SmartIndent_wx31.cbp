@@ -23,7 +23,7 @@
 				</Compiler>
 				<ExtraCommands>
 					<Add after="cmd.exe /c copy /Y manifest_cpp.xml manifest.xml" />
-					<Add after="zip -j9 ..\..\..\devel31\share\CodeBlocks\SmartIndentCpp.zip manifest.xml" />
+					<Add after="zip -jm9 ..\..\..\devel31\share\CodeBlocks\SmartIndentCpp.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -44,7 +44,7 @@
 				</Compiler>
 				<ExtraCommands>
 					<Add after="cmd.exe /c copy /Y manifest_hdl.xml manifest.xml" />
-					<Add after="zip -j9 ..\..\..\devel31\share\CodeBlocks\SmartIndentHDL.zip manifest.xml" />
+					<Add after="zip -jm9 ..\..\..\devel31\share\CodeBlocks\SmartIndentHDL.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -65,7 +65,7 @@
 				</Compiler>
 				<ExtraCommands>
 					<Add after="cmd.exe /c copy /Y manifest_pascal.xml manifest.xml" />
-					<Add after="zip -j9 ..\..\..\devel31\share\CodeBlocks\SmartIndentPascal.zip manifest.xml" />
+					<Add after="zip -jm9 ..\..\..\devel31\share\CodeBlocks\SmartIndentPascal.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -86,7 +86,7 @@
 				</Compiler>
 				<ExtraCommands>
 					<Add after="cmd.exe /c copy /Y manifest_python.xml manifest.xml" />
-					<Add after="zip -j9 ..\..\..\devel31\share\CodeBlocks\SmartIndentPython.zip manifest.xml" />
+					<Add after="zip -jm9 ..\..\..\devel31\share\CodeBlocks\SmartIndentPython.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -107,7 +107,7 @@
 				</Compiler>
 				<ExtraCommands>
 					<Add after="cmd.exe /c copy /Y manifest_lua.xml manifest.xml" />
-					<Add after="zip -j9 ..\..\..\devel31\share\CodeBlocks\SmartIndentLua.zip manifest.xml" />
+					<Add after="zip -jm9 ..\..\..\devel31\share\CodeBlocks\SmartIndentLua.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -128,7 +128,7 @@
 				</Compiler>
 				<ExtraCommands>
 					<Add after="cmd.exe /c copy /Y manifest_fortran.xml manifest.xml" />
-					<Add after="zip -j9 ..\..\..\devel31\share\CodeBlocks\SmartIndentFortran.zip manifest.xml" />
+					<Add after="zip -jm9 ..\..\..\devel31\share\CodeBlocks\SmartIndentFortran.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -149,7 +149,7 @@
 				</Compiler>
 				<ExtraCommands>
 					<Add after="cmd.exe /c copy /Y manifest_xml.xml manifest.xml" />
-					<Add after="zip -j9 ..\..\..\devel31\share\CodeBlocks\SmartIndentXML.zip manifest.xml" />
+					<Add after="zip -jm9 ..\..\..\devel31\share\CodeBlocks\SmartIndentXML.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
