@@ -25,6 +25,7 @@
 
 #include "cbstyledtextctrl.h"
 #include <unordered_map>
+#include "wxstringhash.h"
 
 namespace ScriptBindings
 {

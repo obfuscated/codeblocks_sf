@@ -18,8 +18,6 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <set>
-//-#include "wxstringhash.h"
-
 
 // Useful macros
 #define CHECK_PTR_RET(p) \

@@ -81,7 +81,6 @@
 		<Unit filename="manifest.xml" />
 		<Unit filename="menuutils.cpp" />
 		<Unit filename="menuutils.h" />
-		<Unit filename="wxstringhash.h" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

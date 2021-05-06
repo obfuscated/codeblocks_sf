@@ -127,6 +127,7 @@ ALLHEADERS = annoyingdialog.h \
 				toolsmanager.h \
 				uservarmanager.h \
 				workspaceloader.h \
+				wxstringhash.h \
 				xtra_res.h
 
 sdk_HEADERS = $(ALLHEADERS)

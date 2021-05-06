@@ -28,8 +28,7 @@ noinst_HEADERS = cbkeybinder.h \
 			json_node.h \
 			keybinder.h \
 			macros.h \
-			menuutils.h \
-			wxstringhash.h
+			menuutils.h
 
 EXTRA_DIST = $(srcdir)/*.cbp manifest.xml
 
