@@ -241,12 +241,16 @@ class wxTest extends script_test_base
         clear_test_result();
         local color = wxColour();
         color.Set(52,53,54,255);
-        test_string("Set",color,"[r=52, g=53, b=54]");
-        test_string("tostring",color,"[r=52, g=53, b=54]");
-        test_string("_cloned", clone color,"[r=52, g=53, b=54]");
+        test_string("Set",color,"[r=52, g=53, b=54, a=255]");
+        test_string("tostring",color,"[r=52, g=53, b=54, a=255]");
+        test_string("_cloned", clone color,"[r=52, g=53, b=54, a=255]");
+        test_string("wxColour(3 ints)", wxColour(12, 75, 255),"[r=12, g=75, b=255, a=255]");
+        test_string("wxColour(4 ints)", wxColour(12, 75, 255, 73),"[r=12, g=75, b=255, a=73]");
         test_equal("Red",color.Red(),52);
         test_equal("Green",color.Green(),53);
         test_equal("Blue",color.Blue(),54);
+        test_equal("Alpha",color.Alpha(),255);
+        test_equal("Alpha 2", wxColour(12, 74, 255, 93).Alpha(), 93);
         test_true("IsOK",color.IsOk());
 
         print_test_result();

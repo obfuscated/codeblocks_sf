@@ -509,8 +509,59 @@ SQInteger wxString_ToLong(HSQUIRRELVM v)
     return 1;
 }
 
+SQInteger wxColour_ctor(HSQUIRRELVM v)
+{
+    ExtractParamsBase extractor(v);
+    if (!extractor.CheckNumArguments(1, 5, "wxColour_ctor"))
+        return extractor.ErrorMessage();
+
+    const int numArgs = sq_gettop(v);
+    switch (numArgs)
+    {
+        case 1: // empty ctor
+        {
+            UserDataForType<wxColour> *data;
+            data = SetupUserPointer<wxColour, InstanceAllocationMode::InstanceIsInline>(v, 1);
+            if (!data)
+                return -1; // SetupUserPointer should have called sq_throwerror!
+            new (&(data->userdata)) wxColour();
+            return 0;
+        }
+        case 4: // 3 ints
+        {
+            // env table, red, green, blue
+            ExtractParams4<SkipParam, SQInteger, SQInteger, SQInteger> extractor(v);
+            if (!extractor.Process("wxColour_ctor(3 ints)"))
+                return extractor.ErrorMessage();
+            UserDataForType<wxColour> *data;
+            data = SetupUserPointer<wxColour, InstanceAllocationMode::InstanceIsInline>(v, 1);
+            if (!data)
+                return -1; // SetupUserPointer should have called sq_throwerror!
+            new (&(data->userdata)) wxColour(extractor.p1, extractor.p2, extractor.p3);
+            return 0;
+        }
+        case 5: // 4 ints
+        {
+            // env table, red, green, blue, alpha
+            ExtractParams5<SkipParam, SQInteger, SQInteger, SQInteger, SQInteger> extractor(v);
+            if (!extractor.Process("wxColour_ctor(4 ints)"))
+                return extractor.ErrorMessage();
+            UserDataForType<wxColour> *data;
+            data = SetupUserPointer<wxColour, InstanceAllocationMode::InstanceIsInline>(v, 1);
+            if (!data)
+                return -1; // SetupUserPointer should have called sq_throwerror!
+            new (&(data->userdata)) wxColour(extractor.p1, extractor.p2, extractor.p3, extractor.p4);
+            return 0;
+        }
+        default:
+            return sq_throwerror(v, _SC("Unsupported number of arguments passed wxString()!"));
+    }
+}
+
+
 SQInteger wxColour_Set(HSQUIRRELVM v)
 {
+    // this, red, green, blue, alpha
     ExtractParams5<wxColour*, SQInteger, SQInteger, SQInteger, SQInteger> extractor(v);
     if (!extractor.Process("wxColour_Set"))
         return extractor.ErrorMessage();
@@ -535,8 +586,8 @@ SQInteger wxColour_ToString(HSQUIRRELVM v)
         return extractor.ErrorMessage();
 
     SQChar buf[100];
-    scsprintf(buf, 100, _SC("[r=%d, g=%d, b=%d]"), extractor.p0->Red(), extractor.p0->Green(),
-              extractor.p0->Blue());
+    scsprintf(buf, 100, _SC("[r=%d, g=%d, b=%d, a=%d]"), extractor.p0->Red(), extractor.p0->Green(),
+              extractor.p0->Blue(), extractor.p0->Alpha());
     sq_pushstring(v, buf, -1);
     return 1;
 }
@@ -999,14 +1050,14 @@ void Register_wxTypes(HSQUIRRELVM v)
     {
         // Register wxColour
         const SQInteger classDecl = CreateClassDecl<wxColour>(v);
-        // FIXME (squirrel) Add 3, 4 int version of the c-tor
-        BindEmptyCtor<wxColour>(v);
+        BindMethod(v, _SC("constructor"), wxColour_ctor, _SC("wxColour::constructor"));
         BindDefaultClone<wxColour>(v);
 
         BindMethod(v, _SC("_tostring"), wxColour_ToString, _SC("wxColour::_tostring"));
         BindMethod(v, _SC("Blue"), NoParamGetterInt<wxColour::ChannelType, wxColour, &wxColour::Blue>, _SC("wxColour::Blue"));
         BindMethod(v, _SC("Green"), NoParamGetterInt<wxColour::ChannelType, wxColour, &wxColour::Green>, _SC("wxColour::Green"));
         BindMethod(v, _SC("Red"), NoParamGetterInt<wxColour::ChannelType, wxColour, &wxColour::Red>, _SC("wxColour::Red"));
+        BindMethod(v, _SC("Alpha"), NoParamGetterInt<wxColour::ChannelType, wxColour, &wxColour::Alpha>, _SC("wxColour::Alpha"));
         BindMethod(v, _SC("IsOk"), wxColour_IsOk, _SC("wxColour::IsOk"));
         BindMethod(v, _SC("Set"), wxColour_Set, _SC("wxColour::Set"));
 
