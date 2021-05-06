@@ -4,7 +4,7 @@ dnl copied and adapted from Ogre3D (www.ogre3d.org)
 AC_DEFUN([CODEBLOCKS_GET_PLATFORM],
 [CODEBLOCKS_PLATFORM=gtk
  AC_ARG_WITH(platform,
-             AC_HELP_STRING([--with-platform=PLATFORM],
+             AS_HELP_STRING([--with-platform=PLATFORM],
                             [the platform to build, win32, macosx or gtk(default)]),
              CODEBLOCKS_PLATFORM=$withval,
              CODEBLOCKS_PLATFORM=gtk)
@@ -88,7 +88,7 @@ AC_DEFUN([CODEBLOCKS_CHECK_DEBUG],
 [
 AC_MSG_CHECKING(whether to enable debugging)
 debug_default="no"
-AC_ARG_ENABLE(debug, [AC_HELP_STRING([--enable-debug], [turn on debugging (default is OFF)])],,
+AC_ARG_ENABLE(debug, [AS_HELP_STRING([--enable-debug], [turn on debugging (default is OFF)])],,
                        enable_debug=$debug_default)
     if test "x$enable_debug" = "xyes"; then
         CFLAGS="-g $CFLAGS"
@@ -137,7 +137,7 @@ AC_DEFUN([CODEBLOCKS_ENABLE_SETTINGS],
 [
 AC_MSG_CHECKING(whether to build the source formatter plugin)
 astyle_default="yes"
-AC_ARG_ENABLE(source-formatter, [AC_HELP_STRING([--enable-source-formatter], [build the source formatter plugin (default YES)])],,
+AC_ARG_ENABLE(source-formatter, [AS_HELP_STRING([--enable-source-formatter], [build the source formatter plugin (default YES)])],,
                        enable_astyle=$astyle_default)
 AM_CONDITIONAL([BUILD_ASTYLE], [test "x$enable_astyle" = "xyes"])
 if test "x$enable_astyle" = "xyes"; then
@@ -148,7 +148,7 @@ fi
 
 AC_MSG_CHECKING(whether to build the autosave plugin)
 autosave_default="yes"
-AC_ARG_ENABLE(autosave, [AC_HELP_STRING([--enable-autosave], [build the autosave plugin (default YES)])],,
+AC_ARG_ENABLE(autosave, [AS_HELP_STRING([--enable-autosave], [build the autosave plugin (default YES)])],,
                        enable_autosave=$autosave_default)
 AM_CONDITIONAL([BUILD_AUTOSAVE], [test "x$enable_autosave" = "xyes"])
 if test "x$enable_autosave" = "xyes"; then
@@ -159,7 +159,7 @@ fi
 
 AC_MSG_CHECKING(whether to build the class wizard plugin)
 cw_default="yes"
-AC_ARG_ENABLE(class-wizard, [AC_HELP_STRING([--enable-class-wizard], [build the class wizard plugin (default YES)])],,
+AC_ARG_ENABLE(class-wizard, [AS_HELP_STRING([--enable-class-wizard], [build the class wizard plugin (default YES)])],,
                        enable_cw=$cw_default)
 AM_CONDITIONAL([BUILD_CLASSWIZARD], [test "x$enable_cw" = "xyes"])
 if test "x$enable_cw" = "xyes"; then
@@ -170,7 +170,7 @@ fi
 
 AC_MSG_CHECKING(whether to build the code completion plugin)
 cc_default="yes"
-AC_ARG_ENABLE(code-completion, [AC_HELP_STRING([--enable-code-completion], [build the code completion plugin (default YES)])],,
+AC_ARG_ENABLE(code-completion, [AS_HELP_STRING([--enable-code-completion], [build the code completion plugin (default YES)])],,
                        enable_cc=$cc_default)
 AM_CONDITIONAL([BUILD_CODECOMPLETION], [test "x$enable_cc" = "xyes"])
 if test "x$enable_cc" = "xyes"; then
@@ -181,7 +181,7 @@ fi
 
 AC_MSG_CHECKING(whether to build the compiler plugin)
 gcc_default="yes"
-AC_ARG_ENABLE(compiler, [AC_HELP_STRING([--enable-compiler], [build the compiler plugin (default YES)])],,
+AC_ARG_ENABLE(compiler, [AS_HELP_STRING([--enable-compiler], [build the compiler plugin (default YES)])],,
                        enable_gcc=$gcc_default)
 AM_CONDITIONAL([BUILD_COMPILER], [test "x$enable_gcc" = "xyes"])
 if test "x$enable_gcc" = "xyes"; then
@@ -192,7 +192,7 @@ fi
 
 AC_MSG_CHECKING(whether to build the debugger plugin)
 dbg_default="yes"
-AC_ARG_ENABLE(debugger, [AC_HELP_STRING([--enable-debugger], [build the debugger plugin (default YES)])],,
+AC_ARG_ENABLE(debugger, [AS_HELP_STRING([--enable-debugger], [build the debugger plugin (default YES)])],,
                        enable_dbg=$dbg_default)
 AM_CONDITIONAL([BUILD_DEBUGGER], [test "x$enable_dbg" = "xyes"])
 if test "x$enable_dbg" = "xyes"; then
@@ -203,7 +203,7 @@ fi
 
 AC_MSG_CHECKING(whether to build the default MIME handler plugin)
 mime_default="yes"
-AC_ARG_ENABLE(mime-handler, [AC_HELP_STRING([--enable-mime-handler], [build the default MIME handler plugin (default YES)])],,
+AC_ARG_ENABLE(mime-handler, [AS_HELP_STRING([--enable-mime-handler], [build the default MIME handler plugin (default YES)])],,
                        enable_mime=$mime_default)
 AM_CONDITIONAL([BUILD_MIMEHANDLER], [test "x$enable_mime" = "xyes"])
 if test "x$enable_mime" = "xyes"; then
@@ -214,7 +214,7 @@ fi
 
 AC_MSG_CHECKING(whether to build the open files list plugin)
 openfiles_default="yes"
-AC_ARG_ENABLE(open-files-list, [AC_HELP_STRING([--enable-open-files-list], [build the open files list plugin (default YES)])],,
+AC_ARG_ENABLE(open-files-list, [AS_HELP_STRING([--enable-open-files-list], [build the open files list plugin (default YES)])],,
                        enable_openfiles=$openfiles_default)
 AM_CONDITIONAL([BUILD_OPENFILESLIST], [test "x$enable_openfiles" = "xyes"])
 if test "x$enable_openfiles" = "xyes"; then
@@ -225,7 +225,7 @@ fi
 
 AC_MSG_CHECKING(whether to build the occurrences highlighting plugin)
 occurrenceshighlighting_default="yes"
-AC_ARG_ENABLE(occurrences-highlighting, [AC_HELP_STRING([--enable-occurrences-highlighting], [build the occurrences highlighting plugin (default YES)])],,
+AC_ARG_ENABLE(occurrences-highlighting, [AS_HELP_STRING([--enable-occurrences-highlighting], [build the occurrences highlighting plugin (default YES)])],,
                        enable_occurrenceshighlighting=$occurrenceshighlighting_default)
 AM_CONDITIONAL([BUILD_OCCURRENCESHIGHLIGHTING], [test "x$enable_occurrenceshighlighting" = "xyes"])
 if test "x$enable_occurrenceshighlighting" = "xyes"; then
@@ -236,7 +236,7 @@ fi
 
 AC_MSG_CHECKING(whether to build the foreign projects importer plugin)
 pimport_default="yes"
-AC_ARG_ENABLE(projects-importer, [AC_HELP_STRING([--enable-projects-importer], [build the foreign projects importer plugin (default YES)])],,
+AC_ARG_ENABLE(projects-importer, [AS_HELP_STRING([--enable-projects-importer], [build the foreign projects importer plugin (default YES)])],,
                        enable_pimport=$pimport_default)
 AM_CONDITIONAL([BUILD_PROJECTSIMPORTER], [test "x$enable_pimport" = "xyes"])
 if test "x$enable_pimport" = "xyes"; then
@@ -247,7 +247,7 @@ fi
 
 AC_MSG_CHECKING(whether to build the scripted wizard plugin)
 prw_default="yes"
-AC_ARG_ENABLE(scripted-wizard, [AC_HELP_STRING([--enable-scripted-wizard], [build the scripted wizard plugin (default YES)])],,
+AC_ARG_ENABLE(scripted-wizard, [AS_HELP_STRING([--enable-scripted-wizard], [build the scripted wizard plugin (default YES)])],,
                        enable_prw=$prw_default)
 AM_CONDITIONAL([BUILD_SCRIPTEDWIZARD], [test "x$enable_prw" = "xyes"])
 if test "x$enable_prw" = "xyes"; then
@@ -258,7 +258,7 @@ fi
 
 AC_MSG_CHECKING(whether to build the to-do plugin)
 todo_default="yes"
-AC_ARG_ENABLE(todo, [AC_HELP_STRING([--enable-todo], [build the to-do plugin (default YES)])],,
+AC_ARG_ENABLE(todo, [AS_HELP_STRING([--enable-todo], [build the to-do plugin (default YES)])],,
                        enable_todo=$todo_default)
 AM_CONDITIONAL([BUILD_TODO], [test "x$enable_todo" = "xyes"])
 if test "x$enable_todo" = "xyes"; then
@@ -269,7 +269,7 @@ fi
 
 AC_MSG_CHECKING(whether to build the abbreviations plugin)
 abbreviations_default="yes"
-AC_ARG_ENABLE(abbreviations, [AC_HELP_STRING([--enable-abbreviations], [build the abbreviations plugin (default YES)])],,
+AC_ARG_ENABLE(abbreviations, [AS_HELP_STRING([--enable-abbreviations], [build the abbreviations plugin (default YES)])],,
                        enable_abbreviations=$abbreviations_default)
 AM_CONDITIONAL([BUILD_ABBREVIATIONS], [test "x$enable_abbreviations" = "xyes"])
 if test "x$enable_abbreviations" = "xyes"; then
@@ -280,7 +280,7 @@ fi
 
 AC_MSG_CHECKING(whether to keep prebuild windows dll's in dist-tarball)
 keep_dlls_default="yes"
-AC_ARG_ENABLE(keep-dlls, [AC_HELP_STRING([--enable-keep-dlls], [keep prebuild windows dll's in dist-tarball (default YES)])],,
+AC_ARG_ENABLE(keep-dlls, [AS_HELP_STRING([--enable-keep-dlls], [keep prebuild windows dll's in dist-tarball (default YES)])],,
                        enable_keep_dlls=$keep_dlls_default)
 AM_CONDITIONAL([KEEP_DLLS], [test "x$enable_keep_dlls" = "xyes"])
 if test "x$enable_keep_dlls" = "xyes"; then
@@ -291,7 +291,7 @@ fi
 
 AC_MSG_CHECKING(whether to integrate fortran-plugin in dist-tarball)
 enable_fortran_default="yes"
-AC_ARG_ENABLE(fortran, [AC_HELP_STRING([--enable-fortran], [integrate (external) fortran plugin in dist-tarball (default YES), NOTE: it will not be build automatically])],,
+AC_ARG_ENABLE(fortran, [AS_HELP_STRING([--enable-fortran], [integrate (external) fortran plugin in dist-tarball (default YES), NOTE: it will not be build automatically])],,
                        enable_fortran=$enable_fortran_default)
 AM_CONDITIONAL([ENABLE_FORTRAN], [test "x$enable_fortran" = "xyes"])
 if test "x$enable_fortran" = "xyes"; then
@@ -302,7 +302,7 @@ fi
 
 AC_MSG_CHECKING(whether to use gtk-notebook as default notebook)
 gtk_notebook_default="yes"
-AC_ARG_ENABLE(gtk-notebook, [AC_HELP_STRING([--enable-gtk-notebook], [use gtk-notebook as default notebook (default YES)])],,
+AC_ARG_ENABLE(gtk-notebook, [AS_HELP_STRING([--enable-gtk-notebook], [use gtk-notebook as default notebook (default YES)])],,
                        enable_gtk_notebook=$gtk_notebook_default)
 AM_CONDITIONAL([GTK_NOTEBOOK], [test "x$enable_gtk_notebook" = "xyes"])
 if test "x$enable_gtk_notebook" = "xyes"; then
@@ -316,7 +316,7 @@ case $host in
 	*-*-cygwin* | *-*-mingw*)
 		AC_MSG_CHECKING(whether to build the xp-manifest plugin)
 		xpmanifest_default="yes"
-		AC_ARG_ENABLE(xpmanifest, [AC_HELP_STRING([--enable-xpmanifest], [build the xp-manifest plugin (default YES)])],,
+		AC_ARG_ENABLE(xpmanifest, [AS_HELP_STRING([--enable-xpmanifest], [build the xp-manifest plugin (default YES)])],,
                        enable_xpmanifest=$xpmanifest_default)
 		AM_CONDITIONAL([BUILD_MANIFEST], [test "x$enable_xpmanifest" = "xyes"])
 		if test "x$enable_xpmanifest" = "xyes"; then
@@ -736,14 +736,16 @@ GCC_PCH=0
 PCH_FLAGS=
 pch_default="yes"
 AM_CONDITIONAL([PRECOMPILE_HEADERS], [false])
-AC_ARG_ENABLE(pch, [AC_HELP_STRING([--enable-pch], [use precompiled headers if available (default YES)])],,
+AC_ARG_ENABLE(pch, [AS_HELP_STRING([--enable-pch], [use precompiled headers if available (default YES)])],,
                        enable_pch=$pch_default)
 if test "x$enable_pch" = "x" -o "x$enable_pch" = "xyes" ; then
     if test "x$GCC" = "xyes"; then
         dnl test if we have gcc-3.4:
         AC_MSG_CHECKING([if the compiler supports precompiled headers])
-        AC_TRY_COMPILE([],
-            [
+
+        AC_COMPILE_IFELSE(
+            [AC_LANG_PROGRAM([[]],
+               [[
                 #if !defined(__GNUC__) || !defined(__GNUC_MINOR__)
                     #error "no pch support"
                 #endif
@@ -755,6 +757,7 @@ if test "x$enable_pch" = "x" -o "x$enable_pch" = "xyes" ; then
                    ( defined(__APPLE_CC__) && (__GNUC_MINOR__ < 3)))
                     #error "no pch support"
                 #endif
+                ]])
             ],
             [
                 AC_MSG_RESULT([yes])

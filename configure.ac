@@ -1,8 +1,8 @@
-AC_PREREQ(2.50)
+AC_PREREQ([2.71])
 
 m4_include([revision.m4])
 
-AC_INIT([codeblocks], SVN_REVISION)
+AC_INIT([codeblocks],[SVN_REVISION])
 
 AC_CANONICAL_TARGET
 
@@ -25,7 +25,7 @@ AC_DISABLE_STATIC
 
 LT_INIT
 
-AC_CONFIG_HEADER([src/include/config.h])
+AC_CONFIG_HEADERS([src/include/config.h])
 
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
 
@@ -48,7 +48,6 @@ CODEBLOCKS_SETUP_FOR_TARGET
 
 dnl Checks for header files.
 AC_HEADER_DIRENT
-AC_HEADER_STDC
 AC_CHECK_HEADERS([fcntl.h limits.h stdlib.h string.h sys/param.h unistd.h malloc.h sys/malloc.h malloc/malloc.h])
 
 dnl Checks for typedefs, structures, and compiler characteristics.
@@ -56,7 +55,7 @@ AC_HEADER_STDBOOL
 AC_C_CONST
 AC_C_INLINE
 AC_TYPE_SIZE_T
-AC_HEADER_TIME
+AC_CHECK_HEADERS_ONCE([sys/time.h])
 AC_C_VOLATILE
 
 dnl Checks for library functions.
