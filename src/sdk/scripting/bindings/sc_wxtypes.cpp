@@ -49,6 +49,59 @@ SQInteger static_(HSQUIRRELVM v)
     return ConstructAndReturnInstance(v, wxGetTranslation(cbC2U(extractor.p1)));
 }
 
+SQInteger wxString_ctor(HSQUIRRELVM v)
+{
+    ExtractParamsBase extractor(v);
+    if (!extractor.CheckNumArguments(1, 2, "wxString_ctor"))
+        return extractor.ErrorMessage();
+    const int numArgs = sq_gettop(v);
+
+    if (numArgs == 1) // empty ctor
+    {
+        UserDataForType<wxString> *data;
+        data = SetupUserPointer<wxString, InstanceAllocationMode::InstanceIsInline>(v, 1);
+        if (!data)
+            return -1; // SetupUserPointer should have called sq_throwerror!
+        new (&(data->userdata)) wxString();
+        return 0;
+    }
+    else
+    {
+        // 1 argument ctor
+        const SQObjectType type = sq_gettype(v, 2);
+        switch (type)
+        {
+            case OT_STRING:
+            {
+                // Construct from Squirrel string
+                const SQChar *value = extractor.GetParamString(2);
+                cbAssert(value);
+                UserDataForType<wxString> *data;
+                data = SetupUserPointer<wxString, InstanceAllocationMode::InstanceIsInline>(v, 1);
+                if (!data)
+                    return -1; // SetupUserPointer should have called sq_throwerror!
+                new (&(data->userdata)) wxString(value);
+                return 0;
+            }
+            case OT_INSTANCE:
+            {
+                // Construct from wxString
+                wxString *value;
+                if (!extractor.ProcessParam(value, 2, "wxString_ctor"))
+                    return extractor.ErrorMessage();
+                UserDataForType<wxString> *data;
+                data = SetupUserPointer<wxString, InstanceAllocationMode::InstanceIsInline>(v, 1);
+                if (!data)
+                    return -1; // SetupUserPointer should have called sq_throwerror!
+                new (&(data->userdata)) wxString(*value);
+                return 0;
+            }
+            default:
+                return sq_throwerror(v, _SC("Unsupported argument type passed to wxString constructor!"));
+        }
+    }
+}
+
 SQInteger wxString_OpAdd(HSQUIRRELVM v)
 {
     // TODO: Optional Args
@@ -892,8 +945,7 @@ void Register_wxTypes(HSQUIRRELVM v)
     {
         // register wxString
         const SQInteger classDecl = CreateClassDecl<wxString>(v);
-        // FIXME (squirrel) Add string version of the c-tor
-        BindEmptyCtor<wxString>(v);
+        BindMethod(v, _SC("constructor"), wxString_ctor, _SC("wxString::constructor"));
         BindDefaultClone<wxString>(v);
         BindMethod(v, _SC("_add"), wxString_OpAdd, _SC("wxString::operator+"));
         BindMethod(v, _SC("_cmp"), wxString_OpCompare, _SC("wxString::operator=="));

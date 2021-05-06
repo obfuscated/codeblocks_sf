@@ -39,6 +39,10 @@ class wxTest extends script_test_base
         else
             made_failed("constructor(SQchar)","see previous result");
 
+        test_string("empty ctor", wxString(), "");
+        test_string("string ctor", wxString("from string"), "from string");
+        test_string("wxString ctor", wxString(wxString("from wxString")), "from wxString");
+
         // Some of these fail because squirrel optimizes this and never calls our _cmp metamethod.
         test_true("cmp", _T("Hallo")==string);
         test_true("cmp not", _T("Hallo11")!=string);
