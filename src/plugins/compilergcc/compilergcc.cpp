@@ -2015,7 +2015,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
             m_pProject->SetCurrentlyCompilingTarget(0);
             return -1;
         }
-        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(hostapStr);
+
         command << hostapStr << strSPACE;
         command << target->GetExecutionParameters();
     }
@@ -2028,8 +2028,6 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         // here is last \"
         if (commandIsQuoted)
             command << strQUOTE;
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(command, target);
-        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(command);
     }
     else
     {
@@ -2042,10 +2040,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         }
         command << hostapStr << strSPACE;
         command << target->GetExecutionParameters();
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(command, target);
-        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(command);
     }
-
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(command, target);
     wxString script = command;
 
     if (platform::macosx)
