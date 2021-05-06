@@ -253,8 +253,7 @@ SQInteger wxString_GetChar(HSQUIRRELVM v)
     ExtractParams2<const wxString*, SQInteger> extractor(v);
     if (!extractor.Process("wxString_GetChar"))
         return extractor.ErrorMessage();
-    // FIXME (squirrel) Signed unsigned compare
-    if (extractor.p1 < 0 || extractor.p1 >= extractor.p0->length())
+    if (extractor.p1 < 0 || wxString::size_type(extractor.p1) >= extractor.p0->length())
         return sq_throwerror(v, _SC("wxString_GetChar: Index outside of valid range!"));
     sq_pushinteger(v, extractor.p0->GetChar(extractor.p1));
     return 1;
@@ -694,9 +693,8 @@ SQInteger wxArrayString_Item(HSQUIRRELVM v)
     ExtractParams2<wxArrayString*, SQInteger> extractor(v);
     if (!extractor.Process("wxArrayString_Item"))
         return extractor.ErrorMessage();
-    // FIXME (squirrel) Signed unsigned compare
     const SQInteger index = extractor.p1;
-    if (index < 0 || index >= extractor.p0->GetCount())
+    if (index < 0 || size_t(index) >= extractor.p0->GetCount())
         return sq_throwerror(v, _SC("wxArrayString_Item: index out of bounds!"));
 
     // Create an instance for the return value.
@@ -710,9 +708,8 @@ SQInteger wxArrayString_SetItem(HSQUIRRELVM v)
     if (!extractor.Process("wxArrayString_SetItem"))
         return extractor.ErrorMessage();
 
-    // FIXME (squirrel) Signed unsigned compare
     const SQInteger index = extractor.p1;
-    if (index < 0 || index >= extractor.p0->GetCount())
+    if (index < 0 || size_t(index) >= extractor.p0->GetCount())
         return sq_throwerror(v, _SC("wxArrayString_SetItem: index out of bounds!"));
 
     (*extractor.p0)[index] = *extractor.p2;
