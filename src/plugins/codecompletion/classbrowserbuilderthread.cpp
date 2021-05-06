@@ -1167,6 +1167,7 @@ CCTreeItem::CCTreeItem(CCTreeItem* parent, const wxString& text, int image, int 
     m_data(data),
     m_bold(false),
     m_hasChildren(false),
+    m_colour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)),
     m_semaphore(0, 1)
 {
     m_image[wxTreeItemIcon_Normal]           = image;
@@ -1451,9 +1452,13 @@ void CCTree::CalculateCrc32(CCTreeItem* parent, Crc32 &crc) const
         crc.Update(child->m_text.data(), child->m_text.size());
         crc.Update(child->m_bold ? 1 : 0);
         crc.Update(child->m_hasChildren ? 1 : 0);
-        crc.Update(child->m_colour.Red());
-        crc.Update(child->m_colour.Green());
-        crc.Update(child->m_colour.Blue());
+        if (child->m_colour.IsOk())
+        {
+            crc.Update(child->m_colour.Red());
+            crc.Update(child->m_colour.Green());
+            crc.Update(child->m_colour.Blue());
+        }
+
         crc.Update(child->m_image, sizeof(child->m_image));
         // Compare only token name
         if (child->m_data)
