@@ -437,6 +437,7 @@ void wxsNewWindowDlg::OnCreate(cb_unused wxCommandEvent& event)
         {
             case wxCANCEL: return;
             case wxNO: Params.GenHdr = false; break;
+            case wxYES: break;
             default: return; // Should never come here
         }
     }
@@ -450,6 +451,7 @@ void wxsNewWindowDlg::OnCreate(cb_unused wxCommandEvent& event)
         {
             case wxCANCEL: return;
             case wxNO: Params.GenSrc = false; break;
+            case wxYES: break;
             default: return; // Should never come here
         }
     }
