@@ -596,8 +596,6 @@ void cbDebuggerPlugin::SwitchToDebuggingLayout()
 
     // switch to debugging layout
     Manager::Get()->ProcessEvent(switchEvent);
-
-    ShowLog(false);
 }
 
 void cbDebuggerPlugin::SwitchToPreviousLayout()
