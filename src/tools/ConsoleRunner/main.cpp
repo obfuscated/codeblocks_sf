@@ -101,26 +101,11 @@ int main(int argc, char** argv)
     fullsize += 3 * argc + 1;
 
     char* cmdline = new char[fullsize];
-    memset(cmdline, 0, fullsize);
+    cmdline[0] = '\0';
 
-    // 1st arg (executable) enclosed in quotes to support filenames with spaces
-    bool sp = hasSpaces(argv[1]);
-    if (sp)
-        strcat(cmdline, "\"");
-    strcat(cmdline, argv[1]);
-    if (sp)
-        strcat(cmdline, "\"");
-    strcat(cmdline, " ");
-
-    for (int i = 2; i < argc; ++i)
+    for (int i = 1, n = 0; i < argc; ++i)
     {
-        sp = hasSpaces(argv[i]);
-        if (sp)
-            strcat(cmdline, "\"");
-        strcat(cmdline, argv[i]);
-        if (sp)
-            strcat(cmdline, "\"");
-        strcat(cmdline, " ");
+        n += sprintf(cmdline + n, hasSpaces(argv[i]) ? "\"%s\" " : "%s ", argv[i]);
     }
 
     timeval tv;
