@@ -346,6 +346,7 @@ class wxsItemResData
         wxString DeclarationsCode(wxsCoderContext* Ctx);
         wxString IdentifiersCode(wxsCoderContext* Ctx);
         wxString InitializeCode(wxsCoderContext* Ctx);
+        wxString DestroyCode(wxsCoderContext* Ctx);
         wxString IdInitCode(wxsCoderContext* Ctx);
         wxString HeadersCode(wxsCoderContext* Ctx);
         wxString HeadersNoPCHCode(wxsCoderContext* Ctx);

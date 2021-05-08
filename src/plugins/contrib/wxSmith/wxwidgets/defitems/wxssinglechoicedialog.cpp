@@ -72,6 +72,7 @@ void wxsSingleChoiceDialog::OnBuildCreatingCode()
                   (m_Content.IsEmpty()?_T("0"):ChoicesName.wx_str()));
 
             BuildSetupWindowCode();
+            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
             return;
         }
 

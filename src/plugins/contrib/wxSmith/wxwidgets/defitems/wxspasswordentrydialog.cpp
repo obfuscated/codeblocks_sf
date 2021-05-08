@@ -75,6 +75,7 @@ void wxsPasswordEntryDialog::OnBuildCreatingCode()
             AddHeader(_T("<wx/textdlg.h>"), GetInfo().ClassName, 0);
             Codef(_T("%C(%W, %t, %t, %t, %T, %P);\n"), m_sMessage.wx_str(), m_sCaption.wx_str(), m_sDefaultValue.wx_str());
             BuildSetupWindowCode();
+            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
             break;
 
         case wxsUnknownLanguage: // fall-through

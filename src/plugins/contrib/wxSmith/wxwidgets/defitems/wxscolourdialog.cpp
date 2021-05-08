@@ -71,6 +71,7 @@ void wxsColourDialog::OnBuildCreatingCode()
                 Codef(_T("%C(%W);\n"));
             }
             BuildSetupWindowCode();
+            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
             return;
         }
 

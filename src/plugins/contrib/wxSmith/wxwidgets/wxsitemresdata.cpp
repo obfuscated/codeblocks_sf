@@ -635,6 +635,13 @@ void wxsItemResData::RebuildSourceCode()
 
             wxsCoder::Get()->AddCode(
                 m_SrcFileName,
+                wxsCodeMarks::Beg(wxsCPP,_T("Destroy"),m_ClassName),
+                wxsCodeMarks::End(wxsCPP),
+                DestroyCode(&Context),
+                false );
+
+            wxsCoder::Get()->AddCode(
+                m_SrcFileName,
                 wxsCodeMarks::Beg(wxsCPP,_T("IdInit"),m_ClassName),
                 wxsCodeMarks::End(wxsCPP),
                 IdInitCode(&Context),
@@ -784,6 +791,19 @@ wxString wxsItemResData::InitializeCode(wxsCoderContext* Ctx)
         // And finally attach event handlers
         Code += _T("\n");
         Code += Ctx->m_EventsConnectingCode;
+    }
+
+    return Code;
+}
+
+wxString wxsItemResData::DestroyCode(wxsCoderContext* Ctx)
+{
+    wxString Code = _T("\n");
+
+    // If in source mode, add destroying code
+    if ( Ctx->m_Flags & flSource )
+    {
+        Code += Ctx->m_DestroyingCode;
     }
 
     return Code;

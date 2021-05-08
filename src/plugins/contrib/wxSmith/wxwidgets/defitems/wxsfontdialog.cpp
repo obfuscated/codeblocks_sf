@@ -82,6 +82,7 @@ void wxsFontDialog::OnBuildCreatingCode()
 
             Codef(_T("%C(%W, %s);\n"), sfontName.wx_str());
             BuildSetupWindowCode();
+            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
             return;
         }
 

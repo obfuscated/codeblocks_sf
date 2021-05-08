@@ -129,6 +129,14 @@ void wxsCoderContext::AddBuildingCode(const wxString& Code)
     }
 }
 
+void wxsCoderContext::AddDestroyingCode(const wxString& Code)
+{
+    if ( m_Flags & flSource )
+    {
+        m_DestroyingCode.Append(Code);
+    }
+}
+
 void wxsCoderContext::AddEventCode(const wxString& Code)
 {
     m_EventsConnectingCode.Append(Code);

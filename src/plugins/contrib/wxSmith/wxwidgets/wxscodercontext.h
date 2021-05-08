@@ -57,6 +57,7 @@ struct wxsCoderContext
     wxArrayString m_IdInitializions;        ///< \brief Code used to initialize list of identifiers
     wxString    m_XRCFetchingCode;          ///< \brief Code which will fetch items from XRC file after it's loaded (through querying with IDs)
     wxString    m_BuildingCode;             ///< \brief Code which builds resource's items manually (when not using XRC file)
+    wxString    m_DestroyingCode;           ///< \brief Code which destroys manually added resources
     wxString    m_EventsConnectingCode;     ///< \brief Code used to connect events
 
     ExtraMap      m_Extra;                  ///< \brief Extra data used to exchange information between items while they generate code
@@ -72,6 +73,9 @@ struct wxsCoderContext
 
     /** \brief Adding Manually building code */
     void AddBuildingCode(const wxString& Code);
+
+    /** \brief Adding Manually destroying code */
+    void AddDestroyingCode(const wxString& Code);
 
     /** \brief Adding event connecting code */
     void AddEventCode(const wxString& Code);

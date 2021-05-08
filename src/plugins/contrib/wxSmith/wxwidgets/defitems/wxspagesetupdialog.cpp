@@ -171,6 +171,7 @@ void wxsPageSetupDialog::OnBuildCreatingCode()
 
             Codef(_T("%C(%W, %s);\n"), sDataName.wx_str());
             BuildSetupWindowCode();
+            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("delete %s;\n"), GetVarName().wx_str()));
             return;
         }
 

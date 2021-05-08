@@ -91,7 +91,8 @@ void wxsRichTextStyleOrganiserDialog::OnBuildCreatingCode()
     switch(GetLanguage())
     {
         case wxsCPP:
-            AddHeader(_T(" <wx/richtext/richtextstyledlg.h>"), GetInfo().ClassName, 0);
+            AddHeader(_T("<wx/dialog.h>"), GetInfo().ClassName, 0);
+            AddHeader(_T("<wx/richtext/richtextstyledlg.h>"), GetInfo().ClassName, 0);
 
             for(int i = 0;arrStyleValueNames[i];i++){
                 if((m_iFlags & arrStyleValues[i]) == arrStyleValues[i]){
@@ -115,6 +116,7 @@ void wxsRichTextStyleOrganiserDialog::OnBuildCreatingCode()
                   sFlags.wx_str(), sStyleSheetName.wx_str(), m_sCaption.wx_str());
 
             BuildSetupWindowCode();
+            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
             break;
 
         case wxsUnknownLanguage: // fall-through

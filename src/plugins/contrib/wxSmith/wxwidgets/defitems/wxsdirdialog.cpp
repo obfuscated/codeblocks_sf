@@ -53,6 +53,7 @@ void wxsDirDialog::OnBuildCreatingCode()
             AddHeader(_T("<wx/dirdlg.h>"),GetInfo().ClassName,hfInPCH);
             Codef(_T("%C(%W, %t, %t, %T, %P, %S, %N);\n"),m_Message.wx_str(),m_DefaultPath.wx_str());
             BuildSetupWindowCode();
+            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
             return;
         }
 

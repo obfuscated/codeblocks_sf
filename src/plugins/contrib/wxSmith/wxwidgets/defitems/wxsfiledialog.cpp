@@ -75,6 +75,7 @@ void wxsFileDialog::OnBuildCreatingCode()
                       m_Wildcard.wx_str());
             }
             BuildSetupWindowCode();
+            GetCoderContext()->AddDestroyingCode(wxString::Format(_T("%s->Destroy();\n"), GetVarName().wx_str()));
             return;
         }
 
