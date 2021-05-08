@@ -32,7 +32,7 @@ namespace
 {
 
 
-    wxsRegisterItem<wxsBitmapComboBox> Reg(_T("BitmapComboBox"),wxsTWidget,_T("Standard"),50);
+    wxsRegisterItem<wxsBitmapComboBox> Reg(_T("BitmapComboBox"),wxsTWidget,_T("Standard"),355);
 //    wxsRegisterItem<wxsBitmapComboBox> Reg(
 //        _T("wxBitmapComboBox"),         // Class name
 //        wxsTWidget,                     // Item type

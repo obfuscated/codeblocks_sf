@@ -15,7 +15,7 @@ namespace
         _T(""),
         _T(""),
         _T("Advanced"),
-        80,
+        50,
         _T("TimePickerCtrl"),
         wxsCPP,
         1, 0,

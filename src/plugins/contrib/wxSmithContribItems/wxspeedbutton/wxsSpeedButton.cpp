@@ -42,7 +42,7 @@ namespace
         _T("rcoll@theriver.com"),       // Author's email
         _T(""),                         // Item's homepage
         _T("Contrib"),                  // Category in palette
-        90,                             // Priority in palette
+        50,                             // Priority in palette
         _T("SpeedButton"),              // Base part of names for new items
         wxsCPP,                         // List of coding languages supported by this item
         1, 0,                           // Version
