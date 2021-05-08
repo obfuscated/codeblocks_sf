@@ -8,7 +8,7 @@
 					<label>Closed files list should be</label>
 					<content>
 						<item>a dockable window</item>
-						<item>placed in Logs &amp; others</item>
+						<item>placed in Logs &amp;&amp; others</item>
 					</content>
 					<default>-1</default>
 					<style>wxRA_SPECIFY_COLS</style>

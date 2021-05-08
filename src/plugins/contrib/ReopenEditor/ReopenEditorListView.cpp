@@ -41,15 +41,74 @@ BEGIN_EVENT_TABLE(ReopenEditorListView, wxPanel)
     EVT_MENU(idRemoveAll,ReopenEditorListView::OnRemoveAll)
 END_EVENT_TABLE()
 
-ReopenEditorListView::ReopenEditorListView(const wxArrayString& titles, const wxArrayInt& widths):
-    wxPanel(Manager::Get()->GetAppWindow()),
-    mTitles(titles)
+ReopenEditorListView::ReopenEditorListView(const wxArrayString& titles, const wxArrayInt& widths) :
+    wxPanel(Manager::Get()->GetAppWindow())
 {
-    //ctor
-    m_pListControl = new wxListCtrl(this, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT/* | wxLC_SINGLE_SEL*/);
-    for (size_t i = 0; i < titles.GetCount(); ++i)
-        m_pListControl->InsertColumn(i, titles[i], wxLIST_FORMAT_LEFT, widths[i]);
+    // Constructor
+    Init();
 
+    // Fill columns
+    const size_t colCount = titles.GetCount();
+    for (size_t i = 0; i < colCount; ++i)
+        m_pListControl->InsertColumn(i, titles[i], wxLIST_FORMAT_LEFT, widths[i]);
+}
+
+ReopenEditorListView::ReopenEditorListView(const ReopenEditorListView& Original) :
+    wxPanel(Manager::Get()->GetAppWindow())
+{
+    // Copy constructor
+    Init();
+
+    // Copy the list control
+    m_pListControl->Freeze();
+
+    // Copy columns
+    const int colCount = Original.m_pListControl->GetColumnCount();
+    for (int col = 0; col < colCount; ++col)
+    {
+        wxListItem item;
+
+        item.SetMask(wxLIST_MASK_TEXT | wxLIST_MASK_WIDTH | wxLIST_MASK_FORMAT);
+        Original.m_pListControl->GetColumn(col, item);
+        m_pListControl->InsertColumn(col, item);
+    }
+
+    // Copy lines
+    wxListItem info;
+    info.SetId(0);
+    info.SetMask(wxLIST_MASK_TEXT);
+    const int rowCount = Original.m_pListControl->GetItemCount();
+    for (int row = rowCount-1; row >= 0; --row)
+    {
+        const wxString  text(Original.m_pListControl->GetItemText(row));
+        const wxFont    font(Original.m_pListControl->GetItemFont(row));
+        const wxColour  colour(Original.m_pListControl->GetItemTextColour(row));
+        const wxUIntPtr data(Original.m_pListControl->GetItemData(row));
+
+        m_pListControl->InsertItem(0, text);
+        m_pListControl->SetItemFont(0, font);
+        m_pListControl->SetItemTextColour(0, colour);
+        m_pListControl->SetItemData(0, data);
+        for (int col = 1; col < colCount; ++col)
+        {
+            info.SetColumn(col);
+            Original.m_pListControl->GetItem(info);
+            m_pListControl->SetItem(0, col, info.GetText());
+        }
+    }
+
+    m_pListControl->Thaw();
+}
+
+ReopenEditorListView::~ReopenEditorListView()
+{
+    // Destructor
+    wxDELETE(m_pListControl);
+}
+
+void ReopenEditorListView::Init()
+{
+    m_pListControl = new wxListCtrl(this, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT/* | wxLC_SINGLE_SEL*/);
     m_pListControl->SetId(idReopenEditorList);
     Connect(idReopenEditorList, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
             (wxObjectEventFunction) (wxEventFunction) (wxListEventFunction)
@@ -58,13 +117,6 @@ ReopenEditorListView::ReopenEditorListView(const wxArrayString& titles, const wx
     bs->Add(m_pListControl, 1, wxEXPAND);
     SetSizer(bs);
 }
-
-ReopenEditorListView::~ReopenEditorListView()
-{
-    //dtor
-    wxDELETE(m_pListControl);
-}
-
 
 size_t ReopenEditorListView::GetItemsCount() const
 {
@@ -88,13 +140,15 @@ void ReopenEditorListView::Prepend(const wxArrayString& colValues, Logger::level
     if (!m_pListControl)
         return;
 
-    if (colValues.GetCount() == 0 || colValues.GetCount() > mTitles.GetCount())
+    const int colCount = int(colValues.GetCount());
+    if (colCount == 0 || colCount > m_pListControl->GetColumnCount())
         return;
 
     m_pListControl->Freeze();
     Prepend(colValues[0], lv);
-    for (size_t i = 1; i < colValues.GetCount(); ++i)
+    for (int i = 1; i < colCount; ++i)
         m_pListControl->SetItem(0, i, colValues[i]);
+
     m_pListControl->Thaw();
 }
 
@@ -112,33 +166,31 @@ wxArrayString ReopenEditorListView::GetItemAsArray(long item) const
         return result;
 
     wxListItem info;
-    info.m_itemId = item;
-    info.m_mask = wxLIST_MASK_TEXT;
+    info.SetId(item);
+    info.SetMask(wxLIST_MASK_TEXT);
 
-    for (size_t i = 0; i < mTitles.GetCount(); ++i)
+    const int colCount = m_pListControl->GetColumnCount();
+    for (int i = 0; i < colCount; ++i)
     {
-        info.m_col = i;
+        info.SetColumn(i);
         m_pListControl->GetItem(info);
-        result.Add(info.m_text);
+        result.Add(info.GetText());
     }
+
     return result;
 }
 
 wxString ReopenEditorListView::GetFilename(long item) const
 {
-    wxString result = wxEmptyString;
     if (!m_pListControl)
-        return result;
+        return wxString();
 
     wxListItem info;
-    info.m_itemId = item;
-    info.m_mask = wxLIST_MASK_TEXT;
-
-    info.m_col = 0;
+    info.SetId(item);
+    info.SetMask(wxLIST_MASK_TEXT);
+    info.SetColumn(0);
     m_pListControl->GetItem(info);
-    result = info.m_text;
-
-    return result;
+    return info.GetText();
 }
 
 cbProject* ReopenEditorListView::GetProject(long item) const

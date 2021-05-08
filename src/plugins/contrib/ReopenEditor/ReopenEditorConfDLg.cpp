@@ -3,8 +3,8 @@
 #include "configmanager.h"
 
 //(*InternalHeaders(ReopenEditorConfDLg)
-#include <wx/xrc/xmlres.h>
 #include <wx/radiobox.h>
+#include <wx/xrc/xmlres.h>
 //*)
 
 //(*IdInit(ReopenEditorConfDLg)

@@ -17,6 +17,7 @@ class ReopenEditorListView : public wxPanel
 {
     public:
         ReopenEditorListView(const wxArrayString& titles, const wxArrayInt& widths);
+        ReopenEditorListView(const ReopenEditorListView& Original);
         ~ReopenEditorListView();
 
         virtual size_t GetItemsCount() const;
@@ -27,9 +28,12 @@ class ReopenEditorListView : public wxPanel
         virtual wxString GetFilename(long item) const;
         virtual cbProject* GetProject(long item) const;
         virtual void SetProject(long item, cbProject* prj) const;
+
+    private:
+        void Init();
+
     private:
         wxListCtrl* m_pListControl;
-        wxArrayString mTitles;
         struct ListStyles
         {
             wxFont font;
