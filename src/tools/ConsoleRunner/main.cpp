@@ -68,7 +68,7 @@ int execute_command(char *cmdline)
     CloseHandle( pi.hProcess );
     CloseHandle( pi.hThread );
 
-    return ret;
+    return (INT)ret;
 #else
     int ret = system(cmdline);
     if(WIFEXITED(ret))
