@@ -97,7 +97,8 @@ int main(int argc, char** argv)
         fullsize += strlen(argv[i]);
     }
     // add some slack for spaces between args plus quotes around executable
-    fullsize += argc + 32;
+    // and terminating NUL
+    fullsize += 3 * argc + 1;
 
     char* cmdline = new char[fullsize];
     memset(cmdline, 0, fullsize);
