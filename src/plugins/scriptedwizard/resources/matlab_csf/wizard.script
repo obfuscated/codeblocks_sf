@@ -38,7 +38,7 @@ function OnLeave_MatlabPath(fwd)
   if (fwd)
   {
     local dir         = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
-    local dir_nomacro = ReplaceMacros(dir, true);
+    local dir_nomacro = ReplaceMacros(dir);
     if (!IO.DirectoryExists(dir_nomacro))
     {
       ShowError(_T("Please select a valid path to Matlab..."));

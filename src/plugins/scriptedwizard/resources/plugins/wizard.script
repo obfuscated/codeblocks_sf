@@ -498,7 +498,7 @@ function SubstituteMacros(buffer)
     buffer.Replace(_T("[AUTHOR_WWW]"), PluginSettings.Website);
     buffer.Replace(_T("[THANKS_TO]"), PluginSettings.ThanksTo);
     buffer.Replace(_T("[HEADER_FILENAME]"), PluginSettings.Name + DOT_EXT_H);
-    buffer.Replace(_T("[NOW]"), ReplaceMacros(_T("$(TODAY)"), false));
+    buffer.Replace(_T("[NOW]"), ReplaceMacros(_T("$(TODAY)")));
 
     return buffer;
 }

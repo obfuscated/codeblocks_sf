@@ -358,10 +358,10 @@ function SubstituteMacros(buffer)
 	// handle [IF] / [ENDIF] pairs
 	buffer.Replace(_T("[!PXROS_NAME!]"), _T("") + _T("test"));
 
-	buffer.Replace(_T("[!NOW!]"), ReplaceMacros(_T("$(NOW_L)"), true));
-	buffer.Replace(_T("[!TODAY!]"), ReplaceMacros(_T("$(TODAY)"), true));
-	buffer.Replace(_T("[!PROJECTNAME!]"), ReplaceMacros(_T("$(PROJECTNAME)"), true));
-	buffer.Replace(_T("[!PROJECTDIR!]"), ReplaceMacros(_T("$(PROJECTDIR)"), true));
+	buffer.Replace(_T("[!NOW!]"), ReplaceMacros(_T("$(NOW_L)")));
+	buffer.Replace(_T("[!TODAY!]"), ReplaceMacros(_T("$(TODAY)")));
+	buffer.Replace(_T("[!PROJECTNAME!]"), ReplaceMacros(_T("$(PROJECTNAME)")));
+	buffer.Replace(_T("[!PROJECTDIR!]"), ReplaceMacros(_T("$(PROJECTDIR)")));
 
 	return buffer;
 }

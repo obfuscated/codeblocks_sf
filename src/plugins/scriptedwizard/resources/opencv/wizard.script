@@ -112,7 +112,7 @@ function OnLeave_VersionSelection(fwd)
         OpenCVPathBin = Wizard.GetTextControlValue(_T("ID_TEXTCTRL3"));
 
         // check whether include file exist
-        local inc_nomacro = ReplaceMacros(OpenCVPathInc, true);
+        local inc_nomacro = ReplaceMacros(OpenCVPathInc);
         local test_inc_file = inc_nomacro + _T("\\opencv2\\opencv.hpp");
         if (!IO.FileExists(test_inc_file))
         {
@@ -122,7 +122,7 @@ function OnLeave_VersionSelection(fwd)
         }
 
         // check whether lib file exist
-        local lib_nomacro = ReplaceMacros(OpenCVPathLib, true);
+        local lib_nomacro = ReplaceMacros(OpenCVPathLib);
         // first we check whether a release OpenCV library exists, which could have the name libopencv_core244.dll.a
         // if we can't find a release version of OpenCV library, check a debug version exists, which
         // may have the name libopencv_core244d.dll.a

@@ -56,8 +56,8 @@ function OnLeave_LFPath(fwd)
                         "can't locate Lightfeather's files in it...");
 
         local dir         = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
-        local dir_nomacro = ReplaceMacros(dir, true);
-        
+        local dir_nomacro = ReplaceMacros(dir);
+
         // check for include files
         if (!IO.FileExists(dir_nomacro + _T("/include/lf/Lightfeather.h")))
         {
@@ -137,7 +137,7 @@ function SetupProject(project)
 	    project.AddCompilerOption(_T("-DPIC"));
 	}
     project.AddCompilerOption(_T("-DPNG_NO_ASSEMBLER_CODE"));
-    
+
     if (LF_NVidiaCg)
     {
     	if (PLATFORM == PLATFORM_MSW)
@@ -174,7 +174,7 @@ function SetupProject(project)
     }
 	if (LF_LocalConfig)
 		project.AddCompilerOption(_T("-DHAVE_LOCAL_LF_CONFIG"));
-	
+
     project.AddIncludeDir(_T("$(lf)/include"));
 
     // first rename "default" target (index 0 - could do it by name too) to "Debug"
@@ -208,11 +208,11 @@ function TargetFinalSetup(target, dir, isDebug, isLib)
 	// just setup the different things per-target
     target.SetOutputFilename(_T("bin/" + dir + "/") + Wizard.GetProjectTitle());
     target.SetObjectOutput(_T("bin/obj/" + dir));
-    
+
     target.AddLibDir(_T("$(lf)/bin/" + dir));
-    
+
     target.AddLinkLib(_T("Lightfeather"));
-    
+
     if (isDebug)
     {
     	target.AddCompilerOption(_T("-g"));
@@ -223,7 +223,7 @@ function TargetFinalSetup(target, dir, isDebug, isLib)
     	target.AddCompilerOption(_T("-O2"));
     	target.AddCompilerOption(_T("-s"));
     }
-    
+
     if (isLib)
     {
 		if (LF_NVidiaCg)
