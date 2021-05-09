@@ -146,7 +146,7 @@
 ///     template<>
 ///     MembersType<MyClass> FindMembers<MyClass>::members{};
 ///
-///     const SQInteger classDecl = CreateClassDecl<MyClass>(v, _SC("MyClass"));
+///     const SQInteger classDecl = CreateClassDecl<MyClass>(v);
 ///     MembersType<MyClass> &members = BindMembers<MyClass>(v);
 ///     addMemberRef(members, _SC("name"), &MyClass::name);
 ///     addMemberBool(members, _SC("flag"), &MyClass::flag);
@@ -224,6 +224,15 @@ inline bool GetRootTableField(HSQUIRRELVM vm, const SQChar *fieldName)
 
 template<typename T>
 struct TypeInfo {};
+
+/// This specialization is only needed for compilation purposes. It shoundn't actually be used.
+/// This allows code accessing the base name of a given embedded class to compile without the need
+/// for C++17's "if constexpr". If we switch to C++17 this specialization could be removed.
+template<>
+struct TypeInfo<void>
+{
+    static constexpr const SQChar *className = _SC("__void__");
+};
 
 enum class InstanceAllocationMode : uint32_t
 {
@@ -708,32 +717,33 @@ struct ExtractParams8 : ExtractParamsBase
 };
 
 template<typename UserType>
-inline SQInteger CreateClassDecl(HSQUIRRELVM v, const SQChar *className,
-                                 const SQChar *baseClassName = nullptr)
+inline SQInteger CreateClassDecl(HSQUIRRELVM v)
 {
     const SQInteger tableStackIdx = sq_gettop(v);
-    cbAssert(scstrcmp(className, TypeInfo<UserType>::className)==0);
-    sq_pushstring(v, className, -1);
-    if (baseClassName)
-    {
-        using BaseClass = typename TypeInfo<UserType>::baseClass;
-        cbAssert(std::is_void<BaseClass>::value == false);
-        if constexpr (std::is_void<BaseClass>::value == false)
-            cbAssert(scstrcmp(baseClassName, TypeInfo<BaseClass>::className)==0);
+    sq_pushstring(v, TypeInfo<UserType>::className, -1);
 
-        sq_pushstring(v, baseClassName, -1);
+    // Extract the base class definition if necessary.
+    bool hasBase;
+    using BaseClass = typename TypeInfo<UserType>::baseClass;
+    // Note: This could be implemented with C++17's "if constexpr" and it will make it possible to
+    //   remove the TypeInfo<void> specialization.
+    if (std::is_void<BaseClass>::value == false)
+    {
+        sq_pushstring(v, TypeInfo<BaseClass>::className, -1);
         if (SQ_FAILED(sq_get(v, -3)))
         {
             cbAssert(false);
             return -1;
         }
+        hasBase = true;
     }
     else
     {
         cbAssert(std::is_void<typename TypeInfo<UserType>::baseClass>::value == true);
+        hasBase = false;
     }
 
-    sq_newclass(v, ((baseClassName != nullptr) ? SQTrue : SQFalse));
+    sq_newclass(v, (hasBase ? SQTrue : SQFalse));
     sq_settypetag(v, -1, SQUserPointer(uint64_t(TypeInfo<UserType>::typetag)));
     // Add some memory to the class. We over-allocate in cases where we store only a pointer.
     sq_setclassudsize(v, -1, sizeof(UserDataForType<UserType>));

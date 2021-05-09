@@ -352,7 +352,7 @@ namespace ScriptBindings
 
         {
             // Register EditArrayFileDlg
-            const SQInteger classDecl = CreateClassDecl<EditArrayFileDlg>(v, _SC("EditArrayFileDlg"));
+            const SQInteger classDecl = CreateClassDecl<EditArrayFileDlg>(v);
             BindMethod(v, _SC("constructor"), EditArrayFileDlg_Ctor,
                        _SC("EditArrayFileDlg::constructor"));
             BindMethod(v, _SC("ShowModal"), ShowModalForDialogs<EditArrayFileDlg>,
@@ -365,7 +365,7 @@ namespace ScriptBindings
 
         {
             // Register EditArrayOrderDlg
-            const SQInteger classDecl = CreateClassDecl<EditArrayOrderDlg>(v, _SC("EditArrayOrderDlg"));
+            const SQInteger classDecl = CreateClassDecl<EditArrayOrderDlg>(v);
             BindMethod(v, _SC("constructor"), EditArrayOrderDlg_Ctor,
                        _SC("EditArrayOrderDlg::constructor"));
             BindMethod(v, _SC("ShowModal"), ShowModalForDialogs<EditArrayOrderDlg>,
@@ -382,7 +382,7 @@ namespace ScriptBindings
 
         {
             // Register EditArrayStringDlg
-            const SQInteger classDecl = CreateClassDecl<EditArrayStringDlg>(v, _SC("EditArrayStringDlg"));
+            const SQInteger classDecl = CreateClassDecl<EditArrayStringDlg>(v);
             BindMethod(v, _SC("constructor"), EditArrayStringDlg_Ctor,
                        _SC("EditArrayStringDlg::constructor"));
             BindMethod(v, _SC("ShowModal"), ShowModalForDialogs<EditArrayStringDlg>,
@@ -395,7 +395,7 @@ namespace ScriptBindings
 
         {
             // Register EditPairDlg
-            const SQInteger classDecl = CreateClassDecl<EditPairDlg>(v, _SC("EditPairDlg"));
+            const SQInteger classDecl = CreateClassDecl<EditPairDlg>(v);
             BindMethod(v, _SC("constructor"), EditPairDlg_Ctor,
                        _SC("EditPairDlg::constructor"));
             BindMethod(v, _SC("ShowModal"), ShowModalForDialogs<EditPairDlg>,
@@ -408,7 +408,7 @@ namespace ScriptBindings
 
         {
             // Register EditPathDlg
-            const SQInteger classDecl = CreateClassDecl<EditPathDlg>(v, _SC("EditPathDlg"));
+            const SQInteger classDecl = CreateClassDecl<EditPathDlg>(v);
             BindMethod(v, _SC("constructor"), EditPathDlg_Ctor,
                        _SC("EditPathDlg::constructor"));
             BindMethod(v, _SC("ShowModal"), ShowModalForDialogs<EditPathDlg>,
@@ -422,7 +422,7 @@ namespace ScriptBindings
 
         {
             // Register GenericMultiLineNotesDlg
-            const SQInteger classDecl = CreateClassDecl<GenericMultiLineNotesDlg>(v, _SC("GenericMultiLineNotesDlg"));
+            const SQInteger classDecl = CreateClassDecl<GenericMultiLineNotesDlg>(v);
             BindMethod(v, _SC("constructor"), GenericMultiLineNotesDlg_Ctor,
                        _SC("GenericMultiLineNotesDlg::constructor"));
             BindMethod(v, _SC("ShowModal"), ShowModalForDialogs<GenericMultiLineNotesDlg>,

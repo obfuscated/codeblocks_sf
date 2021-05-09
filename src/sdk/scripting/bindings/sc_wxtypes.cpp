@@ -891,7 +891,7 @@ void Register_wxTypes(HSQUIRRELVM v)
     sq_pushroottable(v);
     {
         // register wxString
-        const SQInteger classDecl = CreateClassDecl<wxString>(v, _SC("wxString"));
+        const SQInteger classDecl = CreateClassDecl<wxString>(v);
         // FIXME (squirrel) Add string version of the c-tor
         BindEmptyCtor<wxString>(v);
         BindDefaultClone<wxString>(v);
@@ -949,7 +949,7 @@ void Register_wxTypes(HSQUIRRELVM v)
 
     {
         // Register wxColour
-        const SQInteger classDecl = CreateClassDecl<wxColour>(v, _SC("wxColour"));
+        const SQInteger classDecl = CreateClassDecl<wxColour>(v);
         // FIXME (squirrel) Add 3, 4 int version of the c-tor
         BindEmptyCtor<wxColour>(v);
         BindDefaultClone<wxColour>(v);
@@ -966,7 +966,7 @@ void Register_wxTypes(HSQUIRRELVM v)
 
     {
         // Register wxPoint
-        const SQInteger classDecl = CreateClassDecl<wxPoint>(v, _SC("wxPoint"));
+        const SQInteger classDecl = CreateClassDecl<wxPoint>(v);
         BindEmptyCtor<wxPoint>(v);
         BindDefaultClone<wxPoint>(v);
         BindMethod(v, _SC("_tostring"), wxPointSize_tostring<wxPoint>, _SC("wxPoint::_tostring"));
@@ -979,7 +979,7 @@ void Register_wxTypes(HSQUIRRELVM v)
 
     {
         // Register wxSize
-        const SQInteger classDecl = CreateClassDecl<wxSize>(v, _SC("wxSize"));
+        const SQInteger classDecl = CreateClassDecl<wxSize>(v);
         BindEmptyCtor<wxSize>(v);
         BindDefaultClone<wxSize>(v);
         BindMethod(v, _SC("_tostring"), wxPointSize_tostring<wxSize>, _SC("wxSize::_tostring"));
@@ -998,7 +998,7 @@ void Register_wxTypes(HSQUIRRELVM v)
 
     {
         // Register wxSize
-        const SQInteger classDecl = CreateClassDecl<wxArrayString>(v, _SC("wxArrayString"));
+        const SQInteger classDecl = CreateClassDecl<wxArrayString>(v);
         BindEmptyCtor<wxArrayString>(v);
         BindDefaultClone<wxArrayString>(v);
         BindMethod(v, _SC("Add"), wxArrayString_Add, _SC("wxArrayString::Add"));
@@ -1015,7 +1015,7 @@ void Register_wxTypes(HSQUIRRELVM v)
 
     {
         // Register wxFileName
-        const SQInteger classDecl = CreateClassDecl<wxFileName>(v, _SC("wxFileName"));
+        const SQInteger classDecl = CreateClassDecl<wxFileName>(v);
         BindEmptyCtor<wxFileName>(v);
         BindDefaultClone<wxFileName>(v);
         BindMethod(v, _SC("_tostring"), wxFileName_tostring, _SC("wxFileName::_tostring"));
