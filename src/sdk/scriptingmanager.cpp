@@ -29,9 +29,9 @@
 #include "crc32.h"
 #include "menuitemsmanager.h"
 #include "genericmultilinenotesdlg.h"
-#include "sqplus.h"
 #include "scriptbindings.h"
 #include "sc_plugin.h"
+#include "squirrel.h"
 #include "sqstdstring.h"
 
 template<> ScriptingManager* Mgr<ScriptingManager>::instance = nullptr;
@@ -42,7 +42,8 @@ static wxString capture;
 
 void PrintSquirrelToWxString(wxString& msg, const SQChar* s, va_list& vl)
 {
-    int buffer_size = 2048;
+    // FIXME (squirrel) Reimplement PrintSquirrelToWxString
+/*    int buffer_size = 2048;
     SQChar* tmp_buffer;
     for (;;buffer_size*=2)
     {
@@ -57,7 +58,7 @@ void PrintSquirrelToWxString(wxString& msg, const SQChar* s, va_list& vl)
         }
         // Buffer size was not enough
         delete[] tmp_buffer;
-    }
+    }*/
 }
 
 static void ScriptsPrintFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
@@ -90,7 +91,8 @@ ScriptingManager::ScriptingManager()
     m_MenuItemsManager(false) // not auto-clear
 {
     //ctor
-
+// FIXME (squirrel) Reimplement ScriptingManager::ScriptingManager
+/*
     // initialize but don't load the IO lib
     SquirrelVM::Init((SquirrelInitFlags)(sqifAll & ~sqifIO));
 
@@ -99,7 +101,7 @@ ScriptingManager::ScriptingManager()
 
     sq_setprintfunc(SquirrelVM::GetVMPtr(), ScriptsPrintFunc);
     sqstd_register_stringlib(SquirrelVM::GetVMPtr());
-
+*/
     RefreshTrusts();
 
     // register types
@@ -123,12 +125,13 @@ ScriptingManager::~ScriptingManager()
     }
     Manager::Get()->GetConfigManager(_T("security"))->Write(_T("/trusted_scripts"), myMap);
 
-    SquirrelVM::Shutdown();
+// FIXME (squirrel) Reimplement ScriptingManager::~ScriptingManager
+//    SquirrelVM::Shutdown();
 }
 
-void ScriptingManager::RegisterScriptFunctions()
+HSQUIRRELVM ScriptingManager::GetVM()
 {
-    // done in scriptbindings.cpp
+    return nullptr;
 }
 
 bool ScriptingManager::LoadScript(const wxString& filename)
@@ -190,6 +193,8 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
 
     s_ScriptErrors.Clear();
 
+// FIXME (squirrel) Reimplement ScriptingManager::LoadBuffer
+/*
     // compile script
     SquirrelObject script;
     try
@@ -214,6 +219,7 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
         m_IncludeSet.erase(incName);
         return false;
     }
+*/
     m_IncludeSet.erase(incName);
     return true;
 }
@@ -225,7 +231,8 @@ wxString ScriptingManager::LoadBufferRedirectOutput(const wxString& buffer)
 
     s_ScriptErrors.Clear();
     ::capture.Clear();
-
+// FIXME (squirrel) Reimplement ScriptingManager::LoadBufferRedirectOutput
+/*
     // Save the old used print function so we can restore it after the
     // redirected print is finished. This is needed for example if the
     // scripting console redirects the script print output to itself and
@@ -244,11 +251,13 @@ wxString ScriptingManager::LoadBufferRedirectOutput(const wxString& buffer)
 
     // restore the old print function
     sq_setprintfunc(vm, oldPrintFunc);
-
     // return the internal print buffer if the script executed successfully
     return res ? ::capture : (wxString) wxEmptyString;
+*/
+    return wxString();
 }
 
+/*
 wxString ScriptingManager::GetErrorString(SquirrelError* exception, bool clearErrors)
 {
     wxString msg;
@@ -280,6 +289,7 @@ void ScriptingManager::DisplayErrors(SquirrelError* exception, bool clearErrors)
         }
     }
 }
+*/
 
 void ScriptingManager::InjectScriptOutput(const wxString& output)
 {
@@ -460,6 +470,8 @@ void ScriptingManager::OnScriptMenu(wxCommandEvent& event)
 
     MenuBoundScript& mbs = it->second;
 
+// FIXME (squirrel) Reimplement OnScriptMenu 1
+/*
     // is it a function?
     if (mbs.isFunc)
     {
@@ -474,7 +486,7 @@ void ScriptingManager::OnScriptMenu(wxCommandEvent& event)
         }
         return;
     }
-
+*/
     // script loading below
 
     if (wxGetKeyState(WXK_SHIFT))
@@ -484,6 +496,8 @@ void ScriptingManager::OnScriptMenu(wxCommandEvent& event)
         return;
     }
 
+// FIXME (squirrel) Reimplement OnScriptMenu 2
+/*
     // run script
     try
     {
@@ -494,6 +508,7 @@ void ScriptingManager::OnScriptMenu(wxCommandEvent& event)
     {
         DisplayErrors(&exception);
     }
+*/
 }
 
 void ScriptingManager::OnScriptPluginMenu(wxCommandEvent& event)

@@ -422,6 +422,8 @@ void CompilerGCC::OnAttach()
     CompilerFactory::SetDefaultCompiler(Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/default_compiler"), _T("gcc")));
     LoadOptions();
 
+    // FIXME (squirrel) Compiler's LogBuild function
+/*
     // register compiler's script functions
     // make sure the VM is initialized
     Manager::Get()->GetScriptingManager();
@@ -432,6 +434,7 @@ void CompilerGCC::OnAttach()
     }
     else
         ScriptBindings::gBuildLogId = -1;
+*/
 
     // register event sink
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,         new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectActivated));

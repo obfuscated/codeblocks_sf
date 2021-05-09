@@ -18,6 +18,7 @@
 #include "manager.h"
 #include "menuitemsmanager.h"
 #include <wx/intl.h>
+#include "squirrel.h" // FIXME (squirrel) Do we really need this!?
 
 struct SquirrelError;
 
@@ -63,6 +64,8 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
         /// Script trusts container struct
         typedef std::map<wxString, TrustedScriptProps> TrustedScripts;
 
+        HSQUIRRELVM GetVM();
+
         /** @brief Loads a script.
           *
           * @param filename The filename of the script to run.
@@ -85,6 +88,8 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
           */
         wxString LoadBufferRedirectOutput(const wxString& buffer);
 
+        // FIXME (squirrel) Reimplement or remove ScriptingManager::GetErrorString/DisplayErrors
+#if 0
         /** @brief Returns an accumulated error string.
           *
           * Returns an error string for the passed exception (if any) plus
@@ -107,6 +112,7 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
           *        accumulated error messages are cleared.
           */
         void DisplayErrors(SquirrelError* exception = nullptr, bool clearErrors = true);
+#endif // 0
 
         /** @brief Injects script output.
           *
@@ -227,7 +233,6 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
 
         void OnScriptMenu(wxCommandEvent& event);
         void OnScriptPluginMenu(wxCommandEvent& event);
-        void RegisterScriptFunctions();
 
         ScriptingManager();
         ~ScriptingManager() override;
@@ -269,8 +274,5 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
 
         DECLARE_EVENT_TABLE()
 };
-
-typedef char SQChar; // HACK, MUST match with the type as defined for the dedicated platform in squirrel.h
-void PrintSquirrelToWxString(wxString& msg, const SQChar* s, va_list& vl);
 
 #endif // SCRIPTING_H

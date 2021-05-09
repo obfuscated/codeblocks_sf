@@ -115,6 +115,8 @@ WizPageBase::~WizPageBase()
 
 wxWizardPage* WizPageBase::GetPrev() const
 {
+// FIXME (squirrel) Reimplement WizPageBase::GetPrev
+#if 0
     try
     {
         wxString sig = _T("OnGetPrevPage_") + m_PageName;
@@ -130,6 +132,7 @@ wxWizardPage* WizPageBase::GetPrev() const
     {
         Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
     }
+#endif // 0
     return wxWizardPageSimple::GetPrev();
 }
 
@@ -137,6 +140,8 @@ wxWizardPage* WizPageBase::GetPrev() const
 
 wxWizardPage* WizPageBase::GetNext() const
 {
+// FIXME (squirrel) Reimplement WizPageBase::GetNext
+#if 0
     try
     {
         wxString sig = _T("OnGetNextPage_") + m_PageName;
@@ -152,13 +157,15 @@ wxWizardPage* WizPageBase::GetNext() const
     {
         Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
     }
+#endif // 0
     return wxWizardPageSimple::GetNext();
 }
 
 void WizPageBase::OnPageChanging(wxWizardEvent& event)
 {
     Manager::Get()->GetConfigManager(_T("scripts"))->Write(_T("/generic_wizard/") + m_PageName + _T("/skip"), (bool)m_SkipPage);
-
+// FIXME (squirrel) Reimplement WizPageBase::OnPageChanging
+#if 0
     try
     {
         wxString sig = _T("OnLeave_") + m_PageName;
@@ -173,11 +180,14 @@ void WizPageBase::OnPageChanging(wxWizardEvent& event)
     {
         Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
     }
+#endif // 0
 }
 
 //------------------------------------------------------------------------------
 void WizPageBase::OnPageChanged(wxWizardEvent& event)
 {
+// FIXME (squirrel) Reimplement WizPageBase::OnPageChanged
+#if 0
     try
     {
         wxString sig = _T("OnEnter_") + m_PageName;
@@ -190,6 +200,7 @@ void WizPageBase::OnPageChanged(wxWizardEvent& event)
     {
         Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
     }
+#endif // 0
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -225,6 +236,9 @@ void WizPage::OnButton(wxCommandEvent& event)
         Manager::Get()->GetLogManager()->DebugLog(F(_T("Can't locate window with id %d"), event.GetId()));
         return;
     }
+
+// FIXME (squirrel) Reimplement WizPage::OnButton
+#if 0
     try
     {
         wxString sig = _T("OnClick_") + win->GetName();
@@ -237,6 +251,7 @@ void WizPage::OnButton(wxCommandEvent& event)
     {
         Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
     }
+#endif // 0
 }
 
 ////////////////////////////////////////////////////////////////////////////////

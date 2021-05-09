@@ -7,6 +7,8 @@
  * $HeadURL$
  */
 
+#if 0
+
 #include <sdk_precomp.h>
 
 #ifndef CB_PRECOMP
@@ -56,3 +58,5 @@ namespace ScriptBindings
                 func(&ProgressDialog::DoUpdate, "DoUpdate");
     }
 } // namespace ScriptBindings
+
+#endif // 0

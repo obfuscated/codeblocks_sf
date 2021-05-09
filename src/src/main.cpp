@@ -951,14 +951,20 @@ void MainFrame::SetupDebuggerUI()
     }
 }
 
+// FIXME (squirrel) Reimplement register MainFrame
+/*
 DECLARE_INSTANCE_TYPE(MainFrame);
+*/
 
 void MainFrame::RegisterScriptFunctions()
 {
+// FIXME (squirrel) Reimplement MainFrame::RegisterScriptFunctions
+/*
     SqPlus::SQClassDef<MainFrame>("MainFrame").
                     func(&MainFrame::Open, "Open");
 
     SqPlus::BindVariable(this, "App", SqPlus::VAR_ACCESS_READ_ONLY);
+*/
 }
 
 void MainFrame::RunStartupScripts()
@@ -975,7 +981,8 @@ void MainFrame::RunStartupScripts()
             se.SerializeIn(ser);
             if (!se.enabled)
                 continue;
-
+// FIXME (squirrel) Reimplement MainFrame::RunStartupScripts
+/*
             try
             {
                 wxString startup = se.script;
@@ -997,6 +1004,7 @@ void MainFrame::RunStartupScripts()
             {
                 Manager::Get()->GetScriptingManager()->DisplayErrors(&exception);
             }
+*/
         }
     }
 }

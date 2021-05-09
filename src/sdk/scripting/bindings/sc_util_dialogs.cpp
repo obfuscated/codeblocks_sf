@@ -7,6 +7,8 @@
  * $HeadURL$
  */
 
+#if 0
+
 #include <sdk_precomp.h>
 
 #ifndef CB_PRECOMP
@@ -305,3 +307,5 @@ namespace ScriptBindings
                 func(&GenericMultiLineNotesDlg::GetNotes, "GetNotes");
     }
 } // namespace ScriptBindings
+
+#endif // 0

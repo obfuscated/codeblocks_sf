@@ -38,8 +38,6 @@
 
 #include <wx/radiobox.h>
 
-#include "scripting/sqplus/sqplus.h"
-
 #include "annoyingdialog.h"
 #include "configurationpanel.h"
 #include "editarrayorderdlg.h"
@@ -967,6 +965,9 @@ void ProjectOptionsDlg::OnScriptsOverviewSelChanged(cb_unused wxTreeEvent& event
 bool ProjectOptionsDlg::IsScriptValid(ProjectBuildTarget* target, const wxString& script)
 {
     static const wxString clearout_buildscripts = _T("SetBuildOptions <- null;");
+
+// FIXME (squirrel) Reimplement ProjectOptionsDlg::IsScriptValid
+/*
     try
     {
         wxString script_nomacro = script;
@@ -974,8 +975,8 @@ bool ProjectOptionsDlg::IsScriptValid(ProjectBuildTarget* target, const wxString
         script_nomacro = wxFileName(script_nomacro).IsAbsolute() ? script_nomacro : m_Project->GetBasePath() + wxFILE_SEP_PATH + script_nomacro;
         Manager::Get()->GetScriptingManager()->LoadBuffer(clearout_buildscripts); // clear previous script's context
         Manager::Get()->GetScriptingManager()->LoadScript(script_nomacro);
-        SqPlus::SquirrelFunction<void> setopts("SetBuildOptions");
 
+        SqPlus::SquirrelFunction<void> setopts("SetBuildOptions");
         if (setopts.func.IsNull())
             return false;
 
@@ -986,6 +987,8 @@ bool ProjectOptionsDlg::IsScriptValid(ProjectBuildTarget* target, const wxString
         Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
         return false;
     }
+*/
+    return false;
 }
 
 bool ProjectOptionsDlg::ValidateTargetName(const wxString& name)

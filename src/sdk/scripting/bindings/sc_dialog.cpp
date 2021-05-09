@@ -7,6 +7,7 @@
  * $HeadURL$
  */
 
+ /*
 #include <sdk_precomp.h>
 
 #ifndef CB_PRECOMP
@@ -146,3 +147,4 @@ namespace ScriptBindings
         SquirrelVM::CreateFunctionGlobal(XrcId, "XRCID", "*");
     }
 } // namespace ScriptBindings
+*/
