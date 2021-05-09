@@ -375,7 +375,7 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
                                    cbU2C(debugName), 1)))
     {
         const wxString errorMsg = ScriptBindings::ExtractLastSquirrelError(m_data->m_vm, false);
-        const wxString fullMessage = wxString::Format("Filename: %s\nError: %s\nDetails: %s",
+        const wxString fullMessage = wxString::Format("LoadBuffer failed\n  Filename: %s\n  Error: %s\n  Details: %s",
                                                       debugName.wx_str(), errorMsg.wx_str(),
                                                       s_ScriptErrors.wx_str());
         Manager::Get()->GetLogManager()->LogError(fullMessage);
@@ -387,7 +387,7 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
     if (SQ_FAILED(sq_call(m_data->m_vm, 1, SQFalse, SQTrue)))
     {
         const wxString errorMsg = ScriptBindings::ExtractLastSquirrelError(m_data->m_vm, false);
-        const wxString fullMessage = wxString::Format("Filename: %s\nError: %s\nDetails: %s",
+        const wxString fullMessage = wxString::Format("LoadBuffer failed\n  Filename: %s\n  Error: %s\n  Details: %s",
                                                       debugName.wx_str(), errorMsg.wx_str(),
                                                       s_ScriptErrors.wx_str());
         Manager::Get()->GetLogManager()->LogError(fullMessage);
