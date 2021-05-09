@@ -18,14 +18,15 @@
     #include "editormanager.h"
     #include "logmanager.h"
     #include "macrosmanager.h"
+    #include "scriptingmanager.h"
 #endif
 
 #include "abbreviations.h"
 #include "abbreviationsconfigpanel.h"
 #include "ccmanager.h"
 #include "editor_hooks.h"
-#include "sc_utils.h"
-#include "sc_typeinfo_all.h"
+#include "scripting/bindings/sc_utils.h"
+#include "scripting/bindings/sc_typeinfo_all.h"
 
 // Register the plugin with Code::Blocks.
 // We are using an anonymous namespace so we don't litter the global one.

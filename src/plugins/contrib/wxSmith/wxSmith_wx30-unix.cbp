@@ -61,9 +61,6 @@
 			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../../../include/scripting/include" />
-			<Add directory="../../../include/scripting/squirrel" />
-			<Add directory="../../../include/scripting/sqplus" />
-			<Add directory="../../../include/scripting/bindings" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--no-undefined" />

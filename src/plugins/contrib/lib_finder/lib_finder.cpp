@@ -38,8 +38,8 @@
 #include <projectloader_hooks.h>
 #include <compiler.h>
 #include <compilerfactory.h>
-#include <sc_utils.h>
-#include <sc_typeinfo_all.h>
+#include <scripting/bindings/sc_utils.h>
+#include <scripting/bindings/sc_typeinfo_all.h>
 #include <scriptingmanager.h>
 #include <logmanager.h>
 

@@ -9,8 +9,8 @@
 
 #include "sdk.h"
 #include <wx/dynarray.h>
-#include "sc_utils.h"
-#include "sc_typeinfo_all.h"
+#include "scripting/bindings/sc_utils.h"
+#include "scripting/bindings/sc_typeinfo_all.h"
 
 #ifndef CB_PRECOMP
     #include "cbproject.h"
