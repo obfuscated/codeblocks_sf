@@ -11,6 +11,7 @@
 
 #include "scriptconsole.h"
 #include "squirrel.h"
+#include "scripting/bindings/sc_utils.h"
 
 #ifndef CB_PRECOMP
     #include <globals.h>
@@ -49,8 +50,8 @@ static void ScriptConsolePrintFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
     static SQChar temp[2048];
     va_list vl;
     va_start(vl,s);
-    scvsprintf(temp, 2048, s, vl);
-    wxString msg(temp);
+    wxString msg;
+    ScriptBindings::PrintSquirrelToWxString(msg, s, vl);
     va_end(vl);
 
     if (s_Console)
@@ -62,8 +63,8 @@ static void ScriptConsoleErrorFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
     static SQChar temp[2048];
     va_list vl;
     va_start(vl,s);
-    scvsprintf(temp, 2048, s, vl);
-    wxString msg = cbC2U(temp);
+    wxString msg;
+    ScriptBindings::PrintSquirrelToWxString(msg, s, vl);
     va_end(vl);
 
     if (s_Console)

@@ -186,6 +186,7 @@ namespace ScriptBindings
 
 DLLIMPORT void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop = -1);
 DLLIMPORT wxString ExtractLastSquirrelError(HSQUIRRELVM vm, bool canBeEmpty);
+DLLIMPORT void PrintSquirrelToWxString(wxString& msg, const SQChar* s, va_list& vl);
 
 struct PreserveTop
 {
