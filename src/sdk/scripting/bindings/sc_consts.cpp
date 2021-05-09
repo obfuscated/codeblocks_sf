@@ -11,8 +11,9 @@
 #include <sdk_precomp.h>
 #ifndef CB_PRECOMP
     #include <wx/string.h>
-    #include <globals.h>
-    #include <settings.h>
+    #include "configmanager.h"
+    #include "globals.h"
+    #include "settings.h"
 #endif
 
 #include <filefilters.h>

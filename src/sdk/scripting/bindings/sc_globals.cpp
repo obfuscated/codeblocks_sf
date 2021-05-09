@@ -9,7 +9,18 @@
 
 #include <sdk_precomp.h>
 #ifndef CB_PRECOMP
+    #include <wx/colordlg.h>
+    #include <wx/menu.h>
     #include <wx/string.h>
+    #include <wx/textdlg.h>
+
+    #include "configmanager.h"
+    #include "editormanager.h"
+    #include "infowindow.h"
+    #include "logmanager.h"
+    #include "macrosmanager.h"
+    #include "scriptingmanager.h"
+    #include "uservarmanager.h"
 #endif // CB_PRECOMP
 
 #include "sc_utils.h"
