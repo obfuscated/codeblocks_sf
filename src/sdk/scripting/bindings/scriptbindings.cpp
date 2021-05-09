@@ -1216,10 +1216,7 @@ namespace ScriptBindings
         if (!extractor.Process("EditorManager::New"))
             return extractor.ErrorMessage();
         cbEditor *result = extractor.p0->New(*extractor.p1);
-        UserDataForType<cbEditor> *data = CreateNonOwnedPtrInstance<cbEditor>(v, result);
-        if (data == nullptr)
-            return -1; // An error should have been logged already.
-        return 1;
+        return ConstructAndReturnNonOwnedPtr(v, result);
     }
 
     SQInteger UserVariableManager_Exists(HSQUIRRELVM v)
