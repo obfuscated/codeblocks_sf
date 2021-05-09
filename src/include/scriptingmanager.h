@@ -107,16 +107,6 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
           */
         void DisplayErrors(bool clearErrors = true);
 
-        /** @brief Injects script output.
-          *
-          * This function is for advanced uses. It's used when some code sets a different
-          * print function for the scripting engine. When this happens, ScriptingManager
-          * no longer receives engine output. If you do something like that,
-          * use this function to "forward" all script output to ScriptingManager.
-          * @param output The engine's output to inject.
-          */
-        void InjectScriptOutput(const wxString& output);
-
         /** @brief Configure scripting in Code::Blocks.
           *
           * @return 0 on success or a negative value on error.

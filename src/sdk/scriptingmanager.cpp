@@ -41,10 +41,11 @@
 template<> ScriptingManager* Mgr<ScriptingManager>::instance = nullptr;
 template<> bool  Mgr<ScriptingManager>::isShutdown = false;
 
+static wxString s_ScriptOutput;
 static wxString s_ScriptErrors;
 static wxString capture;
 
-void PrintSquirrelToWxString(wxString& msg, const SQChar* s, va_list& vl)
+static void PrintSquirrelToWxString(wxString& msg, const SQChar* s, va_list& vl)
 {
     int buffer_size = 2048;
     SQChar* tmp_buffer;
@@ -66,6 +67,17 @@ void PrintSquirrelToWxString(wxString& msg, const SQChar* s, va_list& vl)
 }
 
 static void ScriptsPrintFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
+{
+    va_list vl;
+    va_start(vl,s);
+    wxString msg;
+    PrintSquirrelToWxString(msg,s,vl);
+    va_end(vl);
+
+    s_ScriptOutput << msg;
+}
+
+static void ScriptsErrorFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
 {
     va_list vl;
     va_start(vl,s);
@@ -99,7 +111,7 @@ ScriptingManager::ScriptingManager()
         cbThrow(_T("Can't create scripting engine!"));
 
     // FIXME (squirrel) Provide special error function?
-    sq_setprintfunc(m_vm, ScriptsPrintFunc, ScriptsPrintFunc);
+    sq_setprintfunc(m_vm, ScriptsPrintFunc, ScriptsErrorFunc);
 
     sq_pushroottable(m_vm);
     sqstd_register_bloblib(m_vm);
@@ -214,6 +226,7 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
 
 //    wxCriticalSectionLocker c(cs);
 
+    s_ScriptOutput.Clear();
     s_ScriptErrors.Clear();
 
     if (SQ_FAILED(sq_compilebuffer(m_vm, buffer.utf8_str().data(), buffer.length() * sizeof(SQChar),
@@ -252,6 +265,7 @@ wxString ScriptingManager::LoadBufferRedirectOutput(const wxString& buffer)
 {
 //    wxCriticalSectionLocker c(cs);
 
+    s_ScriptOutput.Clear();
     s_ScriptErrors.Clear();
     ::capture.Clear();
 
@@ -280,7 +294,8 @@ wxString ScriptingManager::LoadBufferRedirectOutput(const wxString& buffer)
 wxString ScriptingManager::GetErrorString(bool clearErrors)
 {
     wxString msg = ExtractLastSquirrelError(m_vm, true);
-
+    if (!msg.empty())
+        msg << "\n";
     msg << s_ScriptErrors;
 
     if (clearErrors)
@@ -306,11 +321,6 @@ void ScriptingManager::DisplayErrors(bool clearErrors)
             dlg.ShowModal();
         }
     }
-}
-
-void ScriptingManager::InjectScriptOutput(const wxString& output)
-{
-    s_ScriptErrors << output;
 }
 
 int ScriptingManager::Configure()
