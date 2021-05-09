@@ -10,18 +10,21 @@
 #include "sdk_precomp.h"
 #include "compilercommandgenerator.h"
 
-#include <wx/intl.h>
-#include <wx/filename.h>
+#ifndef CB_PRECOMP
+    #include <wx/intl.h>
+    #include <wx/filename.h>
 
-#include "cbexception.h"
-#include "cbproject.h"
-#include "compilerfactory.h"
-#include "compiler.h"
-#include "manager.h"
-#include "configmanager.h"
-#include "logmanager.h"
-#include "macrosmanager.h"
-#include "scriptingmanager.h"
+    #include "cbexception.h"
+    #include "cbproject.h"
+    #include "compilerfactory.h"
+    #include "compiler.h"
+    #include "manager.h"
+    #include "configmanager.h"
+    #include "logmanager.h"
+    #include "macrosmanager.h"
+    #include "scriptingmanager.h"
+#endif // CB_PRECOMP
+
 #include "filefilters.h"
 
 // move this to globals if needed
