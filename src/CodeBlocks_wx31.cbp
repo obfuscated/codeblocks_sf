@@ -3210,9 +3210,6 @@
 		<Unit filename="sdk/scripting/bindings/sc_consts.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/scripting/bindings/sc_dialog.cpp">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/scripting/bindings/sc_globals.cpp">
 			<Option target="sdk" />
 		</Unit>
