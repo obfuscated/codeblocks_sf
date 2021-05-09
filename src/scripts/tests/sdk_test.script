@@ -172,8 +172,6 @@ class sdkTest extends script_test_base
         test_ext("cbProject::ExtensionListNodes root after 1", project, _T(""), "/rootNode[0]");
         test_ext("cbProject::ExtensionListNodes root after 2", project, _T("/"), "/rootNode[0]");
 
-        // FIXME (squirrel) multi[1] is odd here... the call "cbProject::ExtensionAddNode 1"
-        //    returned multi[0]
         test_ext("cbProject::ExtensionListNodes after addition", project, _T("rootNode[0]"),
                  "rootNode[0]/child[0];rootNode[0]/multi[0];rootNode[0]/multi[1]");
 

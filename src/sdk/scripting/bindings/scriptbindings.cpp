@@ -24,6 +24,7 @@
 #include "scripting/bindings/sc_typeinfo_all.h"
 
 #include "cbstyledtextctrl.h"
+#include <unordered_map>
 
 namespace ScriptBindings
 {
@@ -1158,18 +1159,36 @@ namespace ScriptBindings
         }
 
         wxArrayString result;
-        int index = 0;
+        typedef std::unordered_map<wxString, int> MapNameToLastIndex;
+        MapNameToLastIndex mapLastIndex;
+
         for (const TiXmlNode *child = queryResult.element->FirstChild();
              child;
              child = child->NextSibling())
         {
             wxString msg = extension;
             if (msg.empty() || msg.Last() != '/')
-                msg << wxT("/");
-            msg << wxString(child->Value(), wxConvUTF8);
-            msg << wxT('[') << index << wxT(']');
+                msg << '/';
+
+            const wxString name(child->Value(), wxConvUTF8);
+
+            // Find the index for this name. The index for every unique name starts at 0 and it is
+            // incremented if the same name is present more than once.
+            int index = 0;
+            MapNameToLastIndex::iterator itIndex = mapLastIndex.find(name);
+            if (itIndex != mapLastIndex.end())
+            {
+                itIndex->second++;
+                index = itIndex->second;
+            }
+            else
+            {
+                index = 0;
+                mapLastIndex[name] = index;
+            }
+
+            msg << name << '[' << index << ']';
             result.Add(msg);
-            ++index;
         }
         return ConstructAndReturnInstance(v, result);
     }
