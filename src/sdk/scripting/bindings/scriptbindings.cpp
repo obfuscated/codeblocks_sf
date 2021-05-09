@@ -1486,26 +1486,6 @@ namespace ScriptBindings
         return 1;
     }
 
-    SQInteger CompileOptionsBase_GetModified(HSQUIRRELVM v)
-    {
-        // this
-        ExtractParams1<const CompileOptionsBase*> extractor(v);
-        if (!extractor.Process("CompileOptionsBase::GetModified"))
-            return extractor.ErrorMessage();
-        sq_pushbool(v, extractor.p0->GetModified());
-        return 1;
-    }
-
-    SQInteger CompileOptionsBase_SetModified(HSQUIRRELVM v)
-    {
-        // this
-        ExtractParams2<CompileOptionsBase*, bool> extractor(v);
-        if (!extractor.Process("CompileOptionsBase::SetModified"))
-            return extractor.ErrorMessage();
-        extractor.p0->SetModified(extractor.p1);
-        return 0;
-    }
-
     SQInteger CompileOptionsBase_GetAlwaysRunPostBuildSteps(HSQUIRRELVM v)
     {
         // this
@@ -1602,50 +1582,72 @@ namespace ScriptBindings
         return 1;
     }
 
-    template<const wxString& (CompileTargetBase::*func)() const>
-    SQInteger CompileTargetBase_GetCString(HSQUIRRELVM v)
+    template<typename Type, const wxString& (Type::*func)() const>
+    SQInteger Generic_GetCString(HSQUIRRELVM v)
     {
         // this
-        ExtractParams1<const CompileTargetBase*> extractor(v);
-        if (!extractor.Process("CompileTargetBase_GetCString"))
+        ExtractParams1<const Type*> extractor(v);
+        if (!extractor.Process("Generic_GetCString"))
             return extractor.ErrorMessage();
         // FIXME (squirrel) This doesn't matter much, because squirrel doesn't care for constness.
         wxString *result = &const_cast<wxString&>((extractor.p0->*func)());
         return ConstructAndReturnNonOwnedPtr(v, result);
     }
 
-    template<void (CompileTargetBase::*func)(const wxString&)>
-    SQInteger CompileTargetBase_SetString(HSQUIRRELVM v)
+    template<typename Type, void (Type::*func)(const wxString&)>
+    SQInteger Generic_SetString(HSQUIRRELVM v)
     {
         // this, string
-        ExtractParams2<CompileTargetBase*, const wxString *> extractor(v);
-        if (!extractor.Process("CompileTargetBase_SetString"))
+        ExtractParams2<Type*, const wxString *> extractor(v);
+        if (!extractor.Process("Generic_SetString"))
             return extractor.ErrorMessage();
 
         (extractor.p0->*func)(*extractor.p1);
         return 0;
     }
 
-    template<wxString (CompileTargetBase::*func)()>
-    SQInteger CompileTargetBase_GetString(HSQUIRRELVM v)
+    template<typename Type, wxString (Type::*func)()>
+    SQInteger Generic_GetString(HSQUIRRELVM v)
     {
         // this
-        ExtractParams1<CompileTargetBase*> extractor(v);
-        if (!extractor.Process("CompileTargetBase_GetString"))
+        ExtractParams1<Type*> extractor(v);
+        if (!extractor.Process("Generic_GetString"))
             return extractor.ErrorMessage();
 
         return ConstructAndReturnInstance(v, (extractor.p0->*func)());
     }
 
-    template<wxString (CompileTargetBase::*func)() const>
-    SQInteger CompileTargetBase_GetStringConst(HSQUIRRELVM v)
+    template<typename Type, wxString (Type::*func)() const>
+    SQInteger Generic_GetStringConst(HSQUIRRELVM v)
     {
         // this
-        ExtractParams1<const CompileTargetBase*> extractor(v);
-        if (!extractor.Process("CompileTargetBase_GetStringConst"))
+        ExtractParams1<const Type*> extractor(v);
+        if (!extractor.Process("Generic_GetStringConst"))
             return extractor.ErrorMessage();
 
         return ConstructAndReturnInstance(v, (extractor.p0->*func)());
+    }
+
+    template<typename Type, bool (Type::*func)() const>
+    SQInteger Generic_GetBool(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const Type*> extractor(v);
+        if (!extractor.Process("Generic_GetBool"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, (extractor.p0->*func)());
+        return 1;
+    }
+
+    template<typename Type, void (Type::*func)(bool)>
+    SQInteger Generic_SetBool(HSQUIRRELVM v)
+    {
+        // this, value
+        ExtractParams2<Type*, bool> extractor(v);
+        if (!extractor.Process("Generic_SetBool"))
+            return extractor.ErrorMessage();
+        (extractor.p0->*func)(extractor.p1);
+        return 0;
     }
 
     SQInteger CompileTargetBase_GetOptionRelation(HSQUIRRELVM v)
@@ -1724,33 +1726,35 @@ namespace ScriptBindings
         return 0;
     }
 
-    SQInteger CompileTargetBase_MakeCommandsModified(HSQUIRRELVM v)
+    SQInteger ProjectBuildTarget_GetParentProject(HSQUIRRELVM v)
     {
         // this
-        ExtractParams1<const CompileTargetBase*> extractor(v);
-        if (!extractor.Process("CompileTargetBase::MakeCommandsModified"))
+        ExtractParams1<ProjectBuildTarget*> extractor(v);
+        if (!extractor.Process("ProjectBuildTarget::GetParentProject"))
             return extractor.ErrorMessage();
-        sq_pushbool(v, extractor.p0->MakeCommandsModified());
-        return 1;
+        return ConstructAndReturnNonOwnedPtr(v, extractor.p0->GetParentProject());
     }
 
-    SQInteger cbProject_GetFilesCount(HSQUIRRELVM v)
+    template<typename ClassType>
+    SQInteger Generic_GetFilesCount(HSQUIRRELVM v)
     {
         // this
-        ExtractParams1<cbProject*> extractor(v);
-        if (!extractor.Process("cbProject::GetFilesCount"))
+        ExtractParams1<ClassType*> extractor(v);
+        if (!extractor.Process("Generic_GetFilesCount"))
             return extractor.ErrorMessage();
         sq_pushinteger(v, extractor.p0->GetFilesCount());
         return 1;
     }
 
-    SQInteger cbProject_GetFile(HSQUIRRELVM v)
+    template<typename ClassType>
+    SQInteger Generic_GetFile(HSQUIRRELVM v)
     {
         // this, index
-        ExtractParams2<cbProject*, SQInteger> extractor(v);
-        if (!extractor.Process("cbProject::GetFile"))
+        ExtractParams2<ClassType*, SQInteger> extractor(v);
+        if (!extractor.Process("Generic_GetFile"))
             return extractor.ErrorMessage();
-        return ConstructAndReturnNonOwnedPtr(v, extractor.p0->GetFile(extractor.p1));
+        ProjectFile *file = extractor.p0->GetFile(extractor.p1);
+        return ConstructAndReturnNonOwnedPtr(v, file);
     }
 
     SQInteger cbProject_AddBuildTarget(HSQUIRRELVM v)
@@ -2027,9 +2031,11 @@ namespace ScriptBindings
             BindMethod(v, _SC("GetCommandsAfterBuild"),
                        CompileOptionsBase_GetArrayString<&CompileOptionsBase::GetCommandsAfterBuild>,
                        _SC("CompileOptionsBase::GetCommandsAfterBuild"));
-            BindMethod(v, _SC("GetModified"), CompileOptionsBase_GetModified,
+            BindMethod(v, _SC("GetModified"),
+                       Generic_GetBool<CompileOptionsBase, &CompileOptionsBase::GetModified>,
                        _SC("CompileOptionsBase::GetModified"));
-            BindMethod(v, _SC("SetModified"), CompileOptionsBase_SetModified,
+            BindMethod(v, _SC("SetModified"),
+                       Generic_SetBool<CompileOptionsBase, &CompileOptionsBase::SetModified>,
                        _SC("CompileOptionsBase::SetModified"));
             BindMethod(v, _SC("AddLinkerOption"),
                        CompileOptionsBase_StringParam<&CompileOptionsBase::AddLinkerOption>,
@@ -2154,86 +2160,87 @@ namespace ScriptBindings
                        CompileTargetBase_GetTargetFilenameGenerationPolicy,
                        _SC("CompileTargetBase::GetTargetFilenameGenerationPolicy"));
             BindMethod(v, _SC("GetFilename"),
-                       CompileTargetBase_GetCString<&CompileTargetBase::GetFilename>,
+                       Generic_GetCString<CompileTargetBase, &CompileTargetBase::GetFilename>,
                        _SC("CompileTargetBase::GetFilename"));
             BindMethod(v, _SC("GetTitle"),
-                       CompileTargetBase_GetCString<&CompileTargetBase::GetTitle>,
+                       Generic_GetCString<CompileTargetBase, &CompileTargetBase::GetTitle>,
                        _SC("CompileTargetBase::GetTitle"));
-            BindMethod(v, _SC("SetTitle"), CompileTargetBase_SetString<&CompileTargetBase::SetTitle>,
+            BindMethod(v, _SC("SetTitle"), Generic_SetString<CompileTargetBase, &CompileTargetBase::SetTitle>,
                        _SC("CompileTargetBase::SetTitle"));
             BindMethod(v, _SC("SetOutputFilename"),
-                       CompileTargetBase_SetString<&CompileTargetBase::SetOutputFilename>,
+                       Generic_SetString<CompileTargetBase, &CompileTargetBase::SetOutputFilename>,
                        _SC("CompileTargetBase::SetOutputFilename"));
             BindMethod(v, _SC("SetWorkingDir"),
-                       CompileTargetBase_SetString<&CompileTargetBase::SetWorkingDir>,
+                       Generic_SetString<CompileTargetBase, &CompileTargetBase::SetWorkingDir>,
                        _SC("CompileTargetBase::SetWorkingDir"));
             BindMethod(v, _SC("SetObjectOutput"),
-                       CompileTargetBase_SetString<&CompileTargetBase::SetObjectOutput>,
+                       Generic_SetString<CompileTargetBase, &CompileTargetBase::SetObjectOutput>,
                        _SC("CompileTargetBase::SetObjectOutput"));
             BindMethod(v, _SC("SetDepsOutput"),
-                       CompileTargetBase_SetString<&CompileTargetBase::SetDepsOutput>,
+                       Generic_SetString<CompileTargetBase, &CompileTargetBase::SetDepsOutput>,
                        _SC("CompileTargetBase::SetDepsOutput"));
             BindMethod(v, _SC("GetOptionRelation"), CompileTargetBase_GetOptionRelation,
                        _SC("CompileTargetBase::GetOptionRelation"));
             BindMethod(v, _SC("SetOptionRelation"), CompileTargetBase_SetOptionRelation,
                        _SC("CompileTargetBase::SetOptionRelation"));
             BindMethod(v, _SC("GetWorkingDir"),
-                       CompileTargetBase_GetString<&CompileTargetBase::GetWorkingDir>,
+                       Generic_GetString<CompileTargetBase, &CompileTargetBase::GetWorkingDir>,
                        _SC("CompileTargetBase::GetWorkingDir"));
             BindMethod(v, _SC("GetObjectOutput"),
-                       CompileTargetBase_GetStringConst<&CompileTargetBase::GetObjectOutput>,
+                       Generic_GetStringConst<CompileTargetBase, &CompileTargetBase::GetObjectOutput>,
                        _SC("CompileTargetBase::GetObjectOutput"));
             BindMethod(v, _SC("GetDepsOutput"),
-                       CompileTargetBase_GetStringConst<&CompileTargetBase::GetDepsOutput>,
+                       Generic_GetStringConst<CompileTargetBase, &CompileTargetBase::GetDepsOutput>,
                        _SC("CompileTargetBase::GetDepsOutput"));
             BindMethod(v, _SC("GetOutputFilename"),
-                       CompileTargetBase_GetStringConst<&CompileTargetBase::GetOutputFilename>,
+                       Generic_GetStringConst<CompileTargetBase, &CompileTargetBase::GetOutputFilename>,
                        _SC("CompileTargetBase::GetOutputFilename"));
             BindMethod(v, _SC("SuggestOutputFilename"),
-                       CompileTargetBase_GetStringConst<&CompileTargetBase::SuggestOutputFilename>,
+                       Generic_GetStringConst<CompileTargetBase, &CompileTargetBase::SuggestOutputFilename>,
                        _SC("CompileTargetBase::SuggestOutputFilename"));
             BindMethod(v, _SC("GetExecutableFilename"),
-                       CompileTargetBase_GetStringConst<&CompileTargetBase::GetExecutableFilename>,
+                       Generic_GetStringConst<CompileTargetBase, &CompileTargetBase::GetExecutableFilename>,
                        _SC("CompileTargetBase::GetExecutableFilename"));
             BindMethod(v, _SC("GetDynamicLibFilename"),
-                       CompileTargetBase_GetStringConst<&CompileTargetBase::GetDynamicLibFilename>,
+                       Generic_GetStringConst<CompileTargetBase, &CompileTargetBase::GetDynamicLibFilename>,
                        _SC("CompileTargetBase::GetDynamicLibFilename"));
             BindMethod(v, _SC("GetDynamicLibDefFilename"),
-                       CompileTargetBase_GetString<&CompileTargetBase::GetDynamicLibDefFilename>,
+                       Generic_GetString<CompileTargetBase, &CompileTargetBase::GetDynamicLibDefFilename>,
                        _SC("CompileTargetBase::GetDynamicLibDefFilename"));
             BindMethod(v, _SC("GetStaticLibFilename"),
-                       CompileTargetBase_GetStringConst<&CompileTargetBase::GetStaticLibFilename>,
+                       Generic_GetStringConst<CompileTargetBase, &CompileTargetBase::GetStaticLibFilename>,
                        _SC("CompileTargetBase::GetStaticLibFilename"));
             BindMethod(v, _SC("GetBasePath"),
-                       CompileTargetBase_GetStringConst<&CompileTargetBase::GetBasePath>,
+                       Generic_GetStringConst<CompileTargetBase, &CompileTargetBase::GetBasePath>,
                        _SC("CompileTargetBase::GetBasePath"));
             BindMethod(v, _SC("SetTargetType"), CompileTargetBase_SetTargetType,
                        _SC("CompileTargetBase::SetTargetType"));
             BindMethod(v, _SC("GetTargetType"), CompileTargetBase_GetTargetType,
                          _SC("CompileTargetBase::GetTargetType"));
             BindMethod(v, _SC("GetExecutionParameters"),
-                       CompileTargetBase_GetCString<&CompileTargetBase::GetExecutionParameters>,
+                       Generic_GetCString<CompileTargetBase, &CompileTargetBase::GetExecutionParameters>,
                        _SC("CompileTargetBase::GetExecutionParameters"));
             BindMethod(v, _SC("SetExecutionParameters"),
-                       CompileTargetBase_SetString<&CompileTargetBase::SetExecutionParameters>,
+                       Generic_SetString<CompileTargetBase, &CompileTargetBase::SetExecutionParameters>,
                        _SC("CompileTargetBase::SetExecutionParameters"));
             BindMethod(v, _SC("GetHostApplication"),
-                       CompileTargetBase_GetCString<&CompileTargetBase::GetHostApplication>,
+                       Generic_GetCString<CompileTargetBase, &CompileTargetBase::GetHostApplication>,
                        _SC("CompileTargetBase::GetHostApplication"));
             BindMethod(v, _SC("SetHostApplication"),
-                       CompileTargetBase_SetString<&CompileTargetBase::SetHostApplication>,
+                       Generic_SetString<CompileTargetBase, &CompileTargetBase::SetHostApplication>,
                        _SC("CompileTargetBase::SetHostApplication"));
             BindMethod(v, _SC("SetCompilerID"),
-                       CompileTargetBase_SetString<&CompileTargetBase::SetCompilerID>,
+                       Generic_SetString<CompileTargetBase, &CompileTargetBase::SetCompilerID>,
                        _SC("CompileTargetBase::SetCompilerID"));
             BindMethod(v, _SC("GetCompilerID"),
-                       CompileTargetBase_GetCString<&CompileTargetBase::GetCompilerID>,
+                       Generic_GetCString<CompileTargetBase, &CompileTargetBase::GetCompilerID>,
                        _SC("CompileTargetBase::GetCompilerID"));
             BindMethod(v, _SC("GetMakeCommandFor"), CompileTargetBase_GetMakeCommandFor,
                        _SC("CompileTargetBase::GetMakeCommandFor"));
             BindMethod(v, _SC("SetMakeCommandFor"), CompileTargetBase_SetMakeCommandFor,
                        _SC("CompileTargetBase::SetMakeCommandFor"));
-            BindMethod(v, _SC("MakeCommandsModified"), CompileTargetBase_MakeCommandsModified,
+            BindMethod(v, _SC("MakeCommandsModified"),
+                       Generic_GetBool<CompileTargetBase, &CompileTargetBase::MakeCommandsModified>,
                        _SC("CompileTargetBase::MakeCommandsModified"));
 
             // Put the class in the root table. This must be last!
@@ -2243,6 +2250,52 @@ namespace ScriptBindings
         {
             // Register ProjectBuildTarget
             const SQInteger classDecl = CreateClassDecl<ProjectBuildTarget>(v, _SC("ProjectBuildTarget"), _SC("CompileTargetBase"));
+            BindMethod(v, _SC("GetParentProject"), ProjectBuildTarget_GetParentProject,
+                       _SC("ProjectBuildTarget::GetParentProject"));
+            BindMethod(v, _SC("GetFullTitle"),
+                       Generic_GetStringConst<ProjectBuildTarget, &ProjectBuildTarget::GetFullTitle>,
+                       _SC("ProjectBuildTarget::GetFullTitle"));
+            BindMethod(v, _SC("GetExternalDeps"),
+                       Generic_GetCString<ProjectBuildTarget, &ProjectBuildTarget::GetExternalDeps>,
+                       _SC("ProjectBuildTarget::GetExternalDeps"));
+            BindMethod(v, _SC("SetExternalDeps"),
+                       Generic_SetString<ProjectBuildTarget, &ProjectBuildTarget::SetExternalDeps>,
+                       _SC("ProjectBuildTarget::SetExternalDeps"));
+            BindMethod(v, _SC("SetAdditionalOutputFiles"),
+                       Generic_SetString<ProjectBuildTarget, &ProjectBuildTarget::SetAdditionalOutputFiles>,
+                       _SC("ProjectBuildTarget::SetAdditionalOutputFiles"));
+            BindMethod(v, _SC("GetAdditionalOutputFiles"),
+                       Generic_GetCString<ProjectBuildTarget, &ProjectBuildTarget::GetAdditionalOutputFiles>,
+                       _SC("ProjectBuildTarget::GetAdditionalOutputFiles"));
+            BindMethod(v, _SC("GetIncludeInTargetAll"),
+                       Generic_GetBool<ProjectBuildTarget, &ProjectBuildTarget::GetIncludeInTargetAll>,
+                       _SC("ProjectBuildTarget::GetIncludeInTargetAll"));
+            BindMethod(v, _SC("SetIncludeInTargetAll"),
+                       Generic_SetBool<ProjectBuildTarget, &ProjectBuildTarget::SetIncludeInTargetAll>,
+                       _SC("ProjectBuildTarget::SetIncludeInTargetAll"));
+            BindMethod(v, _SC("GetCreateDefFile"),
+                       Generic_GetBool<ProjectBuildTarget, &ProjectBuildTarget::GetCreateDefFile>,
+                       _SC("ProjectBuildTarget::GetCreateDefFile"));
+            BindMethod(v, _SC("SetCreateDefFile"),
+                       Generic_SetBool<ProjectBuildTarget, &ProjectBuildTarget::SetCreateDefFile>,
+                       _SC("ProjectBuildTarget::SetCreateDefFile"));
+            BindMethod(v, _SC("GetCreateStaticLib"),
+                       Generic_GetBool<ProjectBuildTarget, &ProjectBuildTarget::GetCreateStaticLib>,
+                       _SC("ProjectBuildTarget::GetCreateStaticLib"));
+            BindMethod(v, _SC("SetCreateStaticLib"),
+                       Generic_SetBool<ProjectBuildTarget, &ProjectBuildTarget::SetCreateStaticLib>,
+                       _SC("ProjectBuildTarget::SetCreateStaticLib"));
+            BindMethod(v, _SC("GetUseConsoleRunner"),
+                       Generic_GetBool<ProjectBuildTarget, &ProjectBuildTarget::GetUseConsoleRunner>,
+                       _SC("ProjectBuildTarget::GetUseConsoleRunner"));
+            BindMethod(v, _SC("SetUseConsoleRunner"),
+                       Generic_SetBool<ProjectBuildTarget, &ProjectBuildTarget::SetUseConsoleRunner>,
+                       _SC("ProjectBuildTarget::SetUseConsoleRunner"));
+
+            BindMethod(v, _SC("GetFilesCount"), Generic_GetFilesCount<ProjectBuildTarget>,
+                       _SC("ProjectBuildTarget::GetFilesCount"));
+            BindMethod(v, _SC("GetFile"), Generic_GetFile<ProjectBuildTarget>,
+                       _SC("ProjectBuildTarget::GetFile"));
 
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
@@ -2251,9 +2304,9 @@ namespace ScriptBindings
         {
             // Register cbProject
             const SQInteger classDecl = CreateClassDecl<cbProject>(v, _SC("cbProject"), _SC("CompileTargetBase"));
-            BindMethod(v, _SC("GetFilesCount"), cbProject_GetFilesCount,
+            BindMethod(v, _SC("GetFilesCount"), Generic_GetFilesCount<cbProject>,
                        _SC("cbProject::GetFilesCount"));
-            BindMethod(v, _SC("GetFile"), cbProject_GetFile, _SC("cbProject::GetFile"));
+            BindMethod(v, _SC("GetFile"), Generic_GetFile<cbProject>, _SC("cbProject::GetFile"));
             BindMethod(v, _SC("AddBuildTarget"), cbProject_AddBuildTarget,
                        _SC("cbProject::AddBuildTarget"));
 
