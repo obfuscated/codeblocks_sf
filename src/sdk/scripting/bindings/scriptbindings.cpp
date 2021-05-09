@@ -1163,7 +1163,10 @@ namespace ScriptBindings
              child;
              child = child->NextSibling())
         {
-            wxString msg = extension + wxT("/") + wxString(child->Value(), wxConvUTF8);
+            wxString msg = extension;
+            if (msg.empty() || msg.Last() != '/')
+                msg << wxT("/");
+            msg << wxString(child->Value(), wxConvUTF8);
             msg << wxT('[') << index << wxT(']');
             result.Add(msg);
             ++index;
