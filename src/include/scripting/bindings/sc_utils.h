@@ -287,6 +287,13 @@ struct ExtractParamsBase
         return value;
     }
 
+    const SQChar* GetParamString(int stackIndex)
+    {
+        const SQChar *value;
+        sq_getstring(m_vm, stackIndex, &value);
+        return value;
+    }
+
     bool CheckNumArguments(int expected, const char *funcStr)
     {
         const int numArgs = sq_gettop(m_vm);
