@@ -1639,6 +1639,17 @@ namespace ScriptBindings
         return 1;
     }
 
+    template<typename Type, bool (Type::*func)()>
+    SQInteger Generic_DoSomethingGetBool(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<Type*> extractor(v);
+        if (!extractor.Process("Generic_DoSomethingGetBool"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, (extractor.p0->*func)());
+        return 1;
+    }
+
     template<typename Type, void (Type::*func)(bool)>
     SQInteger Generic_SetBool(HSQUIRRELVM v)
     {
@@ -1754,7 +1765,157 @@ namespace ScriptBindings
         if (!extractor.Process("Generic_GetFile"))
             return extractor.ErrorMessage();
         ProjectFile *file = extractor.p0->GetFile(extractor.p1);
-        return ConstructAndReturnNonOwnedPtr(v, file);
+        return ConstructAndReturnNonOwnedPtrOrNull(v, file);
+    }
+
+    SQInteger cbProject_CloseAllFiles(HSQUIRRELVM v)
+    {
+        // this, dontSave
+        ExtractParams2<cbProject*, bool> extractor(v);
+        if (!extractor.Process("cbProject::CloseAllFiles"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->CloseAllFiles(extractor.p1));
+        return 1;
+    }
+
+    SQInteger cbProject_GetFileByFilename(HSQUIRRELVM v)
+    {
+        // this, filename, isRelative, isUnixFilename
+        ExtractParams4<cbProject*, const wxString*, bool, bool> extractor(v);
+        if (!extractor.Process("cbProject::GetFileByFilename"))
+            return extractor.ErrorMessage();
+        ProjectFile *file = extractor.p0->GetFileByFilename(*extractor.p1, extractor.p2,
+                                                            extractor.p3);
+        return ConstructAndReturnNonOwnedPtrOrNull(v, file);
+    }
+
+    SQInteger cbProject_RemoveFile(HSQUIRRELVM v)
+    {
+        // FIXME (squirrel) Add support for pf being nullptr
+        // this, pf
+        ExtractParams2<cbProject*, ProjectFile *> extractor(v);
+        if (!extractor.Process("cbProject::RemoveFile"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->RemoveFile(extractor.p1));
+        return 1;
+    }
+
+    struct ParamIntOrWxString
+    {
+        bool Parse(ExtractParamsBase &extractor, int stackIndex, const char *funcStr)
+        {
+            switch (sq_gettype(extractor.GetVM(), stackIndex))
+            {
+                case OT_INTEGER:
+                    intValue = extractor.GetParamInt(stackIndex);
+                    isInt = true;
+                    return true;
+                case OT_INSTANCE:
+                {
+                    if (!extractor.ProcessParam(strValue, stackIndex, funcStr))
+                    {
+                        extractor.ErrorMessage();
+                        return false;
+                    }
+                    isInt = false;
+                    return true;
+                }
+                default:
+                    return false;
+            }
+        }
+
+        bool isInt;
+        union {
+            int intValue;
+            const wxString *strValue;
+        };
+    };
+
+    SQInteger cbProject_AddFile(HSQUIRRELVM v)
+    {
+        // FIXME (squirrel) Add support for default parameters in ExtractParamsN
+        // this, targetName or targetIndex, filename, compile=true, link=true, weight=50
+        ExtractParamsBase extractor(v);
+        if (!extractor.CheckNumArguments(3, 6, "cbProject::AddFile"))
+            return extractor.ErrorMessage();
+
+        cbProject *self;
+        if (!extractor.ProcessParam(self, 1, "cbProject::AddFile"))
+            return extractor.ErrorMessage();
+        const wxString *filename;
+        if (!extractor.ProcessParam(filename, 3, "cbProject::AddFile"))
+            return extractor.ErrorMessage();
+        bool compile = true;
+        const int numArgs = sq_gettop(v);
+        if (numArgs >= 4)
+        {
+            if (!extractor.ProcessParam(compile, 4, "cbProject::AddFile"))
+                return extractor.ErrorMessage();
+        }
+        bool link = true;
+        if (numArgs >= 5)
+        {
+            if (!extractor.ProcessParam(link, 5, "cbProject::AddFile"))
+                return extractor.ErrorMessage();
+        }
+        SQInteger weight = 50;
+        if (numArgs == 6)
+        {
+            if (!extractor.ProcessParam(weight, 6, "cbProject::AddFile"))
+                return extractor.ErrorMessage();
+        }
+
+        ParamIntOrWxString targetNameOrIndex;
+        if (!targetNameOrIndex.Parse(extractor, 2, "cbProject::AddFile"))
+            return sq_throwerror(v, _SC("cbProject::AddFile: Expects an integer or wxString as first argument!"));
+
+        ProjectFile *result;
+        if (targetNameOrIndex.isInt)
+            result = self->AddFile(targetNameOrIndex.intValue, *filename, compile, link, weight);
+        else
+            result = self->AddFile(*targetNameOrIndex.strValue, *filename, compile, link, weight);
+        return ConstructAndReturnNonOwnedPtrOrNull(v, result);
+    }
+
+    SQInteger cbProject_GetBuildTargetsCount(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<cbProject*> extractor(v);
+        if (!extractor.Process("cbProject::GetBuildTargetsCount"))
+            return extractor.ErrorMessage();
+
+        sq_pushinteger(v, extractor.p0->GetBuildTargetsCount());
+        return 1;
+    }
+
+    SQInteger cbProject_GetBuildTarget(HSQUIRRELVM v)
+    {
+        // this, index or targetName
+        ExtractParams2<cbProject*, SkipParam> extractor(v);
+        if (!extractor.Process("cbProject::GetBuildTarget"))
+            return extractor.ErrorMessage();
+
+        ParamIntOrWxString targetNameOrIndex;
+        if (!targetNameOrIndex.Parse(extractor, 2, "cbProject::GetBuildTarget"))
+            return sq_throwerror(v, _SC("cbProject::GetBuildTarget: Expects an integer or wxString as first argument!"));
+
+        ProjectBuildTarget *result;
+        if (targetNameOrIndex.isInt)
+            result = extractor.p0->GetBuildTarget(targetNameOrIndex.intValue);
+        else
+            result = extractor.p0->GetBuildTarget(*targetNameOrIndex.strValue);
+        if (result)
+        {
+            // FIXME (squirrel) This doesn't matter much, because squirrel doesn't care for constness.
+            return ConstructAndReturnNonOwnedPtr(v, result);
+        }
+        else
+        {
+            // FIXME (squirrel) Write a test for this.
+            sq_pushnull(v);
+            return 1;
+        }
     }
 
     SQInteger cbProject_AddBuildTarget(HSQUIRRELVM v)
@@ -1766,6 +1927,626 @@ namespace ScriptBindings
 
         ProjectBuildTarget *result = extractor.p0->AddBuildTarget(*extractor.p1);
         return ConstructAndReturnNonOwnedPtr(v, result);
+    }
+
+    SQInteger cbProject_RenameBuildTarget(HSQUIRRELVM v)
+    {
+        // this, oldTargetName or index, newTargetName
+        ExtractParams3<cbProject*, SkipParam, const wxString*> extractor(v);
+        if (!extractor.Process("cbProject::RenameBuildTarget"))
+            return extractor.ErrorMessage();
+
+        ParamIntOrWxString targetNameOrIndex;
+        if (!targetNameOrIndex.Parse(extractor, 2, "cbProject::RenameBuildTarget"))
+            return sq_throwerror(v, _SC("cbProject::RenameBuildTarget: Expects an integer or wxString as first argument!"));
+
+        if (targetNameOrIndex.isInt)
+        {
+            sq_pushbool(v, extractor.p0->RenameBuildTarget(targetNameOrIndex.intValue,
+                                                           *extractor.p2));
+        }
+        else
+        {
+            sq_pushbool(v, extractor.p0->RenameBuildTarget(*targetNameOrIndex.strValue,
+                                                           *extractor.p2));
+        }
+        return 1;
+    }
+
+    SQInteger cbProject_DuplicateBuildTarget(HSQUIRRELVM v)
+    {
+        // this, targetName or index, newTargetName
+        ExtractParams3<cbProject*, SkipParam, const wxString*> extractor(v);
+        if (!extractor.Process("cbProject::DuplicateBuildTarget"))
+            return extractor.ErrorMessage();
+
+        ParamIntOrWxString targetNameOrIndex;
+        if (!targetNameOrIndex.Parse(extractor, 2, "cbProject::DuplicateBuildTarget"))
+            return sq_throwerror(v, _SC("cbProject::DuplicateBuildTarget: Expects an integer or wxString as first argument!"));
+
+        ProjectBuildTarget *result;
+        if (targetNameOrIndex.isInt)
+            result = extractor.p0->DuplicateBuildTarget(targetNameOrIndex.intValue, *extractor.p2);
+        else
+            result = extractor.p0->DuplicateBuildTarget(*targetNameOrIndex.strValue, *extractor.p2);
+        return ConstructAndReturnNonOwnedPtrOrNull(v, result);
+    }
+
+    SQInteger cbProject_RemoveBuildTarget(HSQUIRRELVM v)
+    {
+        // this, targetName or index
+        ExtractParams2<cbProject*, SkipParam> extractor(v);
+        if (!extractor.Process("cbProject::RemoveBuildTarget"))
+            return extractor.ErrorMessage();
+
+        ParamIntOrWxString targetNameOrIndex;
+        if (!targetNameOrIndex.Parse(extractor, 2, "cbProject::RemoveBuildTarget"))
+            return sq_throwerror(v, _SC("cbProject::RemoveBuildTarget: Expects an integer or wxString as first argument!"));
+
+        bool result;
+        if (targetNameOrIndex.isInt)
+            result = extractor.p0->RemoveBuildTarget(targetNameOrIndex.intValue);
+        else
+            result = extractor.p0->RemoveBuildTarget(*targetNameOrIndex.strValue);
+        sq_pushbool(v, result);
+        return 1;
+    }
+
+    SQInteger cbProject_ExportTargetAsProject(HSQUIRRELVM v)
+    {
+        // this, targetName or index
+        ExtractParams2<cbProject*, SkipParam> extractor(v);
+        if (!extractor.Process("cbProject::ExportTargetAsProject"))
+            return extractor.ErrorMessage();
+
+        ParamIntOrWxString targetNameOrIndex;
+        if (!targetNameOrIndex.Parse(extractor, 2, "cbProject::ExportTargetAsProject"))
+            return sq_throwerror(v, _SC("cbProject::ExportTargetAsProject: Expects an integer or wxString as first argument!"));
+
+        bool result;
+        if (targetNameOrIndex.isInt)
+            result = extractor.p0->ExportTargetAsProject(targetNameOrIndex.intValue);
+        else
+            result = extractor.p0->ExportTargetAsProject(*targetNameOrIndex.strValue);
+        sq_pushbool(v, result);
+        return 1;
+    }
+
+    SQInteger cbProject_BuildTargetValid(HSQUIRRELVM v)
+    {
+        // this, name, virtuals_too
+        ExtractParams3<const cbProject*, const wxString *, bool> extractor(v);
+        if (!extractor.Process("cbProject::BuildTargetValid"))
+            return extractor.ErrorMessage();
+
+        sq_pushbool(v, extractor.p0->BuildTargetValid(*extractor.p1, extractor.p2));
+        return 1;
+    }
+
+    SQInteger cbProject_GetFirstValidBuildTargetName(HSQUIRRELVM v)
+    {
+        // this, virtuals_too
+        ExtractParams2<const cbProject*, bool> extractor(v);
+        if (!extractor.Process("cbProject::GetFirstValidBuildTargetName"))
+            return extractor.ErrorMessage();
+
+        const wxString &result = extractor.p0->GetFirstValidBuildTargetName(extractor.p1);
+        return ConstructAndReturnInstance(v, result);
+    }
+
+    SQInteger cbProject_SetActiveBuildTarget(HSQUIRRELVM v)
+    {
+        // this, name
+        ExtractParams2<cbProject*, const wxString*> extractor(v);
+        if (!extractor.Process("cbProject::SetActiveBuildTarget"))
+            return extractor.ErrorMessage();
+
+        sq_pushbool(v, extractor.p0->SetActiveBuildTarget(*extractor.p1));
+        return 1;
+    }
+
+    SQInteger cbProject_SelectTarget(HSQUIRRELVM v)
+    {
+        // this, initial, evenIfOne
+        ExtractParams3<cbProject*, SQInteger, bool> extractor(v);
+        if (!extractor.Process("cbProject::SelectTarget"))
+            return extractor.ErrorMessage();
+
+        sq_pushinteger(v, extractor.p0->SelectTarget(extractor.p1, extractor.p2));
+        return 1;
+    }
+
+    SQInteger cbProject_GetCurrentlyCompilingTarget(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<cbProject*> extractor(v);
+        if (!extractor.Process("cbProject::GetCurrentlyCompilingTarget"))
+            return extractor.ErrorMessage();
+
+        return ConstructAndReturnNonOwnedPtrOrNull(v, extractor.p0->GetCurrentlyCompilingTarget());
+    }
+
+    SQInteger cbProject_SetCurrentlyCompilingTarget(HSQUIRRELVM v)
+    {
+        // FIXME (squirrel) Implement something like a wrapper, which makes it easier to handle the
+        //  ProjectBuildTarget being nullptr. Currently ProcessParams requires this to be non-null
+        // and so we cannot use it.
+
+        // this, bt
+        ExtractParams2<cbProject*, SkipParam/*ProjectBuildTarget**/> extractor(v);
+        if (!extractor.Process("cbProject::SetCurrentlyCompilingTarget"))
+            return extractor.ErrorMessage();
+
+        ProjectBuildTarget *target = nullptr;
+        if (sq_gettype(v, 2) != OT_NULL)
+        {
+            if (!extractor.ProcessParam(target, 2, "cbProject::SetCurrentlyCompilingTarget"))
+                return extractor.ErrorMessage();
+        }
+
+        extractor.p0->SetCurrentlyCompilingTarget(target);
+        return 0;
+    }
+
+    SQInteger cbProject_GetModeForPCH(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const cbProject*> extractor(v);
+        if (!extractor.Process("cbProject::GetModeForPCH"))
+            return extractor.ErrorMessage();
+
+        sq_pushinteger(v, extractor.p0->GetModeForPCH());
+        return 1;
+    }
+
+    SQInteger cbProject_SetModeForPCH(HSQUIRRELVM v)
+    {
+        // this, mode
+        ExtractParams2<cbProject*, SQInteger> extractor(v);
+        if (!extractor.Process("cbProject::SetModeForPCH"))
+            return extractor.ErrorMessage();
+
+        if (extractor.p1 < pchSourceDir || extractor.p1 > pchSourceFile)
+            return sq_throwerror(v, _SC("cbProject::SetModeForPCH: The value of 'mode' parameter is out of range!"));
+        extractor.p0->SetModeForPCH(PCHMode(extractor.p1));
+        return 0;
+    }
+
+    SQInteger cbProject_ShowNotes(HSQUIRRELVM v)
+    {
+        // this, nonEmptyONly, editable
+        ExtractParams3<cbProject*, bool, bool> extractor(v);
+        if (!extractor.Process("cbProject::ShowNotes"))
+            return extractor.ErrorMessage();
+
+        extractor.p0->ShowNotes(extractor.p1, extractor.p2);
+        return 0;
+    }
+
+    struct FindXmlElementResult
+    {
+        TiXmlElement *element = nullptr;
+        wxString errorStr;
+    };
+
+    static FindXmlElementResult FindExtensionElement(cbProject *project, const wxString &query)
+    {
+        TiXmlNode *extensionNode = project->GetExtensionsNode();
+        if (!extensionNode)
+            return FindXmlElementResult();
+        TiXmlElement *currentElem = extensionNode->ToElement();
+        if (!currentElem)
+            return FindXmlElementResult();
+
+        // Note: This is slow!
+        const wxArrayString names = GetArrayFromString(query, wxT("/"), false);
+        for (const wxString &name : names)
+        {
+            const wxString::size_type openBracePos = name.find_first_of(wxT("[("));
+            if (openBracePos != wxString::npos)
+            {
+                if (name[openBracePos] == wxT('['))
+                {
+                    const wxString::size_type closeBracePos = name.find(wxT(']'), openBracePos + 1);
+                    if (closeBracePos == wxString::npos || closeBracePos != name.length() - 1)
+                    {
+                        FindXmlElementResult result;
+                        result.errorStr.Printf(wxT("Invalid index format in '%s'!"), name.wx_str());
+                        return result;
+                    }
+
+                    const wxString nameStripped = name.substr(0, openBracePos);
+                    long lIndex;
+                    const wxString indexStr = name.substr(openBracePos + 1,
+                                                          closeBracePos - openBracePos - 1);
+                    if (!indexStr.ToLong(&lIndex))
+                    {
+                        FindXmlElementResult result;
+                        result.errorStr.Printf(wxT("Can't convert '%s' to integer!"),
+                                               indexStr.wx_str());
+                        return result;
+                    }
+
+                    const int index = int(lIndex);
+
+                    int currentIndex = -1;
+                    for (TiXmlNode *child = currentElem->FirstChild();
+                         child;
+                         child = child->NextSibling())
+                    {
+                        TiXmlElement *childElement = child->ToElement();
+                        if (wxString(childElement->Value(), wxConvUTF8) != nameStripped)
+                            continue;
+                        ++currentIndex;
+                        if (currentIndex == index)
+                        {
+                            currentElem = childElement;
+                            break;
+                        }
+                    }
+                    if (currentIndex != index)
+                        return FindXmlElementResult();
+                }
+                else if (name[openBracePos] == wxT('('))
+                {
+                    const wxString::size_type closeBracePos = name.find(wxT(')'), openBracePos + 1);
+                    if (closeBracePos == wxString::npos || closeBracePos != name.length() - 1)
+                    {
+                        FindXmlElementResult result;
+                        result.errorStr.Printf(wxT("Invalid attribute format in '%s'!"),
+                                               name.wx_str());
+                        return result;
+                    }
+
+                    const wxString nameStripped = name.substr(0, openBracePos);
+                    const wxString attributeStr = name.substr(openBracePos + 1,
+                                                           closeBracePos - openBracePos - 1);
+                    const wxString::size_type equalPos = attributeStr.find(wxT('='));
+                    if (equalPos == wxString::npos)
+                    {
+                        FindXmlElementResult result;
+                        result.errorStr.Printf(wxT("Invalid attribute format in '%s'!"),
+                                               attributeStr.wx_str());
+                        return result;
+                    }
+
+                    const std::string attributeName = wxString(attributeStr.substr(0, equalPos)).utf8_str().data();
+                    const std::string attributeValue = wxString(attributeStr.substr(equalPos + 1)).utf8_str().data();
+                    for (TiXmlNode *child = currentElem->FirstChild();
+                         child;
+                         child = child->NextSibling())
+                    {
+                        TiXmlElement *childElement = child->ToElement();
+                        if (wxString(childElement->Value(), wxConvUTF8) != nameStripped)
+                            continue;
+
+                        const char *value = childElement->Attribute(attributeName.c_str());
+                        if (value != nullptr && attributeValue == value)
+                        {
+                            currentElem = childElement;
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+                currentElem = currentElem->FirstChildElement(name.utf8_str().data());
+
+            if (!currentElem)
+                return FindXmlElementResult();
+        }
+
+        FindXmlElementResult result;
+        result.element = currentElem;
+        return result;
+    }
+
+    static wxString FindFullExtensionPathForNode(const TiXmlNode *node)
+    {
+        if (!node)
+            return wxString();
+
+        struct StackItem
+        {
+            const char *name;
+            int index;
+        };
+        std::vector<StackItem> extensionStack;
+
+        while (node)
+        {
+            const char *nodeValue = node->ToElement()->Value();
+            if (strcmp(nodeValue, "Extensions") == 0)
+                break;
+
+            int index = 0;
+            // Find index by going back through the siblings and matching the names.
+            for (const TiXmlNode *sibling = node->PreviousSibling();
+                 sibling;
+                 sibling = sibling->PreviousSibling())
+            {
+                const char *value = sibling->ToElement()->Value();
+                if (strcmp(nodeValue, value) == 0)
+                    index++;
+            }
+
+            StackItem item;
+            item.name = nodeValue;
+            item.index = index;
+            extensionStack.push_back(item);
+
+            node = node->Parent();
+        }
+
+        wxString result;
+        for (std::vector<StackItem>::reverse_iterator it = extensionStack.rbegin();
+             it != extensionStack.rend();
+             ++it)
+        {
+            if (!result.empty())
+                result << wxT('/');
+            result << wxString(it->name, wxConvUTF8) << wxT('[') << it->index << wxT(']');
+        }
+        return result;
+    }
+
+    /// Squirrel function would expect a cbProject and an extension string. It will return a
+    /// wxArrayString object.
+    SQInteger cbProject_ExtensionListNodes(HSQUIRRELVM v)
+    {
+        ExtractParams2<cbProject*, const wxString *> extractor(v);
+        if (!extractor.Process("cbProject::ExtensionListNodes"))
+            return extractor.ErrorMessage();
+        const wxString &extension = *extractor.p1;
+
+        FindXmlElementResult queryResult = FindExtensionElement(extractor.p0, extension);
+        if (queryResult.element == nullptr)
+        {
+            // FIXME (squirrel) Modify the API to not throw errors if something is missing.
+            // Return null probably?
+            if (queryResult.errorStr.empty())
+                return ConstructAndReturnInstance(v, wxArrayString());
+            else
+                return sq_throwerror(v, queryResult.errorStr.utf8_str().data());
+        }
+
+        wxArrayString result;
+        int index = 0;
+        for (const TiXmlNode *child = queryResult.element->FirstChild();
+             child;
+             child = child->NextSibling())
+        {
+            wxString msg = extension + wxT("/") + wxString(child->Value(), wxConvUTF8);
+            msg << wxT('[') << index << wxT(']');
+            result.Add(msg);
+            ++index;
+        }
+        return ConstructAndReturnInstance(v, result);
+    }
+
+    /// Squirrel function would expect a cbProject and an extension string. It will return a
+    /// wxArrayString object.
+    SQInteger cbProject_ExtensionListNodeAttributes(HSQUIRRELVM v)
+    {
+        ExtractParams2<cbProject*, const wxString *> extractor(v);
+        if (!extractor.Process("cbProject::ExtensionListNodeAttributes"))
+            return extractor.ErrorMessage();
+
+        FindXmlElementResult queryResult = FindExtensionElement(extractor.p0, *extractor.p1);
+        if (queryResult.element == nullptr)
+        {
+            if (queryResult.errorStr.empty())
+                return ConstructAndReturnInstance(v, wxArrayString());
+            else
+                return sq_throwerror(v, queryResult.errorStr.utf8_str().data());
+        }
+
+        wxArrayString result;
+        for (const TiXmlAttribute *attr = queryResult.element->FirstAttribute();
+             attr;
+             attr = attr->Next())
+        {
+            result.Add(wxString(attr->Name(), wxConvUTF8));
+        }
+        return ConstructAndReturnInstance(v, result);
+    }
+
+    /// Squirrel function would expect a cbProject, an extension string and attribute name. It will
+    /// return a wxString object.
+    SQInteger cbProject_ExtensionGetNodeAttribute(HSQUIRRELVM v)
+    {
+        ExtractParams3<cbProject*, const wxString *, const wxString *> extractor(v);
+        if (!extractor.Process("cbProject::ExtensionGetNodeAttribute"))
+            return extractor.ErrorMessage();
+
+        FindXmlElementResult queryResult = FindExtensionElement(extractor.p0, *extractor.p1);
+        if (queryResult.element == nullptr)
+        {
+            if (queryResult.errorStr.empty())
+                return ConstructAndReturnInstance(v, wxString());
+            else
+                return sq_throwerror(v, queryResult.errorStr.utf8_str().data());
+        }
+
+        wxString result;
+        const char *attributeValue = queryResult.element->Attribute(extractor.p2->utf8_str().data());
+        if (attributeValue)
+            result = wxString(attributeValue, wxConvUTF8);
+        return ConstructAndReturnInstance(v, result);
+    }
+
+    /// Squirrel function would expect a cbProject, an extension string, attribute name and
+    /// attribute value.
+    SQInteger cbProject_ExtensionSetNodeAttribute(HSQUIRRELVM v)
+    {
+        ExtractParams4<cbProject*, const wxString *, const wxString *, const wxString*> extractor(v);
+        if (!extractor.Process("cbProject::ExtensionSetNodeAttribute"))
+            return extractor.ErrorMessage();
+
+        FindXmlElementResult queryResult = FindExtensionElement(extractor.p0, *extractor.p1);
+        if (queryResult.element == nullptr)
+        {
+            if (queryResult.errorStr.empty())
+            {
+                queryResult.errorStr.Printf(wxT("Can't find extension node '%s'!"),
+                                            extractor.p1->wx_str());
+            }
+            return sq_throwerror(v, queryResult.errorStr.utf8_str().data());
+        }
+
+        queryResult.element->SetAttribute(extractor.p2->utf8_str().data(),
+                                          extractor.p3->utf8_str().data());
+        extractor.p0->SetModified(true);
+        return 0;
+    }
+
+    /// Squirrel function would expect a cbProject, an extension string, attribute name.
+    SQInteger cbProject_ExtensionRemoveNodeAttribute(HSQUIRRELVM v)
+    {
+        ExtractParams3<cbProject*, const wxString *, const wxString *> extractor(v);
+        if (!extractor.Process("cbProject::ExtensionRemoveNodeAttribute"))
+            return extractor.ErrorMessage();
+
+        FindXmlElementResult queryResult = FindExtensionElement(extractor.p0, *extractor.p1);
+        if (queryResult.element == nullptr)
+        {
+            if (queryResult.errorStr.empty())
+            {
+                queryResult.errorStr.Printf(wxT("Can't find extension node '%s'!"),
+                                            extractor.p1->wx_str());
+            }
+            return sq_throwerror(v, queryResult.errorStr.utf8_str().data());
+        }
+
+        queryResult.element->RemoveAttribute(extractor.p2->utf8_str().data());
+        extractor.p0->SetModified(true);
+        return 0;
+    }
+
+    /// Squirrel function would expect a cbProject, an extension string and node name.
+    /// It will return the extension of the newly created node, so it could be used in other
+    /// node calls.
+    SQInteger cbProject_ExtensionAddNode(HSQUIRRELVM v)
+    {
+        ExtractParams3<cbProject*, const wxString *, const wxString *> extractor(v);
+        if (!extractor.Process("cbProject::ExtensionAddNode"))
+            return extractor.ErrorMessage();
+
+        // FIXME (squirrel) Simplify this. This code is too repetitive.
+        FindXmlElementResult queryResult = FindExtensionElement(extractor.p0, *extractor.p1);
+        if (queryResult.element == nullptr)
+        {
+            if (queryResult.errorStr.empty())
+            {
+                queryResult.errorStr.Printf(wxT("Can't find extension node '%s'!"),
+                                            extractor.p1->wx_str());
+            }
+            return sq_throwerror(v, queryResult.errorStr.utf8_str().data());
+        }
+
+        TiXmlNode *newNode = queryResult.element->InsertEndChild(TiXmlElement(cbU2C(*extractor.p2)));
+        const wxString resultExtension = FindFullExtensionPathForNode(newNode);
+        extractor.p0->SetModified(true);
+        return ConstructAndReturnInstance(v, resultExtension);
+    }
+
+    /// Squirrel function would expect a cbProject and extension string.
+    SQInteger cbProject_ExtensionRemoveNode(HSQUIRRELVM v)
+    {
+        ExtractParams2<cbProject*, const wxString *> extractor(v);
+        if (!extractor.Process("cbProject::ExtensionRemoveNode"))
+            return extractor.ErrorMessage();
+
+        FindXmlElementResult queryResult = FindExtensionElement(extractor.p0, *extractor.p1);
+        if (queryResult.element == nullptr)
+        {
+            if (queryResult.errorStr.empty())
+            {
+                queryResult.errorStr.Printf(wxT("Can't find extension node '%s'!"),
+                                            extractor.p1->wx_str());
+            }
+            return sq_throwerror(v, queryResult.errorStr.utf8_str().data());
+        }
+
+        TiXmlNode *parent = queryResult.element->Parent();
+        parent->RemoveChild(queryResult.element);
+        extractor.p0->SetModified(true);
+        return 0;
+    }
+
+    SQInteger cbProject_DefineVirtualBuildTarget(HSQUIRRELVM v)
+    {
+        // this, alias, targets
+        ExtractParams3<cbProject*, const wxString *, const wxArrayString *> extractor(v);
+        if (!extractor.Process("cbProject::DefineVirtualBuildTarget"))
+            return extractor.ErrorMessage();
+
+        sq_pushbool(v, extractor.p0->DefineVirtualBuildTarget(*extractor.p1, *extractor.p2));
+        return 1;
+    }
+
+    SQInteger cbProject_HasVirtualBuildTarget(HSQUIRRELVM v)
+    {
+        // this, alias
+        ExtractParams2<const cbProject*, const wxString *> extractor(v);
+        if (!extractor.Process("cbProject::HasVirtualBuildTarget"))
+            return extractor.ErrorMessage();
+
+        sq_pushbool(v, extractor.p0->HasVirtualBuildTarget(*extractor.p1));
+        return 1;
+    }
+
+    SQInteger cbProject_RemoveVirtualBuildTarget(HSQUIRRELVM v)
+    {
+        ExtractParams2<cbProject*, const wxString *> extractor(v);
+        if (!extractor.Process("cbProject::RemoveVirtualBuildTarget"))
+            return extractor.ErrorMessage();
+
+        sq_pushbool(v, extractor.p0->RemoveVirtualBuildTarget(*extractor.p1));
+        return 1;
+    }
+
+    SQInteger cbProject_GetVirtualBuildTargets(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const cbProject*> extractor(v);
+        if (!extractor.Process("cbProject::GetVirtualBuildTargets"))
+            return extractor.ErrorMessage();
+
+        return ConstructAndReturnInstance(v, extractor.p0->GetVirtualBuildTargets());
+    }
+
+    SQInteger cbProject_GetVirtualBuildTargetGroup(HSQUIRRELVM v)
+    {
+        // this, alias
+        ExtractParams2<const cbProject*, const wxString *> extractor(v);
+        if (!extractor.Process("cbProject::GetVirtualBuildTargetGroup"))
+            return extractor.ErrorMessage();
+
+        // FIXME (squirrel) This doesn't matter much, because squirrel doesn't care for constness.
+        wxArrayString *result = &const_cast<wxArrayString&>(extractor.p0->GetVirtualBuildTargetGroup(*extractor.p1));
+        return ConstructAndReturnNonOwnedPtr(v, result);
+    }
+
+    SQInteger cbProject_GetExpandedVirtualBuildTargetGroup(HSQUIRRELVM v)
+    {
+        // this, alias
+        ExtractParams2<const cbProject*, const wxString *> extractor(v);
+        if (!extractor.Process("cbProject::GetExpandedVirtualBuildTargetGroup"))
+            return extractor.ErrorMessage();
+
+        return ConstructAndReturnInstance(v, extractor.p0->GetExpandedVirtualBuildTargetGroup(*extractor.p1));
+    }
+
+    SQInteger cbProject_CanAddToVirtualBuildTarget(HSQUIRRELVM v)
+    {
+        // this, alias, target
+        ExtractParams3<cbProject*, const wxString *, const wxString *> extractor(v);
+        if (!extractor.Process("cbProject::CanAddToVirtualBuildTarget"))
+            return extractor.ErrorMessage();
+
+        sq_pushbool(v, extractor.p0->CanAddToVirtualBuildTarget(*extractor.p1, *extractor.p2));
+        return 1;
     }
 
     SQInteger ProjectManager_NewProject(HSQUIRRELVM v)
@@ -2304,11 +3085,140 @@ namespace ScriptBindings
         {
             // Register cbProject
             const SQInteger classDecl = CreateClassDecl<cbProject>(v, _SC("cbProject"), _SC("CompileTargetBase"));
+            BindMethod(v, _SC("GetModified"), Generic_GetBool<cbProject, &cbProject::GetModified>,
+                       _SC("cbProject::GetModified"));
+            BindMethod(v, _SC("SetModified"), Generic_SetBool<cbProject, &cbProject::SetModified>,
+                       _SC("cbProject::SetModified"));
+            BindMethod(v, _SC("GetMakefile"), Generic_GetCString<cbProject, &cbProject::GetMakefile>,
+                       _SC("cbProject::GetMakefile"));
+            BindMethod(v, _SC("SetMakefile"), Generic_SetString<cbProject, &cbProject::SetMakefile>,
+                       _SC("cbProject::SetMakefile"));
+            BindMethod(v, _SC("IsMakefileCustom"), Generic_GetBool<cbProject, &cbProject::IsMakefileCustom>,
+                       _SC("cbProject::IsMakefileCustom"));
+            BindMethod(v, _SC("SetMakefileCustom"), Generic_SetBool<cbProject, &cbProject::SetMakefileCustom>,
+                       _SC("cbProject::SetMakefileCustom"));
+            BindMethod(v, _SC("CloseAllFiles"), cbProject_CloseAllFiles,
+                       _SC("cbProject::CloseAllFiles"));
+            BindMethod(v, _SC("SaveAllFiles"),
+                       Generic_DoSomethingGetBool<cbProject, &cbProject::SaveAllFiles>,
+                       _SC("cbProject::SaveAllFiles"));
+            BindMethod(v, _SC("Save"),
+                       Generic_DoSomethingGetBool<cbProject, &cbProject::Save>,
+                       _SC("cbProject::Save"));
+            // SaveAs is deemed unsafe, so it is not bound
+            BindMethod(v, _SC("SaveLayout"),
+                       Generic_DoSomethingGetBool<cbProject, &cbProject::SaveLayout>,
+                       _SC("cbProject::SaveLayout"));
+            BindMethod(v, _SC("LoadLayout"),
+                       Generic_DoSomethingGetBool<cbProject, &cbProject::LoadLayout>,
+                       _SC("cbProject::LoadLayout"));
+            BindMethod(v, _SC("GetCommonTopLevelPath"),
+                       Generic_GetStringConst<cbProject, &cbProject::GetCommonTopLevelPath>,
+                       _SC("cbProject::GetCommonTopLevelPath"));
             BindMethod(v, _SC("GetFilesCount"), Generic_GetFilesCount<cbProject>,
                        _SC("cbProject::GetFilesCount"));
             BindMethod(v, _SC("GetFile"), Generic_GetFile<cbProject>, _SC("cbProject::GetFile"));
+            BindMethod(v, _SC("GetFileByFilename"), cbProject_GetFileByFilename,
+                       _SC("cbProject::GetFileByFilename"));
+            BindMethod(v, _SC("RemoveFile"), cbProject_RemoveFile, _SC("cbProject::RemoveFile"));
+            BindMethod(v, _SC("AddFile"), cbProject_AddFile, _SC("cbProject::AddFile"));
+            BindMethod(v, _SC("GetBuildTargetsCount"), cbProject_GetBuildTargetsCount,
+                       _SC("cbProject::GetBuildTargetsCount"));
+            BindMethod(v, _SC("GetBuildTarget"), cbProject_GetBuildTarget,
+                       _SC("cbProject::GetBuildTarget"));
             BindMethod(v, _SC("AddBuildTarget"), cbProject_AddBuildTarget,
                        _SC("cbProject::AddBuildTarget"));
+            BindMethod(v, _SC("RenameBuildTarget"), cbProject_RenameBuildTarget,
+                       _SC("cbProject::RenameBuildTarget"));
+            BindMethod(v, _SC("DuplicateBuildTarget"), cbProject_DuplicateBuildTarget,
+                       _SC("cbProject::DuplicateBuildTarget"));
+            BindMethod(v, _SC("RemoveBuildTarget"), cbProject_RemoveBuildTarget,
+                       _SC("cbProject::RemoveBuildTarget"));
+            BindMethod(v, _SC("ExportTargetAsProject"), cbProject_ExportTargetAsProject,
+                       _SC("cbProject::ExportTargetAsProject"));
+            BindMethod(v, _SC("BuildTargetValid"), cbProject_BuildTargetValid,
+                       _SC("cbProject::BuildTargetValid"));
+            BindMethod(v, _SC("GetFirstValidBuildTargetName"),
+                       cbProject_GetFirstValidBuildTargetName,
+                       _SC("cbProject::GetFirstValidBuildTargetName"));
+            BindMethod(v, _SC("SetDefaultExecuteTarget"),
+                       Generic_SetString<cbProject, &cbProject::SetDefaultExecuteTarget>,
+                       _SC("cbProject::SetDefaultExecuteTarget"));
+            BindMethod(v, _SC("GetDefaultExecuteTarget"),
+                       Generic_GetCString<cbProject, &cbProject::GetDefaultExecuteTarget>,
+                       _SC("cbProject::GetDefaultExecuteTarget"));
+            BindMethod(v, _SC("SetActiveBuildTarget"), cbProject_SetActiveBuildTarget,
+                       _SC("cbProject::SetActiveBuildTarget"));
+            BindMethod(v, _SC("GetActiveBuildTarget"),
+                       Generic_GetCString<cbProject, &cbProject::GetActiveBuildTarget>,
+                       _SC("cbProject::GetActiveBuildTarget"));
+            BindMethod(v, _SC("SelectTarget"), cbProject_SelectTarget,
+                       _SC("cbProject::SelectTarget"));
+            BindMethod(v, _SC("GetCurrentlyCompilingTarget"), cbProject_GetCurrentlyCompilingTarget,
+                       _SC("cbProject::GetCurrentlyCompilingTarget"));
+            BindMethod(v, _SC("SetCurrentlyCompilingTarget"), cbProject_SetCurrentlyCompilingTarget,
+                       _SC("cbProject::SetCurrentlyCompilingTarget"));
+            BindMethod(v, _SC("GetModeForPCH"), cbProject_GetModeForPCH,
+                       _SC("cbProject::GetModeForPCH"));
+            BindMethod(v, _SC("SetModeForPCH"), cbProject_SetModeForPCH,
+                       _SC("cbProject::SetModeForPCH"));
+            BindMethod(v, _SC("SetExtendedObjectNamesGeneration"),
+                       Generic_SetBool<cbProject, &cbProject::SetExtendedObjectNamesGeneration>,
+                       _SC("cbProject::SetExtendedObjectNamesGeneration"));
+            BindMethod(v, _SC("GetExtendedObjectNamesGeneration"),
+                       Generic_GetBool<cbProject, &cbProject::GetExtendedObjectNamesGeneration>,
+                       _SC("cbProject::GetExtendedObjectNamesGeneration"));
+            BindMethod(v, _SC("SetNotes"), Generic_SetString<cbProject, &cbProject::SetNotes>,
+                       _SC("cbProject::SetNotes"));
+            BindMethod(v, _SC("GetNotes"), Generic_GetCString<cbProject, &cbProject::GetNotes>,
+                       _SC("cbProject::GetNotes"));
+            BindMethod(v, _SC("SetShowNotesOnLoad"),
+                       Generic_SetBool<cbProject, &cbProject::SetShowNotesOnLoad>,
+                       _SC("cbProject::SetShowNotesOnLoad"));
+            BindMethod(v, _SC("GetShowNotesOnLoad"),
+                       Generic_GetBool<cbProject, &cbProject::GetShowNotesOnLoad>,
+                       _SC("cbProject::GetShowNotesOnLoad"));
+            BindMethod(v, _SC("SetCheckForExternallyModifiedFiles"),
+                       Generic_SetBool<cbProject, &cbProject::SetCheckForExternallyModifiedFiles>,
+                       _SC("cbProject::SetCheckForExternallyModifiedFiles"));
+            BindMethod(v, _SC("GetCheckForExternallyModifiedFiles"),
+                       Generic_GetBool<cbProject, &cbProject::GetCheckForExternallyModifiedFiles>,
+                       _SC("cbProject::GetCheckForExternallyModifiedFiles"));
+            BindMethod(v, _SC("ShowNotes"), cbProject_ShowNotes, _SC("cbProject::ShowNotes"));
+            BindMethod(v, _SC("AddToExtensions"),
+                       Generic_SetString<cbProject, &cbProject::AddToExtensions>,
+                       _SC("cbProject::AddToExtensions"));
+            BindMethod(v, _SC("ExtensionListNodes"), cbProject_ExtensionListNodes,
+                       _SC("cbProject::ExtensionListNodes"));
+            BindMethod(v, _SC("ExtensionListNodeAttributes"), cbProject_ExtensionListNodeAttributes,
+                       _SC("cbProject::ExtensionListNodeAttributes"));
+            BindMethod(v, _SC("ExtensionGetNodeAttribute"),
+                       cbProject_ExtensionGetNodeAttribute,
+                       _SC("cbProject::ExtensionGetNodeAttribute"));
+            BindMethod(v, _SC("ExtensionSetNodeAttribute"), cbProject_ExtensionSetNodeAttribute,
+                       _SC("cbProject::ExtensionSetNodeAttribute"));
+            BindMethod(v, _SC("ExtensionRemoveNodeAttribute"),
+                       cbProject_ExtensionRemoveNodeAttribute,
+                       _SC("cbProject::ExtensionRemoveNodeAttribute"));
+            BindMethod(v, _SC("ExtensionAddNode"), cbProject_ExtensionAddNode,
+                       _SC("cbProject::ExtensionAddNode"));
+            BindMethod(v, _SC("ExtensionRemoveNode"), cbProject_ExtensionRemoveNode,
+                       _SC("cbProject::ExtensionRemoveNode"));
+            BindMethod(v, _SC("DefineVirtualBuildTarget"), cbProject_DefineVirtualBuildTarget,
+                       _SC("cbProject::DefineVirtualBuildTarget"));
+            BindMethod(v, _SC("HasVirtualBuildTarget"), cbProject_HasVirtualBuildTarget,
+                       _SC("cbProject::HasVirtualBuildTarget"));
+            BindMethod(v, _SC("RemoveVirtualBuildTarget"), cbProject_RemoveVirtualBuildTarget,
+                       _SC("cbProject::RemoveVirtualBuildTarget"));
+            BindMethod(v, _SC("GetVirtualBuildTargets"), cbProject_GetVirtualBuildTargets,
+                       _SC("cbProject::GetVirtualBuildTargets"));
+            BindMethod(v, _SC("GetVirtualBuildTargetGroup"), cbProject_GetVirtualBuildTargetGroup,
+                       _SC("cbProject::GetVirtualBuildTargetGroup"));
+            BindMethod(v, _SC("GetExpandedVirtualBuildTargetGroup"),
+                       cbProject_GetExpandedVirtualBuildTargetGroup,
+                       _SC("cbProject::GetExpandedVirtualBuildTargetGroup"));
+            BindMethod(v, _SC("CanAddToVirtualBuildTarget"), cbProject_CanAddToVirtualBuildTarget,
+                       _SC("cbProject::CanAddToVirtualBuildTarget"));
 
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
