@@ -1568,6 +1568,172 @@ namespace ScriptBindings
         return 0;
     }
 
+    SQInteger CompileTargetBase_SetTargetFilenameGenerationPolicy(HSQUIRRELVM v)
+    {
+        // this, prefix, extension (type is TargetFilenameGenerationPolicy)
+        ExtractParams3<CompileTargetBase*, SQInteger, SQInteger> extractor(v);
+        if (!extractor.Process("CompileTargetBase::SetTargetFilenameGenerationPolicy"))
+            return extractor.ErrorMessage();
+        extractor.p0->SetTargetFilenameGenerationPolicy(TargetFilenameGenerationPolicy(extractor.p1),
+                                                        TargetFilenameGenerationPolicy(extractor.p2));
+        return 0;
+    }
+
+    SQInteger CompileTargetBase_GetTargetFilenameGenerationPolicy(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const CompileTargetBase*> extractor(v);
+        if (!extractor.Process("CompileTargetBase::GetTargetFilenameGenerationPolicy"))
+            return extractor.ErrorMessage();
+
+        TargetFilenameGenerationPolicy prefixOut, extensionOut;
+        extractor.p0->GetTargetFilenameGenerationPolicy(prefixOut, extensionOut);
+
+        // Create a table with two slots "prefix" and "extension". This emulates multiple returns.
+        sq_newtableex(v, 2);
+
+        sq_pushstring(v, _SC("prefix"), -1);
+        sq_pushinteger(v, int(prefixOut));
+        sq_newslot(v, -3, SQFalse);
+
+        sq_pushstring(v, _SC("extension"), -1);
+        sq_pushinteger(v, int(extensionOut));
+        sq_newslot(v, -3, SQFalse);
+        return 1;
+    }
+
+    template<const wxString& (CompileTargetBase::*func)() const>
+    SQInteger CompileTargetBase_GetCString(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const CompileTargetBase*> extractor(v);
+        if (!extractor.Process("CompileTargetBase_GetCString"))
+            return extractor.ErrorMessage();
+        // FIXME (squirrel) This doesn't matter much, because squirrel doesn't care for constness.
+        wxString *result = &const_cast<wxString&>((extractor.p0->*func)());
+        return ConstructAndReturnNonOwnedPtr(v, result);
+    }
+
+    template<void (CompileTargetBase::*func)(const wxString&)>
+    SQInteger CompileTargetBase_SetString(HSQUIRRELVM v)
+    {
+        // this, string
+        ExtractParams2<CompileTargetBase*, const wxString *> extractor(v);
+        if (!extractor.Process("CompileTargetBase_SetString"))
+            return extractor.ErrorMessage();
+
+        (extractor.p0->*func)(*extractor.p1);
+        return 0;
+    }
+
+    template<wxString (CompileTargetBase::*func)()>
+    SQInteger CompileTargetBase_GetString(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<CompileTargetBase*> extractor(v);
+        if (!extractor.Process("CompileTargetBase_GetString"))
+            return extractor.ErrorMessage();
+
+        return ConstructAndReturnInstance(v, (extractor.p0->*func)());
+    }
+
+    template<wxString (CompileTargetBase::*func)() const>
+    SQInteger CompileTargetBase_GetStringConst(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const CompileTargetBase*> extractor(v);
+        if (!extractor.Process("CompileTargetBase_GetStringConst"))
+            return extractor.ErrorMessage();
+
+        return ConstructAndReturnInstance(v, (extractor.p0->*func)());
+    }
+
+    SQInteger CompileTargetBase_GetOptionRelation(HSQUIRRELVM v)
+    {
+        // this, type (OptionsRelationType)
+        ExtractParams2<const CompileTargetBase*, SQInteger> extractor(v);
+        if (!extractor.Process("CompileTargetBase::GetOptionRelation"))
+            return extractor.ErrorMessage();
+        if (extractor.p1 < ortCompilerOptions || extractor.p1 >= ortLast)
+            return sq_throwerror(v, _SC("CompileTargetBase::GetOptionRelation: parameter type out of range!"));
+
+        const OptionsRelation result = extractor.p0->GetOptionRelation(OptionsRelationType(extractor.p1));
+        sq_pushinteger(v, int(result));
+        return 1;
+    }
+
+    SQInteger CompileTargetBase_SetOptionRelation(HSQUIRRELVM v)
+    {
+        // this, type (OptionsRelationType), rel (OptionsRelation)
+        ExtractParams3<CompileTargetBase*, SQInteger, SQInteger> extractor(v);
+        if (!extractor.Process("CompileTargetBase::SetOptionRelation"))
+            return extractor.ErrorMessage();
+        if (extractor.p1 < ortCompilerOptions || extractor.p1 >= ortLast)
+            return sq_throwerror(v, _SC("CompileTargetBase::SetOptionRelation: parameter 'type' out of range!"));
+        if (extractor.p2 < orUseParentOptionsOnly || extractor.p2 > orAppendToParentOptions)
+            return sq_throwerror(v, _SC("CompileTargetBase::SetOptionRelation: parameter 'rel' out of range!"));
+
+        extractor.p0->SetOptionRelation(OptionsRelationType(extractor.p1),
+                                        OptionsRelation(extractor.p2));
+        return 0;
+    }
+
+    SQInteger CompileTargetBase_SetTargetType(HSQUIRRELVM v)
+    {
+        // this, pt (TargetType)
+        ExtractParams2<CompileTargetBase*, SQInteger> extractor(v);
+        if (!extractor.Process("CompileTargetBase::SetTargetType"))
+            return extractor.ErrorMessage();
+        if (extractor.p1 < ttExecutable || extractor.p1 > ttNative)
+            return sq_throwerror(v, _SC("CompileTargetBase::SetTargetType: parameter 'pt' out of range!"));
+
+        extractor.p0->SetTargetType(TargetType(extractor.p1));
+        return 0;
+    }
+
+    SQInteger CompileTargetBase_GetTargetType(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const CompileTargetBase*> extractor(v);
+        if (!extractor.Process("CompileTargetBase::GetTargetType"))
+            return extractor.ErrorMessage();
+        sq_pushinteger(v, int(extractor.p0->GetTargetType()));
+        return 1;
+    }
+
+    SQInteger CompileTargetBase_GetMakeCommandFor(HSQUIRRELVM v)
+    {
+        // this, cmd (type MakeCommand)
+        ExtractParams2<const CompileTargetBase*, SQInteger> extractor(v);
+        if (!extractor.Process("CompileTargetBase::GetMakeCommandFor"))
+            return extractor.ErrorMessage();
+        if (extractor.p1 < mcClean || extractor.p1 >= mcLast)
+            return sq_throwerror(v, _SC("CompileTargetBase::GetMakeCommandFor: parameter 'cmd' out of range!"));
+        return ConstructAndReturnInstance(v, extractor.p0->GetMakeCommandFor(MakeCommand(extractor.p1)));
+    }
+
+    SQInteger CompileTargetBase_SetMakeCommandFor(HSQUIRRELVM v)
+    {
+        // this, cmd (type MakeCommand), make
+        ExtractParams3<CompileTargetBase*, SQInteger, const wxString *> extractor(v);
+        if (!extractor.Process("CompileTargetBase::SetMakeCommandFor"))
+            return extractor.ErrorMessage();
+        if (extractor.p1 < mcClean || extractor.p1 >= mcLast)
+            return sq_throwerror(v, _SC("CompileTargetBase::GetMakeCommandFor: parameter 'cmd' out of range!"));
+        extractor.p0->SetMakeCommandFor(MakeCommand(extractor.p1), *extractor.p2);
+        return 0;
+    }
+
+    SQInteger CompileTargetBase_MakeCommandsModified(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const CompileTargetBase*> extractor(v);
+        if (!extractor.Process("CompileTargetBase::MakeCommandsModified"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->MakeCommandsModified());
+        return 1;
+    }
+
     SQInteger cbProject_GetFilesCount(HSQUIRRELVM v)
     {
         // this
@@ -1980,6 +2146,95 @@ namespace ScriptBindings
         {
             // Register CompileTargetBase
             const SQInteger classDecl = CreateClassDecl<CompileTargetBase>(v, _SC("CompileTargetBase"), _SC("CompileOptionsBase"));
+            BindMethod(v, _SC("SetTargetFilenameGenerationPolicy"),
+                       CompileTargetBase_SetTargetFilenameGenerationPolicy,
+                       _SC("CompileTargetBase::SetTargetFilenameGenerationPolicy"));
+            // FIXME (squirrel) Add this to the wiki!
+            BindMethod(v, _SC("GetTargetFilenameGenerationPolicy"),
+                       CompileTargetBase_GetTargetFilenameGenerationPolicy,
+                       _SC("CompileTargetBase::GetTargetFilenameGenerationPolicy"));
+            BindMethod(v, _SC("GetFilename"),
+                       CompileTargetBase_GetCString<&CompileTargetBase::GetFilename>,
+                       _SC("CompileTargetBase::GetFilename"));
+            BindMethod(v, _SC("GetTitle"),
+                       CompileTargetBase_GetCString<&CompileTargetBase::GetTitle>,
+                       _SC("CompileTargetBase::GetTitle"));
+            BindMethod(v, _SC("SetTitle"), CompileTargetBase_SetString<&CompileTargetBase::SetTitle>,
+                       _SC("CompileTargetBase::SetTitle"));
+            BindMethod(v, _SC("SetOutputFilename"),
+                       CompileTargetBase_SetString<&CompileTargetBase::SetOutputFilename>,
+                       _SC("CompileTargetBase::SetOutputFilename"));
+            BindMethod(v, _SC("SetWorkingDir"),
+                       CompileTargetBase_SetString<&CompileTargetBase::SetWorkingDir>,
+                       _SC("CompileTargetBase::SetWorkingDir"));
+            BindMethod(v, _SC("SetObjectOutput"),
+                       CompileTargetBase_SetString<&CompileTargetBase::SetObjectOutput>,
+                       _SC("CompileTargetBase::SetObjectOutput"));
+            BindMethod(v, _SC("SetDepsOutput"),
+                       CompileTargetBase_SetString<&CompileTargetBase::SetDepsOutput>,
+                       _SC("CompileTargetBase::SetDepsOutput"));
+            BindMethod(v, _SC("GetOptionRelation"), CompileTargetBase_GetOptionRelation,
+                       _SC("CompileTargetBase::GetOptionRelation"));
+            BindMethod(v, _SC("SetOptionRelation"), CompileTargetBase_SetOptionRelation,
+                       _SC("CompileTargetBase::SetOptionRelation"));
+            BindMethod(v, _SC("GetWorkingDir"),
+                       CompileTargetBase_GetString<&CompileTargetBase::GetWorkingDir>,
+                       _SC("CompileTargetBase::GetWorkingDir"));
+            BindMethod(v, _SC("GetObjectOutput"),
+                       CompileTargetBase_GetStringConst<&CompileTargetBase::GetObjectOutput>,
+                       _SC("CompileTargetBase::GetObjectOutput"));
+            BindMethod(v, _SC("GetDepsOutput"),
+                       CompileTargetBase_GetStringConst<&CompileTargetBase::GetDepsOutput>,
+                       _SC("CompileTargetBase::GetDepsOutput"));
+            BindMethod(v, _SC("GetOutputFilename"),
+                       CompileTargetBase_GetStringConst<&CompileTargetBase::GetOutputFilename>,
+                       _SC("CompileTargetBase::GetOutputFilename"));
+            BindMethod(v, _SC("SuggestOutputFilename"),
+                       CompileTargetBase_GetStringConst<&CompileTargetBase::SuggestOutputFilename>,
+                       _SC("CompileTargetBase::SuggestOutputFilename"));
+            BindMethod(v, _SC("GetExecutableFilename"),
+                       CompileTargetBase_GetStringConst<&CompileTargetBase::GetExecutableFilename>,
+                       _SC("CompileTargetBase::GetExecutableFilename"));
+            BindMethod(v, _SC("GetDynamicLibFilename"),
+                       CompileTargetBase_GetStringConst<&CompileTargetBase::GetDynamicLibFilename>,
+                       _SC("CompileTargetBase::GetDynamicLibFilename"));
+            BindMethod(v, _SC("GetDynamicLibDefFilename"),
+                       CompileTargetBase_GetString<&CompileTargetBase::GetDynamicLibDefFilename>,
+                       _SC("CompileTargetBase::GetDynamicLibDefFilename"));
+            BindMethod(v, _SC("GetStaticLibFilename"),
+                       CompileTargetBase_GetStringConst<&CompileTargetBase::GetStaticLibFilename>,
+                       _SC("CompileTargetBase::GetStaticLibFilename"));
+            BindMethod(v, _SC("GetBasePath"),
+                       CompileTargetBase_GetStringConst<&CompileTargetBase::GetBasePath>,
+                       _SC("CompileTargetBase::GetBasePath"));
+            BindMethod(v, _SC("SetTargetType"), CompileTargetBase_SetTargetType,
+                       _SC("CompileTargetBase::SetTargetType"));
+            BindMethod(v, _SC("GetTargetType"), CompileTargetBase_GetTargetType,
+                         _SC("CompileTargetBase::GetTargetType"));
+            BindMethod(v, _SC("GetExecutionParameters"),
+                       CompileTargetBase_GetCString<&CompileTargetBase::GetExecutionParameters>,
+                       _SC("CompileTargetBase::GetExecutionParameters"));
+            BindMethod(v, _SC("SetExecutionParameters"),
+                       CompileTargetBase_SetString<&CompileTargetBase::SetExecutionParameters>,
+                       _SC("CompileTargetBase::SetExecutionParameters"));
+            BindMethod(v, _SC("GetHostApplication"),
+                       CompileTargetBase_GetCString<&CompileTargetBase::GetHostApplication>,
+                       _SC("CompileTargetBase::GetHostApplication"));
+            BindMethod(v, _SC("SetHostApplication"),
+                       CompileTargetBase_SetString<&CompileTargetBase::SetHostApplication>,
+                       _SC("CompileTargetBase::SetHostApplication"));
+            BindMethod(v, _SC("SetCompilerID"),
+                       CompileTargetBase_SetString<&CompileTargetBase::SetCompilerID>,
+                       _SC("CompileTargetBase::SetCompilerID"));
+            BindMethod(v, _SC("GetCompilerID"),
+                       CompileTargetBase_GetCString<&CompileTargetBase::GetCompilerID>,
+                       _SC("CompileTargetBase::GetCompilerID"));
+            BindMethod(v, _SC("GetMakeCommandFor"), CompileTargetBase_GetMakeCommandFor,
+                       _SC("CompileTargetBase::GetMakeCommandFor"));
+            BindMethod(v, _SC("SetMakeCommandFor"), CompileTargetBase_SetMakeCommandFor,
+                       _SC("CompileTargetBase::SetMakeCommandFor"));
+            BindMethod(v, _SC("MakeCommandsModified"), CompileTargetBase_MakeCommandsModified,
+                       _SC("CompileTargetBase::MakeCommandsModified"));
 
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
