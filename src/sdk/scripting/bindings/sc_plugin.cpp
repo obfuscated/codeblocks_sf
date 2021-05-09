@@ -336,43 +336,45 @@ SQInteger RegisterPlugin(HSQUIRRELVM v)
 #endif // 0
 
 // base script plugin class
-const char* s_cbScriptPlugin =
-    "class cbScriptPlugin\n"
-    "{\n"
-    "    info = PluginInfo();\n"
-    "    constructor()\n"
-    "    {\n"
-    "        info.name = _T(\"cbScriptPlugin\");\n"
-    "        info.title = _T(\"Base script plugin\");\n"
-    "        info.version = _T(\"0.1a\");\n"
-    "        info.license = _T(\"GPL\");\n"
-    "    }\n"
-    "    function GetPluginInfo()\n"
-    "    {\n"
-    "        return info;\n"
-    "    }\n"
-    "    function GetMenu()\n"
-    "    {\n"
-    "        return wxArrayString();\n"
-    "    }\n"
-    "    function GetModuleMenu(who,data)\n"
-    "    {\n"
-    "        return wxArrayString();\n"
-    "    }\n"
-    "    function Execute()\n"
-    "    {\n"
-    "        LogDebug(info.name + _T(\"::Run() : not implemented\"));\n"
-    "        return -1;\n"
-    "    }\n"
-    "    function OnMenuClicked(index)\n"
-    "    {\n"
-    "        LogDebug(info.name + _T(\": menu clicked: \") + index);\n"
-    "    }\n"
-    "    function OnModuleMenuClicked(index)\n"
-    "    {\n"
-    "        LogDebug(info.name + _T(\": module menu clicked: \") + index);\n"
-    "    }\n"
-    "}\n";
+const char* s_cbScriptPlugin = R"(
+class cbScriptPlugin
+{
+    info = PluginInfo();
+    constructor()
+    {
+        info.name = _T("cbScriptPlugin");
+        info.title = _T("Base script plugin");
+        info.version = _T("0.1a");
+        info.license = _T("GPL");
+    }
+    function GetPluginInfo()
+    {
+        return info;
+    }
+    function GetMenu()
+    {
+        return wxArrayString();
+    }
+    function GetModuleMenu(who,data)
+    {
+        return wxArrayString();
+    }
+    function Execute()
+    {
+        LogDebug(info.name + _T("::Run() : not implemented"));
+        return -1;
+    }
+    function OnMenuClicked(index)
+    {
+        LogDebug(info.name + _T(": menu clicked: ") + index);
+    }
+    function OnModuleMenuClicked(index)
+    {
+        LogDebug(info.name + _T(": module menu clicked: ") + index);
+    }
+};
+
+)";
 
 // FIXME (squirrel) This is duplicated! Try to deduplicate.
 static wxString s_ScriptOutput;
