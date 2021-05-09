@@ -172,10 +172,10 @@ class sdkTest extends script_test_base
                       debugTarget.SupportsCurrentPlatform());
 
             test_equal("CompileOptionsBase::GetLinkerExecutable default",
-                       debugTarget.GetLinkerExecutable(), leoAutoDetect);
-            debugTarget.SetLinkerExecutable(leoLinker);
+                       debugTarget.GetLinkerExecutable(), ::leoAutoDetect);
+            debugTarget.SetLinkerExecutable(::leoLinker);
             test_equal("CompileOptionsBase::SetLinkerExecutable",
-                       debugTarget.GetLinkerExecutable(), leoLinker);
+                       debugTarget.GetLinkerExecutable(), ::leoLinker);
 
             {
                 test_equal("CompileOptionsBase::GetLinkerOptions empty",
@@ -392,13 +392,13 @@ class sdkTest extends script_test_base
             }
 
             test_equal("CompileTargetBase::GetTargetType", debugTarget.GetTargetType(),
-                       ttExecutable);
-            debugTarget.SetTargetType(ttStaticLib);
+                       ::ttExecutable);
+            debugTarget.SetTargetType(::ttStaticLib);
             test_equal("CompileTargetBase::SetTargetType", debugTarget.GetTargetType(),
-                       ttStaticLib);
+                       ::ttStaticLib);
 
             // Reset target type, because the tests below depend on it.
-            debugTarget.SetTargetType(ttExecutable);
+            debugTarget.SetTargetType(::ttExecutable);
 
             test_string("CompileTargetBase::GetFilename", debugTarget.GetFilename(),
                         MakePath(tempFolder, _T("NewProject.cbp")));
@@ -434,11 +434,11 @@ class sdkTest extends script_test_base
                         MakePath(_T(".deps"), _T("debug")));
 
             test_equal("CompileTargetBase::GetOptionRelation",
-                        debugTarget.GetOptionRelation(ortLinkerOptions),
-                        orAppendToParentOptions);
-            debugTarget.SetOptionRelation(ortLinkerOptions, orUseTargetOptionsOnly);
+                        debugTarget.GetOptionRelation(::ortLinkerOptions),
+                        ::orAppendToParentOptions);
+            debugTarget.SetOptionRelation(::ortLinkerOptions, ::orUseTargetOptionsOnly);
             test_string("CompileTargetBase::SetOptionRelation",
-                        debugTarget.GetOptionRelation(ortLinkerOptions), orUseTargetOptionsOnly);
+                        debugTarget.GetOptionRelation(::ortLinkerOptions), ::orUseTargetOptionsOnly);
 
             test_string("CompileTargetBase::GetExecutableFilename",
                         debugTarget.GetExecutableFilename(),
@@ -476,10 +476,10 @@ class sdkTest extends script_test_base
             test_false("CompileTargetBase::MakeCommandsModified",
                        debugTarget.MakeCommandsModified());
             test_string("CompileTargetBase::GetMakeCommandFor",
-                        debugTarget.GetMakeCommandFor(mcBuild), "$make -f $makefile $target");
-            debugTarget.SetMakeCommandFor(mcBuild, _T("make-me"));
+                        debugTarget.GetMakeCommandFor(::mcBuild), "$make -f $makefile $target");
+            debugTarget.SetMakeCommandFor(::mcBuild, _T("make-me"));
             test_string("CompileTargetBase::SetMakeCommandFor",
-                        debugTarget.GetMakeCommandFor(mcBuild), "make-me");
+                        debugTarget.GetMakeCommandFor(::mcBuild), "make-me");
             test_true("CompileTargetBase::MakeCommandsModified after",
                        debugTarget.MakeCommandsModified());
         }
@@ -530,7 +530,7 @@ class sdkTest extends script_test_base
                            debugTarget.GetUseConsoleRunner());
                 // We need to change the target type, otherwise the SetUseConsoleRunner has no
                 // effect.
-                debugTarget.SetTargetType(ttConsoleOnly);
+                debugTarget.SetTargetType(::ttConsoleOnly);
                 debugTarget.SetUseConsoleRunner(true);
                 test_true("ProjectBuildTarget::SetUseConsoleRunner",
                           debugTarget.GetUseConsoleRunner());
