@@ -1336,14 +1336,12 @@ namespace ScriptBindings
 
     SQInteger ProjectFile_GetParentProject(HSQUIRRELVM v)
     {
-        // FIXME (squirrel) Implement this when we have cbProject bound
-        return -1;
-        /*// this
+        // this
         ExtractParams1<ProjectFile*> extractor(v);
         if (!extractor.Process("ProjectFile::GetParentProject"))
             return extractor.ErrorMessage();
         cbProject *result = extractor.p0->GetParentProject();
-        return ConstructAndReturnNonOwnedPtr(v, result);*/
+        return ConstructAndReturnNonOwnedPtr(v, result);
     }
 
     SQInteger ProjectFile_SetUseCustomBuildCommand(HSQUIRRELVM v)
@@ -1373,7 +1371,7 @@ namespace ScriptBindings
         if (!extractor.Process("ProjectFile::GetUseCustomBuildCommand"))
             return extractor.ErrorMessage();
         sq_pushbool(v, extractor.p0->GetUseCustomBuildCommand(*extractor.p1));
-        return 0;
+        return 1;
     }
 
     SQInteger ProjectFile_GetCustomBuildCommand(HSQUIRRELVM v)
@@ -1383,6 +1381,85 @@ namespace ScriptBindings
         if (!extractor.Process("ProjectFile::GetCustomBuildCommand"))
             return extractor.ErrorMessage();
         return ConstructAndReturnInstance(v, extractor.p0->GetCustomBuildCommand(*extractor.p1));
+    }
+
+    SQInteger cbProject_GetFilesCount(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<cbProject*> extractor(v);
+        if (!extractor.Process("cbProject::GetFilesCount"))
+            return extractor.ErrorMessage();
+        sq_pushinteger(v, extractor.p0->GetFilesCount());
+        return 1;
+    }
+
+    SQInteger cbProject_GetFile(HSQUIRRELVM v)
+    {
+        // this, index
+        ExtractParams2<cbProject*, SQInteger> extractor(v);
+        if (!extractor.Process("cbProject::GetFile"))
+            return extractor.ErrorMessage();
+        return ConstructAndReturnNonOwnedPtr(v, extractor.p0->GetFile(extractor.p1));
+    }
+
+    SQInteger cbProject_AddBuildTarget(HSQUIRRELVM v)
+    {
+        // this, targetName
+        ExtractParams2<cbProject*, const wxString*> extractor(v);
+        if (!extractor.Process("cbProject::AddBuildTarget"))
+            return extractor.ErrorMessage();
+
+        ProjectBuildTarget *result = extractor.p0->AddBuildTarget(*extractor.p1);
+        return ConstructAndReturnNonOwnedPtr(v, result);
+    }
+
+    SQInteger ProjectManager_NewProject(HSQUIRRELVM v)
+    {
+        // this, filename
+        ExtractParams2<ProjectManager*, const wxString *> extractor(v);
+        if (!extractor.Process("ProjectManager::NewProject"))
+            return extractor.ErrorMessage();
+        return ConstructAndReturnNonOwnedPtr(v, extractor.p0->NewProject(*extractor.p1));
+    }
+
+    SQInteger ProjectManager_AddFileToProject(HSQUIRRELVM v)
+    {
+        // this, filename, project, target
+        ExtractParams4<ProjectManager*, const wxString *, cbProject *, SQInteger> extractor(v);
+        if (!extractor.Process("ProjectManager::AddFileToProject"))
+            return extractor.ErrorMessage();
+        sq_pushinteger(v, extractor.p0->AddFileToProject(*extractor.p1, extractor.p2, extractor.p3));
+        return 1;
+    }
+
+    SQInteger ProjectManager_CloseWorkspace(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<ProjectManager*> extractor(v);
+        if (!extractor.Process("ProjectManager::CloseWorkspace"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->CloseWorkspace());
+        return 1;
+    }
+
+    SQInteger ProjectManager_CloseProject(HSQUIRRELVM v)
+    {
+        // this, project, dontsave, refresh
+        ExtractParams4<ProjectManager*, cbProject *, bool, bool> extractor(v);
+        if (!extractor.Process("ProjectManager::CloseProject"))
+            return extractor.ErrorMessage();
+        const bool result = extractor.p0->CloseProject(extractor.p1, extractor.p2, extractor.p3);
+        sq_pushbool(v, result);
+        return 1;
+    }
+
+    SQInteger ProjectManager_RebuildTree(HSQUIRRELVM v)
+    {
+        // this, project, dontsave, refresh
+        ExtractParams1<ProjectManager*> extractor(v);
+        if (!extractor.Process("ProjectManager::RebuildTree"))
+            return extractor.ErrorMessage();
+        extractor.p0->GetUI().RebuildTree();
         return 0;
     }
 
@@ -1519,6 +1596,45 @@ namespace ScriptBindings
             addMemberUInt(members, _SC("weight"), &ProjectFile::weight);
             addMemberRef(members, _SC("compilerVar"), &ProjectFile::compilerVar);
             addMemberRef(members, _SC("buildTargets"), &ProjectFile::buildTargets);
+
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
+
+        {
+            // Register ProjectBuildTarget
+            const SQInteger classDecl = CreateClassDecl<ProjectBuildTarget>(v, _SC("ProjectBuildTarget"));
+
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
+
+        {
+            // Register cbProject
+            const SQInteger classDecl = CreateClassDecl<cbProject>(v, _SC("cbProject"));
+            BindMethod(v, _SC("GetFilesCount"), cbProject_GetFilesCount,
+                       _SC("cbProject::GetFilesCount"));
+            BindMethod(v, _SC("GetFile"), cbProject_GetFile, _SC("cbProject::GetFile"));
+            BindMethod(v, _SC("AddBuildTarget"), cbProject_AddBuildTarget,
+                       _SC("cbProject::AddBuildTarget"));
+
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
+
+        {
+            // Register ProjectManager
+            const SQInteger classDecl = CreateClassDecl<ProjectManager>(v, _SC("ProjectManager"));
+            BindMethod(v, _SC("NewProject"), ProjectManager_NewProject,
+                       _SC("ProjectManager::NewProject"));
+            BindMethod(v, _SC("AddFileToProject"), ProjectManager_AddFileToProject,
+                       _SC("ProjectManager::AddFileToProject"));
+            BindMethod(v, _SC("CloseWorkspace"), ProjectManager_CloseWorkspace,
+                       _SC("ProjectManager::CloseWorkspace"));
+            BindMethod(v, _SC("CloseProject"), ProjectManager_CloseProject,
+                       _SC("ProjectManager::CloseProject"));
+            BindMethod(v, _SC("RebuildTree"), ProjectManager_RebuildTree,
+                       _SC("ProjectManager::RebuildTree"));
 
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);

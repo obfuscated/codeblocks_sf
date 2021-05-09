@@ -30,11 +30,14 @@ enum class TypeTag : uint32_t
     wxArrayString,
     wxFileName,
     cbEditor,
+    cbProject,
     ConfigManager,
     EditorBase,
     EditorManager,
     PluginInfo,
+    ProjectBuildTarget,
     ProjectFile,
+    ProjectManager,
     ScriptingManager,
     UserVariableManager
 };
@@ -89,6 +92,13 @@ struct TypeInfo<cbEditor> {
 };
 
 template<>
+struct TypeInfo<cbProject> {
+    static const uint32_t typetag = uint32_t(TypeTag::cbProject);
+    static constexpr const SQChar *className = _SC("cbProject");
+    using baseClass = void;
+};
+
+template<>
 struct TypeInfo<ConfigManager> {
     static const uint32_t typetag = uint32_t(TypeTag::ConfigManager);
     static constexpr const SQChar *className = _SC("ConfigManager");
@@ -117,9 +127,23 @@ struct TypeInfo<PluginInfo> {
 };
 
 template<>
+struct TypeInfo<ProjectBuildTarget> {
+    static const uint32_t typetag = uint32_t(TypeTag::ProjectBuildTarget);
+    static constexpr const SQChar *className = _SC("ProjectBuildTarget");
+    using baseClass = void;
+};
+
+template<>
 struct TypeInfo<ProjectFile> {
     static const uint32_t typetag = uint32_t(TypeTag::ProjectFile);
     static constexpr const SQChar *className = _SC("ProjectFile");
+    using baseClass = void;
+};
+
+template<>
+struct TypeInfo<ProjectManager> {
+    static const uint32_t typetag = uint32_t(TypeTag::ProjectManager);
+    static constexpr const SQChar *className = _SC("ProjectManager");
     using baseClass = void;
 };
 
