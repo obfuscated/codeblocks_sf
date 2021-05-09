@@ -8,6 +8,7 @@
  */
 
 #if 0
+// FIXME (squirrel) Reimplement progress
 
 #include <sdk_precomp.h>
 

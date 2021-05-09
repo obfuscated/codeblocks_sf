@@ -901,7 +901,7 @@ void Register_wxTypes(HSQUIRRELVM v)
     {
         // register wxString
         const SQInteger classDecl = CreateClassDecl<wxString>(v, _SC("wxString"));
-
+        // FIXME (squirrel) Add string version of the c-tor
         BindEmptyCtor<wxString>(v);
         BindMethod(v, _SC("_add"), wxString_OpAdd, _SC("wxString::operator+"));
         BindMethod(v, _SC("_cmp"), wxString_OpCompare, _SC("wxString::operator=="));
@@ -958,6 +958,7 @@ void Register_wxTypes(HSQUIRRELVM v)
     {
         // Register wxColour
         const SQInteger classDecl = CreateClassDecl<wxColour>(v, _SC("wxColour"));
+        // FIXME (squirrel) Add 3, 4 int version of the c-tor
         BindEmptyCtor<wxColour>(v);
 
         BindMethod(v, _SC("_tostring"), wxColour_ToString, _SC("wxColour::_tostring"));
