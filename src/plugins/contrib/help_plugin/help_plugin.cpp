@@ -12,7 +12,7 @@
   #include <wx/filename.h>
   #include <wx/fs_zip.h>
   #include <wx/intl.h>
-  #include <wx/menuitem.h>
+  #include <wx/menu.h>
   #include <wx/process.h>
   #include <wx/xrc/xmlres.h>
   #include "cbeditor.h"
@@ -24,6 +24,7 @@
   #include "macrosmanager.h"
   #include "manager.h"
   #include "projectmanager.h"
+  #include "scriptingmanager.h"
 #endif
 
 #include <vector>

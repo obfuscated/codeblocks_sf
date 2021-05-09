@@ -10,11 +10,20 @@
 #ifndef CB_SC_TYPEINFO_ALL_H
 #define CB_SC_TYPEINFO_ALL_H
 
-#ifndef CB_PRECOMP
-    #include "cbeditor.h"
-    #include "cbproject.h"
-    #include "compilerfactory.h"
-#endif // CB_PRECOMP
+class cbEditor;
+class cbProject;
+class CompileOptionsBase;
+class CompilerFactory;
+class CompileTargetBase;
+class EditorBase;
+class EditorManager;
+class FileTreeData;
+class PluginInfo;
+class ProjectBuildTarget;
+class ProjectFile;
+class ProjectManager;
+class ScriptingManager;
+class UserVariableManager;
 
 /// @file
 /// This file contains type traits for all C++ classes/structs known to Squirrel through our

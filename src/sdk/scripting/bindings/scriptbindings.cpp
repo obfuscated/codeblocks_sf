@@ -9,8 +9,13 @@
 
 #include <sdk_precomp.h>
 #ifndef CB_PRECOMP
+    #include "cbeditor.h"
+    #include "cbproject.h"
+    #include "compilerfactory.h"
+    #include "compiletargetbase.h"
     #include "configmanager.h"
     #include "editormanager.h"
+    #include "projectbuildtarget.h"
     #include "scriptingmanager.h"
     #include "uservarmanager.h"
 #endif // CB_PRECOMP

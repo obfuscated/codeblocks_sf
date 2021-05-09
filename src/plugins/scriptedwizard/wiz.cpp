@@ -27,10 +27,12 @@
 
     #include <wx/wxscintilla.h> // CB Header
     #include <cbexception.h>
+    #include "cbeditor.h"
     #include <cbproject.h>
     #include <compiler.h>
     #include <compilerfactory.h>
     #include <configmanager.h>
+    #include "editormanager.h"
     #include <filefilters.h>
     #include <globals.h>
     #include <infowindow.h>
