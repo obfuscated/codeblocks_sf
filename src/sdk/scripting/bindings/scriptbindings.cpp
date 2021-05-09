@@ -1602,8 +1602,24 @@ namespace ScriptBindings
         }
 
         {
+            // Register CompileOptionsBase
+            const SQInteger classDecl = CreateClassDecl<CompileOptionsBase>(v, _SC("CompileOptionsBase"));
+
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
+
+        {
+            // Register CompileTargetBase
+            const SQInteger classDecl = CreateClassDecl<CompileTargetBase>(v, _SC("CompileTargetBase"), _SC("CompileOptionsBase"));
+
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
+
+        {
             // Register ProjectBuildTarget
-            const SQInteger classDecl = CreateClassDecl<ProjectBuildTarget>(v, _SC("ProjectBuildTarget"));
+            const SQInteger classDecl = CreateClassDecl<ProjectBuildTarget>(v, _SC("ProjectBuildTarget"), _SC("CompileTargetBase"));
 
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
@@ -1611,7 +1627,7 @@ namespace ScriptBindings
 
         {
             // Register cbProject
-            const SQInteger classDecl = CreateClassDecl<cbProject>(v, _SC("cbProject"));
+            const SQInteger classDecl = CreateClassDecl<cbProject>(v, _SC("cbProject"), _SC("CompileTargetBase"));
             BindMethod(v, _SC("GetFilesCount"), cbProject_GetFilesCount,
                        _SC("cbProject::GetFilesCount"));
             BindMethod(v, _SC("GetFile"), cbProject_GetFile, _SC("cbProject::GetFile"));
@@ -1688,6 +1704,14 @@ namespace ScriptBindings
         }
 
         {
+            // Register CompilerFactory
+            const SQInteger classDecl = CreateClassDecl<CompilerFactory>(v, _SC("CompilerFactory"));
+
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
+
+        {
             // Register PluginInfo
             const SQInteger classDecl = CreateClassDecl<PluginInfo>(v, _SC("PluginInfo"));
             BindEmptyCtor<PluginInfo>(v);
@@ -1702,6 +1726,14 @@ namespace ScriptBindings
             addMemberRef(members, _SC("authorWebsite"), &PluginInfo::authorWebsite);
             addMemberRef(members, _SC("thanksTo"), &PluginInfo::thanksTo);
             addMemberRef(members, _SC("license"), &PluginInfo::license);
+
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
+
+        {
+            // Register FileTreeData
+            const SQInteger classDecl = CreateClassDecl<FileTreeData>(v, _SC("FileTreeData"));
 
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);

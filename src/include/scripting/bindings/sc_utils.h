@@ -454,16 +454,27 @@ inline SQInteger CreateClassDecl(HSQUIRRELVM v, const SQChar *className,
                                  const SQChar *baseClassName = nullptr)
 {
     const SQInteger tableStackIdx = sq_gettop(v);
+    cbAssert(scstrcmp(className, TypeInfo<UserType>::className)==0);
     sq_pushstring(v, className, -1);
     if (baseClassName)
     {
+        using BaseClass = typename TypeInfo<UserType>::baseClass;
+        cbAssert(std::is_void<BaseClass>::value == false);
+        if constexpr (std::is_void<BaseClass>::value == false)
+            cbAssert(scstrcmp(baseClassName, TypeInfo<BaseClass>::className)==0);
+
         sq_pushstring(v, baseClassName, -1);
         if (SQ_FAILED(sq_get(v, -3)))
         {
-            assert(false);
+            cbAssert(false);
             return -1;
         }
     }
+    else
+    {
+        cbAssert(std::is_void<typename TypeInfo<UserType>::baseClass>::value == true);
+    }
+
     sq_newclass(v, ((baseClassName != nullptr) ? SQTrue : SQFalse));
     sq_settypetag(v, -1, SQUserPointer(TypeInfo<UserType>::typetag));
     // Add some memory to the class. We over-allocate in cases where we store only a pointer.
