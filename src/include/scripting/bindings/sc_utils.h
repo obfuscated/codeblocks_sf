@@ -332,13 +332,8 @@ struct ExtractParamsBase
         arg = nullptr;
         if (!ExtractUserPointer(arg, m_vm, stackIndex, TypeInfo<NoPtrAndCVType>::typetag))
         {
-#if SQUIRREL_VERSION_NUMBER>=300
             scsprintf(m_errorMessage, 500, _SC("Extracting '%s' in '%s' failed for index %d"),
                       typeid(Arg).name(), funcStr, stackIndex);
-#else
-            scsprintf(m_errorMessage, _SC("Extracting '%s' in '%s' failed for index %d"),
-                      typeid(Arg).name(), funcStr, stackIndex);
-#endif
             return false;
         }
 
@@ -350,13 +345,8 @@ struct ExtractParamsBase
         SQFloat temp;
         if (SQ_FAILED(sq_getfloat(m_vm, stackIndex, &temp)))
         {
-#if SQUIRREL_VERSION_NUMBER>=300
             scsprintf(m_errorMessage, 500, _SC("Extract float in '%s' failed for index %d"),
                       funcStr, stackIndex);
-#else
-            scsprintf(m_errorMessage, _SC("Extract float in '%s' failed for index %d"),
-                      funcStr, stackIndex);
-#endif
             return false;
         }
         f = temp;
@@ -368,13 +358,8 @@ struct ExtractParamsBase
         SQInteger temp;
         if (SQ_FAILED(sq_getinteger(m_vm, stackIndex, &temp)))
         {
-#if SQUIRREL_VERSION_NUMBER>=300
             scsprintf(m_errorMessage, 500, _SC("Extract int in '%s' failed for index %d"),
                       funcStr, stackIndex);
-#else
-            scsprintf(m_errorMessage, _SC("Extract int in '%s' failed for index %d"),
-                      funcStr, stackIndex);
-#endif
             return false;
         }
         i = temp;
@@ -386,13 +371,8 @@ struct ExtractParamsBase
         SQBool temp;
         if (SQ_FAILED(sq_getbool(m_vm, stackIndex, &temp)))
         {
-#if SQUIRREL_VERSION_NUMBER>=300
             scsprintf(m_errorMessage, 500, _SC("Extract bool in '%s' failed for index %d"),
                       funcStr, stackIndex);
-#else
-            scsprintf(m_errorMessage, _SC("Extract bool in '%s' failed for index %d"),
-                      funcStr, stackIndex);
-#endif
             return false;
         }
         b = temp;
@@ -404,13 +384,8 @@ struct ExtractParamsBase
         const SQChar *temp;
         if (SQ_FAILED(sq_getstring(m_vm, stackIndex, &temp)))
         {
-#if SQUIRREL_VERSION_NUMBER>=300
             scsprintf(m_errorMessage, 500, _SC("Extract string in '%s' failed for index %d"),
                       funcStr, stackIndex);
-#else
-            scsprintf(m_errorMessage, _SC("Extract string in '%s' failed for index %d"),
-                      funcStr, stackIndex);
-#endif
             return false;
         }
 
@@ -458,15 +433,9 @@ struct ExtractParamsBase
         const int numArgs = sq_gettop(m_vm);
         if (numArgs != expected)
         {
-#if SQUIRREL_VERSION_NUMBER>=300
             scsprintf(m_errorMessage, 500,
                       _SC("Wrong number of arguments to '%s' - expected %d given %d (often one argument is an implicit 'this' table)!"),
                       funcStr, expected, numArgs);
-#else
-            scsprintf(m_errorMessage,
-                      _SC("Wrong number of arguments to '%s' - expected %d given %d (often one argument is an implicit 'this' table)!"),
-                      funcStr, expected, numArgs);
-#endif
             return false;
         }
         return true;
@@ -477,15 +446,9 @@ struct ExtractParamsBase
         const int numArgs = sq_gettop(m_vm);
         if (numArgs < expectedMin || numArgs > expectedMax)
         {
-#if SQUIRREL_VERSION_NUMBER>=300
             scsprintf(m_errorMessage, 500,
                       _SC("Wrong number of arguments to '%s' - expected [%d;%d] given %d (often one argument is an implicit 'this' table)!"),
                       funcStr, expectedMin, expectedMax, numArgs);
-#else
-            scsprintf(m_errorMessage,
-                      _SC("Wrong number of arguments to '%s' - expected [%d;%d] given %d (often one argument is an implicit 'this' table)!"),
-                      funcStr, expectedMin, expectedMax, numArgs);
-#endif
             return false;
         }
         return true;
@@ -957,10 +920,8 @@ SQInteger NoParamGetterInt(HSQUIRRELVM v)
 
 inline SQInteger ThrowIndexNotFound(HSQUIRRELVM v)
 {
-#if SQUIRREL_VERSION_NUMBER >= 300
     sq_pushnull(v);
     sq_throwobject(v); // no throw object in 2.x, but it seems we don't need it!?
-#endif
     return -1;
 }
 

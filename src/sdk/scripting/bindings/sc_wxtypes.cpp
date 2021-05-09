@@ -483,13 +483,8 @@ SQInteger wxColour_ToString(HSQUIRRELVM v)
         return extractor.ErrorMessage();
 
     SQChar buf[100];
-#if SQUIRREL_VERSION_NUMBER>=300
     scsprintf(buf, 100, _SC("[r=%d, g=%d, b=%d]"), extractor.p0->Red(), extractor.p0->Green(),
               extractor.p0->Blue());
-#else
-    scsprintf(buf, _SC("[r=%d, g=%d, b=%d]"), extractor.p0->Red(), extractor.p0->Green(),
-              extractor.p0->Blue());
-#endif
     sq_pushstring(v, buf, -1);
     return 1;
 }
@@ -566,11 +561,7 @@ SQInteger wxPointSize_tostring(HSQUIRRELVM v)
         return extractor.ErrorMessage();
 
     SQChar buf[100];
-#if SQUIRREL_VERSION_NUMBER>=300
     scsprintf(buf, 100, _SC("[%d,%d]"), extractor.p0->x, extractor.p0->y);
-#else
-    scsprintf(buf, _SC("[%d,%d]"), extractor.p0->x, extractor.p0->y);
-#endif
     sq_pushstring(v, buf, -1);
     return 1;
 }
