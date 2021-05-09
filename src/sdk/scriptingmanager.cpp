@@ -229,8 +229,11 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
     s_ScriptOutput.Clear();
     s_ScriptErrors.Clear();
 
-    if (SQ_FAILED(sq_compilebuffer(m_vm, buffer.utf8_str().data(), buffer.length() * sizeof(SQChar),
-                                   debugName.utf8_str().data(), 1)))
+    const wxScopedCharBuffer &utf8Buffer = buffer.utf8_str();
+
+    if (SQ_FAILED(sq_compilebuffer(m_vm, utf8Buffer.data(),
+                                   utf8Buffer.length() * sizeof(SQChar),
+                                   cbU2C(debugName), 1)))
     {
         const wxString errorMsg = ExtractLastSquirrelError(m_vm, false);
         const wxString fullMessage = wxString::Format("Filename: %s\nError: %s\nDetails: %s",
