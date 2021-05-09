@@ -2017,6 +2017,9 @@
 		<Unit filename="scripts/tests/script_test_plugin.script">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="scripts/tests/sdk_test.script">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="scripts/tests/test_base.script">
 			<Option target="src" />
 		</Unit>

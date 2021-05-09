@@ -8,6 +8,7 @@ class sdkTest extends script_test_base
         ::print("======= Test SDK function BEGINN ======= \n");
         test_replace_macros();
         test_globals();
+        test_classes();
         ::print("======= Test SDK function END ======= \n");
         print_global_test_result();
     }
@@ -88,5 +89,37 @@ class sdkTest extends script_test_base
 
         print_test_result();
         ::print("======= Test Globals function END ======= \n");
+    }
+
+    function test_classes()
+    {
+        ::print("======= Test SDK Classes function BEGINN ======= \n");
+        clear_test_result();
+
+        {
+            local info = PluginInfo();
+            info.name = _T("test_name");
+            info.title = _T("test_title");
+            info.version = _T("test_version");
+            info.description = _T("test_description");
+            info.author = _T("test_author");
+            info.authorEmail = _T("test_authorEmail");
+            info.authorWebsite = _T("test_authorWebsite");
+            info.thanksTo = _T("test_thanksTo");
+            info.license = _T("test_license");
+
+            test_string("PluginInfo name", info.name, "test_name");
+            test_string("PluginInfo title", info.title, "test_title");
+            test_string("PluginInfo version", info.version, "test_version");
+            test_string("PluginInfo description", info.description, "test_description");
+            test_string("PluginInfo author", info.author, "test_author");
+            test_string("PluginInfo authorEmail", info.authorEmail, "test_authorEmail");
+            test_string("PluginInfo authorWebsite", info.authorWebsite, "test_authorWebsite");
+            test_string("PluginInfo thanksTo", info.thanksTo, "test_thanksTo");
+            test_string("PluginInfo license", info.license, "test_license");
+        }
+
+        print_test_result();
+        ::print("======= Test SDK Classes function END ======= \n");
     }
 }
