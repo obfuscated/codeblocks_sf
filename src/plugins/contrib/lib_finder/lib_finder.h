@@ -65,6 +65,7 @@ class lib_finder: public cbToolPlugin
         void UnregisterScripting();
         bool TryDownload(const wxString& ShortCode,const wxString& FileName);
 
+    public:
         // These functions are used in scripting bindings
 		static bool AddLibraryToProject(const wxString& LibName,cbProject* Project,const wxString& TargetName);
 		static bool RemoveLibraryFromProject(const wxString& LibName,cbProject* Project,const wxString& TargetName);
@@ -72,6 +73,7 @@ class lib_finder: public cbToolPlugin
 		static bool SetupTargetManually(CompileTargetBase* Target);
 		static bool EnsureIsDefined(const wxString& ShortCode);
 
+    private:
         ProjectConfiguration* GetProject(cbProject* Project);
 
         WX_DECLARE_HASH_MAP(cbProject*,ProjectConfiguration*,wxPointerHash,wxPointerEqual,ProjectMapT);

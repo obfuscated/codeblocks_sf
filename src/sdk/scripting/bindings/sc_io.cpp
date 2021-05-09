@@ -362,6 +362,16 @@ namespace ScriptBindings
 namespace ScriptBindings
 {
 
+// Dummy type
+struct IONamespace{};
+
+template<>
+struct TypeInfo<IONamespace> {
+    static const uint32_t typetag = uint32_t(TypeTag::IONamespace);
+    static constexpr const SQChar *className = _SC("IO");
+    using baseClass = void;
+};
+
 void Register_IO(HSQUIRRELVM v, ScriptingManager *manager)
 {
     PreserveTop preserve(v);

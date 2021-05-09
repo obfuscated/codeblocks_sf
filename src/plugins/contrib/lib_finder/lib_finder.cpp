@@ -38,8 +38,9 @@
 #include <projectloader_hooks.h>
 #include <compiler.h>
 #include <compilerfactory.h>
-#include <sqplus.h>
-#include <sc_base_types.h>
+#include <sc_utils.h>
+#include <sc_typeinfo_all.h>
+#include <scriptingmanager.h>
 #include <logmanager.h>
 
 #include "resultmap.h"
@@ -54,11 +55,6 @@ namespace
 {
     // Register the plugin
     PluginRegistrant<lib_finder> reg(_T("lib_finder"));
-
-    // Some class required for scripting
-    class LibFinder
-    {
-    };
 
     static const bool ExtraEventPresent = true;
 };
@@ -384,27 +380,105 @@ bool lib_finder::TryAddLibrary(CompileTargetBase* Target,LibraryResult* Result)
     return true;
 }
 
+namespace ScriptBindings
+{
+
+// Dummy type
+struct LibFinder{};
+
+template<>
+struct TypeInfo<LibFinder> {
+    static uint32_t typetag;
+    static constexpr const SQChar *className = _SC("LibFinder");
+    using baseClass = void;
+};
+
+uint32_t TypeInfo<LibFinder>::typetag = uint32_t(TypeTag::Unassigned);
+
+template<bool (*func)(const wxString &, cbProject *, const wxString &)>
+SQInteger LibFinder_LibraryToProject(HSQUIRRELVM v)
+{
+    // env table, LibName, Project, TargetName
+    ExtractParams4<SkipParam, const wxString *, cbProject *, const wxString *> extractor(v);
+    if (!extractor.Process("LibFinder::LibraryToProject"))
+        return extractor.ErrorMessage();
+    const bool result = func(*extractor.p1, extractor.p2, *extractor.p3);
+    sq_pushbool(v, result);
+    return 1;
+}
+
+SQInteger LibFinder_SetupTargetManually(HSQUIRRELVM v)
+{
+    // env table, Target
+    ExtractParams2<SkipParam, CompileTargetBase *> extractor(v);
+    if (!extractor.Process("LibFinder::SetupTargetManually"))
+        return extractor.ErrorMessage();
+    const bool result = lib_finder::SetupTargetManually(extractor.p1);
+    sq_pushbool(v, result);
+    return 1;
+}
+
+SQInteger LibFinder_EnsureIsDefined(HSQUIRRELVM v)
+{
+    // env table, ShortCode
+    ExtractParams2<SkipParam, const wxString *> extractor(v);
+    if (!extractor.Process("LibFinder::EnsureIsDefined"))
+        return extractor.ErrorMessage();
+    const bool result = lib_finder::EnsureIsDefined(*extractor.p1);
+    sq_pushbool(v, result);
+    return 1;
+}
+
+} // namespace ScriptBindings
+
 void lib_finder::RegisterScripting()
 {
-    SqPlus::SQClassDef<LibFinder>("LibFinder")
-        .staticFunc(&lib_finder::AddLibraryToProject,"AddLibraryToProject")
-        .staticFunc(&lib_finder::IsLibraryInProject,"IsLibraryInProject")
-        .staticFunc(&lib_finder::RemoveLibraryFromProject,"RemoveLibraryFromProject")
-        .staticFunc(&lib_finder::SetupTargetManually,"SetupTarget")
-        .staticFunc(&lib_finder::EnsureIsDefined,"EnsureLibraryDefined")
-    ;
+    ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
+    HSQUIRRELVM v = scriptMgr->GetVM();
+    if (v)
+    {
+        using namespace ScriptBindings;
+
+        TypeInfo<LibFinder>::typetag = scriptMgr->RequestClassTypeTag();
+
+        PreserveTop preserveTop(v);
+
+        sq_pushroottable(v);
+        const SQInteger classDecl = CreateClassDecl<LibFinder>(v, _SC("LibFinder"));
+        BindStaticMethod(v, _SC("AddLibraryToProject"),
+                         LibFinder_LibraryToProject<lib_finder::AddLibraryToProject>,
+                         _SC("LibFinder::AddLibraryToProject"));
+        BindStaticMethod(v, _SC("IsLibraryInProject"),
+                         LibFinder_LibraryToProject<lib_finder::IsLibraryInProject>,
+                         _SC("LibFinder::IsLibraryInProject"));
+        BindStaticMethod(v, _SC("RemoveLibraryFromProject"),
+                         LibFinder_LibraryToProject<lib_finder::RemoveLibraryFromProject>,
+                         _SC("LibFinder::RemoveLibraryFromProject"));
+        BindStaticMethod(v, _SC("SetupTargetManually"), LibFinder_SetupTargetManually,
+                         _SC("LibFinder::SetupTargetManually"));
+        BindStaticMethod(v, _SC("EnsureIsDefined"), LibFinder_EnsureIsDefined,
+                         _SC("LibFinder::EnsureIsDefined"));
+
+        // Put the class in the root table. This must be last!
+        sq_newslot(v, classDecl, SQFalse);
+
+        sq_poptop(v); // Pop root table.
+    }
 }
 
 void lib_finder::UnregisterScripting()
 {
-    Manager::Get()->GetScriptingManager();
-    HSQUIRRELVM v = SquirrelVM::GetVMPtr();
-    if ( v )
+    HSQUIRRELVM v = Manager::Get()->GetScriptingManager()->GetVM();
+    if (v)
     {
+        using namespace ScriptBindings;
+        PreserveTop preserveTop(v);
         sq_pushroottable(v);
-        sq_pushstring(v,"LibFinder",-1);
-        sq_deleteslot(v,-2,false);
+        sq_pushstring(v, _SC("LibFinder"), -1);
+        sq_deleteslot(v, -2, false);
         sq_poptop(v);
+
+        TypeInfo<LibFinder>::typetag = uint32_t(TypeTag::Unassigned);
     }
 }
 

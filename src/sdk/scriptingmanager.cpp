@@ -57,7 +57,8 @@ struct ScriptingManager::Data : wxEvtHandler
     Data(ScriptingManager *scriptingManager) :
         m_ScriptingManager(scriptingManager),
         m_AttachedToMainWindow(false),
-        m_MenuItemsManager(false) // not auto-clear
+        m_MenuItemsManager(false), // not auto-clear
+        m_lastTypeTag(uint32_t(ScriptBindings::TypeTag::Last))
     {}
 
     void OnScriptMenu(wxCommandEvent& event);
@@ -116,6 +117,9 @@ struct ScriptingManager::Data : wxEvtHandler
     // FIXME (squirrel) Using std::string here is not efficient
     using ConstantsMap = std::unordered_map<std::string, ConstantData>;
     ConstantsMap m_mapConstants;
+
+    uint32_t m_lastTypeTag;
+
 
     friend SQInteger ConstantsGet(HSQUIRRELVM v);
     friend SQInteger ConstantsSet(HSQUIRRELVM v);
@@ -717,4 +721,9 @@ void ScriptingManager::Data::OnScriptMenu(wxCommandEvent& event)
 void ScriptingManager::Data::OnScriptPluginMenu(wxCommandEvent& event)
 {
     ScriptBindings::ScriptPluginWrapper::OnScriptMenu(event.GetId());
+}
+
+uint32_t ScriptingManager::RequestClassTypeTag()
+{
+    return m_data->m_lastTypeTag++;
 }

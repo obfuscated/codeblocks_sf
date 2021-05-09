@@ -62,11 +62,13 @@ namespace ScriptBindings
 
 template<>
 struct TypeInfo<Wiz> {
-    // FIXME (squirrel) Add a system for this
-    static const uint32_t typetag = uint32_t(TypeTag::UserVariableManager) + 100;
+    static uint32_t typetag;
     static constexpr const SQChar *className = _SC("Wiz");
     using baseClass = void;
 };
+
+uint32_t TypeInfo<Wiz>::typetag = uint32_t(TypeTag::Unassigned);
+
 } // namespace ScriptBindings
 
 Wiz::Wiz()
@@ -98,7 +100,7 @@ void Wiz::OnAttach()
     }
 
     // read configuration
-    RegisterWizard(vm);
+    RegisterWizard();
 
     // run main wizard script
     // this registers all available wizard scripts with us
@@ -138,6 +140,28 @@ void Wiz::OnAttach()
     m_ReleaseName = _T("Release");
     m_ReleaseOutputDir = _T("bin") + sep + _T("Release") + sep;
     m_ReleaseObjOutputDir = _T("obj") + sep + _T("Release") + sep;
+}
+
+void Wiz::OnRelease(bool appShutDown)
+{
+    if (appShutDown)
+        return;
+    HSQUIRRELVM v = Manager::Get()->GetScriptingManager()->GetVM();
+    if (v)
+    {
+        using namespace ScriptBindings;
+
+        PreserveTop preserveTop(v);
+        sq_pushroottable(v);
+        sq_pushstring(v, _SC("Wizard"), -1);
+        sq_deleteslot(v, -2, false);
+
+        sq_pushstring(v, _SC("Wiz"), -1);
+        sq_deleteslot(v, -2, false);
+        sq_poptop(v);
+
+        TypeInfo<Wiz>::typetag = uint32_t(TypeTag::Unassigned);
+    }
 }
 
 int Wiz::GetCount() const
@@ -2058,15 +2082,19 @@ SQInteger Wiz_ContainerWithChoices(HSQUIRRELVM v)
 
 } // namespace ScriptBindings
 
-void Wiz::RegisterWizard(HSQUIRRELVM v)
+void Wiz::RegisterWizard()
 {
     using namespace ScriptBindings;
+
+    ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
+    HSQUIRRELVM v = scriptMgr->GetVM();
 
     PreserveTop preserveTop(v);
 
     sq_pushroottable(v);
 
     {
+        TypeInfo<Wiz>::typetag = scriptMgr->RequestClassTypeTag();
         // Register Wiz
         const SQInteger classDecl = CreateClassDecl<Wiz>(v, _SC("Wiz"));
 

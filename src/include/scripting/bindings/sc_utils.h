@@ -121,7 +121,7 @@ UserDataForType<UserType>* SetupUserPointer(HSQUIRRELVM vm, SQInteger idx)
 {
     SQUserPointer ptr = nullptr;
     if (SQ_FAILED(sq_getinstanceup(vm, idx, &ptr,
-                                   SQUserPointer(TypeInfo<UserType>::typetag))))
+                                   SQUserPointer(uint64_t(TypeInfo<UserType>::typetag)))))
     {
         sq_throwerror(vm, _SC("SetupUserPointer: Invalid type tag!"));
         cbAssert(false);
@@ -599,7 +599,7 @@ inline SQInteger CreateClassDecl(HSQUIRRELVM v, const SQChar *className,
     }
 
     sq_newclass(v, ((baseClassName != nullptr) ? SQTrue : SQFalse));
-    sq_settypetag(v, -1, SQUserPointer(TypeInfo<UserType>::typetag));
+    sq_settypetag(v, -1, SQUserPointer(uint64_t(TypeInfo<UserType>::typetag)));
     // Add some memory to the class. We over-allocate in cases where we store only a pointer.
     sq_setclassudsize(v, -1, sizeof(UserDataForType<UserType>));
 
