@@ -292,8 +292,8 @@ bool nsEnvVars::EnvvarSetExists(const wxString& set_name)
   if (set_name.IsEmpty())
     return false;
 
-  wxString set_path = nsEnvVars::GetSetPathByName(set_name, true, false);
-  if (set_name.IsEmpty())
+  const wxString set_path = nsEnvVars::GetSetPathByName(set_name, true, false);
+  if (set_path.IsEmpty())
     return false;
 
   return true;
