@@ -50,9 +50,10 @@ static wxString s_ScriptOutput;
 static wxString s_ScriptErrors;
 static wxString capture;
 
-struct ScriptingManager::Data
+struct ScriptingManager::Data : wxEvtHandler
 {
-    Data() :
+    Data(ScriptingManager *scriptingManager) :
+        m_ScriptingManager(scriptingManager),
         m_AttachedToMainWindow(false),
         m_MenuItemsManager(false) // not auto-clear
     {}
@@ -69,6 +70,8 @@ struct ScriptingManager::Data
     };
     typedef std::map<int, MenuBoundScript> MenuIDToScript;
     typedef std::set<wxString> IncludeSet;
+
+    ScriptingManager *m_ScriptingManager;
 
     /// This the Squirrel VM object we will use everywhere.
     HSQUIRRELVM m_vm;
@@ -114,8 +117,13 @@ struct ScriptingManager::Data
 
     friend SQInteger ConstantsGet(HSQUIRRELVM v);
     friend SQInteger ConstantsSet(HSQUIRRELVM v);
+
+private:
+    DECLARE_EVENT_TABLE()
 };
 
+BEGIN_EVENT_TABLE(ScriptingManager::Data, wxEvtHandler)
+END_EVENT_TABLE()
 
 static void PrintSquirrelToWxString(wxString& msg, const SQChar* s, va_list& vl)
 {
@@ -220,17 +228,13 @@ SQInteger ConstantsSet(HSQUIRRELVM v)
     return ScriptBindings::ThrowIndexNotFound(v);
 }
 
-BEGIN_EVENT_TABLE(ScriptingManager, wxEvtHandler)
-//
-END_EVENT_TABLE()
-
 namespace ScriptBindings
 {
     void RegisterBindings(HSQUIRRELVM vm, ScriptingManager *manager);
     void UnregisterBindings();
 } // namespace ScriptBindings
 
-ScriptingManager::ScriptingManager() : m_data(new Data)
+ScriptingManager::ScriptingManager() : m_data(new Data(this))
 {
     m_data->m_vm = sq_open(1024);
     if (m_data->m_vm == nullptr)
@@ -469,25 +473,26 @@ bool ScriptingManager::RegisterScriptPlugin(const wxString& /*name*/, const wxAr
     // attach this event handler in the main window (one-time run)
     if (!m_data->m_AttachedToMainWindow)
     {
-        Manager::Get()->GetAppWindow()->PushEventHandler(this);
+        Manager::Get()->GetAppWindow()->PushEventHandler(m_data);
         m_data->m_AttachedToMainWindow = true;
     }
 
     for (size_t i = 0; i < ids.GetCount(); ++i)
     {
-        Connect(ids[i], -1, wxEVT_COMMAND_MENU_SELECTED,
-                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                &ScriptingManager::Data::OnScriptPluginMenu);
+        m_data->Connect(ids[i], -1, wxEVT_COMMAND_MENU_SELECTED,
+                        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+                        &ScriptingManager::Data::OnScriptPluginMenu);
     }
     return true;
 }
 
-bool ScriptingManager::RegisterScriptMenu(const wxString& menuPath, const wxString& scriptOrFunc, bool isFunction)
+bool ScriptingManager::RegisterScriptMenu(const wxString& menuPath, const wxString& scriptOrFunc,
+                                          bool isFunction)
 {
     // attach this event handler in the main window (one-time run)
     if (!m_data->m_AttachedToMainWindow)
     {
-        Manager::Get()->GetAppWindow()->PushEventHandler(this);
+        Manager::Get()->GetAppWindow()->PushEventHandler(m_data);
         m_data->m_AttachedToMainWindow = true;
     }
 
@@ -499,20 +504,18 @@ bool ScriptingManager::RegisterScriptMenu(const wxString& menuPath, const wxStri
         if (!isFunction)
             item->SetHelp(_("Press SHIFT while clicking this menu item to edit the assigned script in the editor"));
 
-        Connect(id, -1, wxEVT_COMMAND_MENU_SELECTED,
-                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                &ScriptingManager::Data::OnScriptMenu);
+        m_data->Connect(id, -1, wxEVT_COMMAND_MENU_SELECTED,
+                        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+                        &ScriptingManager::Data::OnScriptMenu);
 
         Data::MenuBoundScript mbs;
         mbs.scriptOrFunc = scriptOrFunc;
         mbs.isFunc = isFunction;
         m_data->m_MenuIDToScript.insert(m_data->m_MenuIDToScript.end(), std::make_pair(id, mbs));
-        #if wxCHECK_VERSION(3, 0, 0)
-        Manager::Get()->GetLogManager()->Log(F(_("Script/function '%s' registered under menu '%s'"), scriptOrFunc.wx_str(), menuPath.wx_str()));
-        #else
-        Manager::Get()->GetLogManager()->Log(F(_("Script/function '%s' registered under menu '%s'"), scriptOrFunc.c_str(), menuPath.c_str()));
-        #endif
 
+
+        Manager::Get()->GetLogManager()->Log(F(_("Script/function '%s' registered under menu '%s'"),
+                                               scriptOrFunc.wx_str(), menuPath.wx_str()));
         return true;
     }
 
@@ -680,25 +683,16 @@ void ScriptingManager::Data::OnScriptMenu(wxCommandEvent& event)
 
     Data::MenuBoundScript& mbs = it->second;
 
-// FIXME (squirrel) Reimplement OnScriptMenu 1
-/*
     // is it a function?
     if (mbs.isFunc)
     {
-        try
-        {
-            SqPlus::SquirrelFunction<void> f(cbU2C(mbs.scriptOrFunc));
-            f();
-        }
-        catch (SquirrelError exception)
-        {
-            DisplayErrors(&exception);
-        }
+        ScriptBindings::Caller caller(m_vm);
+        if (!caller.Call0(cbU2C(mbs.scriptOrFunc)))
+            m_ScriptingManager->DisplayErrors();
         return;
     }
-*/
-    // script loading below
 
+    // script loading below
     if (wxGetKeyState(WXK_SHIFT))
     {
         wxString script = ConfigManager::LocateDataFile(mbs.scriptOrFunc, sdScriptsUser | sdScriptsGlobal);
@@ -706,19 +700,9 @@ void ScriptingManager::Data::OnScriptMenu(wxCommandEvent& event)
         return;
     }
 
-// FIXME (squirrel) Reimplement OnScriptMenu 2
-/*
     // run script
-    try
-    {
-        if (!LoadScript(mbs.scriptOrFunc))
-            cbMessageBox(_("Could not run script: ") + mbs.scriptOrFunc, _("Error"), wxICON_ERROR);
-    }
-    catch (SquirrelError exception)
-    {
-        DisplayErrors(&exception);
-    }
-*/
+    if (!m_ScriptingManager->LoadScript(mbs.scriptOrFunc))
+        cbMessageBox(_("Could not run script: ") + mbs.scriptOrFunc, _("Error"), wxICON_ERROR);
 }
 
 void ScriptingManager::Data::OnScriptPluginMenu(wxCommandEvent& event)

@@ -123,3 +123,12 @@ RegisterPlugin(Menu_test_plugin());
 
 // if you want to call this plugin's Execute() function, use this in a script:
 // ExecutePlugin(_T("Menu_test_plugin"));
+
+function ScriptMenuFunc()
+{
+    ::ShowMessage(_T("ScriptMenu"));
+}
+
+// Register script menu
+GetScriptingManager().RegisterScriptMenu(_("&Plugins") + _T("/-") + _("ScriptMenu"),
+                                         _T("ScriptMenuFunc"), true);

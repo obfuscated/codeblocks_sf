@@ -47,7 +47,7 @@ struct SquirrelError;
   * The templated type denotes the function's return type. Also note that the
   * function name is not unicode (we 're not using Squirrel in unicode mode).
   */
-class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHandler
+class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>
 {
         friend class Mgr<ScriptingManager>;
     public:
@@ -222,8 +222,6 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
 
         friend SQInteger ConstantsGet(HSQUIRRELVM v);
         friend SQInteger ConstantsSet(HSQUIRRELVM v);
-
-        DECLARE_EVENT_TABLE()
 };
 
 #endif // SCRIPTING_H

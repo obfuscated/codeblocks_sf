@@ -794,7 +794,6 @@ bool CodeBlocksApp::OnInit()
 
         CheckVersion();
 
-        // FIXME (squirrel) Reimplement run startup script
         // run startup script
         const wxString startup = ConfigManager::LocateDataFile(_T("startup.script"), sdScriptsUser | sdScriptsGlobal);
         if (!startup.empty())
