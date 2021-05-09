@@ -13,34 +13,6 @@
 namespace ScriptBindings
 {
 
-// FIXME (squirrel) Remove this?!
-/*
-static const char * GetStackItemTypeStr(HSQUIRRELVM vm, SQInteger idx)
-{
-    switch (sq_gettype(vm, idx))
-    {
-        case OT_NULL: return "Null";
-        case OT_INTEGER: return "Integer";
-        case OT_FLOAT: return "Float";
-        case OT_BOOL: return "Bool";
-        case OT_STRING: return "String";
-        case OT_TABLE: return "Table";
-        case OT_ARRAY: return "Array";
-        case OT_USERDATA: return "UserData";
-        case OT_CLOSURE: return "Closure";
-        case OT_NATIVECLOSURE: return "NativeClosure";
-        case OT_GENERATOR: return "Generator";
-        case OT_USERPOINTER: return "UserPointer";
-        case OT_THREAD: return "Thread";
-        case OT_FUNCPROTO: return "FuncProto";
-        case OT_CLASS: return "Class";
-        case OT_INSTANCE: return "Instance";
-        case OT_WEAKREF: return "WeakRef";
-        default: return "<Unknown>";
-    }
-}
-*/
-
 static std::string GetItemString(HSQUIRRELVM vm, SQInteger stackIdx)
 {
 /*    const void *ptr;
@@ -166,7 +138,6 @@ void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop)
         }
 
         puts(line.c_str());
-        //printf("debug: [%d]: type %s\n", ii, GetStackItemTypeStr(vm, -1-ii));
     }
     puts("");
 }
