@@ -136,6 +136,105 @@ class sdkTest extends script_test_base
         ::print("======= Test helpers END ======= \n");
     }
 
+    function test_ExtensionAPI(project)
+    {
+        StartNewSection("cbProject Extension API");
+
+        local test_ext = function(message, project, extension, expected)
+        {
+            local list = GetStringFromArray(project.ExtensionListNodes(extension), _T(";"),
+                                            false);
+            test_string(message, list, expected);
+        }
+        local test_attr = function(message, project, extension, expected)
+        {
+            local list = GetStringFromArray(project.ExtensionListNodeAttributes(extension),
+                                            _T(";"), false);
+            test_string(message, list, expected);
+        }
+
+        test_equal("cbProject::ExtensionListNodes root initial",
+                   project.ExtensionListNodes(_T("")).GetCount(), 0);
+        test_equal("cbProject::ExtensionListNodes initial",
+                   project.ExtensionListNodes(_T("rootNode")).GetCount(), 0);
+        test_string("cbProject::ExtensionAddNode root",
+                    project.ExtensionAddNode(_T(""), _T("rootNode")), "rootNode[0]");
+        test_string("cbProject::ExtensionAddNode 0",
+                    project.ExtensionAddNode(_T("rootNode[0]"), _T("child")),
+                    "rootNode[0]/child[0]");
+        test_string("cbProject::ExtensionAddNode 1",
+                    project.ExtensionAddNode(_T("rootNode[0]"), _T("multi")),
+                    "rootNode[0]/multi[0]");
+        test_string("cbProject::ExtensionAddNode 2",
+                    project.ExtensionAddNode(_T("rootNode[0]"), _T("multi")),
+                    "rootNode[0]/multi[1]");
+
+        test_ext("cbProject::ExtensionListNodes root after 1", project, _T(""), "/rootNode[0]");
+        test_ext("cbProject::ExtensionListNodes root after 2", project, _T("/"), "/rootNode[0]");
+
+        // FIXME (squirrel) multi[1] is odd here... the call "cbProject::ExtensionAddNode 1"
+        //    returned multi[0]
+        test_ext("cbProject::ExtensionListNodes after addition", project, _T("rootNode[0]"),
+                 "rootNode[0]/child[0];rootNode[0]/multi[0];rootNode[0]/multi[1]");
+
+        local multi0 = _T("rootNode[0]/multi[0]");
+        local multi1 = _T("rootNode[0]/multi[1]");
+
+        test_attr("cbProject::ExtensionListNodeAttributes multi[0]: empty", project, multi0, "");
+        test_attr("cbProject::ExtensionListNodeAttributes multi[1]: empty", project, multi1, "");
+
+        // Add some attributes to multi[0] and verify them.
+        project.ExtensionSetNodeAttribute(multi0, _T("attr0"), _T("value0"));
+        project.ExtensionSetNodeAttribute(multi0, _T("attr1"), _T("value1"));
+        test_string("cbProject::ExtensionGetNodeAttribute multi[0]: 0",
+                    project.ExtensionGetNodeAttribute(multi0, _T("attr0")), "value0");
+        test_string("cbProject::ExtensionGetNodeAttribute multi[0]: 1",
+                    project.ExtensionGetNodeAttribute(multi0, _T("attr1")), "value1");
+        test_attr("cbProject::ExtensionListNodeAttributes multi[0]: after", project, multi0,
+                  "attr0;attr1");
+
+        // Add some attributes to multi[1] and verify them. The values are different so we can
+        // later use them to do queries.
+        test_attr("cbProject::ExtensionListNodeAttributes multi[1]: empty2", project, multi1,
+                  "");
+        project.ExtensionSetNodeAttribute(multi1, _T("attr0"), _T("test0"));
+        project.ExtensionSetNodeAttribute(multi1, _T("attr1"), _T("value"));
+        test_string("cbProject::ExtensionGetNodeAttribute multi[1]: 0",
+                    project.ExtensionGetNodeAttribute(multi1, _T("attr0")), "test0");
+        test_string("cbProject::ExtensionGetNodeAttribute multi[1]: 1",
+                    project.ExtensionGetNodeAttribute(multi1, _T("attr1")), "value");
+        test_attr("cbProject::ExtensionListNodeAttributes multi[1]: after", project, multi1,
+                  "attr0;attr1");
+
+        // Complex query tests.
+        project.ExtensionSetNodeAttribute(_T("rootNode/multi(attr0=value0)"), _T("attr2"), _T("value2"));
+        project.ExtensionSetNodeAttribute(_T("rootNode/multi(attr0=test0)"), _T("attr2"), _T("test2"));
+        test_string("cbProject::ExtensionGetNodeAttribute complex query 0",
+                    project.ExtensionGetNodeAttribute(multi0, _T("attr2")), "value2");
+        test_string("cbProject::ExtensionGetNodeAttribute complex query 1",
+                    project.ExtensionGetNodeAttribute(multi1, _T("attr2")), "test2");
+
+        project.ExtensionRemoveNodeAttribute(multi0, _T("attr0"));
+        project.ExtensionRemoveNodeAttribute(multi0, _T("attr2"));
+        test_attr("cbProject::ExtensionRemoveNodeAttribute multi[0]", project, multi0, "attr1");
+
+        project.ExtensionRemoveNodeAttribute(multi1, _T("attr1"));
+        test_attr("cbProject::ExtensionRemoveNodeAttribute multi[0]", project, multi1,
+                  "attr0;attr2");
+
+        // Remove node multi1
+        project.ExtensionRemoveNode(_T("rootNode/multi(attr0=test0)"));
+        test_ext("cbProject::ExtensionRemoveNode multi 1", project, _T("rootNode[0]"),
+                 "rootNode[0]/child[0];rootNode[0]/multi[0]");
+
+        project.ExtensionRemoveNode(multi0);
+        test_ext("cbProject::ExtensionRemoveNode multi 0", project, _T("rootNode[0]"),
+                 "rootNode[0]/child[0]");
+
+        project.ExtensionRemoveNode(_T("rootNode"));
+        test_ext("cbProject::ExtensionRemoveNode root", project, _T(""), "");
+    }
+
     function test_project_classes()
     {
         ::print("======= Test SDK Project related classes/functions BEGINN ======= \n");
@@ -812,103 +911,7 @@ class sdkTest extends script_test_base
             test_string("cbProject::SetTitle", project.GetTitle(), "TestTitle");
         }
 
-        {
-            StartNewSection("cbProject Extension API");
-
-            local test_ext = function(message, project, extension, expected)
-            {
-                local list = GetStringFromArray(project.ExtensionListNodes(extension), _T(";"),
-                                                false);
-                test_string(message, list, expected);
-            }
-            local test_attr = function(message, project, extension, expected)
-            {
-                local list = GetStringFromArray(project.ExtensionListNodeAttributes(extension),
-                                                _T(";"), false);
-                test_string(message, list, expected);
-            }
-
-            test_equal("cbProject::ExtensionListNodes root initial",
-                       project.ExtensionListNodes(_T("")).GetCount(), 0);
-            test_equal("cbProject::ExtensionListNodes initial",
-                       project.ExtensionListNodes(_T("rootNode")).GetCount(), 0);
-            test_string("cbProject::ExtensionAddNode root",
-                        project.ExtensionAddNode(_T(""), _T("rootNode")), "rootNode[0]");
-            test_string("cbProject::ExtensionAddNode 0",
-                        project.ExtensionAddNode(_T("rootNode[0]"), _T("child")),
-                        "rootNode[0]/child[0]");
-            test_string("cbProject::ExtensionAddNode 1",
-                        project.ExtensionAddNode(_T("rootNode[0]"), _T("multi")),
-                        "rootNode[0]/multi[0]");
-            test_string("cbProject::ExtensionAddNode 2",
-                        project.ExtensionAddNode(_T("rootNode[0]"), _T("multi")),
-                        "rootNode[0]/multi[1]");
-
-            test_ext("cbProject::ExtensionListNodes root after 1", project, _T(""), "/rootNode[0]");
-            test_ext("cbProject::ExtensionListNodes root after 2", project, _T("/"), "/rootNode[0]");
-
-            // FIXME (squirrel) multi[1] is odd here... the call "cbProject::ExtensionAddNode 1"
-            //    returned multi[0]
-            test_ext("cbProject::ExtensionListNodes after addition", project, _T("rootNode[0]"),
-                     "rootNode[0]/child[0];rootNode[0]/multi[0];rootNode[0]/multi[1]");
-
-            local multi0 = _T("rootNode[0]/multi[0]");
-            local multi1 = _T("rootNode[0]/multi[1]");
-
-            test_attr("cbProject::ExtensionListNodeAttributes multi[0]: empty", project, multi0, "");
-            test_attr("cbProject::ExtensionListNodeAttributes multi[1]: empty", project, multi1, "");
-
-            // Add some attributes to multi[0] and verify them.
-            project.ExtensionSetNodeAttribute(multi0, _T("attr0"), _T("value0"));
-            project.ExtensionSetNodeAttribute(multi0, _T("attr1"), _T("value1"));
-            test_string("cbProject::ExtensionGetNodeAttribute multi[0]: 0",
-                        project.ExtensionGetNodeAttribute(multi0, _T("attr0")), "value0");
-            test_string("cbProject::ExtensionGetNodeAttribute multi[0]: 1",
-                        project.ExtensionGetNodeAttribute(multi0, _T("attr1")), "value1");
-            test_attr("cbProject::ExtensionListNodeAttributes multi[0]: after", project, multi0,
-                      "attr0;attr1");
-
-            // Add some attributes to multi[1] and verify them. The values are different so we can
-            // later use them to do queries.
-            test_attr("cbProject::ExtensionListNodeAttributes multi[1]: empty2", project, multi1,
-                      "");
-            project.ExtensionSetNodeAttribute(multi1, _T("attr0"), _T("test0"));
-            project.ExtensionSetNodeAttribute(multi1, _T("attr1"), _T("value"));
-            test_string("cbProject::ExtensionGetNodeAttribute multi[1]: 0",
-                        project.ExtensionGetNodeAttribute(multi1, _T("attr0")), "test0");
-            test_string("cbProject::ExtensionGetNodeAttribute multi[1]: 1",
-                        project.ExtensionGetNodeAttribute(multi1, _T("attr1")), "value");
-            test_attr("cbProject::ExtensionListNodeAttributes multi[1]: after", project, multi1,
-                      "attr0;attr1");
-
-            // Complex query tests.
-            project.ExtensionSetNodeAttribute(_T("rootNode/multi(attr0=value0)"), _T("attr2"), _T("value2"));
-            project.ExtensionSetNodeAttribute(_T("rootNode/multi(attr0=test0)"), _T("attr2"), _T("test2"));
-            test_string("cbProject::ExtensionGetNodeAttribute complex query 0",
-                        project.ExtensionGetNodeAttribute(multi0, _T("attr2")), "value2");
-            test_string("cbProject::ExtensionGetNodeAttribute complex query 1",
-                        project.ExtensionGetNodeAttribute(multi1, _T("attr2")), "test2");
-
-            project.ExtensionRemoveNodeAttribute(multi0, _T("attr0"));
-            project.ExtensionRemoveNodeAttribute(multi0, _T("attr2"));
-            test_attr("cbProject::ExtensionRemoveNodeAttribute multi[0]", project, multi0, "attr1");
-
-            project.ExtensionRemoveNodeAttribute(multi1, _T("attr1"));
-            test_attr("cbProject::ExtensionRemoveNodeAttribute multi[0]", project, multi1,
-                      "attr0;attr2");
-
-            // Remove node multi1
-            project.ExtensionRemoveNode(_T("rootNode/multi(attr0=test0)"));
-            test_ext("cbProject::ExtensionRemoveNode multi 1", project, _T("rootNode[0]"),
-                     "rootNode[0]/child[0];rootNode[0]/multi[0]");
-
-            project.ExtensionRemoveNode(multi0);
-            test_ext("cbProject::ExtensionRemoveNode multi 0", project, _T("rootNode[0]"),
-                     "rootNode[0]/child[0]");
-
-            project.ExtensionRemoveNode(_T("rootNode"));
-            test_ext("cbProject::ExtensionRemoveNode root", project, _T(""), "");
-        }
+        test_ExtensionAPI(project);
 
         {
             StartNewSection("File API calls in ProjectBuildTarget");
