@@ -35,7 +35,7 @@ struct PreserveTop
 
     void check()
     {
-#if !defined(NDEBUG)
+#if defined(cbDEBUG)
         if (sq_gettop(m_vm) != m_top)
             PrintStack(m_vm, "PreserveTop::check failure!");
 #endif
