@@ -50,6 +50,7 @@
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-DEXPORT_LIB" />
 					<Add directory="include/scripting/include" />
 				</Compiler>
 			</Target>
