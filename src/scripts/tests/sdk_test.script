@@ -1111,6 +1111,8 @@ class sdkTest extends script_test_base
         clear_test_result();
 
         {
+            StartNewSection("ConfigManager");
+
             local cfg = GetConfigManager();
             test_false("GetConfigManager", IsNull(cfg));
 
@@ -1123,6 +1125,242 @@ class sdkTest extends script_test_base
             test_equal("ConfigManager bool", cfg.Read(_T("/test/bool"), true), false);
             test_equal("ConfigManager float", cfg.Read(_T("/test/float"), 5.0), 11.2);
             test_string("ConfigManager string", cfg.Read(_T("/test/string"), _T("defstr")), "mystr");
+        }
+
+        StartNewSection("editor related");
+
+        // FIXME (squirrel) Clean up this folder when we have the IO API bound, so tests are less
+        // noisy and produce smaller number of dialogs.
+        local tempFolder = MakePath(GetFolder(0x4), _T("sdk_tests"));
+        print(_T("TEMP folder is=") + tempFolder + _T("\n"));
+
+        local editorMgr = GetEditorManager();
+        test_false("GetEditorManager", IsNull(editorMgr));
+        test_equal("GetEditorManager equal", editorMgr, GetEditorManager());
+        test_true("EditorManager type", editorMgr instanceof EditorManager);
+
+        editorMgr.CloseAll(true);
+
+        local editor0 = editorMgr.New(MakePath(tempFolder, _T("test0.cpp")));
+        test_false("EditorManager::New", IsNull(editor0));
+        test_true("cbEditor type", editor0 instanceof cbEditor);
+        test_true("EditorBase type", editor0 instanceof EditorBase);
+
+        editor0.SetText(_("Line1\nLine2\nLine3"));
+
+        local editor1 = editorMgr.New(MakePath(tempFolder, _T("test1.ext")));
+        test_false("EditorManager::New 2", IsNull(editor1));
+        editor1.SetText(_("Line1\nLine2\nLine3\nLine4"));
+
+        {
+            // FIXME (squirrel) GetShortName behaves strangely. Setting the filename doesn't change
+            // the shortname. Probably this is a bug in the API.
+            StartNewSection("EditorBase");
+
+            test_string("GetFilename 0", editor0.GetFilename(),
+                        MakePath(tempFolder, _T("test0.cpp")));
+            test_string("GetFilename 1", editor1.GetFilename(),
+                        MakePath(tempFolder, _T("test1.ext")));
+            editor1.SetFilename(MakePath(tempFolder, _T("newtest1.ext")));
+            test_string("GetFilename 1", editor1.GetFilename(),
+                        MakePath(tempFolder, _T("newtest1.ext")));
+            test_string("GetShortName 0", editor0.GetShortName(), "test0.cpp");
+            test_string("GetShortName 1", editor1.GetShortName(), "test1.ext");
+
+            test_true("GetModified 0", editor0.GetModified());
+            test_true("GetModified 1", editor1.GetModified());
+            editor0.SetModified(false);
+            test_false("SetModified 0", editor0.GetModified());
+
+            test_string("GetTitle", editor0.GetTitle(), "test0.cpp");
+            editor0.SetTitle(_T("newtest0"));
+            test_string("SetTitle", editor0.GetTitle(), "newtest0");
+
+            test_true("IsBuiltinEditor", editor0.IsBuiltinEditor());
+            test_true("ThereAreOthers", editor0.ThereAreOthers());
+
+            // Just call it, we cannot verify if it really works.
+            editor0.GotoLine(2, true);
+
+
+            test_false("IsReadOnly", editor0.IsReadOnly());
+            test_false("HasSelection", editor0.HasSelection());
+        }
+
+        {
+            StartNewSection("cbEditor");
+            test_string("GetText 0", editor0.GetText(), "Line1\nLine2\nLine3");
+            test_string("GetText 1", editor0.GetText(), "Line1\nLine2\nLine3");
+            editor0.SetText(_T("NewLine1\nNewLine2\n   NewLine3\nNewLine4"));
+            test_string("SetText", editor0.GetText(), "NewLine1\nNewLine2\n   NewLine3\nNewLine4");
+
+            test_true("EditorBase::CanUndo", editor0.CanUndo());
+            test_false("EditorBase::CanRedo 0", editor0.CanRedo());
+
+            local startText = editor0.GetText();
+            local endText = startText + _T("\nsome_new_lines\nnew\n\n")
+            editor0.SetText(endText);
+            editor0.Undo();
+            test_equal("EditorBase::Undo", editor0.GetText(), startText);
+            test_true("EditorBase::CanRedo 1", editor0.CanRedo());
+            editor0.Redo();
+            test_equal("EditorBase::Redo", editor0.GetText(), endText);
+
+            editor0.SetEditorTitle(_T("newEditorTitle"));
+            test_string("SetEditorTitle", editor0.GetTitle(), "*newEditorTitle");
+            test_equal("GetProjectFile", editor0.GetProjectFile(), null);
+
+            // Just call these, we cannot verify if they really work.
+            editor0.FoldAll();
+            editor0.UnfoldAll();
+            editor0.ToggleAllFolds();
+            editor0.FoldBlockFromLine(2);
+            editor0.UnfoldBlockFromLine(2);
+            editor0.ToggleFoldBlockFromLine(2);
+            editor0.Touch();
+            editor0.GotoNextBreakpoint();
+            editor0.GotoPreviousBreakpoint();
+            editor0.GotoNextBookmark();
+            editor0.GotoPreviousBookmark();
+            editor0.Print(false, pcmColourOnWhite, true);
+            editor0.AutoComplete();
+
+            test_false("HasBreakpoint", editor0.HasBreakpoint(2));
+            test_true("AddBreakpoint 0", editor0.AddBreakpoint(2, true));
+            test_false("AddBreakpoint 1", editor0.AddBreakpoint(2, true));
+            test_true("AddBreakpoint 2", editor0.AddBreakpoint(3, true));
+            test_true("AddBreakpoint 3", editor0.HasBreakpoint(2));
+            test_true("AddBreakpoint 4", editor0.HasBreakpoint(3));
+
+            test_true("RemoveBreakpoint 0", editor0.RemoveBreakpoint(2, true));
+            test_false("RemoveBreakpoint 1", editor0.RemoveBreakpoint(2, true));
+            test_false("RemoveBreakpoint 2", editor0.HasBreakpoint(2));
+            test_true("RemoveBreakpoint 3", editor0.HasBreakpoint(3));
+
+            editor0.ToggleBreakpoint(3, true);
+            test_false("RemoveBreakpoint 3", editor0.HasBreakpoint(3));
+
+            test_equal("GetLineIndentInSpaces 0", editor0.GetLineIndentInSpaces(0), 0);
+            test_equal("GetLineIndentInSpaces 1", editor0.GetLineIndentInSpaces(2), 3);
+            test_string("GetLineIndentString 0", editor0.GetLineIndentString(0), "");
+            test_string("GetLineIndentString 1", editor0.GetLineIndentString(2), "   ");
+
+            test_false("HasBookmark", editor0.HasBookmark(2));
+            editor0.ToggleBookmark(2);
+            test_true("ToggleBookmark 0", editor0.HasBookmark(2));
+            editor0.ToggleBookmark(3);
+            test_true("ToggleBookmark 1", editor0.HasBookmark(2));
+            test_true("ToggleBookmark 2", editor0.HasBookmark(3));
+
+            editor0.ClearAllBookmarks();
+            test_false("ToggleBookmark 1", editor0.HasBookmark(2));
+            test_false("ToggleBookmark 2", editor0.HasBookmark(3));
+
+            local editor0Filename = clone editor0.GetFilename();
+            test_true("cbEditor::Reload", editor0.Reload(true));
+            test_equal("cbEditor::Reload: invalidate", editorMgr.IsBuiltinOpen(editor0Filename),
+                       editor0);
+            editor0.SetFilename(MakePath(tempFolder, _T("saved0.ext")));
+            test_true("cbEditor::Save", editor0.Save());
+        }
+
+        {
+            StartNewSection("EditorManager");
+
+            local editor0Filename = clone editor0.GetFilename();
+            local editor1Filename = clone editor1.GetFilename();
+
+            // Indices start from one because of the 'start here' page.
+            test_equal("GetBuiltinEditor: index 0", editorMgr.GetBuiltinEditor(1), editor0);
+            test_equal("GetBuiltinEditor: index 1", editorMgr.GetBuiltinEditor(2), editor1);
+            test_equal("GetBuiltinEditor: filename 0", editorMgr.GetBuiltinEditor(editor0Filename),
+                       editor0);
+            test_equal("GetBuiltinEditor: filename 1", editorMgr.GetBuiltinEditor(editor1Filename),
+                       editor1);
+
+            test_equal("IsBuiltinOpen: filename 0", editorMgr.IsBuiltinOpen(editor0Filename),
+                       editor0);
+            test_equal("IsBuiltinOpen: filename 1", editorMgr.IsBuiltinOpen(editor1Filename),
+                       editor1);
+
+            editor0.Activate();
+            test_equal("GetActiveEditor 0", editorMgr.GetActiveEditor(), editor0);
+            test_equal("GetBuiltinActiveEditor 0", editorMgr.GetBuiltinActiveEditor(), editor0);
+            editor1.Activate();
+            test_equal("GetActiveEditor 1", editorMgr.GetActiveEditor(), editor1);
+            test_equal("GetBuiltinActiveEditor 1", editorMgr.GetBuiltinActiveEditor(), editor1);
+
+            editorMgr.ActivatePrevious();
+            test_equal("ActivatePrevious", editorMgr.GetActiveEditor(), editor0);
+            editorMgr.ActivateNext();
+            test_equal("ActivateNext", editorMgr.GetActiveEditor(), editor1);
+
+            editor1.SetModified(true);
+            test_true("SaveActive", editorMgr.SaveActive());
+            test_false("SaveActive: post", editor1.GetModified());
+            test_true("CloseActive", editorMgr.CloseActive(true));
+            test_equal("CloseActive: check 0", editorMgr.IsBuiltinOpen(editor0Filename), editor0);
+            test_equal("CloseActive: check 1", editorMgr.IsBuiltinOpen(editor1Filename), null);
+
+            editor1 = editorMgr.Open(editor1Filename);
+            test_false("Open 0", IsNull(editor1));
+
+            // Indices start from one because of the 'start here' page.
+            test_true("Close index", editorMgr.Close(1));
+            test_equal("Close index: check 0", editorMgr.IsBuiltinOpen(editor0Filename), null);
+            test_equal("Close index: check 1", editorMgr.IsBuiltinOpen(editor1Filename), editor1);
+
+            editor0 = editorMgr.Open(editor0Filename);
+            test_false("Open 1", IsNull(editor0));
+
+            test_true("Close filename", editorMgr.Close(editor0Filename));
+            test_equal("Close filename: check 0", editorMgr.IsBuiltinOpen(editor0Filename), null);
+            test_equal("Close filename: check 1", editorMgr.IsBuiltinOpen(editor1Filename), editor1);
+
+            // This puts editor0 on the right of editor1, so the indices below are swapped.
+            editor0 = editorMgr.Open(editor0Filename);
+            test_false("Open 2", IsNull(editor0));
+
+            editor0.SetModified(true);
+            editor1.SetModified(true);
+            test_true("SaveAll", editorMgr.SaveAll());
+            test_false("SaveAll: check 0", editor0.GetModified());
+            test_false("SaveAll: check 1", editor1.GetModified());
+
+            // Indices start from one because of the 'start here' page.
+            editor0.SetModified(true);
+            editor1.SetModified(true);
+            test_true("Save index", editorMgr.Save(2));
+            test_false("Save index: check 0", editor0.GetModified());
+            test_true("Save index: check 1", editor1.GetModified());
+
+            editor0.SetModified(true);
+            editor1.SetModified(true);
+            test_true("Save filename", editorMgr.Save(editor0Filename));
+            test_false("Save filename: check 0", editor0.GetModified());
+            test_true("Save filename: check 1", editor1.GetModified());
+
+            local editor0header = editorMgr.New(MakePath(tempFolder, _T("test0.h")));
+            test_false("EditorManager::New", IsNull(editor0header));
+            editor0 = editorMgr.Open(MakePath(tempFolder, _T("test0.cpp")));
+            test_false("Open 3", IsNull(editor0));
+
+            editor0header.Activate();
+            test_true("SwapActiveHeaderSource 0", editorMgr.SwapActiveHeaderSource());
+            test_equal("SwapActiveHeaderSource 0: active", editorMgr.GetActiveEditor(), editor0);
+            test_true("SwapActiveHeaderSource 1", editorMgr.SwapActiveHeaderSource());
+            test_equal("SwapActiveHeaderSource 1: active", editorMgr.GetActiveEditor(),
+                       editor0header);
+
+//            {
+//                // Commented because they require user intervention. To test them uncomment them.
+//                editor0.Activate();
+//                print("EditorManager::SaveActiveAs: " + editorMgr.SaveActiveAs() + "\n");
+//                print("cbEditor::SaveAs: " + editor0.SaveAs() +  "\n");
+//            }
+
+            test_true("CloseAll", editorMgr.CloseAll(true));
+            // After this call all editors must be saved or closed.
         }
 
         {
