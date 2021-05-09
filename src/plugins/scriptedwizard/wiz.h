@@ -75,8 +75,10 @@ class Wiz : public cbWizardPlugin
         bool IsCheckboxChecked(const wxString& name);
 
         void FillComboboxWithCompilers(const wxString& name);
-        void FillContainerWithSelectCompilers( const wxString& name, const wxString& validCompilerIDs );
-        void AppendContainerWithSelectCompilers( const wxString& name, const wxString& validCompilerIDs );
+        void FillContainerWithSelectCompilers(const wxString& name,
+                                              const wxString& validCompilerIDs);
+        void AppendContainerWithSelectCompilers(const wxString& name,
+                                                const wxString& validCompilerIDs);
         wxString GetCompilerFromCombobox(const wxString& name);
         void FillContainerWithCompilers(const wxString& name, const wxString& compilerID,
                                         const wxString& validCompilerIDs);
@@ -140,32 +142,34 @@ class Wiz : public cbWizardPlugin
 
         // compiler defaults
         void SetCompilerDefault(const wxString& defCompilerID);
-        void SetDebugTargetDefaults(bool wantDebug,
-                                        const wxString& debugName,
-                                        const wxString& debugOut,
-                                        const wxString& debugObjOut);
-        void SetReleaseTargetDefaults(bool wantRelease,
-                                        const wxString& releaseName,
-                                        const wxString& releaseOut,
-                                        const wxString& releaseObjOut);
+        void SetDebugTargetDefaults(bool wantDebug,const wxString& debugName,
+                                    const wxString& debugOut, const wxString& debugObjOut);
+        void SetReleaseTargetDefaults(bool wantRelease, const wxString& releaseName,
+                                      const wxString& releaseOut, const wxString& releaseObjOut);
 
-        int       FillContainerWithChoices( const wxString& name, const wxString& choices );
-        int       AppendContainerWithChoices( const wxString& name, const wxString& choices );
-        wxString  GetWizardScriptFolder(void);
+        int FillContainerWithChoices(const wxString& name, const wxString& choices);
+        int AppendContainerWithChoices(const wxString& name, const wxString& choices);
+        wxString GetWizardScriptFolder(void);
 
         // pre-defined pages
         void AddInfoPage(const wxString& pageId, const wxString& intro_msg);
         void AddFilePathPage(bool showHeaderGuard);
         void AddProjectPathPage();
-        void AddCompilerPage(const wxString& compilerID, const wxString& validCompilerIDs, bool allowCompilerChange = true, bool allowConfigChange = true);
-        void AddBuildTargetPage(const wxString& targetName, bool isDebug, bool showCompiler = false, const wxString& compilerID = wxEmptyString, const wxString& validCompilerIDs = _T("*"), bool allowCompilerChange = true);
-        void AddGenericSingleChoiceListPage(const wxString& pageName, const wxString& descr, const wxString& choices, int defChoice);
-        void AddGenericSelectPathPage(const wxString& pageId, const wxString& descr, const wxString& label, const wxString& defValue);
+        void AddCompilerPage(const wxString& compilerID, const wxString& validCompilerIDs,
+                             bool allowCompilerChange = true, bool allowConfigChange = true);
+        void AddBuildTargetPage(const wxString& targetName, bool isDebug, bool showCompiler = false,
+                                const wxString& compilerID = wxEmptyString,
+                                const wxString& validCompilerIDs = _T("*"),
+                                bool allowCompilerChange = true);
+        void AddGenericSingleChoiceListPage(const wxString& pageName, const wxString& descr,
+                                            const wxString& choices, int defChoice);
+        void AddGenericSelectPathPage(const wxString& pageId, const wxString& descr,
+                                      const wxString& label, const wxString& defValue);
         // XRC pages
         void AddPage(const wxString& panelName);
 
         void Finalize();
-        void RegisterWizard();
+        void RegisterWizard(HSQUIRRELVM v);
         wxString FindTemplateFile(const wxString& filename);
 	protected:
         void OnAttach() override;

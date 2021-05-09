@@ -464,6 +464,81 @@ struct ExtractParams5 : ExtractParamsBase
     Arg4 p4;
 };
 
+template<typename Arg0, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5,
+         typename Arg6>
+struct ExtractParams7 : ExtractParamsBase
+{
+    ExtractParams7(HSQUIRRELVM vm) : ExtractParamsBase(vm) {}
+
+    bool Process(const char *funcStr)
+    {
+        if (!CheckNumArguments(7, funcStr))
+            return false;
+        if (!ProcessParam(p0, 1, funcStr))
+            return false;
+        if (!ProcessParam(p1, 2, funcStr))
+            return false;
+        if (!ProcessParam(p2, 3, funcStr))
+            return false;
+        if (!ProcessParam(p3, 4, funcStr))
+            return false;
+        if (!ProcessParam(p4, 5, funcStr))
+            return false;
+        if (!ProcessParam(p5, 6, funcStr))
+            return false;
+        if (!ProcessParam(p6, 7, funcStr))
+            return false;
+        return true;
+    }
+
+    Arg0 p0;
+    Arg1 p1;
+    Arg2 p2;
+    Arg3 p3;
+    Arg4 p4;
+    Arg5 p5;
+    Arg6 p6;
+};
+
+template<typename Arg0, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5,
+         typename Arg6, typename Arg7>
+struct ExtractParams8 : ExtractParamsBase
+{
+    ExtractParams8(HSQUIRRELVM vm) : ExtractParamsBase(vm) {}
+
+    bool Process(const char *funcStr)
+    {
+        if (!CheckNumArguments(8, funcStr))
+            return false;
+        if (!ProcessParam(p0, 1, funcStr))
+            return false;
+        if (!ProcessParam(p1, 2, funcStr))
+            return false;
+        if (!ProcessParam(p2, 3, funcStr))
+            return false;
+        if (!ProcessParam(p3, 4, funcStr))
+            return false;
+        if (!ProcessParam(p4, 5, funcStr))
+            return false;
+        if (!ProcessParam(p5, 6, funcStr))
+            return false;
+        if (!ProcessParam(p6, 7, funcStr))
+            return false;
+        if (!ProcessParam(p7, 8, funcStr))
+            return false;
+        return true;
+    }
+
+    Arg0 p0;
+    Arg1 p1;
+    Arg2 p2;
+    Arg3 p3;
+    Arg4 p4;
+    Arg5 p5;
+    Arg6 p6;
+    Arg7 p7;
+};
+
 template<typename UserType>
 inline SQInteger CreateClassDecl(HSQUIRRELVM v, const SQChar *className,
                                  const SQChar *baseClassName = nullptr)

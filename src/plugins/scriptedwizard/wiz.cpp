@@ -44,6 +44,9 @@
 #include "wiz.h"
 #include "wizpage.h"
 
+#include "scripting/bindings/sc_utils.h"
+#include "scripting/bindings/sc_typeinfo_all.h"
+
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(Wizards); // TODO: find out why this causes a shadow warning for 'Item'
 
@@ -52,11 +55,17 @@ namespace
     PluginRegistrant<Wiz> reg(_T("ScriptedWizard"));
 }
 
-// FIXME (squirrel) Reimplement Binding of Wiz
-/*
-// scripting support
-DECLARE_INSTANCE_TYPE(Wiz);
-*/
+namespace ScriptBindings
+{
+
+template<>
+struct TypeInfo<Wiz> {
+    // FIXME (squirrel) Add a system for this
+    static const uint32_t typetag = uint32_t(TypeTag::UserVariableManager) + 100;
+    static constexpr const SQChar *className = _SC("Wiz");
+    using baseClass = void;
+};
+} // namespace ScriptBindings
 
 Wiz::Wiz()
     : m_pWizard(nullptr),
@@ -77,18 +86,17 @@ Wiz::~Wiz()
 void Wiz::OnAttach()
 {
     // make sure the VM is initialized
-    Manager::Get()->GetScriptingManager();
-
-// FIXME (squirrel) Reimplement Wiz::OnAttach 1
-/*
-    if (!SquirrelVM::GetVMPtr())
+    ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
+    HSQUIRRELVM vm = scriptMgr->GetVM();
+    if (!vm)
     {
-        cbMessageBox(_("Project wizard disabled: scripting not initialized"), _("Error"), wxICON_ERROR);
+        cbMessageBox(_("Project wizard disabled: scripting not initialized"), _("Error"),
+                     wxICON_ERROR);
         return;
     }
-*/
+
     // read configuration
-    RegisterWizard();
+    RegisterWizard(vm);
 
     // run main wizard script
     // this registers all available wizard scripts with us
@@ -1752,107 +1760,492 @@ wxString Wiz::GetWizardScriptFolder(void)
     return m_WizardScriptFolder;
 }
 
-
-void Wiz::RegisterWizard()
+namespace ScriptBindings
 {
-// FIXME (squirrel) Reimplement
-#if 0
-    SqPlus::SQClassDef<Wiz>("Wiz").
-            // register new wizards
-            func(&Wiz::AddWizard, "AddWizard").
-            // add wizard pages
-            func(&Wiz::AddInfoPage, "AddInfoPage").
-            func(&Wiz::AddProjectPathPage, "AddProjectPathPage").
-            func(&Wiz::AddFilePathPage, "AddFilePathPage").
-            func(&Wiz::AddCompilerPage, "AddCompilerPage").
-            func(&Wiz::AddBuildTargetPage, "AddBuildTargetPage").
-            func(&Wiz::AddGenericSingleChoiceListPage, "AddGenericSingleChoiceListPage").
-            func(&Wiz::AddGenericSelectPathPage, "AddGenericSelectPathPage").
-            func(&Wiz::AddPage, "AddPage").
-            // compiler defaults
-            func(&Wiz::SetCompilerDefault, "SetCompilerDefault").
-            func(&Wiz::SetDebugTargetDefaults, "SetDebugTargetDefaults").
-            func(&Wiz::SetReleaseTargetDefaults, "SetReleaseTargetDefaults").
-            // GUI controls
-            func(&Wiz::EnableWindow, "EnableWindow").
-            func(&Wiz::SetTextControlValue, "SetTextControlValue").
-            func(&Wiz::GetTextControlValue, "GetTextControlValue").
-            func(&Wiz::SetSpinControlValue, "SetSpinControlValue").
-            func(&Wiz::GetSpinControlValue, "GetSpinControlValue").
-            func(&Wiz::CheckCheckbox, "CheckCheckbox").
-            func(&Wiz::IsCheckboxChecked, "IsCheckboxChecked").
-            func(&Wiz::FillComboboxWithCompilers, "FillComboboxWithCompilers").
-            func(&Wiz::GetCompilerFromCombobox, "GetCompilerFromCombobox").
-            func(&Wiz::FillContainerWithCompilers, "FillContainerWithCompilers").
-            // these three are deprecated, the ItemContainer versions should be used instead as they are more generic.
-            func(&Wiz::GetComboboxStringSelection, "GetComboboxStringSelection").
-            func(&Wiz::GetComboboxSelection, "GetComboboxSelection").
-            func(&Wiz::SetComboboxSelection, "SetComboboxSelection").
-            func(&Wiz::SetComboboxValue, "SetComboboxValue").
-            func(&Wiz::GetComboboxValue, "GetComboboxValue").
-            func(&Wiz::GetComboboxStringSelection, "GetItemContainerStringSelection").
-            func(&Wiz::GetComboboxSelection, "GetItemContainerSelection").
-            func(&Wiz::SetComboboxSelection, "SetItemContainerSelection").
-            func(&Wiz::GetRadioboxSelection, "GetRadioboxSelection").
-            func(&Wiz::SetRadioboxSelection, "SetRadioboxSelection").
-            func(&Wiz::GetListboxSelection, "GetListboxSelection").
-            func(&Wiz::GetListboxSelections, "GetListboxSelections").
-            func(&Wiz::GetListboxStringSelections, "GetListboxStringSelections").
-            func(&Wiz::SetListboxSelection, "SetListboxSelection").
-            func(&Wiz::GetCheckListboxChecked, "GetCheckListboxChecked").
-            func(&Wiz::GetCheckListboxStringChecked, "GetCheckListboxStringChecked").
-            func(&Wiz::IsCheckListboxItemChecked, "IsCheckListboxItemChecked").
-            func(&Wiz::CheckCheckListboxItem, "CheckCheckListboxItem").
-            // get various common info
-            func(&Wiz::GetWizardType, "GetWizardType").
-            func(&Wiz::FindTemplateFile, "FindTemplateFile").
-            // project path page
-            func(&Wiz::GetProjectPath, "GetProjectPath").
-            func(&Wiz::GetProjectName, "GetProjectName").
-            func(&Wiz::GetProjectFullFilename, "GetProjectFullFilename").
-            func(&Wiz::GetProjectTitle, "GetProjectTitle").
-            // compiler page
-            func(&Wiz::GetCompilerID, "GetCompilerID").
-            // + debug target
-            func(&Wiz::GetWantDebug, "GetWantDebug").
-            func(&Wiz::GetDebugName, "GetDebugName").
-            func(&Wiz::GetDebugOutputDir, "GetDebugOutputDir").
-            func(&Wiz::GetDebugObjectOutputDir, "GetDebugObjectOutputDir").
-            // + release target
-            func(&Wiz::GetWantRelease, "GetWantRelease").
-            func(&Wiz::GetReleaseName, "GetReleaseName").
-            func(&Wiz::GetReleaseOutputDir, "GetReleaseOutputDir").
-            func(&Wiz::GetReleaseObjectOutputDir, "GetReleaseObjectOutputDir").
-            // build target page
-            func(&Wiz::GetTargetCompilerID, "GetTargetCompilerID").
-            func(&Wiz::GetTargetEnableDebug, "GetTargetEnableDebug").
-            func(&Wiz::GetTargetName, "GetTargetName").
-            func(&Wiz::GetTargetOutputDir, "GetTargetOutputDir").
-            func(&Wiz::GetTargetObjectOutputDir, "GetTargetObjectOutputDir").
-            // file path page
-            func(&Wiz::GetFileName, "GetFileName").
-            func(&Wiz::GetFileHeaderGuard, "GetFileHeaderGuard").
-            func(&Wiz::GetFileAddToProject, "GetFileAddToProject").
-            func(&Wiz::GetFileTargetIndex, "GetFileTargetIndex").
-            func(&Wiz::SetFilePathSelectionFilter, "SetFilePathSelectionFilter").
+SQInteger Wiz_AddWizard(HSQUIRRELVM v)
+{
+    // this, otype, title, cat, script, templatePNG, wizardPNG, xrc
+    ExtractParams8<Wiz*, SQInteger, const wxString *, const wxString *, const wxString *,
+                   const wxString *, const wxString *, const wxString *> extractor(v);
+    if (!extractor.Process("Wiz::AddWizard"))
+        return extractor.ErrorMessage();
+    if (extractor.p1 < SQInteger(totProject) || extractor.p1 > SQInteger(totUser))
+        return sq_throwerror(v, _SC("Wiz::AddWizard: Value of otype parameter is out of range"));
+    const TemplateOutputType otype = TemplateOutputType(extractor.p1);
+    extractor.p0->AddWizard(otype, *extractor.p2, *extractor.p3, *extractor.p4, *extractor.p5,
+                            *extractor.p6, *extractor.p7);
+    return 0;
+}
 
-            // Fill the named window with compilers matching a mask/filter
-            func(&Wiz::FillContainerWithSelectCompilers, "FillContainerWithSelectCompilers").
+SQInteger Wiz_AddInfoPage(HSQUIRRELVM v)
+{
+    // this, pageId, intro_msg
+    ExtractParams3<Wiz*, const wxString *, const wxString *> extractor(v);
+    if (!extractor.Process("Wiz::AddInfoPage"))
+        return extractor.ErrorMessage();
+    extractor.p0->AddInfoPage(*extractor.p1, *extractor.p2);
+    return 0;
+}
 
-            // Add to the named window the compilers matching a mask/filter
-            func(&Wiz::AppendContainerWithSelectCompilers, "AppendContainerWithSelectCompilers").
+SQInteger Wiz_AddProjectPathPage(HSQUIRRELVM v)
+{
+    // this
+    ExtractParams1<Wiz*> extractor(v);
+    if (!extractor.Process("Wiz::AddProjectPathPage"))
+        return extractor.ErrorMessage();
+    extractor.p0->AddProjectPathPage();
+    return 0;
+}
 
-            // Fill the named window with a semi-colon separated set of strings
-            func(&Wiz::FillContainerWithChoices, "FillContainerWithChoices").
+SQInteger Wiz_AddFilePathPage(HSQUIRRELVM v)
+{
+    // this, showHeaderGuard
+    ExtractParams2<Wiz*, bool> extractor(v);
+    if (!extractor.Process("Wiz::AddFilePathPage"))
+        return extractor.ErrorMessage();
+    extractor.p0->AddFilePathPage(extractor.p1);
+    return 0;
+}
 
-            // Add to the named window, a semi-colon separated set of strings
-            func(&Wiz::AppendContainerWithChoices, "AppendContainerWithChoices").
+SQInteger Wiz_AddCompilerPage(HSQUIRRELVM v)
+{
+    // this, compilerId, validCompilerIDs, allowCompilerChange=true, allowConfigChange=true
+    ExtractParams5<Wiz*, const wxString *, const wxString *, bool, bool> extractor(v);
+    if (!extractor.Process("Wiz::AddCompilerPage"))
+        return extractor.ErrorMessage();
+    extractor.p0->AddCompilerPage(*extractor.p1, *extractor.p2, extractor.p3, extractor.p4);
+    return 0;
+}
 
-            // Return the name only of the current wizard folder (this is not a path)
-            func(&Wiz::GetWizardScriptFolder, "GetWizardScriptFolder");
+SQInteger Wiz_AddBuildTargetPage(HSQUIRRELVM v)
+{
+    // this, targetName, isDebug, showCompiler, compilerID = "", validCompilerIDs = "*",
+    // allowCompilerChange
+    ExtractParams7<Wiz*, const wxString *, bool, bool, const wxString *, const wxString *, bool> extractor(v);
+    if (!extractor.Process("Wiz::AddBuildTargetPage"))
+        return extractor.ErrorMessage();
+    extractor.p0->AddBuildTargetPage(*extractor.p1, extractor.p2, extractor.p3, *extractor.p4,
+                                     *extractor.p5, extractor.p6);
+    return 0;
+}
 
-    SqPlus::BindVariable(this, "Wizard", SqPlus::VAR_ACCESS_READ_ONLY);
-#endif // 0
+SQInteger Wiz_AddGenericSingleChoiceListPage(HSQUIRRELVM v)
+{
+    // this, pageName, descr, choices, defChoice
+    ExtractParams5<Wiz*, const wxString *, const wxString *, const wxString *, SQInteger> extractor(v);
+    if (!extractor.Process("Wiz::AddGenericSingleChoiceListPage"))
+        return extractor.ErrorMessage();
+    extractor.p0->AddGenericSingleChoiceListPage(*extractor.p1, *extractor.p2, *extractor.p3,
+                                                 extractor.p4);
+    return 0;
+}
+
+SQInteger Wiz_AddGenericSelectPathPage(HSQUIRRELVM v)
+{
+    // this, pageId, descr, label, defValue
+    ExtractParams5<Wiz*, const wxString *, const wxString *, const wxString *, const wxString *> extractor(v);
+    if (!extractor.Process("Wiz::AddGenericSelectPathPage"))
+        return extractor.ErrorMessage();
+    extractor.p0->AddGenericSelectPathPage(*extractor.p1, *extractor.p2, *extractor.p3,
+                                           *extractor.p4);
+    return 0;
+}
+
+SQInteger Wiz_AddPage(HSQUIRRELVM v)
+{
+    // this, panelName
+    ExtractParams2<Wiz*, const wxString *> extractor(v);
+    if (!extractor.Process("Wiz::AddPage"))
+        return extractor.ErrorMessage();
+    extractor.p0->AddPage(*extractor.p1);
+    return 0;
+}
+
+SQInteger Wiz_SetCompilerDefault(HSQUIRRELVM v)
+{
+    // this, defCompilerID
+    ExtractParams2<Wiz*, const wxString *> extractor(v);
+    if (!extractor.Process("Wiz::SetCompilerDefault"))
+        return extractor.ErrorMessage();
+    extractor.p0->SetCompilerDefault(*extractor.p1);
+    return 0;
+}
+
+template<void (Wiz::*func)(bool, const wxString &, const wxString &, const wxString &)>
+SQInteger Wiz_SetTargetDefaults(HSQUIRRELVM v)
+{
+    // this, want, name, out, objOut
+    ExtractParams5<Wiz*, bool, const wxString *, const wxString *, const wxString *> extractor(v);
+    if (!extractor.Process("Wiz::SetTargetDefaults"))
+        return extractor.ErrorMessage();
+    (extractor.p0->*func)(extractor.p1, *extractor.p2, *extractor.p3, *extractor.p4);
+    return 0;
+}
+
+SQInteger Wiz_EnableWindow(HSQUIRRELVM v)
+{
+    // this, name, enable
+    ExtractParams3<Wiz*, const wxString *, bool> extractor(v);
+    if (!extractor.Process("Wiz::EnableWindow"))
+        return extractor.ErrorMessage();
+    extractor.p0->EnableWindow(*extractor.p1, extractor.p2);
+    return 0;
+}
+
+SQInteger Wiz_SetTextControlValue(HSQUIRRELVM v)
+{
+    // this, name, value
+    ExtractParams3<Wiz*, const wxString *, const wxString *> extractor(v);
+    if (!extractor.Process("Wiz::SetTextControlValue"))
+        return extractor.ErrorMessage();
+    extractor.p0->SetTextControlValue(*extractor.p1, *extractor.p2);
+    return 0;
+}
+
+template<wxString (Wiz::*func)(const wxString &)>
+SQInteger Wiz_GetStringFromString(HSQUIRRELVM v)
+{
+    // this, name
+    ExtractParams2<Wiz*, const wxString *> extractor(v);
+    if (!extractor.Process("Wiz_GetStringFromString"))
+        return extractor.ErrorMessage();
+    const wxString &result = (extractor.p0->*func)(*extractor.p1);
+    return ConstructAndReturnInstance(v, result);
+}
+
+template<wxString (Wiz::*func)()>
+SQInteger Wiz_GetString(HSQUIRRELVM v)
+{
+    // this
+    ExtractParams1<Wiz*> extractor(v);
+    if (!extractor.Process("Wiz_GetString"))
+        return extractor.ErrorMessage();
+    const wxString &result = (extractor.p0->*func)();
+    return ConstructAndReturnInstance(v, result);
+}
+
+template<bool (Wiz::*func)()>
+SQInteger Wiz_GetBool(HSQUIRRELVM v)
+{
+    // this
+    ExtractParams1<Wiz*> extractor(v);
+    if (!extractor.Process("Wiz_GetBool"))
+        return extractor.ErrorMessage();
+    sq_pushbool(v, (extractor.p0->*func)());
+    return 1;
+}
+
+SQInteger Wiz_SetSpinControlValue(HSQUIRRELVM v)
+{
+    // this, name, value
+    ExtractParams3<Wiz*, const wxString *, SQInteger> extractor(v);
+    if (!extractor.Process("Wiz::SetSpinControlValue"))
+        return extractor.ErrorMessage();
+    extractor.p0->SetSpinControlValue(*extractor.p1, extractor.p2);
+    return 0;
+}
+
+SQInteger Wiz_GetSpinControlValue(HSQUIRRELVM v)
+{
+    // this, name
+    ExtractParams2<Wiz*, const wxString *> extractor(v);
+    if (!extractor.Process("Wiz::GetSpinControlValue"))
+        return extractor.ErrorMessage();
+    sq_pushinteger(v, extractor.p0->GetSpinControlValue(*extractor.p1));
+    return 1;
+}
+
+SQInteger Wiz_CheckCheckbox(HSQUIRRELVM v)
+{
+    // this, name, check
+    ExtractParams3<Wiz*, const wxString *, bool> extractor(v);
+    if (!extractor.Process("Wiz::CheckCheckbox"))
+        return extractor.ErrorMessage();
+    extractor.p0->CheckCheckbox(*extractor.p1, extractor.p2);
+    return 0;
+}
+
+SQInteger Wiz_IsCheckboxChecked(HSQUIRRELVM v)
+{
+    // this, name
+    ExtractParams2<Wiz*, const wxString *> extractor(v);
+    if (!extractor.Process("Wiz::IsCheckboxChecked"))
+        return extractor.ErrorMessage();
+    sq_pushbool(v, extractor.p0->IsCheckboxChecked(*extractor.p1));
+    return 1;
+}
+
+SQInteger Wiz_FillComboboxWithCompilers(HSQUIRRELVM v)
+{
+    // this, name
+    ExtractParams2<Wiz*, const wxString *> extractor(v);
+    if (!extractor.Process("Wiz::FillComboboxWithCompilers"))
+        return extractor.ErrorMessage();
+    extractor.p0->FillComboboxWithCompilers(*extractor.p1);
+    return 0;
+}
+
+SQInteger Wiz_GetCompilerFromCombobox(HSQUIRRELVM v)
+{
+    // this, name
+    ExtractParams2<Wiz*, const wxString *> extractor(v);
+    if (!extractor.Process("Wiz::GetCompilerFromCombobox"))
+        return extractor.ErrorMessage();
+    const wxString &result = extractor.p0->GetCompilerFromCombobox(*extractor.p1);
+    return ConstructAndReturnInstance(v, result);
+}
+
+SQInteger Wiz_FillContainerWithCompilers(HSQUIRRELVM v)
+{
+    // this, name, compilerID, validCompilerIDs
+    ExtractParams4<Wiz*, const wxString *, const wxString *, const wxString *> extractor(v);
+    if (!extractor.Process("Wiz::FillContainerWithCompilers"))
+        return extractor.ErrorMessage();
+    extractor.p0->FillContainerWithCompilers(*extractor.p1, *extractor.p2, *extractor.p3);
+    return 0;
+}
+
+template<int (Wiz::*func)(const wxString &name)>
+SQInteger Wiz_GetSelection(HSQUIRRELVM v)
+{
+    // this, name
+    ExtractParams2<Wiz*, const wxString *> extractor(v);
+    if (!extractor.Process("Wiz_GetSelection"))
+        return extractor.ErrorMessage();
+    sq_pushinteger(v, (extractor.p0->*func)(*extractor.p1));
+    return 1;
+}
+
+template<void (Wiz::*func)(const wxString &, int)>
+SQInteger Wiz_SetSelection(HSQUIRRELVM v)
+{
+    // this, name, sel
+    ExtractParams3<Wiz*, const wxString *, SQInteger> extractor(v);
+    if (!extractor.Process("Wiz_SetSelection"))
+        return extractor.ErrorMessage();
+    (extractor.p0->*func)(*extractor.p1, extractor.p2);
+    return 0;
+}
+
+SQInteger Wiz_SetComboboxValue(HSQUIRRELVM v)
+{
+    // this, name, value
+    ExtractParams3<Wiz*, const wxString *, const wxString *> extractor(v);
+    if (!extractor.Process("Wiz::SetComboboxValue"))
+        return extractor.ErrorMessage();
+    extractor.p0->SetComboboxValue(*extractor.p1, *extractor.p2);
+    return 0;
+}
+
+SQInteger Wiz_IsCheckListboxItemChecked(HSQUIRRELVM v)
+{
+    // this, name, item
+    ExtractParams3<Wiz*, const wxString *, SQInteger> extractor(v);
+    if (!extractor.Process("Wiz::IsCheckListboxItemChecked"))
+        return extractor.ErrorMessage();
+    if (extractor.p2 < 0)
+        return sq_throwerror(v, _SC("Wiz::IsCheckListboxItemChecked: item parameter given negative value!"));
+    sq_pushbool(v, extractor.p0->IsCheckListboxItemChecked(*extractor.p1, extractor.p2));
+    return 1;
+}
+
+SQInteger Wiz_CheckCheckListboxItem(HSQUIRRELVM v)
+{
+    // this, name, item, check
+    ExtractParams4<Wiz*, const wxString *, SQInteger, bool> extractor(v);
+    if (!extractor.Process("Wiz::CheckCheckListboxItem"))
+        return extractor.ErrorMessage();
+    if (extractor.p2 < 0)
+        return sq_throwerror(v, _SC("Wiz::CheckCheckListboxItem: item parameter given negative value!"));
+    extractor.p0->CheckCheckListboxItem(*extractor.p1, extractor.p2, extractor.p3);
+    return 0;
+}
+
+SQInteger Wiz_GetWizardType(HSQUIRRELVM v)
+{
+    // this
+    ExtractParams1<Wiz*> extractor(v);
+    if (!extractor.Process("Wiz::GetWizardType"))
+        return extractor.ErrorMessage();
+    sq_pushinteger(v, extractor.p0->GetWizardType());
+    return 1;
+}
+
+SQInteger Wiz_GetFileTargetIndex(HSQUIRRELVM v)
+{
+    // this
+    ExtractParams1<Wiz*> extractor(v);
+    if (!extractor.Process("Wiz::GetFileTargetIndex"))
+        return extractor.ErrorMessage();
+    sq_pushinteger(v, extractor.p0->GetFileTargetIndex());
+    return 1;
+}
+
+SQInteger Wiz_SetFilePathSelectionFilter(HSQUIRRELVM v)
+{
+    // this, filter
+    ExtractParams2<Wiz*, const wxString *> extractor(v);
+    if (!extractor.Process("Wiz::SetFilePathSelectionFilter"))
+        return extractor.ErrorMessage();
+    extractor.p0->SetFilePathSelectionFilter(*extractor.p1);
+    return 0;
+}
+
+template<void (Wiz::*func)(const wxString &, const wxString &)>
+SQInteger Wiz_ContainerWithSelectCompilers(HSQUIRRELVM v)
+{
+    // this, name, validCompilerIDs
+    ExtractParams3<Wiz*, const wxString *, const wxString *> extractor(v);
+    if (!extractor.Process("Wiz_ContainerWithSelectCompilers"))
+        return extractor.ErrorMessage();
+    (extractor.p0->*func)(*extractor.p1, *extractor.p2);
+    return 0;
+}
+
+template<int (Wiz::*func)(const wxString &, const wxString &)>
+SQInteger Wiz_ContainerWithChoices(HSQUIRRELVM v)
+{
+    // this, name, choices
+    ExtractParams3<Wiz*, const wxString *, const wxString *> extractor(v);
+    if (!extractor.Process("Wiz_ContainerWithChoices"))
+        return extractor.ErrorMessage();
+    sq_pushinteger(v, (extractor.p0->*func)(*extractor.p1, *extractor.p2));
+    return 1;
+}
+
+} // namespace ScriptBindings
+
+void Wiz::RegisterWizard(HSQUIRRELVM v)
+{
+    using namespace ScriptBindings;
+
+    PreserveTop preserveTop(v);
+
+    sq_pushroottable(v);
+
+    {
+        // Register Wiz
+        const SQInteger classDecl = CreateClassDecl<Wiz>(v, _SC("Wiz"));
+
+        // register new wizards
+        BindMethod(v, _SC("AddWizard"), Wiz_AddWizard, _SC("Wiz::AddWizard"));
+
+        // add wizard pages
+        BindMethod(v, _SC("AddInfoPage"), Wiz_AddInfoPage, _SC("Wiz::AddInfoPage"));
+        BindMethod(v, _SC("AddProjectPathPage"), Wiz_AddProjectPathPage, _SC("Wiz::AddProjectPathPage"));
+        BindMethod(v, _SC("AddFilePathPage"), Wiz_AddFilePathPage, _SC("Wiz::AddFilePathPage"));
+        BindMethod(v, _SC("AddCompilerPage"), Wiz_AddCompilerPage, _SC("Wiz::AddCompilerPage"));
+        BindMethod(v, _SC("AddBuildTargetPage"), Wiz_AddBuildTargetPage, _SC("Wiz::AddBuildTargetPage"));
+        BindMethod(v, _SC("AddGenericSingleChoiceListPage"), Wiz_AddGenericSingleChoiceListPage, _SC("Wiz::AddGenericSingleChoiceListPage"));
+        BindMethod(v, _SC("AddGenericSelectPathPage"), Wiz_AddGenericSelectPathPage, _SC("Wiz::AddGenericSelectPathPage"));
+        BindMethod(v, _SC("AddPage"), Wiz_AddPage, _SC("Wiz::AddPage"));
+
+        // compiler defaults
+        BindMethod(v, _SC("SetCompilerDefault"), Wiz_SetCompilerDefault, _SC("Wiz::SetCompilerDefault"));
+        BindMethod(v, _SC("SetDebugTargetDefaults"), Wiz_SetTargetDefaults<&Wiz::SetDebugTargetDefaults>, _SC("Wiz::SetDebugTargetDefaults"));
+        BindMethod(v, _SC("SetReleaseTargetDefaults"), Wiz_SetTargetDefaults<&Wiz::SetReleaseTargetDefaults>, _SC("Wiz::SetReleaseTargetDefaults"));
+
+        // GUI controls
+        BindMethod(v, _SC("EnableWindow"), Wiz_EnableWindow, _SC("Wiz::EnableWindow"));
+        BindMethod(v, _SC("SetTextControlValue"), Wiz_SetTextControlValue, _SC("Wiz::SetTextControlValue"));
+        BindMethod(v, _SC("GetTextControlValue"), Wiz_GetStringFromString<&Wiz::GetTextControlValue>, _SC("Wiz::GetTextControlValue"));
+        BindMethod(v, _SC("SetSpinControlValue"), Wiz_SetSpinControlValue, _SC("Wiz::SetSpinControlValue"));
+        BindMethod(v, _SC("GetSpinControlValue"), Wiz_GetSpinControlValue, _SC("Wiz::GetSpinControlValue"));
+        BindMethod(v, _SC("CheckCheckbox"), Wiz_CheckCheckbox, _SC("Wiz::CheckCheckbox"));
+        BindMethod(v, _SC("IsCheckboxChecked"), Wiz_IsCheckboxChecked, _SC("Wiz::IsCheckboxChecked"));
+        BindMethod(v, _SC("FillComboboxWithCompilers"), Wiz_FillComboboxWithCompilers, _SC("Wiz::FillComboboxWithCompilers"));
+        BindMethod(v, _SC("GetCompilerFromCombobox"), Wiz_GetCompilerFromCombobox, _SC("Wiz::GetCompilerFromCombobox"));
+        BindMethod(v, _SC("FillContainerWithCompilers"), Wiz_FillContainerWithCompilers, _SC("Wiz::FillContainerWithCompilers"));
+
+        // these three are deprecated, the ItemContainer versions should be used instead as they are more generic.
+        BindMethod(v, _SC("GetComboboxStringSelection"), Wiz_GetStringFromString<&Wiz::GetComboboxStringSelection>, _SC("Wiz::GetComboboxStringSelection"));
+        BindMethod(v, _SC("GetComboboxSelection"), Wiz_GetSelection<&Wiz::GetComboboxSelection>, _SC("Wiz::GetComboboxSelection"));
+        BindMethod(v, _SC("SetComboboxSelection"), Wiz_SetSelection<&Wiz::SetComboboxSelection>, _SC("Wiz::SetComboboxSelection"));
+
+        BindMethod(v, _SC("SetComboboxValue"), Wiz_SetComboboxValue, _SC("Wiz::SetComboboxValue"));
+        BindMethod(v, _SC("GetComboboxValue"), Wiz_GetStringFromString<&Wiz::GetComboboxValue>, _SC("Wiz::GetComboboxValue"));
+        BindMethod(v, _SC("GetItemContainerStringSelection"), Wiz_GetStringFromString<&Wiz::GetComboboxStringSelection>, _SC("Wiz::GetItemContainerStringSelection"));
+        BindMethod(v, _SC("GetItemContainerSelection"), Wiz_GetSelection<&Wiz::GetComboboxSelection>, _SC("Wiz::GetItemContainerSelection"));
+        BindMethod(v, _SC("SetItemContainerSelection"), Wiz_SetSelection<&Wiz::SetComboboxSelection>, _SC("Wiz::SetItemContainerSelection"));
+        BindMethod(v, _SC("GetRadioboxSelection"), Wiz_GetSelection<&Wiz::GetRadioboxSelection>, _SC("Wiz::GetRadioboxSelection"));
+        BindMethod(v, _SC("SetRadioboxSelection"), Wiz_SetSelection<&Wiz::SetRadioboxSelection>, _SC("Wiz::SetRadioboxSelection"));
+        BindMethod(v, _SC("GetListboxSelection"), Wiz_GetSelection<&Wiz::GetListboxSelection>, _SC("Wiz::GetListboxSelection"));
+        BindMethod(v, _SC("GetListboxSelections"), Wiz_GetStringFromString<&Wiz::GetListboxSelections>, _SC("Wiz::GetListboxSelections"));
+        BindMethod(v, _SC("GetListboxStringSelections"), Wiz_GetStringFromString<&Wiz::GetListboxStringSelections>, _SC("Wiz::GetListboxStringSelections"));
+        BindMethod(v, _SC("SetListboxSelection"), Wiz_SetSelection<&Wiz::SetListboxSelection>, _SC("Wiz::SetListboxSelection"));
+        BindMethod(v, _SC("GetCheckListboxChecked"), Wiz_GetStringFromString<&Wiz::GetCheckListboxChecked>, _SC("Wiz::GetCheckListboxChecked"));
+        BindMethod(v, _SC("GetCheckListboxStringChecked"), Wiz_GetStringFromString<&Wiz::GetCheckListboxStringChecked>, _SC("Wiz::GetCheckListboxStringChecked"));
+        BindMethod(v, _SC("IsCheckListboxItemChecked"), Wiz_IsCheckListboxItemChecked, _SC("Wiz::IsCheckListboxItemChecked"));
+        BindMethod(v, _SC("CheckCheckListboxItem"), Wiz_CheckCheckListboxItem, _SC("Wiz::CheckCheckListboxItem"));
+
+        // get various common info
+        BindMethod(v, _SC("GetWizardType"), Wiz_GetWizardType, _SC("Wiz::GetWizardType"));
+        BindMethod(v, _SC("FindTemplateFile"), Wiz_GetStringFromString<&Wiz::FindTemplateFile>, _SC("Wiz::FindTemplateFile"));
+
+        // project path page
+        BindMethod(v, _SC("GetProjectPath"), Wiz_GetString<&Wiz::GetProjectPath>, _SC("Wiz::GetProjectPath"));
+        BindMethod(v, _SC("GetProjectName"), Wiz_GetString<&Wiz::GetProjectName>, _SC("Wiz::GetProjectName"));
+        BindMethod(v, _SC("GetProjectFullFilename"), Wiz_GetString<&Wiz::GetProjectFullFilename>, _SC("Wiz::GetProjectFullFilename"));
+        BindMethod(v, _SC("GetProjectTitle"), Wiz_GetString<&Wiz::GetProjectTitle>, _SC("Wiz::GetProjectTitle"));
+
+        // compiler page
+        BindMethod(v, _SC("GetCompilerID"), Wiz_GetString<&Wiz::GetCompilerID>, _SC("Wiz::GetCompilerID"));
+
+        // + debug target
+        BindMethod(v, _SC("GetWantDebug"), Wiz_GetBool<&Wiz::GetWantDebug>, _SC("Wiz::GetWantDebug"));
+        BindMethod(v, _SC("GetDebugName"), Wiz_GetString<&Wiz::GetDebugName>, _SC("Wiz::GetDebugName"));
+        BindMethod(v, _SC("GetDebugOutputDir"), Wiz_GetString<&Wiz::GetDebugOutputDir>, _SC("Wiz::GetDebugOutputDir"));
+        BindMethod(v, _SC("GetDebugObjectOutputDir"), Wiz_GetString<&Wiz::GetDebugObjectOutputDir>, _SC("Wiz::GetDebugObjectOutputDir"));
+
+        // + release target
+        BindMethod(v, _SC("GetWantRelease"), Wiz_GetBool<&Wiz::GetWantRelease>, _SC("Wiz::GetWantRelease"));
+        BindMethod(v, _SC("GetReleaseName"), Wiz_GetString<&Wiz::GetReleaseName>, _SC("Wiz::GetReleaseName"));
+        BindMethod(v, _SC("GetReleaseOutputDir"), Wiz_GetString<&Wiz::GetReleaseOutputDir>, _SC("Wiz::GetReleaseOutputDir"));
+        BindMethod(v, _SC("GetReleaseObjectOutputDir"), Wiz_GetString<&Wiz::GetReleaseObjectOutputDir>, _SC("Wiz::GetReleaseObjectOutputDir"));
+
+        // build target page
+        BindMethod(v, _SC("GetTargetCompilerID"), Wiz_GetString<&Wiz::GetTargetCompilerID>, _SC("Wiz::GetTargetCompilerID"));
+        BindMethod(v, _SC("GetTargetEnableDebug"), Wiz_GetBool<&Wiz::GetTargetEnableDebug>, _SC("Wiz::GetTargetEnableDebug"));
+        BindMethod(v, _SC("GetTargetName"), Wiz_GetString<&Wiz::GetTargetName>, _SC("Wiz::GetTargetName"));
+        BindMethod(v, _SC("GetTargetOutputDir"), Wiz_GetString<&Wiz::GetTargetOutputDir>, _SC("Wiz::GetTargetOutputDir"));
+        BindMethod(v, _SC("GetTargetObjectOutputDir"), Wiz_GetString<&Wiz::GetTargetObjectOutputDir>, _SC("Wiz::GetTargetObjectOutputDir"));
+
+        // file path page
+        BindMethod(v, _SC("GetFileName"), Wiz_GetString<&Wiz::GetFileName>, _SC("Wiz::GetFileName"));
+        BindMethod(v, _SC("GetFileHeaderGuard"), Wiz_GetString<&Wiz::GetFileHeaderGuard>, _SC("Wiz::GetFileHeaderGuard"));
+        BindMethod(v, _SC("GetFileAddToProject"), Wiz_GetBool<&Wiz::GetFileAddToProject>, _SC("Wiz::GetFileAddToProject"));
+        BindMethod(v, _SC("GetFileTargetIndex"), Wiz_GetFileTargetIndex, _SC("Wiz::GetFileTargetIndex"));
+        BindMethod(v, _SC("SetFilePathSelectionFilter"), Wiz_SetFilePathSelectionFilter, _SC("Wiz::SetFilePathSelectionFilter"));
+
+        // Fill the named window with compilers matching a mask/filter
+        BindMethod(v, _SC("FillContainerWithSelectCompilers"), Wiz_ContainerWithSelectCompilers<&Wiz::FillContainerWithSelectCompilers>, _SC("Wiz::FillContainerWithSelectCompilers"));
+
+        // Add to the named window the compilers matching a mask/filter
+        BindMethod(v, _SC("AppendContainerWithSelectCompilers"), Wiz_ContainerWithSelectCompilers<&Wiz::AppendContainerWithSelectCompilers>, _SC("Wiz::AppendContainerWithSelectCompilers"));
+
+        // Fill the named window with a semi-colon separated set of strings
+        BindMethod(v, _SC("FillContainerWithChoices"), Wiz_ContainerWithChoices<&Wiz::FillContainerWithChoices>, _SC("Wiz::FillContainerWithChoices"));
+
+        // Add to the named window, a semi-colon separated set of strings
+        BindMethod(v, _SC("AppendContainerWithChoices"), Wiz_ContainerWithChoices<&Wiz::AppendContainerWithChoices>, _SC("Wiz::AppendContainerWithChoices"));
+
+        // Return the name only of the current wizard folder (this is not a path)
+        BindMethod(v, _SC("GetWizardScriptFolder"), Wiz_GetString<&Wiz::GetWizardScriptFolder>, _SC("Wiz::GetWizardScriptFolder"));
+
+        BindDefaultInstanceCmp<FileTreeData>(v);
+        // Put the class in the root table. This must be last!
+        sq_newslot(v, classDecl, SQFalse);
+    }
+
+    {
+        sq_pushstring(v, _SC("Wizard"), -1);
+        // Setup global variable Wizard
+        if (!CreateNonOwnedPtrInstance(v, this))
+            cbAssert(false);
+        sq_newslot(v, -3, SQFalse);
+    }
+
+    sq_poptop(v); // Pop root table
 }
 
 ////////////////////////
