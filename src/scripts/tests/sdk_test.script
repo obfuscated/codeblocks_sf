@@ -1579,23 +1579,142 @@ class sdkTest extends script_test_base
         ::print("======= Test Dialog functions BEGINN ======= \n");
         clear_test_result();
 
+        // FIXME (squirrel) Add a variable which controls these, so all can be enabled at once.
+/*
         {
             local progress = ProgressDialog();
+            test_true("ProgressDialog", progress.DoUpdate(100, _T("progress")));
 
-            for (local a = 0; a < 1000; ++a)
-            {
-                // just waste time
-                for (local b = 0; b < 100000; ++b)
-                    ;
-                if (!progress.DoUpdate(a/10, _T("progress: " + a)))
-                {
-                    made_passed("ProgressDialog abort works");
-                    break;
-                }
-            }
-            made_passed("ProgressDialog update works");
+            local progress = ProgressDialog();
+            while (progress.DoUpdate(99, _T("Press the cancel button to continue")))
+                ;
+            test_false("ProgressDialog cancel", false);
         }
 
+        {
+            local arr = GetArrayFromString(_T("press;ok"), _T(";"), true);
+
+            local dlg = EditArrayFileDlg(arr, true);
+            test_equal("EditArrayFileDlg OK 0", dlg.ShowModal(), wxID_OK);
+            test_string("EditArrayFileDlg OK 1", GetStringFromArray(arr, _T("<>"), false),
+                        "press<>ok");
+
+            arr = GetArrayFromString(_T("delete first;press;ok"), _T(";"), true);
+            local dlg = EditArrayFileDlg(arr, true, _T("__base__"));
+            test_equal("EditArrayFileDlg delete first 0", dlg.ShowModal(), wxID_OK);
+            test_string("EditArrayFileDlg delete first 1", GetStringFromArray(arr, _T("<>"), false),
+                        "press<>ok");
+
+            arr = GetArrayFromString(_T("press;cancel"), _T(";"), true);
+            local dlg = EditArrayFileDlg(arr, true);
+            test_equal("EditArrayFileDlg Cancel 0", dlg.ShowModal(), wxID_CANCEL);
+            test_string("EditArrayFileDlg Cancel 1", GetStringFromArray(arr, _T("<>"), false),
+                        "press<>cancel");
+        }
+
+        {
+            local dlg = EditArrayOrderDlg(GetArrayFromString(_T("press;ok"), _T(";"), true));
+            test_equal("EditArrayOrderDlg OK 0", dlg.ShowModal(), wxID_OK);
+            test_string("EditArrayOrderDlg OK 1",
+                        GetStringFromArray(dlg.GetArray(), _T("<>"), false), "press<>ok");
+
+            local dlg = EditArrayOrderDlg();
+            dlg.SetArray(GetArrayFromString(_T("move_me;press;ok"), _T(";"), true))
+            test_equal("EditArrayOrderDlg move 0", dlg.ShowModal(), wxID_OK);
+            test_string("EditArrayOrderDlg move 1",
+                        GetStringFromArray(dlg.GetArray(), _T("<>"), false), "press<>move_me<>ok");
+
+            local dlg = EditArrayOrderDlg(GetArrayFromString(_T("press;cancel"), _T(";"), true));
+            test_equal("EditArrayOrderDlg OK 0", dlg.ShowModal(), wxID_CANCEL);
+            test_string("EditArrayOrderDlg OK 1",
+                        GetStringFromArray(dlg.GetArray(), _T("<>"), false), "press<>cancel");
+        }
+
+        {
+            local arr = GetArrayFromString(_T("press;ok"), _T(";"), true);
+            local dlg = EditArrayStringDlg(arr);
+            test_equal("EditArrayStringDlg OK 0", dlg.ShowModal(), wxID_OK);
+            test_string("EditArrayStringDlg OK 1",
+                        GetStringFromArray(arr, _T("<>"), false), "press<>ok");
+
+            local arr = GetArrayFromString(_T("delete first;press;ok"), _T(";"), true);
+            local dlg = EditArrayStringDlg(arr);
+            test_equal("EditArrayStringDlg delete first 0", dlg.ShowModal(), wxID_OK);
+            test_string("EditArrayStringDlg delete first 1", GetStringFromArray(arr, _T("<>"), false),
+                        "press<>ok");
+
+            local arr = GetArrayFromString(_T("press;cancel"), _T(";"), true);
+            local dlg = EditArrayStringDlg(arr);
+            test_equal("EditArrayStringDlg Cancel 0", dlg.ShowModal(), wxID_CANCEL);
+            test_string("EditArrayStringDlg Cancel 1", GetStringFromArray(arr, _T("<>"), false),
+                        "press<>cancel");
+        }
+
+        {
+            local key = _T("press");
+            local value = _T("ok");
+            local dlg = EditPairDlg(key, value);
+            test_equal("EditPairDlg OK 0", dlg.ShowModal(), wxID_OK);
+            test_string("EditPairDlg OK 1", key, "press");
+            test_string("EditPairDlg OK 2", value, "ok");
+
+            local key = _T("change_to_success_and_press_ok");
+            local value = _T("");
+            local dlg = EditPairDlg(key, value, _T("Change to success"));
+            test_equal("EditPairDlg change 0", dlg.ShowModal(), wxID_OK);
+            test_string("EditPairDlg change 1", key, "change_to_success_and_press_ok");
+            test_string("EditPairDlg change 2", value, "success");
+
+            local key = _T("press");
+            local value = _T("cancel");
+
+            // FIXME (squirrel) Bind these constants!
+            local bmDisable=0;
+            local bmBrowseForFile=1;
+            local bmBrowseForDirectory=2;
+
+            test_equal("bmDisable", bmDisable, 0);
+            test_equal("bmBrowseForFile", bmBrowseForFile, 1);
+            test_equal("bmBrowseForDirectory", bmBrowseForDirectory, 2);
+
+            local dlg = EditPairDlg(key, value, _T("To Cancel"), bmBrowseForDirectory);
+            test_equal("EditPairDlg Cancel 0", dlg.ShowModal(), wxID_CANCEL);
+            test_string("EditPairDlg Cancel 1", key, "press");
+            test_string("EditPairDlg Cancel 1", value, "cancel");
+        }
+
+        {
+            local tempFolder = GetFolder(0x4);
+
+            local dlg = EditPathDlg(MakePath(tempFolder, _T("press_ok")), _T(""));
+            test_equal("EditPathDlg OK 0", dlg.ShowModal(), wxID_OK);
+            test_string("EditPathDlg OK 1", dlg.GetPath(), MakePath(tempFolder, _T("press_ok")));
+
+            local dlg = EditPathDlg(MakePath(tempFolder, _T("set_to_success")), _T(""),
+                                    _T("Press OK"),
+                                    _T("Set path to '") + MakePath(tempFolder, _T("result")) + _T("'"),
+                                    true, true, _T("Really all files|*"));
+            test_equal("EditPathDlg set 0", dlg.ShowModal(), wxID_OK);
+            test_string("EditPathDlg set 1", dlg.GetPath(), MakePath(tempFolder, _T("success")));
+
+            local dlg = EditPathDlg(MakePath(tempFolder, _T("press_cancel")), _T(""));
+            test_equal("EditPathDlg cancel 0", dlg.ShowModal(), wxID_CANCEL);
+            test_string("EditPathDlg cancel 1", dlg.GetPath(), MakePath(tempFolder,
+                                                                        _T("press_cancel")));
+        }
+
+        {
+            local dlg = GenericMultiLineNotesDlg();
+            test_equal("GenericMultiLineNotesDlg OK 0", dlg.ShowModal(), wxID_OK);
+            test_string("GenericMultiLineNotesDlg OK 1", dlg.GetNotes(), "");
+
+            local dlg = GenericMultiLineNotesDlg(_T("Set to 'result'"),
+                                                 _T("Change the text to result and press OK"),
+                                                 false);
+            test_equal("GenericMultiLineNotesDlg set 0", dlg.ShowModal(), wxID_OK);
+            test_string("GenericMultiLineNotesDlg set 1", dlg.GetNotes(), "result");
+        }
+*/
         print_test_result();
         ::print("======= Test Dialog functions END ======= \n");
     }

@@ -2106,7 +2106,7 @@ namespace ScriptBindings
         Register_Globals(v);
         Register_IO(v); // IO is enabled, but just for harmless functions
         Register_ProgressDialog(v);
-//        Register_UtilDialogs();
+        Register_UtilDialogs(v);
 
         PreserveTop preserveTop(v);
         sq_pushroottable(v);
