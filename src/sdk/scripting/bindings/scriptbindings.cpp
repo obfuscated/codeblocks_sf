@@ -2599,7 +2599,7 @@ namespace ScriptBindings
             return extractor.ErrorMessage();
 
         ProjectsArray *projects = extractor.p0->GetProjects();
-        if (extractor.p1 < 0 || extractor.p1>= projects->GetCount())
+        if (extractor.p1 < 0 || extractor.p1>= SQInteger(projects->GetCount()))
             return sq_throwerror(v, _SC("ProjectManager::GetProject: Index out of bounds!"));
         cbProject *project = (*projects)[extractor.p1];
         return ConstructAndReturnNonOwnedPtr(v, project);
@@ -2792,7 +2792,7 @@ namespace ScriptBindings
 
             PreserveTop preserver(v);
 
-            const int count = int(deps->GetCount());
+            const size_t count = deps->GetCount();
             for (size_t ii = 0; ii < count; ++ii)
             {
                 // FIXME (squirrel) This doesn't matter much, because squirrel doesn't care for constness.
