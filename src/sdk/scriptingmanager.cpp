@@ -60,8 +60,6 @@ struct ScriptingManager::Data
     void OnScriptMenu(wxCommandEvent& event);
     void OnScriptPluginMenu(wxCommandEvent& event);
 
-    wxCriticalSection cs;
-
     /// Container for script menus.
     /// Maps "script menuitem_ID" to "script_filename"
     struct MenuBoundScript
@@ -302,8 +300,6 @@ HSQUIRRELVM ScriptingManager::GetVM()
 
 bool ScriptingManager::LoadScript(const wxString& filename)
 {
-//    wxCriticalSectionLocker c(cs);
-
     wxLogNull ln; // own error checking implemented -> avoid debug warnings
 
     wxString fname(filename);
@@ -369,8 +365,6 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
     }
     m_data->m_IncludeSet.insert(incName);
 
-//    wxCriticalSectionLocker c(cs);
-
     s_ScriptOutput.Clear();
     s_ScriptErrors.Clear();
 
@@ -411,8 +405,6 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
 
 wxString ScriptingManager::LoadBufferRedirectOutput(const wxString& buffer)
 {
-//    wxCriticalSectionLocker c(cs);
-
     s_ScriptOutput.Clear();
     s_ScriptErrors.Clear();
     ::capture.Clear();
