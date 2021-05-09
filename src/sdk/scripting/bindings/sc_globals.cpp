@@ -63,13 +63,8 @@ namespace ScriptBindings
 
         sq_pushroottable(v);
 
-        sq_pushstring(v, _SC("Include"), -1);
-        sq_newclosure(v, Include, 0);
-        sq_newslot(v, -3, SQFalse);
-
-        sq_pushstring(v, _SC("Require"), -1);
-        sq_newclosure(v, Require, 0);
-        sq_newslot(v, -3, SQFalse);
+        BindMethod(v, _SC("Include"), Include, nullptr);
+        BindMethod(v, _SC("Require"), Require, nullptr);
 
         sq_pop(v, 1); // root table
     }

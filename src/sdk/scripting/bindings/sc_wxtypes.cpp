@@ -997,16 +997,9 @@ void Register_wxTypes(HSQUIRRELVM v)
 
         sq_newslot(v, classDecl, SQFalse); // Put the class in the root table. This must be last!
     }
-    {
-        sq_pushstring(v, _SC("_T"), -1);
-        sq_newclosure(v, static_T, 0);
-        sq_newslot(v, -3, SQFalse);
-    }
-    {
-        sq_pushstring(v, _SC("_"), -1);
-        sq_newclosure(v, static_, 0);
-        sq_newslot(v, -3, SQFalse);
-    }
+
+    BindMethod(v, _SC("_T"), static_T, nullptr);
+    BindMethod(v, _SC("_"), static_, nullptr);
 
     {
         // Register wxColour

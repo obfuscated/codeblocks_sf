@@ -110,12 +110,8 @@ namespace ScriptBindings
         {
             // setup root table delegate which could make constants appear as constants.
             sq_newtable(v);
-            sq_pushstring(v, _SC("_get"), -1);
-            sq_newclosure(v, constants_get, 0);
-            sq_newslot(v, -3, SQFalse);
-            sq_pushstring(v, _SC("_set"), -1);
-            sq_newclosure(v, constants_set, 0);
-            sq_newslot(v, -3, SQFalse);
+            BindMethod(v, _SC("_get"), constants_get, nullptr);
+            BindMethod(v, _SC("_set"), constants_set, nullptr);
             sq_setdelegate(v, -2);
         }
 
