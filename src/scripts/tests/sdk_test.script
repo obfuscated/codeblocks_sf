@@ -13,6 +13,7 @@ class sdkTest extends script_test_base
         test_project_classes();
         test_classes();
         test_io();
+        test_dialogs();
 
         ::print("======= Test SDK function END ======= \n");
         print_global_test_result();
@@ -1571,5 +1572,31 @@ class sdkTest extends script_test_base
 
         print_test_result();
         ::print("======= Test IO functions END ======= \n");
+    }
+
+    function test_dialogs()
+    {
+        ::print("======= Test Dialog functions BEGINN ======= \n");
+        clear_test_result();
+
+        {
+            local progress = ProgressDialog();
+
+            for (local a = 0; a < 1000; ++a)
+            {
+                // just waste time
+                for (local b = 0; b < 100000; ++b)
+                    ;
+                if (!progress.DoUpdate(a/10, _T("progress: " + a)))
+                {
+                    made_passed("ProgressDialog abort works");
+                    break;
+                }
+            }
+            made_passed("ProgressDialog update works");
+        }
+
+        print_test_result();
+        ::print("======= Test Dialog functions END ======= \n");
     }
 }

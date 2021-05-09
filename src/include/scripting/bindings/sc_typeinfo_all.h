@@ -46,6 +46,7 @@ enum class TypeTag : uint32_t
     FileTreeData,
     IONamespace,
     PluginInfo,
+    ProgressDialog,
     ProjectBuildTarget,
     ProjectFile,
     ProjectManager,
@@ -180,6 +181,15 @@ struct TypeInfo<ProjectBuildTarget> {
     static const uint32_t typetag = uint32_t(TypeTag::ProjectBuildTarget);
     static constexpr const SQChar *className = _SC("ProjectBuildTarget");
     using baseClass = CompileTargetBase;
+};
+
+class ProgressDialog;
+
+template<>
+struct TypeInfo<ProgressDialog> {
+    static const uint32_t typetag = uint32_t(TypeTag::ProgressDialog);
+    static constexpr const SQChar *className = _SC("ProgressDialog");
+    using baseClass = void;
 };
 
 template<>
