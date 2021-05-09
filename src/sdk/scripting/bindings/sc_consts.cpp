@@ -11,8 +11,12 @@
 #include <sdk_precomp.h>
 #ifndef CB_PRECOMP
     #include <wx/string.h>
+    #include "cbplugin.h"
+    #include "cbproject.h"
     #include "configmanager.h"
     #include "globals.h"
+    #include "printing_types.h"
+    #include "scriptingmanager.h"
     #include "settings.h"
 #endif
 

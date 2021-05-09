@@ -10,9 +10,14 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <configurationpanel.h>
-    #include <cbstyledtextctrl.h>
-    #include <editorcolourset.h>
+    #include "cbeditor.h"
+    #include "cbstyledtextctrl.h"
+    #include "configmanager.h"
+    #include "configurationpanel.h"
+    #include "editorcolourset.h"
+    #include "editormanager.h"
+    #include "logmanager.h"
+    #include "macrosmanager.h"
 #endif
 
 #include "abbreviations.h"
