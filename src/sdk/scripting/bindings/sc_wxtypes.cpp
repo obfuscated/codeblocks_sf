@@ -483,6 +483,20 @@ SQInteger wxString_DoBeforeFirstLast(HSQUIRRELVM v)
     return 1;
 }
 
+SQInteger wxString_ToLong(HSQUIRRELVM v)
+{
+    // env table, string
+    ExtractParams2<SkipParam, const wxString*> extractor(v);
+    if (!extractor.Process("wxString_ToLong"))
+        return extractor.ErrorMessage();
+
+    long value;
+    if (!extractor.p1->ToLong(&value))
+        value = -1;
+    sq_pushinteger(v, value);
+    return 1;
+}
+
 SQInteger wxColour_Set(HSQUIRRELVM v)
 {
     ExtractParams5<wxColour*, SQInteger, SQInteger, SQInteger, SQInteger> extractor(v);
@@ -1000,6 +1014,7 @@ void Register_wxTypes(HSQUIRRELVM v)
 
     BindMethod(v, _SC("_T"), static_T, nullptr);
     BindMethod(v, _SC("_"), static_, nullptr);
+    BindMethod(v, _SC("wxString_ToLong"), wxString_ToLong, nullptr);
 
     {
         // Register wxColour

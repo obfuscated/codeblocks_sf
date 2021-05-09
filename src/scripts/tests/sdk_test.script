@@ -7,10 +7,11 @@ class sdkTest extends script_test_base
         clear_global_test_results()
         ::print("======= Test SDK function BEGINN ======= \n");
         test_replace_macros();
+        test_globals();
         ::print("======= Test SDK function END ======= \n");
         print_global_test_result();
     }
-    
+
     function test_replace_macros()
     {
         ::print("======= Test ReplaceMacros function BEGINN ======= \n");
@@ -22,24 +23,24 @@ class sdkTest extends script_test_base
         test_string("active line", ReplaceMacros(_("$(ACTIVE_EDITOR_LINE)")),_("1"));
         test_string("editor name", ReplaceMacros(_("$(ACTIVE_EDITOR_STEM)")),_("test"));
         test_string("editor name extension", ReplaceMacros(_("$(ACTIVE_EDITOR_EXT)")),_("ext"));
-        
+
         test_string("if true", ReplaceMacros(_("$if(true){true}{false}")),_("true"));
         test_string("if 1", ReplaceMacros(_("$if(1){true}{false}")),_("true"));
         test_string("if 1==1", ReplaceMacros(_("$if(1==1){true}{false}")),_("true"));
         test_string("if false", ReplaceMacros(_("$if(false){true}{false}")),_("false"));
         test_string("if 0", ReplaceMacros(_("$if(0){true}{false}")),_("false"));
         test_string("if 1==0", ReplaceMacros(_("$if(1==0){true}{false}")),_("false"));
-        
+
         test_string("if test==test", ReplaceMacros(_("$if(test==test){true}{false}")),_("true"));
         test_string("if tes<test", ReplaceMacros(_("$if(tes<test){true}{false}")),_("true"));
         test_string("if 1>0", ReplaceMacros(_("$if(1>0){true}{false}")),_("true"));
         test_string("if 1<0", ReplaceMacros(_("$if(1<0){true}{false}")),_("false"));
-        
+
         test_string("if [[print(_(\"true\"))]]", ReplaceMacros(_("$if([[print(_(\"true\"))]]){true}{false}")),_("true"));
         test_string("if [[print(_(\"false\"))]]", ReplaceMacros(_("$if([[print(_(\"false\"))]]){true}{false}")),_("false"));
         test_string("if [[print(_(\"FALSE\"))]]", ReplaceMacros(_("$if([[print(_(\"FALSE\"))]]){true}{false}")),_("false"));
         test_string("if [[print(_(\"0\"))]]", ReplaceMacros(_("$if([[print(_(\"0\"))]]){true}{false}")),_("false"));
-        
+
         test_string("if [[print(_(\"1==0\"))]]", ReplaceMacros(_("$if([[print(_(\"1==0\"))]]){true}{false}")),_("false"));
         test_string("if [[print(_(\"1==1\"))]]", ReplaceMacros(_("$if([[print(_(\"1==1\"))]]){true}{false}")),_("true"));
         local testStr = " PS1=\"\\(awk '/MemFree/{print \\\" \\2}' \\\" /proc/meminfo) prompt > \"";
@@ -50,12 +51,42 @@ class sdkTest extends script_test_base
         print(_("bash escape string: \"" + testStr + "\""));
         test_string("bash escaping 2.1", ReplaceMacros(_("$if(true){" + testStr + "}{false}")),_(testStr));
         test_string("bash escaping 2.2", ReplaceMacros(_("$if(false){" + testStr + "}{false}")),_("false"));
-       
 
-        
         print(_("Close the editor "));
         testEditor.Close();
         print_test_result();
         ::print("======= Test ReplaceMacros function END ======= \n");
+    }
+
+    function test_globals()
+    {
+        ::print("======= Test Globals function BEGINN ======= \n");
+        clear_test_result();
+
+        local arr = GetArrayFromString(_T(" item1, item2, item3"), _T(","), true);
+        test_equal("GetArrayFromString count", arr.GetCount(), 3);
+        test_string("GetArrayFromString item0", arr.Item(0), "item1");
+        test_string("GetArrayFromString item1", arr.Item(1), "item2");
+        test_string("GetArrayFromString item2", arr.Item(2), "item3");
+
+        local strFromArr0 = GetStringFromArray(arr, _T(";"), false);
+        local strFromArr1 = GetStringFromArray(arr, _T("<>"), true);
+        test_string("GetStringFromArray 0", strFromArr0, "item1;item2;item3");
+        test_string("GetStringFromArray 1", strFromArr1, "item1<>item2<>item3<>");
+
+        test_equal("IsNull", IsNull(_T("")), false);
+        test_string("EscapeSpaces", EscapeSpaces(_T("test  spaces")), @"test\ \ spaces");
+        test_string("UnixFilename", UnixFilename(_T("\\test\\unix.file"), wxPATH_UNIX),
+                    "/test/unix.file");
+
+        test_equal("FileTypeOf", FileTypeOf(_T("test.cpp")), 10);
+        // TODO: Check if this is actually correct
+        test_string( "URLEncode", URLEncode(_T("/ test")), "%2F+test");
+
+        test_equal("GetPlatformsFromString", GetPlatformsFromString(_T("Windows;Unix")), 2 | 4);
+        test_string("GetStringFromPlatforms", GetStringFromPlatforms(2 | 4, true), "Windows;Unix;");
+
+        print_test_result();
+        ::print("======= Test Globals function END ======= \n");
     }
 }

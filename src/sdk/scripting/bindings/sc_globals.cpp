@@ -7,7 +7,6 @@
  * $HeadURL$
  */
 
-#if 1
 #include <sdk_precomp.h>
 #ifndef CB_PRECOMP
     #include <wx/string.h>
@@ -15,6 +14,8 @@
 
 #include "sc_utils.h"
 #include "sc_typeinfo_all.h"
+
+#include <wx/numdlg.h>
 
 namespace ScriptBindings
 {
@@ -88,156 +89,184 @@ namespace ScriptBindings
         return 1;
     }
 
-    SQInteger Include(HSQUIRRELVM v)
+    SQInteger gGetArrayFromString(HSQUIRRELVM v)
     {
+        // env table, text, separator, trim spaces
+        ExtractParams4<SkipParam, const wxString *, const wxString *, bool> extractor(v);
+        if (!extractor.Process("GetArrayFromString"))
+            return extractor.ErrorMessage();
+        UserDataForType<wxArrayString> *data = CreateInlineInstance<wxArrayString>(v);
+        if (data == nullptr)
+            return -1; // An error should have been logged already.
+
+        const wxArrayString &result = GetArrayFromString(*extractor.p1, *extractor.p2, extractor.p3);
+        new (&data->userdata) wxArrayString(result);
+        return 1;
+    }
+
+    SQInteger gGetStringFromArray(HSQUIRRELVM v)
+    {
+        // env table, array, separator, separator at end
+        ExtractParams4<SkipParam, const wxArrayString *, const wxString *, bool> extractor(v);
+        if (!extractor.Process("GetStringFromArray"))
+            return extractor.ErrorMessage();
+        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
+        if (data == nullptr)
+            return -1; // An error should have been logged already.
+
+        const wxString &result = GetStringFromArray(*extractor.p1, *extractor.p2, extractor.p3);
+        new (&data->userdata) wxString(result);
+        return 1;
+    }
+
+    SQInteger gEscapeSpaces(HSQUIRRELVM v)
+    {
+        // env table, str
         ExtractParams2<SkipParam, const wxString *> extractor(v);
-        if (!extractor.Process("Include"))
+        if (!extractor.Process("EscapeSpaces"))
             return extractor.ErrorMessage();
 
-        ScriptingManager *sm = Manager::Get()->GetScriptingManager();
-        if (!sm->LoadScript(*extractor.p1))
-        {
-            wxString msg = wxString::Format(_("Include: Failed to load required script: '%s'"),
-                                            extractor.p1->wx_str());
-            return sq_throwerror(v, cbU2C(msg));
-        }
-
-        return 0;
+        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
+        if (data == nullptr)
+            return -1; // An error should have been logged already.
+        new (&data->userdata) wxString(EscapeSpaces(*extractor.p1));
+        return 1;
     }
-    SQInteger Require(HSQUIRRELVM v)
+
+    SQInteger gUnixFilename(HSQUIRRELVM v)
     {
-        ExtractParams2<SkipParam, const wxString *> extractor(v);
-        if (!extractor.Process("Require"))
+        // env table, filename, format
+        ExtractParams3<SkipParam, const wxString *, SQInteger> extractor(v);
+        if (!extractor.Process("UnixFilename"))
             return extractor.ErrorMessage();
 
-        ScriptingManager *sm = Manager::Get()->GetScriptingManager();
-        if (sm->LoadScript(*extractor.p1))
-        {
-            sq_pushinteger(v, 0);
-            return 1;
-        }
-        else
-        {
-            wxString msg = wxString::Format(_("Require: Failed to load required script: '%s'"),
-                                            extractor.p1->wx_str());
-            return sq_throwerror(v, cbU2C(msg));
-        }
+        if (extractor.p2 < wxPATH_NATIVE || extractor.p2 >= wxPATH_MAX)
+            return sq_throwerror(v, _SC("UnixFilename: format out of range!"));
+
+        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
+        if (data == nullptr)
+            return -1; // An error should have been logged already.
+        new (&data->userdata) wxString(UnixFilename(*extractor.p1, wxPathFormat(extractor.p2)));
+        return 1;
     }
 
-    void Register_Globals(HSQUIRRELVM v)
+    SQInteger gFileTypeOf(HSQUIRRELVM v)
     {
-        PreserveTop preserve(v);
-
-        sq_pushroottable(v);
-
-        BindMethod(v, _SC("Log"), NoReturnSingleWxStringParam<gLog>, nullptr);
-        BindMethod(v, _SC("LogDebug"), NoReturnSingleWxStringParam<&gDebugLog>, nullptr);
-        BindMethod(v, _SC("LogWarning"), NoReturnSingleWxStringParam<&gWarningLog>, nullptr);
-        BindMethod(v, _SC("LogError"), NoReturnSingleWxStringParam<&gErrorLog>, nullptr);
-
-        BindMethod(v, _SC("Message"), MessageBoxFunc, nullptr);
-        BindMethod(v, _SC("ShowMessage"), NoReturnSingleWxStringParam<&gShowMessage>, nullptr);
-        BindMethod(v, _SC("ShowWarning"), NoReturnSingleWxStringParam<&gShowMessageWarn>, nullptr);
-        BindMethod(v, _SC("ShowError"), NoReturnSingleWxStringParam<&gShowMessageError>, nullptr);
-        BindMethod(v, _SC("ShowInfo"), NoReturnSingleWxStringParam<&gShowMessageInfo>, nullptr);
-
-        BindMethod(v, _SC("ReplaceMacros"), gReplaceMacros, nullptr);
-
-        BindMethod(v, _SC("GetEditorManager"), getEM, nullptr);
-
-        BindMethod(v, _SC("Include"), Include, nullptr);
-        BindMethod(v, _SC("Require"), Require, nullptr);
-
-        sq_pop(v, 1); // root table
-    }
-}
-
-#else // 0
-#include <sdk_precomp.h>
-#ifndef CB_PRECOMP
-    #include <wx/string.h>
-    #include <wx/textdlg.h>
-    #include <globals.h>
-    #include <settings.h>
-    #include <manager.h>
-    #include <logmanager.h>
-    #include <configmanager.h>
-    #include <editormanager.h>
-    #include <projectmanager.h>
-    #include <pluginmanager.h>
-#endif
-
-#include "sc_base_types.h"
-
-#include <wx/colordlg.h>
-#include <wx/numdlg.h>
-#include <infowindow.h>
-
-namespace ScriptBindings
-{
-    // global funcs
-    void gDebugLog(const wxString& msg){ Manager::Get()->GetLogManager()->DebugLog(msg); }
-    void gErrorLog(const wxString& msg){ Manager::Get()->GetLogManager()->LogError(msg); }
-    void gWarningLog(const wxString& msg){ Manager::Get()->GetLogManager()->LogWarning(msg); }
-    void gLog(const wxString& msg){ Manager::Get()->GetLogManager()->Log(msg); }
-    int gMessage(const wxString& msg, const wxString& caption, int buttons){ return cbMessageBox(msg, caption, buttons); }
-    void gShowMessage(const wxString& msg){ cbMessageBox(msg, _("Script message"), wxICON_INFORMATION | wxOK); }
-    void gShowMessageWarn(const wxString& msg){ cbMessageBox(msg, _("Script warning"), wxICON_WARNING | wxOK); }
-    void gShowMessageError(const wxString& msg){ cbMessageBox(msg, _("Script error"), wxICON_ERROR | wxOK); }
-    void gShowMessageInfo(const wxString& msg){ cbMessageBox(msg, _("Script information"), wxICON_INFORMATION | wxOK); }
-    wxString gReplaceMacros(const wxString& buffer){ return Manager::Get()->GetMacrosManager()->ReplaceMacros(buffer); }
-
-    SQInteger IsNull(HSQUIRRELVM v)
-    {
-        StackHandler sa(v);
-        SQUserPointer up = nullptr;
-        sq_getinstanceup(v, 2, &up, nullptr);
-        return sa.Return(up == nullptr);
+        // env table, filename
+        ExtractParams2<SkipParam, const wxString *> extractor(v);
+        if (!extractor.Process("FileTypeOf"))
+            return extractor.ErrorMessage();
+        // FIXME: (squirrel) This returns int, but it could return an enum!
+        sq_pushinteger(v, FileTypeOf(*extractor.p1));
+        return 1;
     }
 
-    ProjectManager* getPM()
+    SQInteger gURLEncode(HSQUIRRELVM v)
     {
-        return Manager::Get()->GetProjectManager();
+        // env table, str
+        ExtractParams2<SkipParam, const wxString *> extractor(v);
+        if (!extractor.Process("URLEncode"))
+            return extractor.ErrorMessage();
+        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
+        if (data == nullptr)
+            return -1; // An error should have been logged already.
+        new (&data->userdata) wxString(URLEncode(*extractor.p1));
+        return 1;
     }
-    EditorManager* getEM()
+
+    SQInteger gGetPlatformsFromString(HSQUIRRELVM v)
     {
-        return Manager::Get()->GetEditorManager();
+        // env table, platforms
+        ExtractParams2<SkipParam, const wxString *> extractor(v);
+        if (!extractor.Process("GetPlatformsFromString"))
+            return extractor.ErrorMessage();
+        // FIXME: (squirrel) This returns int, but it could return an enum!
+        sq_pushinteger(v, GetPlatformsFromString(*extractor.p1));
+        return 1;
     }
-    ConfigManager* getCM()
+
+    SQInteger gGetStringFromPlatforms(HSQUIRRELVM v)
     {
-        return Manager::Get()->GetConfigManager(_T("scripts"));
+        // env table, platforms, force separate
+        ExtractParams3<SkipParam, SQInteger, bool> extractor(v);
+        if (!extractor.Process("GetStringFromPlatforms"))
+            return extractor.ErrorMessage();
+        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
+        if (data == nullptr)
+            return -1; // An error should have been logged already.
+        new (&data->userdata) wxString(GetStringFromPlatforms(extractor.p1, extractor.p2));
+        return 1;
     }
-    CompilerFactory* getCF()
+
+    SQInteger ConfigManager_GetFolder(HSQUIRRELVM v)
     {
-        static CompilerFactory cf; // all its members are static functions anyway
-        return &cf;
+        // env table, dir
+        ExtractParams2<SkipParam, SQInteger> extractor(v);
+        if (!extractor.Process("GetFolder"))
+            return extractor.ErrorMessage();
+        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
+        if (data == nullptr)
+            return -1; // An error should have been logged already.
+        // FIXME (squirrel) We expose an int, but we could expose the actual enum to scripts.
+        new (&data->userdata) wxString(ConfigManager::GetFolder(SearchDirs(extractor.p1)));
+        return 1;
     }
-    UserVariableManager* getUVM()
+
+    SQInteger ConfigManager_LocateDataFile(HSQUIRRELVM v)
     {
-        return Manager::Get()->GetUserVariableManager();
+        // env table, filename, dir
+        ExtractParams3<SkipParam, const wxString *, SQInteger> extractor(v);
+        if (!extractor.Process("LocateDataFile"))
+            return extractor.ErrorMessage();
+        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
+        if (data == nullptr)
+            return -1; // An error should have been logged already.
+        // FIXME (squirrel) We expose an int, but we could expose the actual enum to scripts.
+        new (&data->userdata) wxString(ConfigManager::LocateDataFile(*extractor.p1,
+                                                                     SearchDirs(extractor.p2)));
+        return 1;
     }
-    ScriptingManager* getSM()
+
+    SQInteger ExecutePlugin(HSQUIRRELVM v)
     {
-        return Manager::Get()->GetScriptingManager();
+        // env table, pluginName
+        ExtractParams2<SkipParam, const wxString *> extractor(v);
+        if (!extractor.Process("ExecutePlugin"))
+            return extractor.ErrorMessage();
+        sq_pushinteger(v, Manager::Get()->GetPluginManager()->ExecutePlugin(*extractor.p1));
+        return 1;
     }
-    bool InstallPlugin(const wxString& pluginName, bool allUsers, bool confirm)
+
+    SQInteger InstallPlugin(HSQUIRRELVM v)
     {
+        // env table, pluginName, allUsers, confirm
+        ExtractParams4<SkipParam, const wxString *, bool, bool> extractor(v);
+        if (!extractor.Process("InstallPlugin"))
+            return extractor.ErrorMessage();
+
+        const wxString &pluginName = *extractor.p1;
         if (cbMessageBox(_("A script is trying to install a Code::Blocks plugin.\n"
-                            "Do you wish to allow this?\n\n") + pluginName,
-                            _("Security warning"), wxICON_WARNING | wxYES_NO) == wxID_NO)
+                           "Do you wish to allow this?\n\n") + pluginName,
+                        _("Security warning"), wxICON_WARNING | wxYES_NO) == wxID_NO)
         {
             return false;
         }
-        return Manager::Get()->GetPluginManager()->InstallPlugin(pluginName, allUsers, confirm);
+
+        const bool result = Manager::Get()->GetPluginManager()->InstallPlugin(pluginName,
+                                                                              extractor.p2,
+                                                                              extractor.p3);
+        sq_pushbool(v, result);
+        return 1;
     }
-    int ExecutePlugin(const wxString& pluginName)
+
+    SQInteger ConfigurePlugin(HSQUIRRELVM v)
     {
-        return Manager::Get()->GetPluginManager()->ExecutePlugin(pluginName);
+        // Leaving script binding intact for compatibility, but this is factually not implemented at
+        // all.
+        sq_pushinteger(v, 0);
+        return 1;
     }
-    int ConfigurePlugin(cb_unused const wxString& pluginName)
-    {
-        return 0; /* leaving script binding intact for compatibility, but this is factually not implemented at all */
-    }
+
     // locate and call a menu from string (e.g. "/Valgrind/Run Valgrind::MemCheck")
     void CallMenu(const wxString& menuPath)
     {
@@ -300,108 +329,195 @@ namespace ScriptBindings
             pos = nextPos; // prepare for next loop
         }
     }
-    void Include(const wxString& filename)
+
+    SQInteger Include(HSQUIRRELVM v)
     {
-        getSM()->LoadScript(filename);
+        ExtractParams2<SkipParam, const wxString *> extractor(v);
+        if (!extractor.Process("Include"))
+            return extractor.ErrorMessage();
+
+        ScriptingManager *sm = Manager::Get()->GetScriptingManager();
+        if (!sm->LoadScript(*extractor.p1))
+        {
+            wxString msg = wxString::Format(_("Include: Failed to load required script: '%s'"),
+                                            extractor.p1->wx_str());
+            return sq_throwerror(v, cbU2C(msg));
+        }
+
+        return 0;
     }
     SQInteger Require(HSQUIRRELVM v)
     {
-        StackHandler sa(v);
-        const wxString& filename = *SqPlus::GetInstance<wxString,false>(v, 2);
-        if (!getSM()->LoadScript(filename))
+        ExtractParams2<SkipParam, const wxString *> extractor(v);
+        if (!extractor.Process("Require"))
+            return extractor.ErrorMessage();
+
+        ScriptingManager *sm = Manager::Get()->GetScriptingManager();
+        if (sm->LoadScript(*extractor.p1))
         {
-            wxString msg = wxString::Format(_("Failed to load required script: %s"), filename.c_str());
-            return sa.ThrowError(cbU2C(msg));
+            sq_pushinteger(v, 0);
+            return 1;
         }
-        return sa.Return(static_cast<SQInteger>(0));
+        else
+        {
+            wxString msg = wxString::Format(_("Require: Failed to load required script: '%s'"),
+                                            extractor.p1->wx_str());
+            return sq_throwerror(v, cbU2C(msg));
+        }
     }
-    SQInteger wx_GetColourFromUser(HSQUIRRELVM v)
+
+    SQInteger InfoWindow_Display(HSQUIRRELVM v)
     {
-        StackHandler sa(v);
-        const wxColour& c = sa.GetParamCount() == 2 ? *SqPlus::GetInstance<wxColour,false>(v, 2) : *wxBLACK;
-        return SqPlus::ReturnCopy(v, wxGetColourFromUser(Manager::Get()->GetAppWindow(), c));
+        // env table, title, message, delay, hysteresis
+        ExtractParams5<SkipParam, const wxString *, const wxString *, SQInteger, SQInteger> extractor(v);
+        if (!extractor.Process("InfoWindow::Display"))
+            return extractor.ErrorMessage();
+
+        InfoWindow::Display(*extractor.p1, *extractor.p2, extractor.p3, extractor.p4);
+        return 0;
     }
-    long wx_GetNumberFromUser(const wxString& message, const wxString& prompt, const wxString& caption, long value)
+
+    SQInteger IsNull(HSQUIRRELVM v)
     {
-        return wxGetNumberFromUser(message, prompt, caption, value);
+        ExtractParamsBase extractor(v);
+        if (!extractor.CheckNumArguments(2, "IsNull"))
+            return extractor.ErrorMessage();
+        SQUserPointer up = nullptr;
+        sq_getinstanceup(v, 2, &up, nullptr);
+        sq_pushbool(v, (up == nullptr));
+        return 1;
     }
-    wxString wx_GetPasswordFromUser(const wxString& message, const wxString& caption, const wxString& default_value)
+
+    SQInteger gWxLaunchDefaultBrowser(HSQUIRRELVM v)
+    {
+        // env table, url, flags
+        ExtractParams3<SkipParam, const wxString *, SQInteger> extractor(v);
+        if (!extractor.Process("wxLaunchDefaultBrowser"))
+            return extractor.ErrorMessage();
+
+        sq_pushbool(v, wxLaunchDefaultBrowser(*extractor.p1, extractor.p2));
+        return 1;
+    }
+
+    SQInteger gWxGetColourFromUser(HSQUIRRELVM v)
+    {
+        // env table, colInit (optional)
+        ExtractParamsBase extractor(v);
+        if (!extractor.CheckNumArguments(1, 2, "wxGetColourFromUser"))
+            return extractor.ErrorMessage();
+
+        const wxColour *initColour = wxBLACK;
+        const int numArgs = sq_gettop(v);
+        if (numArgs == 2)
+        {
+            if (!extractor.ProcessParam(initColour, 2, "wxGetColourFromUser"))
+                return extractor.ErrorMessage();
+        }
+
+        const wxColour &result = wxGetColourFromUser(Manager::Get()->GetAppWindow(), *initColour);
+
+        UserDataForType<wxColour> *data = CreateInlineInstance<wxColour>(v);
+        if (data == nullptr)
+            return -1; // An error should have been logged already.
+        new (&data->userdata) wxColour(result);
+        return 1;
+    }
+
+    SQInteger gWxGetNumberFromUser(HSQUIRRELVM v)
+    {
+        // env table, message, prompt, caption, value
+        ExtractParams5<SkipParam, const wxString *, const wxString *, const wxString *, SQInteger> extractor(v);
+        if (!extractor.Process("wxGetNumberFromUser"))
+            return extractor.ErrorMessage();
+
+        sq_pushinteger(v, wxGetNumberFromUser(*extractor.p1, *extractor.p2, *extractor.p3,
+                                              extractor.p4));
+        return 1;
+    }
+
+    wxString wx_GetPasswordFromUser(const wxString& message, const wxString& caption,
+                                    const wxString& default_value)
     {
         return wxGetPasswordFromUser(message, caption, default_value);
     }
-    wxString wx_GetTextFromUser(const wxString& message, const wxString& caption, const wxString& default_value)
+    wxString wx_GetTextFromUser(const wxString& message, const wxString& caption,
+                                const wxString& default_value)
     {
         return cbGetTextFromUser(message, caption, default_value);
     }
 
-    long wxString_ToLong(wxString const &str)
+    template <wxString (*func)(const wxString&, const wxString &, const wxString&)>
+    SQInteger gWxGetTextFromUser(HSQUIRRELVM v)
     {
-        long value;
-        if(!str.ToLong(&value))
-            return -1;
-        return value;
+        // env table, message, caption, default_value
+        ExtractParams4<SkipParam, const wxString *, const wxString *, const wxString *> extractor(v);
+        if (!extractor.Process("gWxGetTextFromUser"))
+            return extractor.ErrorMessage();
+
+        const wxString &result = func(*extractor.p1, *extractor.p2, *extractor.p3);
+
+        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
+        if (data == nullptr)
+            return -1; // An error should have been logged already.
+        new (&data->userdata) wxString(result);
+        return 1;
     }
 
-
-    void Register_Globals()
+    void Register_Globals(HSQUIRRELVM v)
     {
-        // global funcs
-        SqPlus::RegisterGlobal(gLog, "Log");
-        SqPlus::RegisterGlobal(gDebugLog, "LogDebug");
-        SqPlus::RegisterGlobal(gWarningLog, "LogWarning");
-        SqPlus::RegisterGlobal(gErrorLog, "LogError");
+        PreserveTop preserve(v);
 
-        SqPlus::RegisterGlobal(gMessage, "Message");
-        SqPlus::RegisterGlobal(gShowMessage, "ShowMessage");
-        SqPlus::RegisterGlobal(gShowMessageWarn, "ShowWarning");
-        SqPlus::RegisterGlobal(gShowMessageError, "ShowError");
-        SqPlus::RegisterGlobal(gShowMessageInfo, "ShowInfo");
-        SqPlus::RegisterGlobal(gReplaceMacros, "ReplaceMacros");
+        sq_pushroottable(v);
 
-        SqPlus::RegisterGlobal(getPM, "GetProjectManager");
-        SqPlus::RegisterGlobal(getEM, "GetEditorManager");
-        SqPlus::RegisterGlobal(getCM, "GetConfigManager");
-        SqPlus::RegisterGlobal(getUVM, "GetUserVariableManager");
-        SqPlus::RegisterGlobal(getSM, "GetScriptingManager");
-        SqPlus::RegisterGlobal(getCF, "GetCompilerFactory");
+        BindMethod(v, _SC("Log"), NoReturnSingleWxStringParam<gLog>, nullptr);
+        BindMethod(v, _SC("LogDebug"), NoReturnSingleWxStringParam<&gDebugLog>, nullptr);
+        BindMethod(v, _SC("LogWarning"), NoReturnSingleWxStringParam<&gWarningLog>, nullptr);
+        BindMethod(v, _SC("LogError"), NoReturnSingleWxStringParam<&gErrorLog>, nullptr);
+
+        BindMethod(v, _SC("Message"), MessageBoxFunc, nullptr);
+        BindMethod(v, _SC("ShowMessage"), NoReturnSingleWxStringParam<&gShowMessage>, nullptr);
+        BindMethod(v, _SC("ShowWarning"), NoReturnSingleWxStringParam<&gShowMessageWarn>, nullptr);
+        BindMethod(v, _SC("ShowError"), NoReturnSingleWxStringParam<&gShowMessageError>, nullptr);
+        BindMethod(v, _SC("ShowInfo"), NoReturnSingleWxStringParam<&gShowMessageInfo>, nullptr);
+
+        BindMethod(v, _SC("ReplaceMacros"), gReplaceMacros, nullptr);
+
+        BindMethod(v, _SC("GetEditorManager"), getEM, nullptr);
 
         // from globals.h
-        SqPlus::RegisterGlobal(GetArrayFromString, "GetArrayFromString");
-        SqPlus::RegisterGlobal(GetStringFromArray, "GetStringFromArray");
-        SqPlus::RegisterGlobal(EscapeSpaces, "EscapeSpaces");
-        SqPlus::RegisterGlobal(UnixFilename, "UnixFilename");
-        SqPlus::RegisterGlobal(FileTypeOf, "FileTypeOf");
-        SqPlus::RegisterGlobal(URLEncode, "URLEncode");
-        SqPlus::RegisterGlobal(NotifyMissingFile, "NotifyMissingFile");
-        SqPlus::RegisterGlobal(GetPlatformsFromString, "GetPlatformsFromString");
-        SqPlus::RegisterGlobal(GetStringFromPlatforms, "GetStringFromPlatforms");
+        BindMethod(v, _SC("GetArrayFromString"), gGetArrayFromString, nullptr);
+        BindMethod(v, _SC("GetStringFromArray"), gGetStringFromArray, nullptr);
+        BindMethod(v, _SC("EscapeSpaces"), gEscapeSpaces, nullptr);
+        BindMethod(v, _SC("UnixFilename"), gUnixFilename, nullptr);
+        BindMethod(v, _SC("FileTypeOf"), gFileTypeOf, nullptr);
+        BindMethod(v, _SC("URLEncode"), gURLEncode, nullptr);
+        BindMethod(v, _SC("NotifyMissingFile"), NoReturnSingleWxStringParam<&NotifyMissingFile>, nullptr);
+        BindMethod(v, _SC("GetPlatformsFromString"), gGetPlatformsFromString, nullptr);
+        BindMethod(v, _SC("GetStringFromPlatforms"), gGetStringFromPlatforms, nullptr);
 
-        SqPlus::RegisterGlobal(ConfigManager::GetFolder, "GetFolder");
-        SqPlus::RegisterGlobal(ConfigManager::LocateDataFile, "LocateDataFile");
+        BindMethod(v, _SC("GetFolder"), ConfigManager_GetFolder, nullptr);
+        BindMethod(v, _SC("LocateDataFile"), ConfigManager_LocateDataFile, nullptr);
 
-        SqPlus::RegisterGlobal(ExecutePlugin, "ExecuteToolPlugin");
-        SqPlus::RegisterGlobal(ConfigurePlugin, "ConfigureToolPlugin");
-        SqPlus::RegisterGlobal(InstallPlugin, "InstallPlugin");
+        BindMethod(v, _SC("ExecuteToolPlugin"), ExecutePlugin, nullptr);
+        BindMethod(v, _SC("ConfigureToolPlugin"), ConfigurePlugin, nullptr);
+        BindMethod(v, _SC("InstallPlugin"), InstallPlugin, nullptr);
 
-        SqPlus::RegisterGlobal(CallMenu, "CallMenu");
+        BindMethod(v, _SC("CallMenu"), NoReturnSingleWxStringParam<CallMenu>, nullptr);
 
-        SqPlus::RegisterGlobal(Include, "Include");
-        SquirrelVM::CreateFunctionGlobal(Require, "Require", "*");
+        BindMethod(v, _SC("Include"), Include, nullptr);
+        BindMethod(v, _SC("Require"), Require, nullptr);
 
-        SqPlus::RegisterGlobal(InfoWindow::Display, "InfoWindow");
-
-        SquirrelVM::CreateFunctionGlobal(IsNull, "IsNull", "*");
+        BindMethod(v, _SC("InfoWindow"), InfoWindow_Display, nullptr);
+        BindMethod(v, _SC("IsNull"), IsNull, nullptr);
 
         // now for some wx globals (utility) functions
-        SqPlus::RegisterGlobal(wxLaunchDefaultBrowser, "wxLaunchDefaultBrowser");
-        SquirrelVM::CreateFunctionGlobal(wx_GetColourFromUser, "wxGetColourFromUser", "*");
-        SqPlus::RegisterGlobal(wx_GetNumberFromUser, "wxGetNumberFromUser");
-        SqPlus::RegisterGlobal(wx_GetPasswordFromUser, "wxGetPasswordFromUser");
-        SqPlus::RegisterGlobal(wx_GetTextFromUser, "wxGetTextFromUser");
+        BindMethod(v, _SC("wxLaunchDefaultBrowser"), gWxLaunchDefaultBrowser, nullptr);
+        BindMethod(v, _SC("wxGetColourFromUser"), gWxGetColourFromUser, nullptr);
+        BindMethod(v, _SC("wxGetNumberFromUser"), gWxGetNumberFromUser, nullptr);
+        BindMethod(v, _SC("wxGetPasswordFromUser"), gWxGetTextFromUser<wx_GetPasswordFromUser>,
+                   nullptr);
+        BindMethod(v, _SC("wxGetTextFromUser"), gWxGetTextFromUser<wx_GetTextFromUser>, nullptr);
 
-        // FIXME (squirrel) Move to sc_wxtypes.cpp
-        SqPlus::RegisterGlobal(wxString_ToLong, "wxString_ToLong");
+        sq_pop(v, 1); // root table
     }
 }
-
-#endif // 0
