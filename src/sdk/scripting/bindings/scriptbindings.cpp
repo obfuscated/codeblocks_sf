@@ -2206,7 +2206,7 @@ namespace ScriptBindings
     void Register_ProgressDialog(HSQUIRRELVM v);
     void Register_UtilDialogs(HSQUIRRELVM v, ScriptingManager *manager);
     void Register_IO(HSQUIRRELVM v, ScriptingManager *manager);
-    void Register_ScriptPlugin(HSQUIRRELVM v);
+    void Register_ScriptPlugin(HSQUIRRELVM v, ScriptingManager *manager);
     void Unregister_ScriptPlugin();
 
     void RegisterBindings(HSQUIRRELVM v, ScriptingManager *manager)
@@ -3123,7 +3123,7 @@ namespace ScriptBindings
         sq_pop(v, 1); // Pop root table.
 
         // called last because it needs a few previously registered types
-        Register_ScriptPlugin(v);
+        Register_ScriptPlugin(v, manager);
     }
 
     void UnregisterBindings()
