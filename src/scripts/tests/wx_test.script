@@ -60,6 +60,8 @@ class wxTest extends script_test_base
         // I don't know how to write this test yet.
         //test_string("_add wxString+userptr", _T("first-") + <something>, "first-2.0");
 
+        test_string("_cloned", clone string, "Hallo");
+
         test_false("IsEmpty",string.IsEmpty());
         test_true("IsEmpty", wxString().IsEmpty());
         test_equal("Length",string.Length(),5);
@@ -237,6 +239,7 @@ class wxTest extends script_test_base
         color.Set(52,53,54,255);
         test_string("Set",color,"[r=52, g=53, b=54]");
         test_string("tostring",color,"[r=52, g=53, b=54]");
+        test_string("_cloned", clone color,"[r=52, g=53, b=54]");
         test_equal("Red",color.Red(),52);
         test_equal("Green",color.Green(),53);
         test_equal("Blue",color.Blue(),54);
@@ -272,6 +275,19 @@ class wxTest extends script_test_base
         test_equal("Index(\"string2\",false,false)", array.Index(_T("string2"),false,false),1);
         test_equal("Index(\"string2\",false,true)", array.Index(_T("string2"),false,true),2);
         test_string("Item", array.Item(2),_T("String2"));
+
+        {
+            local cloned = clone array;
+            local match = array.GetCount() == cloned.GetCount();
+
+            for (local i = 0; match && i < array.GetCount(); ++i)
+            {
+                local item = cloned.Item(i);
+                if (array.Item(i) != item)
+                    match = false;
+            }
+            test_true("_cloned", match);
+        }
 
         // Test if modifying the result of Item doesn't change the value in the array.
         local itemValue = array.Item(2);
@@ -332,6 +348,7 @@ class wxTest extends script_test_base
         ::print("Use path: " + path + "\n");
         filename.Assign(path,::wxPATH_NATIVE);
         test_string("tostring",filename,path);
+        test_string("_cloned", clone filename,path);
         test_string("Assign",filename,path);
         test_equal("GetDirCount",filename.GetDirCount(),2);
         test_equal("GetDirs",filename.GetDirs().GetCount(),2);
@@ -472,6 +489,7 @@ class wxTest extends script_test_base
         test_true("Cmp",point1 == point2);
         test_false("Cmp not",point1 == point3);
         test_string("_tostring",point1,"[10,10]");
+        test_string("_cloned", clone point1,"[10,10]");
 
         print_test_result();
         ::print("======= Test wxPoint END  ======= \n");
@@ -490,6 +508,7 @@ class wxTest extends script_test_base
         point3.Set(10,5);
 
         test_string("_tostring",point1,"[10,10]");
+        test_string("_cloned", clone point1,"[10,10]");
         //test_true("Cmp",point1.Cmp(point2));
         //test_false("Cmp",point1.Cmp(point3));
         test_equal("GetWidth",point3.GetWidth(),10);
@@ -498,7 +517,6 @@ class wxTest extends script_test_base
         point3.SetHeight(66);
         test_equal("SetWidth",point3.GetWidth(),23);
         test_equal("SetHeight",point3.GetHeight(),66);
-
 
         print_test_result();
         ::print("======= Test wxSize END  ======= \n");
