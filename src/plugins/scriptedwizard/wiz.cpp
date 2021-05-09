@@ -104,43 +104,25 @@ void Wiz::OnAttach()
     // user script first
     wxString templatePath = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/");
     wxString script = templatePath + _T("/config.script");
-    if (wxFileExists(script))
-    {
-        Manager::Get()->GetScriptingManager()->LoadScript(script);
-// FIXME (squirrel) Reimplement Wiz::OnAttach 2
-/*
-        try
-        {
-            SqPlus::SquirrelFunction<void> f("RegisterWizards");
-            f();
-        }
-        catch (SquirrelError& e)
-        {
-            Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-        }
-*/
-    }
-    else
+    if (!wxFileExists(script))
     {
         // global script next
         templatePath = ConfigManager::GetFolder(sdDataGlobal) + _T("/templates/wizard/");
         script = templatePath + _T("/config.script");
-        if (wxFileExists(script))
+        if (!wxFileExists(script))
+            script = wxString();
+    }
+
+    if (!script.empty())
+    {
+        if (scriptMgr->LoadScript(script))
         {
-            Manager::Get()->GetScriptingManager()->LoadScript(script);
-// FIXME (squirrel) Reimplement Wiz::OnAttach 3
-/*
-            try
-            {
-                SqPlus::SquirrelFunction<void> f("RegisterWizards");
-                f();
-            }
-            catch (SquirrelError& e)
-            {
-                Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-            }
-*/
+            ScriptBindings::Caller caller(vm);
+            if (!caller.CallByName0(_SC("RegisterWizards")))
+                scriptMgr->DisplayErrors(true); // FIXME (squirrel) This error is not displayed properly!
         }
+        else
+            scriptMgr->DisplayErrors(true);
     }
 
     // default compiler settings (returned if no compiler page is added in the wizard)
@@ -234,6 +216,8 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
 {
     cbAssert(index >= 0 && index < GetCount());
 
+    ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
+
     // clear previous script's context
     static const wxString clearout_wizscripts =  _T("function BeginWizard(){};\n"
                                                     "function SetupProject(project){return false;};\n"
@@ -243,7 +227,7 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
                                                     "function GetFilesDir(){return _T(\"\");};\n"
                                                     "function GetGeneratedFile(index){return _T(\"\");};\n"
                                                     "function GetTargetName() { return _T(\"\"); }\n");
-    Manager::Get()->GetScriptingManager()->LoadBuffer(clearout_wizscripts, _T("ClearWizState"));
+    scriptMgr->LoadBuffer(clearout_wizscripts, _T("ClearWizState"));
 
     // early check: build target wizards need an active project
     if (m_Wizards[index].output_type == totTarget &&
@@ -254,9 +238,6 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
     }
 
     m_LaunchIndex = index;
-
-    wxString global_commons = ConfigManager::GetFolder(sdDataGlobal) + _T("/templates/wizard/common_functions.script");
-    wxString user_commons = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/common_functions.script");
 
     m_LastXRC = m_Wizards[index].xrc;
     if (wxFileExists(m_LastXRC))
@@ -274,14 +255,15 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
 
     // create wizard
     m_pWizard = new wxWizard;
-    m_pWizard->Create(Manager::Get()->GetAppWindow(), wxID_ANY,
-                    m_Wizards[index].title,
-                    m_Wizards[index].wizardPNG,
-                    wxDefaultPosition,
-                    wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
-    if (!Manager::Get()->GetScriptingManager()->LoadScript(global_commons) && // load global common functions
-        !Manager::Get()->GetScriptingManager()->LoadScript(user_commons)) // and/or load user common functions
+    m_pWizard->Create(Manager::Get()->GetAppWindow(), wxID_ANY, m_Wizards[index].title,
+                      m_Wizards[index].wizardPNG, wxDefaultPosition,
+                      wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+
+    const wxString global_commons = ConfigManager::GetFolder(sdDataGlobal) + _T("/templates/wizard/common_functions.script");
+    const wxString user_commons = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/common_functions.script");
+    if (!scriptMgr->LoadScript(global_commons) && // load global common functions
+        !scriptMgr->LoadScript(user_commons)) // and/or load user common functions
     {
         // any errors have been displayed by ScriptingManager
         Clear();
@@ -294,7 +276,7 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
     if (!wxFileExists(script))
         script = ConfigManager::GetFolder(sdDataGlobal) + _T("/templates/wizard/") + m_Wizards[index].script;
 
-    if (!Manager::Get()->GetScriptingManager()->LoadScript(script)) // build and run script
+    if (!scriptMgr->LoadScript(script)) // build and run script
     {
         // any errors have been displayed by ScriptingManager
         Clear();
@@ -308,19 +290,15 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
     if (scriptDirs.GetCount())
         m_WizardScriptFolder = scriptDirs[scriptDirs.GetCount()-1];
 
-// FIXME (squirrel) Reimplement Wiz::Launch
-/*
-    // call BeginWizard()
     try
     {
-        SqPlus::SquirrelFunction<void> f("BeginWizard");
-        f();
-    }
-    catch (SquirrelError& e)
-    {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-        Clear();
-        return nullptr;
+        ScriptBindings::Caller caller(scriptMgr->GetVM());
+        if (!caller.CallByName0(_SC("BeginWizard")))
+        {
+            scriptMgr->DisplayErrors(true);
+            Clear();
+            return nullptr;
+        }
     }
     catch (cbException& e)
     {
@@ -328,7 +306,6 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
         Clear();
         return nullptr;
     }
-*/
 
     // check if *any* pages were added
     if (m_Pages.GetCount() == 0)
@@ -445,122 +422,116 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
 
     // add all the template files
     // first get the dirs with the files by calling GetFilesDir()
-    wxString srcdir;
-// FIXME (squirrel) Reimplement Wiz::RunProjectWizard
-/*
-    try
+
+    ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
+
+    const wxString *srcDir = nullptr;
+    ScriptBindings::Caller caller(scriptMgr->GetVM());
+
+    if (!caller.CallByNameAndReturn0(_SC("GetFilesDir"), srcDir))
     {
-        SqPlus::SquirrelFunction<wxString&> f("GetFilesDir");
-        if (!f.func.IsNull())
-            srcdir = f();
-        if (!srcdir.IsEmpty())
-        {
-            // now break them up (remember: semicolon-separated list of dirs)
-            wxArrayString tmpsrcdirs = GetArrayFromString(srcdir, _T(";"), true);
-            // and copy files from each source dir we got
-            for (size_t i = 0; i < tmpsrcdirs.GetCount(); ++i)
-                CopyFiles(theproject, prjdir, tmpsrcdirs[i]);
-        }
-    }
-    catch (SquirrelError& e)
-    {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+        scriptMgr->DisplayErrors(true);
         Clear();
         return nullptr;
     }
+    if (srcDir && !srcDir->empty())
+    {
+        // now break them up (remember: semicolon-separated list of dirs)
+        wxArrayString tmpsrcdirs = GetArrayFromString(*srcDir, ";", true);
+        // and copy files from each source dir we got
+        for (size_t i = 0; i < tmpsrcdirs.GetCount(); ++i)
+            CopyFiles(theproject, prjdir, tmpsrcdirs[i]);
+    }
+    caller.Finish();
 
     // add generated files
-    try
+    if (caller.SetupFunc(_SC("GetGeneratedFile")))
     {
-        SqPlus::SquirrelFunction<wxString&> f("GetGeneratedFile");
-        if (!f.func.IsNull())
+        wxArrayString files;
+        wxArrayString contents;
+
+        // safety limit to avoid infinite loops because of badly written scripts: 50 files
+        for (int idx = 0; idx < 50; ++idx)
         {
-            wxArrayString files;
-            wxArrayString contents;
-            int idx = 0;
-            // safety limit to avoid infinite loops because of badly written scripts: 50 files
-            while (idx < 50)
+            const wxString *fileAndContents = nullptr;
+            if (!caller.CallAndReturn1(fileAndContents, idx))
             {
-                wxString fileAndContents = f(idx++);
-                if (fileAndContents.IsEmpty())
-                    break;
-                wxString tmpFile = fileAndContents.BeforeFirst(_T(';'));
-                wxString tmpContents = fileAndContents.AfterFirst(_T(';'));
-                tmpFile.Trim();
-                tmpContents.Trim();
-                if (tmpFile.IsEmpty() || tmpContents.IsEmpty())
-                    break;
-                files.Add(tmpFile);
-                contents.Add(tmpContents);
-            };
+                scriptMgr->DisplayErrors(true);
+                Clear();
+                return nullptr;
+            }
 
-            if (files.GetCount() != 0 && contents.GetCount() == files.GetCount())
+            if (fileAndContents == nullptr || fileAndContents->empty())
+                break;
+            wxString tmpFile = fileAndContents->BeforeFirst(_T(';'));
+            wxString tmpContents = fileAndContents->AfterFirst(_T(';'));
+            tmpFile.Trim();
+            tmpContents.Trim();
+            if (tmpFile.IsEmpty() || tmpContents.IsEmpty())
+                break;
+            files.Add(tmpFile);
+            contents.Add(tmpContents);
+
+            // Do this last to prepare for the next iteration.
+            // Make sure you do this after the last use of fileAndContents.
+            caller.PopResult();
+        }
+
+        if (files.GetCount() != 0 && contents.GetCount() == files.GetCount())
+        {
+            // prepare the list of targets to add this file to (i.e. all of them)
+            wxArrayInt targetIndices;
+            for (int x = 0; x < theproject->GetBuildTargetsCount(); ++x)
+                targetIndices.Add(x);
+
+            theproject->BeginAddFiles();
+
+            // ok, we have to generate some files here
+            size_t count = files.GetCount();
+            for (size_t i = 0; i < count; ++i)
             {
-                // prepare the list of targets to add this file to (i.e. all of them)
-                wxArrayInt targetIndices;
-                for (int x = 0; x < theproject->GetBuildTargetsCount(); ++x)
-                    targetIndices.Add(x);
+                // GenerateFile() performs sanity and security checks
+                wxString actual = GenerateFile(theproject->GetBasePath(), files[i], contents[i]);
 
-                theproject->BeginAddFiles();
-
-                // ok, we have to generate some files here
-                size_t count = files.GetCount();
-                for (size_t i = 0; i < count; ++i)
+                if (!actual.IsEmpty())
                 {
-                    // GenerateFile() performs sanity and security checks
-                    wxString actual = GenerateFile(theproject->GetBasePath(), files[i], contents[i]);
-
-                    if (!actual.IsEmpty())
+                    // Add the file only if it does not exist
+                    if (theproject->GetFileByFilename(files[i], true, true) == NULL)
                     {
-                        // Add the file only if it does not exist
-                        if (theproject->GetFileByFilename(files[i], true, true) == NULL)
-                        {
-                            Manager::Get()->GetLogManager()->DebugLog(_T("Generated file ") + actual);
-                            // add it to the project
-                            Manager::Get()->GetProjectManager()->AddFileToProject(actual, theproject, targetIndices);
-                        }
-                        else
-                        {
-                            Manager::Get()->GetLogManager()->DebugLog(F(_T("File %s exists"), actual.wx_str()));
-                        }
+                        Manager::Get()->GetLogManager()->DebugLog(_T("Generated file ") + actual);
+                        // add it to the project
+                        Manager::Get()->GetProjectManager()->AddFileToProject(actual, theproject, targetIndices);
+                    }
+                    else
+                    {
+                        Manager::Get()->GetLogManager()->DebugLog(F(_T("File %s exists"), actual.wx_str()));
                     }
                 }
-
-                theproject->EndAddFiles();
             }
-        }
-    }
-    catch (SquirrelError& e)
-    {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-        Clear();
-        return nullptr;
-    }
 
-//    if (srcdir.IsEmpty())
-//        cbMessageBox(_("The wizard didn't provide any files to copy!"), _("Warning"), wxICON_WARNING);
+            theproject->EndAddFiles();
+        }
+
+        caller.Finish();
+    }
 
     // ask the script to setup the new project (edit targets, setup options, etc)
     // call SetupProject()
-    try
+    bool result = false;
+    if (!caller.CallByNameAndReturn1(_SC("SetupProject"), result, theproject))
     {
-        SqPlus::SquirrelFunction<bool> f("SetupProject");
-        if (!f(theproject))
-        {
-            cbMessageBox(wxString::Format(_("Couldn't setup project options:\n%s"),
-                                        prjdir.c_str()),
-                        _("Error"), wxICON_ERROR);
-            Clear();
-            return nullptr;
-        }
-    }
-    catch (SquirrelError& e)
-    {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+        scriptMgr->DisplayErrors(true);
         Clear();
         return nullptr;
     }
-*/
+
+    if (!result)
+    {
+        cbMessageBox(wxString::Format(_("Couldn't setup project options:\n%s"), prjdir.c_str()),
+                     _("Error"), wxICON_ERROR);
+        Clear();
+        return nullptr;
+    }
 
     // save the project and...
     theproject->Save();
@@ -577,6 +548,7 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
 CompileTargetBase* Wiz::RunTargetWizard(cb_unused wxString* pFilename)
 {
     cbProject* theproject = Manager::Get()->GetProjectManager()->GetActiveProject(); // can't fail; if no project, the wizard didn't even run
+    ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
 
     bool isDebug = false;
     wxString targetName;
@@ -588,28 +560,25 @@ CompileTargetBase* Wiz::RunTargetWizard(cb_unused wxString* pFilename)
     }
     else
     {
-// FIXME (squirrel) Reimplement Wiz::RunTargetWizard
-/*
-        // Call GetTargetName() to ask the script to tell us
-        // the name of the new target that should be added.
-        try
-        {
-            SqPlus::SquirrelFunction<wxString&> f("GetTargetName");
-            targetName = f();
-            if (targetName == wxEmptyString)
+        ScriptBindings::Caller caller(scriptMgr->GetVM());
+
+        wxString *result = nullptr;
+        if (caller.CallByNameAndReturn0(_SC("GetTargetName"), result)) {
+            if (!result || result->empty())
             {
                 cbMessageBox(_("GetTargetName returned empty string. Failing!"), _("Error"), wxICON_ERROR);
                 Clear();
                 return nullptr;
             }
+            targetName = *result;
         }
-        catch (SquirrelError& e)
+        else
         {
-            Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+            scriptMgr->DisplayErrors(true);
             Clear();
             return nullptr;
         }
-*/
+
         isDebug = false;
     }
 
@@ -685,43 +654,41 @@ CompileTargetBase* Wiz::RunTargetWizard(cb_unused wxString* pFilename)
 //        return nullptr;
 //    }
 
-// FIXME (squirrel) Reimplement Wiz::RunTargetWizard 2
-#if 0
-    // ask the script to setup the new target (setup options, etc)
-    // call SetupTarget()
-    try
-    {
-        SqPlus::SquirrelFunction<bool> f("SetupTarget");
-        if (!f(target, isDebug))
+    ScriptBindings::Caller caller(scriptMgr->GetVM());
+
+    // Ask the script to setup the new target (setup options, etc) by calling its SetupTarget().
+    bool result = false;
+    if (caller.CallByNameAndReturn2(_SC("SetupTarget"), result, target, isDebug)) {
+        if (!result)
         {
             cbMessageBox(_("Couldn't setup target options:"), _("Error"), wxICON_ERROR);
             Clear();
             return nullptr;
         }
     }
-    catch (SquirrelError& e)
+    else
     {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+        scriptMgr->DisplayErrors(true);
         Clear();
         return nullptr;
     }
-#endif // 0
+
     return target;
 }
 
 CompileTargetBase* Wiz::RunFilesWizard(wxString* pFilename)
 {
-// FIXME (squirrel) Reimplement Wiz::RunFilesWizard
-#if 0
-    try
+    ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
+    ScriptBindings::Caller caller(scriptMgr->GetVM());
+
+    wxString *result = nullptr;
+    if (caller.CallByNameAndReturn0(_SC("CreateFiles"), result))
     {
-        SqPlus::SquirrelFunction<wxString&> f("CreateFiles");
-        wxString files = f();
-        if (files.IsEmpty())
-            cbMessageBox(_("Wizard failed..."), _("Error"), wxICON_ERROR);
+        if (!result || result->empty())
+            cbMessageBox(_("Wizard failed... (returned no files)"), _("Error"), wxICON_ERROR);
         else
         {
-            const wxString &filename = files.BeforeFirst(_T(';'));
+            const wxString &filename = result->BeforeFirst(_T(';'));
             if (pFilename)
                 *pFilename = filename;
             EditorBase *editor = Manager::Get()->GetEditorManager()->GetEditor(filename);
@@ -729,11 +696,8 @@ CompileTargetBase* Wiz::RunFilesWizard(wxString* pFilename)
                 static_cast<cbEditor*>(editor)->SetEditorStyle();
         }
     }
-    catch (SquirrelError& e)
-    {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-    }
-#endif // 0
+    else
+        scriptMgr->DisplayErrors(true);
 
     Clear();
     return nullptr;
@@ -741,19 +705,18 @@ CompileTargetBase* Wiz::RunFilesWizard(wxString* pFilename)
 
 CompileTargetBase* Wiz::RunCustomWizard(cb_unused wxString* pFilename)
 {
-// FIXME (squirrel) Reimplement Wiz::RunCustomWizard
-#if 0
-    try
+    ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
+    ScriptBindings::Caller caller(scriptMgr->GetVM());
+
+    bool result = false;
+    if (caller.CallByNameAndReturn0(_SC("SetupCustom"), result))
     {
-        SqPlus::SquirrelFunction<bool> f("SetupCustom");
-        if (!f())
+        if (!result)
             cbMessageBox(_("Wizard failed..."), _("Error"), wxICON_ERROR);
     }
-    catch (SquirrelError& e)
-    {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-    }
-#endif // 0
+    else
+        scriptMgr->DisplayErrors(true);
+
     Clear();
     return nullptr;
 }

@@ -618,7 +618,7 @@ void CompilerCommandGenerator::DoBuildScripts(cbProject* project, CompileTargetB
         }
 
         ScriptBindings::Caller caller(scriptMgr->GetVM());
-        if (!caller.Call1(cbU2C(funcName), target))
+        if (!caller.CallByName1(cbU2C(funcName), target))
         {
             scriptMgr->DisplayErrors(true);
             m_ScriptsWithErrors.Add(scriptNoMacro);
