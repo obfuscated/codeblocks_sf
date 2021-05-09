@@ -21,7 +21,7 @@
 namespace ScriptBindings
 {
 
-void PrintStack(HSQUIRRELVM vm, const char *title);
+void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop = -1);
 
 struct PreserveTop
 {
@@ -37,7 +37,7 @@ struct PreserveTop
     {
 #if defined(cbDEBUG)
         if (sq_gettop(m_vm) != m_top)
-            PrintStack(m_vm, "PreserveTop::check failure!");
+            PrintStack(m_vm, "PreserveTop::check failure!", m_top);
 #endif
         cbAssert(sq_gettop(m_vm) == m_top);
     }
