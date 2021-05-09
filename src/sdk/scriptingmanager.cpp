@@ -140,7 +140,7 @@ ScriptingManager::~ScriptingManager()
 
 HSQUIRRELVM ScriptingManager::GetVM()
 {
-    return nullptr;
+    return m_vm;
 }
 
 bool ScriptingManager::LoadScript(const wxString& filename)
@@ -187,6 +187,20 @@ bool ScriptingManager::LoadScript(const wxString& filename)
     return ret;
 }
 
+static wxString ExtractLastSquirrelError(HSQUIRRELVM vm, bool canBeEmpty)
+{
+    const SQChar *s;
+    sq_getlasterror(vm);
+    sq_getstring(vm, -1, &s);
+    wxString errorMsg;
+    if (s)
+        errorMsg = wxString(s);
+    else if (!canBeEmpty)
+        errorMsg = "Unknown error!";
+    sq_pop(vm, 1);
+    return errorMsg;
+}
+
 bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugName)
 {
     // includes guard to avoid recursion
@@ -205,19 +219,11 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
     if (SQ_FAILED(sq_compilebuffer(m_vm, buffer.utf8_str().data(), buffer.length() * sizeof(SQChar),
                                    debugName.utf8_str().data(), 1)))
     {
-        const SQChar *s;
-        sq_getlasterror(m_vm);
-        sq_getstring(m_vm, -1, &s);
-        wxString errorMsg;
-        if (s)
-            errorMsg = wxString(s);
-        else
-            errorMsg = "Unknown error!";
-
-        cbMessageBox(wxString::Format("Filename: %s\nError: %s\nDetails: %s", debugName.wx_str(),
-                                      errorMsg.wx_str(), s_ScriptErrors.wx_str()),
-                     _("Script compile error"), wxICON_ERROR);
-
+        const wxString errorMsg = ExtractLastSquirrelError(m_vm, false);
+        const wxString fullMessage = wxString::Format("Filename: %s\nError: %s\nDetails: %s",
+                                                      debugName.wx_str(), errorMsg.wx_str(),
+                                                      s_ScriptErrors.wx_str());
+        Manager::Get()->GetLogManager()->LogError(fullMessage);
         m_IncludeSet.erase(incName);
         return false;
     }
@@ -225,22 +231,13 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
     sq_pushroottable(m_vm);
     if (SQ_FAILED(sq_call(m_vm, 1, SQFalse, SQTrue)))
     {
-        // FIXME (squirrel) Wrap this in function?
-        const SQChar *s;
-        sq_getlasterror(m_vm);
-        sq_getstring(m_vm, -1, &s);
-        wxString errorMsg;
-        if (s)
-            errorMsg = wxString(s);
-        else
-            errorMsg = "Unknown error!";
-
-        cbMessageBox(wxString::Format("Filename: %s\nError: %s\nDetails: %s", debugName.wx_str(),
-                                      errorMsg.wx_str(), s_ScriptErrors.wx_str()),
-                     _("Script compile error"), wxICON_ERROR);
+        const wxString errorMsg = ExtractLastSquirrelError(m_vm, false);
+        const wxString fullMessage = wxString::Format("Filename: %s\nError: %s\nDetails: %s",
+                                                      debugName.wx_str(), errorMsg.wx_str(),
+                                                      s_ScriptErrors.wx_str());
+        Manager::Get()->GetLogManager()->LogError(fullMessage);
 
         m_IncludeSet.erase(incName);
-        sq_pop(m_vm, 1);
         return false;
     }
 
@@ -280,12 +277,10 @@ wxString ScriptingManager::LoadBufferRedirectOutput(const wxString& buffer)
     return res ? ::capture : (wxString) wxEmptyString;
 }
 
-/*
-wxString ScriptingManager::GetErrorString(SquirrelError* exception, bool clearErrors)
+wxString ScriptingManager::GetErrorString(bool clearErrors)
 {
-    wxString msg;
-    if (exception)
-        msg << cbC2U(exception->desc);
+    wxString msg = ExtractLastSquirrelError(m_vm, true);
+
     msg << s_ScriptErrors;
 
     if (clearErrors)
@@ -294,9 +289,9 @@ wxString ScriptingManager::GetErrorString(SquirrelError* exception, bool clearEr
     return msg;
 }
 
-void ScriptingManager::DisplayErrors(SquirrelError* exception, bool clearErrors)
+void ScriptingManager::DisplayErrors(bool clearErrors)
 {
-    wxString msg = GetErrorString(exception, clearErrors);
+    wxString msg = GetErrorString(clearErrors);
     if (!msg.IsEmpty())
     {
         if (cbMessageBox(_("Script errors have occured...\nPress 'Yes' to see the exact errors."),
@@ -312,7 +307,6 @@ void ScriptingManager::DisplayErrors(SquirrelError* exception, bool clearErrors)
         }
     }
 }
-*/
 
 void ScriptingManager::InjectScriptOutput(const wxString& output)
 {
