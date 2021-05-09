@@ -14,11 +14,14 @@
 
 class Menu_test_plugin extends cbScriptPlugin
 {
+    moduleMenuWho = mtUnknown;
+    moduleMenuHasData = false;
+
     // mandatory to setup the plugin's info
     constructor()
     {
 		info = PluginInfo();
-        info.name = _T("Menu_test_plugin");
+        info.name = _T("Menu Test_Plugin");
         info.title = _T("Test menus in the scripting engine of C::B");
         info.version = _T("0.1a");
         info.license = _T("GPL");
@@ -50,10 +53,45 @@ class Menu_test_plugin extends cbScriptPlugin
     }
 
     // optional to create context menu entries
-    /*function GetModuleMenu(who, data)
+    function GetModuleMenu(who, data)
     {
+        moduleMenuHasData = false;
+        moduleMenuWho = who;
+        local entries = ::wxArrayString();
+        if (who == mtProjectManager)
+        {
+            if (data == null)
+            {
+                entries.Add(_T("Project Menu Test 0"), 1);
+            }
+            else
+            {
+                moduleMenuHasData = true;
+                entries.Add(_T("Kind: " + data.GetKind()) + _T("; File index: ") + data.GetFileIndex(), 1);
+                entries.Add(data.GetProject().GetTitle(), 1);
+                local file = data.GetProjectFile();
+                if (file)
+                    entries.Add(file.GetBaseName(), 1);
+                else
+                    entries.Add(_T("No file"), 1);
+                entries.Add(_T("Folder: '") + data.GetFolder() + _T("'"), 1);
+            }
+        }
+        else if (who = mtEditorManager)
+        {
+            entries.Add(_T("Editor Test 0"), 1);
+        }
+        else if (who = mtEditorTab)
+        {
+            entries.Add(_T("Editor Tab Test 0"), 1);
+        }
+        else if (who = mtLogManager)
+        {
+            entries.Add(_T("Log Test 0"), 1);
+        }
 
-    }*/
+        return entries;
+    }
 
     // optional to support ExecutePlugin(pluginNameString)
     function Execute()
@@ -71,7 +109,7 @@ class Menu_test_plugin extends cbScriptPlugin
     // optional calback for context menu items clicking
     function OnModuleMenuClicked(index)
     {
-
+        print("Module Menu: " + index + " '"+ moduleMenuWho + "' " + moduleMenuHasData + "\n");
     }
 
     function StartTest()

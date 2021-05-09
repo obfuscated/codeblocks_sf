@@ -16,12 +16,17 @@
 #include <memory>
 #include <vector>
 
+#ifndef CB_PRECOMP
+    #include <wx/string.h>
+#endif // CB_PRECOMP
+
 // FIXME (squirrel) Explain how things below actually work.
 
 namespace ScriptBindings
 {
 
 void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop = -1);
+wxString ExtractLastSquirrelError(HSQUIRRELVM vm, bool canBeEmpty);
 
 struct PreserveTop
 {
@@ -1012,6 +1017,285 @@ MembersType<UserType>& BindMembers(HSQUIRRELVM v)
 
     return FindMembers<UserType>::members;
 }
+
+struct ObjectHandle
+{
+    ObjectHandle() : m_vm(nullptr)
+    {
+        sq_resetobject(&m_object);
+    }
+    ObjectHandle(HSQUIRRELVM vm, SQInteger stackIdx) : m_vm(vm)
+    {
+        cbAssert(m_vm);
+        sq_getstackobj(m_vm, stackIdx, &m_object);
+        sq_addref(m_vm, &m_object);
+    }
+    ObjectHandle(const ObjectHandle &obj) : m_vm(obj.m_vm), m_object(obj.m_object)
+    {
+        if (m_vm)
+            sq_addref(m_vm, &m_object);
+    }
+
+    ~ObjectHandle()
+    {
+        if (m_vm)
+            sq_release(m_vm, &m_object);
+    }
+
+    ObjectHandle& operator=(const ObjectHandle &obj)
+    {
+        cbAssert(this != &obj);
+        HSQOBJECT temp = obj.m_object; // We need this because obj is const.
+        if (obj.m_vm)
+            sq_addref(obj.m_vm, &temp);
+
+        if (m_vm)
+            sq_release(m_vm, &m_object);
+        m_vm = obj.m_vm;
+        m_object = temp;
+
+        return *this;
+    }
+
+    const HSQOBJECT& Get() const { return m_object; }
+
+    void Push()
+    {
+        cbAssert(m_vm);
+        sq_pushobject(m_vm, m_object);
+    }
+
+    HSQUIRRELVM GetVM() { return m_vm; }
+
+private:
+    HSQUIRRELVM m_vm;
+    HSQOBJECT m_object;
+};
+
+struct Caller
+{
+    Caller(HSQUIRRELVM vm) : m_vm(vm), m_closureStackIdx(-1)
+    {
+        sq_pushroottable(m_vm);
+        sq_resetobject(&m_object);
+        sq_getstackobj(m_vm, -1, &m_object);
+        sq_addref(m_vm, &m_object);
+
+        sq_poptop(m_vm); // pop root table
+    }
+    Caller(HSQUIRRELVM vm, const HSQOBJECT &object) : m_vm(vm), m_closureStackIdx(-1)
+    {
+        m_object = object;
+
+        sq_addref(m_vm, &m_object);
+    }
+
+    Caller(Caller&) = delete;
+    Caller& operator=(Caller&) = delete;
+
+    ~Caller()
+    {
+        Finish();
+
+        sq_release(m_vm, &m_object);
+    }
+
+    void Finish()
+    {
+        // Remove the closure from the stack.
+        if (m_closureStackIdx != -1)
+        {
+            sq_pop(m_vm, sq_gettop(m_vm) - m_closureStackIdx + 1);
+            m_closureStackIdx = -1;
+        }
+    }
+
+    bool SetupFunc(const SQChar *funcName) {
+        cbAssert(m_closureStackIdx == -1);
+        sq_pushobject(m_vm, m_object);
+        sq_pushstring(m_vm, funcName, -1);
+
+        // Gets the field 'funcName' from the object
+        if (SQ_FAILED(sq_get(m_vm, -2)))
+        {
+            sq_poptop(m_vm); // remove the object
+            return false;
+        }
+
+        sq_remove(m_vm, -2); // remove the object
+        if (sq_gettype(m_vm, -1) != OT_CLOSURE)
+        {
+            sq_poptop(m_vm); // remove the value
+            return false;
+        }
+        m_closureStackIdx = sq_gettop(m_vm);
+        return true;
+    }
+
+    template<typename Arg>
+    bool Push(const Arg *arg)
+    {
+        if (arg == nullptr)
+        {
+            sq_pushnull(m_vm);
+            return true;
+        }
+        else
+            return CreateNonOwnedPtrInstance(m_vm, const_cast<Arg*>(arg)) != nullptr;
+    }
+
+    bool Push(SQInteger arg)
+    {
+        sq_pushinteger(m_vm, arg);
+        return true;
+    }
+
+    bool CallRaw(bool hasReturn)
+    {
+        sq_reseterror(m_vm);
+        if (SQ_FAILED(sq_call(m_vm, sq_gettop(m_vm) - m_closureStackIdx, hasReturn, SQTrue)))
+        {
+            sq_poptop(m_vm);
+            return false;
+        }
+        return true;
+    }
+
+    template<typename Return>
+    bool CallAndReturn0(const SQChar *functionName, Return &returnValue)
+    {
+        if (!SetupFunc(functionName))
+            return false;
+        sq_pushobject(m_vm, m_object);
+
+        if (!CallRaw(true))
+            return false;
+        return ExtractResult(returnValue);
+    }
+
+    template<typename Return, typename Arg0>
+    bool CallAndReturn1(const SQChar *functionName, Return &returnValue, Arg0 arg0)
+    {
+        if (!SetupFunc(functionName))
+            return false;
+        sq_pushobject(m_vm, m_object);
+
+        if (!Push(arg0))
+            return false;
+
+        if (!CallRaw(true))
+            return false;
+        return ExtractResult(returnValue);
+    }
+
+    template<typename Return, typename Arg0, typename Arg1>
+    bool CallAndReturn2(const SQChar *functionName, Return &returnValue, Arg0 arg0, Arg1 arg1)
+    {
+        if (!SetupFunc(functionName))
+            return false;
+        sq_pushobject(m_vm, m_object);
+
+        if (!Push(arg0))
+            return false;
+        if (!Push(arg1))
+            return false;
+
+        if (!CallRaw(true))
+            return false;
+        return ExtractResult(returnValue);
+    }
+
+    template<typename Return, typename Arg0, typename Arg1, typename Arg2>
+    bool CallAndReturn3(const SQChar *functionName, Return &returnValue, Arg0 arg0, Arg1 arg1, Arg2 arg2)
+    {
+        if (!SetupFunc(functionName))
+            return false;
+        sq_pushobject(m_vm, m_object);
+
+        if (!Push(arg0))
+            return false;
+        if (!Push(arg1))
+            return false;
+        if (!Push(arg2))
+            return false;
+
+        if (!CallRaw(true))
+            return false;
+        return ExtractResult(returnValue);
+    }
+
+    bool Call0(const SQChar *functionName)
+    {
+        if (!SetupFunc(functionName))
+            return false;
+        sq_pushobject(m_vm, m_object);
+
+        return CallRaw(false);
+    }
+
+    template<typename Arg0>
+    bool Call1(const SQChar *functionName, Arg0 arg0)
+    {
+        if (!SetupFunc(functionName))
+            return false;
+        sq_pushobject(m_vm, m_object);
+
+        if (!Push(arg0))
+            return false;
+
+        return CallRaw(false);
+    }
+
+    template<typename Arg0, typename Arg1>
+    bool Call2(const SQChar *functionName, Arg0 arg0, Arg1 arg1)
+    {
+        if (!SetupFunc(functionName))
+            return false;
+        sq_pushobject(m_vm, m_object);
+
+        if (!Push(arg0))
+            return false;
+        if (!Push(arg1))
+            return false;
+
+        return CallRaw(false);
+    }
+
+    template<typename Arg0, typename Arg1, typename Arg2>
+    bool Call3(const SQChar *functionName, Arg0 arg0, Arg1 arg1, Arg2 arg2)
+    {
+        if (!SetupFunc(functionName))
+            return false;
+        sq_pushobject(m_vm, m_object);
+
+        if (!Push(arg0))
+            return false;
+        if (!Push(arg1))
+            return false;
+        if (!Push(arg2))
+            return false;
+
+        return CallRaw(false);
+    }
+
+    bool ExtractResult(SQInteger &result)
+    {
+        if (SQ_FAILED(sq_getinteger(m_vm, -1, &result)))
+            return false;
+        sq_poptop(m_vm);
+        return true;
+    }
+
+    template<typename Arg>
+    bool ExtractResult(Arg *&arg)
+    {
+        return ExtractUserPointer(arg, m_vm, -1, TypeInfo<typename std::remove_cv<Arg>::type>::typetag);
+    }
+private:
+    HSQUIRRELVM m_vm;
+    SQInteger m_closureStackIdx;
+    HSQOBJECT m_object;
+};
 
 } // namespace ScriptBindings
 

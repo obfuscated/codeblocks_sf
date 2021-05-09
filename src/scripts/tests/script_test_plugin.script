@@ -69,7 +69,7 @@ class Scripting_TestPlugin extends cbScriptPlugin
     {
 
     }
-    
+
     function StartTest()
     {
         StartSDKTest();
@@ -82,7 +82,7 @@ class Scripting_TestPlugin extends cbScriptPlugin
         wx.clear_global_test_results();
         wx.Run();
     }
-    
+
     function StartSDKTest()
     {
         local sdk = sdkTest();
@@ -94,5 +94,7 @@ class Scripting_TestPlugin extends cbScriptPlugin
 // this call actually registers the script plugin with Code::Blocks
 RegisterPlugin(Scripting_TestPlugin());
 
+print("Plugin instance: " + GetPlugin(_T("Scripting_TestPlugin")) + "\n");
+
 // if you want to call this plugin's Execute() function, use this in a script:
-// ExecutePlugin(_T("Scripting_TestPlugin"));
+ExecutePlugin(_T("Scripting_TestPlugin"));
