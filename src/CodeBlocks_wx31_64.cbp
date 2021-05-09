@@ -1027,6 +1027,9 @@
 		<Unit filename="include/workspaceloader.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/wxstringhash.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/xtra_res.h">
 			<Option target="sdk" />
 		</Unit>
