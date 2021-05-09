@@ -11,6 +11,9 @@
 #include <string>
 #include <sstream>
 #include <stdarg.h>
+#include <string.h>
+#include <memory>
+#include <vector>
 
 // FIXME (squirrel) Explain how things below actually work.
 
@@ -557,6 +560,231 @@ inline SQInteger ThrowIndexNotFound(HSQUIRRELVM v)
     sq_throwobject(v); // no throw object in 2.x, but it seems we don't need it!?
 #endif
     return -1;
+}
+
+enum class MatchResult
+{
+    Found,
+    Error,
+    NotFound
+};
+
+template<typename ClassType>
+struct MemberBase
+{
+    MemberBase(const SQChar *name) : name(name)
+    {}
+    virtual ~MemberBase() {}
+
+    MatchResult MatchAndGet(HSQUIRRELVM v, const ClassType *instance, const SQChar *nameToMatch)
+    {
+        if (scstrcmp(name, nameToMatch) == 0)
+        {
+            if (DoPush(v, instance))
+                return MatchResult::Found;
+            else
+                return MatchResult::Error;
+        }
+        else
+            return MatchResult::NotFound;
+    }
+    MatchResult MatchAndSet(HSQUIRRELVM v, ClassType *instance, const SQChar *nameToMatch,
+                            SQInteger valueIndex)
+    {
+        if (scstrcmp(name, nameToMatch) == 0)
+        {
+            if (DoSet(v, instance, valueIndex))
+                return MatchResult::Found;
+            else
+                return MatchResult::Error;
+        }
+        else
+            return MatchResult::NotFound;
+    }
+
+    virtual bool DoPush(HSQUIRRELVM v, const ClassType *instance) = 0;
+    virtual bool DoSet(HSQUIRRELVM v, ClassType *instance, SQInteger valueIndex) = 0;
+
+protected:
+    const SQChar *name;
+};
+
+template<typename ClassType>
+struct MemberInt : MemberBase<ClassType>
+{
+    using MemberType = int ClassType::*;
+
+    MemberInt(const SQChar *name, MemberType memberPtr) :
+        MemberBase<ClassType>(name),
+        memberPtr(memberPtr)
+    {
+    }
+
+    bool DoPush(HSQUIRRELVM v, const ClassType *instance) override
+    {
+        sq_pushinteger(v, instance->*memberPtr);
+        return true;
+    }
+    bool DoSet(HSQUIRRELVM v, ClassType *instance, SQInteger valueIndex) override
+    {
+        SQInteger value;
+        sq_getinteger(v, valueIndex, &value);
+        instance->*memberPtr = value;
+        return true;
+    }
+
+private:
+    MemberType memberPtr;
+};
+
+template<typename ClassType>
+struct MemberFloat : MemberBase<ClassType>
+{
+    using MemberType = float ClassType::*;
+
+    MemberFloat(const SQChar *name, MemberType memberPtr) :
+        MemberBase<ClassType>(name),
+        memberPtr(memberPtr)
+    {
+    }
+
+    bool DoPush(HSQUIRRELVM v, const ClassType *instance) override
+    {
+        sq_pushfloat(v, instance->*memberPtr);
+        return true;
+    }
+    bool DoSet(HSQUIRRELVM v, ClassType *instance, SQInteger valueIndex) override
+    {
+        SQFloat value;
+        sq_getfloat(v, valueIndex, &value);
+        instance->*memberPtr = value;
+        return true;
+    }
+private:
+    MemberType memberPtr;
+};
+
+template<typename ClassType, typename RefType>
+struct MemberRef : MemberBase<ClassType>
+{
+    using MemberType = RefType ClassType::*;
+
+    MemberRef(const SQChar *name, MemberType memberPtr) :
+        MemberBase<ClassType>(name),
+        memberPtr(memberPtr)
+    {
+    }
+
+    bool DoPush(HSQUIRRELVM v, const ClassType *instance) override
+    {
+        RefType *refPtr = &(const_cast<ClassType*>(instance)->*memberPtr);
+        if (CreateNonOwnedPtrInstance<RefType>(v, refPtr) == nullptr)
+            return false;
+        return true;
+    }
+    bool DoSet(HSQUIRRELVM v, ClassType *instance, SQInteger valueIndex) override
+    {
+        RefType *ref;
+        ExtractParamsBase extractor(v);
+        if (!extractor.ProcessParam(ref, valueIndex, "Cannot parse RefType"))
+        {
+            extractor.ErrorMessage();
+            return false;
+        }
+
+        instance->*memberPtr = *ref;
+        return true;
+    }
+private:
+    MemberType memberPtr;
+};
+
+template<typename ClassType>
+using MembersType=std::vector<std::unique_ptr<MemberBase<ClassType>>>;
+
+template<typename ClassType>
+struct FindMembers
+{
+    static MembersType<ClassType> members;
+};
+
+template<typename ClassType>
+void addMemberInt(MembersType<ClassType> &members, const SQChar *name,
+                  int ClassType::*memberPtr)
+{
+    members.emplace_back(new MemberInt<ClassType>(name, memberPtr));
+}
+
+template<typename ClassType>
+void addMemberFloat(MembersType<ClassType> &members, const SQChar *name,
+                    float ClassType::* memberPtr)
+{
+    members.emplace_back(new MemberFloat<ClassType>(name, memberPtr));
+}
+
+template<typename ClassType, typename RefType>
+void addMemberRef(MembersType<ClassType> &members, const SQChar *name,
+                  RefType ClassType::* memberPtr)
+{
+    members.emplace_back(new MemberRef<ClassType, RefType>(name, memberPtr));
+}
+
+
+template<typename ClassType>
+SQInteger GenericMember_get(HSQUIRRELVM v)
+{
+    ExtractParams2<const ClassType*, const SQChar*> extractor(v);
+    if (!extractor.Process("GenericMember_get"))
+        return extractor.ErrorMessage();
+
+    for (std::unique_ptr<MemberBase<ClassType>> &member : FindMembers<ClassType>::members)
+    {
+        switch (member->MatchAndGet(v, extractor.p0, extractor.p1))
+        {
+            case MatchResult::Found:
+                return 1;
+            case MatchResult::Error:
+                return -1;
+            case MatchResult::NotFound:
+                break;
+        }
+    }
+    return GenericMember_get<typename TypeInfo<ClassType>::baseClass>(v);
+}
+
+template<typename ClassType>
+SQInteger GenericMember_set(HSQUIRRELVM v)
+{
+    ExtractParams3<ClassType*, const SQChar*, SkipParam> extractor(v);
+    if (!extractor.Process("GenericMember_set"))
+        return extractor.ErrorMessage();
+
+    for (std::unique_ptr<MemberBase<ClassType>> &member : FindMembers<ClassType>::members)
+    {
+        switch (member->MatchAndSet(v, extractor.p0, extractor.p1, 3))
+        {
+            case MatchResult::Found:
+                return 0;
+            case MatchResult::Error:
+                return -1;
+            case MatchResult::NotFound:
+                break;
+        }
+    }
+
+    return GenericMember_set<typename TypeInfo<ClassType>::baseClass>(v);
+}
+
+template<>
+inline SQInteger GenericMember_get<void>(HSQUIRRELVM v)
+{
+    return ThrowIndexNotFound(v);
+}
+
+template<>
+inline SQInteger GenericMember_set<void>(HSQUIRRELVM v)
+{
+    return ThrowIndexNotFound(v);
 }
 
 } // namespace ScriptBindings

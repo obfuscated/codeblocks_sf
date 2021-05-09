@@ -77,13 +77,14 @@ namespace ScriptBindings
         return 1;
     }
 
-    SQInteger getEM(HSQUIRRELVM v)
+    template<typename ManagerType, ManagerType* (Manager::*func)() const>
+    SQInteger GetManager(HSQUIRRELVM v)
     {
         ExtractParamsBase extractor(v);
-        if (!extractor.CheckNumArguments(1, "GetEditorManager"))
+        if (!extractor.CheckNumArguments(1, "GetManager"))
             return extractor.ErrorMessage();
-        EditorManager *manager = Manager::Get()->GetEditorManager();
-        UserDataForType<EditorManager> *data = CreateNonOwnedPtrInstance<EditorManager>(v, manager);
+        ManagerType *manager = (Manager::Get()->*func)();
+        UserDataForType<ManagerType> *data = CreateNonOwnedPtrInstance<ManagerType>(v, manager);
         if (data == nullptr)
             return -1; // An error should have been logged already.
         return 1;
@@ -482,7 +483,12 @@ namespace ScriptBindings
 
         BindMethod(v, _SC("ReplaceMacros"), gReplaceMacros, nullptr);
 
-        BindMethod(v, _SC("GetEditorManager"), getEM, nullptr);
+        BindMethod(v, _SC("GetEditorManager"),
+                   GetManager<EditorManager, &Manager::GetEditorManager>, nullptr);
+        BindMethod(v, _SC("GetUserVariableManager"),
+                   GetManager<UserVariableManager, &Manager::GetUserVariableManager>, nullptr);
+        BindMethod(v, _SC("GetScriptingManager"),
+                   GetManager<ScriptingManager, &Manager::GetScriptingManager>, nullptr);
 
         // from globals.h
         BindMethod(v, _SC("GetArrayFromString"), gGetArrayFromString, nullptr);
