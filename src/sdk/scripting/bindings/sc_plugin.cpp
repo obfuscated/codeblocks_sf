@@ -270,7 +270,7 @@ SQInteger RegisterPlugin(HSQUIRRELVM v)
     Caller caller(v, object.Get());
     const PluginInfo *info;
     if (!caller.CallByNameAndReturn0(_SC("GetPluginInfo"), info))
-        return sq_throwerror(v, "RegisterPlugin: Call to GetPluginInfo failed!");
+        return sq_throwerror(v, _SC("RegisterPlugin: Call to GetPluginInfo failed!"));
 
     Manager *manager = Manager::Get();
     // look if a script plugin with the same name already exists
@@ -383,9 +383,9 @@ void Register_ScriptPlugin(HSQUIRRELVM v)
     {
         sq_pushroottable(v);
 
-        BindMethod(v, "ExecutePlugin", ScriptPluginWrapper::ExecutePlugin, nullptr);
-        BindMethod(v, "GetPlugin", ScriptPluginWrapper::GetPlugin, nullptr);
-        BindMethod(v, "RegisterPlugin", ScriptPluginWrapper::RegisterPlugin, nullptr);
+        BindMethod(v, _SC("ExecutePlugin"), ScriptPluginWrapper::ExecutePlugin, nullptr);
+        BindMethod(v, _SC("GetPlugin"), ScriptPluginWrapper::GetPlugin, nullptr);
+        BindMethod(v, _SC("RegisterPlugin"), ScriptPluginWrapper::RegisterPlugin, nullptr);
 
         sq_pop(v, 1); // root table
     }
@@ -405,7 +405,7 @@ void Register_ScriptPlugin(HSQUIRRELVM v)
 
     if (SQ_SUCCEEDED(sq_compilebuffer(v, s_cbScriptPlugin,
                                       (strlen(s_cbScriptPlugin) + 1) * sizeof(SQChar),
-                                      "cbScriptPlugin", 1)))
+                                      _SC("cbScriptPlugin"), 1)))
     {
         sq_pushroottable(v); // this is the parameter for the script closure
 

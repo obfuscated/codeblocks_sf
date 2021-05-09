@@ -306,42 +306,42 @@ void EnvVars::OnRelease(bool /*appShutDown*/)
   {
     // TODO (Morten#5#): Is that the correct way of un-registering? (Seems so weird...)
     sq_pushroottable(v);
-    sq_pushstring(v, "EnvvarDiscard", -1);
+    sq_pushstring(v, _SC("EnvvarDiscard"), -1);
     sq_deleteslot(v, -2, false);
     sq_poptop(v);
 
     sq_pushroottable(v);
-    sq_pushstring(v, "EnvvarApply", -1);
+    sq_pushstring(v, _SC("EnvvarApply"), -1);
     sq_deleteslot(v, -2, false);
     sq_poptop(v);
 
     sq_pushroottable(v);
-    sq_pushstring(v, "EnvvarSetDiscard", -1);
+    sq_pushstring(v, _SC("EnvvarSetDiscard"), -1);
     sq_deleteslot(v, -2, false);
     sq_poptop(v);
 
     sq_pushroottable(v);
-    sq_pushstring(v, "EnvvarSetApply", -1);
+    sq_pushstring(v, _SC("EnvvarSetApply"), -1);
     sq_deleteslot(v, -2, false);
     sq_poptop(v);
 
     sq_pushroottable(v);
-    sq_pushstring(v, "EnvvarSetExists", -1);
+    sq_pushstring(v, _SC("EnvvarSetExists"), -1);
     sq_deleteslot(v, -2, false);
     sq_poptop(v);
 
     sq_pushroottable(v);
-    sq_pushstring(v, "EnvVarGetEnvvarsBySetPath", -1);
+    sq_pushstring(v, _SC("EnvVarGetEnvvarsBySetPath"), -1);
     sq_deleteslot(v, -2, false);
     sq_poptop(v);
 
     sq_pushroottable(v);
-    sq_pushstring(v, "EnvvarGetActiveSetName", -1);
+    sq_pushstring(v, _SC("EnvvarGetActiveSetName"), -1);
     sq_deleteslot(v, -2, false);
     sq_poptop(v);
 
     sq_pushroottable(v);
-    sq_pushstring(v, "EnvvarGetEnvvarSetNames", -1);
+    sq_pushstring(v, _SC("EnvvarGetEnvvarSetNames"), -1);
     sq_deleteslot(v, -2, false);
     sq_poptop(v);
   }

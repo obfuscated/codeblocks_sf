@@ -535,8 +535,8 @@ void wxSmith::UnregisterScripting()
     {
         ScriptBindings::PreserveTop preserveTop(v);
         sq_pushroottable(v);
-        sq_pushstring(v,"WxsRecoverWxsFile",-1);
-        sq_deleteslot(v,-2,false);
+        sq_pushstring(v, _SC("WxsRecoverWxsFile"), -1);
+        sq_deleteslot(v, -2, false);
         sq_poptop(v);
     }
 }
