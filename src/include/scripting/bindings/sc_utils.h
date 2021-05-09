@@ -653,6 +653,35 @@ protected:
 };
 
 template<typename ClassType>
+struct MemberBool : MemberBase<ClassType>
+{
+    using MemberType = bool ClassType::*;
+
+    MemberBool(const SQChar *name, MemberType memberPtr) :
+        MemberBase<ClassType>(name),
+        memberPtr(memberPtr)
+    {
+    }
+
+    bool DoPush(HSQUIRRELVM v, const ClassType *instance) override
+    {
+        sq_pushbool(v, instance->*memberPtr);
+        return true;
+    }
+    bool DoSet(HSQUIRRELVM v, ClassType *instance, SQInteger valueIndex) override
+    {
+        SQBool value;
+        sq_getbool(v, valueIndex, &value);
+        instance->*memberPtr = value;
+        return true;
+    }
+
+private:
+    MemberType memberPtr;
+};
+
+// FIXME (squirrel): Add more serious range checking
+template<typename ClassType>
 struct MemberInt : MemberBase<ClassType>
 {
     using MemberType = int ClassType::*;
@@ -672,6 +701,40 @@ struct MemberInt : MemberBase<ClassType>
     {
         SQInteger value;
         sq_getinteger(v, valueIndex, &value);
+        instance->*memberPtr = value;
+        return true;
+    }
+
+private:
+    MemberType memberPtr;
+};
+
+// FIXME (squirrel): Add more serious range checking
+template<typename ClassType, typename UIntType>
+struct MemberUInt : MemberBase<ClassType>
+{
+    using MemberType = UIntType ClassType::*;
+
+    MemberUInt(const SQChar *name, MemberType memberPtr) :
+        MemberBase<ClassType>(name),
+        memberPtr(memberPtr)
+    {
+    }
+
+    bool DoPush(HSQUIRRELVM v, const ClassType *instance) override
+    {
+        sq_pushinteger(v, instance->*memberPtr);
+        return true;
+    }
+    bool DoSet(HSQUIRRELVM v, ClassType *instance, SQInteger valueIndex) override
+    {
+        SQInteger value;
+        sq_getinteger(v, valueIndex, &value);
+        if (value < 0)
+        {
+            sq_throwerror(v, _SC("Cannot set unsigned member to negative value!"));
+            return false;
+        }
         instance->*memberPtr = value;
         return true;
     }
@@ -752,10 +815,23 @@ struct FindMembers
 };
 
 template<typename ClassType>
+void addMemberBool(MembersType<ClassType> &members, const SQChar *name,
+                   bool ClassType::*memberPtr)
+{
+    members.emplace_back(new MemberBool<ClassType>(name, memberPtr));
+}
+
+template<typename ClassType>
 void addMemberInt(MembersType<ClassType> &members, const SQChar *name,
                   int ClassType::*memberPtr)
 {
     members.emplace_back(new MemberInt<ClassType>(name, memberPtr));
+}
+template<typename ClassType, typename UIntType>
+void addMemberUInt(MembersType<ClassType> &members, const SQChar *name,
+                   UIntType ClassType::*memberPtr)
+{
+    members.emplace_back(new MemberUInt<ClassType, UIntType>(name, memberPtr));
 }
 
 template<typename ClassType>
@@ -771,7 +847,6 @@ void addMemberRef(MembersType<ClassType> &members, const SQChar *name,
 {
     members.emplace_back(new MemberRef<ClassType, RefType>(name, memberPtr));
 }
-
 
 template<typename ClassType>
 SQInteger GenericMember_get(HSQUIRRELVM v)
@@ -828,6 +903,21 @@ template<>
 inline SQInteger GenericMember_set<void>(HSQUIRRELVM v)
 {
     return ThrowIndexNotFound(v);
+}
+
+/// Helper which sets the functions for getting/setting members of a class.
+/// @return The members container which should be populated by the caller.
+/// @see addMemberInt, addMemberFloat, addMemberRef
+template<typename UserType>
+MembersType<UserType>& BindMembers(HSQUIRRELVM v)
+{
+    SQChar nameBuf[100];
+    scsprintf(nameBuf, cbCountOf(nameBuf), _SC("%s::_get"), TypeInfo<UserType>::className);
+    BindMethod(v, _SC("_get"), GenericMember_get<UserType>, nameBuf);
+    scsprintf(nameBuf, cbCountOf(nameBuf), _SC("%s::_set"), TypeInfo<UserType>::className);
+    BindMethod(v, _SC("_set"), GenericMember_set<UserType>, nameBuf);
+
+    return FindMembers<UserType>::members;
 }
 
 } // namespace ScriptBindings

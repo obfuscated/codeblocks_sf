@@ -745,7 +745,7 @@ SQInteger wxFileName_GetDirs(HSQUIRRELVM v)
     if (!extractor.Process("wxFileName_GetDirs"))
         return extractor.ErrorMessage();
 
-    // This doesn't matter much, because squirrel doesn't care for constness.
+    // FIXME (squirrel) This doesn't matter much, because squirrel doesn't care for constness.
     wxArrayString *dirs = &const_cast<wxArrayString&>(extractor.p0->GetDirs());
     return ConstructAndReturnNonOwnedPtr(v, dirs);
 }

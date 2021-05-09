@@ -1282,6 +1282,110 @@ namespace ScriptBindings
         }
     }
 
+    template<void (ProjectFile::*func)(const wxString &)>
+    SQInteger ProjectFile_SingleWxStringParam(HSQUIRRELVM v)
+    {
+        // this, targetName
+        ExtractParams2<ProjectFile*, const wxString*> extractor(v);
+        if (!extractor.Process("ProjectFile_SingleWxStringParam"))
+            return extractor.ErrorMessage();
+        (extractor.p0->*func)(*extractor.p1);
+        return 0;
+    }
+
+    SQInteger ProjectFile_RenameBuildTarget(HSQUIRRELVM v)
+    {
+        // this, oldTargetName, newTargetName
+        ExtractParams3<ProjectFile*, const wxString*, const wxString*> extractor(v);
+        if (!extractor.Process("ProjectFile::RenameBuildTarget"))
+            return extractor.ErrorMessage();
+        extractor.p0->RenameBuildTarget(*extractor.p1, *extractor.p2);
+        return 0;
+    }
+
+    SQInteger ProjectFile_GetBuildTargets(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const ProjectFile*> extractor(v);
+        if (!extractor.Process("ProjectFile::GetBuildTargets"))
+            return extractor.ErrorMessage();
+        // FIXME (squirrel) This doesn't matter much, because squirrel doesn't care for constness.
+        wxArrayString *result = &const_cast<wxArrayString&>(extractor.p0->GetBuildTargets());
+        return ConstructAndReturnNonOwnedPtr(v, result);
+    }
+
+    SQInteger ProjectFile_GetBaseName(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<const ProjectFile*> extractor(v);
+        if (!extractor.Process("ProjectFile::GetBaseName"))
+            return extractor.ErrorMessage();
+        return ConstructAndReturnInstance(v, extractor.p0->GetBaseName());
+    }
+
+    SQInteger ProjectFile_GetObjName(HSQUIRRELVM v)
+    {
+        // this
+        ExtractParams1<ProjectFile*> extractor(v);
+        if (!extractor.Process("ProjectFile::GetObjName"))
+            return extractor.ErrorMessage();
+        // FIXME (squirrel) This doesn't matter much, because squirrel doesn't care for constness.
+        wxString *result = &const_cast<wxString&>(extractor.p0->GetObjName());
+        return ConstructAndReturnNonOwnedPtr(v, result);
+    }
+
+    SQInteger ProjectFile_GetParentProject(HSQUIRRELVM v)
+    {
+        // FIXME (squirrel) Implement this when we have cbProject bound
+        return -1;
+        /*// this
+        ExtractParams1<ProjectFile*> extractor(v);
+        if (!extractor.Process("ProjectFile::GetParentProject"))
+            return extractor.ErrorMessage();
+        cbProject *result = extractor.p0->GetParentProject();
+        return ConstructAndReturnNonOwnedPtr(v, result);*/
+    }
+
+    SQInteger ProjectFile_SetUseCustomBuildCommand(HSQUIRRELVM v)
+    {
+        // this, compilerId, useCustomBuildCommand
+        ExtractParams3<ProjectFile*, const wxString *, bool> extractor(v);
+        if (!extractor.Process("ProjectFile::SetUseCustomBuildCommand"))
+            return extractor.ErrorMessage();
+        extractor.p0->SetUseCustomBuildCommand(*extractor.p1, extractor.p2);
+        return 0;
+    }
+
+    SQInteger ProjectFile_SetCustomBuildCommand(HSQUIRRELVM v)
+    {
+        // this, compilerId, newBuildCommand
+        ExtractParams3<ProjectFile*, const wxString *, const wxString *> extractor(v);
+        if (!extractor.Process("ProjectFile::SetCustomBuildCommand"))
+            return extractor.ErrorMessage();
+        extractor.p0->SetCustomBuildCommand(*extractor.p1, *extractor.p2);
+        return 0;
+    }
+
+    SQInteger ProjectFile_GetUseCustomBuildCommand(HSQUIRRELVM v)
+    {
+        // this, compilerId
+        ExtractParams2<ProjectFile*, const wxString *> extractor(v);
+        if (!extractor.Process("ProjectFile::GetUseCustomBuildCommand"))
+            return extractor.ErrorMessage();
+        sq_pushbool(v, extractor.p0->GetUseCustomBuildCommand(*extractor.p1));
+        return 0;
+    }
+
+    SQInteger ProjectFile_GetCustomBuildCommand(HSQUIRRELVM v)
+    {
+        // this, compilerId
+        ExtractParams2<ProjectFile*, const wxString *> extractor(v);
+        if (!extractor.Process("ProjectFile::GetCustomBuildCommand"))
+            return extractor.ErrorMessage();
+        return ConstructAndReturnInstance(v, extractor.p0->GetCustomBuildCommand(*extractor.p1));
+        return 0;
+    }
+
     SQInteger EditorBase_Close(HSQUIRRELVM v)
     {
         ExtractParams1<EditorBase*> extractor(v);
@@ -1332,6 +1436,8 @@ namespace ScriptBindings
 
     template<>
     MembersType<PluginInfo> FindMembers<PluginInfo>::members{};
+    template<>
+    MembersType<ProjectFile> FindMembers<ProjectFile>::members{};
 
     void Register_Constants(HSQUIRRELVM v);
     void Unregister_Constants(HSQUIRRELVM v);
@@ -1356,11 +1462,63 @@ namespace ScriptBindings
         PreserveTop preserveTop(v);
         sq_pushroottable(v);
 
+        // FIXME (squirrel) Add a way to prevent instances from being constructed for a particular
+        // class type.
+
+        // FIXME (squirrel) We have the class name in the typeinfo there is no need to specify it,
+        // manually. And I guess the base class name is also redundant.
+
         {
             // Register ConfigManager
             const SQInteger classDecl = CreateClassDecl<ConfigManager>(v, _SC("ConfigManager"));
             BindMethod(v, _SC("Read"), ConfigManager_Read, _SC("ConfigManager::Read"));
             BindMethod(v, _SC("Write"), ConfigManager_Write, _SC("ConfigManager::Write"));
+
+            // Put the class in the root table. This must be last!
+            sq_newslot(v, classDecl, SQFalse);
+        }
+
+        {
+            // Register ProjectFile
+            const SQInteger classDecl = CreateClassDecl<ProjectFile>(v, _SC("ProjectFile"));
+            BindMethod(v, _SC("AddBuildTarget"),
+                       ProjectFile_SingleWxStringParam<&ProjectFile::AddBuildTarget>,
+                       _SC("ProjectFile::AddBuildTarget"));
+            BindMethod(v, _SC("RenameBuildTarget"), ProjectFile_RenameBuildTarget,
+                       _SC("ProjectFile::RenameBuildTarget"));
+            BindMethod(v, _SC("RemoveBuildTarget"),
+                       ProjectFile_SingleWxStringParam<&ProjectFile::RemoveBuildTarget>,
+                       _SC("ProjectFile::RemoveBuildTarget"));
+            BindMethod(v, _SC("GetBuildTargets"), ProjectFile_GetBuildTargets,
+                       _SC("ProjectFile::GetBuildTargets"));
+            BindMethod(v, _SC("GetBaseName"), ProjectFile_GetBaseName,
+                       _SC("ProjectFile::GetBaseName"));
+            BindMethod(v, _SC("GetObjName"), ProjectFile_GetObjName,
+                       _SC("ProjectFile::GetObjName"));
+            BindMethod(v, _SC("SetObjName"),
+                       ProjectFile_SingleWxStringParam<&ProjectFile::SetObjName>,
+                       _SC("ProjectFile::SetObjName"));
+            BindMethod(v, _SC("GetParentProject"), ProjectFile_GetParentProject,
+                       _SC("ProjectFile::GetParentProject"));
+            BindMethod(v, _SC("SetUseCustomBuildCommand"), ProjectFile_SetUseCustomBuildCommand,
+                       _SC("ProjectFile::SetUseCustomBuildCommand"));
+            BindMethod(v, _SC("SetCustomBuildCommand"), ProjectFile_SetCustomBuildCommand,
+                       _SC("ProjectFile::SetCustomBuildCommand"));
+            BindMethod(v, _SC("GetUseCustomBuildCommand"), ProjectFile_GetUseCustomBuildCommand,
+                       _SC("ProjectFile::GetUseCustomBuildCommand"));
+            BindMethod(v, _SC("GetCustomBuildCommand"), ProjectFile_GetCustomBuildCommand,
+                       _SC("ProjectFile::GetCustomBuildCommand"));
+
+            MembersType<ProjectFile> &members = BindMembers<ProjectFile>(v);
+            addMemberRef(members, _SC("file"), &ProjectFile::file);
+            addMemberRef(members, _SC("relativeFilename"), &ProjectFile::relativeFilename);
+            addMemberRef(members, _SC("relativeToCommonTopLevelPath"),
+                         &ProjectFile::relativeToCommonTopLevelPath);
+            addMemberBool(members, _SC("compile"), &ProjectFile::compile);
+            addMemberBool(members, _SC("link"), &ProjectFile::link);
+            addMemberUInt(members, _SC("weight"), &ProjectFile::weight);
+            addMemberRef(members, _SC("compilerVar"), &ProjectFile::compilerVar);
+            addMemberRef(members, _SC("buildTargets"), &ProjectFile::buildTargets);
 
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
@@ -1417,10 +1575,8 @@ namespace ScriptBindings
             // Register PluginInfo
             const SQInteger classDecl = CreateClassDecl<PluginInfo>(v, _SC("PluginInfo"));
             BindEmptyCtor<PluginInfo>(v);
-            BindMethod(v, _SC("_get"), GenericMember_get<PluginInfo>, _SC("PluginInfo::_get"));
-            BindMethod(v, _SC("_set"), GenericMember_set<PluginInfo>, _SC("PluginInfo::_set"));
 
-            MembersType<PluginInfo> &members = FindMembers<PluginInfo>::members;
+            MembersType<PluginInfo> &members = BindMembers<PluginInfo>(v);
             addMemberRef(members, _SC("name"), &PluginInfo::name);
             addMemberRef(members, _SC("title"), &PluginInfo::title);
             addMemberRef(members, _SC("version"), &PluginInfo::version);

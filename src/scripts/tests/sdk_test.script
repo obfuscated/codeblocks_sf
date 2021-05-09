@@ -111,6 +111,30 @@ class sdkTest extends script_test_base
         }
 
         {
+            // FIXME (squirrel) Add tests for:
+            //   ProjectFile::AddBuildTarget
+            //   ProjectFile::RenameBuildTarget
+            //   ProjectFile::RemoveBuildTarget
+            //   ProjectFile::GetBuildTargets
+            //   ProjectFile::GetBaseName
+            //   ProjectFile::GetObjName
+            //   ProjectFile::SetObjName
+            //   ProjectFile::GetParentProject
+            //   ProjectFile::SetUseCustomBuildCommand
+            //   ProjectFile::SetCustomBuildCommand
+            //   ProjectFile::GetUseCustomBuildCommand
+            //   ProjectFile::GetCustomBuildCommand
+            //   ProjectFile::file
+            //   ProjectFile::relativeFilename
+            //   ProjectFile::relativeToCommonTopLevelPath
+            //   ProjectFile::compile
+            //   ProjectFile::link
+            //   ProjectFile::weight
+            //   ProjectFile::compilerVar
+            //   ProjectFile::buildTargets
+        }
+
+        {
             local info = PluginInfo();
             info.name = _T("test_name");
             info.title = _T("test_title");
