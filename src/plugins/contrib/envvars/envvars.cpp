@@ -25,8 +25,9 @@
 #endif
 
 #include "projectloader_hooks.h"
-#include <sqplus.h>
-#include <sc_base_types.h>
+
+#include "sc_utils.h"
+#include "sc_typeinfo_all.h"
 
 #include "envvars_common.h"
 #include "envvars_cfgdlg.h"
@@ -165,6 +166,93 @@ void EnvVars::OnProjectClosed(CodeBlocksEvent& event)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
+namespace ScriptBindings
+{
+SQInteger GetEnvvarSetNames(HSQUIRRELVM v)
+{
+    // env table
+    ExtractParams1<SkipParam> extractor(v);
+    if (!extractor.Process("EnvvarGetEnvvarSetNames"))
+        return extractor.ErrorMessage();
+
+    return ConstructAndReturnInstance(v, nsEnvVars::GetEnvvarSetNames());
+}
+
+SQInteger GetActiveSetName(HSQUIRRELVM v)
+{
+    // env table
+    ExtractParams1<SkipParam> extractor(v);
+    if (!extractor.Process("EnvvarGetActiveSetName"))
+        return extractor.ErrorMessage();
+
+    return ConstructAndReturnInstance(v, nsEnvVars::GetActiveSetName());
+}
+
+SQInteger GetEnvvarsBySetPath(HSQUIRRELVM v)
+{
+    // env table, set_path
+    ExtractParams2<SkipParam, const wxString *> extractor(v);
+    if (!extractor.Process("EnvvarGetEnvvarsBySetPath"))
+        return extractor.ErrorMessage();
+
+    return ConstructAndReturnInstance(v, nsEnvVars::GetEnvvarsBySetPath(*extractor.p1));
+}
+
+SQInteger EnvvarSetExists(HSQUIRRELVM v)
+{
+    // env table, set_path
+    ExtractParams2<SkipParam, const wxString *> extractor(v);
+    if (!extractor.Process("EnvvarSetExists"))
+        return extractor.ErrorMessage();
+
+    sq_pushbool(v, nsEnvVars::EnvvarSetExists(*extractor.p1));
+    return 1;
+}
+
+SQInteger EnvvarSetApply(HSQUIRRELVM v)
+{
+    // env table, set_name, even_if_active
+    ExtractParams3<SkipParam, const wxString *, bool> extractor(v);
+    if (!extractor.Process("EnvvarSetApply"))
+        return extractor.ErrorMessage();
+
+    nsEnvVars::EnvvarSetApply(*extractor.p1, extractor.p2);
+    return 0;
+}
+
+SQInteger EnvvarSetDiscard(HSQUIRRELVM v)
+{
+    // env table, set_name
+    ExtractParams2<SkipParam, const wxString *> extractor(v);
+    if (!extractor.Process("EnvvarSetDiscard"))
+        return extractor.ErrorMessage();
+    nsEnvVars::EnvvarSetDiscard(*extractor.p1);
+    return 0;
+}
+
+SQInteger EnvvarApply(HSQUIRRELVM v)
+{
+    // env table, key, value
+    ExtractParams3<SkipParam, const wxString *, const wxString *> extractor(v);
+    if (!extractor.Process("EnvvarApply"))
+        return extractor.ErrorMessage();
+
+    sq_pushbool(v, nsEnvVars::EnvvarApply(*extractor.p1, *extractor.p2));
+    return 1;
+}
+
+SQInteger EnvvarDiscard(HSQUIRRELVM v)
+{
+    // env table, key
+    ExtractParams2<SkipParam, const wxString *> extractor(v);
+    if (!extractor.Process("EnvvarDiscard"))
+        return extractor.ErrorMessage();
+
+    sq_pushbool(v, nsEnvVars::EnvvarDiscard(*extractor.p1));
+    return 1;
+}
+} // namespace ScriptBindings
+
 void EnvVars::OnAttach()
 {
 #if defined(TRACE_ENVVARS)
@@ -186,18 +274,24 @@ void EnvVars::OnAttach()
   Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<EnvVars, CodeBlocksEvent>(this, &EnvVars::OnProjectActivated));
   Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE,    new cbEventFunctor<EnvVars, CodeBlocksEvent>(this, &EnvVars::OnProjectClosed));
 
-  // Register scripting
-  Manager::Get()->GetScriptingManager(); // make sure the VM is initialised
-  if (SquirrelVM::GetVMPtr())
   {
-    SqPlus::RegisterGlobal(&nsEnvVars::GetEnvvarSetNames,   "EnvvarGetEnvvarSetNames"  );
-    SqPlus::RegisterGlobal(&nsEnvVars::GetActiveSetName,    "EnvvarGetActiveSetName"   );
-    SqPlus::RegisterGlobal(&nsEnvVars::GetEnvvarsBySetPath, "EnvVarGetEnvvarsBySetPath");
-    SqPlus::RegisterGlobal(&nsEnvVars::EnvvarSetExists,     "EnvvarSetExists"          );
-    SqPlus::RegisterGlobal(&nsEnvVars::EnvvarSetApply,      "EnvvarSetApply"           );
-    SqPlus::RegisterGlobal(&nsEnvVars::EnvvarSetDiscard,    "EnvvarSetDiscard"         );
-    SqPlus::RegisterGlobal(&nsEnvVars::EnvvarApply,         "EnvvarApply"              );
-    SqPlus::RegisterGlobal(&nsEnvVars::EnvvarDiscard,       "EnvvarDiscard"            );
+    // Register scripting
+    ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
+    HSQUIRRELVM vm = scriptMgr->GetVM();
+    ScriptBindings::PreserveTop preserveTop(vm);
+
+    sq_pushroottable(vm);
+
+    ScriptBindings::BindMethod(vm, _SC("EnvvarGetEnvvarSetNames"), ScriptBindings::GetEnvvarSetNames, nullptr);
+    ScriptBindings::BindMethod(vm, _SC("EnvvarGetActiveSetName"), ScriptBindings::GetActiveSetName, nullptr);
+    ScriptBindings::BindMethod(vm, _SC("EnvvarGetEnvvarsBySetPath"), ScriptBindings::GetEnvvarsBySetPath, nullptr);
+    ScriptBindings::BindMethod(vm, _SC("EnvvarSetExists"), ScriptBindings::EnvvarSetExists, nullptr);
+    ScriptBindings::BindMethod(vm, _SC("EnvvarSetApply"), ScriptBindings::EnvvarSetApply, nullptr);
+    ScriptBindings::BindMethod(vm, _SC("EnvvarSetDiscard"), ScriptBindings::EnvvarSetDiscard, nullptr);
+    ScriptBindings::BindMethod(vm, _SC("EnvvarApply"), ScriptBindings::EnvvarApply, nullptr);
+    ScriptBindings::BindMethod(vm, _SC("EnvvarDiscard"), ScriptBindings::EnvvarDiscard, nullptr);
+
+    sq_poptop(vm); // Pop root table.
   }
 }// OnAttach
 
@@ -206,8 +300,7 @@ void EnvVars::OnAttach()
 void EnvVars::OnRelease(bool /*appShutDown*/)
 {
   // Unregister scripting
-  Manager::Get()->GetScriptingManager(); // make sure the VM is initialised
-  HSQUIRRELVM v = SquirrelVM::GetVMPtr();
+  HSQUIRRELVM v = Manager::Get()->GetScriptingManager()->GetVM();
   if (v)
   {
     // TODO (Morten#5#): Is that the correct way of un-registering? (Seems so weird...)
