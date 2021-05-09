@@ -16,9 +16,10 @@
     #include <wx/intl.h>
 #endif
 
-#include "squirrel.h" // FIXME (squirrel) Do we really need this!?
-
-struct SquirrelError;
+/// Forward declare the Squirrel VM type. I'm doing this because including squirrel.h would require
+/// changing include paths in a lot of projects. Unfortunately we have to keep this in sync with the
+/// one in squirrel.h.
+typedef struct SQVM* cbHSQUIRRELVM;
 
 /** @brief Provides scripting in Code::Blocks.
   *
@@ -66,7 +67,7 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>
         /// Script trusts container struct
         typedef std::map<wxString, TrustedScriptProps> TrustedScripts;
 
-        HSQUIRRELVM GetVM();
+        cbHSQUIRRELVM GetVM();
 
         /** @brief Loads a script.
           *
@@ -152,7 +153,7 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>
         bool UnRegisterAllScriptMenus();
 
         /// Register an integer constant.
-        void BindIntConstant(const char *name, SQInteger value);
+        void BindIntConstant(const char *name, int64_t value);
         /// Register a bool constant
         void BindBoolConstant(const char *name, bool value);
         /// Register a string constant.
@@ -219,13 +220,12 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>
     private:
         ScriptingManager();
         ~ScriptingManager() override;
-    private:
+
+    public:
         struct Data;
+    private:
 
         Data *m_data;
-
-        friend SQInteger ConstantsGet(HSQUIRRELVM v);
-        friend SQInteger ConstantsSet(HSQUIRRELVM v);
 };
 
 #endif // SCRIPTING_H
