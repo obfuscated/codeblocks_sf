@@ -265,6 +265,27 @@ struct ExtractParamsBase
         return true;
     }
 
+    float GetParamFloat(int stackIndex)
+    {
+        SQFloat value;
+        sq_getfloat(m_vm, stackIndex, &value);
+        return value;
+    }
+
+    SQInteger GetParamInt(int stackIndex)
+    {
+        SQInteger value;
+        sq_getinteger(m_vm, stackIndex, &value);
+        return value;
+    }
+
+    bool GetParamBool(int stackIndex)
+    {
+        SQBool value;
+        sq_getbool(m_vm, stackIndex, &value);
+        return value;
+    }
+
     bool CheckNumArguments(int expected, const char *funcStr)
     {
         const int numArgs = sq_gettop(m_vm);

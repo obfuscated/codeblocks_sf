@@ -82,6 +82,14 @@ namespace ScriptBindings
         return ConstructAndReturnNonOwnedPtr(v, manager);
     }
 
+    SQInteger GetCM(HSQUIRRELVM v)
+    {
+        ExtractParams1<SkipParam> extractor(v);
+        if (!extractor.Process("GetConfigManager"))
+            return extractor.ErrorMessage();
+        return ConstructAndReturnNonOwnedPtr(v, Manager::Get()->GetConfigManager(_T("scripts")));
+    }
+
     SQInteger gGetArrayFromString(HSQUIRRELVM v)
     {
         // env table, text, separator, trim spaces
@@ -439,6 +447,7 @@ namespace ScriptBindings
 
         BindMethod(v, _SC("GetEditorManager"),
                    GetManager<EditorManager, &Manager::GetEditorManager>, nullptr);
+        BindMethod(v, _SC("GetConfigManager"), GetCM, nullptr);
         BindMethod(v, _SC("GetUserVariableManager"),
                    GetManager<UserVariableManager, &Manager::GetUserVariableManager>, nullptr);
         BindMethod(v, _SC("GetScriptingManager"),
