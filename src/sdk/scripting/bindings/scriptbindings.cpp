@@ -25,7 +25,6 @@
 #endif
 #include "cbstyledtextctrl.h"
 
-#include "scriptbindings.h"
 #include <cbexception.h>
 #include "sc_base_types.h"
 
@@ -1181,11 +1180,32 @@ namespace ScriptBindings
 
 #else
 
+#include <sdk_precomp.h>
+#ifndef CB_PRECOMP
+#endif // CB_PRECOMP
+
+#include "sc_utils.h"
+
 namespace ScriptBindings
 {
+    void Register_Constants(HSQUIRRELVM v);
+    void Register_Globals(HSQUIRRELVM v);
+    void Register_wxTypes(HSQUIRRELVM v);
+    void Register_Dialog(HSQUIRRELVM v);
+    void Register_ProgressDialog(HSQUIRRELVM v);
+    void Register_UtilDialogs(HSQUIRRELVM v);
+    void Register_IO(HSQUIRRELVM v);
+    void Register_ScriptPlugin(HSQUIRRELVM v);
 
-    void RegisterBindings()
+    void RegisterBindings(HSQUIRRELVM vm)
     {
+        Register_wxTypes(vm);
+        Register_Constants(vm);
+        Register_Globals(vm);
+//        Register_IO(); // IO is enabled, but just for harmless functions
+//        Register_Dialog();
+//        Register_ProgressDialog();
+//        Register_UtilDialogs();
     }
 } // namespace ScriptBindings
 #endif // 0

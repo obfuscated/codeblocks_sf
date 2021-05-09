@@ -29,7 +29,6 @@
 #include "crc32.h"
 #include "menuitemsmanager.h"
 #include "genericmultilinenotesdlg.h"
-#include "scriptbindings.h"
 #include "sc_plugin.h"
 
 #include "squirrel.h"
@@ -102,6 +101,11 @@ BEGIN_EVENT_TABLE(ScriptingManager, wxEvtHandler)
 //
 END_EVENT_TABLE()
 
+namespace ScriptBindings
+{
+    void RegisterBindings(HSQUIRRELVM vm);
+} // namespace ScriptBindings
+
 ScriptingManager::ScriptingManager()
     : m_AttachedToMainWindow(false),
     m_MenuItemsManager(false) // not auto-clear
@@ -123,7 +127,7 @@ ScriptingManager::ScriptingManager()
     RefreshTrusts();
 
     // register types
-    ScriptBindings::RegisterBindings();
+    ScriptBindings::RegisterBindings(m_vm);
 }
 
 ScriptingManager::~ScriptingManager()

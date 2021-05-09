@@ -740,6 +740,12 @@
 		<Unit filename="include/scripting/bindings/sc_plugin.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/scripting/bindings/sc_typeinfo_all.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/bindings/sc_utils.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/scripting/include/sqconfig.h">
 			<Option target="Squirrel" />
 		</Unit>
@@ -2906,13 +2912,13 @@
 		<Unit filename="sdk/scripting/bindings/sc_util_dialogs.cpp">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/scripting/bindings/sc_utils.cpp">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/scripting/bindings/sc_wxtypes.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/scripting/bindings/scriptbindings.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/scripting/bindings/scriptbindings.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/scripting/sqstdlib/sqstdaux.cpp">
