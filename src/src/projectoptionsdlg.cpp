@@ -49,6 +49,8 @@
 #include "projectdepsdlg.h"
 #include "projectloader.h"
 #include "projectoptionsdlg.h" // class's header file
+#include "scripting/bindings/sc_utils.h"
+#include "scripting/bindings/sc_typeinfo_all.h"
 #include "virtualbuildtargetsdlg.h"
 
 
@@ -962,33 +964,48 @@ void ProjectOptionsDlg::OnScriptsOverviewSelChanged(cb_unused wxTreeEvent& event
     FillScripts();
 }
 
-bool ProjectOptionsDlg::IsScriptValid(ProjectBuildTarget* target, const wxString& script)
+bool ProjectOptionsDlg::IsScriptValid(ProjectBuildTarget* target, const wxString& script,
+                                      wxString &errorMsg)
 {
-    static const wxString clearout_buildscripts = _T("SetBuildOptions <- null;");
+    wxString scriptNoMacro = script;
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(scriptNoMacro, target);
+    if (!wxFileName(scriptNoMacro).IsAbsolute())
+        scriptNoMacro = m_Project->GetBasePath() + wxFILE_SEP_PATH + scriptNoMacro;
 
-// FIXME (squirrel) Reimplement ProjectOptionsDlg::IsScriptValid
-/*
-    try
+    ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
+
+    // clear previous script's context
+    if (!scriptMgr->LoadBuffer("SetBuildOptions <- null;"))
     {
-        wxString script_nomacro = script;
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(script_nomacro, target);
-        script_nomacro = wxFileName(script_nomacro).IsAbsolute() ? script_nomacro : m_Project->GetBasePath() + wxFILE_SEP_PATH + script_nomacro;
-        Manager::Get()->GetScriptingManager()->LoadBuffer(clearout_buildscripts); // clear previous script's context
-        Manager::Get()->GetScriptingManager()->LoadScript(script_nomacro);
-
-        SqPlus::SquirrelFunction<void> setopts("SetBuildOptions");
-        if (setopts.func.IsNull())
-            return false;
-
-        return true;
-    }
-    catch (SquirrelError& e)
-    {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+        errorMsg = _("Setting 'SetBuildOptions' to null failed!");
         return false;
     }
-*/
-    return false;
+
+    if (!scriptMgr->LoadScript(scriptNoMacro))
+    {
+        errorMsg = scriptMgr->GetErrorString();
+        return false;
+    }
+
+    HSQUIRRELVM vm = scriptMgr->GetVM();
+
+    ScriptBindings::PreserveTop preserveTop(vm);
+
+    if (!ScriptBindings::GetRootTableField(vm, _SC("SetBuildOptions")))
+    {
+        errorMsg = _("Cannot find function/closure 'SetBuildOptions'!");
+        return false;
+    }
+
+    const SQObjectType type = sq_gettype(vm, -1);
+    sq_poptop(vm); // Pop the closure
+    if (type == OT_CLOSURE || type == OT_NATIVECLOSURE)
+        return true;
+    else
+    {
+        errorMsg = _("'SetBuildOptions' is not a function/closure!");
+        return false;
+    }
 }
 
 bool ProjectOptionsDlg::ValidateTargetName(const wxString& name)
@@ -1027,11 +1044,14 @@ bool ProjectOptionsDlg::DoCheckScripts(CompileTargetBase* base)
     for (size_t i = 0; i < scripts.GetCount(); ++i)
     {
         ProjectBuildTarget* bt = dynamic_cast<ProjectBuildTarget*>(base);
-        if (!IsScriptValid(bt, scripts[i]))
+        wxString errorMsg;
+        if (!IsScriptValid(bt, scripts[i], errorMsg))
         {
             wxString msg;
             msg << _("Invalid build script: ") + scripts[i] << _T('\n');
             msg << _("First seen in: ") + base->GetTitle() << _T('\n');
+            msg << _T("Error:\n  ");
+            msg << errorMsg;
             cbMessageBox(msg, _("Error"), wxICON_ERROR, this);
             return false;
         }

@@ -69,7 +69,7 @@ class ProjectOptionsDlg : public wxScrollingDialog
         void DoTargetChange(bool saveOld = true);
         void DoBeforeTargetChange(bool force = false);
         bool DoCheckScripts(CompileTargetBase* base);
-        bool IsScriptValid(ProjectBuildTarget* target, const wxString& script);
+        bool IsScriptValid(ProjectBuildTarget* target, const wxString& script, wxString &errorMsg);
         bool ValidateTargetName(const wxString& name);
         void UpdateTargetControls();
         cbProject* m_Project;
