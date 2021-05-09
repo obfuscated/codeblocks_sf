@@ -237,18 +237,25 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
         ScriptingManager();
         ~ScriptingManager() override;
 
-        TrustedScripts m_TrustedScripts;
 
-        // container for script menus
-        // script menuitem_ID -> script_filename
+    private:
+        /// Container for script menus.
+        /// Maps "script menuitem_ID" to "script_filename"
         struct MenuBoundScript
         {
             wxString scriptOrFunc;
             bool isFunc;
         };
         typedef std::map<int, MenuBoundScript> MenuIDToScript;
-        MenuIDToScript m_MenuIDToScript;
+        typedef std::set<wxString> IncludeSet;
 
+    private:
+        /// This the Squirrel VM object we will use everywhere.
+        HSQUIRRELVM m_vm;
+
+        TrustedScripts m_TrustedScripts;
+
+        MenuIDToScript m_MenuIDToScript;
         bool m_AttachedToMainWindow;
 
         /** \brief This variable stores a stack of currently running script files. The back points to the current running file
@@ -267,9 +274,7 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
          */
         std::vector<wxString> m_RunningScriptFileStack;
 
-        typedef std::set<wxString> IncludeSet;
         IncludeSet m_IncludeSet;
-
         MenuItemsManager m_MenuItemsManager;
 
         DECLARE_EVENT_TABLE()

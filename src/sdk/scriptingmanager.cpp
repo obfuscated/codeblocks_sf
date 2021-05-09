@@ -31,7 +31,11 @@
 #include "genericmultilinenotesdlg.h"
 #include "scriptbindings.h"
 #include "sc_plugin.h"
+
 #include "squirrel.h"
+#include "sqstdaux.h"
+#include "sqstdblob.h"
+#include "sqstdmath.h"
 #include "sqstdstring.h"
 
 template<> ScriptingManager* Mgr<ScriptingManager>::instance = nullptr;
@@ -42,13 +46,13 @@ static wxString capture;
 
 void PrintSquirrelToWxString(wxString& msg, const SQChar* s, va_list& vl)
 {
-    // FIXME (squirrel) Reimplement PrintSquirrelToWxString
-/*    int buffer_size = 2048;
+    int buffer_size = 2048;
     SQChar* tmp_buffer;
     for (;;buffer_size*=2)
     {
+        // FIXME (squirrel) Optimize this
         tmp_buffer = new SQChar [buffer_size];
-        int retvalue = vsnprintf(tmp_buffer, buffer_size, s, vl);
+        int retvalue = scvsprintf(tmp_buffer, buffer_size, s, vl);
         if (retvalue < buffer_size)
         {
             // Buffersize was large enough
@@ -58,7 +62,7 @@ void PrintSquirrelToWxString(wxString& msg, const SQChar* s, va_list& vl)
         }
         // Buffer size was not enough
         delete[] tmp_buffer;
-    }*/
+    }
 }
 
 static void ScriptsPrintFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
@@ -90,18 +94,20 @@ ScriptingManager::ScriptingManager()
     : m_AttachedToMainWindow(false),
     m_MenuItemsManager(false) // not auto-clear
 {
-    //ctor
-// FIXME (squirrel) Reimplement ScriptingManager::ScriptingManager
-/*
-    // initialize but don't load the IO lib
-    SquirrelVM::Init((SquirrelInitFlags)(sqifAll & ~sqifIO));
-
-    if (!SquirrelVM::GetVMPtr())
+    m_vm = sq_open(1024);
+    if (m_vm == nullptr)
         cbThrow(_T("Can't create scripting engine!"));
 
-    sq_setprintfunc(SquirrelVM::GetVMPtr(), ScriptsPrintFunc);
-    sqstd_register_stringlib(SquirrelVM::GetVMPtr());
-*/
+    // FIXME (squirrel) Provide special error function?
+    sq_setprintfunc(m_vm, ScriptsPrintFunc, ScriptsPrintFunc);
+
+    sq_pushroottable(m_vm);
+    sqstd_register_bloblib(m_vm);
+    sqstd_register_mathlib(m_vm);
+    sqstd_register_stringlib(m_vm);
+    sqstd_seterrorhandlers(m_vm);
+    sq_pop(m_vm, 1);
+
     RefreshTrusts();
 
     // register types
@@ -125,8 +131,11 @@ ScriptingManager::~ScriptingManager()
     }
     Manager::Get()->GetConfigManager(_T("security"))->Write(_T("/trusted_scripts"), myMap);
 
-// FIXME (squirrel) Reimplement ScriptingManager::~ScriptingManager
-//    SquirrelVM::Shutdown();
+    if (m_vm)
+    {
+        sq_close(m_vm);
+        m_vm = nullptr;
+    }
 }
 
 HSQUIRRELVM ScriptingManager::GetVM()
@@ -193,33 +202,50 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
 
     s_ScriptErrors.Clear();
 
-// FIXME (squirrel) Reimplement ScriptingManager::LoadBuffer
-/*
-    // compile script
-    SquirrelObject script;
-    try
+    if (SQ_FAILED(sq_compilebuffer(m_vm, buffer.utf8_str().data(), buffer.length() * sizeof(SQChar),
+                                   debugName.utf8_str().data(), 1)))
     {
-        script = SquirrelVM::CompileBuffer(cbU2C(buffer), cbU2C(debugName));
-    }
-    catch (SquirrelError e)
-    {
-        cbMessageBox(wxString::Format(_T("Filename: %s\nError: %s\nDetails: %s"), debugName.c_str(), cbC2U(e.desc).c_str(), s_ScriptErrors.c_str()), _("Script compile error"), wxICON_ERROR);
+        const SQChar *s;
+        sq_getlasterror(m_vm);
+        sq_getstring(m_vm, -1, &s);
+        wxString errorMsg;
+        if (s)
+            errorMsg = wxString(s);
+        else
+            errorMsg = "Unknown error!";
+
+        cbMessageBox(wxString::Format("Filename: %s\nError: %s\nDetails: %s", debugName.wx_str(),
+                                      errorMsg.wx_str(), s_ScriptErrors.wx_str()),
+                     _("Script compile error"), wxICON_ERROR);
+
         m_IncludeSet.erase(incName);
         return false;
     }
 
-    // run script
-    try
+    sq_pushroottable(m_vm);
+    if (SQ_FAILED(sq_call(m_vm, 1, SQFalse, SQTrue)))
     {
-        SquirrelVM::RunScript(script);
-    }
-    catch (SquirrelError e)
-    {
-        cbMessageBox(wxString::Format(_T("Filename: %s\nError: %s\nDetails: %s"), debugName.c_str(), cbC2U(e.desc).c_str(), s_ScriptErrors.c_str()), _("Script run error"), wxICON_ERROR);
+        // FIXME (squirrel) Wrap this in function?
+        const SQChar *s;
+        sq_getlasterror(m_vm);
+        sq_getstring(m_vm, -1, &s);
+        wxString errorMsg;
+        if (s)
+            errorMsg = wxString(s);
+        else
+            errorMsg = "Unknown error!";
+
+        cbMessageBox(wxString::Format("Filename: %s\nError: %s\nDetails: %s", debugName.wx_str(),
+                                      errorMsg.wx_str(), s_ScriptErrors.wx_str()),
+                     _("Script compile error"), wxICON_ERROR);
+
         m_IncludeSet.erase(incName);
+        sq_pop(m_vm, 1);
         return false;
     }
-*/
+
+    sq_pop(m_vm, 1);
+
     m_IncludeSet.erase(incName);
     return true;
 }
@@ -231,30 +257,27 @@ wxString ScriptingManager::LoadBufferRedirectOutput(const wxString& buffer)
 
     s_ScriptErrors.Clear();
     ::capture.Clear();
-// FIXME (squirrel) Reimplement ScriptingManager::LoadBufferRedirectOutput
-/*
+
     // Save the old used print function so we can restore it after the
     // redirected print is finished. This is needed for example if the
     // scripting console redirects the script print output to itself and
     // not the default print function of the ScriptingManager.
     // In this case we have to restore the print function after the call to
     // the scripting console.
-    const HSQUIRRELVM vm = SquirrelVM::GetVMPtr();
-    const SQPRINTFUNCTION oldPrintFunc = sq_getprintfunc(vm);
+    const SQPRINTFUNCTION oldPrintFunc = sq_getprintfunc(m_vm);
+    const SQPRINTFUNCTION oldErrorFunc = sq_geterrorfunc(m_vm);
 
     // redirect the print output to an internal buffer, so we can collect
     // the print output
-    sq_setprintfunc(vm, CaptureScriptOutput);
+    sq_setprintfunc(m_vm, CaptureScriptOutput, CaptureScriptOutput);
 
     // Run the script
     bool res = LoadBuffer(buffer);
 
     // restore the old print function
-    sq_setprintfunc(vm, oldPrintFunc);
+    sq_setprintfunc(m_vm, oldPrintFunc, oldErrorFunc);
     // return the internal print buffer if the script executed successfully
     return res ? ::capture : (wxString) wxEmptyString;
-*/
-    return wxString();
 }
 
 /*
