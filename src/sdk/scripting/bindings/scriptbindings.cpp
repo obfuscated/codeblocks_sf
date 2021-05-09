@@ -1189,6 +1189,7 @@ namespace ScriptBindings
 namespace ScriptBindings
 {
     void Register_Constants(HSQUIRRELVM v);
+    void Unregister_Constants(HSQUIRRELVM v);
     void Register_Globals(HSQUIRRELVM v);
     void Register_wxTypes(HSQUIRRELVM v);
     void Register_Dialog(HSQUIRRELVM v);
@@ -1206,6 +1207,11 @@ namespace ScriptBindings
 //        Register_Dialog();
 //        Register_ProgressDialog();
 //        Register_UtilDialogs();
+    }
+
+    void UnregisterBindings(HSQUIRRELVM v)
+    {
+        Unregister_Constants(v);
     }
 } // namespace ScriptBindings
 #endif // 0
