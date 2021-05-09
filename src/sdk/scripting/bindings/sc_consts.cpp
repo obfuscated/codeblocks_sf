@@ -373,6 +373,8 @@ namespace ScriptBindings
         BIND_INT_CONSTANT_NAMED(int32_t(LinkerExecutableOption::CppCompiler), "leoCppCompiler");
         BIND_INT_CONSTANT_NAMED(int32_t(LinkerExecutableOption::Linker), "leoLinker");
 
+        // FIXME (squirrel) Bind SupportedPlatforms
+
         sq_pop(v, 1); // pop root table
     }
 
