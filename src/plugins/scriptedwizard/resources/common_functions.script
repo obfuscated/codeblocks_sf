@@ -12,13 +12,13 @@
 //
 
 // Warnings On
-function WarningsOn(base, compilerID)
+function WarningsOn(compileTargetBase, compilerID)
 {
-    if      (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")) )
+    if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
     {
-        base.AddCompilerOption(_T("/W3"));
+        compileTargetBase.AddCompilerOption(_T("/W3"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msp430*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin"))
@@ -28,45 +28,45 @@ function WarningsOn(base, compilerID)
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ppc*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tcc"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*")) )
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*")))
     {
-        base.AddCompilerOption(_T("-Wall"));
+        compileTargetBase.AddCompilerOption(_T("-Wall"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*"))
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ldc")) )
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ldc")))
     {
-        base.AddCompilerOption(_T("-w"));
+        compileTargetBase.AddCompilerOption(_T("-w"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")) )
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")))
     {
-        base.AddCompilerOption(_T("-wx")); // max. warning level
+        compileTargetBase.AddCompilerOption(_T("-wx")); // max. warning level
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc")) )
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc")))
     {
-        base.AddCompilerOption(_T("-w-"));
+        compileTargetBase.AddCompilerOption(_T("-w-"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang")) )
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang")))
     {
-        base.AddCompilerOption(_T("-Weverything"));
+        compileTargetBase.AddCompilerOption(_T("-Weverything"));
     }
-    else if(    GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("lcc")) )
+    else if(GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("lcc")))
     {
-        base.AddCompilerOption(_T("-A"));
+        compileTargetBase.AddCompilerOption(_T("-A"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("null")) )
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("null")))
     {
         // with SDCC all warnings are enabled by default. You can only ask for less by using --less-pedantic or --disable-warning.
         // the (pseudo) compiler "No Compiler" takes no options
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("keil*")))
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("keil*")))
     {
-        base.AddCompilerOption(_T("WARNINGLEVEL(2)"));
+        compileTargetBase.AddCompilerOption(_T("WARNINGLEVEL(2)"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("iar*")))
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("iar*")))
     {
-        base.AddCompilerOption(_T("--remarks"));
+        compileTargetBase.AddCompilerOption(_T("--remarks"));
     }
     else
     {
@@ -76,15 +76,15 @@ function WarningsOn(base, compilerID)
 }// WarningsOn
 
 // Debug symbols On
-function DebugSymbolsOn(base, compilerID)
+function DebugSymbolsOn(compileTargetBase, compilerID)
 {
-    if      (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
+    if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
     {
-        base.AddCompilerOption(_T("/Zi"));
-        base.AddCompilerOption(_T("/D_DEBUG"));
-        base.AddLinkerOption(_T("/DEBUG"));
+        compileTargetBase.AddCompilerOption(_T("/Zi"));
+        compileTargetBase.AddCompilerOption(_T("/D_DEBUG"));
+        compileTargetBase.AddLinkerOption(_T("/DEBUG"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msp430*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang"))
@@ -97,41 +97,41 @@ function DebugSymbolsOn(base, compilerID)
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ldc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ppc*"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*")) )
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*")))
     {
-        base.AddCompilerOption(_T("-g"));
+        compileTargetBase.AddCompilerOption(_T("-g"));
 
         if  (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd")))
         {
-            base.AddCompilerOption(_T("-debug"));
+            compileTargetBase.AddCompilerOption(_T("-debug"));
         }
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*")))
     {
-        base.AddCompilerOption(_T("-v"));
-        base.AddLinkerOption(_T("-v"));
+        compileTargetBase.AddCompilerOption(_T("-v"));
+        compileTargetBase.AddLinkerOption(_T("-v"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc")))
     {
-        base.AddCompilerOption(_T("/Zi"));
+        compileTargetBase.AddCompilerOption(_T("/Zi"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("lcc")))
     {
-        base.AddCompilerOption(_T("-g2"));
+        compileTargetBase.AddCompilerOption(_T("-g2"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")))
     {
-        base.AddCompilerOption(_T("-d2")); // full symbolic debugging information
+        compileTargetBase.AddCompilerOption(_T("-d2")); // full symbolic debugging information
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("keil*")))
     {
-        base.AddCompilerOption(_T("DEBUG"));
-        base.AddCompilerOption(_T("OBJECTEXTEND"));
+        compileTargetBase.AddCompilerOption(_T("DEBUG"));
+        compileTargetBase.AddCompilerOption(_T("OBJECTEXTEND"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc"))
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("iar*")))
     {
-        base.AddCompilerOption(_T("--debug"));
+        compileTargetBase.AddCompilerOption(_T("--debug"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("null")))
     {
@@ -145,20 +145,19 @@ function DebugSymbolsOn(base, compilerID)
 }// DebugSymbolsOn
 
 // Optimizations On
-function OptimizationsOn(base, compilerID)
+function OptimizationsOn(compileTargetBase, compilerID)
 {
-    if      (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
+    if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
     {
-        if (   !GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc8"))
-            && !GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc10")) )
+        if (!GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc8"))
+            && !GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc10")))
         {
-
-            base.AddCompilerOption(_T("/Og"));  // Deprecated in MSVC 8 and later (MSVC 10)
+            compileTargetBase.AddCompilerOption(_T("/Og"));  // Deprecated in MSVC 8 and later (MSVC 10)
         }
-        base.AddCompilerOption(_T("/Ox"));
-        base.AddCompilerOption(_T("/DNDEBUG"));
+        compileTargetBase.AddCompilerOption(_T("/Ox"));
+        compileTargetBase.AddCompilerOption(_T("/DNDEBUG"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin"))
@@ -168,61 +167,61 @@ function OptimizationsOn(base, compilerID)
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ifclin"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ldc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ppc*"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*")) )
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*")))
     {
-        base.AddCompilerOption(_T("-O2"));
+        compileTargetBase.AddCompilerOption(_T("-O2"));
 
-        if  (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
+        if  (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran")) )
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran")))
         {
-            base.AddLinkerOption(_T("-s"));
+            compileTargetBase.AddLinkerOption(_T("-s"));
         }
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msp430*")) )
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msp430*")))
     {
-        base.AddCompilerOption(_T("-Os"));
+        compileTargetBase.AddCompilerOption(_T("-Os"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc")) )
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc")))
     {
-        base.AddCompilerOption(_T("-o"));
+        compileTargetBase.AddCompilerOption(_T("-o"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("lcc")) )
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("lcc")))
     {
-        base.AddCompilerOption(_T("-O"));
+        compileTargetBase.AddCompilerOption(_T("-O"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ifcwin")) )
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ifcwin")))
     {
-        base.AddCompilerOption(_T("/O2"));
+        compileTargetBase.AddCompilerOption(_T("/O2"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")) )
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")))
     {
-        base.AddCompilerOption(_T("-ot")); // optimize for time
-        base.AddCompilerOption(_T("-ox")); // Maximum optimization
+        compileTargetBase.AddCompilerOption(_T("-ot")); // optimize for time
+        compileTargetBase.AddCompilerOption(_T("-ox")); // Maximum optimization
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("keilc51")))
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("keilc51")))
     {
-        base.AddCompilerOption(_T("OPTIMIZE(11,SIZE)"));
+        compileTargetBase.AddCompilerOption(_T("OPTIMIZE(11,SIZE)"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("keilcx51")))
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("keilcx51")))
     {
-        base.AddCompilerOption(_T("OPTIMIZE(11,SIZE)"));
-        base.AddCompilerOption(_T("OBJECTADVANCED"));
+        compileTargetBase.AddCompilerOption(_T("OPTIMIZE(11,SIZE)"));
+        compileTargetBase.AddCompilerOption(_T("OBJECTADVANCED"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("iar*")))
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("iar*")))
     {
-        base.AddCompilerOption(_T("-Oh"));
+        compileTargetBase.AddCompilerOption(_T("-Oh"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc")) )
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc")))
     {
-        base.AddCompilerOption(_T("--opt-code-size"));
+        compileTargetBase.AddCompilerOption(_T("--opt-code-size"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("null")) )
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("null")))
     {
         // the (pseudo) compiler "No Compiler" takes no options
     }
@@ -234,34 +233,34 @@ function OptimizationsOn(base, compilerID)
 }// OptimizationsOn
 
 // C++ Exceptions On
-function CppExceptionsOn(base, compilerID)
+function CppExceptionsOn(compileTargetBase, compilerID)
 {
-    if      (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
+    if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
     {
-        base.AddCompilerOption(_T("/EHsc"));
+        compileTargetBase.AddCompilerOption(_T("/EHsc"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin")) )
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin")))
     {
-        base.AddCompilerOption(_T("-fexceptions"));
+        compileTargetBase.AddCompilerOption(_T("-fexceptions"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*")))
     {
-        base.AddCompilerOption(_T("-x"));
+        compileTargetBase.AddCompilerOption(_T("-x"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")))
     {
-        base.AddCompilerOption(_T("-xs"));
+        compileTargetBase.AddCompilerOption(_T("-xs"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc")))
     {
-        base.AddCompilerOption(_T("-Ae"));
+        compileTargetBase.AddCompilerOption(_T("-Ae"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc")))
     {
-        base.AddCompilerOption(_T("/EHs"));
+        compileTargetBase.AddCompilerOption(_T("/EHs"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("null")))
     {
@@ -312,7 +311,6 @@ function VerifyMacro(macro)
 // Returns: The include directory (which maybe translated from a macro)
 function GetCompilerIncludeDir(selection, defaultSelection, defaultIncludeMacro)
 {
-
     // make it a real path and verify it's existence
     local selection_nomacro = VerifyMacro(selection);
 
@@ -547,7 +545,7 @@ function VerifyFile(dir, file, type)
 // Returns: true, if the library exists, false otherwise
 function SilentVerifyLibFile(dir, file)
 {
-    return (   IO.FileExists(dir + wxFILE_SEP_PATH + file)
+    return (IO.FileExists(dir + wxFILE_SEP_PATH + file)
             || IO.FileExists(dir + wxFILE_SEP_PATH + file + _T(".a"))
             || IO.FileExists(dir + wxFILE_SEP_PATH + file + _T(".dll.a"))
             || IO.FileExists(dir + wxFILE_SEP_PATH + file + _T(".lib"))
@@ -556,7 +554,7 @@ function SilentVerifyLibFile(dir, file)
             || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".dll.a"))
             || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".lib"))
             || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".la"))
-            || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".so")) );
+            || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".so")));
 }
 
 // verify the existence of a file of library type (add prefix lib, postfix .a and .lib)
