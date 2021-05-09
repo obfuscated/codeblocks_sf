@@ -21,8 +21,165 @@
     #include "prep.h"
 #endif // CB_PRECOMP
 
-// FIXME (squirrel) Explain how things below actually work.
-
+/// @namespace ScriptBindings
+/// Binding classes:
+/// ------------------------------
+/// This is done with the CreateClassDecl() function.
+/// Bound classes are identified by a type tag, which are set using the
+/// ScriptBindings::TypeInfo<T>::typetag value. The type tag value can be a constant (see
+/// ScriptBindings::TypeTag enum) or it can be dynamic (see ScriptingManager::RequestClassTypeTag).
+///
+/// Class instances:
+/// ------------------------------
+/// When a Squirrel instance of a given bound class is created, it need a way to access the native
+/// C++ memory of the object. Currently there are two possibilities - the C++ memory is owned by the
+/// Squirrel object and it is part of its layout or the C++ memory is owned by something on the C++
+/// side and the Squirrel object has just a pointer to it.
+/// The former is called inline instance (see InstanceAllocationMode::InstanceIsInline) and it is
+/// created by the following functions:
+/// * CreateInlineInstance()
+/// * ConstructAndReturnInstance() - helper around CreateInlineInstance, which makes it easier to
+///   return inline instances as Squirrel return values from bound C++ functions.
+///
+/// The latter is called non-owned-pointer (see InstanceAllocationMode::InstanceIsNonOwnedPtr) and
+/// it is created by following functions:
+/// * CreateNonOwnedPtrInstance()
+/// * ConstructAndReturnNonOwnedPtr()
+/// * ConstructAndReturnNonOwnedPtrOrNull()
+///
+/// All C++ functions which can create an instance can/should be used inside native C++ functions
+/// called by Squirrel. When a bound Squirrel object is created the "constructor" metamethod is
+/// meant to decided if the C++ memory for the bound object is inline or non-owned. Most
+/// constructors create inline Squirrel objects.
+///
+/// Non-owned-ptr objects are meant to be used when we have a C++ function which returns a reference
+/// or a pointer to some object. In this case the C++ object should live longer than the Squirrel
+/// object. Unfortunately we cannot manage this automatically without introducing shared pointers in
+/// all Code::Blocks API, so this is something the script writers should be aware of.
+///
+/// The C++ data is stored in the user data part of the Squirrel objects. We store a
+/// UserDataForType<UserType>, which is capable to store a pointer to the C++ object or whole C++
+/// instance in place. See SetupUserPointer and ExtractUserPointer for details how this object is
+/// created and access respectively.
+///
+/// Binding functions and methods:
+/// ------------------------------
+///
+/// Binding a C++ function which could be called from Squirrel code happens by assigning a closure
+/// object to a slot in a table. If the table is for a class a method is added. If the table is the
+/// root table a global function is defined. The difference between functions and methods is the
+/// meaning of the first parameter which is passed by Squirrel. For methods this is a reference to
+/// the object and for functions this is a reference to the environment table.
+///
+/// We have some helper functions which make binding functions and methods a bit easier:
+/// * BindMethod()
+/// * BindStaticMethod()
+/// * BindEmptyCtor()
+/// * BindDefaultInstanceCmp()
+/// * BindDefaultClone()
+///
+/// BindMethod and BindStaticMethod require passing a function pointer which translates the Squirrel
+/// objects to C++ object and handles returning a value back to Squirrel. We deliberately don't do
+/// this using template meta programming like it is done in SqPlus, sqrat, LuaBind and similar
+/// frameworks. The reason is to make the binding logic simpler and more clear. There is some cost
+/// we have to pay for this decision - the bind code is a bit more verbose, something like 4 time
+/// more code is needed to do the same thing compared to SqPlus. The benefit is that we have better
+/// control on the behaviour of every bound function. The current implementation provides better
+/// type checking for the function parameters. It is possible to implement default parameters (not
+/// used extensively in the bindings).
+///
+/// So when Squirrel calls some bound C++ function it calls the wrapper function and it passes
+/// arguments on the Squirrel stack. To extract the arguments we use one of the derived classes of
+/// ExtractParamsBase. We support extracting from 0 to 8 arguments. We've manually expanded the
+/// implementations of these 9 classes, because C++ is really limited in its reflection capabilities
+/// and the result is a lot simpler code.
+///
+/// An example wrapper function looks like this:
+/// @code
+/// SQInteger MyWrapper(HSQUIRRELVM v)
+/// {
+///     // env table (we skip it), some object, an int, a bool, Squirrel string
+///     ExtractParams5<SkipParam, wxArrayString *, SQInteger, bool, const SQChar *> extractor(v);
+///     if (!extractor.Process("MyWrapper"))
+///         return extractor.ErrorMessage();
+///
+///     // Do something with the data and return a result back to Squirrel if needed.
+///     // You can access the parsed data using:
+///     //   extractor.p0
+///     //   extractor.p1
+///     //   extractor.p2
+///     //   extractor.p3
+///     //   extractor.p4
+///     return 0;
+/// }
+/// @endcode
+///
+/// The ExtractParamsN classes allow an easier way to parse the arguments. If you need more complex
+/// behaviours you can use the ExtractParamsBase directly.
+///
+/// Binding members:
+/// ------------------------------
+///
+/// Class members in Squirrel are just slots in a table. Squirrel provides the _get and _set
+/// metamethods which make it possible to override this behaviour and allow us to provide members in
+/// a custom way. This is the mechanism we're using to provide C++ native member access from
+/// Squirrel.
+///
+/// To make this work we need to have a way to map a Squirrel string name to member pointer in C++.
+/// We store this information in an array of member accessors (see MembersType and MemberBase). The
+/// default get and set metamethods expect this array to be inside a FindMembers specialization and
+/// to be globally accessible. We use an array because we don't expect to have many members, so the
+/// benefit of using some map data structure would be small. This decision could easily be revisited
+/// in the future if this assumption is proven wrong.
+///
+/// Below is a sample which shows how to add members to a class:
+/// @code
+///    struct MyClass
+///    {
+///         wxString name;
+///         bool flag;
+///         int valueI;
+///         unsigned valueU;
+///         float valueF;
+///     };
+///
+///     template<>
+///     MembersType<MyClass> FindMembers<MyClass>::members{};
+///
+///     const SQInteger classDecl = CreateClassDecl<MyClass>(v, _SC("MyClass"));
+///     MembersType<MyClass> &members = BindMembers<MyClass>(v);
+///     addMemberRef(members, _SC("name"), &MyClass::name);
+///     addMemberBool(members, _SC("flag"), &MyClass::flag);
+///     addMemberInt(members, _SC("valueI"), &MyClass::valueI);
+///     addMemberUInt(members, _SC("valueU"), &MyClass::valueU);
+///     addMemberFloat(members, _SC("valueF"), &MyClass::valueF);
+///
+///     // Put the class in the root table. This must be last!
+///     sq_newslot(v, classDecl, SQFalse);
+/// @endcode
+///
+/// Helper functions related to binding members:
+/// * BindMembers()
+/// * addMemberBool()
+/// * addMemberInt()
+/// * addMemberUInt()
+/// * addMemberFloat()
+/// * addMemberRef()
+///
+/// Calling Squirrel functions from C++:
+/// ------------------------------
+///
+/// Steps to call a Squirrel function from C++:
+/// 1. You have to extract the closure from an object (root table or some class instance) and push
+///    it on the Squirrel stack.
+/// 2. Push the arguments
+/// 3. Call the function
+/// 4. Extract the results
+///
+/// To achieve this in a simpler manner we have the Caller class. It can call both global functions
+/// and class methods. It can call functions by name or it has more complex modes. It supports
+/// calling the same function multiple times.
+///
 namespace ScriptBindings
 {
 
