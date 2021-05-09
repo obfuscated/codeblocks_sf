@@ -180,15 +180,22 @@ class sdkTest extends script_test_base
         {
             StartNewSection("CompileOptionsBase");
 
-            test_equal("CompileOptionsBase::GetPlatforms", debugTarget.GetPlatforms(), 255);
-            debugTarget.RemovePlatform(2);
-            test_equal("CompileOptionsBase::RemovePlatform", debugTarget.GetPlatforms(), 255 & (~2));
-            debugTarget.SetPlatforms(2);
-            test_equal("CompileOptionsBase::SetPlatforms", debugTarget.GetPlatforms(), 2);
-            debugTarget.AddPlatform(1);
-            test_equal("CompileOptionsBase::AddPlatform", debugTarget.GetPlatforms(), 1 | 2);
+            test_equal("SupportedPlatforms::spMac", spMac, 1);
+            test_equal("SupportedPlatforms::spUnix", spUnix, 2);
+            test_equal("SupportedPlatforms::spWindows", spWindows, 4);
+            test_equal("SupportedPlatforms::spAll", spAll, 255);
 
-            debugTarget.SetPlatforms(255);
+            test_equal("CompileOptionsBase::GetPlatforms", debugTarget.GetPlatforms(), spAll);
+            debugTarget.RemovePlatform(spUnix);
+            test_equal("CompileOptionsBase::RemovePlatform", debugTarget.GetPlatforms(),
+                       spAll & (~spUnix));
+            debugTarget.SetPlatforms(spUnix);
+            test_equal("CompileOptionsBase::SetPlatforms", debugTarget.GetPlatforms(), spUnix);
+            debugTarget.AddPlatform(spMac);
+            test_equal("CompileOptionsBase::AddPlatform", debugTarget.GetPlatforms(),
+                       spMac | spUnix);
+
+            debugTarget.SetPlatforms(spAll);
             test_true("CompileOptionsBase::SupportsCurrentPlatform true",
                       debugTarget.SupportsCurrentPlatform());
             debugTarget.SetPlatforms(0);
