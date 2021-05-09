@@ -2691,6 +2691,7 @@ namespace ScriptBindings
             BindMethod(v, _SC("Read"), ConfigManager_Read, _SC("ConfigManager::Read"));
             BindMethod(v, _SC("Write"), ConfigManager_Write, _SC("ConfigManager::Write"));
 
+            BindDefaultInstanceCmp<ConfigManager>(v);
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
         }
@@ -2737,6 +2738,7 @@ namespace ScriptBindings
             addMemberRef(members, _SC("compilerVar"), &ProjectFile::compilerVar);
             addMemberRef(members, _SC("buildTargets"), &ProjectFile::buildTargets);
 
+            BindDefaultInstanceCmp<ProjectFile>(v);
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
         }
@@ -2930,6 +2932,7 @@ namespace ScriptBindings
             BindMethod(v, _SC("UnsetAllVars"), CompileOptionsBase_UnsetAllVars,
                        _SC("CompileOptionsBase::UnsetAllVars"));
 
+            BindDefaultInstanceCmp<CompileOptionsBase>(v);
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
         }
@@ -3028,6 +3031,7 @@ namespace ScriptBindings
                        Generic_GetBool<CompileTargetBase, &CompileTargetBase::MakeCommandsModified>,
                        _SC("CompileTargetBase::MakeCommandsModified"));
 
+            BindDefaultInstanceCmp<CompileTargetBase>(v);
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
         }
@@ -3082,6 +3086,7 @@ namespace ScriptBindings
             BindMethod(v, _SC("GetFile"), Generic_GetFile<ProjectBuildTarget>,
                        _SC("ProjectBuildTarget::GetFile"));
 
+            BindDefaultInstanceCmp<ProjectBuildTarget>(v);
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
         }
@@ -3224,6 +3229,7 @@ namespace ScriptBindings
             BindMethod(v, _SC("CanAddToVirtualBuildTarget"), cbProject_CanAddToVirtualBuildTarget,
                        _SC("cbProject::CanAddToVirtualBuildTarget"));
 
+            BindDefaultInstanceCmp<cbProject>(v);
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
         }
@@ -3242,6 +3248,7 @@ namespace ScriptBindings
             BindMethod(v, _SC("RebuildTree"), ProjectManager_RebuildTree,
                        _SC("ProjectManager::RebuildTree"));
 
+            BindDefaultInstanceCmp<ProjectManager>(v);
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
         }
@@ -3270,6 +3277,7 @@ namespace ScriptBindings
             const SQInteger classDecl = CreateClassDecl<EditorManager>(v, _SC("EditorManager"));
             BindMethod(v, _SC("New"), EditorManager_New, _SC("EditorManager::New"));
 
+            BindDefaultInstanceCmp<EditorManager>(v);
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
         }
@@ -3279,6 +3287,7 @@ namespace ScriptBindings
             const SQInteger classDecl = CreateClassDecl<UserVariableManager>(v, _SC("UserVariableManager"));
             BindMethod(v, _SC("Exists"), UserVariableManager_Exists, _SC("UserVariableManager::Exists"));
 
+            BindDefaultInstanceCmp<UserVariableManager>(v);
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
         }
@@ -3289,6 +3298,7 @@ namespace ScriptBindings
             BindMethod(v, _SC("RegisterScriptMenu"), ScriptingManager_RegisterScriptMenu,
                        _SC("ScriptingManager::RegisterScriptMenu"));
 
+            BindDefaultInstanceCmp<ScriptingManager>(v);
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
         }
@@ -3317,6 +3327,7 @@ namespace ScriptBindings
             addMemberRef(members, _SC("thanksTo"), &PluginInfo::thanksTo);
             addMemberRef(members, _SC("license"), &PluginInfo::license);
 
+            BindDefaultInstanceCmp<PluginInfo>(v);
             // Put the class in the root table. This must be last!
             sq_newslot(v, classDecl, SQFalse);
         }

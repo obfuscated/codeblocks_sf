@@ -619,9 +619,34 @@ SQInteger Generic_DefaultCtor(HSQUIRRELVM v)
 }
 
 template<typename UserType>
+SQInteger Generic_InstanceCmp(HSQUIRRELVM v)
+{
+    ExtractParams2<UserType*, SkipParam> extractor(v);
+    if (!extractor.Process("Generic_InstanceCmp"))
+        return extractor.ErrorMessage();
+
+    UserType *b;
+    if (!ExtractUserPointer(b, v, 2, TypeInfo<UserType>::typetag))
+    {
+        // Incorrect type, just return that instances doesn't match.
+        sq_pushinteger(v, 1);
+        return 1;
+    }
+
+    sq_pushinteger(v, (extractor.p0 == b ? 0 : 1));
+    return 1;
+}
+
+template<typename UserType>
 void BindEmptyCtor(HSQUIRRELVM v)
 {
     BindMethod(v, _SC("constructor"), Generic_DefaultCtor<UserType>, nullptr);
+}
+
+template<typename UserType>
+void BindDefaultInstanceCmp(HSQUIRRELVM v)
+{
+    BindMethod(v, _SC("_cmp"), Generic_InstanceCmp<UserType>, nullptr);
 }
 
 template<typename ReturnType, typename ClassType, ReturnType (ClassType::*func)() const>

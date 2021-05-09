@@ -42,10 +42,10 @@ class wxTest extends script_test_base
         // Some of these fail because squirrel optimizes this and never calls our _cmp metamethod.
         test_true("cmp", _T("Hallo")==string);
         test_true("cmp not", _T("Hallo11")!=string);
-        test_true("cmp string", _T("Hallo")=="Halllo");
-        test_true("cmp string2", "Hallo"==_T("Halllo"));
-        test_true("cmp string not", _T("Hallo11")=="halllo");
-        test_true("cmp string not2", "Hallo11"==_T("halllo"));
+        test_true("cmp string", _T("Hallo")=="Hallo");
+        test_true("cmp string2", "Hallo"==_T("Hallo"));
+        test_false("cmp string not", _T("Hallo11")=="halllo");
+        test_false("cmp string not2", "Hallo11"==_T("halllo"));
         test_equal("Compare", _T("Hallo").Compare(string), 0);
         test_equal("Compare lt", _T("ABC").Compare(_T("WXY")), -1);
         test_equal("Compare gt", _T("WXY").Compare(_T("ABC")), 1);
@@ -465,7 +465,6 @@ class wxTest extends script_test_base
         point2.y = 10;
         point3.x = 10;
         point3.y = 5;
-        //made_failed("compare doesn't seem to work","error: \"comparison between 'instance' and 'instance'\" ")
         test_false("compare gt",point1 > point2);
         test_true("compare gt",point1 > point3);
         test_false("compare lt",point1 < point2);
@@ -509,4 +508,4 @@ class wxTest extends script_test_base
     {
 
     }
-};
+}

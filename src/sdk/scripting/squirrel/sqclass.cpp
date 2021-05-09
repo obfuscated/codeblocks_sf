@@ -76,7 +76,7 @@ bool SQClass::NewSlot(SQSharedState *ss,const SQObjectPtr &key,const SQObjectPtr
             }
             if(type(temp) == OT_NULL) {
                 bool isconstructor;
-                SQVM::IsEqual(ss->_constructoridx, key, isconstructor);
+                _thread(ss->_root_vm)->IsEqual(ss->_constructoridx, key, isconstructor);
                 if(isconstructor) {
                     _constructoridx = (SQInteger)_methods.size();
                 }
