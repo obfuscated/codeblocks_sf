@@ -168,7 +168,8 @@ class wxTest extends script_test_base
         clear_test_result();
         ::print("======= Test wx String unicode BEGINN ======= \n");
         ::print("test string: !5Aa ЉЩщӃ ウインカリ\n");
-        made_failed("This implementation doesn't support UNICODE","not implemented, as you can see on the wrong test string (it has to show Cyrillic  and ?Japanese? symbols")
+        made_failed("This implementation doesn't support UNICODE",
+                    "not implemented, as you can see on the wrong test string (it has to show Cyrillic  and ?Japanese? symbols");
 
 
  //       local string = _T("!5Aa ЉЩщӃ ウインカリ");
