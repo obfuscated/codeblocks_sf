@@ -140,7 +140,7 @@ ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
 
 ScriptConsole::~ScriptConsole()
 {
-    if (s_Console == this)
+    if (s_Console == this && !Manager::IsAppShuttingDown())
     {
         s_Console = nullptr;
         HSQUIRRELVM vm = ScriptingManager::Get()->GetVM();
