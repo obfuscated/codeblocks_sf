@@ -3303,9 +3303,9 @@ void CompilerGCC::OnProjectCompilerOptions(cb_unused wxCommandEvent& event)
     if (ftd)
     {
         // 'configure' selected target, if other than 'All'
-        ProjectBuildTarget* target = 0;
+        ProjectBuildTarget* target = nullptr;
         cbProject *currentProject = ftd->GetProject();
-        if (m_RealTargetIndex != -1)
+        if (m_RealTargetIndex != -1 && !m_Targets.empty())
         {
             const wxString &targetName = m_Targets[m_RealTargetIndex];
             if (currentProject == m_pProject)

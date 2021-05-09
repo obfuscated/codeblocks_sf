@@ -226,9 +226,13 @@ void ProjectOptionsDlg::FillBuildTargets()
     // add build targets to list
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
     lstTargets->Clear();
-    for (int i = 0; i < m_Project->GetBuildTargetsCount(); ++i)
-        lstTargets->Append(m_Project->GetBuildTarget(i)->GetTitle());
-    lstTargets->SetSelection(0);
+    const int count = m_Project->GetBuildTargetsCount();
+    if (count > 0)
+    {
+        for (int i = 0; i < count; ++i)
+            lstTargets->Append(m_Project->GetBuildTarget(i)->GetTitle());
+        lstTargets->SetSelection(0);
+    }
 }
 
 void ProjectOptionsDlg::DoTargetChange(bool saveOld)
@@ -238,7 +242,7 @@ void ProjectOptionsDlg::DoTargetChange(bool saveOld)
 
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
 
-    if (lstTargets->GetSelection() == -1)
+    if (lstTargets->GetSelection() == -1 && lstTargets->GetCount() > 0)
         lstTargets->SetSelection(0);
     ProjectBuildTarget* target = m_Project->GetBuildTarget(lstTargets->GetSelection());
     if (!target || m_Current_Sel == lstTargets->GetSelection())

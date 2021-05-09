@@ -167,9 +167,6 @@ class sdkTest extends script_test_base
 
         test_equal("cbProject::GetBuildTargetsCount initial", project.GetBuildTargetsCount(), 0);
 
-        // FIXME (squirrel) Asserts when Project -> Properties with this empty project
-        // FIXME (squirrel) Asserts when Project -> Build options with this empty project
-
         local debugTarget = project.AddBuildTarget(_T("Debug"));
         test_false("cbProject::AddBuildTarget non null 0", IsNull(debugTarget));
         test_true("ProjectBuildTarget type", debugTarget instanceof ProjectBuildTarget);
