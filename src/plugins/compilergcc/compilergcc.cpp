@@ -9,52 +9,52 @@
 
 #include <sdk.h>
 
-#include <wx/frame.h> // GetMenuBar
-#include <wx/gauge.h> // Needs to be before compilergcc.h if NOPCH on wxMSW
-#include <wx/listctrl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/sizer.h>
-#include <wx/button.h>
-#include <wx/stattext.h>
-#include <wx/statline.h>
-#include <wx/ffile.h>
-#include <wx/utils.h>
-#include <wx/uri.h>
-#include <wx/xml/xml.h>
-
 #ifndef CB_PRECOMP
     #include <wx/app.h>
     #include <wx/toolbar.h>
+    #include <wx/frame.h> // GetMenuBar
+    #include <wx/gauge.h> // Needs to be before compilergcc.h if NOPCH on wxMSW
+    #include <wx/listctrl.h>
+    #include <wx/xrc/xmlres.h>
+    #include <wx/sizer.h>
+    #include <wx/button.h>
+    #include <wx/stattext.h>
+    #include <wx/statline.h>
+    #include <wx/ffile.h>
+    #include <wx/utils.h>
+
+    #include "prep.h"
+    #include "manager.h"
+    #include "sdk_events.h"
+    #include "pipedprocess.h"
+    #include "configmanager.h"
+    #include "compilercommandgenerator.h"
+    #include "logmanager.h"
+    #include "macrosmanager.h"
+    #include "projectmanager.h"
+    #include "editormanager.h"
+    #include "scriptingmanager.h"
+    #include "configurationpanel.h"
+    #include "pluginmanager.h"
+    #include "cbeditor.h"
+    #include "infowindow.h"
+    #include "globals.h"
 #endif
 
-#include <prep.h>
-#include <manager.h>
-#include <sdk_events.h>
-#include <pipedprocess.h>
-#include <configmanager.h>
-#include <compilercommandgenerator.h>
-#include <debuggermanager.h>
-#include <incremental_select_helper.h>
-#include <logmanager.h>
-#include <macrosmanager.h>
-#include <projectmanager.h>
-#include <editormanager.h>
-#include <scriptingmanager.h>
-#include <configurationpanel.h>
-#include <pluginmanager.h>
-#include <cbeditor.h>
-#include <annoyingdialog.h>
-#include <filefilters.h>
-#include <infowindow.h>
+#include <wx/uri.h>
+#include <wx/xml/xml.h>
+
+#include "annoyingdialog.h"
+#include "debuggermanager.h"
+#include "filefilters.h"
+#include "incremental_select_helper.h"
 
 #include "compilergcc.h"
 #include "compileroptionsdlg.h"
 #include "directcommands.h"
-#include "globals.h"
 #include "cbart_provider.h"
 #include "cbworkspace.h"
 #include "cbstyledtextctrl.h"
-
 
 #include "compilerMINGW.h"
 #include "compilerGNUARM.h"
