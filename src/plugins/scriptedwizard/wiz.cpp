@@ -540,8 +540,9 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
         *pFilename = theproject->GetFilename();
 
     // finally, make sure everything looks ok
-    Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
-    Manager::Get()->GetProjectManager()->GetUI().GetTree()->Expand(theproject->GetProjectNode());
+    cbProjectManagerUI &ui = Manager::Get()->GetProjectManager()->GetUI();
+    ui.RebuildTree();
+    ui.GetTree()->Expand(theproject->GetProjectNode());
     return theproject;
 }
 
