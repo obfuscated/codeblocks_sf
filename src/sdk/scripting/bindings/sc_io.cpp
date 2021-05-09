@@ -7,9 +7,6 @@
  * $HeadURL$
  */
 
-#if 0
-// FIXME (squirrel) Reimplement IO
-
 #include <sdk_precomp.h>
 #include <manager.h>
 #include <macrosmanager.h>
@@ -25,8 +22,9 @@
 #include <wx/filename.h>
 #include <wx/utils.h>
 
+#include "sc_utils.h"
+#include "sc_typeinfo_all.h"
 #include "scriptsecuritywarningdlg.h"
-#include "sc_base_types.h"
 
 namespace ScriptBindings
 {
@@ -42,6 +40,7 @@ namespace ScriptBindings
                 return true;
 
             ScriptSecurityWarningDlg dlg(Manager::Get()->GetAppWindow(), operation, descr);
+            PlaceWindow(&dlg);
             if (dlg.ShowModal() != wxID_OK)
                 return false;
 
@@ -66,204 +65,353 @@ namespace ScriptBindings
             return false;
         }
 
-        wxString GetCwd()
+        SQInteger GetCwd(HSQUIRRELVM v)
         {
-            return wxGetCwd();
+            // env table
+            ExtractParams1<SkipParam> extractor(v);
+            if (!extractor.Process("IO::GetCwd"))
+                return extractor.ErrorMessage();
+            const wxString result = wxGetCwd();
+            return ConstructAndReturnInstance(v, result);
         }
 
-        void SetCwd(const wxString& dir)
+        SQInteger SetCwd(HSQUIRRELVM v)
         {
-            wxSetWorkingDirectory(dir);
+            // env table, dir
+            ExtractParams2<SkipParam, const wxString *> extractor(v);
+            if (!extractor.Process("IO::SetCwd"))
+                return extractor.ErrorMessage();
+
+            wxSetWorkingDirectory(*extractor.p1);
+            return 0;
         }
 
-        bool CreateDirRecursively(const wxString& full_path, int perms)
+        SQInteger CreateDirRecursively(HSQUIRRELVM v)
         {
-            wxFileName fname(Manager::Get()->GetMacrosManager()->ReplaceMacros(full_path));
+            // env table, full_path, perms
+            ExtractParams3<SkipParam, const wxString *, SQInteger> extractor(v);
+            if (!extractor.Process("IO::CreateDirectory"))
+                return extractor.ErrorMessage();
+
+            wxFileName fname(Manager::Get()->GetMacrosManager()->ReplaceMacros(*extractor.p1));
             NormalizePath(fname, wxEmptyString);
-            if (!SecurityAllows(_T("CreateDir"), fname.GetFullPath()))
-                return false;
-            return ::CreateDirRecursively(fname.GetFullPath(), perms);
+            if (SecurityAllows(_T("CreateDir"), fname.GetFullPath()))
+            {
+                const int perms = extractor.p2;
+                sq_pushbool(v, ::CreateDirRecursively(fname.GetFullPath(), perms));
+            }
+            else
+                sq_pushbool(v, false);
+            return 1;
         }
 
-        wxString ChooseDir(const wxString& message, const wxString& initialPath, bool showCreateDirButton)
+        SQInteger SelectDirectory(HSQUIRRELVM v)
         {
-            return ChooseDirectory(nullptr, message, Manager::Get()->GetMacrosManager()->ReplaceMacros(initialPath), wxEmptyString, false, showCreateDirButton);
+            // env table, message, initialPath, showCreateDirButton
+            ExtractParams4<SkipParam, const wxString *, const wxString *, bool> extractor(v);
+            if (!extractor.Process("IO::SelectDirectory"))
+                return extractor.ErrorMessage();
+
+            const wxString &path = Manager::Get()->GetMacrosManager()->ReplaceMacros(*extractor.p2);
+            const wxString &result = ChooseDirectory(nullptr, *extractor.p1, path, wxString(),
+                                                     false, extractor.p3);
+            return ConstructAndReturnInstance(v, result);
         }
 
-        bool RemoveDir(const wxString& src)
+        SQInteger RemoveDirectory(HSQUIRRELVM v)
         {
-            wxFileName fname(Manager::Get()->GetMacrosManager()->ReplaceMacros(src));
+            // env table, src
+            ExtractParams2<SkipParam, const wxString *> extractor(v);
+            if (!extractor.Process("IO::RemoveDirectory"))
+                return extractor.ErrorMessage();
+
+            wxFileName fname(Manager::Get()->GetMacrosManager()->ReplaceMacros(*extractor.p1));
             NormalizePath(fname, wxEmptyString);
-            if (!SecurityAllows(_T("RemoveDir"), fname.GetFullPath()))
-                return false;
-            return wxRmdir(fname.GetFullPath());
+            if (SecurityAllows(_T("RemoveDir"), fname.GetFullPath()))
+                sq_pushbool(v, wxRmdir(fname.GetFullPath()));
+            else
+                sq_pushbool(v, false);
+            return 1;
         }
 
-        bool DirectoryExists(const wxString& dir)
+        SQInteger DirectoryExists(HSQUIRRELVM v)
         {
-            wxFileName fname(Manager::Get()->GetMacrosManager()->ReplaceMacros(dir));
+            // env table, dir
+            ExtractParams2<SkipParam, const wxString *> extractor(v);
+            if (!extractor.Process("IO::DirectoryExists"))
+                return extractor.ErrorMessage();
+
+            wxFileName fname(Manager::Get()->GetMacrosManager()->ReplaceMacros(*extractor.p1));
             NormalizePath(fname, wxEmptyString);
-            return wxDirExists(fname.GetFullPath());
+            sq_pushbool(v, wxDirExists(fname.GetFullPath()));
+            return 1;
         }
 
-        bool CopyFile(const wxString& src, const wxString& dst, bool overwrite)
+        SQInteger CopyFile(HSQUIRRELVM v)
         {
-            wxFileName fname1(Manager::Get()->GetMacrosManager()->ReplaceMacros(src));
-            wxFileName fname2(Manager::Get()->GetMacrosManager()->ReplaceMacros(dst));
-            NormalizePath(fname1, wxEmptyString);
-            NormalizePath(fname2, wxEmptyString);
-            if (!SecurityAllows(_T("CopyFile"), wxString::Format(_T("%s -> %s"), src.c_str(), dst.c_str())))
-                return false;
-            if (!wxFileExists(fname1.GetFullPath())) return false;
-            return wxCopyFile(fname1.GetFullPath(),
-                            fname2.GetFullPath(),
-                            overwrite);
+            // env table, src, dst, overwrite
+            ExtractParams4<SkipParam, const wxString *, const wxString *, bool> extractor(v);
+            if (!extractor.Process("IO::CopyFile"))
+                return extractor.ErrorMessage();
+
+            const wxString &src = *extractor.p1;
+            const wxString &dst = *extractor.p2;
+
+            MacrosManager *macros = Manager::Get()->GetMacrosManager();
+
+            wxFileName fnameSrc(macros->ReplaceMacros(src));
+            wxFileName fnameDst(macros->ReplaceMacros(dst));
+            NormalizePath(fnameSrc, wxEmptyString);
+            NormalizePath(fnameDst, wxEmptyString);
+
+            bool result = false;
+
+            // FIXME (squirrel) This format differs from the one in RenameFile!
+            if (SecurityAllows("CopyFile", wxString::Format("%s -> %s", src, dst)))
+            {
+                const wxString &srcFullPath = fnameSrc.GetFullPath();
+                if (wxFileExists(srcFullPath))
+                {
+                    // FIXME (squirrel) Redirect the wxWidgets logger to somewhere else.
+                    // Currently if the destination file exists there will be a log error message
+                    // box shown.
+                    result = wxCopyFile(srcFullPath, fnameDst.GetFullPath(), extractor.p3);
+                }
+            }
+            sq_pushbool(v, result);
+            return 1;
         }
 
-        bool RenameFile(const wxString& src, const wxString& dst)
+        SQInteger RenameFile(HSQUIRRELVM v)
         {
-            wxFileName fname1(Manager::Get()->GetMacrosManager()->ReplaceMacros(src));
-            wxFileName fname2(Manager::Get()->GetMacrosManager()->ReplaceMacros(dst));
-            NormalizePath(fname1, wxEmptyString);
-            NormalizePath(fname2, wxEmptyString);
-            if (!SecurityAllows(_T("RenameFile"), wxString::Format(_T("%s -> %s"),
-                                            fname1.GetFullPath().c_str(), fname2.GetFullPath().c_str())))
-                return false;
-            if (!wxFileExists(fname1.GetFullPath())) return false;
-            return wxRenameFile(fname1.GetFullPath(),
-                                fname2.GetFullPath());
+            // env table, src, dst
+            ExtractParams3<SkipParam, const wxString *, const wxString *> extractor(v);
+            if (!extractor.Process("IO::RenameFile"))
+                return extractor.ErrorMessage();
+
+            MacrosManager *macros = Manager::Get()->GetMacrosManager();
+
+            wxFileName fnameSrc(macros->ReplaceMacros(*extractor.p1));
+            wxFileName fnameDst(macros->ReplaceMacros(*extractor.p2));
+            NormalizePath(fnameSrc, wxEmptyString);
+            NormalizePath(fnameDst, wxEmptyString);
+
+            const wxString &srcFullPath = fnameSrc.GetFullPath();
+            const wxString &dstFullPath = fnameDst.GetFullPath();
+
+            bool result = false;
+            if (SecurityAllows("RenameFile", wxString::Format("%s -> %s", srcFullPath, dstFullPath)))
+            {
+                if (wxFileExists(srcFullPath))
+                    result = wxRenameFile(srcFullPath, dstFullPath);
+            }
+            sq_pushbool(v, result);
+            return 1;
         }
 
-        bool RemoveFile(const wxString& src)
+        SQInteger RemoveFile(HSQUIRRELVM v)
         {
-            wxFileName fname(Manager::Get()->GetMacrosManager()->ReplaceMacros(src));
+            // env table, src
+            ExtractParams2<SkipParam, const wxString *> extractor(v);
+            if (!extractor.Process("IO::RemoveFile"))
+                return extractor.ErrorMessage();
+            wxFileName fname(Manager::Get()->GetMacrosManager()->ReplaceMacros(*extractor.p1));
             NormalizePath(fname, wxEmptyString);
-            if (!SecurityAllows(_T("RemoveFile"), fname.GetFullPath()))
-                return false;
-            if (!wxFileExists(fname.GetFullPath())) return false;
-            return wxRemoveFile(fname.GetFullPath());
+
+            bool result = false;
+            const wxString &fullPath = fname.GetFullPath();
+            if (SecurityAllows("RemoveFile", fullPath))
+            {
+                if (wxFileExists(fullPath))
+                    result = wxRemoveFile(fullPath);
+            }
+            sq_pushbool(v, result);
+            return 1;
         }
 
-        bool FileExists(const wxString& file)
+        SQInteger FileExists(HSQUIRRELVM v)
         {
-            wxFileName fname(Manager::Get()->GetMacrosManager()->ReplaceMacros(file));
+            // env table, file
+            ExtractParams2<SkipParam, const wxString *> extractor(v);
+            if (!extractor.Process("IO::FileExists"))
+                return extractor.ErrorMessage();
+            wxFileName fname(Manager::Get()->GetMacrosManager()->ReplaceMacros(*extractor.p1));
             NormalizePath(fname, wxEmptyString);
-            return wxFileExists(fname.GetFullPath());
+            sq_pushbool(v, wxFileExists(fname.GetFullPath()));
+            return 1;
         }
 
-        wxString ChooseFile(const wxString& title, const wxString& defaultFile, const wxString& filter)
+        SQInteger SelectFile(HSQUIRRELVM v)
         {
-            wxFileDialog dlg(nullptr,
-                            title,
-                            wxEmptyString,
-                            Manager::Get()->GetMacrosManager()->ReplaceMacros(defaultFile),
-                            filter,
-                            wxFD_OPEN | compatibility::wxHideReadonly);
+            // env table, title, defaultFile, filter
+            ExtractParams4<SkipParam, const wxString *, const wxString *, const wxString *> extractor(v);
+            if (!extractor.Process("IO::SelectFile"))
+                return extractor.ErrorMessage();
+
+            wxFileDialog dlg(nullptr, *extractor.p1, wxString(),
+                            Manager::Get()->GetMacrosManager()->ReplaceMacros(*extractor.p2),
+                            *extractor.p3, wxFD_OPEN | compatibility::wxHideReadonly);
             PlaceWindow(&dlg);
+            wxString result;
             if (dlg.ShowModal() == wxID_OK)
-                return dlg.GetPath();
-            return wxEmptyString;
+                result = dlg.GetPath();
+            return ConstructAndReturnInstance(v, result);
         }
 
-        wxString ReadFileContents(const wxString& filename)
+        SQInteger ReadFileContents(HSQUIRRELVM v)
         {
-            wxFileName fname(Manager::Get()->GetMacrosManager()->ReplaceMacros(filename));
+            // env table, filename
+            ExtractParams2<SkipParam, const wxString *> extractor(v);
+            if (!extractor.Process("IO::ReadFileContents"))
+                return extractor.ErrorMessage();
+
+            wxFileName fname(Manager::Get()->GetMacrosManager()->ReplaceMacros(*extractor.p1));
             NormalizePath(fname, wxEmptyString);
             wxFile f(fname.GetFullPath());
-            return cbReadFileContents(f);
+            return ConstructAndReturnInstance(v, cbReadFileContents(f));
         }
 
-        bool WriteFileContents(const wxString& filename, const wxString& contents)
+        SQInteger WriteFileContents(HSQUIRRELVM v)
         {
-            wxFileName fname(Manager::Get()->GetMacrosManager()->ReplaceMacros(filename));
+            // env table, filename, contents
+            ExtractParams3<SkipParam, const wxString *, const wxString *> extractor(v);
+            if (!extractor.Process("IO::WriteFileContents"))
+                return extractor.ErrorMessage();
+
+            wxFileName fname(Manager::Get()->GetMacrosManager()->ReplaceMacros(*extractor.p1));
             NormalizePath(fname, wxEmptyString);
-            if (!SecurityAllows(_T("CreateFile"), fname.GetFullPath()))
-                return false;
-            wxFile f(fname.GetFullPath(), wxFile::write);
-            return cbWrite(f, contents);
+            const wxString &fullPath = fname.GetFullPath();
+            bool result = false;
+            if (SecurityAllows("CreateFile", fullPath))
+            {
+                wxFile f(fullPath, wxFile::write);
+                result = cbWrite(f, *extractor.p2);
+            }
+            sq_pushbool(v, result);
+            return 1;
         }
 
-        int Execute(const wxString& command)
+        SQInteger Execute(HSQUIRRELVM v)
         {
-            if (!SecurityAllows(_T("Execute"), command))
-                return -1;
-            wxArrayString output;
-            return wxExecute(command, output, wxEXEC_NODISABLE);
+            // env table, command
+            ExtractParams2<SkipParam, const wxString *> extractor(v);
+            if (!extractor.Process("IO::Execute"))
+                return extractor.ErrorMessage();
+            const wxString &command = *extractor.p1;
+
+            SQInteger result = -1;
+            if (SecurityAllows("Execute", command))
+            {
+                wxArrayString output;
+                result = wxExecute(command, output, wxEXEC_NODISABLE);
+            }
+            sq_pushinteger(v, result);
+            return 1;
         }
 
-        wxString ExecuteAndGetOutput(const wxString& command)
+        SQInteger ExecuteAndGetOutput(HSQUIRRELVM v)
         {
-            if (!SecurityAllows(_T("Execute"), command))
-                return wxEmptyString;
+            // env table, command
+            ExtractParams2<SkipParam, const wxString *> extractor(v);
+            if (!extractor.Process("IO::ExecuteAndGetOutput"))
+                return extractor.ErrorMessage();
+            const wxString &command = *extractor.p1;
 
-            wxArrayString output;
-            wxExecute(command, output, wxEXEC_NODISABLE);
-
-            return GetStringFromArray(output, _T("\n"));
+            wxString result;
+            if (SecurityAllows("Execute", command))
+            {
+                wxArrayString output;
+                wxExecute(command, output, wxEXEC_NODISABLE);
+                result = GetStringFromArray(output, "\n");
+            }
+            return ConstructAndReturnInstance(v, result);
         }
 
-        wxString ExecuteAndGetOutputAndError(const wxString& command, bool prepend_error = true)
+        SQInteger ExecuteAndGetOutputAndError(HSQUIRRELVM v)
         {
-            if (!SecurityAllows(_T("Execute"), command))
-                return wxEmptyString;
+            // env table, command, preprend_error
+            ExtractParams3<SkipParam, const wxString *, bool> extractor(v);
+            if (!extractor.Process("IO::ExecuteAndGetOutputAndError"))
+                return extractor.ErrorMessage();
+            const wxString &command = *extractor.p1;
 
-            wxArrayString output;
-            wxArrayString error;
-            wxExecute(command, output, error, wxEXEC_NODISABLE);
+            wxString result;
+            if (SecurityAllows("Execute", command))
+            {
+                wxArrayString output;
+                wxArrayString error;
+                wxExecute(command, output, error, wxEXEC_NODISABLE);
 
-            wxString str_out;
+                const bool preprendError = extractor.p2;
 
-            if ( prepend_error && !error.IsEmpty())
-                str_out += GetStringFromArray(error,  _T("\n"));
-
-            if (!output.IsEmpty())
-                str_out += GetStringFromArray(output, _T("\n"));
-
-            if (!prepend_error && !error.IsEmpty())
-                str_out += GetStringFromArray(error,  _T("\n"));
-
-            return  str_out;
+                if (preprendError && !error.empty())
+                    result += GetStringFromArray(error, "\n");
+                if (!output.empty())
+                    result += GetStringFromArray(output, "\n");
+                if (!preprendError && !error.empty())
+                    result += GetStringFromArray(error, "\n");
+            }
+            return ConstructAndReturnInstance(v, result);
         }
-
 
     } // namespace IOLib
 } // namespace ScriptBindings
 
 namespace ScriptBindings
 {
-    struct IONamespace {};
 
-    void Register_IO()
+void Register_IO(HSQUIRRELVM v)
+{
+    PreserveTop preserve(v);
+    sq_pushroottable(v);
+
     {
-        SqPlus::SQClassDef<IONamespace>("IO").
+        // Register IO
+        const SQInteger classDecl = CreateClassDecl<IONamespace>(v, _SC("IO"));
+#ifndef NO_INSECURE_SCRIPTS
+        BindStaticMethod(v, _SC("CreateDirectory"), IOLib::CreateDirRecursively,
+                         _SC("IO::CreateDirectory"));
+        BindStaticMethod(v, _SC("RemoveDirectory"), IOLib::RemoveDirectory,
+                         _SC("IO::RemoveDirectory"));
+        BindStaticMethod(v, _SC("CopyFile"), IOLib::CopyFile, _SC("IO::CopyFile"));
+        BindStaticMethod(v, _SC("RenameFile"), IOLib::RenameFile, _SC("IO::RenameFile"));
+        BindStaticMethod(v, _SC("RemoveFile"), IOLib::RemoveFile, _SC("IO::RemoveFile"));
+        BindStaticMethod(v, _SC("WriteFileContents"), IOLib::WriteFileContents,
+                         _SC("IO::WriteFileContents"));
+        BindStaticMethod(v, _SC("Execute"), IOLib::Execute, _SC("IO::Execute"));
+        BindStaticMethod(v, _SC("ExecuteAndGetOutput"), IOLib::ExecuteAndGetOutput,
+                         _SC("IO::ExecuteAndGetOutput"));
+        BindStaticMethod(v, _SC("ExecuteAndGetOutputAndError"), IOLib::ExecuteAndGetOutputAndError,
+                         _SC("IO::ExecuteAndGetOutputAndError"));
+        // FIXME (squirrel) Introduce an API for listing a directory
+#endif // NO_INSECURE_SCRIPTS
 
-                #ifndef NO_INSECURE_SCRIPTS
-                staticFunc(&IOLib::CreateDirRecursively,        "CreateDirectory").
-                staticFunc(&IOLib::RemoveDir,                   "RemoveDirectory").
-                staticFunc(&IOLib::CopyFile,                    "CopyFile").
-                staticFunc(&IOLib::RenameFile,                  "RenameFile").
-                staticFunc(&IOLib::RemoveFile,                  "RemoveFile").
-                staticFunc(&IOLib::WriteFileContents,           "WriteFileContents").
-                staticFunc(&IOLib::Execute,                     "Execute").
-                staticFunc(&IOLib::ExecuteAndGetOutput,         "ExecuteAndGetOutput").
-                staticFunc(&IOLib::ExecuteAndGetOutputAndError, "ExecuteAndGetOutputAndError").
-                #endif // NO_INSECURE_SCRIPTS
+        BindStaticMethod(v, _SC("GetCwd"), IOLib::GetCwd, _SC("IO::GetCwd"));
+        BindStaticMethod(v, _SC("SetCwd"), IOLib::SetCwd, _SC("IO::SetCwd"));
 
-                staticFunc(&IOLib::GetCwd, "GetCwd").
-                staticFunc(&IOLib::SetCwd, "SetCwd").
+        BindStaticMethod(v, _SC("DirectoryExists"), IOLib::DirectoryExists,
+                         _SC("IO::DirectoryExists"));
+        BindStaticMethod(v, _SC("SelectDirectory"), IOLib::SelectDirectory,
+                         _SC("IO::SelectDirectory"));
+        BindStaticMethod(v, _SC("FileExists"), IOLib::FileExists, _SC("IO::FileExists"));
+        BindStaticMethod(v, _SC("SelectFile"), IOLib::SelectFile, _SC("IO::SelectFile"));
+        BindStaticMethod(v, _SC("ReadFileContents"), IOLib::ReadFileContents,
+                         _SC("IO::ReadFileContents"));
 
-                staticFunc(&IOLib::DirectoryExists,  "DirectoryExists").
-                staticFunc(&IOLib::ChooseDir,        "SelectDirectory").
-                staticFunc(&IOLib::FileExists,       "FileExists").
-                staticFunc(&IOLib::ChooseFile,       "SelectFile").
-                staticFunc(&IOLib::ReadFileContents, "ReadFileContents");
+        // Put the class in the root table. This must be last!
+        sq_newslot(v, classDecl, SQFalse);
 
-        #ifndef NO_INSECURE_SCRIPTS
-        SqPlus::BindConstant(true,  "allowInsecureScripts");
-        #else
-        SqPlus::BindConstant(false, "allowInsecureScripts");
-        #endif // NO_INSECURE_SCRIPTS
+// FIXME (squirrel) Expose this constant! This would require better API for constants
+//
+//        #ifndef NO_INSECURE_SCRIPTS
+//        SqPlus::BindConstant(true,  "allowInsecureScripts");
+//        #else
+//        SqPlus::BindConstant(false, "allowInsecureScripts");
+//        #endif // NO_INSECURE_SCRIPTS
     }
-} // namespace ScriptBindings
 
-#endif // 0
+    // pop root table.
+    sq_pop(v, 1);
+}
+
+} // namespace ScriptBinding

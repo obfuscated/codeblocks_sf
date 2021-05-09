@@ -7,10 +7,12 @@ class sdkTest extends script_test_base
         clear_global_test_results()
         ::print("======= Test SDK function BEGINN ======= \n");
 
+        test_helpers();
         test_replace_macros();
         test_globals();
         test_project_classes();
         test_classes();
+        test_io();
 
         ::print("======= Test SDK function END ======= \n");
         print_global_test_result();
@@ -96,7 +98,41 @@ class sdkTest extends script_test_base
 
     function MakePath(folder, name)
     {
-        return folder + ::wxFILE_SEP_PATH + name
+        if (folder.IsEmpty())
+            return name;
+        else if (folder.GetChar(folder.length() - 1) != ::wxFILE_SEP_PATH.GetChar(0))
+            return folder + ::wxFILE_SEP_PATH + name;
+        else
+            return folder + name;
+    }
+
+    function MakeDir(folder, name)
+    {
+        local result = MakePath(folder, name);
+        if (!result.IsEmpty()
+            && (result.GetChar(result.length() - 1) != ::wxFILE_SEP_PATH.GetChar(0)))
+        {
+            result += ::wxFILE_SEP_PATH;
+        }
+        return result;
+    }
+
+    function test_helpers()
+    {
+        ::print("======= Test helpers BEGINN ======= \n");
+        clear_test_result();
+
+        test_string("MakePath 0", MakePath(_T(""), _T("name")), "name");
+        test_string("MakePath 1", MakePath(_T("path"), _T("name")), "path/name");
+        test_string("MakePath 2", MakePath(_T("path/"), _T("name")), "path/name");
+
+        test_string("MakeDir 0", MakeDir(_T(""), _T("name")), "name/");
+        test_string("MakeDir 1", MakeDir(_T(""), _T("name/")), "name/");
+        test_string("MakeDir 2", MakeDir(_T("path"), _T("name/")), "path/name/");
+        test_string("MakeDir 3", MakeDir(_T("path/"), _T("name/")), "path/name/");
+
+        print_test_result();
+        ::print("======= Test helpers END ======= \n");
     }
 
     function test_project_classes()
@@ -113,9 +149,8 @@ class sdkTest extends script_test_base
         // projects at the time of the start of the script.
         test_true("ProjectManager::CloseWorkspace", projectMgr.CloseWorkspace());
 
-        // FIXME (squirrel) Clean up this folder when we have the IO API bound, so tests are less
-        // noisy and produce smaller number of dialogs.
-        local tempFolder = MakePath(GetFolder(0x4), _T("sdk_tests"));
+        local tempFolder = MakeDir(GetFolder(0x4), _T("sdk_tests"));
+        FolderCleanup(tempFolder);
         print(_T("TEMP folder is=") + tempFolder + _T("\n"));
 
         local project = projectMgr.NewProject(MakePath(tempFolder, _T("NewProject.cbp")));
@@ -440,8 +475,7 @@ class sdkTest extends script_test_base
             test_string("CompileTargetBase::GetStaticLibFilename",
                         debugTarget.GetStaticLibFilename(),
                         MakePath(tempFolder, _T("libNewProject.a")));
-            test_string("CompileTargetBase::GetBasePath", debugTarget.GetBasePath(),
-                        tempFolder +::wxFILE_SEP_PATH);
+            test_string("CompileTargetBase::GetBasePath", debugTarget.GetBasePath(), tempFolder);
 
             test_string("CompileTargetBase::GetExecutionParameters",
                         debugTarget.GetExecutionParameters(), "");
@@ -560,7 +594,7 @@ class sdkTest extends script_test_base
             test_true("cbProject::SaveLayout", project.SaveLayout());
             test_true("cbProject::LoadLayout", project.LoadLayout());
             test_string("cbProject::GetCommonTopLevelPath", project.GetCommonTopLevelPath(),
-                        tempFolder + ::wxFILE_SEP_PATH);
+                        tempFolder);
             test_true("cbProject::GetFile out of range",
                       IsNull(project.GetFile(project.GetFilesCount() + 100)));
             test_false("cbProject::GetFileByFilename",
@@ -1101,6 +1135,8 @@ class sdkTest extends script_test_base
 //            }
         }
 
+        FolderCleanup(tempFolder);
+
         print_test_result();
         ::print("======= Test SDK Project related classes/functions END ======= \n");
     }
@@ -1129,9 +1165,8 @@ class sdkTest extends script_test_base
 
         StartNewSection("editor related");
 
-        // FIXME (squirrel) Clean up this folder when we have the IO API bound, so tests are less
-        // noisy and produce smaller number of dialogs.
-        local tempFolder = MakePath(GetFolder(0x4), _T("sdk_tests"));
+        local tempFolder = MakeDir(GetFolder(0x4), _T("sdk_tests"));
+        FolderCleanup(tempFolder);
         print(_T("TEMP folder is=") + tempFolder + _T("\n"));
 
         local editorMgr = GetEditorManager();
@@ -1181,7 +1216,6 @@ class sdkTest extends script_test_base
 
             // Just call it, we cannot verify if it really works.
             editor0.GotoLine(2, true);
-
 
             test_false("IsReadOnly", editor0.IsReadOnly());
             test_false("HasSelection", editor0.HasSelection());
@@ -1269,6 +1303,7 @@ class sdkTest extends script_test_base
 
             local editor0Filename = clone editor0.GetFilename();
             local editor1Filename = clone editor1.GetFilename();
+            print("editor0: " + editor0Filename + "; editor1: " + editor1Filename + "\n");
 
             // Indices start from one because of the 'start here' page.
             test_equal("GetBuiltinEditor: index 0", editorMgr.GetBuiltinEditor(1), editor0);
@@ -1302,14 +1337,22 @@ class sdkTest extends script_test_base
             test_equal("CloseActive: check 0", editorMgr.IsBuiltinOpen(editor0Filename), editor0);
             test_equal("CloseActive: check 1", editorMgr.IsBuiltinOpen(editor1Filename), null);
 
+            print("editor open: '" + editor0Filename + "'\n");
             editor1 = editorMgr.Open(editor1Filename);
             test_false("Open 0", IsNull(editor1));
+
+            editor0.SetModified(true);
+            editor1.SetModified(true);
+            test_true("SaveAll", editorMgr.SaveAll());
+            test_false("SaveAll: check 0", editor0.GetModified());
+            test_false("SaveAll: check 1", editor1.GetModified());
 
             // Indices start from one because of the 'start here' page.
             test_true("Close index", editorMgr.Close(1));
             test_equal("Close index: check 0", editorMgr.IsBuiltinOpen(editor0Filename), null);
             test_equal("Close index: check 1", editorMgr.IsBuiltinOpen(editor1Filename), editor1);
 
+            print("editor open: '" + editor0Filename + "'\n");
             editor0 = editorMgr.Open(editor0Filename);
             test_false("Open 1", IsNull(editor0));
 
@@ -1318,14 +1361,9 @@ class sdkTest extends script_test_base
             test_equal("Close filename: check 1", editorMgr.IsBuiltinOpen(editor1Filename), editor1);
 
             // This puts editor0 on the right of editor1, so the indices below are swapped.
+            print("editor open: '" + editor0Filename + "'\n");
             editor0 = editorMgr.Open(editor0Filename);
             test_false("Open 2", IsNull(editor0));
-
-            editor0.SetModified(true);
-            editor1.SetModified(true);
-            test_true("SaveAll", editorMgr.SaveAll());
-            test_false("SaveAll: check 0", editor0.GetModified());
-            test_false("SaveAll: check 1", editor1.GetModified());
 
             // Indices start from one because of the 'start here' page.
             editor0.SetModified(true);
@@ -1410,5 +1448,128 @@ class sdkTest extends script_test_base
 
         print_test_result();
         ::print("======= Test SDK classes/functions END ======= \n");
+    }
+
+    function FolderCleanup(folder)
+    {
+        if(::PLATFORM == ::PLATFORM_GTK)
+        {
+            // FIXME (squirrel) Make this cross platform!
+            if (IO.DirectoryExists(folder))
+            {
+                print("Note: Deleting recursively '" + folder + "'\n");
+                IO.Execute(_T("rm -rf \"") + folder + _T("\""));
+                if (IO.DirectoryExists(folder))
+                    throw "Cannot delete folder: '" + folder + "'! Aborting!";
+            }
+
+            print("Note: Creating '" + folder + "'\n");
+            IO.CreateDirectory(folder, 0755);
+            if (!IO.DirectoryExists(folder))
+                throw "Cannot create folder: '" + folder + "'! Aborting!";
+        }
+    }
+
+    function test_io()
+    {
+        ::print("======= Test IO functions BEGINN ======= \n");
+        clear_test_result();
+
+        local startCwd = IO.GetCwd();
+        test_false("Start GetCWD", startCwd.IsEmpty());
+        print("Start CWD: " + startCwd + "\n");
+
+        local tempRootFolder = GetFolder(0x4);
+        local tempFolder = MakeDir(GetFolder(0x4), _T("sdk_tests"));
+        IO.SetCwd(tempRootFolder);
+        test_string("SetCwd", IO.GetCwd(), tempRootFolder);
+        test_true("DirectoryExists", IO.DirectoryExists(tempRootFolder));
+
+        //if (allowInsecureScripts)
+        {
+            if (IO.DirectoryExists(tempFolder))
+            {
+                if(::PLATFORM == ::PLATFORM_GTK)
+                {
+                    test_equal("Execute rm -rf",
+                               IO.Execute(_T("rm -rf \"") + tempFolder + _T("\"")), 0);
+                }
+                else
+                    made_failed("Execute rm -rf", "unsupported platform");
+
+                test_false("RemoveDirectory start", IO.DirectoryExists(tempFolder));
+            }
+
+            test_true("CreateDirectory", IO.CreateDirectory(tempFolder, 0755));
+            test_true("CreateDirectory test", IO.DirectoryExists(tempFolder));
+            test_true("RemoveDirectory", IO.RemoveDirectory(tempFolder));
+            test_true("CreateDirectory after delete", IO.CreateDirectory(tempFolder, 0755));
+
+            test_true("Execute fail", IO.Execute(_T("some-unknown-command")) != 0);
+
+            local filepath0 = MakePath(tempFolder, _T("file0.txt"));
+            local filepath1 = MakePath(tempFolder, _T("file1.txt"));
+            local copypath0 = MakePath(tempFolder, _T("copy-file0.txt"));
+            local renamepath1 = MakePath(tempFolder, _T("rename-file1.txt"));
+
+            test_true("WriteFileContents 0",
+                      IO.WriteFileContents(filepath0, _T("This is\nfile00000\n\n")));
+            test_true("WriteFileContents 0: exists", IO.FileExists(filepath0));
+            test_true("WriteFileContents 1",
+                      IO.WriteFileContents(filepath1, _T("This is\nfile11111\n\n")));
+            test_true("WriteFileContents 1: exists", IO.FileExists(filepath1));
+
+            test_string("ReadFileContents 0", IO.ReadFileContents(filepath0),
+                        "This is\nfile00000\n\n");
+            test_string("ReadFileContents 1", IO.ReadFileContents(filepath1),
+                        "This is\nfile11111\n\n");
+
+            test_true("CopyFile", IO.CopyFile(filepath0, copypath0, false));
+            test_false("CopyFile overwrite fail", IO.CopyFile(filepath0, copypath0, false));
+            test_true("CopyFile overwrite", IO.CopyFile(filepath0, copypath0, true));
+            test_true("CopyFile exits 0", IO.FileExists(filepath0));
+            test_true("CopyFile exits 1", IO.FileExists(copypath0));
+
+            test_true("RenameFile", IO.RenameFile(filepath1, renamepath1));
+            test_false("RenameFile exists 0", IO.FileExists(filepath1));
+            test_true("RenameFile exists 1", IO.FileExists(renamepath1));
+
+            test_true("RemoveFile", IO.RemoveFile(renamepath1));
+            test_false("RemoveFile exists", IO.FileExists(renamepath1));
+
+
+            if(::PLATFORM == ::PLATFORM_GTK)
+            {
+                test_equal("Execute 0", IO.Execute(_T("echo 1")), 0);
+                test_equal("Execute 1", IO.Execute(_T("sh -c \"exit 10\"")), 10);
+                test_string("ExecuteAndGetOutput", IO.ExecuteAndGetOutput(_T("echo output")),
+                            "output\n");
+
+                local cmdWithError = _T("sh -c \"echo error111 >&2 && echo output222\"");
+                local r = IO.ExecuteAndGetOutputAndError(cmdWithError, true);
+                test_string("ExecuteAndGetOutputAndError 0", r, "error111\noutput222\n");
+                r = IO.ExecuteAndGetOutputAndError(cmdWithError, false);
+                test_string("ExecuteAndGetOutputAndError 1", r, "output222\nerror111\n");
+            }
+
+            FolderCleanup(tempFolder);
+        }
+
+        // FIXME (squirrel) Add a variable which controls these, so all can be enabled at once.
+//        {
+//            // Uncomment these to test APIs which require user interaction and which aren't
+//            // suitable for automated testing.
+//            print("SelectDirectory: " + IO.SelectDirectory(_T("Select dir"), startCwd, true) + "\n");
+//            local file = IO.SelectFile(_T("Select file"), MakePath(startCwd, _T("file0.txt")),
+//                                       _T(""));
+//            print("SelectFile: " + file + "\n");
+//        }
+
+        // This must be the last test performed.
+        IO.SetCwd(startCwd);
+        test_string("Restore CWD", IO.GetCwd(), startCwd);
+
+        print_test_result();
+        ::print("======= Test IO functions END ======= \n");
     }
 }
