@@ -24,8 +24,8 @@
 
 namespace ScriptBindings
 {
-    #define BIND_INT_CONSTANT(a) bind_intConstantNamed(v, a, #a)
-    #define BIND_INT_CONSTANT_NAMED(a,n) bind_intConstantNamed(v, a, n)
+    #define BIND_INT_CONSTANT(a) bind_intConstantNamed(a, #a)
+    #define BIND_INT_CONSTANT_NAMED(a,n) bind_intConstantNamed(a, n)
     #define BIND_WXSTR_CONSTANT_NAMED(a,n) bind_wxStringConstantNamed(v, a, n)
 
     // FIXME (squirrel) Using std::string here is not efficient
@@ -35,7 +35,7 @@ namespace ScriptBindings
     IntConstantsMap g_mapIntConstants;
     wxStringConstantsMap g_mapWxStringConstants;
 
-    void bind_intConstantNamed(HSQUIRRELVM v, SQInteger value, const char *name)
+    void bind_intConstantNamed(SQInteger value, const char *name)
     {
         g_mapIntConstants.insert(IntConstantsMap::value_type(name, value));
     }
