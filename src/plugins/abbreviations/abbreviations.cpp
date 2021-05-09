@@ -151,8 +151,8 @@ void Abbreviations::UnregisterScripting()
     if (vm)
     {
         ScriptBindings::PreserveTop preserveTop(vm);
-        sq_pushstring(vm, _SC("AutoComplete"), -1);
         sq_pushroottable(vm);
+        sq_pushstring(vm, _SC("AutoComplete"), -1);
         sq_deleteslot(vm, -2, false);
         sq_poptop(vm);
     }
