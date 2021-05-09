@@ -26,6 +26,10 @@
     #include <wx/regex.h>
 #endif
 
+#include <map>
+#include <set>
+#include <unordered_map>
+
 #include "crc32.h"
 #include "menuitemsmanager.h"
 #include "genericmultilinenotesdlg.h"
@@ -45,6 +49,67 @@ template<> bool  Mgr<ScriptingManager>::isShutdown = false;
 static wxString s_ScriptOutput;
 static wxString s_ScriptErrors;
 static wxString capture;
+
+struct ScriptingManager::Data
+{
+    Data() :
+        m_AttachedToMainWindow(false),
+        m_MenuItemsManager(false) // not auto-clear
+    {}
+
+    void OnScriptMenu(wxCommandEvent& event);
+    void OnScriptPluginMenu(wxCommandEvent& event);
+
+    wxCriticalSection cs;
+
+    /// Container for script menus.
+    /// Maps "script menuitem_ID" to "script_filename"
+    struct MenuBoundScript
+    {
+        wxString scriptOrFunc;
+        bool isFunc;
+    };
+    typedef std::map<int, MenuBoundScript> MenuIDToScript;
+    typedef std::set<wxString> IncludeSet;
+
+    /// This the Squirrel VM object we will use everywhere.
+    HSQUIRRELVM m_vm;
+
+    TrustedScripts m_TrustedScripts;
+
+    MenuIDToScript m_MenuIDToScript;
+    bool m_AttachedToMainWindow;
+
+    ///  \brief This variable stores a stack of currently running script files. The back points to the current running file
+    ///
+    /// This variable is used to track the current running script for determine the working directory so it is possible to use relative paths with the
+    /// "include" script function. This has to be a stack, because includes can go over several levels and every level can use relative paths.
+    /// ~~~~~~
+    /// main.script  --> include("scripts/include1.script")
+    /// scripts
+    ///   |----- include1.script     --> include("library/library.script")
+    ///   |-----library
+    ///            |----- library.script
+    /// ~~~~~~
+    /// The back of the stack will always point to the current running script and can be used to get the relative path of the include statements.
+    /// The stack is pushed and popped in the LoadScript() function
+    ///
+    std::vector<wxString> m_RunningScriptFileStack;
+
+    IncludeSet m_IncludeSet;
+    MenuItemsManager m_MenuItemsManager;
+
+    // FIXME (squirrel) Using std::string here is not efficient
+    using IntConstantsMap = std::unordered_map<std::string, SQInteger>;
+    // FIXME (squirrel) Using std::string here is not efficient
+    using wxStringConstantsMap = std::unordered_map<std::string, HSQOBJECT>;
+    IntConstantsMap m_mapIntConstants;
+    wxStringConstantsMap m_mapWxStringConstants;
+
+    friend SQInteger ConstantsGet(HSQUIRRELVM v);
+    friend SQInteger ConstantsSet(HSQUIRRELVM v);
+};
+
 
 static void PrintSquirrelToWxString(wxString& msg, const SQChar* s, va_list& vl)
 {
@@ -105,18 +170,18 @@ SQInteger ConstantsGet(HSQUIRRELVM v)
     if (!extractor.Process("constants_get"))
         return extractor.ErrorMessage();
 
-    ScriptingManager *manager = reinterpret_cast<ScriptingManager*>(sq_getforeignptr(v));
-    cbAssert(manager);
+    ScriptingManager::Data *data = reinterpret_cast<ScriptingManager*>(sq_getforeignptr(v))->m_data;
+    cbAssert(data);
 
-    ScriptingManager::IntConstantsMap::const_iterator intIt = manager->m_mapIntConstants.find(extractor.p1);
-    if (intIt != manager->m_mapIntConstants.end())
+    ScriptingManager::Data::IntConstantsMap::const_iterator intIt = data->m_mapIntConstants.find(extractor.p1);
+    if (intIt != data->m_mapIntConstants.end())
     {
         sq_pushinteger(v, intIt->second);
         return 1;
     }
 
-    ScriptingManager::wxStringConstantsMap::const_iterator wxStringIt = manager->m_mapWxStringConstants.find(extractor.p1);
-    if (wxStringIt != manager->m_mapWxStringConstants.end())
+    ScriptingManager::Data::wxStringConstantsMap::const_iterator wxStringIt = data->m_mapWxStringConstants.find(extractor.p1);
+    if (wxStringIt != data->m_mapWxStringConstants.end())
     {
         sq_pushobject(v, wxStringIt->second);
         return 1;
@@ -134,14 +199,14 @@ SQInteger ConstantsSet(HSQUIRRELVM v)
     if (!extractor.ProcessParam(name, 2, "constants_set"))
         return extractor.ErrorMessage();
 
-    ScriptingManager *manager = reinterpret_cast<ScriptingManager*>(sq_getforeignptr(v));
-    cbAssert(manager);
+    ScriptingManager::Data *data = reinterpret_cast<ScriptingManager*>(sq_getforeignptr(v))->m_data;
+    cbAssert(data);
 
-    ScriptingManager::IntConstantsMap::const_iterator intIt = manager->m_mapIntConstants.find(name);
-    if (intIt != manager->m_mapIntConstants.end())
+    ScriptingManager::Data::IntConstantsMap::const_iterator intIt = data->m_mapIntConstants.find(name);
+    if (intIt != data->m_mapIntConstants.end())
         return sq_throwerror(v, _SC("Trying to modify global constant is not allowed!"));
-    ScriptingManager::wxStringConstantsMap::const_iterator wxStringIt = manager->m_mapWxStringConstants.find(name);
-    if (wxStringIt != manager->m_mapWxStringConstants.end())
+    ScriptingManager::Data::wxStringConstantsMap::const_iterator wxStringIt = data->m_mapWxStringConstants.find(name);
+    if (wxStringIt != data->m_mapWxStringConstants.end())
         return sq_throwerror(v, _SC("Trying to modify global constant is not allowed!"));
 
     return ScriptBindings::ThrowIndexNotFound(v);
@@ -157,44 +222,42 @@ namespace ScriptBindings
     void UnregisterBindings(HSQUIRRELVM vm);
 } // namespace ScriptBindings
 
-ScriptingManager::ScriptingManager() :
-    m_AttachedToMainWindow(false),
-    m_MenuItemsManager(false) // not auto-clear
+ScriptingManager::ScriptingManager() : m_data(new Data)
 {
-    m_vm = sq_open(1024);
-    if (m_vm == nullptr)
+    m_data->m_vm = sq_open(1024);
+    if (m_data->m_vm == nullptr)
         cbThrow(_T("Can't create scripting engine!"));
 
     // FIXME (squirrel) Provide special error function?
-    sq_setprintfunc(m_vm, ScriptsPrintFunc, ScriptsErrorFunc);
+    sq_setprintfunc(m_data->m_vm, ScriptsPrintFunc, ScriptsErrorFunc);
 
-    sq_setforeignptr(m_vm, this);
+    sq_setforeignptr(m_data->m_vm, this);
 
-    sq_pushroottable(m_vm);
-    sqstd_register_bloblib(m_vm);
-    sqstd_register_mathlib(m_vm);
-    sqstd_register_stringlib(m_vm);
-    sqstd_seterrorhandlers(m_vm);
-    sq_pop(m_vm, 1);
+    sq_pushroottable(m_data->m_vm);
+    sqstd_register_bloblib(m_data->m_vm);
+    sqstd_register_mathlib(m_data->m_vm);
+    sqstd_register_stringlib(m_data->m_vm);
+    sqstd_seterrorhandlers(m_data->m_vm);
+    sq_pop(m_data->m_vm, 1);
 
     RefreshTrusts();
 
     // Setup the constant system.
     {
         // Setup root table delegate which could make constants appear as constants.
-        ScriptBindings::PreserveTop preserveTop(m_vm);
-        sq_pushroottable(m_vm);
+        ScriptBindings::PreserveTop preserveTop(m_data->m_vm);
+        sq_pushroottable(m_data->m_vm);
 
-        sq_newtable(m_vm);
-        ScriptBindings::BindMethod(m_vm, _SC("_get"), ConstantsGet, nullptr);
-        ScriptBindings::BindMethod(m_vm, _SC("_set"), ConstantsSet, nullptr);
-        sq_setdelegate(m_vm, -2);
+        sq_newtable(m_data->m_vm);
+        ScriptBindings::BindMethod(m_data->m_vm, _SC("_get"), ConstantsGet, nullptr);
+        ScriptBindings::BindMethod(m_data->m_vm, _SC("_set"), ConstantsSet, nullptr);
+        sq_setdelegate(m_data->m_vm, -2);
 
-        sq_pop(m_vm, 1); // pop root table
+        sq_pop(m_data->m_vm, 1); // pop root table
     }
 
     // register types
-    ScriptBindings::RegisterBindings(m_vm, this);
+    ScriptBindings::RegisterBindings(m_data->m_vm, this);
 }
 
 ScriptingManager::~ScriptingManager()
@@ -204,7 +267,7 @@ ScriptingManager::~ScriptingManager()
     ConfigManagerContainer::StringToStringMap myMap;
     int i = 0;
     TrustedScripts::iterator it;
-    for (it = m_TrustedScripts.begin(); it != m_TrustedScripts.end(); ++it)
+    for (it = m_data->m_TrustedScripts.begin(); it != m_data->m_TrustedScripts.end(); ++it)
     {
         if (!it->second.permanent)
             continue;
@@ -214,25 +277,27 @@ ScriptingManager::~ScriptingManager()
     }
     Manager::Get()->GetConfigManager(_T("security"))->Write(_T("/trusted_scripts"), myMap);
 
-    if (m_vm)
+    if (m_data->m_vm)
     {
-        for (wxStringConstantsMap::value_type &v : m_mapWxStringConstants)
+        for (Data::wxStringConstantsMap::value_type &v : m_data->m_mapWxStringConstants)
         {
-            sq_release(m_vm, &v.second);
+            sq_release(m_data->m_vm, &v.second);
         }
-        m_mapWxStringConstants.clear();
-        m_mapIntConstants.clear();
+        m_data->m_mapWxStringConstants.clear();
+        m_data->m_mapIntConstants.clear();
 
-        ScriptBindings::UnregisterBindings(m_vm);
+        ScriptBindings::UnregisterBindings(m_data->m_vm);
 
-        sq_close(m_vm);
-        m_vm = nullptr;
+        sq_close(m_data->m_vm);
+        m_data->m_vm = nullptr;
     }
+
+    delete m_data;
 }
 
 HSQUIRRELVM ScriptingManager::GetVM()
 {
-    return m_vm;
+    return m_data->m_vm;
 }
 
 bool ScriptingManager::LoadScript(const wxString& filename)
@@ -248,9 +313,9 @@ bool ScriptingManager::LoadScript(const wxString& filename)
         bool found = false;
 
         // check in same dir as currently running script (if any)
-        if (!m_RunningScriptFileStack.empty())
+        if (!m_data->m_RunningScriptFileStack.empty())
         {
-            const wxString& currentlyRunningScriptFile = m_RunningScriptFileStack.back();
+            const wxString& currentlyRunningScriptFile = m_data->m_RunningScriptFileStack.back();
             if (!currentlyRunningScriptFile.IsEmpty())
             {
                 fname = wxFileName(currentlyRunningScriptFile).GetPath() + _T('/') + filename;
@@ -273,9 +338,9 @@ bool ScriptingManager::LoadScript(const wxString& filename)
     }
     // read file
     wxString contents = cbReadFileContents(f);
-    m_RunningScriptFileStack.push_back(fname);
+    m_data->m_RunningScriptFileStack.push_back(fname);
     bool ret = LoadBuffer(contents, fname);
-    m_RunningScriptFileStack.pop_back();
+    m_data->m_RunningScriptFileStack.pop_back();
     return ret;
 }
 
@@ -297,12 +362,12 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
 {
     // includes guard to avoid recursion
     wxString incName = UnixFilename(debugName);
-    if (m_IncludeSet.find(incName) != m_IncludeSet.end())
+    if (m_data->m_IncludeSet.find(incName) != m_data->m_IncludeSet.end())
     {
         Manager::Get()->GetLogManager()->LogWarning(F(_T("Ignoring Include(\"%s\") because it would cause recursion..."), incName.wx_str()));
         return true;
     }
-    m_IncludeSet.insert(incName);
+    m_data->m_IncludeSet.insert(incName);
 
 //    wxCriticalSectionLocker c(cs);
 
@@ -311,35 +376,35 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
 
     const wxScopedCharBuffer &utf8Buffer = buffer.utf8_str();
 
-    if (SQ_FAILED(sq_compilebuffer(m_vm, utf8Buffer.data(),
+    if (SQ_FAILED(sq_compilebuffer(m_data->m_vm, utf8Buffer.data(),
                                    utf8Buffer.length() * sizeof(SQChar),
                                    cbU2C(debugName), 1)))
     {
-        const wxString errorMsg = ExtractLastSquirrelError(m_vm, false);
+        const wxString errorMsg = ExtractLastSquirrelError(m_data->m_vm, false);
         const wxString fullMessage = wxString::Format("Filename: %s\nError: %s\nDetails: %s",
                                                       debugName.wx_str(), errorMsg.wx_str(),
                                                       s_ScriptErrors.wx_str());
         Manager::Get()->GetLogManager()->LogError(fullMessage);
-        m_IncludeSet.erase(incName);
+        m_data->m_IncludeSet.erase(incName);
         return false;
     }
 
-    sq_pushroottable(m_vm); // this is the parameter for the script closure
-    if (SQ_FAILED(sq_call(m_vm, 1, SQFalse, SQTrue)))
+    sq_pushroottable(m_data->m_vm); // this is the parameter for the script closure
+    if (SQ_FAILED(sq_call(m_data->m_vm, 1, SQFalse, SQTrue)))
     {
-        const wxString errorMsg = ExtractLastSquirrelError(m_vm, false);
+        const wxString errorMsg = ExtractLastSquirrelError(m_data->m_vm, false);
         const wxString fullMessage = wxString::Format("Filename: %s\nError: %s\nDetails: %s",
                                                       debugName.wx_str(), errorMsg.wx_str(),
                                                       s_ScriptErrors.wx_str());
         Manager::Get()->GetLogManager()->LogError(fullMessage);
 
-        m_IncludeSet.erase(incName);
+        m_data->m_IncludeSet.erase(incName);
         return false;
     }
 
-    sq_pop(m_vm, 1); // pop the closure
+    sq_pop(m_data->m_vm, 1); // pop the closure
 
-    m_IncludeSet.erase(incName);
+    m_data->m_IncludeSet.erase(incName);
     return true;
 }
 
@@ -358,25 +423,25 @@ wxString ScriptingManager::LoadBufferRedirectOutput(const wxString& buffer)
     // not the default print function of the ScriptingManager.
     // In this case we have to restore the print function after the call to
     // the scripting console.
-    const SQPRINTFUNCTION oldPrintFunc = sq_getprintfunc(m_vm);
-    const SQPRINTFUNCTION oldErrorFunc = sq_geterrorfunc(m_vm);
+    const SQPRINTFUNCTION oldPrintFunc = sq_getprintfunc(m_data->m_vm);
+    const SQPRINTFUNCTION oldErrorFunc = sq_geterrorfunc(m_data->m_vm);
 
     // redirect the print output to an internal buffer, so we can collect
     // the print output
-    sq_setprintfunc(m_vm, CaptureScriptOutput, CaptureScriptOutput);
+    sq_setprintfunc(m_data->m_vm, CaptureScriptOutput, CaptureScriptOutput);
 
     // Run the script
     bool res = LoadBuffer(buffer);
 
     // restore the old print function
-    sq_setprintfunc(m_vm, oldPrintFunc, oldErrorFunc);
+    sq_setprintfunc(m_data->m_vm, oldPrintFunc, oldErrorFunc);
     // return the internal print buffer if the script executed successfully
     return res ? ::capture : (wxString) wxEmptyString;
 }
 
 wxString ScriptingManager::GetErrorString(bool clearErrors)
 {
-    wxString msg = ExtractLastSquirrelError(m_vm, true);
+    wxString msg = ExtractLastSquirrelError(m_data->m_vm, true);
     if (!msg.empty())
         msg << "\n";
     msg << s_ScriptErrors;
@@ -414,17 +479,17 @@ int ScriptingManager::Configure()
 bool ScriptingManager::RegisterScriptPlugin(const wxString& /*name*/, const wxArrayInt& ids)
 {
     // attach this event handler in the main window (one-time run)
-    if (!m_AttachedToMainWindow)
+    if (!m_data->m_AttachedToMainWindow)
     {
         Manager::Get()->GetAppWindow()->PushEventHandler(this);
-        m_AttachedToMainWindow = true;
+        m_data->m_AttachedToMainWindow = true;
     }
 
     for (size_t i = 0; i < ids.GetCount(); ++i)
     {
         Connect(ids[i], -1, wxEVT_COMMAND_MENU_SELECTED,
                 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                &ScriptingManager::OnScriptPluginMenu);
+                &ScriptingManager::Data::OnScriptPluginMenu);
     }
     return true;
 }
@@ -432,14 +497,14 @@ bool ScriptingManager::RegisterScriptPlugin(const wxString& /*name*/, const wxAr
 bool ScriptingManager::RegisterScriptMenu(const wxString& menuPath, const wxString& scriptOrFunc, bool isFunction)
 {
     // attach this event handler in the main window (one-time run)
-    if (!m_AttachedToMainWindow)
+    if (!m_data->m_AttachedToMainWindow)
     {
         Manager::Get()->GetAppWindow()->PushEventHandler(this);
-        m_AttachedToMainWindow = true;
+        m_data->m_AttachedToMainWindow = true;
     }
 
     int id = wxNewId();
-    id = m_MenuItemsManager.CreateFromString(menuPath, id);
+    id = m_data->m_MenuItemsManager.CreateFromString(menuPath, id);
     wxMenuItem* item = Manager::Get()->GetAppFrame()->GetMenuBar()->FindItem(id);
     if (item)
     {
@@ -448,12 +513,12 @@ bool ScriptingManager::RegisterScriptMenu(const wxString& menuPath, const wxStri
 
         Connect(id, -1, wxEVT_COMMAND_MENU_SELECTED,
                 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                &ScriptingManager::OnScriptMenu);
+                &ScriptingManager::Data::OnScriptMenu);
 
-        MenuBoundScript mbs;
+        Data::MenuBoundScript mbs;
         mbs.scriptOrFunc = scriptOrFunc;
         mbs.isFunc = isFunction;
-        m_MenuIDToScript.insert(m_MenuIDToScript.end(), std::make_pair(id, mbs));
+        m_data->m_MenuIDToScript.insert(m_data->m_MenuIDToScript.end(), std::make_pair(id, mbs));
         #if wxCHECK_VERSION(3, 0, 0)
         Manager::Get()->GetLogManager()->Log(F(_("Script/function '%s' registered under menu '%s'"), scriptOrFunc.wx_str(), menuPath.wx_str()));
         #else
@@ -476,14 +541,14 @@ bool ScriptingManager::UnRegisterScriptMenu(cb_unused const wxString& menuPath)
 
 bool ScriptingManager::UnRegisterAllScriptMenus()
 {
-    m_MenuItemsManager.Clear();
+    m_data->m_MenuItemsManager.Clear();
     return true;
 }
 
 void ScriptingManager::BindIntConstant(const char *name, SQInteger value)
 {
-    std::pair<IntConstantsMap::iterator, bool> result;
-    result = m_mapIntConstants.insert(IntConstantsMap::value_type(name, value));
+    std::pair<Data::IntConstantsMap::iterator, bool> result;
+    result = m_data->m_mapIntConstants.insert(Data::IntConstantsMap::value_type(name, value));
     cbAssert(result.second);
 }
 
@@ -496,29 +561,29 @@ void ScriptingManager::BindBoolConstant(const char *name, bool value)
 void ScriptingManager::BindWxStringConstant(const char *name, const wxString &value)
 {
     using namespace ScriptBindings;
-    PreserveTop preserve(m_vm);
+    PreserveTop preserve(m_data->m_vm);
 
-    UserDataForType<wxString> *data = CreateInlineInstance<wxString>(m_vm);
+    UserDataForType<wxString> *data = CreateInlineInstance<wxString>(m_data->m_vm);
     if (data)
     {
         new (&data->userdata) wxString(value);
 
         HSQOBJECT obj;
         sq_resetobject(&obj);
-        sq_getstackobj(m_vm, -1, &obj);
-        sq_addref(m_vm, &obj);
-        sq_pop(m_vm, 1);
+        sq_getstackobj(m_data->m_vm, -1, &obj);
+        sq_addref(m_data->m_vm, &obj);
+        sq_pop(m_data->m_vm, 1);
 
-        std::pair<wxStringConstantsMap::iterator, bool> result;
-        result = m_mapWxStringConstants.insert(wxStringConstantsMap::value_type(name, obj));
+        std::pair<Data::wxStringConstantsMap::iterator, bool> result;
+        result = m_data->m_mapWxStringConstants.insert(Data::wxStringConstantsMap::value_type(name, obj));
         cbAssert(result.second);
     }
 }
 
 bool ScriptingManager::IsScriptTrusted(const wxString& script)
 {
-    TrustedScripts::iterator it = m_TrustedScripts.find(script);
-    if (it == m_TrustedScripts.end())
+    TrustedScripts::iterator it = m_data->m_TrustedScripts.find(script);
+    if (it == m_data->m_TrustedScripts.end())
         return false;
     // check the crc too
     wxUint32 crc = wxCrc32::FromFile(script);
@@ -527,52 +592,52 @@ bool ScriptingManager::IsScriptTrusted(const wxString& script)
     cbMessageBox(script + _T("\n\n") + _("The script was marked as \"trusted\" but it has been modified "
                     "since then.\nScript not trusted anymore."),
                 _("Warning"), wxICON_WARNING);
-    m_TrustedScripts.erase(it);
+    m_data->m_TrustedScripts.erase(it);
     return false;
 }
 
 bool ScriptingManager::IsCurrentlyRunningScriptTrusted()
 {
-    if (m_RunningScriptFileStack.empty())
+    if (m_data->m_RunningScriptFileStack.empty())
         return false;
 
-    return IsScriptTrusted(m_RunningScriptFileStack.back());
+    return IsScriptTrusted(m_data->m_RunningScriptFileStack.back());
 }
 
 void ScriptingManager::TrustScript(const wxString& script, bool permanently)
 {
     // TODO: what should happen when script is empty()?
 
-    TrustedScripts::iterator it = m_TrustedScripts.find(script);
-    if (it != m_TrustedScripts.end())
+    TrustedScripts::iterator it = m_data->m_TrustedScripts.find(script);
+    if (it != m_data->m_TrustedScripts.end())
     {
         // already trusted, remove it from the trusts (we recreate the trust below)
-        m_TrustedScripts.erase(it);
+        m_data->m_TrustedScripts.erase(it);
     }
 
     TrustedScriptProps props;
     props.permanent = permanently;
     props.crc = wxCrc32::FromFile(script);
 
-    m_TrustedScripts.insert(m_TrustedScripts.end(), std::make_pair(script, props));
+    m_data->m_TrustedScripts.insert(m_data->m_TrustedScripts.end(), std::make_pair(script, props));
 }
 
 void ScriptingManager::TrustCurrentlyRunningScript(bool permanently)
 {
-    if (!m_RunningScriptFileStack.empty())
+    if (!m_data->m_RunningScriptFileStack.empty())
     {
-        const wxString currentlyRunningScriptFile = m_RunningScriptFileStack.back();
+        const wxString currentlyRunningScriptFile = m_data->m_RunningScriptFileStack.back();
         TrustScript(currentlyRunningScriptFile, permanently);
     }
 }
 
 bool ScriptingManager::RemoveTrust(const wxString& script)
 {
-    TrustedScripts::iterator it = m_TrustedScripts.find(script);
-    if (it != m_TrustedScripts.end())
+    TrustedScripts::iterator it = m_data->m_TrustedScripts.find(script);
+    if (it != m_data->m_TrustedScripts.end())
     {
         // already trusted, remove it from the trusts (we recreate the trust below)
-        m_TrustedScripts.erase(it);
+        m_data->m_TrustedScripts.erase(it);
         return true;
     }
     return false;
@@ -581,7 +646,7 @@ bool ScriptingManager::RemoveTrust(const wxString& script)
 void ScriptingManager::RefreshTrusts()
 {
     // reload trusted scripts set
-    m_TrustedScripts.clear();
+    m_data->m_TrustedScripts.clear();
     ConfigManagerContainer::StringToStringMap myMap;
     Manager::Get()->GetConfigManager(_T("security"))->Read(_T("/trusted_scripts"), &myMap);
     ConfigManagerContainer::StringToStringMap::iterator it;
@@ -595,25 +660,25 @@ void ScriptingManager::RefreshTrusts()
         unsigned long tmp;
         value.ToULong(&tmp, 16);
         props.crc = tmp;
-        m_TrustedScripts.insert(m_TrustedScripts.end(), std::make_pair(key, props));
+        m_data->m_TrustedScripts.insert(m_data->m_TrustedScripts.end(), std::make_pair(key, props));
     }
 }
 
 const ScriptingManager::TrustedScripts& ScriptingManager::GetTrustedScripts()
 {
-    return m_TrustedScripts;
+    return m_data->m_TrustedScripts;
 }
 
-void ScriptingManager::OnScriptMenu(wxCommandEvent& event)
+void ScriptingManager::Data::OnScriptMenu(wxCommandEvent& event)
 {
-    MenuIDToScript::iterator it = m_MenuIDToScript.find(event.GetId());
+    Data::MenuIDToScript::iterator it = m_MenuIDToScript.find(event.GetId());
     if (it == m_MenuIDToScript.end())
     {
         cbMessageBox(_("No script associated with this menu?!?"), _("Error"), wxICON_ERROR);
         return;
     }
 
-    MenuBoundScript& mbs = it->second;
+    Data::MenuBoundScript& mbs = it->second;
 
 // FIXME (squirrel) Reimplement OnScriptMenu 1
 /*
@@ -656,7 +721,7 @@ void ScriptingManager::OnScriptMenu(wxCommandEvent& event)
 */
 }
 
-void ScriptingManager::OnScriptPluginMenu(wxCommandEvent& event)
+void ScriptingManager::Data::OnScriptPluginMenu(wxCommandEvent& event)
 {
     ScriptBindings::ScriptPluginWrapper::OnScriptMenu(event.GetId());
 }
