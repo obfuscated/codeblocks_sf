@@ -137,9 +137,6 @@ class wxSmith : public cbPlugin
         /** \brief Function Generating background panes for resource and property browsers */
         void BuildBrowserParents();
 
-        /** \brief Function allowing to recover invalid wxs file */
-        static bool RecoverWxsFile( const wxString& WxsResourceSettings );
-
         void OnViewBrowsers(wxCommandEvent& event);
         void OnViewResourceBrowser(wxCommandEvent& event);
         void OnViewPropertyBrowser(wxCommandEvent& event);

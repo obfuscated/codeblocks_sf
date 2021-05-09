@@ -464,6 +464,38 @@ struct ExtractParams5 : ExtractParamsBase
     Arg4 p4;
 };
 
+template<typename Arg0, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
+struct ExtractParams6 : ExtractParamsBase
+{
+    ExtractParams6(HSQUIRRELVM vm) : ExtractParamsBase(vm) {}
+
+    bool Process(const char *funcStr)
+    {
+        if (!CheckNumArguments(6, funcStr))
+            return false;
+        if (!ProcessParam(p0, 1, funcStr))
+            return false;
+        if (!ProcessParam(p1, 2, funcStr))
+            return false;
+        if (!ProcessParam(p2, 3, funcStr))
+            return false;
+        if (!ProcessParam(p3, 4, funcStr))
+            return false;
+        if (!ProcessParam(p4, 5, funcStr))
+            return false;
+        if (!ProcessParam(p5, 6, funcStr))
+            return false;
+        return true;
+    }
+
+    Arg0 p0;
+    Arg1 p1;
+    Arg2 p2;
+    Arg3 p3;
+    Arg4 p4;
+    Arg4 p5;
+};
+
 template<typename Arg0, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5,
          typename Arg6>
 struct ExtractParams7 : ExtractParamsBase
