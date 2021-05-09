@@ -430,11 +430,8 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           */
         void EndLoadingWorkspace();
 
-        ProjectManager& operator=(cb_unused const ProjectManager& rhs) // prevent assignment operator
-        {
-            cbThrow(_T("Can't assign a ProjectManager* !!!"));
-            return *this;
-        }
+        ProjectManager(const ProjectManager&) = delete;
+        ProjectManager& operator=(const ProjectManager&) = delete;
 
         /// This method should be called when the applications is started by a plugin.
         /// There is only one plugin which could be running the application.
@@ -449,8 +446,6 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
                                       bool isRelative, bool isUnixFilename);
 
     private:
-        ProjectManager(cb_unused const ProjectManager& rhs); // prevent copy construction
-
         ProjectManager();
         ~ProjectManager() override;
         void OnAppDoneStartup(CodeBlocksEvent& event);

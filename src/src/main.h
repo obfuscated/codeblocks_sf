@@ -61,15 +61,9 @@ struct ToolbarInfo
 class MainFrame : public wxFrame
 {
     public:
-        // needed for binding with SqPlus
-        MainFrame& operator=(cb_unused const MainFrame& rhs) // prevent assignment operator
-        {
-            cbThrow(_T("Can't use MainFrame's operator="));
-            return *this;
-        }
+        MainFrame& operator=(const MainFrame&) = delete;
+        MainFrame(const MainFrame&) = delete;
     private:
-        MainFrame(cb_unused const MainFrame& rhs); // prevent copy construction
-
         bool LayoutDifferent(const wxString& layout1, const wxString& layout2,
                              const wxString& delimiter);
         bool LayoutMessagePaneDifferent(const wxString& layout1, const wxString& layout2,

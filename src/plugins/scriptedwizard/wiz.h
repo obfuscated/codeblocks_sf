@@ -41,11 +41,8 @@ class Wiz : public cbWizardPlugin
 		Wiz();
 		~Wiz() override;
 
-        Wiz& operator=(cb_unused const Wiz& rhs)  // prevent assignment operator
-        {
-        	cbThrow(_T("Can't assign an Wiz* !!!"));
-        	return *this;
-		}
+        Wiz(const Wiz&) = delete;
+        Wiz& operator=(const Wiz&) = delete;
 
 		int GetCount() const override;
         TemplateOutputType GetOutputType(int index) const override;
@@ -197,8 +194,6 @@ class Wiz : public cbWizardPlugin
         wxString m_ReleaseOutputDir;
         wxString m_ReleaseObjOutputDir;
         wxString m_WizardScriptFolder;
-	private:
-        Wiz(cb_unused const Wiz& rhs); // prevent copy construction
 };
 
 #endif // WIZ_H

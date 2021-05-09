@@ -60,11 +60,8 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         friend class Mgr<EditorManager>;
         static bool s_CanShutdown;
     public:
-        EditorManager& operator=(cb_unused const EditorManager& rhs) // prevent assignment operator
-        {
-            cbThrow(_T("Can't assign an EditorManager* !!!"));
-            return *this;
-        }
+        EditorManager(const EditorManager&) = delete;
+        EditorManager& operator=(const EditorManager&) = delete;
 
         friend class Manager; // give Manager access to our private members
         static bool CanShutdown(){ return s_CanShutdown; }
@@ -187,8 +184,6 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         EditorBase* InternalGetEditorBase(int page);
 
     private:
-        EditorManager(cb_unused const EditorManager& rhs); // prevent copy construction
-
         EditorManager();
         ~EditorManager() override;
         void OnCheckForModifiedFiles(wxCommandEvent& event);
