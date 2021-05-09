@@ -20,7 +20,6 @@
 
 #include <ccmanager.h>
 #include <editor_hooks.h>
-#include <sc_base_types.h>
 
 
 // Register the plugin with Code::Blocks.

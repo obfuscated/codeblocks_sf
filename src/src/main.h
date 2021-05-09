@@ -20,7 +20,6 @@
 #include "find_replace.h"
 #include "sdk_events.h"
 #include "recentitemslist.h"
-#include "scripting/bindings/sc_base_types.h"
 #include "scrollingdialog.h"
 
 #include <unordered_map>

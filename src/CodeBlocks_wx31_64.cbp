@@ -976,9 +976,6 @@
 		<Unit filename="include/safedelete.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/scripting/bindings/sc_base_types.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="include/scripting/bindings/sc_plugin.h">
 			<Option target="sdk" />
 		</Unit>
