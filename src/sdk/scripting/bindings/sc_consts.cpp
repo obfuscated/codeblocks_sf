@@ -18,104 +18,17 @@
 
 #include <filefilters.h>
 
-#include "sc_utils.h"
-#include "sc_typeinfo_all.h"
-
-#include <unordered_map>
 
 namespace ScriptBindings
 {
-    #define BIND_INT_CONSTANT(a) bind_intConstantNamed(a, #a)
-    #define BIND_INT_CONSTANT_NAMED(a,n) bind_intConstantNamed(a, n)
-    #define BIND_WXSTR_CONSTANT_NAMED(a,n) bind_wxStringConstantNamed(v, a, n)
-
-    // FIXME (squirrel) Using std::string here is not efficient
-    using IntConstantsMap = std::unordered_map<std::string, SQInteger>;
-    // FIXME (squirrel) Using std::string here is not efficient
-    using wxStringConstantsMap = std::unordered_map<std::string, HSQOBJECT>;
-    IntConstantsMap g_mapIntConstants;
-    wxStringConstantsMap g_mapWxStringConstants;
-
-    void bind_intConstantNamed(SQInteger value, const char *name)
-    {
-        g_mapIntConstants.insert(IntConstantsMap::value_type(name, value));
-    }
-
-    void bind_wxStringConstantNamed(HSQUIRRELVM v, const wxString &value, const char *name)
-    {
-        PreserveTop preserve(v);
-
-        UserDataForType<wxString> *data = CreateInlineInstance<wxString>(v);
-        if (data)
-        {
-            new (&data->userdata) wxString(value);
-
-            HSQOBJECT obj;
-            sq_resetobject(&obj);
-            sq_getstackobj(v, -1, &obj);
-            sq_addref(v, &obj);
-            sq_pop(v, 1);
-            g_mapWxStringConstants.insert(wxStringConstantsMap::value_type(name, obj));
-        }
-    }
+    #define BIND_INT_CONSTANT(a) manager->BindIntConstant(#a, a)
+    #define BIND_INT_CONSTANT_NAMED(a,n) manager->BindIntConstant(n, a)
+    #define BIND_WXSTR_CONSTANT_NAMED(a,n) manager->BindWxStringConstant(n, a)
 
     wxString s_PathSep = wxFILE_SEP_PATH;
 
-    static SQInteger constants_get(HSQUIRRELVM v)
+    void Register_Constants(ScriptingManager *manager)
     {
-        ExtractParams2<SkipParam, const SQChar*> extractor(v);
-        if (!extractor.Process("constants_get"))
-            return extractor.ErrorMessage();
-
-        IntConstantsMap::const_iterator intIt = g_mapIntConstants.find(extractor.p1);
-        if (intIt != g_mapIntConstants.end())
-        {
-            sq_pushinteger(v, intIt->second);
-            return 1;
-        }
-
-        wxStringConstantsMap::const_iterator wxStringIt = g_mapWxStringConstants.find(extractor.p1);
-        if (wxStringIt != g_mapWxStringConstants.end())
-        {
-            sq_pushobject(v, wxStringIt->second);
-            return 1;
-        }
-
-        return ThrowIndexNotFound(v);
-    }
-
-    static SQInteger constants_set(HSQUIRRELVM v)
-    {
-        ExtractParamsBase extractor(v);
-        if (!extractor.CheckNumArguments(3, "constants_set"))
-            return extractor.ErrorMessage();
-        const SQChar *name = nullptr;
-        if (!extractor.ProcessParam(name, 2, "constants_set"))
-            return extractor.ErrorMessage();
-
-        IntConstantsMap::const_iterator intIt = g_mapIntConstants.find(name);
-        if (intIt != g_mapIntConstants.end())
-            return sq_throwerror(v, _SC("Trying to modify global constant is not allowed!"));
-        wxStringConstantsMap::const_iterator wxStringIt = g_mapWxStringConstants.find(name);
-        if (wxStringIt != g_mapWxStringConstants.end())
-            return sq_throwerror(v, _SC("Trying to modify global constant is not allowed!"));
-
-        return ThrowIndexNotFound(v);
-    }
-
-    void Register_Constants(HSQUIRRELVM v)
-    {
-        PreserveTop preserveTop(v);
-        sq_pushroottable(v);
-
-        {
-            // setup root table delegate which could make constants appear as constants.
-            sq_newtable(v);
-            BindMethod(v, _SC("_get"), constants_get, nullptr);
-            BindMethod(v, _SC("_set"), constants_set, nullptr);
-            sq_setdelegate(v, -2);
-        }
-
         // platform constants
         BIND_INT_CONSTANT_NAMED(0,  "PLATFORM_MSW");
         BIND_INT_CONSTANT_NAMED(1,  "PLATFORM_GTK");
@@ -375,16 +288,6 @@ namespace ScriptBindings
         BIND_INT_CONSTANT_NAMED(int32_t(LinkerExecutableOption::Linker), "leoLinker");
 
         // FIXME (squirrel) Bind SupportedPlatforms
-
-        sq_pop(v, 1); // pop root table
     }
 
-    void Unregister_Constants(HSQUIRRELVM vm)
-    {
-        for (wxStringConstantsMap::value_type &v : g_mapWxStringConstants)
-        {
-            sq_release(vm, &v.second);
-        }
-        g_mapWxStringConstants.clear();
-    }
 } // namespace ScriptBindings

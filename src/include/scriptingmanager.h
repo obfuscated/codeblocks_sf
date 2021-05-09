@@ -8,16 +8,18 @@
 
 #include <map>
 #include <set>
+#include <unordered_map>
 
 #ifndef CB_PRECOMP
     #include "cbexception.h" // cbThrow
     #include "globals.h" // cbC2U
+    #include "settings.h"
+    #include "manager.h"
+    #include "menuitemsmanager.h"
+
+    #include <wx/intl.h>
 #endif
 
-#include "settings.h"
-#include "manager.h"
-#include "menuitemsmanager.h"
-#include <wx/intl.h>
 #include "squirrel.h" // FIXME (squirrel) Do we really need this!?
 
 struct SquirrelError;
@@ -149,6 +151,13 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
           */
         bool UnRegisterAllScriptMenus();
 
+        /// Register an integer constant.
+        void BindIntConstant(const char *name, SQInteger value);
+        /// Register a bool constant
+        void BindBoolConstant(const char *name, bool value);
+        /// Register a string constant.
+        void BindWxStringConstant(const char *name, const wxString &value);
+
         /** @brief Security function.
           *
           * @param script The script's full filename.
@@ -259,6 +268,16 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
 
         IncludeSet m_IncludeSet;
         MenuItemsManager m_MenuItemsManager;
+
+        // FIXME (squirrel) Using std::string here is not efficient
+        using IntConstantsMap = std::unordered_map<std::string, SQInteger>;
+        // FIXME (squirrel) Using std::string here is not efficient
+        using wxStringConstantsMap = std::unordered_map<std::string, HSQOBJECT>;
+        IntConstantsMap m_mapIntConstants;
+        wxStringConstantsMap m_mapWxStringConstants;
+
+        friend SQInteger ConstantsGet(HSQUIRRELVM v);
+        friend SQInteger ConstantsSet(HSQUIRRELVM v);
 
         DECLARE_EVENT_TABLE()
 };

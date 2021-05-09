@@ -360,7 +360,7 @@ namespace ScriptBindings
 namespace ScriptBindings
 {
 
-void Register_IO(HSQUIRRELVM v)
+void Register_IO(HSQUIRRELVM v, ScriptingManager *manager)
 {
     PreserveTop preserve(v);
     sq_pushroottable(v);
@@ -401,13 +401,11 @@ void Register_IO(HSQUIRRELVM v)
         // Put the class in the root table. This must be last!
         sq_newslot(v, classDecl, SQFalse);
 
-// FIXME (squirrel) Expose this constant! This would require better API for constants
-//
-//        #ifndef NO_INSECURE_SCRIPTS
-//        SqPlus::BindConstant(true,  "allowInsecureScripts");
-//        #else
-//        SqPlus::BindConstant(false, "allowInsecureScripts");
-//        #endif // NO_INSECURE_SCRIPTS
+#ifndef NO_INSECURE_SCRIPTS
+        manager->BindBoolConstant("allowInsecureScripts", true);
+#else
+        manager->BindBoolConstant("allowInsecureScripts", false);
+#endif // NO_INSECURE_SCRIPTS
     }
 
     // pop root table.

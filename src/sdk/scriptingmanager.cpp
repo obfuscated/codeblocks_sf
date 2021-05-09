@@ -30,6 +30,8 @@
 #include "menuitemsmanager.h"
 #include "genericmultilinenotesdlg.h"
 #include "sc_plugin.h"
+#include "sc_utils.h"
+#include "sc_typeinfo_all.h"
 
 #include "squirrel.h"
 #include "sqstdaux.h"
@@ -97,18 +99,66 @@ static void CaptureScriptOutput(HSQUIRRELVM /*v*/, const SQChar * s, ...)
     va_end(vl);
 }
 
+SQInteger ConstantsGet(HSQUIRRELVM v)
+{
+    ScriptBindings::ExtractParams2<ScriptBindings::SkipParam, const SQChar*> extractor(v);
+    if (!extractor.Process("constants_get"))
+        return extractor.ErrorMessage();
+
+    ScriptingManager *manager = reinterpret_cast<ScriptingManager*>(sq_getforeignptr(v));
+    cbAssert(manager);
+
+    ScriptingManager::IntConstantsMap::const_iterator intIt = manager->m_mapIntConstants.find(extractor.p1);
+    if (intIt != manager->m_mapIntConstants.end())
+    {
+        sq_pushinteger(v, intIt->second);
+        return 1;
+    }
+
+    ScriptingManager::wxStringConstantsMap::const_iterator wxStringIt = manager->m_mapWxStringConstants.find(extractor.p1);
+    if (wxStringIt != manager->m_mapWxStringConstants.end())
+    {
+        sq_pushobject(v, wxStringIt->second);
+        return 1;
+    }
+
+    return ScriptBindings::ThrowIndexNotFound(v);
+}
+
+SQInteger ConstantsSet(HSQUIRRELVM v)
+{
+    ScriptBindings::ExtractParamsBase extractor(v);
+    if (!extractor.CheckNumArguments(3, "constants_set"))
+        return extractor.ErrorMessage();
+    const SQChar *name = nullptr;
+    if (!extractor.ProcessParam(name, 2, "constants_set"))
+        return extractor.ErrorMessage();
+
+    ScriptingManager *manager = reinterpret_cast<ScriptingManager*>(sq_getforeignptr(v));
+    cbAssert(manager);
+
+    ScriptingManager::IntConstantsMap::const_iterator intIt = manager->m_mapIntConstants.find(name);
+    if (intIt != manager->m_mapIntConstants.end())
+        return sq_throwerror(v, _SC("Trying to modify global constant is not allowed!"));
+    ScriptingManager::wxStringConstantsMap::const_iterator wxStringIt = manager->m_mapWxStringConstants.find(name);
+    if (wxStringIt != manager->m_mapWxStringConstants.end())
+        return sq_throwerror(v, _SC("Trying to modify global constant is not allowed!"));
+
+    return ScriptBindings::ThrowIndexNotFound(v);
+}
+
 BEGIN_EVENT_TABLE(ScriptingManager, wxEvtHandler)
 //
 END_EVENT_TABLE()
 
 namespace ScriptBindings
 {
-    void RegisterBindings(HSQUIRRELVM vm);
+    void RegisterBindings(HSQUIRRELVM vm, ScriptingManager *manager);
     void UnregisterBindings(HSQUIRRELVM vm);
 } // namespace ScriptBindings
 
-ScriptingManager::ScriptingManager()
-    : m_AttachedToMainWindow(false),
+ScriptingManager::ScriptingManager() :
+    m_AttachedToMainWindow(false),
     m_MenuItemsManager(false) // not auto-clear
 {
     m_vm = sq_open(1024);
@@ -117,6 +167,8 @@ ScriptingManager::ScriptingManager()
 
     // FIXME (squirrel) Provide special error function?
     sq_setprintfunc(m_vm, ScriptsPrintFunc, ScriptsErrorFunc);
+
+    sq_setforeignptr(m_vm, this);
 
     sq_pushroottable(m_vm);
     sqstd_register_bloblib(m_vm);
@@ -127,8 +179,22 @@ ScriptingManager::ScriptingManager()
 
     RefreshTrusts();
 
+    // Setup the constant system.
+    {
+        // Setup root table delegate which could make constants appear as constants.
+        ScriptBindings::PreserveTop preserveTop(m_vm);
+        sq_pushroottable(m_vm);
+
+        sq_newtable(m_vm);
+        ScriptBindings::BindMethod(m_vm, _SC("_get"), ConstantsGet, nullptr);
+        ScriptBindings::BindMethod(m_vm, _SC("_set"), ConstantsSet, nullptr);
+        sq_setdelegate(m_vm, -2);
+
+        sq_pop(m_vm, 1); // pop root table
+    }
+
     // register types
-    ScriptBindings::RegisterBindings(m_vm);
+    ScriptBindings::RegisterBindings(m_vm, this);
 }
 
 ScriptingManager::~ScriptingManager()
@@ -150,6 +216,13 @@ ScriptingManager::~ScriptingManager()
 
     if (m_vm)
     {
+        for (wxStringConstantsMap::value_type &v : m_mapWxStringConstants)
+        {
+            sq_release(m_vm, &v.second);
+        }
+        m_mapWxStringConstants.clear();
+        m_mapIntConstants.clear();
+
         ScriptBindings::UnregisterBindings(m_vm);
 
         sq_close(m_vm);
@@ -405,6 +478,41 @@ bool ScriptingManager::UnRegisterAllScriptMenus()
 {
     m_MenuItemsManager.Clear();
     return true;
+}
+
+void ScriptingManager::BindIntConstant(const char *name, SQInteger value)
+{
+    std::pair<IntConstantsMap::iterator, bool> result;
+    result = m_mapIntConstants.insert(IntConstantsMap::value_type(name, value));
+    cbAssert(result.second);
+}
+
+void ScriptingManager::BindBoolConstant(const char *name, bool value)
+{
+    // FIXME (squirrel) Add proper support for bool constants
+    BindIntConstant(name, value);
+}
+
+void ScriptingManager::BindWxStringConstant(const char *name, const wxString &value)
+{
+    using namespace ScriptBindings;
+    PreserveTop preserve(m_vm);
+
+    UserDataForType<wxString> *data = CreateInlineInstance<wxString>(m_vm);
+    if (data)
+    {
+        new (&data->userdata) wxString(value);
+
+        HSQOBJECT obj;
+        sq_resetobject(&obj);
+        sq_getstackobj(m_vm, -1, &obj);
+        sq_addref(m_vm, &obj);
+        sq_pop(m_vm, 1);
+
+        std::pair<wxStringConstantsMap::iterator, bool> result;
+        result = m_mapWxStringConstants.insert(wxStringConstantsMap::value_type(name, obj));
+        cbAssert(result.second);
+    }
 }
 
 bool ScriptingManager::IsScriptTrusted(const wxString& script)
