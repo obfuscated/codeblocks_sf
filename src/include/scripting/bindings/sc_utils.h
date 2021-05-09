@@ -19,6 +19,7 @@
 #ifndef CB_PRECOMP
     #include <wx/string.h>
     #include "prep.h"
+    #include "settings.h"
 #endif // CB_PRECOMP
 
 /// @namespace ScriptBindings
@@ -183,8 +184,8 @@
 namespace ScriptBindings
 {
 
-void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop = -1);
-wxString ExtractLastSquirrelError(HSQUIRRELVM vm, bool canBeEmpty);
+DLLIMPORT void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop = -1);
+DLLIMPORT wxString ExtractLastSquirrelError(HSQUIRRELVM vm, bool canBeEmpty);
 
 struct PreserveTop
 {
