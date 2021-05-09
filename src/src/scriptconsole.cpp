@@ -153,6 +153,8 @@ ScriptConsole::~ScriptConsole()
 
 void ScriptConsole::Log(const wxString& msg)
 {
+    if (msg.empty())
+        return;
     txtConsole->AppendText(msg);
     if (msg.Last() != _T('\n'))
         txtConsole->AppendText(_T('\n'));
