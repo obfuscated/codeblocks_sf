@@ -332,13 +332,9 @@ class wxTest extends script_test_base
 
         local path;
         if(::PLATFORM == ::PLATFORM_MSW )
-        {
-            path = _T("\\share\\codeblocks\\");
-        }
+            path = _T("share\\codeblocks\\");
         else if(::PLATFORM == ::PLATFORM_GTK)
-        {
             path = _T("share/codeblocks/");
-        }
         else
         {
             made_failed("Assign","Your operating system is not supported in this test script. Please add a test case. Thank you.");
@@ -351,7 +347,10 @@ class wxTest extends script_test_base
         test_string("_cloned", clone filename,path);
         test_string("Assign",filename,path);
         test_equal("GetDirCount",filename.GetDirCount(),2);
-        test_equal("GetDirs",filename.GetDirs().GetCount(),2);
+        local dirs = filename.GetDirs();
+        test_equal("GetDirs",dirs.GetCount(),2);
+        test_equal("GetDirs[0]",dirs.Item(0), _T("share"));
+        test_equal("GetDirs[1]",dirs.Item(1), _T("codeblocks"));
 
         filename.Clear();
         test_string("Clear",filename,"");
@@ -386,10 +385,14 @@ class wxTest extends script_test_base
         filename.ClearExt();
         test_false("HasExt not (after ClearExt)",filename.HasExt());
         test_true("HasName",filename.HasName());
-        if(::PLATFORM != ::PLATFORM_MSW)
-            test_false("HasVolume",filename.HasVolume());
-        else
-            test_true("HasVolume",filename.HasVolume());
+
+        test_false("HasVolume",filename.HasVolume());
+        if(::PLATFORM == ::PLATFORM_MSW)
+        {
+            local absFilename = clone filename;
+            absFilename.MakeAbsolute(wxFileName.GetCwd(wxString()), ::wxPATH_NATIVE)
+            test_true("HasVolume (abs)",absFilename.HasVolume());
+        }
 
         test_false("IsAbsolute",filename.IsAbsolute(::wxPATH_NATIVE));
         test_true("IsOk",filename.IsOk());
@@ -459,10 +462,14 @@ class wxTest extends script_test_base
 
             filename.SetName(_T("afterName"));
             test_string("SetName", filename.GetFullPath(::wxPATH_NATIVE), path + _T("afterName.my"));
-
-            filename.SetVolume(_T("afterName"));
-            test_string("SetVolume", filename.GetFullPath(::wxPATH_NATIVE),
-                        path + _T("afterName.my"));
+        }
+        {
+            filename.Assign(::wxFILE_SEP_PATH + path, ::wxPATH_NATIVE);
+            local expectedPath = filename.GetFullPath(::wxPATH_NATIVE);
+            filename.SetVolume(_T("d"));
+            if (::PLATFORM == ::PLATFORM_MSW)
+                expectedPath = _T("d:") + expectedPath;
+            test_string("SetVolume", filename.GetFullPath(::wxPATH_NATIVE), expectedPath);
         }
         print_test_result();
         ::print("======= Test wxFileName END  ======= \n");
