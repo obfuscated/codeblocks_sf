@@ -380,6 +380,7 @@ void Register_IO(HSQUIRRELVM v, ScriptingManager *manager)
     {
         // Register IO
         const SQInteger classDecl = CreateClassDecl<IONamespace>(v);
+        BindDisabledCtor(v);
 #ifndef NO_INSECURE_SCRIPTS
         BindStaticMethod(v, _SC("CreateDirectory"), IOLib::CreateDirRecursively,
                          _SC("IO::CreateDirectory"));

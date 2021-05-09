@@ -2098,6 +2098,8 @@ void Wiz::RegisterWizard()
         // Register Wiz
         const SQInteger classDecl = CreateClassDecl<Wiz>(v);
 
+        BindDisabledCtor(v);
+
         // register new wizards
         BindMethod(v, _SC("AddWizard"), Wiz_AddWizard, _SC("Wiz::AddWizard"));
 

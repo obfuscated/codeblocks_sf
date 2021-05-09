@@ -27,6 +27,7 @@
 
 namespace ScriptBindings
 {
+
     SQInteger ConfigManager_Read(HSQUIRRELVM v)
     {
         // this, key, default value
@@ -2221,12 +2222,10 @@ namespace ScriptBindings
         PreserveTop preserveTop(v);
         sq_pushroottable(v);
 
-        // FIXME (squirrel) Add a way to prevent instances from being constructed for a particular
-        // class type.
-
         {
             // Register ConfigManager
             const SQInteger classDecl = CreateClassDecl<ConfigManager>(v);
+            BindDisabledCtor(v);
             BindMethod(v, _SC("Read"), ConfigManager_Read, _SC("ConfigManager::Read"));
             BindMethod(v, _SC("Write"), ConfigManager_Write, _SC("ConfigManager::Write"));
 
@@ -2238,6 +2237,7 @@ namespace ScriptBindings
         {
             // Register ProjectFile
             const SQInteger classDecl = CreateClassDecl<ProjectFile>(v);
+            BindDisabledCtor(v);
             BindMethod(v, _SC("AddBuildTarget"),
                        ProjectFile_SingleWxStringParam<&ProjectFile::AddBuildTarget>,
                        _SC("ProjectFile::AddBuildTarget"));
@@ -2285,6 +2285,7 @@ namespace ScriptBindings
         {
             // Register CompileOptionsBase
             const SQInteger classDecl = CreateClassDecl<CompileOptionsBase>(v);
+            BindDisabledCtor(v);
             BindMethod(v, _SC("AddPlatform"),
                        CompileOptionsBase_Platform<&CompileOptionsBase::AddPlatform>,
                        _SC("CompileOptionsBase::AddPlatform"));
@@ -2479,6 +2480,7 @@ namespace ScriptBindings
         {
             // Register CompileTargetBase
             const SQInteger classDecl = CreateClassDecl<CompileTargetBase>(v);
+            BindDisabledCtor(v);
             BindMethod(v, _SC("SetTargetFilenameGenerationPolicy"),
                        CompileTargetBase_SetTargetFilenameGenerationPolicy,
                        _SC("CompileTargetBase::SetTargetFilenameGenerationPolicy"));
@@ -2578,6 +2580,7 @@ namespace ScriptBindings
         {
             // Register ProjectBuildTarget
             const SQInteger classDecl = CreateClassDecl<ProjectBuildTarget>(v);
+            BindDisabledCtor(v);
             BindMethod(v, _SC("GetParentProject"), ProjectBuildTarget_GetParentProject,
                        _SC("ProjectBuildTarget::GetParentProject"));
             BindMethod(v, _SC("GetFullTitle"),
@@ -2633,6 +2636,7 @@ namespace ScriptBindings
         {
             // Register cbProject
             const SQInteger classDecl = CreateClassDecl<cbProject>(v);
+            BindDisabledCtor(v);
             BindMethod(v, _SC("GetModified"), Generic_GetBool<cbProject, &cbProject::GetModified>,
                        _SC("cbProject::GetModified"));
             BindMethod(v, _SC("SetModified"), Generic_SetBool<cbProject, &cbProject::SetModified>,
@@ -2776,6 +2780,7 @@ namespace ScriptBindings
         {
             // Register ProjectManager
             const SQInteger classDecl = CreateClassDecl<ProjectManager>(v);
+            BindDisabledCtor(v);
             BindMethod(v, _SC("GetDefaultPath"), ProjectManager_GetDefaultPath,
                        _SC("ProjectManager::GetDefaultPath"));
             BindMethod(v, _SC("SetDefaultPath"), ProjectManager_SetDefaultPath,
@@ -2849,6 +2854,7 @@ namespace ScriptBindings
         {
             // Register EditorBase
             const SQInteger classDecl = CreateClassDecl<EditorBase>(v);
+            BindDisabledCtor(v);
             BindMethod(v, _SC("GetFilename"),
                        Generic_GetCString<EditorBase, &EditorBase::GetFilename>,
                        _SC("EditorBase::GetFilename"));
@@ -2911,6 +2917,7 @@ namespace ScriptBindings
         {
             // Register cbEditor
             const SQInteger classDecl = CreateClassDecl<cbEditor>(v);
+            BindDisabledCtor(v);
             BindMethod(v, _SC("SetEditorTitle"),
                        Generic_SetString<cbEditor, &cbEditor::SetEditorTitle>,
                        _SC("cbEditor::SetEditorTitle"));
@@ -2986,6 +2993,7 @@ namespace ScriptBindings
         {
             // Register EditorManager
             const SQInteger classDecl = CreateClassDecl<EditorManager>(v);
+            BindDisabledCtor(v);
             BindMethod(v, _SC("New"), EditorManager_FilenameTocbEditor<&EditorManager::New>,
                        _SC("EditorManager::New"));
             BindMethod(v, _SC("Open"), EditorManager_Open, _SC("EditorManager::Open"));
@@ -3032,6 +3040,7 @@ namespace ScriptBindings
         {
             // Register UserVariableManager
             const SQInteger classDecl = CreateClassDecl<UserVariableManager>(v);
+            BindDisabledCtor(v);
             BindMethod(v, _SC("Exists"), UserVariableManager_Exists, _SC("UserVariableManager::Exists"));
 
             BindDefaultInstanceCmp<UserVariableManager>(v);
@@ -3042,6 +3051,7 @@ namespace ScriptBindings
         {
             // Register ScriptingManager
             const SQInteger classDecl = CreateClassDecl<ScriptingManager>(v);
+            BindDisabledCtor(v);
             BindMethod(v, _SC("RegisterScriptMenu"), ScriptingManager_RegisterScriptMenu,
                        _SC("ScriptingManager::RegisterScriptMenu"));
 
@@ -3053,6 +3063,7 @@ namespace ScriptBindings
         {
             // Register CompilerFactory
             const SQInteger classDecl = CreateClassDecl<CompilerFactory>(v);
+            BindDisabledCtor(v);
             BindStaticMethod(v, _SC("IsValidCompilerID"), CompilerFactory_IsValidCompilerID,
                              _SC("CompilerFactory::IsValidCompilerID"));
             BindStaticMethod(v, _SC("GetCompilerIndex"), CompilerFactory_GetCompilerIndex,
@@ -3095,6 +3106,7 @@ namespace ScriptBindings
         {
             // Register FileTreeData
             const SQInteger classDecl = CreateClassDecl<FileTreeData>(v);
+            BindDisabledCtor(v);
 
             BindMethod(v, _SC("GetKind"), FileTreeData_GetKind, _SC("FileTreeData::GetKind"));
             BindMethod(v, _SC("GetProject"), FileTreeData_GetProject,

@@ -886,6 +886,12 @@ SQInteger Generic_DefaultCtor(HSQUIRRELVM v)
     return 0;
 }
 
+inline SQInteger Generic_DisabledCtor(HSQUIRRELVM v)
+{
+    PrintStack(v, "Disabled_Ctor");
+    return sq_throwerror(v, _SC("Cannot construct instances of this class!"));
+}
+
 template<typename UserType>
 SQInteger Generic_InstanceCmp(HSQUIRRELVM v)
 {
@@ -925,6 +931,11 @@ template<typename UserType>
 void BindEmptyCtor(HSQUIRRELVM v)
 {
     BindMethod(v, _SC("constructor"), Generic_DefaultCtor<UserType>, nullptr);
+}
+
+inline void BindDisabledCtor(HSQUIRRELVM v)
+{
+    BindMethod(v, _SC("constructor"), Generic_DisabledCtor, nullptr);
 }
 
 template<typename UserType>
