@@ -102,7 +102,12 @@ libwxsmith_wxwidgets_defitems_la_SOURCES = \
 ./wxsrichtextstylecomboctrl.cpp \
 ./wxsrichtextstylelistbox.cpp \
 ./wxsrichtextstylelistctrl.cpp \
-./wxsspinctrldouble.cpp
+./wxsspinctrldouble.cpp \
+./wxsdataviewctrl.cpp \
+./wxsdataviewlistctrl.cpp \
+./wxsdataviewtreectrl.cpp
+
+
 
 noinst_HEADERS = \
 ./wxsgauge.h \
@@ -199,5 +204,8 @@ noinst_HEADERS = \
 ./wxsrichtextstylelistbox.h \
 ./wxsrichtextstylelistctrl.h \
 ./wxsspinctrldouble.h
+./wxsdataviewctrl.h \
+./wxsdataviewtreectrl.h \
+./wxsdataviewlistctrl.h
 
 EXTRA_DIST = $(srcdir)/wxsmediactrl.*
