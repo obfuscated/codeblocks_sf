@@ -203,7 +203,7 @@ noinst_HEADERS = \
 ./wxsrichtextstylecomboctrl.h \
 ./wxsrichtextstylelistbox.h \
 ./wxsrichtextstylelistctrl.h \
-./wxsspinctrldouble.h
+./wxsspinctrldouble.h \
 ./wxsdataviewctrl.h \
 ./wxsdataviewtreectrl.h \
 ./wxsdataviewlistctrl.h

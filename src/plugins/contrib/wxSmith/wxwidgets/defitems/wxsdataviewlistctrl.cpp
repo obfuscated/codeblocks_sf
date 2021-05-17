@@ -20,7 +20,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsDataViewListCtrl> Reg(_T("DataViewListCtrl"), wxsTWidget, _T("Standard"), 10);
+    wxsRegisterItem<wxsDataViewListCtrl> Reg(_T("DataViewListCtrl"), wxsTWidget, _T("Standard"), 277);
 
     WXS_ST_BEGIN(wxsDataViewListCtrlStyles, _T("wxDV_DEFAULT_STYLE"))
     WXS_ST_CATEGORY("wxDataViewListCtrl")
