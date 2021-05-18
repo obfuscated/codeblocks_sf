@@ -72,14 +72,44 @@ class wxTest extends script_test_base
         test_equal("length",string.length(),5);
         test_equal("len",string.len(),5);
         test_equal("size",string.size(),5);
+
+        // Lower case functions
+        string = _T("Hallo");
         test_string("Lower",string.Lower(),"hallo");
+        test_string("Lower after",string,"Hallo");
         string.LowerCase();
         test_string("LowerCase",string,"hallo");
+
+        string = _T("HallO");
         test_string("MakeLower",string.MakeLower(),"hallo");
+        test_string("MakeLower",string,"hallo");
+
+        // Upper case functions
+        string = _T("Hallo");
         test_string("Upper",string.Upper(),"HALLO");
+        test_string("Upper after",string,"Hallo");
         string.UpperCase();
         test_string("UpperCase",string,"HALLO");
+
+        string = _T("Hallo");
         test_string("MakeUpper",string.MakeUpper(),"HALLO");
+        test_string("MakeUpper",string,"HALLO");
+
+        // Test if the return value of MakeUpper/MakeLower is a proper reference to this.
+        // Test if the return value of Lower/Upper is a copy and not reference to this.
+        string = _T("Hallo");
+        test_string("MakeLower Chaining", string.MakeLower().Upper(),"HALLO");
+        test_string("MakeLower Chaining 2", string, "hallo");
+        string = _T("Hallo");
+        test_string("MakeLower Chaining 3", string.MakeLower().MakeUpper(),"HALLO");
+        test_string("MakeLower Chaining 4", string, "HALLO");
+        string = _T("Hallo");
+        test_string("MakeUpper Chaining", string.MakeUpper().Lower(),"hallo");
+        test_string("MakeUpper Chaining 2", string, "HALLO");
+        string = _T("Hallo");
+        test_string("MakeUpper Chaining", string.MakeUpper().MakeLower(),"hallo");
+        test_string("MakeUpper Chaining 2", string, "hallo");
+
         string = _T("Hallo");
         test_string("Mid",string.Mid(2,2),"ll");
         test_string("Remove",string.Remove(2,string.len()-2),"Ha");

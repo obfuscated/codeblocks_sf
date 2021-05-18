@@ -288,13 +288,25 @@ SQInteger wxString_Length(HSQUIRRELVM v)
     return 1;
 }
 
-using wxStringDoSomethingAndReturnNewFunc = wxString& (wxString::*)();
+using wxStringMakeFunc = wxString& (wxString::*)();
 
-template<wxStringDoSomethingAndReturnNewFunc func>
-SQInteger wxString_NoParamReturnWxString(HSQUIRRELVM v)
+template<wxStringMakeFunc func>
+SQInteger wxString_Make(HSQUIRRELVM v)
 {
     ExtractParams1<wxString*> extractor(v);
-    if (!extractor.Process("wxString_NoParamReturnWxString"))
+    if (!extractor.Process("wxString_Make"))
+        return extractor.ErrorMessage();
+    wxString &ref = (extractor.p0->*func)();
+    return ConstructAndReturnNonOwnedPtr(v, &ref);
+}
+
+using wxStringCaseFunc = wxString (wxString::*)() const;
+
+template<wxStringCaseFunc func>
+SQInteger wxString_Case(HSQUIRRELVM v)
+{
+    ExtractParams1<wxString*> extractor(v);
+    if (!extractor.Process("wxString_Case"))
         return extractor.ErrorMessage();
 
     return ConstructAndReturnInstance(v, (extractor.p0->*func)());
@@ -1010,16 +1022,16 @@ void Register_wxTypes(HSQUIRRELVM v)
         BindMethod(v, _SC("len"), wxString_Length, _SC("wxString::len"));
         BindMethod(v, _SC("size"), wxString_Length, _SC("wxString::size"));
 
-        BindMethod(v, _SC("Lower"), wxString_NoParamReturnWxString<&wxString::MakeLower>,
+        BindMethod(v, _SC("Lower"), wxString_Case<&wxString::Lower>,
                    _SC("wxString::Lower"));
-        BindMethod(v, _SC("MakeLower"), wxString_NoParamReturnWxString<&wxString::MakeLower>,
+        BindMethod(v, _SC("MakeLower"), wxString_Make<&wxString::MakeLower>,
                    _SC("wxString::MakeLower"));
         BindMethod(v, _SC("LowerCase"), wxString_NoParamNoReturn<&wxString::LowerCase>,
                    _SC("wxString::LowerCase"));
 
-        BindMethod(v, _SC("Upper"), wxString_NoParamReturnWxString<&wxString::MakeUpper>,
+        BindMethod(v, _SC("Upper"), wxString_Case<&wxString::Upper>,
                    _SC("wxString::Upper"));
-        BindMethod(v, _SC("MakeUpper"), wxString_NoParamReturnWxString<&wxString::MakeUpper>,
+        BindMethod(v, _SC("MakeUpper"), wxString_Make<&wxString::MakeUpper>,
                    _SC("wxString::MakeUpper"));
         BindMethod(v, _SC("UpperCase"), wxString_NoParamNoReturn<&wxString::UpperCase>,
                    _SC("wxString::UpperCase"));
