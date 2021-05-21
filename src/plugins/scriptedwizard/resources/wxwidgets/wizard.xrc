@@ -250,7 +250,6 @@
 					<style>wxLB_EXTENDED</style>
 				</object>
 				<flag>wxALL|wxEXPAND</flag>
-				<option>1|wxEXPAND</option>
 				<border>8</border>
 			</object>
 		<object class="sizeritem">
