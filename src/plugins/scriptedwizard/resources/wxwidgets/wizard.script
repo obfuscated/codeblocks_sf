@@ -10,7 +10,7 @@ WxPath <- _T("");
 WantPCH <- false;
 IsDLL <- false;
 IsMonolithic <- false;
-IsUnicode <- false;
+IsUnicode <- true;
 IsAdvOpt <- false;
 IsEmpty <- false; // For empty projects
 IsPartialDebug <- false; // For debug linking against release libraries
@@ -21,22 +21,22 @@ LibWxVer <- _T(""); // Determines wx version
 LibUnicSuffix <- _T(""); // Suffix for Unicode
 LibDebugSuffix <- _T("d"); // Suffix for Debug wx Lib
 LibSuffix <- _T(""); // Suffix for Lib, defines file extension
-LibWxJpeg <- false; // JPEG Lib
-LibWxTiff <- false; //TIFF Lib
-LibWxRegex <- false; // Regex Lib
-LibWxExpat <- false; // Expat Lib
-LibWxXml <- false; // XML Lib
-LibWxXrc <- false; // XRC Lib
-LibWxAdv <- false; //Adv Lib
-LibWxAdvUI <- false; // Adv UI Lib
-LibWxHtml <- false; // HTML Lib
-LibWxOdbc <- false; //ODBC Lib
+LibWxXML <- false; // XML Lib
+LibWxXRC <- false; // XRC Lib
+LibWxAdvanced <- false; //Advanced Lib
+LibWxAUI <- false; // AUI Lib
+LibWxHTML <- false; // HTML Lib
 LibWxMedia <- false; // Media Lib
 LibWxNet <- false; // Net Lib
-LibWxOpengl <- false; // OpenGL Lib
-LibWxQa <- false; // QA Lib
-LibWxRichText <- false; // Richtext Lib
-WxVersion <- 1; // 0 - wx 2.6, 1 - wx 2.8, 2 - wx 3.0, 3 -wx 3.1
+LibWxGL <- false; // OpenGL Lib
+LibWxQA <- false; // QA Lib
+LibWxRichText <- false; // RichText Lib
+LibWxWebView <- false; // WebView Lib
+LibWxSTC <- false; // STC Lib
+LibWxPropertyGrid <- false; // PropertyGrid Lib
+LibWxRibbon <- false; // Ribbon Lib
+LibWxLinkWinSock2 <- false; // On Windows, link with WinSock2 instead of WinSock
+WxVersion <- 0; // 0 - wx 3.0, 1 - wx 3.1
 DebugTarget <- 1; // Target Type; 0 - Console, 1 - GUI
 ReleaseTarget <- 1; // Target Type; 0 - Console, 1 - GUI
 FileName <- _T(""); // Filename for wizard
@@ -64,7 +64,7 @@ function BeginWizard()
 
     if (WizType == wizProject)
     {
-        local intro_msg = _T("Welcome to the new wxWidgets 2.6.x / 2.8.x / 3.0.x / 3.1.x\nproject wizard!\n\n" +
+        local intro_msg = _T("Welcome to the wxWidgets project wizard!\n\n" +
                             "This wizard will guide you to create a new project using\n" +
                             "the wxWidgets cross-platform GUI library.\n\n" +
                             "When you 're ready to proceed, please click \"Next\"...");
@@ -72,7 +72,7 @@ function BeginWizard()
         Wizard.AddInfoPage(_T("WxIntro"), intro_msg);
         Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"),
                                               _T("Please select the wxWidgets version you want to use."),
-                                              _T("wxWidgets 2.6.x;wxWidgets 2.8.x;wxWidgets 3.0.x;wxWidgets 3.1.x"),
+                                              _T("wxWidgets 3.0.x;wxWidgets 3.1.x"),
                                               WxVersion); // select wxwidgets version
         Wizard.AddProjectPathPage();
         Wizard.AddPage(_T("WxProjDetails"));
@@ -91,18 +91,19 @@ function BeginWizard()
         {
             Wizard.AddPage(_T("WxConfAdvOpt")); // Wizard page to select target type
             Wizard.AddPage(_T("WxAddLib")); // Add additional wx libraries
+            Wizard.AddPage(_T("WxAddLibMono")); // libraries options for monolithic build
         }
     }
     else if (WizType == wizTarget)
     {
-        local intro_msg = _T("Welcome to the new wxWidgets 2.6.x / 2.8.x / 3.0.x / 3.1.x\nTarget wizard!\n\n" +
+        local intro_msg = _T("Welcome to the wxWidgets Target wizard!\n\n" +
                             "This wizard will guide you to create a new target\n" +
                             "When you 're ready to proceed, please click \"Next\"...");
 
         Wizard.AddInfoPage(_T("WxIntro"), intro_msg);
         Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"),
                                               _T("Please select the wxWidgets version you want to use."),
-                                              _T("wxWidgets 2.6.x;wxWidgets 2.8.x;wxWidgets 3.0.x;wxWidgets 3.1.x"),
+                                              _T("wxWidgets 3.0.x;wxWidgets 3.1.x"),
                                               WxVersion); // select wxwidgets version
         if (PLATFORM == PLATFORM_MSW)
             Wizard.AddGenericSelectPathPage(_T("WxPath"), wxpath_msg, _T("wxWidgets' location:"), _T("$(#wx)"));
@@ -118,6 +119,7 @@ function BeginWizard()
         {
             Wizard.AddPage(_T("WxConfAdvOpt")); // Wizard page to select target type
             Wizard.AddPage(_T("WxAddLib")); // Add additional wx libraries
+            Wizard.AddPage(_T("WxAddLibMono")); // libraries options for monolithic build
         }
     }
 }
@@ -199,7 +201,7 @@ function OnLeave_WxGuiSelect(fwd)
         {
             if ( !("WxsAddWxExtensions" in getroottable()) )
             {
-                ShowInfo(_T("wxSmith plugin is not loaded, can not continue"));
+                ShowInfo(_T("wxSmith plugin is not loaded, can't continue"));
                 return false;
             }
         }
@@ -248,7 +250,7 @@ function OnEnter_WxConf(fwd)
     {
         Wizard.CheckCheckbox(_T("chkWxConfDLL"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/dll"), 0)));
         Wizard.CheckCheckbox(_T("chkWxConfMono"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/monolithic"), 0)));
-        Wizard.CheckCheckbox(_T("chkWxConfUni"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/unicode"), 0)));
+        Wizard.CheckCheckbox(_T("chkWxConfUni"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/unicode"), 1)));
         Wizard.CheckCheckbox(_T("chkWxConfAdvOpt"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/debug"), 0)));
         Wizard.CheckCheckbox(_T("chkWxConfPCH"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/pch"), 0)));
         Wizard.SetTextControlValue(_T("txtWxConfConfig"), ConfigManager.Read(_T("/wx_project_wizard/configuration"), _T("")));
@@ -347,12 +349,8 @@ function OnLeave_WxConf(fwd)
             lib_unic_suffix = _T("");
 
         if (WxVersion == 0)
-            lib_wxver = _T("26");
-        else if (WxVersion == 1)
-            lib_wxver = _T("28");
-        else if (WxVersion == 2)
             lib_wxver = _T("30");
-        else if (WxVersion == 3)
+        else if (WxVersion == 1)
             lib_wxver = _T("31");
 
         // Now set the global variables
@@ -500,12 +498,8 @@ function OnLeave_WxConfUnix(fwd)
         }
 
         if (WxVersion == 0)
-            LibWxVer = _T("2.6");
-        else if (WxVersion == 1)
-            LibWxVer = _T("2.8");
-        else if (WxVersion == 2)
             LibWxVer = _T("3.0");
-        else if (WxVersion == 3)
+        else if (WxVersion == 1)
             LibWxVer = _T("3.1");
 
         // Ask the user whether wizard shall add PCH support when empty Project is selected
@@ -747,24 +741,26 @@ function SetupProject(project)
             project.AddLinkLib(LibPrefix + _T("oleaut32") + LibSuffix);
             project.AddLinkLib(LibPrefix + _T("uuid") + LibSuffix);
             project.AddLinkLib(LibPrefix + _T("comctl32") + LibSuffix);
-            project.AddLinkLib(LibPrefix + _T("wsock32") + LibSuffix);
-            project.AddLinkLib(LibPrefix + _T("odbc32") + LibSuffix);
+            if (LibWxLinkWinSock2)
+                project.AddLinkLib(LibPrefix + _T("ws2_32") + LibSuffix);
+            else
+                project.AddLinkLib(LibPrefix + _T("wsock32") + LibSuffix);
+            if (LibWxGL) project.AddLinkLib(LibPrefix + _T("opengl32") + LibSuffix);
 
-            if (WxVersion == 3 && GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
+            // needed for wxWidgets 3.1 and newer
+            if (WxVersion >= 1 && GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
             {
                 project.AddLinkLib(LibPrefix + _T("shlwapi") + LibSuffix);
                 project.AddLinkLib(LibPrefix + _T("version") + LibSuffix);
                 project.AddLinkLib(LibPrefix + _T("oleacc") + LibSuffix);
                 project.AddLinkLib(LibPrefix + _T("uxtheme") + LibSuffix);
+                if (LibWxSTC) project.AddLinkLib(LibPrefix + _T("imm32") + LibSuffix);
             }
 
 
         }
     }
 
-    // (WxVersion < 2) == (wxWidgets <= 2.8.x)
-    if (WxVersion < 2 && GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
-        project.AddCompilerOption(_T("[[if (GetCompilerFactory().GetCompilerVersionString(_T(\"gcc\")) >= _T(\"4.8.0\")) print(_T(\"-Wno-unused-local-typedefs\"));]]"));
 
     // enable PCH
     if (WantPCH && GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
@@ -1038,41 +1034,39 @@ function SetupTarget(target, is_debug)
         if (IsMonolithic)
         {
             target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + LibSuffix);
-            if (!IsDLL)
-            {
-                target.AddLinkLib(LibPrefix + _T("wxpng") + LibDebugSuffix + LibSuffix);
-                target.AddLinkLib(LibPrefix + _T("wxjpeg") + LibDebugSuffix + LibSuffix);
-                target.AddLinkLib(LibPrefix + _T("wxtiff") + LibDebugSuffix + LibSuffix);
-                target.AddLinkLib(LibPrefix + _T("wxzlib") + LibDebugSuffix + LibSuffix);
-            }
+            if (LibWxGL) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_gl") + LibSuffix);
         }
         else
         {
             // Check and add additional libraries
+            if (LibWxWebView) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_webview") + LibSuffix);
+            if (LibWxSTC) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_stc") + LibSuffix);
+            if (LibWxPropertyGrid) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_propgrid") + LibSuffix);
+            if (LibWxRibbon) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_ribbon") + LibSuffix);
             if (LibWxRichText) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_richtext") + LibSuffix);
-            if (LibWxXrc) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_xrc") + LibSuffix);
-            if (LibWxAdvUI) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_aui") + LibSuffix);
-            if (LibWxOdbc)
-            {
-                target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_dbgrid") + LibSuffix);
-                target.AddLinkLib(LibPrefix + _T("wxbase") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_odbc") + LibSuffix);
-            }
+            if (LibWxXRC) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_xrc") + LibSuffix);
+            if (LibWxAUI) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_aui") + LibSuffix);
             if (LibWxMedia) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_media") + LibSuffix);
             if (LibWxNet) target.AddLinkLib(LibPrefix + _T("wxbase") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_net") + LibSuffix);
-            if (LibWxOpengl) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_gl") + LibSuffix);
-            if (LibWxQa) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_qa") + LibSuffix);
-            // Now comes the core libraries
-            if (LibWxXml) target.AddLinkLib(LibPrefix + _T("wxbase") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_xml") + LibSuffix);
-            if (LibWxAdv) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_adv") + LibSuffix);
-            if (LibWxHtml) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_html") + LibSuffix);
+            if (LibWxGL) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_gl") + LibSuffix);
+            if (LibWxQA) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_qa") + LibSuffix);
+            if (LibWxXML) target.AddLinkLib(LibPrefix + _T("wxbase") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_xml") + LibSuffix);
+            if (LibWxAdvanced) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_adv") + LibSuffix);
+            if (LibWxHTML) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_html") + LibSuffix);
             target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_core") + LibSuffix);
             target.AddLinkLib(LibPrefix + _T("wxbase") + LibWxVer + LibUnicSuffix + LibDebugSuffix + LibSuffix);
+        }
+
+        if (!IsDLL)
+        {
             target.AddLinkLib(LibPrefix + _T("wxpng") + LibDebugSuffix + LibSuffix);
-            if (LibWxJpeg) target.AddLinkLib(LibPrefix + _T("wxjpeg") + LibDebugSuffix + LibSuffix);
-            if (LibWxTiff) target.AddLinkLib(LibPrefix + _T("wxtiff") + LibDebugSuffix + LibSuffix);
+            target.AddLinkLib(LibPrefix + _T("wxjpeg") + LibDebugSuffix + LibSuffix);
+            target.AddLinkLib(LibPrefix + _T("wxtiff") + LibDebugSuffix + LibSuffix);
             target.AddLinkLib(LibPrefix + _T("wxzlib") + LibDebugSuffix + LibSuffix);
-            if (LibWxRegex) target.AddLinkLib(LibPrefix + _T("wxregex") + LibUnicSuffix + LibDebugSuffix + LibSuffix);
-            if (LibWxExpat) target.AddLinkLib(LibPrefix + _T("wxexpat") + LibDebugSuffix + LibSuffix);
+            target.AddLinkLib(LibPrefix + _T("wxregex") + LibUnicSuffix + LibDebugSuffix + LibSuffix);
+            if (LibWxSTC) target.AddLinkLib(LibPrefix + _T("wxscintilla") + LibDebugSuffix + LibSuffix);
+            if (LibWxXML) target.AddLinkLib(LibPrefix + _T("wxexpat") + LibDebugSuffix + LibSuffix);
+
         }
     }
     return true;
@@ -1090,7 +1084,8 @@ function OnGetNextPage_WxConf()
         return _T("WxConfAdvOpt");
     if (!IsMonolithic)
         return _T("WxAddLib");
-    return _T("");
+   else
+        return _T("WxAddLibMono");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1100,9 +1095,17 @@ function OnGetNextPage_WxConf()
 function OnEnter_WxConfAdvOpt(fwd)
 {
     if (fwd)
-    {
+    {        
+        Wizard.CheckCheckbox(_T("chkWxDebug"), 
+            IntToBool(GetConfigManager().Read(_T("/wx_project_wizard/wxdebug"), BoolToInt(ChkWxDebug))));
+
         Wizard.EnableWindow(_T("RadioBoxDebug"), Wizard.GetWantDebug());
+        if (Wizard.GetWantDebug())
+            Wizard.SetRadioboxSelection(_T("RadioBoxDebug"), GetConfigManager().Read(_T("/wx_project_wizard/debugtarget"), DebugTarget));
+
         Wizard.EnableWindow(_T("RadioBoxRelease"), Wizard.GetWantRelease());
+        if (Wizard.GetWantRelease())
+            Wizard.SetRadioboxSelection(_T("RadioBoxRelease"), GetConfigManager().Read(_T("/wx_project_wizard/releasetarget"), ReleaseTarget));
     }
     return true;
 }
@@ -1119,6 +1122,10 @@ function OnLeave_WxConfAdvOpt(fwd)
         DebugTarget = Wizard.GetRadioboxSelection(_T("RadioBoxDebug"));
         ReleaseTarget = Wizard.GetRadioboxSelection(_T("RadioBoxRelease"));
         if (!ChkWxDebug) LibDebugSuffix = _T("");
+
+        GetConfigManager().Write(_T("/wx_project_wizard/wxdebug"), BoolToInt(ChkWxDebug));
+        GetConfigManager().Write(_T("/wx_project_wizard/debugtarget"), DebugTarget);
+        GetConfigManager().Write(_T("/wx_project_wizard/releasetarget"), ReleaseTarget);
     }
     return true;
 }
@@ -1130,7 +1137,7 @@ function OnLeave_WxConfAdvOpt(fwd)
 function OnGetNextPage_WxConfAdvOpt()
 {
     if (IsMonolithic)
-        return _T("");
+        return _T("WxAddLibMono");
     else
         return _T("WxAddLib");
 }
@@ -1153,6 +1160,19 @@ function OnGetPrevPage_WxAddLib()
 
 function OnEnter_WxAddLib(fwd)
 {
+    if (fwd)
+    {
+        if (IsDLL) // no linking against any winsock needed
+        {
+            Wizard.CheckCheckbox(_T("chkWxLinkWinSock2"), false);
+            Wizard.EnableWindow(_T("chkWxLinkWinSock2"), false);
+        }
+        else
+        {
+            Wizard.CheckCheckbox(_T("chkWxLinkWinSock2"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/winsock2"), 0)));
+            Wizard.EnableWindow(_T("chkWxLinkWinSock2"), true);
+        }
+    }
     return true;
 }
 
@@ -1160,7 +1180,76 @@ function OnLeave_WxAddLib(fwd)
 {
     if (fwd)
     {
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
+        {
+            local tempLibArray = ::wxArrayString();
+            
+            tempLibArray = GetArrayFromString(Wizard.GetListboxStringSelections(_T("lstWxLibs")), _T(";"), false);        
+            if (tempLibArray.Index(_T("wxQA")) >= 0)
+            {
+                if (Message(_T("Library wxQA may not be available for wxWidgets built with GCC.\n" +
+                            "Continue anyway?"),
+                            _T("Warning"), wxYES_NO) == wxID_NO)
+                {
+                    return false;
+                }
+            }
+        }
+
+        LibWxLinkWinSock2 = Wizard.IsCheckboxChecked(_T("chkWxLinkWinSock2"));
         AddlLibList = Wizard.GetListboxStringSelections(_T("lstWxLibs"));
+    }
+    return true;
+}
+
+function OnGetNextPage_WxAddLib()
+{
+    return _T("");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Set options for the monolithic build (for Windows)
+////////////////////////////////////////////////////////////////////////////////
+
+function OnGetPrevPage_WxAddLibMono()
+{
+    if (IsAdvOpt) // IsAdvOpt - Refers to Target Type
+        return _T("WxConfAdvOpt");
+    else
+        return _T("WxConf");
+}
+
+function OnEnter_WxAddLibMono(fwd)
+{
+    if (fwd)
+    {
+        Wizard.CheckCheckbox(_T("chkWxLinkOpenGLMono"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/linkopenglmono"), 0)));
+
+        if (IsDLL) // no linking against any winsock needed
+        {
+            Wizard.CheckCheckbox(_T("chkWxLinkWinSock2Mono"), false);
+            Wizard.EnableWindow(_T("chkWxLinkWinSock2Mono"), false);
+        }
+        else
+        {
+            Wizard.CheckCheckbox(_T("chkWxLinkWinSock2Mono"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/winsock2mono"), 0)));
+            Wizard.EnableWindow(_T("chkWxLinkWinSock2Mono"), true);
+        }
+    }
+    return true;
+}
+
+function OnLeave_WxAddLibMono(fwd)
+{
+    if (fwd)
+    {
+        LibWxGL =  Wizard.IsCheckboxChecked(_T("chkWxLinkOpenGLMono"));
+        LibWxLinkWinSock2 = Wizard.IsCheckboxChecked(_T("chkWxLinkWinSock2Mono"));
+        
+        // Assume that XML and STC is always used and set the vars to true
+        // since we will need it to link scintilla and expat
+        LibWxSTC = true;
+        LibWxXML = true;
     }
     return true;
 }
@@ -1365,25 +1454,25 @@ function BoolToInt(val)
 function SetupAddlLibs()
 {
     // Now set these variable values based on library selections
+    // for the multilib build
     if (!AddlLibList.IsEmpty())
     {
         local tempLibArray = ::wxArrayString();
         tempLibArray = GetArrayFromString(AddlLibList, _T(";"), false);
 
-        LibWxRichText = ((WxVersion > 0) && (tempLibArray.Index(_T("wxRichText")) >=0));
-        LibWxAdvUI = ((WxVersion > 0) && (tempLibArray.Index(_T("wxAui")) >=0));
-        LibWxXrc = (tempLibArray.Index(_T("wxXrc")) >=0);
-        LibWxOdbc = ((tempLibArray.Index(_T("wxDbGrid")) >=0) || (tempLibArray.Index(_T("wxOdbc")) >=0));
+        LibWxWebView = (tempLibArray.Index(_T("wxWebView")) >=0);
+        LibWxSTC = (tempLibArray.Index(_T("wxSTC")) >=0);
+        LibWxPropertyGrid = (tempLibArray.Index(_T("wxPropertyGrid")) >=0);
+        LibWxRibbon = (tempLibArray.Index(_T("wxRibbon")) >=0);
+        LibWxRichText = (tempLibArray.Index(_T("wxRichText")) >=0);
+        LibWxAUI = (tempLibArray.Index(_T("wxAUI")) >=0);
+        LibWxXRC = (tempLibArray.Index(_T("wxXRC")) >=0);
         LibWxMedia = (tempLibArray.Index(_T("wxMedia")) >=0);;
         LibWxNet = (tempLibArray.Index(_T("wxNet")) >=0);
-        LibWxOpengl = (tempLibArray.Index(_T("wxGl")) >=0);
-        LibWxQa = (tempLibArray.Index(_T("wxQa")) >=0);
-        LibWxXml = (tempLibArray.Index(_T("wxXml")) >=0) || LibWxRichText || LibWxXrc;
-        LibWxAdv = (tempLibArray.Index(_T("wxAdv")) >=0) || LibWxRichText || LibWxXrc || LibWxOdbc;
-        LibWxHtml = (tempLibArray.Index(_T("wxHtml")) >=0) || LibWxRichText || LibWxXrc;
-        LibWxJpeg = (tempLibArray.Index(_T("wxJpeg")) >=0);
-        LibWxTiff = (tempLibArray.Index(_T("wxTiff")) >=0);
-        LibWxRegex = (tempLibArray.Index(_T("wxRegex")) >=0);
-        LibWxExpat = (tempLibArray.Index(_T("wxExpat")) >=0);
+        LibWxGL = (tempLibArray.Index(_T("wxGL")) >=0);
+        LibWxQA = (tempLibArray.Index(_T("wxQA")) >=0);
+        LibWxXML = (tempLibArray.Index(_T("wxXML")) >=0) || LibWxRichText || LibWxXRC || LibWxQA;
+        LibWxAdvanced = (tempLibArray.Index(_T("wxAdvanced")) >=0) || LibWxRichText || LibWxXRC;
+        LibWxHTML = (tempLibArray.Index(_T("wxHTML")) >=0) || LibWxRichText || LibWxXRC;
     }
 }
