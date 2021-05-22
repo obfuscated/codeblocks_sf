@@ -1169,7 +1169,7 @@ function OnEnter_WxAddLib(fwd)
         }
         else
         {
-            Wizard.CheckCheckbox(_T("chkWxLinkWinSock2"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/winsock2"), 0)));
+            Wizard.CheckCheckbox(_T("chkWxLinkWinSock2"), IntToBool(GetConfigManager().Read(_T("/wx_project_wizard/winsock2"), 0)));
             Wizard.EnableWindow(_T("chkWxLinkWinSock2"), true);
         }
     }
@@ -1182,9 +1182,8 @@ function OnLeave_WxAddLib(fwd)
     {
         if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
         {
-            local tempLibArray = ::wxArrayString();
-            
-            tempLibArray = GetArrayFromString(Wizard.GetListboxStringSelections(_T("lstWxLibs")), _T(";"), false);        
+            local tempLibArray = GetArrayFromString(Wizard.GetListboxStringSelections(_T("lstWxLibs")), _T(";"), false);
+
             if (tempLibArray.Index(_T("wxQA")) >= 0)
             {
                 if (Message(_T("Library wxQA may not be available for wxWidgets built with GCC.\n" +
@@ -1204,6 +1203,9 @@ function OnLeave_WxAddLib(fwd)
 
 function OnGetNextPage_WxAddLib()
 {
+    // the project is set to use multilib wxWidgets build,
+    // return empty string to prevent showing
+    // the monolithic library options
     return _T("");
 }
 
@@ -1223,7 +1225,7 @@ function OnEnter_WxAddLibMono(fwd)
 {
     if (fwd)
     {
-        Wizard.CheckCheckbox(_T("chkWxLinkOpenGLMono"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/linkopenglmono"), 0)));
+        Wizard.CheckCheckbox(_T("chkWxLinkOpenGLMono"), IntToBool(GetConfigManager().Read(_T("/wx_project_wizard/linkopenglmono"), 0)));
 
         if (IsDLL) // no linking against any winsock needed
         {
@@ -1232,7 +1234,7 @@ function OnEnter_WxAddLibMono(fwd)
         }
         else
         {
-            Wizard.CheckCheckbox(_T("chkWxLinkWinSock2Mono"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/winsock2mono"), 0)));
+            Wizard.CheckCheckbox(_T("chkWxLinkWinSock2Mono"), IntToBool(GetConfigManager().Read(_T("/wx_project_wizard/winsock2mono"), 0)));
             Wizard.EnableWindow(_T("chkWxLinkWinSock2Mono"), true);
         }
     }
