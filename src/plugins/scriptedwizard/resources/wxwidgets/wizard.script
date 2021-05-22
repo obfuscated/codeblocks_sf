@@ -829,6 +829,35 @@ function SetupProject(project)
     return true;
 }
 
+// generates a name for a wxWidgets "main" library, e.g., "wxmsw31u_aui.lib"
+function GetMSWwxLibraryFileName(is_base, library_name)
+{
+    local name = LibPrefix;
+
+    if (is_base)
+        name += _T("wxbase");
+    else
+        name += _T("wxmsw");
+
+    name += LibWxVer + LibUnicSuffix + LibDebugSuffix + library_name + LibSuffix;
+
+    return name;
+}
+
+// generates a name for a wxWidgets 3rd party library (image formats, zlib, expat, regex)
+function GetMSWwxLibrary3rdPartyFileName(library_name, has_unic_suffix)
+{
+    local name = LibPrefix + _T("wx") + library_name;
+
+    if (has_unic_suffix)
+        name += LibUnicSuffix;
+
+    name += LibDebugSuffix + LibSuffix;
+
+    return name;
+}
+
+
 function SetupTarget(target, is_debug)
 {
     if (IsNull(target))
@@ -1033,40 +1062,39 @@ function SetupTarget(target, is_debug)
         /* Now Add the required Libraries */
         if (IsMonolithic)
         {
-            target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + LibSuffix);
-            if (LibWxGL) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_gl") + LibSuffix);
+            target.AddLinkLib(GetMSWwxLibraryFileName(false, _T(""))); // the monolithic library itself
+            if (LibWxGL) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_gl")));
         }
         else
         {
             // Check and add additional libraries
-            if (LibWxWebView) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_webview") + LibSuffix);
-            if (LibWxSTC) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_stc") + LibSuffix);
-            if (LibWxPropertyGrid) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_propgrid") + LibSuffix);
-            if (LibWxRibbon) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_ribbon") + LibSuffix);
-            if (LibWxRichText) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_richtext") + LibSuffix);
-            if (LibWxXRC) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_xrc") + LibSuffix);
-            if (LibWxAUI) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_aui") + LibSuffix);
-            if (LibWxMedia) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_media") + LibSuffix);
-            if (LibWxNet) target.AddLinkLib(LibPrefix + _T("wxbase") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_net") + LibSuffix);
-            if (LibWxGL) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_gl") + LibSuffix);
-            if (LibWxQA) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_qa") + LibSuffix);
-            if (LibWxXML) target.AddLinkLib(LibPrefix + _T("wxbase") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_xml") + LibSuffix);
-            if (LibWxAdvanced) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_adv") + LibSuffix);
-            if (LibWxHTML) target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_html") + LibSuffix);
-            target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + _T("_core") + LibSuffix);
-            target.AddLinkLib(LibPrefix + _T("wxbase") + LibWxVer + LibUnicSuffix + LibDebugSuffix + LibSuffix);
+            if (LibWxWebView) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_webview")));
+            if (LibWxSTC) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_stc")));
+            if (LibWxPropertyGrid) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_propgrid")));
+            if (LibWxRibbon) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_ribbon")));
+            if (LibWxRichText) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_richtext")));
+            if (LibWxXRC) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_xrc")));
+            if (LibWxAUI) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_aui")));
+            if (LibWxMedia) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_media")));
+            if (LibWxNet) target.AddLinkLib(GetMSWwxLibraryFileName(true, _T("_net")));
+            if (LibWxGL) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_gl")));
+            if (LibWxQA) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_qa")));
+            if (LibWxXML) target.AddLinkLib(GetMSWwxLibraryFileName(true, _T("_xml")));
+            if (LibWxAdvanced) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_adv")));
+            if (LibWxHTML) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_html")));
+            target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_core")));
+            target.AddLinkLib(GetMSWwxLibraryFileName(true, _T(""))); // the base library itself
         }
 
         if (!IsDLL)
         {
-            target.AddLinkLib(LibPrefix + _T("wxpng") + LibDebugSuffix + LibSuffix);
-            target.AddLinkLib(LibPrefix + _T("wxjpeg") + LibDebugSuffix + LibSuffix);
-            target.AddLinkLib(LibPrefix + _T("wxtiff") + LibDebugSuffix + LibSuffix);
-            target.AddLinkLib(LibPrefix + _T("wxzlib") + LibDebugSuffix + LibSuffix);
-            target.AddLinkLib(LibPrefix + _T("wxregex") + LibUnicSuffix + LibDebugSuffix + LibSuffix);
-            if (LibWxSTC) target.AddLinkLib(LibPrefix + _T("wxscintilla") + LibDebugSuffix + LibSuffix);
-            if (LibWxXML) target.AddLinkLib(LibPrefix + _T("wxexpat") + LibDebugSuffix + LibSuffix);
-
+            target.AddLinkLib(GetMSWwxLibrary3rdPartyFileName(_T("png"), false));
+            target.AddLinkLib(GetMSWwxLibrary3rdPartyFileName(_T("jpeg"), false));
+            target.AddLinkLib(GetMSWwxLibrary3rdPartyFileName(_T("tiff"), false));
+            target.AddLinkLib(GetMSWwxLibrary3rdPartyFileName(_T("zlib"), false));
+            target.AddLinkLib(GetMSWwxLibrary3rdPartyFileName(_T("regex"), true));
+            if (LibWxSTC) target.AddLinkLib(GetMSWwxLibrary3rdPartyFileName(_T("scintilla"), false));
+            if (LibWxXML) target.AddLinkLib(GetMSWwxLibrary3rdPartyFileName(_T("expat"), false));
         }
     }
     return true;
