@@ -23,19 +23,19 @@
 template<> PersonalityManager* Mgr<PersonalityManager>::instance = nullptr;
 template<> bool  Mgr<PersonalityManager>::isShutdown = false;
 
-PersonalityManager::PersonalityManager()
+PersonalityManager::PersonalityManager() : m_pers("default"), m_ready(false)
 {
-    PersonalityManager::pers = _T("default");
 }
 
 void PersonalityManager::SetPersonality(const wxString& personality, cb_unused bool createIfNotExist)
 {
-    pers = personality;
+    m_pers = personality;
 }
 
 const wxString PersonalityManager::GetPersonality()
 {
-    return pers;
+    cbAssert(m_ready);
+    return m_pers;
 }
 
 const wxArrayString PersonalityManager::GetPersonalitiesList()
@@ -54,5 +54,7 @@ const wxArrayString PersonalityManager::GetPersonalitiesList()
     return list;
 }
 
-wxString PersonalityManager::pers;
-
+void PersonalityManager::MarkAsReady()
+{
+    m_ready = true;
+}

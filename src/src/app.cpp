@@ -1250,19 +1250,22 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame, const wxString& CmdLine
 
 void CodeBlocksApp::SetupPersonality(const wxString& personality)
 {
+    PersonalityManager *personalityMgr = Manager::Get()->GetPersonalityManager();
+
     if (personality.CmpNoCase(_T("ask")) == 0)
     {
-        const wxArrayString items(Manager::Get()->GetPersonalityManager()->GetPersonalitiesList());
+        const wxArrayString items(personalityMgr->GetPersonalitiesList());
 
         wxSingleChoiceDialog dlg(nullptr, _("Please choose which personality (profile) to load:"),
                                           _("Personalities (profiles)"),
                                           items);
-        PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_OK)
-            Manager::Get()->GetPersonalityManager()->SetPersonality(dlg.GetStringSelection());
+            personalityMgr->SetPersonality(dlg.GetStringSelection());
     }
     else
-        Manager::Get()->GetPersonalityManager()->SetPersonality(personality, true);
+        personalityMgr->SetPersonality(personality, true);
+
+    personalityMgr->MarkAsReady();
 }
 
 void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
