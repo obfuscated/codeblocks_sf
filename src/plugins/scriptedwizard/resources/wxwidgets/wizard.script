@@ -1124,8 +1124,7 @@ function OnEnter_WxConfAdvOpt(fwd)
 {
     if (fwd)
     {        
-        Wizard.CheckCheckbox(_T("chkWxDebug"), 
-            IntToBool(GetConfigManager().Read(_T("/wx_project_wizard/wxdebug"), BoolToInt(ChkWxDebug))));
+        Wizard.CheckCheckbox(_T("chkWxDebug"), GetConfigManager().Read(_T("/wx_project_wizard/wxdebug"), ChkWxDebug));
 
         Wizard.EnableWindow(_T("RadioBoxDebug"), Wizard.GetWantDebug());
         if (Wizard.GetWantDebug())
@@ -1151,7 +1150,7 @@ function OnLeave_WxConfAdvOpt(fwd)
         ReleaseTarget = Wizard.GetRadioboxSelection(_T("RadioBoxRelease"));
         if (!ChkWxDebug) LibDebugSuffix = _T("");
 
-        GetConfigManager().Write(_T("/wx_project_wizard/wxdebug"), BoolToInt(ChkWxDebug));
+        GetConfigManager().Write(_T("/wx_project_wizard/wxdebug"), ChkWxDebug);
         GetConfigManager().Write(_T("/wx_project_wizard/debugtarget"), DebugTarget);
         GetConfigManager().Write(_T("/wx_project_wizard/releasetarget"), ReleaseTarget);
     }
@@ -1197,7 +1196,7 @@ function OnEnter_WxAddLib(fwd)
         }
         else
         {
-            Wizard.CheckCheckbox(_T("chkWxLinkWinSock2"), IntToBool(GetConfigManager().Read(_T("/wx_project_wizard/winsock2"), 0)));
+            Wizard.CheckCheckbox(_T("chkWxLinkWinSock2"), GetConfigManager().Read(_T("/wx_project_wizard/winsock2"), LibWxLinkWinSock2));
             Wizard.EnableWindow(_T("chkWxLinkWinSock2"), true);
         }
     }
@@ -1253,7 +1252,7 @@ function OnEnter_WxAddLibMono(fwd)
 {
     if (fwd)
     {
-        Wizard.CheckCheckbox(_T("chkWxLinkOpenGLMono"), IntToBool(GetConfigManager().Read(_T("/wx_project_wizard/linkopenglmono"), 0)));
+        Wizard.CheckCheckbox(_T("chkWxLinkOpenGLMono"), GetConfigManager().Read(_T("/wx_project_wizard/linkopenglmono"), false));
 
         if (IsDLL) // no linking against any winsock needed
         {
@@ -1262,7 +1261,7 @@ function OnEnter_WxAddLibMono(fwd)
         }
         else
         {
-            Wizard.CheckCheckbox(_T("chkWxLinkWinSock2Mono"), IntToBool(GetConfigManager().Read(_T("/wx_project_wizard/winsock2mono"), 0)));
+            Wizard.CheckCheckbox(_T("chkWxLinkWinSock2Mono"), GetConfigManager().Read(_T("/wx_project_wizard/winsock2mono"), LibWxLinkWinSock2));
             Wizard.EnableWindow(_T("chkWxLinkWinSock2Mono"), true);
         }
     }
