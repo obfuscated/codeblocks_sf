@@ -829,7 +829,7 @@ function SetupProject(project)
     return true;
 }
 
-// generates a name for a wxWidgets "main" library, e.g., "wxmsw31u_aui.lib"
+// generates a name for a wxWidgets "main" library, e.g., "wxmsw31ud_aui.lib"
 function GetMSWwxLibraryFileName(is_base, library_name)
 {
     local name = LibPrefix;
@@ -839,12 +839,18 @@ function GetMSWwxLibraryFileName(is_base, library_name)
     else
         name += _T("wxmsw");
 
-    name += LibWxVer + LibUnicSuffix + LibDebugSuffix + library_name + LibSuffix;
+    name += LibWxVer + LibUnicSuffix + LibDebugSuffix;
+
+    // library_name can be empty for the base or monolithic library
+    if (library_name.len() != 0)
+        name += _T("_") + library_name;
+
+    name += LibSuffix;
 
     return name;
 }
 
-// generates a name for a wxWidgets 3rd party library (image formats, zlib, expat, regex)
+// generates a name for a wxWidgets 3rd party library (image formats, expat, regex, scintilla, zlib)
 function GetMSWwxLibrary3rdPartyFileName(library_name, has_unic_suffix)
 {
     local name = LibPrefix + _T("wx") + library_name;
@@ -1063,26 +1069,26 @@ function SetupTarget(target, is_debug)
         if (IsMonolithic)
         {
             target.AddLinkLib(GetMSWwxLibraryFileName(false, _T(""))); // the monolithic library itself
-            if (LibWxGL) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_gl")));
+            if (LibWxGL) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("gl")));
         }
         else
         {
             // Check and add additional libraries
-            if (LibWxWebView) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_webview")));
-            if (LibWxSTC) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_stc")));
-            if (LibWxPropertyGrid) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_propgrid")));
-            if (LibWxRibbon) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_ribbon")));
-            if (LibWxRichText) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_richtext")));
-            if (LibWxXRC) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_xrc")));
-            if (LibWxAUI) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_aui")));
-            if (LibWxMedia) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_media")));
-            if (LibWxNet) target.AddLinkLib(GetMSWwxLibraryFileName(true, _T("_net")));
-            if (LibWxGL) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_gl")));
-            if (LibWxQA) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_qa")));
-            if (LibWxXML) target.AddLinkLib(GetMSWwxLibraryFileName(true, _T("_xml")));
-            if (LibWxAdvanced) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_adv")));
-            if (LibWxHTML) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_html")));
-            target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("_core")));
+            if (LibWxWebView) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("webview")));
+            if (LibWxSTC) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("stc")));
+            if (LibWxPropertyGrid) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("propgrid")));
+            if (LibWxRibbon) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("ribbon")));
+            if (LibWxRichText) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("richtext")));
+            if (LibWxXRC) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("xrc")));
+            if (LibWxAUI) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("aui")));
+            if (LibWxMedia) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("media")));
+            if (LibWxNet) target.AddLinkLib(GetMSWwxLibraryFileName(true, _T("net")));
+            if (LibWxGL) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("gl")));
+            if (LibWxQA) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("qa")));
+            if (LibWxXML) target.AddLinkLib(GetMSWwxLibraryFileName(true, _T("xml")));
+            if (LibWxAdvanced) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("adv")));
+            if (LibWxHTML) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("html")));
+            target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("core")));
             target.AddLinkLib(GetMSWwxLibraryFileName(true, _T(""))); // the base library itself
         }
 
