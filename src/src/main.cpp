@@ -770,8 +770,9 @@ void MainFrame::CreateIDE()
     SetupGUILogging(uiSize16);
 
     {
-        wxString msg = wxString::Format(wxT("Loaded config file '%s'"),
-                                        CfgMgrBldr::Get()->GetConfigFile().wx_str());
+        wxString msg = wxString::Format(_("Loaded config file '%s' (personality: '%s')"),
+                                        CfgMgrBldr::Get()->GetConfigFile(),
+                                        Manager::Get()->GetPersonalityManager()->GetPersonality());
         Manager::Get()->GetLogManager()->Log(msg);
     }
 

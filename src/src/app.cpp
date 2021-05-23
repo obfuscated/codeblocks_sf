@@ -651,7 +651,11 @@ bool CodeBlocksApp::OnInit()
             return false;
         }
 
-        if ( !LoadConfig() )
+        // The personality should be set by the ParseCmdLine.
+        // If not the "default" would be used. If not called here LoadConfig would fail.
+        Manager::Get()->GetPersonalityManager()->MarkAsReady();
+
+        if (!LoadConfig())
             return false;
 
         // set safe-mode appropriately
@@ -1264,8 +1268,6 @@ void CodeBlocksApp::SetupPersonality(const wxString& personality)
     }
     else
         personalityMgr->SetPersonality(personality, true);
-
-    personalityMgr->MarkAsReady();
 }
 
 void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
