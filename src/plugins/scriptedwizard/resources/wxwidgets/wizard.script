@@ -154,24 +154,29 @@ function OnEnter_WxProjDetails(fwd)
 {
     if (fwd)
     {
-        Wizard.SetTextControlValue(_T("txtProjAuthor"), GetConfigManager().Read(_T("/wx_project_wizard/author"), _T("")));
-        Wizard.SetTextControlValue(_T("txtProjEmail"), GetConfigManager().Read(_T("/wx_project_wizard/email"), _T("")));
-        Wizard.SetTextControlValue(_T("txtProjWebsite"), GetConfigManager().Read(_T("/wx_project_wizard/website"), _T("")));
+        local configManager = GetConfigManager();
+
+        Wizard.SetTextControlValue(_T("txtProjAuthor"), configManager.Read(_T("/wx_project_wizard/author"), _T("")));
+        Wizard.SetTextControlValue(_T("txtProjEmail"), configManager.Read(_T("/wx_project_wizard/email"), _T("")));
+        Wizard.SetTextControlValue(_T("txtProjWebsite"), configManager.Read(_T("/wx_project_wizard/website"), _T("")));
     }
     return true;
 }
 
 function OnLeave_WxProjDetails(fwd)
 {
+    local configManager = GetConfigManager();
+
     if (fwd)
     {
         ProjAuthor = Wizard.GetTextControlValue(_T("txtProjAuthor"));
         ProjEmail = Wizard.GetTextControlValue(_T("txtProjEmail"));
         ProjWebsite = Wizard.GetTextControlValue(_T("txtProjWebsite"));
     }
-    GetConfigManager().Write(_T("/wx_project_wizard/author"), ProjAuthor);
-    GetConfigManager().Write(_T("/wx_project_wizard/email"), ProjEmail);
-    GetConfigManager().Write(_T("/wx_project_wizard/website"), ProjWebsite);
+
+    configManager.Write(_T("/wx_project_wizard/author"), ProjAuthor);
+    configManager.Write(_T("/wx_project_wizard/email"), ProjEmail);
+    configManager.Write(_T("/wx_project_wizard/website"), ProjWebsite);
     return true;
 }
 
@@ -183,8 +188,10 @@ function OnEnter_WxGuiSelect(fwd)
 {
     if (fwd)
     {
-        GuiBuilder = ConfigManager.Read(_T("/wx_project_wizard/guibuilder"), 0);
-        GuiAppType = ConfigManager.Read(_T("/wx_project_wizard/guiapptype"), 0);
+        local configManager = GetConfigManager();
+
+        GuiBuilder = configManager.Read(_T("/wx_project_wizard/guibuilder"), 0);
+        GuiAppType = configManager.Read(_T("/wx_project_wizard/guiapptype"), 0);
         Wizard.SetRadioboxSelection(_T("RB_GUISelect"), GuiBuilder);
         Wizard.SetRadioboxSelection(_T("RB_GUIAppType"), GuiAppType);
     }
@@ -195,6 +202,8 @@ function OnLeave_WxGuiSelect(fwd)
 {
     if (fwd)
     {
+        local configManager = GetConfigManager();
+
         GuiBuilder = Wizard.GetRadioboxSelection(_T("RB_GUISelect"));
         GuiAppType = Wizard.GetRadioboxSelection(_T("RB_GUIAppType"));
         if ( GuiBuilder==1 )
@@ -205,8 +214,8 @@ function OnLeave_WxGuiSelect(fwd)
                 return false;
             }
         }
-        GetConfigManager().Write(_T("/wx_project_wizard/guibuilder"), GuiBuilder);
-        GetConfigManager().Write(_T("/wx_project_wizard/guiapptype"), GuiAppType);
+        configManager.Write(_T("/wx_project_wizard/guibuilder"), GuiBuilder);
+        configManager.Write(_T("/wx_project_wizard/guiapptype"), GuiAppType);
     }
     return true;
 }
@@ -248,12 +257,14 @@ function OnEnter_WxConf(fwd)
 {
     if (fwd)
     {
-        Wizard.CheckCheckbox(_T("chkWxConfDLL"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/dll"), 0)));
-        Wizard.CheckCheckbox(_T("chkWxConfMono"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/monolithic"), 0)));
-        Wizard.CheckCheckbox(_T("chkWxConfUni"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/unicode"), 1)));
-        Wizard.CheckCheckbox(_T("chkWxConfAdvOpt"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/debug"), 0)));
-        Wizard.CheckCheckbox(_T("chkWxConfPCH"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/pch"), 0)));
-        Wizard.SetTextControlValue(_T("txtWxConfConfig"), ConfigManager.Read(_T("/wx_project_wizard/configuration"), _T("")));
+        local configManager = GetConfigManager();
+
+        Wizard.CheckCheckbox(_T("chkWxConfDLL"), IntToBool(configManager.Read(_T("/wx_project_wizard/dll"), 0)));
+        Wizard.CheckCheckbox(_T("chkWxConfMono"), IntToBool(configManager.Read(_T("/wx_project_wizard/monolithic"), 0)));
+        Wizard.CheckCheckbox(_T("chkWxConfUni"), IntToBool(configManager.Read(_T("/wx_project_wizard/unicode"), 1)));
+        Wizard.CheckCheckbox(_T("chkWxConfAdvOpt"), IntToBool(configManager.Read(_T("/wx_project_wizard/debug"), 0)));
+        Wizard.CheckCheckbox(_T("chkWxConfPCH"), IntToBool(configManager.Read(_T("/wx_project_wizard/pch"), 0)));
+        Wizard.SetTextControlValue(_T("txtWxConfConfig"), configManager.Read(_T("/wx_project_wizard/configuration"), _T("")));
     }
     return true;
 }
@@ -262,6 +273,8 @@ function OnLeave_WxConf(fwd)
 {
     if (fwd)
     {
+        local configManager = GetConfigManager();
+
         IsDLL = Wizard.IsCheckboxChecked(_T("chkWxConfDLL"));
         IsMonolithic = Wizard.IsCheckboxChecked(_T("chkWxConfMono"));
         IsUnicode = Wizard.IsCheckboxChecked(_T("chkWxConfUni"));
@@ -291,11 +304,11 @@ function OnLeave_WxConf(fwd)
             PCHFileName = _T("wx_pch.h");
 
         // Now write the configurations
-        ConfigManager.Write(_T("/wx_project_wizard/dll"), BoolToInt(IsDLL));
-        ConfigManager.Write(_T("/wx_project_wizard/monolithic"), BoolToInt(IsMonolithic));
-        ConfigManager.Write(_T("/wx_project_wizard/unicode"), BoolToInt(IsUnicode));
-        ConfigManager.Write(_T("/wx_project_wizard/debug"), BoolToInt(IsAdvOpt));
-        ConfigManager.Write(_T("/wx_project_wizard/pch"), BoolToInt(WantPCH));
+        configManager.Write(_T("/wx_project_wizard/dll"), BoolToInt(IsDLL));
+        configManager.Write(_T("/wx_project_wizard/monolithic"), BoolToInt(IsMonolithic));
+        configManager.Write(_T("/wx_project_wizard/unicode"), BoolToInt(IsUnicode));
+        configManager.Write(_T("/wx_project_wizard/debug"), BoolToInt(IsAdvOpt));
+        configManager.Write(_T("/wx_project_wizard/pch"), BoolToInt(WantPCH));
 
         // validate settings
         local lib_prefix;
@@ -468,10 +481,12 @@ function OnEnter_WxConfUnix(fwd)
 {
     if (fwd)
     {
+        local configManager = GetConfigManager();
+
         Wizard.SetRadioboxSelection(_T("m_radioBoxWxChoice"), ChoiceWxUnixLib);
-        Wizard.CheckCheckbox(_T("chkWxConfSo"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/dll"), 0)));
-        Wizard.CheckCheckbox(_T("chkWxConfUnicode"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/unicode"), 0)));
-        Wizard.CheckCheckbox(_T("chkWxUnixConfPCH"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/pch"), 0)));
+        Wizard.CheckCheckbox(_T("chkWxConfSo"), IntToBool(configManager.Read(_T("/wx_project_wizard/dll"), 0)));
+        Wizard.CheckCheckbox(_T("chkWxConfUnicode"), IntToBool(configManager.Read(_T("/wx_project_wizard/unicode"), 0)));
+        Wizard.CheckCheckbox(_T("chkWxUnixConfPCH"), IntToBool(configManager.Read(_T("/wx_project_wizard/pch"), 0)));
         OnClick_m_radioBoxWxChoice();
     }
     return true;
@@ -481,6 +496,8 @@ function OnLeave_WxConfUnix(fwd)
 {
     if (fwd)
     {
+        local configManager = GetConfigManager();
+
         ChoiceWxUnixLib = Wizard.GetRadioboxSelection(_T("m_radioBoxWxChoice"));
         if (ChoiceWxUnixLib == 1)
         {
@@ -514,9 +531,9 @@ function OnLeave_WxConfUnix(fwd)
         PCHFileName = _T("wx_pch.h");
 
         // Now write the setting to Configuration
-        ConfigManager.Write(_T("/wx_project_wizard/dll"), BoolToInt(IsDLL));
-        ConfigManager.Write(_T("/wx_project_wizard/unicode"), BoolToInt(IsUnicode));
-        ConfigManager.Write(_T("/wx_project_wizard/pch"), BoolToInt(WantPCH));
+        configManager.Write(_T("/wx_project_wizard/dll"), BoolToInt(IsDLL));
+        configManager.Write(_T("/wx_project_wizard/unicode"), BoolToInt(IsUnicode));
+        configManager.Write(_T("/wx_project_wizard/pch"), BoolToInt(WantPCH));
     }
     return true;
 }
@@ -1129,16 +1146,18 @@ function OnGetNextPage_WxConf()
 function OnEnter_WxConfAdvOpt(fwd)
 {
     if (fwd)
-    {        
-        Wizard.CheckCheckbox(_T("chkWxDebug"), GetConfigManager().Read(_T("/wx_project_wizard/wxdebug"), ChkWxDebug));
+    {
+        local configManager = GetConfigManager();
+
+        Wizard.CheckCheckbox(_T("chkWxDebug"), configManager.Read(_T("/wx_project_wizard/wxdebug"), ChkWxDebug));
 
         Wizard.EnableWindow(_T("RadioBoxDebug"), Wizard.GetWantDebug());
         if (Wizard.GetWantDebug())
-            Wizard.SetRadioboxSelection(_T("RadioBoxDebug"), GetConfigManager().Read(_T("/wx_project_wizard/debugtarget"), DebugTarget));
+            Wizard.SetRadioboxSelection(_T("RadioBoxDebug"), configManager.Read(_T("/wx_project_wizard/debugtarget"), DebugTarget));
 
         Wizard.EnableWindow(_T("RadioBoxRelease"), Wizard.GetWantRelease());
         if (Wizard.GetWantRelease())
-            Wizard.SetRadioboxSelection(_T("RadioBoxRelease"), GetConfigManager().Read(_T("/wx_project_wizard/releasetarget"), ReleaseTarget));
+            Wizard.SetRadioboxSelection(_T("RadioBoxRelease"), configManager.Read(_T("/wx_project_wizard/releasetarget"), ReleaseTarget));
     }
     return true;
 }
@@ -1151,14 +1170,16 @@ function OnLeave_WxConfAdvOpt(fwd)
 {
     if (fwd)
     {
+        local configManager = GetConfigManager();
+
         ChkWxDebug = Wizard.IsCheckboxChecked(_T("chkWxDebug"));
         DebugTarget = Wizard.GetRadioboxSelection(_T("RadioBoxDebug"));
         ReleaseTarget = Wizard.GetRadioboxSelection(_T("RadioBoxRelease"));
         if (!ChkWxDebug) LibDebugSuffix = _T("");
 
-        GetConfigManager().Write(_T("/wx_project_wizard/wxdebug"), ChkWxDebug);
-        GetConfigManager().Write(_T("/wx_project_wizard/debugtarget"), DebugTarget);
-        GetConfigManager().Write(_T("/wx_project_wizard/releasetarget"), ReleaseTarget);
+        configManager.Write(_T("/wx_project_wizard/wxdebug"), ChkWxDebug);
+        configManager.Write(_T("/wx_project_wizard/debugtarget"), DebugTarget);
+        configManager.Write(_T("/wx_project_wizard/releasetarget"), ReleaseTarget);
     }
     return true;
 }
@@ -1258,7 +1279,9 @@ function OnEnter_WxAddLibMono(fwd)
 {
     if (fwd)
     {
-        Wizard.CheckCheckbox(_T("chkWxLinkOpenGLMono"), GetConfigManager().Read(_T("/wx_project_wizard/linkopenglmono"), false));
+        local configManager = GetConfigManager();
+
+        Wizard.CheckCheckbox(_T("chkWxLinkOpenGLMono"), configManager.Read(_T("/wx_project_wizard/linkopenglmono"), false));
 
         if (IsDLL) // no linking against any winsock needed
         {
@@ -1267,7 +1290,7 @@ function OnEnter_WxAddLibMono(fwd)
         }
         else
         {
-            Wizard.CheckCheckbox(_T("chkWxLinkWinSock2Mono"), GetConfigManager().Read(_T("/wx_project_wizard/winsock2mono"), LibWxLinkWinSock2));
+            Wizard.CheckCheckbox(_T("chkWxLinkWinSock2Mono"), configManager.Read(_T("/wx_project_wizard/winsock2mono"), LibWxLinkWinSock2));
             Wizard.EnableWindow(_T("chkWxLinkWinSock2Mono"), true);
         }
     }
