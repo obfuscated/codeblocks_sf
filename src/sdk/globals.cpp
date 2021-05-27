@@ -72,6 +72,8 @@ const wxString cbDEFAULT_OPEN_FOLDER_CMD = _T("open -R");
 const wxString cbDEFAULT_OPEN_FOLDER_CMD = _T("xdg-open");
 #endif
 
+const wxString g_EscapeChar = wxChar(26);
+
 int GetPlatformsFromString(const wxString& platforms)
 {
     bool pW = platforms.Contains(_("Windows"));
