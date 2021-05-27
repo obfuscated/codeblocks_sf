@@ -1005,7 +1005,7 @@ void cbEditor::SetProjectFile(ProjectFile* project_file, bool preserve_modified)
 
         m_pProjectFile->editorOpen = true;
 
-        if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/tab_text_relative"), true))
+        if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/tab_text_relative"), false))
             m_Shortname = m_pProjectFile->relativeToCommonTopLevelPath;
         else
             m_Shortname = m_pProjectFile->file.GetFullName();
@@ -1375,7 +1375,7 @@ void cbEditor::SetEditorStyleBeforeFileOpen()
     // update the tab text based on preferences
     if (m_pProjectFile)
     {
-        if (mgr->ReadBool(_T("/tab_text_relative"), true))
+        if (mgr->ReadBool(_T("/tab_text_relative"), false))
             m_Shortname = m_pProjectFile->relativeToCommonTopLevelPath;
         else
             m_Shortname = m_pProjectFile->file.GetFullName();
