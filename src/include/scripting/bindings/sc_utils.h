@@ -273,16 +273,18 @@ constexpr size_t smax(size_t a, size_t b)
 template<typename UserType>
 struct UserDataForType
 {
-    InstanceAllocationMode mode;
-    /// Make it possible to store either whole object or a pointer to an object.
-    /// Make sure the data is properly aligned.
+    using NoCVUserType = typename std::remove_cv<UserType>::type;
 
-    static_assert(alignof(UserType) <= TypeAlignment<UserType>::value, "The TypeAlignment specialization is probably incorrect!");
+    static_assert(alignof(UserType) <= TypeAlignment<NoCVUserType>::value, "The TypeAlignment specialization is probably incorrect!");
 
     using StorageType = typename std::aligned_storage<
         smax(sizeof(UserType), sizeof(UserType*)),
-        smax(TypeAlignment<UserType>::value, alignof(UserType*))
+        smax(TypeAlignment<NoCVUserType>::value, alignof(UserType*))
     >::type;
+
+    InstanceAllocationMode mode;
+    /// Make it possible to store either whole object or a pointer to an object.
+    /// Make sure the data is properly aligned.
 
     union
     {
