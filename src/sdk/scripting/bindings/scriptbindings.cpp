@@ -281,7 +281,7 @@ namespace ScriptBindings
     {
         // this, option
         ExtractParams2<CompileOptionsBase*, const wxString *> extractor(v);
-        if (!extractor.Process("CompileOptionsBase_AddOption"))
+        if (!extractor.Process("CompileOptionsBase_StringParam"))
             return extractor.ErrorMessage();
         (extractor.p0->*func)(*extractor.p1);
         return 0;
