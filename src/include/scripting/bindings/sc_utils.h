@@ -61,7 +61,17 @@
 /// The C++ data is stored in the user data part of the Squirrel objects. We store a
 /// UserDataForType<UserType>, which is capable to store a pointer to the C++ object or whole C++
 /// instance in place. See SetupUserPointer and ExtractUserPointer for details how this object is
-/// created and access respectively.
+/// created and access respectively. Note that the alignment of the classes (the result of the
+/// alignof) sharing one class hierarchy should be the same. If this is not true compilation would
+/// fail - there are static asserts to detect such problems. This is important because the
+/// alignment of the class controls what is the offset of the UserDataForType<UserType>::userdata
+/// and UserDataForType<UserType>::userptr relative to the start of the structure. If there is a
+/// mismatch in the alignment in the hierarchy and we try to extract an instance which doesn't
+/// match the Squirrel type we'll get a crash or hard to diagnose problem. One example of this
+/// problem is when you try to extract a base type C++ instance from a fully derived Squirrel
+/// instance. If the compiler detects this problem the alignment could be adjusted by specializing
+/// the TypeAlignment<T> struct for every type in the hierarchy. Note that the whole graph should
+/// be adjusted.
 ///
 /// Binding functions and methods:
 /// ------------------------------
@@ -236,6 +246,19 @@ struct TypeInfo<void>
     static constexpr const SQChar *className = _SC("__void__");
 };
 
+template<typename T>
+struct TypeAlignment
+{
+    static constexpr const int value = alignof(T);
+};
+
+template<>
+struct TypeAlignment<void>
+{
+    // The type here is "int" to prevent alignof(void) kind of warnings.
+    static constexpr const int value = alignof(int);
+};
+
 enum class InstanceAllocationMode : uint32_t
 {
     InstanceIsInline,
@@ -254,13 +277,24 @@ struct UserDataForType
     /// Make it possible to store either whole object or a pointer to an object.
     /// Make sure the data is properly aligned.
 
-    union {
-        typename std::aligned_storage<
-            smax(sizeof(UserType), sizeof(UserType*)),
-            smax(alignof(UserType), alignof(UserType*))
-        >::type userdata;
+    static_assert(alignof(UserType) <= TypeAlignment<UserType>::value, "The TypeAlignment specialization is probably incorrect!");
+
+    using StorageType = typename std::aligned_storage<
+        smax(sizeof(UserType), sizeof(UserType*)),
+        smax(TypeAlignment<UserType>::value, alignof(UserType*))
+    >::type;
+
+    union
+    {
+        StorageType userdata;
         UserType *userptr;
     };
+};
+
+template<>
+struct UserDataForType<void>
+{
+     using StorageType = int; // Prevent alignof(void)/sizeof(void) type of warnings!
 };
 
 /// Policy type which select the type used for the release hook.
@@ -738,6 +772,11 @@ inline SQInteger CreateClassDecl(HSQUIRRELVM v)
             return -1;
         }
         hasBase = true;
+
+        static_assert((std::is_void<BaseClass>::value
+                       || (alignof(typename UserDataForType<UserType>::StorageType) == alignof(typename UserDataForType<BaseClass>::StorageType))
+                      ),
+                      "ExtractUserPointer might fail/crash/corrupt memory if you try to extract the base class from derived Squirrel instance!");
     }
     else
     {

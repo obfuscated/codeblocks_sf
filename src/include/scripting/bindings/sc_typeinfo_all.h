@@ -10,16 +10,13 @@
 #ifndef CB_SC_TYPEINFO_ALL_H
 #define CB_SC_TYPEINFO_ALL_H
 
-class cbEditor;
-class cbProject;
-class CompileOptionsBase;
+#include "cbeditor.h" // needed for alignof(cbEditor)
+#include "cbproject.h" // needed for alignof(cbProject)
+
 class CompilerFactory;
-class CompileTargetBase;
-class EditorBase;
 class EditorManager;
 class FileTreeData;
 class PluginInfo;
-class ProjectBuildTarget;
 class ProjectFile;
 class ProjectManager;
 class ScriptingManager;
@@ -28,10 +25,12 @@ class UserVariableManager;
 /// @file
 /// This file contains type traits for all C++ classes/structs known to Squirrel through our
 /// binding.
-/// The trait provide information about:
+/// The traits provide information about:
 ///  * the type tag which should  be unique;
 ///  * the squirrel name of the class/struct;
 ///  * the base class of the class/struct;
+///  * the type use for calling release hooks (@sa ReleaseHookType);
+///  * the alignment of the class if it must be non-default (@sa TypeAlignment for details);
 
 namespace ScriptBindings
 {
@@ -250,6 +249,30 @@ template<>
 struct ReleaseHookType<ScriptingManager>
 {
     using type = void;
+};
+
+template<>
+struct TypeAlignment<CompileTargetBase>
+{
+    static constexpr const int value = TypeAlignment<cbProject>::value;
+};
+
+template<>
+struct TypeAlignment<CompileOptionsBase>
+{
+    static constexpr const int value = TypeAlignment<CompileTargetBase>::value;
+};
+
+template<>
+struct TypeAlignment<ProjectBuildTarget>
+{
+    static constexpr const int value = TypeAlignment<CompileTargetBase>::value;
+};
+
+template<>
+struct TypeAlignment<EditorBase>
+{
+    static constexpr const int value = TypeAlignment<cbEditor>::value;
 };
 
 } // namespace ScriptBindings

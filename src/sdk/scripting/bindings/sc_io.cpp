@@ -372,6 +372,12 @@ struct TypeInfo<IONamespace> {
     using baseClass = void;
 };
 
+template<>
+struct TypeAlignment<IONamespace>
+{
+    static constexpr const int value = TypeAlignment<void>::value;
+};
+
 void Register_IO(HSQUIRRELVM v, ScriptingManager *manager)
 {
     PreserveTop preserve(v);
