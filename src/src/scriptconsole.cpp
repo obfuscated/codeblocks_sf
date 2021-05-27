@@ -47,7 +47,6 @@ static SQPRINTFUNCTION s_OldErrorFunc = nullptr;
 
 static void ScriptConsolePrintFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
 {
-    static SQChar temp[2048];
     va_list vl;
     va_start(vl,s);
     wxString msg;
@@ -60,7 +59,6 @@ static void ScriptConsolePrintFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
 
 static void ScriptConsoleErrorFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
 {
-    static SQChar temp[2048];
     va_list vl;
     va_start(vl,s);
     wxString msg;
