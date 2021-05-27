@@ -366,7 +366,8 @@ namespace ScriptBindings
 struct IONamespace{};
 
 template<>
-struct TypeInfo<IONamespace> {
+struct TypeInfo<IONamespace>
+{
     static const uint32_t typetag = uint32_t(TypeTag::IONamespace);
     static constexpr const SQChar *className = _SC("IO");
     using baseClass = void;

@@ -32,7 +32,7 @@
 ///
 /// Class instances:
 /// ------------------------------
-/// When a Squirrel instance of a given bound class is created, it need a way to access the native
+/// When a Squirrel instance of a given bound class is created, it needs a way to access the native
 /// C++ memory of the object. Currently there are two possibilities - the C++ memory is owned by the
 /// Squirrel object and it is part of its layout or the C++ memory is owned by something on the C++
 /// side and the Squirrel object has just a pointer to it.
@@ -50,7 +50,7 @@
 ///
 /// All C++ functions which can create an instance can/should be used inside native C++ functions
 /// called by Squirrel. When a bound Squirrel object is created the "constructor" metamethod is
-/// meant to decided if the C++ memory for the bound object is inline or non-owned. Most
+/// meant to decide if the C++ memory for the bound object is inline or non-owned. Most
 /// constructors create inline Squirrel objects.
 ///
 /// Non-owned-ptr objects are meant to be used when we have a C++ function which returns a reference
@@ -61,7 +61,7 @@
 /// The C++ data is stored in the user data part of the Squirrel objects. We store a
 /// UserDataForType<UserType>, which is capable to store a pointer to the C++ object or whole C++
 /// instance in place. See SetupUserPointer and ExtractUserPointer for details how this object is
-/// created and access respectively. Note that the alignment of the classes (the result of the
+/// created and accessed respectively. Note that the alignment of the classes (the result of the
 /// alignof) sharing one class hierarchy should be the same. If this is not true compilation would
 /// fail - there are static asserts to detect such problems. This is important because the
 /// alignment of the class controls what is the offset of the UserDataForType<UserType>::userdata
@@ -349,7 +349,7 @@ UserDataForType<UserType>* SetupUserPointer(HSQUIRRELVM vm, SQInteger idx)
 
     UserDataForType<UserType> *data = reinterpret_cast<UserDataForType<UserType>*>(ptr);
     data->mode = mode;
-    // Note: When c++17 is availalbel to us we would be able to use "if constexpr" and get rid of
+    // Note: When c++17 is available to us we would be able to use "if constexpr" and get rid of
     // the ReleaseHookType policy.
     if (mode == InstanceAllocationMode::InstanceIsInline)
         sq_setreleasehook(vm, idx, ReleaseHook<typename ReleaseHookType<UserType>::type>);
