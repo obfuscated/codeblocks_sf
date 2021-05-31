@@ -2052,7 +2052,6 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 
     Manager::Get()->GetMacrosManager()->ReplaceMacros(command, target);
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(command);
-
     wxString script = command;
 
     if (platform::macosx)
