@@ -63,6 +63,7 @@ const long wxsSettings::ID_CHECKBOX12 = wxNewId();
 const long wxsSettings::ID_RADIOBUTTON5 = wxNewId();
 const long wxsSettings::ID_RADIOBUTTON6 = wxNewId();
 const long wxsSettings::ID_RADIOBUTTON7 = wxNewId();
+const long wxsSettings::ID_RADIOBUTTON8 = wxNewId();
 //*)
 
 BEGIN_EVENT_TABLE(wxsSettings,cbConfigurationPanel)
@@ -243,7 +244,7 @@ wxsSettings::wxsSettings(wxWindow* parent,cb_unused wxWindowID id)
     m_UseI18N = new wxCheckBox(this, ID_CHECKBOX12, _("Use I18N for strings"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX12"));
     m_UseI18N->SetValue(true);
     BoxSizer4->Add(m_UseI18N, 0, wxALIGN_CENTER_VERTICAL, 5);
-    FlexGridSizer1 = new wxFlexGridSizer(0, 5, 0, 0);
+    FlexGridSizer1 = new wxFlexGridSizer(0, 6, 0, 0);
     FlexGridSizer1->AddGrowableCol(0);
     FlexGridSizer1->Add(0,0,1, wxEXPAND, 5);
     StaticText15 = new wxStaticText(this, wxID_ANY, _("Non-I18N string:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
@@ -255,12 +256,12 @@ wxsSettings::wxsSettings(wxWindow* parent,cb_unused wxWindowID id)
     FlexGridSizer1->Add(m_NoneI18NwxT, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     m_NoneI18N = new wxRadioButton(this, ID_RADIOBUTTON7, _("\"\""), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON7"));
     FlexGridSizer1->Add(m_NoneI18N, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    m_NoneI18NwxS = new wxRadioButton(this, ID_RADIOBUTTON8, _("wxS(\"\")"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON8"));
+    FlexGridSizer1->Add(m_NoneI18NwxS, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer4->Add(FlexGridSizer1, 1, wxLEFT|wxEXPAND, 5);
     StaticBoxSizer4->Add(BoxSizer4, 0, wxTOP|wxEXPAND, 5);
     FlexGridSizer6->Add(StaticBoxSizer4, 1, wxEXPAND, 5);
     SetSizer(FlexGridSizer6);
-    FlexGridSizer6->Fit(this);
-    FlexGridSizer6->SetSizeHints(this);
 
     Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsSettings::OnDragTargetColClick);
     Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsSettings::OnDragParentColClick);
@@ -321,6 +322,7 @@ wxsSettings::wxsSettings(wxWindow* parent,cb_unused wxWindowID id)
       case 0: m_NoneI18N_T->SetValue(true);  break;
       case 1: m_NoneI18NwxT->SetValue(true); break;
       case 2: m_NoneI18N->SetValue(true);    break;
+      case 3: m_NoneI18NwxS->SetValue(true); break;
       default:                               break;
     }
 
@@ -444,6 +446,7 @@ void wxsSettings::OnApply()
     if      (m_NoneI18N_T->GetValue())  cfg->Write(_T("/noneI18N"),0);
     else if (m_NoneI18NwxT->GetValue()) cfg->Write(_T("/noneI18N"),1);
     else if (m_NoneI18N->GetValue())    cfg->Write(_T("/noneI18N"),2);
+    else if (m_NoneI18NwxS->GetValue()) cfg->Write(_T("/noneI18N"),3);
 
     int Flags =  (m_BorderLeft->IsChecked()   ? wxsSizerFlagsProperty::BorderLeft   : 0) |
                  (m_BorderRight->IsChecked()  ? wxsSizerFlagsProperty::BorderRight  : 0) |

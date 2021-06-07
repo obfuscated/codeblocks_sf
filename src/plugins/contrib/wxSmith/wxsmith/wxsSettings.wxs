@@ -421,7 +421,7 @@
 							</object>
 							<object class="sizeritem">
 								<object class="wxFlexGridSizer" variable="FlexGridSizer1" member="no">
-									<cols>5</cols>
+									<cols>6</cols>
 									<growablecols>0</growablecols>
 									<object class="spacer">
 										<flag>wxEXPAND</flag>
@@ -455,6 +455,13 @@
 									<object class="sizeritem">
 										<object class="wxRadioButton" name="ID_RADIOBUTTON7" variable="m_NoneI18N" member="yes">
 											<label>&quot;&quot;</label>
+										</object>
+										<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxRadioButton" name="ID_RADIOBUTTON8" variable="m_NoneI18NwxS" member="yes">
+											<label>wxS(&quot;&quot;)</label>
 										</object>
 										<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>

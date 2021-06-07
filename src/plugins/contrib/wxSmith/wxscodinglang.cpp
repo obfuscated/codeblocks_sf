@@ -166,6 +166,7 @@ namespace wxsCodeMarks
         {
           case 1: NonTransPrefix = _T("wxT(");                       break;
           case 2: NonTransPrefix = _T(""); NonTransPostfix = _T(""); break;
+          case 3: NonTransPrefix = _T("wxS(");                       break;
           case 0: // fall-through
           default:                                                   break;
         }

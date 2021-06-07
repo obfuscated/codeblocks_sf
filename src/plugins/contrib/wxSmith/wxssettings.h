@@ -86,6 +86,7 @@ private:
     static const long ID_RADIOBUTTON5;
     static const long ID_RADIOBUTTON6;
     static const long ID_RADIOBUTTON7;
+    static const long ID_RADIOBUTTON8;
     //*)
 
     //(*Declarations(wxsSettings)
@@ -112,6 +113,7 @@ private:
     wxRadioButton* m_Icons32;
     wxRadioButton* m_NoneI18N;
     wxRadioButton* m_NoneI18N_T;
+    wxRadioButton* m_NoneI18NwxS;
     wxRadioButton* m_NoneI18NwxT;
     wxRadioButton* m_TIcons16;
     wxRadioButton* m_TIcons32;
