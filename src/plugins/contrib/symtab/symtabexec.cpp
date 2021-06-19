@@ -566,7 +566,7 @@ int SymTabExecDlg::ParseOutputSuccess(wxString lib, wxString filter)
           }
 
           // now associate a user-data with this entry
-          m_ListCtrl->SetItemData(item, (intptr_t)new customListEntry(n, the_value, the_type, the_name));
+          m_ListCtrl->SetItemPtrData(item, (wxUIntPtr)new customListEntry(n, the_value, the_type, the_name));
 
           ++entries;
         }

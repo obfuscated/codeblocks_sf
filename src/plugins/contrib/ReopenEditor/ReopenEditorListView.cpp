@@ -88,7 +88,7 @@ ReopenEditorListView::ReopenEditorListView(const ReopenEditorListView& Original)
         m_pListControl->InsertItem(0, text);
         m_pListControl->SetItemFont(0, font);
         m_pListControl->SetItemTextColour(0, colour);
-        m_pListControl->SetItemData(0, data);
+        m_pListControl->SetItemPtrData(0, data);
         for (int col = 1; col < colCount; ++col)
         {
             info.SetColumn(col);

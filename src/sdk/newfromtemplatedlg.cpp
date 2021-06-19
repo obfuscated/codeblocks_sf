@@ -259,7 +259,7 @@ void NewFromTemplateDlg::BuildListFor(TemplateOutputType otype, wxListCtrl* list
                 int index = list->InsertItem(0, plugin->GetTitle(w), iconIndex);
                 if (index != -1)
                 {
-                    list->SetItemData(index, (wxIntPtr)(new ListItemData(nullptr, plugin, w)));
+                    list->SetItemPtrData(index, (wxUIntPtr)(new ListItemData(nullptr, plugin, w)));
                     // if the script exists in the user's configuration, mark that it's been customized
                     wxString script = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/") + plugin->GetScriptFilename(w);
                     if (wxFileExists(script))
