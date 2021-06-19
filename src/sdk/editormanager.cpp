@@ -1026,9 +1026,9 @@ void EditorManager::CheckForExternallyModifiedFiles()
         }
     }
 
-    // this will emmit a EVT_EDITOR_ACTIVATED event, which in turn will notify
+    // this will emit a EVT_EDITOR_ACTIVATED event, which in turn will notify
     // the app to update the currently active file's info
-    // (we 're interested in updating read-write state)
+    // (we're interested in updating read-write state)
     SetActiveEditor(GetActiveEditor());
 
     if (failedFiles.GetCount())
