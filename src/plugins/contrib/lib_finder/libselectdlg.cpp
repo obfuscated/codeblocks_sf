@@ -24,14 +24,14 @@
 #include "libselectdlg.h"
 
 //(*InternalHeaders(LibSelectDlg)
-#include <wx/checklst.h>
-#include <wx/checkbox.h>
-#include <wx/sizer.h>
 #include <wx/button.h>
-#include <wx/radiobut.h>
-#include <wx/string.h>
+#include <wx/checkbox.h>
+#include <wx/checklst.h>
 #include <wx/intl.h>
+#include <wx/radiobut.h>
+#include <wx/sizer.h>
 #include <wx/stattext.h>
+#include <wx/string.h>
 //*)
 
 #include <manager.h>
@@ -56,8 +56,8 @@ LibSelectDlg::LibSelectDlg(wxWindow* parent,const wxArrayString& Names,bool addO
 {
 	//(*Initialize(LibSelectDlg)
 	wxBoxSizer* BoxSizer1;
-	wxStdDialogButtonSizer* StdDialogButtonSizer1;
 	wxStaticBoxSizer* StaticBoxSizer1;
+	wxStdDialogButtonSizer* StdDialogButtonSizer1;
 
 	Create(parent, wxID_ANY, _("Setting up libraries"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
@@ -83,7 +83,6 @@ LibSelectDlg::LibSelectDlg(wxWindow* parent,const wxArrayString& Names,bool addO
 	StdDialogButtonSizer1->Realize();
 	BoxSizer1->Add(StdDialogButtonSizer1, 0, wxLEFT|wxRIGHT|wxEXPAND, 10);
 	SetSizer(BoxSizer1);
-	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
 	Center();
 	//*)

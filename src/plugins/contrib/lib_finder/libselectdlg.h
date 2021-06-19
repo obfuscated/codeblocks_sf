@@ -26,13 +26,13 @@
 
 //(*Headers(LibSelectDlg)
 #include "scrollingdialog.h"
-class wxStaticBoxSizer;
-class wxStdDialogButtonSizer;
-class wxCheckListBox;
 class wxBoxSizer;
-class wxStaticText;
-class wxRadioButton;
 class wxCheckBox;
+class wxCheckListBox;
+class wxRadioButton;
+class wxStaticBoxSizer;
+class wxStaticText;
+class wxStdDialogButtonSizer;
 //*)
 
 class LibSelectDlg: public wxScrollingDialog
@@ -64,11 +64,11 @@ class LibSelectDlg: public wxScrollingDialog
 
 		//(*Declarations(LibSelectDlg)
 		wxCheckBox* m_SetupGlobalVars;
+		wxCheckListBox* m_Libraries;
+		wxRadioButton* m_ClearAll;
+		wxRadioButton* m_ClearSelected;
 		wxRadioButton* m_DontClear;
 		wxStaticText* StaticText1;
-		wxRadioButton* m_ClearAll;
-		wxCheckListBox* m_Libraries;
-		wxRadioButton* m_ClearSelected;
 		//*)
 
 		//(*Identifiers(LibSelectDlg)
