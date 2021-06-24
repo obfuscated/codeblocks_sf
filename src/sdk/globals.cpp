@@ -889,16 +889,28 @@ wxString ExpandBackticks(wxString& str) // backticks are written in-place to str
             bt = it->second;
         else
         {
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("Caching result of `%s`"), cmd.wx_str()));
-            wxArrayString output;
-            if (platform::WindowsVersion() >= platform::winver_WindowsNT2000)
-                wxExecute(_T("cmd /c ") + cmd, output, wxEXEC_NODISABLE);
+            LogManager *log = Manager::Get()->GetLogManager();
+            log->DebugLog(F(_T("Caching result of `%s`"), cmd.wx_str()));
+
+            wxString fullCmd;
+
+            if (platform::windows)
+                fullCmd = "cmd /c " + cmd;
             else
-                wxExecute(cmd,                 output, wxEXEC_NODISABLE);
+            {
+                ConfigManager *conf = Manager::Get()->GetConfigManager(_T("app"));
+                const wxString shell = conf->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
+                fullCmd = cmd;
+                fullCmd.Replace("'", "\\'");
+                fullCmd = shell + " '" + fullCmd + "'";
+            }
+            wxArrayString output;
+            const long exitCode = wxExecute(fullCmd, output, wxEXEC_NODISABLE);
             bt = GetStringFromArray(output, _T(" "), false);
             // add it in the cache
             m_Backticks[cmd] = bt;
-            Manager::Get()->GetLogManager()->DebugLog(_T("Cached"));
+            log->DebugLog(wxString::Format("Cached: '%s' (full cmd: '%s' exit code: %d)", bt,
+                                           fullCmd, int(exitCode)));
         }
         ret << bt << _T(' ');
         str = str.substr(0, start) + bt + str.substr(end + 1, wxString::npos);
