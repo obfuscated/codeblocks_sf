@@ -13,7 +13,6 @@ libBrowseTracker_la_LIBADD = ../../../sdk/libcodeblocks.la \
 			$(CB_TINYXML_LIBS)
 
 libBrowseTracker_la_SOURCES = BrowseTracker.cpp \
-			BrowseSelector.cpp \
 			Version.cpp \
 			BrowseMarks.cpp \
 			BrowseTrackerConfPanel.cpp \
@@ -21,10 +20,10 @@ libBrowseTracker_la_SOURCES = BrowseTracker.cpp \
 			ConfigPanel.cpp \
 			ProjectData.cpp \
 			JumpTracker.cpp \
-			JumpData.cpp
+			JumpData.cpp \
+			btswitcherdlg
 
 noinst_HEADERS =  	BrowseTracker.h \
-			BrowseSelector.h \
 			Version.h \
 			BrowseMarks.h \
 			BrowseTrackerDefs.h \
@@ -33,7 +32,8 @@ noinst_HEADERS =  	BrowseTracker.h \
 			ConfigPanel.h \
 			ProjectData.h \
 			JumpTracker.h \
-			JumpData.h
+			JumpData.h \
+			btswitcherdlg
 
 resources_forZIP = \
 	BrowseTrackerToolbar.xrc \

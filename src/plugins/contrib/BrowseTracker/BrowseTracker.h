@@ -23,18 +23,35 @@
 #define BROWSETRACKER_H_INCLUDED
 
 #include "cbplugin.h" // for "class cbPlugin"
+#include "editormanager.h"  //(2021/06/19)
 #include "BrowseTrackerDefs.h"
 
 class wxFileConfig;
 
 class TiXmlElement;
-class BrowseSelector;
 class BrowseMarks;
 class ProjectData;
 class BrowseMarks;
 class cbStyledTextCtrl;
 class wxAuiNotebookEvent;
 class JumpTracker;
+class cbAuiNotebook;
+
+///*
+// * Struct for store tabs stack info //(2021/06/19) defined in editormanager.h:44
+// */
+//// ----------------------------------------------------------------------------
+//struct cbNotebookStack
+//// ----------------------------------------------------------------------------
+//{
+//    cbNotebookStack(wxWindow* a_pWindow = nullptr)
+//        : window (a_pWindow),
+//          next (nullptr)
+//   {}
+//
+//    wxWindow*           window;
+//    cbNotebookStack*    next;
+//};
 
 // ----------------------------------------------------------------------------
 // The following have been moved to BrowseTrackerDefs.h
@@ -153,6 +170,12 @@ class BrowseTracker : public cbPlugin
 		// ---
 
     public:
+
+        // Stack holding sequence of activated editors //(2021/06/19)
+        cbNotebookStack* GetNotebookStack();
+        void DeleteNotebookStack();
+        void RebuildNotebookStack();
+
         wxString    GetPageFilename(int TrackerIndex);
         wxString    GetPageFilename(EditorBase* eb);
         EditorBase* GetEditor(int index);
@@ -187,6 +210,10 @@ class BrowseTracker : public cbPlugin
         wxString      GetBrowseTrackerCfgFilename(){return m_CfgFilenameStr;}
 
         int         m_UpdateUIEditorIndex;
+
+        // Activated editor stack maintenance
+        void OnPageChanged(wxAuiNotebookEvent& event);
+        void OnPageClose(wxAuiNotebookEvent& event);
 
     protected:
         bool            m_BrowseMarksEnabled; //user has enabled BrowseTracker
@@ -295,7 +322,6 @@ class BrowseTracker : public cbPlugin
         int             m_LastEditorIndex;
         ArrayOfEditorBasePtrs  m_apEditors;
         int             m_nBrowsedEditorCount;
-        BrowseSelector* m_popupWin;
         EditorBase*     m_UpdateUIFocusEditor;
         EditorBase*     m_LastEbDeactivated;
         EditorBase*     m_PreviousEbActivated;
@@ -335,6 +361,12 @@ class BrowseTracker : public cbPlugin
         int             m_nProjectClosingFileCount;
 
         JumpTracker*    m_pJumpTracker;
+
+        // Activated editors stack maintenance pointers //(2021/06/19)
+        cbAuiNotebook*             m_pNotebook;
+        cbNotebookStack*           m_pNotebookStackHead;
+        cbNotebookStack*           m_pNotebookStackTail;
+        size_t                     m_nNotebookStackSize;
 
 		DECLARE_EVENT_TABLE();
 

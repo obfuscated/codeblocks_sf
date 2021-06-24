@@ -130,6 +130,8 @@
 		<Unit filename="Version.cpp" />
 		<Unit filename="Version.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="btswitcherdlg.cpp" />
+		<Unit filename="btswitcherdlg.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

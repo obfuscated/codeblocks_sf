@@ -274,6 +274,12 @@ AppVersion::~AppVersion()
 //           Fix focusing the wrong editor on active editor being close.
 //           Add config item to enable/disable focusing previously active editor
 //           http://forums.codeblocks.org/index.php?topic=23977.0;topicseen
+//  1.2.110  2021/05/6
+//           Implement cb main.cpp method of switching editors and remove BrowseSelector.h/.cpp
+//  1.2.111  2021/06/19
+//           Implemented EditorManager's stack based switching into BrowseTracker
+//           Linux support, support for stack based editor switching
+//
 // ----------------------------------------------------------------------------
 //  //FIXME: Bugs
 //      01) Requires CB to be restarted after Install before Alt-Left/Right work.
@@ -286,5 +292,5 @@ AppVersion::~AppVersion()
 //          Shadow the menuitem cmdkey definitions w/ wxMenuItem->GetAccel()
 //          Selection/history of Marks via dlg
 // ----------------------------------------------------------------------------
-//testing autoriztion to commit
+//
 // ----------------------------------------------------------------------------

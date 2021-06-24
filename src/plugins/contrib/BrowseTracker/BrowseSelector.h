@@ -28,6 +28,7 @@
 class wxListBox;
 class wxAuiNotebook;
 class wxPanel;
+class BrowseTracker;
 
 // ----------------------------------------------------------------------------
 class BrowseSelector : public wxScrollingDialog
