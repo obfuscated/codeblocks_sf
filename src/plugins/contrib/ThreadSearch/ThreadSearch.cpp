@@ -988,7 +988,7 @@ void ThreadSearch::SetManagerType(ThreadSearchViewManagerBase::eManagerTypes mgr
 
 void ThreadSearch::OnSettingsChanged(CodeBlocksEvent &event)
 {
-    if (event.GetInt() == cbSettingsType::Environment && m_pThreadSearchView)
+    if (event.GetInt() == int(cbSettingsType::Environment) && m_pThreadSearchView)
     {
         m_pThreadSearchView->UpdateSettings();
     }

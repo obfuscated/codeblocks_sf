@@ -587,7 +587,7 @@ void NassiPlugin::OnUpdateUIMenuItem(wxUpdateUIEvent &event)
 
 void NassiPlugin::OnSettingsChanged(CodeBlocksEvent &event)
 {
-    if (event.GetInt()==cbSettingsType::Environment)
+    if (event.GetInt()==int(cbSettingsType::Environment))
     {
         for (int i = 0 ; i < Manager::Get()->GetEditorManager()->GetEditorsCount() ; i++)
         {
