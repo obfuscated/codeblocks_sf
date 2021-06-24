@@ -2840,6 +2840,7 @@ int CompilerGCC::DoBuild(const wxString& target, bool clean, bool build, bool cl
 int CompilerGCC::Build(const wxString& target)
 {
     m_LastBuildStep = true;
+    cbClearBackticksCache();
     return DoBuild(target, false, true);
 }
 
@@ -2855,6 +2856,7 @@ int CompilerGCC::Rebuild(ProjectBuildTarget* target)
 
 int CompilerGCC::Rebuild(const wxString& target)
 {
+    cbClearBackticksCache();
     m_LastBuildStep = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/rebuild_seperately"), false);
     if (m_LastBuildStep)
         return DoBuild(target, true, true);
@@ -2909,11 +2911,13 @@ int CompilerGCC::DoWorkspaceBuild(const wxString& target, bool clean, bool build
 
 int CompilerGCC::BuildWorkspace(const wxString& target)
 {
+    cbClearBackticksCache();
     return DoWorkspaceBuild(target, false, true);
 }
 
 int CompilerGCC::RebuildWorkspace(const wxString& target)
 {
+    cbClearBackticksCache();
     m_LastBuildStep = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/rebuild_seperately"), false);
     if (m_LastBuildStep)
         return DoWorkspaceBuild(target, true, true);
@@ -2925,6 +2929,7 @@ int CompilerGCC::RebuildWorkspace(const wxString& target)
 
 int CompilerGCC::CleanWorkspace(const wxString& target)
 {
+    cbClearBackticksCache();
     return DoWorkspaceBuild(target, true, false);
 }
 

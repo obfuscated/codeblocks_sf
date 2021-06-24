@@ -270,6 +270,7 @@ extern DLLIMPORT wxString GetEOLStr(int eolMode = -1);
 extern DLLIMPORT wxString URLEncode(const wxString &str);
 
 extern DLLIMPORT wxString cbExpandBackticks(wxString &str);
+extern DLLIMPORT void cbClearBackticksCache();
 
 /** This function creates a new wxMenu object on the heap and recursively
   * copies a given menu into it.

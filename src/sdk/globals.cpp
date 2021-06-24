@@ -924,6 +924,12 @@ wxString cbExpandBackticks(wxString& str) // backticks are written in-place to s
     return ret; // return a list of the replaced expressions
 }
 
+void cbClearBackticksCache()
+{
+    Manager::Get()->GetLogManager()->DebugLog("Cached: cleared!");
+    m_Backticks.clear();
+}
+
 wxMenu* CopyMenu(wxMenu* mnu, bool with_accelerators)
 {
     if (!mnu || mnu->GetMenuItemCount() < 1)
