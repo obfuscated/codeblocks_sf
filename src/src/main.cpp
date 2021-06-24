@@ -5047,7 +5047,7 @@ void MainFrame::OnSettingsEnvironment(cb_unused wxCommandEvent& event)
         ShowHideStartPage();
 
         CodeBlocksEvent event2(cbEVT_SETTINGS_CHANGED);
-        event2.SetInt(cbSettingsType::Environment);
+        event2.SetInt(int(cbSettingsType::Environment));
         Manager::Get()->ProcessEvent(event2);
     }
     if (needRestart)
@@ -5130,7 +5130,7 @@ void MainFrame::OnSettingsEditor(cb_unused wxCommandEvent& event)
         Manager::Get()->GetEditorManager()->RecreateOpenEditorStyles();
 
         CodeBlocksEvent event2(cbEVT_SETTINGS_CHANGED);
-        event2.SetInt(cbSettingsType::Editor);
+        event2.SetInt(int(cbSettingsType::Editor));
         Manager::Get()->ProcessEvent(event2);
     }
 }
@@ -5142,7 +5142,7 @@ void MainFrame::OnSettingsCompiler(cb_unused wxCommandEvent& event)
     if (dlg.ShowModal() == wxID_OK)
     {
         CodeBlocksEvent event2(cbEVT_SETTINGS_CHANGED);
-        event2.SetInt(cbSettingsType::Compiler);
+        event2.SetInt(int(cbSettingsType::Compiler));
         Manager::Get()->ProcessEvent(event2);
     }
 }
@@ -5154,7 +5154,7 @@ void MainFrame::OnSettingsDebugger(cb_unused wxCommandEvent& event)
     if (dlg.ShowModal() == wxID_OK)
     {
         CodeBlocksEvent event2(cbEVT_SETTINGS_CHANGED);
-        event2.SetInt(cbSettingsType::Debugger);
+        event2.SetInt(int(cbSettingsType::Debugger));
         Manager::Get()->ProcessEvent(event2);
     }
 }
@@ -5164,7 +5164,7 @@ void MainFrame::OnSettingsPlugins(cb_unused wxCommandEvent& event)
     if (Manager::Get()->GetPluginManager()->Configure() == wxID_OK)
     {
         CodeBlocksEvent event2(cbEVT_SETTINGS_CHANGED);
-        event2.SetInt(cbSettingsType::Plugins);
+        event2.SetInt(int(cbSettingsType::Plugins));
         Manager::Get()->ProcessEvent(event2);
     }
 }
@@ -5174,7 +5174,13 @@ void MainFrame::OnSettingsScripting(cb_unused wxCommandEvent& event)
     ScriptingSettingsDlg dlg(this);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
+    {
         RunStartupScripts();
+
+        CodeBlocksEvent event2(cbEVT_SETTINGS_CHANGED);
+        event2.SetInt(int(cbSettingsType::Scripting));
+        Manager::Get()->ProcessEvent(event2);
+    }
 }
 
 void MainFrame::OnProjectActivated(CodeBlocksEvent& event)

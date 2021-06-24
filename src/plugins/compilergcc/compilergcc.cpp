@@ -523,6 +523,12 @@ int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target, wxWin
             m_pLog->AddBuildProgressBar();
         else
             m_pLog->RemoveBuildProgressBar();
+
+        CodeBlocksEvent settingsEvent(cbEVT_SETTINGS_CHANGED);
+        settingsEvent.SetInt(int(cbSettingsType::BuildOptions));
+        settingsEvent.SetProject(project);
+        settingsEvent.SetBuildTargetName(target ? target->GetTitle() : wxString());
+        Manager::Get()->ProcessEvent(settingsEvent);
     }
 //    delete panel;
     return 0;

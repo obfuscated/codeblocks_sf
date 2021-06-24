@@ -1403,7 +1403,13 @@ void DebuggerManager::OnTargetSelected(cb_unused CodeBlocksEvent& event)
 
 void DebuggerManager::OnSettingsChanged(CodeBlocksEvent& event)
 {
-    if (event.GetInt() == cbSettingsType::Compiler || event.GetInt() == cbSettingsType::Debugger)
+    const int value = event.GetInt();
+    if (value < int(cbSettingsType::First) || value >= int(cbSettingsType::Last))
+        return;
+    const cbSettingsType settingType = cbSettingsType(value);
+
+    if (settingType == cbSettingsType::Compiler || settingType == cbSettingsType::Debugger
+        || settingType == cbSettingsType::BuildOptions)
     {
         if (m_useTargetsDefault)
             FindTargetsDebugger();

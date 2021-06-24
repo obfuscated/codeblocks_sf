@@ -497,16 +497,17 @@ extern EVTIMPORT const wxEventType cbEVT_SHOW_CALL_TIP;
 // settings events
 
 // event.GetInt() returns value of type cbSettingsType::Type indicating which setting group was changed
-struct cbSettingsType
+enum class cbSettingsType : int
 {
-    enum Type
-    {
-        Compiler,
-        Debugger,
-        Environment,
-        Editor,
-        Plugins
-    };
+    First,
+    Compiler = First,
+    Debugger,
+    Environment,
+    Editor,
+    Plugins,
+    Scripting,
+    BuildOptions,
+    Last // use only to convert from ints
 };
 extern EVTIMPORT const wxEventType cbEVT_SETTINGS_CHANGED;
 #define EVT_SETTINGS_CHANGED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_SETTINGS_CHANGED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
