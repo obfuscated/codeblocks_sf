@@ -286,5 +286,5 @@ AppVersion::~AppVersion()
 //          Shadow the menuitem cmdkey definitions w/ wxMenuItem->GetAccel()
 //          Selection/history of Marks via dlg
 // ----------------------------------------------------------------------------
-//
+//testing autoriztion to commit
 // ----------------------------------------------------------------------------
