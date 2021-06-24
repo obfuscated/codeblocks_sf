@@ -287,6 +287,7 @@ int idSearchGotoPreviousChanged     = XRCID("idSearchGotoPreviousChanged");
 
 int idSettingsEnvironment    = XRCID("idSettingsEnvironment");
 int idSettingsGlobalUserVars = XRCID("idSettingsGlobalUserVars");
+int idSettingsBackticks      = XRCID("idSettingsBackticks");
 int idSettingsEditor         = XRCID("idSettingsEditor");
 int idSettingsCompiler       = XRCID("idSettingsCompiler");
 int idSettingsDebugger       = XRCID("idSettingsDebugger");
@@ -533,6 +534,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     EVT_MENU(idSettingsEnvironment,    MainFrame::OnSettingsEnvironment)
     EVT_MENU(idSettingsGlobalUserVars, MainFrame::OnGlobalUserVars)
+    EVT_MENU(idSettingsBackticks,      MainFrame::OnBackticks)
     EVT_MENU(idSettingsEditor,         MainFrame::OnSettingsEditor)
     EVT_MENU(idSettingsCompiler,       MainFrame::OnSettingsCompiler)
     EVT_MENU(idSettingsDebugger,       MainFrame::OnSettingsDebugger)
@@ -5055,6 +5057,61 @@ void MainFrame::OnSettingsEnvironment(cb_unused wxCommandEvent& event)
 void MainFrame::OnGlobalUserVars(cb_unused wxCommandEvent& event)
 {
     Manager::Get()->GetUserVariableManager()->Configure();
+}
+
+void MainFrame::OnBackticks(cb_unused wxCommandEvent& event)
+{
+    wxDialog dialog(this, wxID_ANY, _("Backtick Cache"), wxDefaultPosition, wxDefaultSize,
+                    wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX);
+    wxBoxSizer *mainSizer;
+    mainSizer = new wxBoxSizer(wxVERTICAL);
+
+    // Add list
+    wxListCtrl *list = new wxListCtrl(&dialog, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                      wxLC_REPORT | wxVSCROLL | wxHSCROLL | wxLC_HRULES | wxLC_VRULES);
+    list->SetMinSize(wxSize(600, 400));
+    mainSizer->Add(list, 1, wxALL | wxEXPAND, 8);
+
+    // Add Buttons
+    wxStdDialogButtonSizer *btnSizer = new wxStdDialogButtonSizer();
+    auto endModalHandler = [&dialog](wxCommandEvent &event) {
+        dialog.EndModal(event.GetId());
+        event.Skip();
+    };
+
+    wxButton *clearButton = new wxButton(&dialog, wxID_APPLY, wxString(_("C&lear and close")));
+    clearButton->Bind(wxEVT_BUTTON, endModalHandler);
+    btnSizer->AddButton(clearButton);
+    wxButton *closeButton = new wxButton(&dialog, wxID_CLOSE, wxString());
+    closeButton->Bind(wxEVT_BUTTON, endModalHandler);
+    btnSizer->AddButton(closeButton);
+    btnSizer->Realize();
+    mainSizer->Add(btnSizer, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 8);
+
+    // Size
+    dialog.SetSizer(mainSizer);
+    mainSizer->SetSizeHints(&dialog);
+
+    list->InsertColumn(0, _("Expression"), wxLIST_FORMAT_LEFT, 100);
+    list->InsertColumn(1, _("Value"), wxLIST_FORMAT_LEFT, 300);
+
+    const cbBackticksMap &map = cbGetBackticksCache();
+    for (const cbBackticksMap::value_type &item : map)
+    {
+        const int count = list->GetItemCount();
+        list->InsertItem(count, item.first);
+        list->SetItem(count, 1, item.second);
+    }
+
+    if (list->GetItemCount() > 0)
+    {
+        list->SetColumnWidth(0, wxLIST_AUTOSIZE);
+        list->SetColumnWidth(1, wxLIST_AUTOSIZE);
+    }
+
+    PlaceWindow(&dialog);
+    if (dialog.ShowModal() == wxID_APPLY)
+        cbClearBackticksCache();
 }
 
 void MainFrame::OnSettingsEditor(cb_unused wxCommandEvent& event)

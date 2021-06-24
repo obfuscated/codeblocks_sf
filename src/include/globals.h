@@ -6,6 +6,7 @@
 #ifndef SDK_GLOBALS_H
 #define SDK_GLOBALS_H
 
+#include <map>
 #include <memory>
 #include <vector>
 
@@ -269,8 +270,11 @@ extern DLLIMPORT wxString GetEOLStr(int eolMode = -1);
 
 extern DLLIMPORT wxString URLEncode(const wxString &str);
 
+typedef std::map<wxString, wxString> cbBackticksMap;
+
 extern DLLIMPORT wxString cbExpandBackticks(wxString &str);
 extern DLLIMPORT void cbClearBackticksCache();
+extern DLLIMPORT const cbBackticksMap& cbGetBackticksCache();
 
 /** This function creates a new wxMenu object on the heap and recursively
   * copies a given menu into it.

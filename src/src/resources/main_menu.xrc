@@ -711,6 +711,10 @@
         <label>&amp;Global variables...</label>
         <help>Change global compiler variables</help>
       </object>
+      <object class="wxMenuItem" name="idSettingsBackticks">
+        <label>&amp;Backtick Cache...</label>
+        <help>Show the list of all backtick expressions present in the cache</help>
+      </object>
       <object class="wxMenuItem" name="idSettingsScripting">
         <label>&amp;Scripting...</label>
         <help>Change scripting settings</help>

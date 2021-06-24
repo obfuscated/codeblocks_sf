@@ -859,8 +859,8 @@ wxString URLEncode(const wxString &str) // not sure this is 100% standards compl
 }
 
 /** Adds support for backtick'd expressions under Windows. */
-typedef std::map<wxString, wxString> BackticksMap;
-BackticksMap m_Backticks; // all calls share the same cache
+
+cbBackticksMap m_Backticks; // all calls share the same cache
 
 wxString cbExpandBackticks(wxString& str) // backticks are written in-place to str
 {
@@ -885,7 +885,7 @@ wxString cbExpandBackticks(wxString& str) // backticks are written in-place to s
             break;
 
         wxString bt;
-        BackticksMap::iterator it = m_Backticks.find(cmd);
+        cbBackticksMap::iterator it = m_Backticks.find(cmd);
         if (it != m_Backticks.end()) // in the cache :)
             bt = it->second;
         else
@@ -928,6 +928,11 @@ void cbClearBackticksCache()
 {
     Manager::Get()->GetLogManager()->DebugLog("Cached: cleared!");
     m_Backticks.clear();
+}
+
+const cbBackticksMap& cbGetBackticksCache()
+{
+    return m_Backticks;
 }
 
 wxMenu* CopyMenu(wxMenu* mnu, bool with_accelerators)
