@@ -1018,7 +1018,7 @@ wxString CompilerCommandGenerator::SetupCompilerOptions(Compiler* compiler, Proj
 
     Manager::Get()->GetMacrosManager()->ReplaceMacros(result, target);
 
-    wxString bt = ExpandBackticks(result);
+    wxString bt = cbExpandBackticks(result);
     SearchDirsFromBackticks(compiler, target, bt);
 
     // add in array
@@ -1047,7 +1047,7 @@ wxString CompilerCommandGenerator::SetupLinkerOptions(Compiler* compiler, Projec
 
     Manager::Get()->GetMacrosManager()->ReplaceMacros(result, target);
 
-    wxString bt = ExpandBackticks(result);
+    wxString bt = cbExpandBackticks(result);
     SearchDirsFromBackticks(compiler, target, bt);
 
     // add in array
@@ -1162,7 +1162,7 @@ wxString CompilerCommandGenerator::SetupResourceCompilerOptions(cb_unused Compil
 
     Manager::Get()->GetMacrosManager()->ReplaceMacros(result, target);
 
-    wxString bt = ExpandBackticks(result);
+    wxString bt = cbExpandBackticks(result);
     SearchDirsFromBackticks(compiler, target, bt);
 
     // add in array

@@ -1939,7 +1939,7 @@ void EditorManager::CollectDefines(CodeBlocksEvent& event)
         else if (compilerFlags[i].Find(wxT("`")) != wxNOT_FOUND)
         {
             wxString str = compilerFlags[i];
-            ExpandBackticks(str);
+            cbExpandBackticks(str);
             str.Replace(wxT("`"), wxT(" ")); // remove any leftover backticks to prevent an infinite loop
             AppendArray(GetArrayFromString(str, wxT(" ")), compilerFlags);
         }

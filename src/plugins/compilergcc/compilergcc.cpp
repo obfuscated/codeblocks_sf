@@ -1371,7 +1371,7 @@ int CompilerGCC::DoRunQueue()
     // special shell used only for build commands
     if (!cmd->isRun)
     {
-        ExpandBackticks(cmd->command);
+        cbExpandBackticks(cmd->command);
 
         // Run the command in a shell, so stream redirections (<, >, << and >>),
         // piping and other shell features can be evaluated.
@@ -2173,7 +2173,7 @@ bool CompilerGCC::DoCleanWithMake(ProjectBuildTarget* bt)
     wxArrayString output, errors;
     wxSetWorkingDirectory(m_pBuildingProject->GetExecutionDir());
 
-    ExpandBackticks(cmd);
+    cbExpandBackticks(cmd);
     if (showOutput)
         LogMessage(F(_("Executing clean command: %s"), cmd.wx_str()), cltNormal);
 

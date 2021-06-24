@@ -861,7 +861,8 @@ wxString URLEncode(const wxString &str) // not sure this is 100% standards compl
 /** Adds support for backtick'd expressions under Windows. */
 typedef std::map<wxString, wxString> BackticksMap;
 BackticksMap m_Backticks; // all calls share the same cache
-wxString ExpandBackticks(wxString& str) // backticks are written in-place to str
+
+wxString cbExpandBackticks(wxString& str) // backticks are written in-place to str
 {
     wxString ret;
 
