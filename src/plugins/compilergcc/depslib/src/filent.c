@@ -9,7 +9,7 @@
  * This file is part of jam.
  *
  * License is hereby granted to use this software and distribute it
- * freely, as long as this copyright notice is retained and modifications 
+ * freely, as long as this copyright notice is retained and modifications
  * are clearly marked.
  *
  * ALL WARRANTIES ARE HEREBY DISCLAIMED.
@@ -70,7 +70,7 @@
  */
 
 void
-file_dirscan( 
+file_dirscan(
 	const char *dir,
 	scanback func,
 	void	*closure )
@@ -92,7 +92,7 @@ file_dirscan(
 	dir = *dir ? dir : ".";
 
  	/* Special case \ or d:\ : enter it */
- 
+
  	if( f.f_dir.len == 1 && f.f_dir.ptr[0] == '\\' )
  	    (*func)( closure, dir, 0 /* not stat()'ed */, (time_t)0 );
  	else if( f.f_dir.len == 3 && f.f_dir.ptr[1] == ':' )
