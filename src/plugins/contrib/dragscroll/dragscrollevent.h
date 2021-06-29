@@ -16,15 +16,16 @@
 #define DRAGSCROLL_EVENT_H
 
 #include <wx/event.h>
+#include "wx/xrc/xmlres.h"
+
 class cbPlugin;
 
-	enum {
-	    idDragScrollAddWindow = 1,
-	    idDragScrollRemoveWindow,
-	    idDragScrollRescan,
-	    idDragScrollReadConfig,
-	    idDragScrollInvokeConfig
-    };
+    const int idDragScrollAddWindow    = XRCID("idDragScrollAddWindow");
+    const int idDragScrollRemoveWindow = XRCID("idDragScrollRemoveWindow");
+    const int idDragScrollRescan       = XRCID("idDragScrollRescan");
+    const int idDragScrollReadConfig   = XRCID("idDragScrollReadConfig");
+    const int idDragScrollInvokeConfig = XRCID("idDragScrollInvokeConfig");
+
 // ----------------------------------------------------------------------------
 class DragScrollEvent : public wxCommandEvent
 // ----------------------------------------------------------------------------

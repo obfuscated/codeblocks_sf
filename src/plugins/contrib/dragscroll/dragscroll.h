@@ -31,7 +31,7 @@
 // ---------------------------------------------------------------------------
 
 //----------------------------------------
-#define VERSION "1.3.29 2019/03/30"
+#define VERSION "1.3.30 2021/06/25"                //(ph 2021/06/25)
 //----------------------------------------
 
 //-#undef LOGGING
@@ -473,6 +473,10 @@ private:
 //          will annoyingly set the editor caret at the right-click position.
 //  Version 1.3.29 2019/03/30
 //          Option to reverse mouse wheel zoom direction
+//  1.3.30  2021/06/25
+//          Make it easier for external processes to use DragScroll support
+//          Convert event ids to XRCIDs for external use.
+//          Add Connect() for wxEVT_COMMAND_MENU_SELECTED for DragScroll events
 // ----------------------------------------------------------------------------
 //  ToDo
 // ----------------------------------------------------------------------------

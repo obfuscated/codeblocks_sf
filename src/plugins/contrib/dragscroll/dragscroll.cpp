@@ -248,6 +248,11 @@ void cbDragScroll::OnAttach()
         (wxObjectEventFunction) (wxEventFunction)
         (wxCommandEventFunction) &cbDragScroll::OnWindowClose);
 
+    // Catch External requests to support a window //(2021/06/25)
+    Connect(idDragScrollAddWindow,idDragScrollInvokeConfig, wxEVT_COMMAND_MENU_SELECTED,
+        (wxObjectEventFunction) (wxEventFunction)
+        (wxCommandEventFunction) &cbDragScroll::OnDragScrollEvent_Dispatcher);
+
     // Set current plugin version
 	PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
 	pInfo->version = wxT(VERSION);
@@ -277,6 +282,22 @@ void cbDragScroll::OnRelease(bool /*appShutDown*/)
 	// IsAttached() will be FALSE...
 
 	// Remove all Mouse event handlers
+    // Disconnect from creation of windows //(2021/06/25)
+    Disconnect( wxEVT_CREATE,
+        (wxObjectEventFunction) (wxEventFunction)
+        (wxCommandEventFunction) &cbDragScroll::OnWindowOpen);
+
+    // Disonnect from Destroyed windows
+    Disconnect( wxEVT_DESTROY,
+        (wxObjectEventFunction) (wxEventFunction)
+        (wxCommandEventFunction) &cbDragScroll::OnWindowClose);
+
+    // Disconnect from External requests to support a window
+    Disconnect(idDragScrollAddWindow,idDragScrollInvokeConfig, wxEVT_COMMAND_MENU_SELECTED,
+        (wxObjectEventFunction) (wxEventFunction)
+        (wxCommandEventFunction) &cbDragScroll::OnDragScrollEvent_Dispatcher);
+
+	// Disconnect all Mouse event handlers
 	DetachAll();
 }
 // ----------------------------------------------------------------------------
@@ -318,7 +339,7 @@ int cbDragScroll::Configure(wxWindow* parent)
 	if (panel)
 	{
 		dlg.AttachConfigurationPanel(panel);
-		if (parent)
+        if (parent)
             CenterChildOnParent( parent, &dlg);
         else
             PlaceWindow(&dlg,pdlConstrain);
@@ -483,38 +504,40 @@ void cbDragScroll::OnDragScrollEvent_Dispatcher(wxCommandEvent& event )
     if ( not IsAttached() )
         return;
 
-    switch ( event.GetId() )
+    int id = event.GetId();
+
+    switch ( id )
     {
-	    case idDragScrollAddWindow:
+        default:
+	    if (id == idDragScrollAddWindow)
 	    {
 	        if (not GetMouseDragScrollEnabled() )
                 return;
             OnDragScrollEventAddWindow( event );
 	        break;
 	    }
-	    case idDragScrollRemoveWindow:
+	    else if (id == idDragScrollRemoveWindow)
 	    {
             OnDragScrollEventRemoveWindow( event );
 	        break;
 	    }
-	    case idDragScrollRescan:
+	    else if (id == idDragScrollRescan)
 	    {
  	        if (not GetMouseDragScrollEnabled() )
                 return;
-           OnDragScrollEventRescan( event );
+            OnDragScrollEventRescan( event );
 	        break;
 	    }
-	    case idDragScrollReadConfig:
+	    else if (id == idDragScrollReadConfig)
         {
             OnDragScrollEvent_RereadConfig( event );
 	        break;
         }
-	    case idDragScrollInvokeConfig:
+	    else if (id == idDragScrollInvokeConfig)
         {
             OnDragScrollEvent_InvokeConfig( event );
 	        break;
         }
-        default: break;
     }//switch
 }
 // ----------------------------------------------------------------------------
@@ -649,7 +672,7 @@ void cbDragScroll::CleanUpWindowPointerArray()
     unsigned int i = 0;
     while (i < m_WindowPtrs.GetCount() )
     {
-    	if ( not winExists((wxWindow*)m_WindowPtrs.Item(i)) )
+        if ( not winExists((wxWindow*)m_WindowPtrs.Item(i)) )
         {    m_WindowPtrs.RemoveAt(i);
             #if defined(LOGGING)
             //LOGIT( _T("csDragScroll CleanedUp[%d][%p]"), i, m_WindowPtrs.Item(i));
@@ -1595,8 +1618,8 @@ void MouseEventsHandler::OnMouseEvent(wxMouseEvent& event)    //MSW
         // slider values 1...2...3...4...5...6...7...8...9...10   //v0.14
         // divisn values 90  80  70  60 50   40  30  20  10   1
         int nThreshold = 1+( 100-(pDS->GetMouseDragSensitivity()*10) );
-        m_RatioX += (abs(dX)/nThreshold);
-        m_RatioY += (abs(dY)/nThreshold);
+        m_RatioX += (double(abs(dX))/double(nThreshold));
+        m_RatioY += (double(abs(dY))/double(nThreshold));
 
         // scroll the client area
         if (abs(dX) > abs(dY))
