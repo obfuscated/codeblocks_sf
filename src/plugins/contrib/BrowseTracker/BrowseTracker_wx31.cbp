@@ -36,7 +36,6 @@
 					<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 				</Compiler>
 				<Linker>
-					<Add option="-s" />
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-mthreads" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
@@ -60,7 +59,6 @@
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
 					<Add option="-Wall" />
-					<Add option="-g" />
 					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-pipe" />
 					<Add option="-mthreads" />

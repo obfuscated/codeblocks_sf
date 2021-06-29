@@ -26,7 +26,6 @@
 					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>
-					<Add option="-s" />
 					<Add option="`$(WX_CONFIG) --libs std,aui`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
