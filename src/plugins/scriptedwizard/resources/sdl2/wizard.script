@@ -24,7 +24,7 @@ function BeginWizard()
         local sdl2path_descr = _T("Please select the folder where SDL2 is installed on your computer.\n" +
                                   "This is either the i686-w64-mingw32 (32-bit) or the x86_64-w64-mingw32 (64-bit)\n" +
                                   "folder under the top-level folder where SDL2 was unpacked.\n\n" +
-                                  "To help you, this folder must contain the subfolders \"include\" and \"lib\".\n\n") +
+                                  "To help you, this folder must contain the subfolders \"include\" and \"lib\".\n\n" +
                                   "You can also use a global variable, p.e. $(#sdl2)\n");
 
         Wizard.AddGenericSelectPathPage(_T("SDL2Path"), sdl2path_descr, _T("Please select SDL2's location:"), SDL2PathDefault);
