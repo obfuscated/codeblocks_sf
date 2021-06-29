@@ -63,15 +63,11 @@
 # include <io.h>
 # include <sys/stat.h>
 
+# include <stdint.h>
+
 /*
  * file_dirscan() - scan a directory for files
  */
-
-# ifdef _M_IA64
-# define FINDTYPE long long
-# else
-# define FINDTYPE long
-# endif
 
 void
 file_dirscan( 
@@ -82,7 +78,7 @@ file_dirscan(
 	PATHNAME f;
 	char filespec[ MAXJPATH ];
 	char filename[ MAXJPATH ];
-	FINDTYPE handle;
+	intptr_t handle;
 	int ret;
 	struct _finddata_t finfo[1];
 
@@ -130,7 +126,7 @@ file_dirscan(
 # else
 	handle = _findfirst( filespec, finfo );
 
-	if( ( ret = ( handle == (FINDTYPE)(-1) ) ) ) /* TNB */
+	if( ( ret = ( handle == (intptr_t)(-1) ) ) ) /* TNB */
 	    return;
 
 	while( !ret )
@@ -280,7 +276,7 @@ file_archscan(
 	    if( ( c = strrchr( name, '\\' ) ) ) /* TNB */
 		name = c + 1;
 
-	    sprintf( buf, "%s(%.*s)", archive, endname - name, name );
+	    sprintf( buf, "%s(%.*s)", archive, (int)(endname - name), name );
 	    (*func)( closure, buf, 1 /* time valid */, (time_t)lar_date );
 
 	    offset += SARHDR + lar_size;
