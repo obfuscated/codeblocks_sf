@@ -21,7 +21,7 @@ libBrowseTracker_la_SOURCES = BrowseTracker.cpp \
 			ProjectData.cpp \
 			JumpTracker.cpp \
 			JumpData.cpp \
-			btswitcherdlg
+			btswitcherdlg.cpp
 
 noinst_HEADERS =  	BrowseTracker.h \
 			Version.h \
@@ -33,7 +33,7 @@ noinst_HEADERS =  	BrowseTracker.h \
 			ProjectData.h \
 			JumpTracker.h \
 			JumpData.h \
-			btswitcherdlg
+			btswitcherdlg.h
 
 resources_forZIP = \
 	BrowseTrackerToolbar.xrc \
