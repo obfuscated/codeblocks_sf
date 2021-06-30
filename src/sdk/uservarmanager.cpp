@@ -230,7 +230,7 @@ bool UserVariableManager::Exists(const wxString& variable) const
         return false;
 
     wxString member(variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).BeforeFirst(wxT(')')).MakeLower());
-    return !m_CfgMan->Exists(cSets + m_ActiveSet + _T('/') + member + _T("/base"));
+    return m_CfgMan->Exists(cSets + m_ActiveSet + _T('/') + member + _T("/base"));
 }
 
 void UserVariableManager::Arrogate()
