@@ -174,7 +174,7 @@ static void GetCygwinPath(wxString& path, bool bWindowsPath)
 
         // preserve any escape characters at start of path - this is true for
         // breakpoints - value is 2, but made dynamic for safety as we
-        // are only checking for the prefix not any furthur correctness
+        // are only checking for the prefix not any further correctness
         // Keep this code otherwise you will encounter strange debugging file issues.
         if (path.GetChar(0) == g_EscapeChar)
         {
