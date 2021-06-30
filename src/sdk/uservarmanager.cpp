@@ -179,6 +179,8 @@ wxString UserVariableManager::Replace(const wxString& variable)
             d.AddVar(package);
             PlaceWindow(&d);
             d.ShowModal();
+
+            base = m_CfgMan->Read(path + cBase);
         }
     }
 
