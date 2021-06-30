@@ -253,7 +253,7 @@
 				<border>8</border>
 			</object>
 		<object class="sizeritem">
-			<object class="wxCheckBox" name="chkWxLinkWinsock2">
+			<object class="wxCheckBox" name="chkWxLinkWinSock2">
 				<label>Link with Winsock2 instead Winsock</label>
 				<tooltip>For static build only, needed by wxWidgets 3.1.6+</tooltip>
 			</object>

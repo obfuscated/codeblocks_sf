@@ -58,7 +58,7 @@ function BeginWizard()
                           "This is the top-level folder where wxWidgets was unpacked.\n" +
                           "To help you, this folder must contain the subfolders\n" +
                           "\"include\" and \"lib\".\n\n" +
-                          "You can also use a global variable, p.e. $(#wx31)\n");
+                          "You can also use a global variable, f.e. $(#wx)\n");
 
     WizType = Wizard.GetWizardType();
 
@@ -69,11 +69,6 @@ function BeginWizard()
                             "the wxWidgets cross-platform GUI library.\n\n" +
                             "When you 're ready to proceed, please click \"Next\"...");
 
-        local wxpath_default = _T("");
-
-        if (GetUserVariableManager().Exists(_T("#wx")))
-            wxpath_default = _T("$(#wx)");
-
         Wizard.AddInfoPage(_T("WxIntro"), intro_msg);
         Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"),
                                               _T("Please select the wxWidgets version you want to use."),
@@ -83,7 +78,7 @@ function BeginWizard()
         Wizard.AddPage(_T("WxProjDetails"));
         Wizard.AddPage(_T("WxGuiSelect"));
         if (PLATFORM == PLATFORM_MSW)
-            Wizard.AddGenericSelectPathPage(_T("WxPath"), wxpath_msg, _T("wxWidgets' location:"), wxpath_default);
+            Wizard.AddGenericSelectPathPage(_T("WxPath"), wxpath_msg, _T("wxWidgets' location:"), _T("$(#wx)"));
 
         // we need the compiler selection before wx settings, because we 'll have
         // to validate the settings. To do this we must know the compiler beforehand...
@@ -111,7 +106,7 @@ function BeginWizard()
                                               _T("wxWidgets 3.0.x;wxWidgets 3.1.x"),
                                               WxVersion); // select wxwidgets version
         if (PLATFORM == PLATFORM_MSW)
-            Wizard.AddGenericSelectPathPage(_T("WxPath"), wxpath_msg, _T("wxWidgets' location:"), wxpath_default);
+            Wizard.AddGenericSelectPathPage(_T("WxPath"), wxpath_msg, _T("wxWidgets' location:"), _T("$(#wx)"));
 
         // we need the compiler selection before wx settings, because we 'll have
         // to validate the settings. To do this we must know the compiler beforehand...
@@ -160,7 +155,6 @@ function OnEnter_WxProjDetails(fwd)
     if (fwd)
     {
         local configManager = GetConfigManager();
-
         Wizard.SetTextControlValue(_T("txtProjAuthor"), configManager.Read(_T("/wx_project_wizard/author"), _T("")));
         Wizard.SetTextControlValue(_T("txtProjEmail"), configManager.Read(_T("/wx_project_wizard/email"), _T("")));
         Wizard.SetTextControlValue(_T("txtProjWebsite"), configManager.Read(_T("/wx_project_wizard/website"), _T("")));
@@ -170,8 +164,6 @@ function OnEnter_WxProjDetails(fwd)
 
 function OnLeave_WxProjDetails(fwd)
 {
-    local configManager = GetConfigManager();
-
     if (fwd)
     {
         ProjAuthor = Wizard.GetTextControlValue(_T("txtProjAuthor"));
@@ -179,6 +171,7 @@ function OnLeave_WxProjDetails(fwd)
         ProjWebsite = Wizard.GetTextControlValue(_T("txtProjWebsite"));
     }
 
+    local configManager = GetConfigManager();
     configManager.Write(_T("/wx_project_wizard/author"), ProjAuthor);
     configManager.Write(_T("/wx_project_wizard/email"), ProjEmail);
     configManager.Write(_T("/wx_project_wizard/website"), ProjWebsite);
@@ -194,9 +187,9 @@ function OnEnter_WxGuiSelect(fwd)
     if (fwd)
     {
         local configManager = GetConfigManager();
-
         GuiBuilder = configManager.Read(_T("/wx_project_wizard/guibuilder"), 0);
         GuiAppType = configManager.Read(_T("/wx_project_wizard/guiapptype"), 0);
+
         Wizard.SetRadioboxSelection(_T("RB_GUISelect"), GuiBuilder);
         Wizard.SetRadioboxSelection(_T("RB_GUIAppType"), GuiAppType);
     }
@@ -207,8 +200,6 @@ function OnLeave_WxGuiSelect(fwd)
 {
     if (fwd)
     {
-        local configManager = GetConfigManager();
-
         GuiBuilder = Wizard.GetRadioboxSelection(_T("RB_GUISelect"));
         GuiAppType = Wizard.GetRadioboxSelection(_T("RB_GUIAppType"));
         if ( GuiBuilder==1 )
@@ -219,6 +210,8 @@ function OnLeave_WxGuiSelect(fwd)
                 return false;
             }
         }
+
+        local configManager = GetConfigManager();
         configManager.Write(_T("/wx_project_wizard/guibuilder"), GuiBuilder);
         configManager.Write(_T("/wx_project_wizard/guiapptype"), GuiAppType);
     }
@@ -256,7 +249,6 @@ function OnEnter_WxConf(fwd)
     if (fwd)
     {
         local configManager = GetConfigManager();
-
         Wizard.CheckCheckbox(_T("chkWxConfDLL"), IntToBool(configManager.Read(_T("/wx_project_wizard/dll"), 0)));
         Wizard.CheckCheckbox(_T("chkWxConfMono"), IntToBool(configManager.Read(_T("/wx_project_wizard/monolithic"), 0)));
         Wizard.CheckCheckbox(_T("chkWxConfUni"), IntToBool(configManager.Read(_T("/wx_project_wizard/unicode"), 1)));
@@ -271,8 +263,6 @@ function OnLeave_WxConf(fwd)
 {
     if (fwd)
     {
-        local configManager = GetConfigManager();
-
         IsDLL = Wizard.IsCheckboxChecked(_T("chkWxConfDLL"));
         IsMonolithic = Wizard.IsCheckboxChecked(_T("chkWxConfMono"));
         IsUnicode = Wizard.IsCheckboxChecked(_T("chkWxConfUni"));
@@ -302,6 +292,7 @@ function OnLeave_WxConf(fwd)
             PCHFileName = _T("wx_pch.h");
 
         // Now write the configurations
+        local configManager = GetConfigManager();
         configManager.Write(_T("/wx_project_wizard/dll"), BoolToInt(IsDLL));
         configManager.Write(_T("/wx_project_wizard/monolithic"), BoolToInt(IsMonolithic));
         configManager.Write(_T("/wx_project_wizard/unicode"), BoolToInt(IsUnicode));
@@ -479,12 +470,12 @@ function OnEnter_WxConfUnix(fwd)
 {
     if (fwd)
     {
-        local configManager = GetConfigManager();
-
         Wizard.SetRadioboxSelection(_T("m_radioBoxWxChoice"), ChoiceWxUnixLib);
+        local configManager = GetConfigManager();
         Wizard.CheckCheckbox(_T("chkWxConfSo"), IntToBool(configManager.Read(_T("/wx_project_wizard/dll"), 0)));
         Wizard.CheckCheckbox(_T("chkWxConfUnicode"), IntToBool(configManager.Read(_T("/wx_project_wizard/unicode"), 0)));
         Wizard.CheckCheckbox(_T("chkWxUnixConfPCH"), IntToBool(configManager.Read(_T("/wx_project_wizard/pch"), 0)));
+
         OnClick_m_radioBoxWxChoice();
     }
     return true;
@@ -494,8 +485,6 @@ function OnLeave_WxConfUnix(fwd)
 {
     if (fwd)
     {
-        local configManager = GetConfigManager();
-
         ChoiceWxUnixLib = Wizard.GetRadioboxSelection(_T("m_radioBoxWxChoice"));
         if (ChoiceWxUnixLib == 1)
         {
@@ -529,6 +518,7 @@ function OnLeave_WxConfUnix(fwd)
         PCHFileName = _T("wx_pch.h");
 
         // Now write the setting to Configuration
+        local configManager = GetConfigManager();
         configManager.Write(_T("/wx_project_wizard/dll"), BoolToInt(IsDLL));
         configManager.Write(_T("/wx_project_wizard/unicode"), BoolToInt(IsUnicode));
         configManager.Write(_T("/wx_project_wizard/pch"), BoolToInt(WantPCH));
@@ -760,7 +750,8 @@ function SetupProject(project)
                 project.AddLinkLib(LibPrefix + _T("ws2_32") + LibSuffix);
             else
                 project.AddLinkLib(LibPrefix + _T("wsock32") + LibSuffix);
-            if (LibWxGL) project.AddLinkLib(LibPrefix + _T("opengl32") + LibSuffix);
+            if (LibWxGL)
+                project.AddLinkLib(LibPrefix + _T("opengl32") + LibSuffix);
 
             // needed for wxWidgets 3.1 and newer
             if (WxVersion >= 1 && GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
@@ -769,7 +760,8 @@ function SetupProject(project)
                 project.AddLinkLib(LibPrefix + _T("version") + LibSuffix);
                 project.AddLinkLib(LibPrefix + _T("oleacc") + LibSuffix);
                 project.AddLinkLib(LibPrefix + _T("uxtheme") + LibSuffix);
-                if (LibWxSTC) project.AddLinkLib(LibPrefix + _T("imm32") + LibSuffix);
+                if (LibWxSTC)
+                    project.AddLinkLib(LibPrefix + _T("imm32") + LibSuffix);
             }
 
 
@@ -1084,7 +1076,8 @@ function SetupTarget(target, is_debug)
         if (IsMonolithic)
         {
             target.AddLinkLib(GetMSWwxLibraryFileName(false, _T(""))); // the monolithic library itself
-            if (LibWxGL) target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("gl")));
+            if (LibWxGL)
+                target.AddLinkLib(GetMSWwxLibraryFileName(false, _T("gl")));
         }
         else
         {
@@ -1114,8 +1107,10 @@ function SetupTarget(target, is_debug)
             target.AddLinkLib(GetMSWwxLibrary3rdPartyFileName(_T("tiff"), false));
             target.AddLinkLib(GetMSWwxLibrary3rdPartyFileName(_T("zlib"), false));
             target.AddLinkLib(GetMSWwxLibrary3rdPartyFileName(_T("regex"), true));
-            if (LibWxSTC) target.AddLinkLib(GetMSWwxLibrary3rdPartyFileName(_T("scintilla"), false));
-            if (LibWxXML) target.AddLinkLib(GetMSWwxLibrary3rdPartyFileName(_T("expat"), false));
+            if (LibWxSTC)
+                target.AddLinkLib(GetMSWwxLibrary3rdPartyFileName(_T("scintilla"), false));
+            if (LibWxXML)
+            target.AddLinkLib(GetMSWwxLibrary3rdPartyFileName(_T("expat"), false));
         }
     }
     return true;
@@ -1133,7 +1128,7 @@ function OnGetNextPage_WxConf()
         return _T("WxConfAdvOpt");
     if (!IsMonolithic)
         return _T("WxAddLib");
-   else
+    else
         return _T("WxAddLibMono");
 }
 
@@ -1168,13 +1163,13 @@ function OnLeave_WxConfAdvOpt(fwd)
 {
     if (fwd)
     {
-        local configManager = GetConfigManager();
-
         ChkWxDebug = Wizard.IsCheckboxChecked(_T("chkWxDebug"));
         DebugTarget = Wizard.GetRadioboxSelection(_T("RadioBoxDebug"));
         ReleaseTarget = Wizard.GetRadioboxSelection(_T("RadioBoxRelease"));
-        if (!ChkWxDebug) LibDebugSuffix = _T("");
+        if (!ChkWxDebug)
+            LibDebugSuffix = _T("");
 
+        local configManager = GetConfigManager();
         configManager.Write(_T("/wx_project_wizard/wxdebug"), ChkWxDebug);
         configManager.Write(_T("/wx_project_wizard/debugtarget"), DebugTarget);
         configManager.Write(_T("/wx_project_wizard/releasetarget"), ReleaseTarget);
@@ -1301,7 +1296,7 @@ function OnLeave_WxAddLibMono(fwd)
     {
         LibWxGL =  Wizard.IsCheckboxChecked(_T("chkWxLinkOpenGLMono"));
         LibWxLinkWinSock2 = Wizard.IsCheckboxChecked(_T("chkWxLinkWinSock2Mono"));
-        
+
         // Assume that XML and STC is always used and set the vars to true
         // since we will need it to link scintilla and expat
         LibWxSTC = true;
