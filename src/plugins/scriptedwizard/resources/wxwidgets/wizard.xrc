@@ -30,7 +30,7 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="chkWxConfUni">
-							<label>Enable unicode</label>
+							<label>Enable Unicode</label>
 						</object>
 						<flag>wxALL</flag>
 						<border>8</border>
@@ -232,26 +232,54 @@
 			<object class="sizeritem">
 				<object class="wxListBox" name="lstWxLibs">
 					<content>
-						<item>wxRichText</item>
-						<item>wxAui</item>
-						<item>wxXrc</item>
-						<item>wxDbGrid</item>
-						<item>wxOdbc</item>
+						<item>wxAdvanced</item>
+						<item>wxAUI</item>
+						<item>wxGL</item>
+						<item>wxHTML</item>
 						<item>wxMedia</item>
 						<item>wxNet</item>
-						<item>wxGl</item>
-						<item>wxQa</item>
-						<item>wxXml</item>
-						<item>wxAdv</item>
-						<item>wxHtml</item>
-						<item>wxJpeg</item>
-						<item>wxTiff</item>
-						<item>wxRegex</item>
-						<item>wxExpat</item>
+						<item>wxPropertyGrid</item>
+						<item>wxQA</item>
+						<item>wxRibbon</item>
+						<item>wxRichText</item>
+						<item>wxSTC</item>
+						<item>wxWebView</item>
+						<item>wxXML</item>
+						<item>wxXRC</item>
 					</content>
 					<style>wxLB_EXTENDED</style>
 				</object>
 				<flag>wxALL|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+		<object class="sizeritem">
+			<object class="wxCheckBox" name="chkWxLinkWinSock2">
+				<label>Link with Winsock2 instead Winsock</label>
+				<tooltip>For static build only, needed by wxWidgets 3.1.6+</tooltip>
+			</object>
+			<flag>wxALL</flag>
+			<border>8</border>
+		</object>
+	</object>
+	</object>
+	<object class="wxPanel" name="WxAddLibMono">
+		<object class="wxStaticBoxSizer">
+			<label>Options for project using wxWidgets monolithic build</label>
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="chkWxLinkOpenGLMono">
+					<label>Add OpenGL support</label>
+					<tooltip>Link with wxGL and opengl32 libraries</tooltip>
+				</object>
+				<flag>wxALL</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="chkWxLinkWinSock2Mono">
+					<label>Link with Winsock2 instead Winsock</label>
+					<tooltip>For static build only, needed by wxWidgets 3.1.6+</tooltip>
+				</object>
+				<flag>wxALL</flag>
 				<border>8</border>
 			</object>
 		</object>
