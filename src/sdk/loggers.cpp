@@ -367,10 +367,18 @@ void ListCtrlLogger::Append(const wxString& msg, Logger::level lv)
 
     int idx = control->GetItemCount();
 
+    bool autoScroll = true;
+    if (!control->IsVisible(idx -1))
+        autoScroll = false;
+
     control->Freeze();
     control->InsertItem(idx, msg);
     control->SetItemFont(idx, style[lv].font);
     control->SetItemTextColour(idx, style[lv].colour);
+
+    if (autoScroll)
+        control->EnsureVisible(idx);
+
     control->Thaw();
 }
 
