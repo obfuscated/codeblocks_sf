@@ -845,6 +845,9 @@
 		<Unit filename="include/globals.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/globals_cygwin.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/ibaseloader.h">
 			<Option target="sdk" />
 		</Unit>
@@ -2392,6 +2395,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/globals.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/globals_cygwin.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/importers_globals.cpp">
