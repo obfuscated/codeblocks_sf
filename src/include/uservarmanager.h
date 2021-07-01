@@ -14,6 +14,14 @@
     #include "globals.h"
 #endif
 
+class UserVarManagerUI
+{
+public:
+    virtual void DisplayInfoWindow(const wxString &title,const wxString &msg) = 0;
+    virtual void OpenEditWindow(const wxArrayString &var = wxArrayString()) = 0;
+    virtual wxString GetVariable(wxWindow* parent, const wxString &old) = 0;
+};
+
 class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
 {
         friend class Manager;
@@ -24,8 +32,13 @@ class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
         wxString        m_ActiveSet;
         wxArrayString   m_Preempted;
 
+        UserVarManagerUI* m_ui;
+
     public:
         UserVariableManager();
+        ~UserVariableManager();
+
+        void SetUI(UserVarManagerUI* ui);
 
         wxString Replace(const wxString& variable);
 

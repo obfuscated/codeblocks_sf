@@ -65,6 +65,20 @@ const wxChar *bim[] =
 };
 const wxArrayString builtinMembers((size_t) 7, bim);
 
+
+
+class UserVarManagerDefaultUI : public UserVarManagerUI
+{
+public:
+    void DisplayInfoWindow(const wxString &title,const wxString &msg) override
+    {
+        Manager::Get()->GetLogManager()->LogWarning(msg);
+    }
+
+    void OpenEditWindow(const wxArrayString &var) override { };
+    wxString GetVariable(wxWindow* parent, const wxString &old) override { return ""; };
+};
+
 class GetUserVariableDialog : public wxScrollingDialog
 {
 public:
@@ -137,14 +151,41 @@ class UsrGlblMgrEditDialog : public wxScrollingDialog
 
 public:
     UsrGlblMgrEditDialog(const wxString& var = wxEmptyString);
-    friend class UserVariableManager;
+    friend class UserVarManagerGUI;
+};
+
+
+class UserVarManagerGUI : public UserVarManagerUI
+{
+public:
+    void DisplayInfoWindow(const wxString &title, const wxString &msg)
+    {
+        InfoWindow::Display(title, msg , 8000, 1000);
+    }
+
+    void OpenEditWindow(const wxArrayString &var)
+    {
+        UsrGlblMgrEditDialog d;
+        for (unsigned int i = 0; i < var.GetCount(); ++i)
+        {
+            d.AddVar(var[i]);
+        }
+        PlaceWindow(&d);
+        d.ShowModal();
+    }
+
+    wxString GetVariable(wxWindow* parent, const wxString &old)
+    {
+        GetUserVariableDialog dlg(parent, old);
+        PlaceWindow(&dlg);
+        dlg.ShowModal();
+        return dlg.GetVariable();
+    }
 };
 
 void UserVariableManager::Configure()
 {
-    UsrGlblMgrEditDialog d;
-    PlaceWindow(&d);
-    d.ShowModal();
+    m_ui->OpenEditWindow();
     m_ActiveSet = Manager::Get()->GetConfigManager(_T("gcv"))->Read(_T("/active"));
 }
 
@@ -174,11 +215,11 @@ wxString UserVariableManager::Replace(const wxString& variable)
             msg.Printf(_("In the currently active set, Code::Blocks does not know\n"
                          "the global compiler variable \"%s\".\n\n"
                          "Please define it."), package.wx_str());
-            InfoWindow::Display(_("Global Compiler Variables"), msg , 8000, 1000);
-            UsrGlblMgrEditDialog d;
-            d.AddVar(package);
-            PlaceWindow(&d);
-            d.ShowModal();
+
+            m_ui->DisplayInfoWindow(_("Global Compiler Variables"), msg);
+            wxArrayString ar;
+            ar.Add(package);
+            m_ui->OpenEditWindow(ar);
 
             base = m_CfgMan->Read(path + cBase);
         }
@@ -203,7 +244,7 @@ wxString UserVariableManager::Replace(const wxString& variable)
         msg.Printf(_("In the currently active set, Code::Blocks does not know\n"
                      "the member \"%s\" of the global compiler variable \"%s\".\n\n"
                      "Please define it."), member.wx_str(), package.wx_str());
-        InfoWindow::Display(_("Global Compiler Variables"), msg , 8000, 1000);
+        m_ui->DisplayInfoWindow(_("Global Compiler Variables"), msg);
     }
 
     return ret;
@@ -239,12 +280,8 @@ void UserVariableManager::Arrogate()
         return;
 
     wxString peList;
-
-    UsrGlblMgrEditDialog d;
-
     for (unsigned int i = 0; i < m_Preempted.GetCount(); ++i)
     {
-        d.AddVar(m_Preempted[i]);
         peList << m_Preempted[i] << _T('\n');
     }
     peList = peList.BeforeLast('\n'); // remove trailing newline
@@ -260,17 +297,22 @@ void UserVariableManager::Arrogate()
                      "%s\n\n"
                      "Please define them."), peList.wx_str());
 
-    PlaceWindow(&d);
+    m_ui->DisplayInfoWindow(_("Global Compiler Variables"), msg);
+    m_ui->OpenEditWindow(m_Preempted);
     m_Preempted.Clear();
-    InfoWindow::Display(_("Global Compiler Variables"), msg , 8000 + 800*m_Preempted.GetCount(), 100);
-
-    d.ShowModal();
 }
 
 UserVariableManager::UserVariableManager()
 {
     m_CfgMan = Manager::Get()->GetConfigManager(_T("gcv"));
+    m_ui =  new UserVarManagerDefaultUI(); //new UserVarManagerGUI(); //new UserVarManagerDefaultUI();
     Migrate();
+}
+
+UserVariableManager::~UserVariableManager()
+{
+    if(m_ui != nullptr)
+        delete m_ui;
 }
 
 void UserVariableManager::Migrate()
@@ -309,10 +351,7 @@ void UserVariableManager::Migrate()
 
 wxString UserVariableManager::GetVariable(wxWindow *parent, const wxString &old)
 {
-    GetUserVariableDialog dlg(parent, old);
-    PlaceWindow(&dlg);
-    dlg.ShowModal();
-    return dlg.GetVariable();
+    return m_ui->GetVariable(parent, old);
 }
 
 BEGIN_EVENT_TABLE(GetUserVariableDialog, wxScrollingDialog)
