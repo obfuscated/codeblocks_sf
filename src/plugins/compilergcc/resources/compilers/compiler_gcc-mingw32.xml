@@ -1,0 +1,17 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler>
+<CodeBlocks_compiler name="GNU GCC MingW32 Compiler"
+                     id="gcc-mingw32"
+                     weight="60"
+                     platform="windows">
+    <Path type="master">
+            <Search path="C:\mingw-w64\mingw32\"/>
+            <Fallback path="C:\MinGW\"/>
+    </Path>
+    <Path type="include">
+        <Add><master/>\include</Add>
+    </Path>
+    <Path type="lib">
+        <Add><master/>\lib</Add>
+    </Path>
+</CodeBlocks_compiler>
