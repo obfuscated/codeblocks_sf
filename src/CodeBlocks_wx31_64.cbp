@@ -85,7 +85,6 @@
 				<Option output="devel31_64/codeblocks" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel31_64" />
 				<Option object_output=".objs31_64" />
-				<Option external_deps="" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --verbose -p debug" />
@@ -4189,6 +4188,12 @@
 		<Unit filename="src/threadsdlg.h">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/uservardlgs.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/uservardlgs.h">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/virtualbuildtargetsdlg.cpp">
 			<Option target="src" />
 		</Unit>
@@ -4256,8 +4261,6 @@
 			<Option target="src" />
 		</Unit>
 		<Extensions>
-			<code_completion />
-			<envvars />
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
 				<resources>
@@ -4280,7 +4283,6 @@
 					<wxDialog wxs="plugins/codecompletion/wxsmith/goto_function.wxs" src="plugins/codecompletion/gotofunctiondlg.cpp" hdr="plugins/codecompletion/gotofunctiondlg.h" fwddecl="1" i18n="1" name="GotoFunctionDlg" language="CPP" />
 				</resources>
 			</wxsmith>
-			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
