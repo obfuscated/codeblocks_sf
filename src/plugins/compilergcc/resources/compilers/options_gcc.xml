@@ -2,9 +2,9 @@
 <!DOCTYPE CodeBlocks_compiler_options>
 <CodeBlocks_compiler_options>
     <if platform="windows">
-        <Program name="C"         value="mingw32-gcc.exe"/>
-        <Program name="CPP"       value="mingw32-g++.exe"/>
-        <Program name="LD"        value="mingw32-g++.exe"/>
+        <Program name="C"         value="gcc.exe"/>
+        <Program name="CPP"       value="g++.exe"/>
+        <Program name="LD"        value="g++.exe"/>
         <Program name="DBGconfig" value="gdb_debugger:Default"/>
         <Program name="LIB"       value="ar.exe"/>
         <Program name="WINDRES"   value="windres.exe"/>

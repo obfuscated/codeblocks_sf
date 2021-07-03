@@ -5,7 +5,9 @@
                      weight="60"
                      platform="windows">
     <Path type="master">
-            <Search path="C:\TDM-GCC-64"/>
+        <Search envVar="PATH"
+            for="C"/>
+        <Search path="C:\TDM-GCC-64*"/>
     </Path>
     <Path type="include">
         <Add><master/>\include</Add>
