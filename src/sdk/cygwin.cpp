@@ -10,6 +10,7 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/string.h>
     #if defined(__WXMSW__)
         #include <wx/msw/wrapwin.h>     // Wraps windows.h
         #include <wx/msw/registry.h>    // for Registry detection of Cygwin
@@ -18,6 +19,8 @@
     #include "cbproject.h"
     #include "compilerfactory.h"
     #include "logmanager.h"
+
+    #include <map>
 #endif
 
 #include "cygwin.h"
