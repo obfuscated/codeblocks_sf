@@ -78,9 +78,7 @@ class GDB_driver : public DebuggerDriver
     private:
         void HandleMainBreakPoint(const wxRegEx& reBreak, wxString line);
 
-#ifdef __WXMSW__
         bool m_CygwinPresent;
-#endif
 
         // Seems to be intended to allow step before program has started.
         // Was always false.  HC changed to take value from DebuggerGDB::m_BreakOnEntry.

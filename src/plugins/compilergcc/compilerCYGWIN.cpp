@@ -7,11 +7,10 @@
  * $HeadURL$
  */
 
-#include "compilerCYGWIN.h"
+#include <sdk.h>
 
-#ifdef __WXMSW__
-    #include "globals_cygwin.h"
-#endif // __WXMSW__
+#include "compilerCYGWIN.h"
+#include "globals_cygwin.h"
 
 CompilerCYGWIN::CompilerCYGWIN()
     : CompilerMINGW(_("Cygwin GCC"), _T("cygwin"))
@@ -31,15 +30,12 @@ Compiler * CompilerCYGWIN::CreateCopy()
 
 AutoDetectResult CompilerCYGWIN::AutoDetectInstallationDir()
 {
-#ifdef __WXMSW__
-    // Only detect on Windows!!!!
-    if (isDetectedCygwinCompiler())
+    if (platform::windows && cbIsDetectedCygwinCompiler())
     {
-        m_MasterPath = getCygwinCompilerPathRoot();
+        m_MasterPath = cbGetCygwinCompilerPathRoot();
         return adrDetected;
     }
     else
-#endif // __WXMSW__
     {
         return adrGuessed;
     }

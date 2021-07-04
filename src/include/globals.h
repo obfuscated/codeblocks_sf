@@ -183,7 +183,6 @@ extern DLLIMPORT const wxString DEFAULT_ARRAY_SEP;
 extern DLLIMPORT const wxString DEFAULT_CONSOLE_TERM;
 extern DLLIMPORT const wxString DEFAULT_CONSOLE_SHELL;
 extern DLLIMPORT const wxString cbDEFAULT_OPEN_FOLDER_CMD;
-extern DLLIMPORT const wxString g_EscapeChar;
 
 // global helper funcs
 /// Reads a wxString from a non-unicode file. File must be open. File is closed automatically.
