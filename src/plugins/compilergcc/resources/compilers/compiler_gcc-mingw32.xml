@@ -5,10 +5,10 @@
                      weight="60"
                      platform="windows">
     <Path type="master">
-        <Search envVar="PATH"
+        <Search path="C:\MinGW*"
             for="C"/>
-        <Search path="C:\mingw-w64\mingw32*"/>
-        <Fallback path="C:\MinGW\"/>
+        <Search path="C:\mingw-w64\mingw32*"
+            for="C"/>
     </Path>
     <Path type="include">
         <Add><master/>\include</Add>

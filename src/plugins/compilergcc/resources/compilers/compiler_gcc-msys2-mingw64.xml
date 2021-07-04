@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0"?>
 <!DOCTYPE CodeBlocks_compiler>
-<CodeBlocks_compiler name="GNU GCC TDM-32 Compiler"
-                     id="gcc-tdm-32"
+<CodeBlocks_compiler name="GNU GCC MSYS MingW64 Compiler"
+                     id="gcc-msys2-mingw64"
                      weight="60"
                      platform="windows">
     <Path type="master">
-        <Search path="C:\TDM-GCC-32*"
+        <Search path="C:\msys64\mingw64*"
             for="C"/>
     </Path>
     <Path type="include">
