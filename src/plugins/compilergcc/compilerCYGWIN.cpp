@@ -10,7 +10,7 @@
 #include <sdk.h>
 
 #include "compilerCYGWIN.h"
-#include "globals_cygwin.h"
+#include "cygwin.h"
 
 CompilerCYGWIN::CompilerCYGWIN()
     : CompilerMINGW(_("Cygwin GCC"), _T("cygwin"))

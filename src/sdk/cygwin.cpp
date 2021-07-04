@@ -10,15 +10,17 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/msw/wrapwin.h>     // Wraps windows.h
-    #include <wx/msw/registry.h>    // for Registry detection of Cygwin
+    #if defined(__WXMSW__)
+        #include <wx/msw/wrapwin.h>     // Wraps windows.h
+        #include <wx/msw/registry.h>    // for Registry detection of Cygwin
+    #endif // defined(__WXMSW__)
 
     #include "cbproject.h"
     #include "compilerfactory.h"
     #include "logmanager.h"
 #endif
 
-#include "globals_cygwin.h"
+#include "cygwin.h"
 
 // Keep a cache of all file paths converted from
 // Cygwin path into native path . Only applicable if under Windows and using Cygwin!
