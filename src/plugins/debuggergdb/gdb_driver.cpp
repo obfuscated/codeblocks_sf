@@ -12,13 +12,14 @@
 #include "gdb_commands.h"
 #include "debuggeroptionsdlg.h"
 #include "debuggerstate.h"
+
 #include <cbdebugger_interfaces.h>
+#include <configmanager.h>
+#include <cygwin.h>
+#include <globals.h>
+#include <infowindow.h>
 #include <manager.h>
 #include <macrosmanager.h>
-#include <configmanager.h>
-#include <globals.h>
-#include <globals_cygwin.h>
-#include <infowindow.h>
 
 // the ">>>>>>" is a hack: sometimes, especially when watching uninitialized char*
 // some random control codes in the stream (like 'delete') will mess-up our prompt and the debugger

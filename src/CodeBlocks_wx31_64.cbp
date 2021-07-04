@@ -779,6 +779,9 @@
 		<Unit filename="include/crc32.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/cygwin.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/debuggermanager.h">
 			<Option target="sdk" />
 		</Unit>
@@ -843,9 +846,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/globals.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/globals_cygwin.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/ibaseloader.h">
@@ -2334,6 +2334,9 @@
 		<Unit filename="sdk/crc32.cpp">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/cygwin.cpp">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/debuggermanager.cpp">
 			<Option target="sdk" />
 		</Unit>
@@ -2395,9 +2398,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/globals.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/globals_cygwin.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/importers_globals.cpp">
