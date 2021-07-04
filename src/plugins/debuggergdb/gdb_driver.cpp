@@ -17,24 +17,8 @@
 #include <macrosmanager.h>
 #include <configmanager.h>
 #include <globals.h>
+#include <globals_cygwin.h>
 #include <infowindow.h>
-
-#ifdef __WXMSW__
-    #include "globals_cygwin.h"
-
-    #include "cbproject.h"
-    #include "projectmanager.h"
-    #include "compilerfactory.h"
-
-    // for Registry detection of Cygwin
-    #include "wx/msw/wrapwin.h"     // Wraps windows.h
-    #include <wx/msw/registry.h>
-
-    // Keep a cache of all file paths converted from
-    // Cygwin path into native path . Only applicable if under Windows and using Cygwin!
-    static std::map<wxString, wxString> g_fileCache;
-
-#endif // __WXMSW__
 
 // the ">>>>>>" is a hack: sometimes, especially when watching uninitialized char*
 // some random control codes in the stream (like 'delete') will mess-up our prompt and the debugger
@@ -103,14 +87,8 @@ GDB_driver::GDB_driver(DebuggerGDB* plugin) :
     m_needsUpdate = false;
     m_forceUpdate = false;
 
-#ifdef __WXMSW__
-    // Only applicable for WX MS Windows
     if (platform::windows)
-    {
-        // Check if CygWin is configured in the project and detected
-        m_CygwinPresent = isDetectedCygwinCompiler();
-    }
-#endif // __WXMSW__
+        m_CygwinPresent = cbIsDetectedCygwinCompiler();
 }
 
 GDB_driver::~GDB_driver()
@@ -128,17 +106,16 @@ wxString GDB_driver::GetCommandLine(const wxString& debugger, const wxString& de
     cmd << _T(" -quiet");       // don't display version on startup
     cmd << wxT(" ") << userArguments;
 
-#ifdef __WXMSW__
-    // Only applicable for WX MS Windows and Cygwin compiler is present and project setup for Cygwin
+    wxString actualDebuggee;
     if (platform::windows && m_CygwinPresent)
     {
-        wxString debuggeeCygwin = debuggee.Clone();
-        GetCygwinPathFromWindowsPath(debuggeeCygwin);
-        cmd << _T(" -args ") << debuggeeCygwin;
+        actualDebuggee = debuggee;
+        cbGetCygwinPathFromWindowsPath(actualDebuggee);
     }
     else
-#endif // __WXMSW__
-        cmd << _T(" -args ") << debuggee;
+        actualDebuggee = debuggee;
+
+    cmd << _T(" -args ") << actualDebuggee;
     return cmd;
 }
 
@@ -715,7 +692,7 @@ void GDB_driver::ParseOutput(const wxString& output)
     // non-command messages (e.g. breakpoint hits)
     // break them up in lines
 
-    wxArrayString lines = GetArrayFromString(buffer, _T('\n'));
+    const wxArrayString lines = GetArrayFromString(buffer, _T('\n'));
     for (unsigned int i = 0; i < lines.GetCount(); ++i)
     {
         // log GDB's version
@@ -857,21 +834,10 @@ void GDB_driver::ParseOutput(const wxString& output)
                         lineStr = rePendingFound.GetMatch(bpstr, 2);
                     }
 
-#ifdef __WXMSW__
-                    // Only applicable for WX MS Windows
-
-                    // Check for possibility of debugging a cygwin compiled program and convert to valid Windows path
                     if (platform::windows && m_CygwinPresent)
-                    {
-                        // Log(_T("Pending breakpoint GetWindowsPathFromCygwinPath Before: ") + file);
-                        GetWindowsPathFromCygwinPath(file);
-                        // Log(_T("Pending breakpoint GetWindowsPathFromCygwinPath After:  ") + file);
-                    }
+                        cbGetWindowsPathFromCygwinPath(file);
                     else
-#endif // __WXMSW__
-                    {
                         file = UnixFilename(file);
-                    }
 
     //                m_pDBG->Log(wxString::Format(_T("file: %s, line: %s"), file.c_str(), lineStr.c_str()));
                     long line;
@@ -923,7 +889,7 @@ void GDB_driver::ParseOutput(const wxString& output)
         }
 
         // cursor change
-        else if (lines[i].StartsWith(g_EscapeChar)) // ->->
+        else if (!lines[i].empty() && lines[i][0] == wxUniChar(26)) // ->->
         {
             // breakpoint, e.g.
             // C:/Devel/tmp/test_console_dbg/tmp/main.cpp:14:171:beg:0x401428
@@ -941,18 +907,16 @@ void GDB_driver::ParseOutput(const wxString& output)
             //^Z^ZC:\dev\wxwidgets\wxWidgets-2.8.10\build\msw/../../src/common/imagall.cpp:29:961:beg:0x6f826722
             //>>>>>>cb_gdb:
 
-#ifdef __WXMSW__
-            // Only applicable for WX MS Windows
-            // Check for possibility of debugging a cygwin compiled program and convert to valid Windows path
+            wxString line;
             if (platform::windows && m_CygwinPresent)
             {
-                // Log(_T("cursor change GetWindowsPathFromCygwinPath Before: ") + lines[i]);
-                GetWindowsPathFromCygwinPath(lines[i]);
-                // Log(_T("cursor change GetWindowsPathFromCygwinPath After:  ") + lines[i]);
+                line = lines[i];
+                cbGetWindowsPathFromCygwinPath(line);
             }
-#endif // __WXMSW__
+            else
+                line = lines[i];
 
-            HandleMainBreakPoint(reBreak, lines[i]);
+            HandleMainBreakPoint(reBreak, line);
         }
         else
         {
@@ -1015,16 +979,8 @@ void GDB_driver::ParseOutput(const wxString& output)
                 m_needsUpdate = true;
             }
 
-#ifdef __WXMSW__
-            // Only applicable for WX MS Windows
-            // Check for possibility of debugging a cygwin compiled program and convert to valid Windows path when m_Cursor.file is not blank/empty
             if (isFileUpdated && platform::windows && m_CygwinPresent)
-            {
-                // Log(_T("m_Cursor.file GetWindowsPathFromCygwinPath Before: ") + m_Cursor.file);
-                GetWindowsPathFromCygwinPath(m_Cursor.file);
-                // Log(_T("m_Cursor.file GetWindowsPathFromCygwinPath After:  ") + m_Cursor.file);
-            }
-#endif // __WXMSW__
+                cbGetWindowsPathFromCygwinPath(m_Cursor.file);
         }
     }
     buffer.Clear();
@@ -1078,8 +1034,8 @@ void GDB_driver::HandleMainBreakPoint(const wxRegEx& reBreak_in, wxString line)
             }
             else
             {
-                // For debuging of usual linux application 'GetMatch(line, 1)' is empty.
-                // While for debuging of application under wine the name of the disk is useless.
+                // For debugging of usual linux application 'GetMatch(line, 1)' is empty.
+                // While for debugging of application under wine the name of the disk is useless.
                 m_Cursor.file = reBreak_in.GetMatch( line, 2);
             }
 
