@@ -910,6 +910,9 @@ void GDB_driver::ParseOutput(const wxString& output)
             wxString line;
             if (platform::windows && m_CygwinPresent)
             {
+                /// FIXME I think this is wrong... it is probably better to resolve cygwin names when we have an actual file name parsed!
+                /// FIXME I think this is wrong... it is probably better to resolve cygwin names when we have an actual file name parsed!
+                /// FIXME I think this is wrong... it is probably better to resolve cygwin names when we have an actual file name parsed!
                 line = lines[i];
                 cbGetWindowsPathFromCygwinPath(line);
             }

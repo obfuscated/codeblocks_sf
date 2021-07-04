@@ -135,12 +135,18 @@ static void GetCygwinPath(wxString& path, bool bWindowsPath)
     std::map<wxString, wxString>::const_iterator it = g_FileCache.find(path);
     if (it != g_FileCache.end())
     {
+        /// FIXME This would be wrong if bWindowsPath is different in two consecutive calls!!!
+        /// FIXME This would be wrong if bWindowsPath is different in two consecutive calls!!!
+        /// FIXME This would be wrong if bWindowsPath is different in two consecutive calls!!!
         path = it->second;
         return;
     }
     wxString pathOriginal = path;
     unsigned int EscCount=0;
 
+    /// FIXME This code is really questionable. We're supposed to handle paths not some random text with paths. This is something that must be handled by the caller!!!
+    /// FIXME This code is really questionable. We're supposed to handle paths not some random text with paths. This is something that must be handled by the caller!!!
+    /// FIXME This code is really questionable. We're supposed to handle paths not some random text with paths. This is something that must be handled by the caller!!!
     // preserve any escape characters at start of path - this is true for
     // breakpoints - value is 2, but made dynamic for safety as we
     // are only checking for the prefix not any further correctness
@@ -183,6 +189,9 @@ static void GetCygwinPath(wxString& path, bool bWindowsPath)
     {
         // Needed if debugging a Cygwin build app in codeblocks. Convert GDB cygwin filename to mingw filename!!!!
         // /cygdrive/x/... to c:/...
+        /// FIXME This could be done with substr...
+        /// FIXME This could be done with substr...
+        /// FIXME This could be done with substr...
         wxString tmpfilename  = PathWithoutEsc;
         tmpfilename.Remove(0,11);
 
@@ -202,6 +211,9 @@ static void GetCygwinPath(wxString& path, bool bWindowsPath)
             if (resultPath.StartsWith(wxT("/")) || !bWindowsPath)
             {
                 // Check if we already have the file cached before
+                /// FIXME This is useless because path has not been modified above... neither g_FileCache...
+                /// FIXME This is useless because path has not been modified above... neither g_FileCache...
+                /// FIXME This is useless because path has not been modified above... neither g_FileCache...
                 if (g_FileCache.find(path) != g_FileCache.end())
                     resultPath = g_FileCache.find(path)->second;
                 else
