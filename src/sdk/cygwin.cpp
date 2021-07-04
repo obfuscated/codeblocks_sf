@@ -136,33 +136,18 @@ bool cbIsDetectedCygwinCompiler(void)
 
 static void GetCygwinPath(wxString& path, bool bWindowsPath)
 {
+    // Append search type to the path for use in the g_FileCache cache
+    wxString cacheSearchPath = wxString::Format(_T("%s:%s"), path, bWindowsPath?"Windows":"Cygwin");
+
     // Check if we already have the file cached before
-    std::map<wxString, wxString>::const_iterator it = g_FileCache.find(path);
+    std::map<wxString, wxString>::const_iterator it = g_FileCache.find(cacheSearchPath);
     if (it != g_FileCache.end())
     {
         path = it->second;
         return;
     }
-    wxString pathOriginal = path;
-    unsigned int EscCount=0;
 
-    // preserve any escape characters at start of path - this is true for
-    // breakpoints - value is 2, but made dynamic for safety as we
-    // are only checking for the prefix not any further correctness
-    // Keep this code otherwise you will encounter strange debugging file issues.
-    const wxUniChar escapeChar(26);
-    if (path.GetChar(0) == escapeChar)
-    {
-        unsigned int i = 0;
-        while ((i < path.Len()) && (path.GetChar(i) == escapeChar))
-        {
-            EscCount++;
-            i++;
-        }
-    }
-    wxString PathWithoutEsc(path);
-    PathWithoutEsc.Remove(0, EscCount);
-    wxString resultPath = PathWithoutEsc;
+    wxString resultPath = path;
 
     // File Examples
     //   "C:\cygwin64\usr\include\ctype.h"
@@ -178,7 +163,7 @@ static void GetCygwinPath(wxString& path, bool bWindowsPath)
     //    "/sbin"
     //    other "/..."
 
-    // By default we use the 'resultPath' as our file name (esc removed).
+
     // As we are under Windows we check 'resultPath' to see if it starts with '/cygdrive' and
     // if it does then process the path as a cygwin path.
     // But if the path does not then check if the path/file exists and if it does then use it,
@@ -188,13 +173,7 @@ static void GetCygwinPath(wxString& path, bool bWindowsPath)
     {
         // Needed if debugging a Cygwin build app in codeblocks. Convert GDB cygwin filename to mingw filename!!!!
         // /cygdrive/x/... to c:/...
-        wxString tmpfilename  = PathWithoutEsc;
-        tmpfilename.Remove(0,11);
-
-        resultPath.Clear();
-        resultPath.Append(PathWithoutEsc[10]);
-        resultPath.Append(_T(":"));
-        resultPath.Append(tmpfilename);
+        resultPath = wxString::Format(_T("%c:%s"), path[10], path.Mid(11));
     }
     else
     {
@@ -206,39 +185,33 @@ static void GetCygwinPath(wxString& path, bool bWindowsPath)
             // to a valid Windows path.
             if (resultPath.StartsWith(wxT("/")) || !bWindowsPath)
             {
-                // Check if we already have the file cached before
-                if (g_FileCache.find(path) != g_FileCache.end())
-                    resultPath = g_FileCache.find(path)->second;
-                else
+                // file attribute also contains cygwin path
+                wxString cygwinConvertCMD = g_CygwinCompilerPathRoot + "\\bin\\cygpath.exe";
+                if (wxFileName::FileExists(cygwinConvertCMD))
                 {
-                    // file attribute also contains cygwin path
-                    wxString cygwinConvertCMD = g_CygwinCompilerPathRoot + "\\bin\\cygpath.exe";
-                    if (wxFileName::FileExists(cygwinConvertCMD))
+                    cygwinConvertCMD.Trim().Trim(false);
+                    // we got a conversion command from the user, use it
+                    if (bWindowsPath)
+                        cygwinConvertCMD.Append(wxT(" -w "));
+                    else
+                        cygwinConvertCMD.Append(wxT(" -u "));
+                    cygwinConvertCMD.Append(wxString::Format(wxT("%s"), resultPath.c_str()));
+
+                    wxArrayString cmdOutput;
+                    const long resExecute = wxExecute(_T("cmd /c ") + cygwinConvertCMD, cmdOutput, wxEXEC_SYNC, NULL );
+                    if ((resExecute== 0) && (!cmdOutput.IsEmpty()))
                     {
-                        cygwinConvertCMD.Trim().Trim(false);
-                        // we got a conversion command from the user, use it
-                        if (bWindowsPath)
-                            cygwinConvertCMD.Append(wxT(" -w "));
-                        else
-                            cygwinConvertCMD.Append(wxT(" -u "));
-                        cygwinConvertCMD.Append(wxString::Format(wxT("%s"), resultPath.c_str()));
+                        cmdOutput.Item(0).Trim().Trim(false);
+                        const wxString &outputPath = cmdOutput.Item(0);
 
-                        wxArrayString cmdOutput;
-                        const long resExecute = wxExecute(_T("cmd /c ") + cygwinConvertCMD, cmdOutput, wxEXEC_SYNC, NULL );
-                        if ((resExecute== 0) && (!cmdOutput.IsEmpty()))
-                        {
-                            cmdOutput.Item(0).Trim().Trim(false);
-                            const wxString &outputPath = cmdOutput.Item(0);
-
-                            // Check if path or file exists on the disk
-                            if ((wxDirExists(outputPath)) || (wxFileName::FileExists(outputPath)))
-                                resultPath = outputPath;
-                            else if (!bWindowsPath)
-                                resultPath = outputPath;
-                        }
-                        else
-                            Manager::Get()->GetLogManager()->DebugLog(wxString::Format(wxT("cygwinConvertCMD error: %d"), resExecute));
+                        // Check if path or file exists on the disk
+                        if ((wxDirExists(outputPath)) || (wxFileName::FileExists(outputPath)))
+                            resultPath = outputPath;
+                        else if (!bWindowsPath)
+                            resultPath = outputPath;
                     }
+                    else
+                        Manager::Get()->GetLogManager()->DebugLog(wxString::Format(wxT("cygwinConvertCMD error: %d"), resExecute));
                 }
             }
         }
@@ -250,15 +223,8 @@ static void GetCygwinPath(wxString& path, bool bWindowsPath)
         resultPath.Replace(wxT("/"), wxT("\\"));
     }
 
-    // Compile corrected path
-    path = wxString();
-    for (unsigned int i=0; i<EscCount; i++)
-        path += escapeChar;
-    path += resultPath;
-
-    // Add the file to the cache ( regardless of the validity of the result)
-    // If result is invalid then next time we do not do any checks, so it is faster!!!
-    g_FileCache[pathOriginal] = path;
+    path = resultPath;
+    g_FileCache[cacheSearchPath] = resultPath;
 }
 
 void cbGetWindowsPathFromCygwinPath(wxString& path)

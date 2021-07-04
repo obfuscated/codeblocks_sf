@@ -908,16 +908,7 @@ void GDB_driver::ParseOutput(const wxString& output)
             //^Z^ZC:\dev\wxwidgets\wxWidgets-2.8.10\build\msw/../../src/common/imagall.cpp:29:961:beg:0x6f826722
             //>>>>>>cb_gdb:
 
-            wxString line;
-            if (platform::windows && m_CygwinPresent)
-            {
-                line = lines[i];
-                cbGetWindowsPathFromCygwinPath(line);
-            }
-            else
-                line = lines[i];
-
-            HandleMainBreakPoint(reBreak, line);
+            HandleMainBreakPoint(reBreak, lines[i]);
         }
         else
         {
@@ -1032,6 +1023,8 @@ void GDB_driver::HandleMainBreakPoint(const wxRegEx& reBreak_in, wxString line)
             if (platform::windows)
             {
                 m_Cursor.file = reBreak_in.GetMatch(line, 1) + reBreak_in.GetMatch(line, 2);
+                if (m_CygwinPresent)
+                    cbGetWindowsPathFromCygwinPath(m_Cursor.file);
             }
             else
             {
