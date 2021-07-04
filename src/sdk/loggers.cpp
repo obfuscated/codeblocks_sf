@@ -368,8 +368,12 @@ void ListCtrlLogger::Append(const wxString& msg, Logger::level lv)
     int idx = control->GetItemCount();
 
     bool autoScroll = true;
+
+#if wxCHECK_VERSION(3, 1, 3)
     if (!control->IsVisible(idx -1))
         autoScroll = false;
+#endif
+
 
     control->Freeze();
     control->InsertItem(idx, msg);

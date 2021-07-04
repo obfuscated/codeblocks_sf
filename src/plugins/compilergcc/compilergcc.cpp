@@ -2951,6 +2951,9 @@ int CompilerGCC::KillProcess()
 
     m_CommandQueue.Clear();
 
+    ProjectManager *projectManager = Manager::Get()->GetProjectManager();
+    bool isRunning = projectManager->GetIsRunning() == this;
+
     for (CompilerProcess &p : m_CompilerProcessList)
     {
         if (!p.pProcess)
@@ -2965,7 +2968,23 @@ int CompilerGCC::KillProcess()
         ((PipedProcess*) p.pProcess)->ForfeitStreams();
 
         wxLogNull nullLog;
-        ret = wxProcess::Kill(p.PID, wxSIGKILL, wxKILL_CHILDREN);
+
+        if (isRunning)
+        {
+            // We are running a target, so just kill it to prevent any SIGTERM handlers to prevent
+            // the termination.
+            ret = wxProcess::Kill(p.PID, wxSIGKILL, wxKILL_CHILDREN);
+        }
+        else
+        {
+            // This is a compilation process and compilers generally don't prevent SIGTERM, in fact
+            // they handle it correctly and clean up file, so we're supposed to use SIGTERM on them.
+            // If we use SIGKILL they might leave some partially written files, partially written
+            // object files pretty bad, because they lead to broken incremental builds (the linking
+            // fails).
+            ret = wxProcess::Kill(p.PID, wxSIGTERM, wxKILL_CHILDREN);
+        }
+
 
         // According wxWidgets Documentation [1] OnTerminate is never called if we use
         // wxProcess::Kill. The pointer to the wxProcess object is used to check if the
@@ -3002,9 +3021,8 @@ int CompilerGCC::KillProcess()
         }
     }
 
-    ProjectManager *projectManager = Manager::Get()->GetProjectManager();
-    if (projectManager->GetIsRunning() == this)
-        projectManager->SetIsRunning(NULL);
+    if (isRunning)
+        projectManager->SetIsRunning(nullptr);
     return ret;
 }
 
@@ -4034,7 +4052,7 @@ void CompilerGCC::NotifyJobDone(bool showNothingToBeDone)
         // Check if this was a run operation and the application has been closed.
         // If this is the case we don't need to send cbEVT_COMPILER_FINISHED event.
         if (manager->GetIsRunning() == this)
-            manager->SetIsRunning(NULL);
+            manager->SetIsRunning(nullptr);
         else
         {
             CodeBlocksEvent evt(cbEVT_COMPILER_FINISHED, 0, m_pProject, 0, this);
