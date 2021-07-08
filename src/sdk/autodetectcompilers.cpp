@@ -66,10 +66,7 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
             {
                 // Here, some user-interaction is required not to show this
                 // dialog again on each new start-up of C::B.
-                if (path.IsEmpty())
-                    list->SetItem(idx, 1, _("Invalid MP"));
-                else
-                    list->SetItem(idx, 1, _("Invalid CFG"));
+                list->SetItem(idx, 1, _("Invalid"));
                 // So we better clearly HIGHLIGHT this entry:
                 highlight = 1;
             }
