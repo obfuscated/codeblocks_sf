@@ -52,6 +52,7 @@ static wxRegEx reSwitchFrame(wxT("[ \\t]*([0-9]+)[ \\t]([0-9a-z`]+)[ \\t](.+)[ \
 static wxRegEx reExamineMemoryLine(wxT("([0-9a-f`]+) ((( |-)[0-9a-f]{2}){1,16})"));
 
 // .  0  Id: 2d84.1ac0 Suspend: 1 Teb: 00fb3000 Unfrozen
+//    1  Id: 33e8.c6c Suspend: 1 Teb: 00f45000 Unfrozen
 static wxRegEx reThread("([.# ])  ([0-9]+) (.*)");
 
 // prv local  int la = 0n0
@@ -753,14 +754,14 @@ class CdbCmd_Threads : public DebuggerCmd
             DebuggerDriver::ThreadsContainer &threads = m_pDriver->GetThreads();
             threads.clear();
 
-            const wxArrayString lines = GetArrayFromString(output, '\n');
+            const wxArrayString lines = GetArrayFromString(output, '\n', false);
             for (size_t i = 0; i < lines.GetCount(); ++i)
             {
                 m_pDriver->Log(lines[i]);
                 if (reThread.Matches(lines[i]))
                 {
-                    wxString active = reThread.GetMatch(lines[i], 1);
-                    wxString num = reThread.GetMatch(lines[i], 2);
+                    const bool active = (reThread.GetMatch(lines[i], 1).Trim(false) == '.');
+                    const wxString num = reThread.GetMatch(lines[i], 2);
 
 #if defined(_WIN64)
                     long long int number;
@@ -769,11 +770,10 @@ class CdbCmd_Threads : public DebuggerCmd
                     long number;
                     num.ToLong(&number, 10);
 #endif
-
-                    const wxString info = reThread.GetMatch(lines[i], 3) + " " + lines[i + 1] +
-                                          " " + lines[2];
-                    threads.push_back(cb::shared_ptr<cbThread>(new cbThread(!active.empty(), number,
-                                                                            info)));
+                    const wxString info = reThread.GetMatch(lines[i], 3) + " " +
+                                          wxString(lines[i + 1]).Trim(false) + " " +
+                                          wxString(lines[i + 2]).Trim(false);
+                    threads.push_back(cb::shared_ptr<cbThread>(new cbThread(active, number, info)));
                 }
             }
             Manager::Get()->GetDebuggerManager()->GetThreadsDialog()->Reload();

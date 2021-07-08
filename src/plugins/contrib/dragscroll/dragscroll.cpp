@@ -249,7 +249,19 @@ void cbDragScroll::OnAttach()
         (wxCommandEventFunction) &cbDragScroll::OnWindowClose);
 
     // Catch External requests to support a window //(2021/06/25)
-    Connect(idDragScrollAddWindow,idDragScrollInvokeConfig, wxEVT_COMMAND_MENU_SELECTED,
+    Connect(idDragScrollAddWindow, wxEVT_COMMAND_MENU_SELECTED,
+        (wxObjectEventFunction) (wxEventFunction)
+        (wxCommandEventFunction) &cbDragScroll::OnDragScrollEvent_Dispatcher);
+    Connect(idDragScrollRemoveWindow, wxEVT_COMMAND_MENU_SELECTED,
+        (wxObjectEventFunction) (wxEventFunction)
+        (wxCommandEventFunction) &cbDragScroll::OnDragScrollEvent_Dispatcher);
+    Connect(idDragScrollRescan, wxEVT_COMMAND_MENU_SELECTED,
+        (wxObjectEventFunction) (wxEventFunction)
+        (wxCommandEventFunction) &cbDragScroll::OnDragScrollEvent_Dispatcher);
+    Connect(idDragScrollReadConfig, wxEVT_COMMAND_MENU_SELECTED,
+        (wxObjectEventFunction) (wxEventFunction)
+        (wxCommandEventFunction) &cbDragScroll::OnDragScrollEvent_Dispatcher);
+    Connect(idDragScrollInvokeConfig, wxEVT_COMMAND_MENU_SELECTED,
         (wxObjectEventFunction) (wxEventFunction)
         (wxCommandEventFunction) &cbDragScroll::OnDragScrollEvent_Dispatcher);
 
@@ -293,7 +305,19 @@ void cbDragScroll::OnRelease(bool /*appShutDown*/)
         (wxCommandEventFunction) &cbDragScroll::OnWindowClose);
 
     // Disconnect from External requests to support a window
-    Disconnect(idDragScrollAddWindow,idDragScrollInvokeConfig, wxEVT_COMMAND_MENU_SELECTED,
+    Disconnect(idDragScrollAddWindow, wxEVT_COMMAND_MENU_SELECTED,
+        (wxObjectEventFunction) (wxEventFunction)
+        (wxCommandEventFunction) &cbDragScroll::OnDragScrollEvent_Dispatcher);
+    Disconnect(idDragScrollRemoveWindow, wxEVT_COMMAND_MENU_SELECTED,
+        (wxObjectEventFunction) (wxEventFunction)
+        (wxCommandEventFunction) &cbDragScroll::OnDragScrollEvent_Dispatcher);
+    Disconnect(idDragScrollRescan, wxEVT_COMMAND_MENU_SELECTED,
+        (wxObjectEventFunction) (wxEventFunction)
+        (wxCommandEventFunction) &cbDragScroll::OnDragScrollEvent_Dispatcher);
+    Disconnect(idDragScrollReadConfig, wxEVT_COMMAND_MENU_SELECTED,
+        (wxObjectEventFunction) (wxEventFunction)
+        (wxCommandEventFunction) &cbDragScroll::OnDragScrollEvent_Dispatcher);
+    Disconnect(idDragScrollInvokeConfig, wxEVT_COMMAND_MENU_SELECTED,
         (wxObjectEventFunction) (wxEventFunction)
         (wxCommandEventFunction) &cbDragScroll::OnDragScrollEvent_Dispatcher);
 
