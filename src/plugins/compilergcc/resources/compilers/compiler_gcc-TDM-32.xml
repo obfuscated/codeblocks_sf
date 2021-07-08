@@ -7,6 +7,7 @@
     <Path type="master">
         <Search path="C:\TDM-GCC-32*"
             for="C"/>
+        <Fallback path="C:\TDM-GCC-32"/>
     </Path>
     <Path type="include">
         <Add><master/>\include</Add>

@@ -7,6 +7,7 @@
     <Path type="master">
         <Search path="C:\mingw-w64\mingw64*"
             for="C"/>
+        <Fallback path="C:\mingw-w64\mingw64"/>
     </Path>
     <Path type="include">
         <Add><master/>\include</Add>
