@@ -1385,7 +1385,7 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
     if (!w)
         cbThrow(_T("Passed NULL pointer to PlaceWindow."));
 
-    int the_mode;
+    int the_mode = int(mode);
 
     if (!enforce)
     {
