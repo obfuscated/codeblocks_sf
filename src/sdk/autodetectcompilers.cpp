@@ -34,9 +34,9 @@
 
 BEGIN_EVENT_TABLE(AutoDetectCompilers, wxScrollingDialog)
     EVT_UPDATE_UI(-1, AutoDetectCompilers::OnUpdateUI)
-    EVT_BUTTON(XRCID("btnSetDefaultCompiler"), AutoDetectCompilers::OnDefaultClick)
-    EVT_RADIOBOX(XRCID("rbCompilerShowOptions"), AutoDetectCompilers::OnCompilerDisplayOptionClickRadioButton)
-    EVT_CHECKBOX(XRCID("cbShowCompilerPath"), AutoDetectCompilers::OnCompilerPathDisplayOptionClickCheckBox)
+    EVT_BUTTON(XRCID("btnSetDefaultCompiler"), AutoDetectCompilers::OnDefaultCompilerClick)
+    EVT_RADIOBOX(XRCID("rbCompilerShowOptions"), AutoDetectCompilers::OnUdateCompilerListUI)
+    EVT_CHECKBOX(XRCID("cbShowCompilerPath"), AutoDetectCompilers::OnUdateCompilerListUI)
 END_EVENT_TABLE()
 
 AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
@@ -136,9 +136,9 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                 }
             }
 
-            CompilerList.push_back(cItem);
+            vCompilerList.push_back(cItem);
         }
-        updateCompilerDisplayList();
+        UpdateCompilerDisplayList();
     }
 
     XRCCTRL(*this, "lblDefCompiler", wxStaticText)->SetLabel(CompilerFactory::GetDefaultCompiler()->GetName());
@@ -149,28 +149,27 @@ AutoDetectCompilers::~AutoDetectCompilers()
     //dtor
 }
 
-void AutoDetectCompilers::OnDefaultClick(cb_unused wxCommandEvent& event)
+void AutoDetectCompilers::OnDefaultCompilerClick(cb_unused wxCommandEvent& event)
 {
     wxListCtrl* list = XRCCTRL(*this, "lcCompilers", wxListCtrl);
-    int idx = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-    if (idx != -1)
+    int idxList = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+    if (idxList != -1)
     {
-        CompilerFactory::SetDefaultCompiler(idx);
+        wxString wsSelection = list->GetItemText(idxList);
+        Compiler* compiler = CompilerFactory::GetCompilerByName(wsSelection);
+        int idxComiler = CompilerFactory::GetCompilerIndex(compiler);
+
+        CompilerFactory::SetDefaultCompiler(idxComiler);
         XRCCTRL(*this, "lblDefCompiler", wxStaticText)->SetLabel(CompilerFactory::GetDefaultCompiler()->GetName());
     }
 }
 
-void AutoDetectCompilers::OnCompilerDisplayOptionClickRadioButton(cb_unused wxCommandEvent& event)
+void AutoDetectCompilers::OnUdateCompilerListUI(cb_unused wxCommandEvent& event)
 {
-    updateCompilerDisplayList();
+    UpdateCompilerDisplayList();
 }
 
-void AutoDetectCompilers::OnCompilerPathDisplayOptionClickCheckBox(cb_unused wxCommandEvent& event)
-{
-    updateCompilerDisplayList();
-}
-
-void AutoDetectCompilers::updateCompilerDisplayList()
+void AutoDetectCompilers::UpdateCompilerDisplayList()
 {
     bool bShowCompilerPath= XRCCTRL(*this,"cbShowCompilerPath", wxCheckBox)->GetValue();
     bool bShowAllCompilerOptions = (XRCCTRL(*this, "rbCompilerShowOptions", wxRadioBox)->GetSelection() == 1);
@@ -179,28 +178,23 @@ void AutoDetectCompilers::updateCompilerDisplayList()
     if (list)
     {
         list->ClearAll();
-        list->InsertColumn(eCompilerNameColumn, _("Compiler"), wxLIST_FORMAT_LEFT, 380);
-        list->InsertColumn(eStatusColumn, _("Status"), wxLIST_FORMAT_LEFT, 100);
+        list->InsertColumn(ccnNameColumn, _("Compiler"), wxLIST_FORMAT_LEFT, 380);
+        list->InsertColumn(ccnStatusColumn, _("Status"), wxLIST_FORMAT_LEFT, 100);
 
         if (bShowCompilerPath)
-        {
-            list->InsertColumn(eCompilerPathColumn, _("Compiler Path"), wxLIST_FORMAT_LEFT, 200);
-        }
+            list->InsertColumn(ccnDetectedPathColumn, _("Compiler Path"), wxLIST_FORMAT_LEFT, 200);
 
-        for (auto itCL = std::begin(CompilerList); itCL != std::end(CompilerList); ++itCL)
+        for (auto itCL = std::begin(vCompilerList); itCL != std::end(vCompilerList); ++itCL)
         {
             if (bShowAllCompilerOptions && !itCL->bDetected)
-            {
                 continue;
-            }
 
             int idx = list->GetItemCount();
             list->InsertItem(idx, itCL->wxsCompilerName);
-            list->SetItem(idx, eStatusColumn, itCL->wxsStatus);
+            list->SetItem(idx, ccnStatusColumn, itCL->wxsStatus);
             if (bShowCompilerPath)
-            {
-                list->SetItem(idx, eCompilerPathColumn, itCL->wxsCompilerPath);
-            }
+                list->SetItem(idx, ccnDetectedPathColumn, itCL->wxsCompilerPath);
+
             switch(itCL->iHighlight)
             {
                 case 1:
@@ -213,12 +207,10 @@ void AutoDetectCompilers::updateCompilerDisplayList()
         }
 
         // Resize columns so one can read the whole stuff:
-        list->SetColumnWidth(eCompilerNameColumn, wxLIST_AUTOSIZE);
-        list->SetColumnWidth(eStatusColumn, wxLIST_AUTOSIZE);
+        list->SetColumnWidth(ccnNameColumn, wxLIST_AUTOSIZE);
+        list->SetColumnWidth(ccnStatusColumn, wxLIST_AUTOSIZE);
         if (bShowCompilerPath)
-        {
-            list->SetColumnWidth(eCompilerPathColumn, wxLIST_AUTOSIZE);
-        }
+            list->SetColumnWidth(ccnDetectedPathColumn, wxLIST_AUTOSIZE);
     }
 }
 
@@ -232,7 +224,7 @@ void AutoDetectCompilers::OnMouseMotion(wxMouseEvent& event)
     {
         wxListItem itm;
         itm.m_itemId = idx;
-        itm.m_col = eStatusColumn;
+        itm.m_col = ccnStatusColumn;
         itm.m_mask = wxLIST_MASK_TEXT;
         if (list->GetItem(itm))
             txt = itm.m_text;
@@ -241,7 +233,7 @@ void AutoDetectCompilers::OnMouseMotion(wxMouseEvent& event)
     {
         wxListItem itm;
         itm.m_itemId = idx;
-        itm.m_col = eCompilerNameColumn;
+        itm.m_col = ccnNameColumn;
         itm.m_mask = wxLIST_MASK_TEXT;
         if (list->GetItem(itm))
         {
@@ -270,7 +262,7 @@ void AutoDetectCompilers::OnUpdateUI(wxUpdateUIEvent& event)
     XRCCTRL(*this, "btnSetDefaultCompiler", wxButton)->Enable(en);
 
     wxString sDefaultCompiler = CompilerFactory::GetDefaultCompiler()->GetName();
-    for (auto itCL = std::begin(CompilerList); itCL != std::end(CompilerList); ++itCL)
+    for (auto itCL = std::begin(vCompilerList); itCL != std::end(vCompilerList); ++itCL)
     {
         // Find default compiler in the list.
         if (itCL->wxsCompilerName.IsSameAs(sDefaultCompiler))

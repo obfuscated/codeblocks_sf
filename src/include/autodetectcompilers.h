@@ -13,13 +13,12 @@ class wxUpdateUIEvent;
 
 class AutoDetectCompilers : public wxScrollingDialog
 {
-#if 1
     private:
-        enum PCHMode
+        enum CompilerColumnsNumber
         {
-            eCompilerNameColumn = 0,
-            eStatusColumn,
-            eCompilerPathColumn,
+            ccnNameColumn = 0,
+            ccnStatusColumn,
+            ccnDetectedPathColumn,
         };
 
         struct CompilerItem
@@ -30,17 +29,16 @@ class AutoDetectCompilers : public wxScrollingDialog
             int iHighlight;
             bool bDetected;
         };
-        std::vector<CompilerItem> CompilerList;
+        std::vector<CompilerItem> vCompilerList;
 
-		void updateCompilerDisplayList();
-#endif
+		void UpdateCompilerDisplayList();
+
 	public:
 		AutoDetectCompilers(wxWindow* parent);
 		~AutoDetectCompilers() override;
 
-		void OnDefaultClick(wxCommandEvent& event);
-		void OnCompilerDisplayOptionClickRadioButton(wxCommandEvent& event);
-		void OnCompilerPathDisplayOptionClickCheckBox(wxCommandEvent& event);
+		void OnDefaultCompilerClick(wxCommandEvent& event);
+		void OnUdateCompilerListUI(wxCommandEvent& event);
 		void OnMouseMotion(wxMouseEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
 	private:
