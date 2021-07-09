@@ -3,14 +3,12 @@
 	<object class="wxScrollingDialog" name="dlgAutoDetectCompilers">
 		<title>Compilers auto-detection</title>
 		<centered>1</centered>
-		<size>900,407</size>
 		<style>wxCAPTION|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
 		<object class="wxBoxSizer">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
 				<object class="wxStaticText" name="ID_STATICTEXT2">
-					<label>Note: After auto-detection, either the default compiler was not detected or at least one compiler&apos;s master path is still empty and therefore invalid.&#x0A;Inspect the list below and select another default compiler if it was not found or and change the compiler&apos;s master path later in the compiler options if the compiler is invalid.&#x0A;Select you favourite default compiler here:</label>
-					<size>907,59</size>
+					<label>Note: After auto-detection, either the default compiler was not detected or at least none compiler&apos;s master&#x0A;path is still empty and therefore invalid. Inspect the list below and select another default compiler if it &#x0A;was not found or and change the compiler&apos;s master path later in the compiler options if the compiler is invalid.&#x0A;Select you favourite default compiler here:</label>
 				</object>
 				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
@@ -24,23 +22,21 @@
 					<growablerows>0</growablerows>
 					<object class="sizeritem">
 						<object class="wxListCtrl" name="lcCompilers">
-							<size>523,200</size>
-							<style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
+							<style>wxLC_REPORT|wxLC_SINGLE_SEL|wxVSCROLL|wxHSCROLL</style>
 						</object>
-						<flag>wxEXPAND|wxFIXED_MINSIZE</flag>
+						<flag>wxEXPAND</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxGridSizer">
 							<cols>1</cols>
 							<rows>3</rows>
-							<vgap>10</vgap>
 							<object class="sizeritem">
 								<object class="wxButton" name="btnSetDefaultCompiler">
 									<label>Set as default</label>
 									<pos>-1,-1</pos>
 									<size>-1,-1</size>
 								</object>
-								<flag>wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+								<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -52,18 +48,18 @@
 									</content>
 									<default>1</default>
 								</object>
-								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
+								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
 								<object class="wxCheckBox" name="cbShowCompilerPath">
 									<label>Show Path</label>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT</flag>
+								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxALL|wxEXPAND</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -101,10 +97,8 @@
 			<object class="sizeritem">
 				<object class="wxBoxSizer">
 					<object class="sizeritem">
-						<object class="wxButton" name="wxID_OK">
-							<size>-1,-1</size>
-				</object>
-				<flag>wxALL|wxEXPAND</flag>
+						<object class="wxButton" name="wxID_OK" />
+						<flag>wxALIGN_LEFT</flag>
 					</object>
 				</object>
 				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
