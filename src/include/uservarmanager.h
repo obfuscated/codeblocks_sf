@@ -14,6 +14,15 @@
     #include "globals.h"
 #endif
 
+class UserVarManagerUI
+{
+public:
+    virtual ~UserVarManagerUI() {};
+    virtual void DisplayInfoWindow(const wxString &title,const wxString &msg) = 0;
+    virtual void OpenEditWindow(const wxArrayString &var = wxArrayString()) = 0;
+    virtual wxString GetVariable(wxWindow* parent, const wxString &old) = 0;
+};
+
 class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
 {
         friend class Manager;
@@ -24,8 +33,14 @@ class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
         wxString        m_ActiveSet;
         wxArrayString   m_Preempted;
 
+        UserVarManagerUI* m_ui;
+
+
     public:
         UserVariableManager();
+        ~UserVariableManager();
+
+        void SetUI(UserVarManagerUI* ui);
 
         wxString Replace(const wxString& variable);
 
@@ -40,6 +55,19 @@ class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
 
         UserVariableManager& operator=(const UserVariableManager&) = delete;
         UserVariableManager(const UserVariableManager&) = delete;
+
+        static const wxString cBase;
+        static const wxString cDir;
+        static const wxChar   cSlash;
+        static const wxString cSlashBase;
+        static const wxString cInclude;
+        static const wxString cLib;
+        static const wxString cObj;
+        static const wxString cBin;
+        static const wxString cCflags;
+        static const wxString cLflags;
+        static const wxString cSets;
+        static const wxArrayString builtinMembers;
 };
 
 #endif // USER_VARIABLE_MANAGER_H

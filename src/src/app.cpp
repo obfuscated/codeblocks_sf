@@ -48,6 +48,7 @@
 #include "crashhandler.h"
 #include "projectmanagerui.h"
 #include "splashscreen.h"
+#include "uservardlgs.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
     #include <sys/param.h>
@@ -729,6 +730,9 @@ bool CodeBlocksApp::OnInit()
                 return false;
             }
         }
+
+        if (!m_Batch)
+            Manager::Get()->GetUserVariableManager()->SetUI(new UserVarManagerGUI());
 
         // Splash screen moved to this place, otherwise it would be short visible, even if we only pass filenames via DDE/IPC
         // we also don't need it, if only a single instance is allowed

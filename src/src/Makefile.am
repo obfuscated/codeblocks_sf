@@ -63,6 +63,7 @@ codeblocks_SOURCES = app.cpp \
 			startherepage.cpp \
 			switcherdlg.cpp \
 			threadsdlg.cpp \
+			uservardlgs.cpp \
 			virtualbuildtargetsdlg.cpp \
 			watchesdlg.cpp
 
@@ -102,6 +103,7 @@ noinst_HEADERS = app.h \
 			startherepage.h \
 			switcherdlg.h \
 			threadsdlg.h \
+			uservardlgs.h \
 			virtualbuildtargetsdlg.h \
 			watchesdlg.h
 
