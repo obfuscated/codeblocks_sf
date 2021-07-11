@@ -98,7 +98,6 @@
 				<object class="wxBoxSizer">
 					<object class="sizeritem">
 						<object class="wxButton" name="wxID_OK" />
-						<flag>wxALIGN_LEFT</flag>
 					</object>
 				</object>
 				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>

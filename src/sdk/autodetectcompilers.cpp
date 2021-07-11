@@ -130,6 +130,12 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                 // Check, if the master path is valid:
                 if ( !path.IsEmpty() && wxFileName::DirExists(path_no_macros) )
                 {
+                    cItem.wxsStatus = _("User-defined");
+                    cItem.bDetected = true;
+                    cItem.iHighlight = 0;
+                }
+                else
+                {
                     cItem.wxsStatus = _("User-defined masterpath issue");
                     cItem.bDetected = false;
                     cItem.iHighlight = 0;
