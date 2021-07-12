@@ -188,6 +188,27 @@ Compiler* CompilerFactory::CreateCompilerCopy(Compiler* compiler, const wxString
     return newC; // return the index for the new compiler
 }
 
+bool CompilerFactory::RenameCompiler(Compiler* compiler, const wxString& newName)
+{
+    if (!compiler || newName.IsEmpty())
+        return false;
+
+    // abort if an existing compiler with the same name exists
+    // this also avoids the possibility of throwing an exception
+    // in the compiler->CreateCopy() call below...
+    for (size_t i = 0; i < Compilers.GetCount(); ++i)
+    {
+        if (Compilers[i]->GetName() == newName)
+            return false;
+    }
+
+    Compiler::m_CompilerIDs.Remove(compiler->GetID());
+    compiler->SetName(newName);
+    compiler->m_ID = newName;
+    compiler->MakeValidID();
+    return true;
+}
+
 void CompilerFactory::RemoveCompiler(Compiler* compiler)
 {
     if (!compiler || compiler->m_ParentID.IsEmpty())

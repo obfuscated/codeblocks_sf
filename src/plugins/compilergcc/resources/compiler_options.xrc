@@ -7,6 +7,15 @@
 				<object class="wxBoxSizer">
 					<object class="sizeritem">
 						<object class="wxTreeCtrl" name="tcScope">
+							<image_list></image_list>
+							<tree_items>
+								<item>TreeCtrl1</item>
+								<item></item>
+							</tree_items>
+							<items_text>
+								<item2>TreeCtrl1</item2>
+								<item2></item2>
+							</items_text>
 							<style>wxTR_NO_BUTTONS|wxTR_SINGLE</style>
 						</object>
 						<flag>wxRIGHT|wxEXPAND</flag>
@@ -29,6 +38,17 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxBoxSizer">
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="cbShowDetectedOnly">
+														<label>Show Detected Only</label>
+														<checked>1</checked>
+													</object>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
+												</object>
+												<object class="spacer">
+													<flag>wxALIGN_TOP</flag>
+													<size>24,-1</size>
+												</object>
 												<object class="sizeritem">
 													<object class="wxButton" name="btnSetDefaultCompiler">
 														<label>Set as default</label>
@@ -139,6 +159,8 @@
 																	<orient>wxVERTICAL</orient>
 																	<object class="sizeritem">
 																		<object class="unknown" name="pgCompilerFlags">
+																			<style></style>
+																			<style></style>
 																		</object>
 																		<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 																		<border>5</border>
@@ -384,6 +406,7 @@
 																<selection>0</selection>
 																<help>This option controls which executable would be used for linking. Auto detect means that C++ compiler would be used for C++ projects and C compiler for C projects.</help>
 															</object>
+															<flag>wxALIGN_LEFT</flag>
 															<border>5</border>
 															<option>1</option>
 														</object>

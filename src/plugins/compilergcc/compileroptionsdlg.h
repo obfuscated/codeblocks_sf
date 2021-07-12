@@ -36,6 +36,12 @@ class CompilerOptionsDlg : public cbConfigurationPanel
         void OnApply() override;
         void OnCancel() override {}
     private:
+        struct CompilerItem
+        {
+            wxString wxsCompilerName;
+            bool bDetected;
+        };
+
         enum CustomVarActionType
         {
             CVA_Add,
@@ -51,7 +57,10 @@ class CompilerOptionsDlg : public cbConfigurationPanel
         };
         void TextToOptions();
         void OptionsToText();
+        int  GetSelectedCompilerListCompilerID();
+        void DoFillCompilerList();
         void DoFillCompilerSets(int compilerIdx);
+        void OnShowCompilerDetectedOnlyClick(cb_unused wxCommandEvent& event);
         void DoFillCompilerPrograms();
         void DoFillVars();
         void DoFillOthers();
@@ -135,6 +144,8 @@ class CompilerOptionsDlg : public cbConfigurationPanel
 
         bool                         m_BuildingTree;                 //!< flag to ignore tree changing events while building it
         static int                   m_MenuOption;
+
+        std::vector<CompilerItem>    m_vCompilerList;
 
         DECLARE_EVENT_TABLE()
 };
