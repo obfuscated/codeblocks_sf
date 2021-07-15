@@ -381,6 +381,36 @@ class DLLIMPORT DebuggerManager : public Mgr<DebuggerManager>
         int m_loggerIndex;
         bool m_isDisassemblyMixedMode;
         bool m_useTargetsDefault;
+
+    public:
+        /// Struct to keep Compiler debugger
+        struct CompilerDebuggerOptions
+        {
+            bool cdoValidData;              // This structure contains data
+            wxString cdoCompilerMasterPath;
+            wxString cdoCompilerIDName;     // Compiler ID from compiler*.XML file
+            wxString cdoDebuggerConfigurationName;   // Name of the debugger configuration
+            wxString cdoExecutablePath;     // Options:
+                                            //   a) FileName of the debugger program, which uses the master path bin directory to find the file
+                                            //   b) Fully qualified FileName including directory. If it is not in this directory then the master path is used to try and find the file
+            wxString cdoUserArguments;      // Executable arguments
+            wxString cdoType;               // GDB or CDB
+            wxString cdoInitCommands;       // Debugger initialization commands
+            bool cdoDisableInit;            // Disables auto loading of start-up scripts (.gdbinit)
+            bool cdoWatchArgs;              // Automatic watches are added for the current function's arguments
+            bool cdoWatchLocals;            // Automatic watches are added for all the local variables of the current function
+            bool cdoCatchExceptions;        // Catch C++ exceptions
+            bool cdoEvalExpressionAsTooltip;// While debugging, leaving the mouse over a variable (or the selection) evaluates it in a tooltip
+            bool cdoAddOtherSearchDirs;     // If enabled, the other open projects' paths will be added in the debugger's search list
+            bool cdoDoNoRunDebuggee;        // If enabled, the debugger will not a send a run or continue command
+            wxString cdoDisassemblyFlavor;  // Options:  "System default" or "ATandT" or "Intel" or "Custom" where "System default" is "ATandT" for Windows otherwise it is "Intel"
+            wxString cdoInstructionSet;     // Disassembly custom instruction set
+        };
+
+        void SaveDebuggerConfigOptions(CompilerDebuggerOptions & cdoConfiguation);
+
+    private:
+        CompilerDebuggerOptions m_cdoConfiguation;
 };
 
 #endif // X_DEBUGGER_MANAGER_H

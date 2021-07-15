@@ -106,6 +106,23 @@ Compiler::Compiler(const wxString& name, const wxString& ID, const wxString& par
     m_VersionString = wxString();
     m_Weight = weight;
     m_RegExes.reserve(100);
+
+    m_cdoConfiguation.cdoValidData                  = false;
+    m_cdoConfiguation.cdoCompilerIDName             = m_ID;
+    m_cdoConfiguation.cdoExecutablePath             = _T("gdb.exe");
+    m_cdoConfiguation.cdoUserArguments              = _T("");
+    m_cdoConfiguation.cdoType                       = _T("GDB");
+    m_cdoConfiguation.cdoInitCommands               = _T("");
+    m_cdoConfiguation.cdoDisableInit                = true;
+    m_cdoConfiguation.cdoWatchArgs                  = true;
+    m_cdoConfiguation.cdoWatchLocals                = true;
+    m_cdoConfiguation.cdoCatchExceptions            = true;
+    m_cdoConfiguation.cdoEvalExpressionAsTooltip    = false;
+    m_cdoConfiguation.cdoAddOtherSearchDirs         = false;
+    m_cdoConfiguation.cdoDoNoRunDebuggee            = false;
+    m_cdoConfiguation.cdoDisassemblyFlavor          = _T("System default");
+    m_cdoConfiguation.cdoInstructionSet             = _T("");
+
     Manager::Get()->GetLogManager()->DebugLog(F(_T("Added compiler \"%s\""), m_Name.wx_str()));
 }
 
@@ -148,6 +165,24 @@ Compiler::Compiler(const Compiler& other) :
 
     m_Valid = other.m_Valid;
     m_NeedValidityCheck = other.m_NeedValidityCheck;
+
+    m_cdoConfiguation.cdoValidData                  = false;
+    m_cdoConfiguation.cdoCompilerIDName             = m_ID;
+    m_cdoConfiguation.cdoExecutablePath             = _T("gdb.exe");
+    m_cdoConfiguation.cdoUserArguments              = _T("");
+    m_cdoConfiguation.cdoType                       = _T("GDB");
+    m_cdoConfiguation.cdoInitCommands               = _T("");
+    m_cdoConfiguation.cdoDisableInit                = true;
+    m_cdoConfiguation.cdoWatchArgs                  = true;
+    m_cdoConfiguation.cdoWatchLocals                = true;
+    m_cdoConfiguation.cdoCatchExceptions            = true;
+    m_cdoConfiguation.cdoEvalExpressionAsTooltip    = false;
+    m_cdoConfiguation.cdoAddOtherSearchDirs         = false;
+    m_cdoConfiguation.cdoDoNoRunDebuggee            = false;
+    m_cdoConfiguation.cdoDisassemblyFlavor          = _T("System default");
+    m_cdoConfiguation.cdoInstructionSet             = _T("");
+
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Added compiler \"%s\""), m_Name.wx_str()));
 }
 
 Compiler::~Compiler()
@@ -894,7 +929,26 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
                 m_Mirror.Programs.LD = value;
             }
             else if (prog == wxT("DBGconfig"))
-                m_Programs.DBGconfig = value;
+            {
+                // Check if the DBGconfig is of the format <plugin name>:<debugger config name>
+                if (value.Find(':') == wxNOT_FOUND)
+                {
+                    if (value.IsEmpty())
+                    {
+                        m_Programs.DBGconfig = wxString::Format(wxT("NoPlugin:%s"), m_cdoConfiguation.cdoCompilerIDName);;
+                    }
+                    else
+                    {
+                        m_Programs.DBGconfig = wxString::Format(wxT("%s:%s"),value, m_cdoConfiguation.cdoCompilerIDName);;
+                    }
+                    m_cdoConfiguation.cdoDebuggerConfigurationName = m_Programs.DBGconfig;
+                }
+                else
+                {
+                    m_Programs.DBGconfig = value;
+                    m_cdoConfiguation.cdoDebuggerConfigurationName = value;
+                }
+            }
             else if (prog == wxT("LIB"))
             {
                 m_Programs.LIB = cfg->Read(cmpKey + wxT("/lib_linker"), value);
@@ -1071,6 +1125,39 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
         {
             LoadDefaultOptions(wxT("common_") + node->GetAttribute(wxT("name"), wxString()), recursion + 1);
         }
+        else if (node->GetName() == wxT("debugger"))
+        {
+            wxString debugName = node->GetAttribute(wxT("name"), wxString());
+            if (debugName == wxT("executable_path"))
+            {
+                m_cdoConfiguation.cdoValidData = true;
+                m_cdoConfiguation.cdoExecutablePath = value;
+            }
+            else if (debugName == wxT("user_arguments"))
+                m_cdoConfiguation.cdoUserArguments = value;
+            else if (debugName == wxT("type"))
+                m_cdoConfiguation.cdoType = value;
+            else if (debugName == wxT("init_commands"))
+                m_cdoConfiguation.cdoInitCommands = value;
+            else if (debugName == wxT("disable_init"))
+                m_cdoConfiguation.cdoDisableInit =  (value == wxT("true"));
+            else if (debugName == wxT("watch_args"))
+                m_cdoConfiguation.cdoWatchArgs =  (value == wxT("true"));
+            else if (debugName == wxT("watch_locals"))
+                m_cdoConfiguation.cdoWatchLocals =  (value == wxT("true"));
+            else if (debugName == wxT("catch_exceptions"))
+                m_cdoConfiguation.cdoCatchExceptions = (value == wxT("true"));
+            else if (debugName == wxT("eval_expression_as_tooltip"))
+                m_cdoConfiguation.cdoEvalExpressionAsTooltip = (value == wxT("true"));
+            else if (debugName == wxT("add_other_search_dirs"))
+                m_cdoConfiguation.cdoAddOtherSearchDirs = (value == wxT("true"));
+            else if (debugName == wxT("do_not_run_debuggee"))
+                m_cdoConfiguation.cdoDoNoRunDebuggee = (value == wxT("true"));
+            else if (debugName == wxT("disassembly_flavor"))
+                m_cdoConfiguation.cdoDisassemblyFlavor = value;
+            else if (debugName == wxT("instruction_set"))
+                m_cdoConfiguation.cdoInstructionSet = value;
+        }
         while (!node->GetNext() && depth > 0)
         {
             node = node->GetParent();
@@ -1091,6 +1178,13 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
         m_Programs.LIB     = m_Mirror.Programs.LIB;
         m_Programs.WINDRES = m_Mirror.Programs.WINDRES;
         m_Programs.MAKE    = m_Mirror.Programs.MAKE;
+
+        if (m_cdoConfiguation.cdoValidData == true)
+        {
+            AutoDetectInstallationDir();
+            m_cdoConfiguation.cdoCompilerMasterPath = m_MasterPath;
+            Manager::Get()->GetDebuggerManager()->SaveDebuggerConfigOptions(m_cdoConfiguation);
+        }
     }
 }
 

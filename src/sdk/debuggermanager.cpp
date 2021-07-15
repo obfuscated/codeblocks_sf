@@ -28,6 +28,7 @@
     #include "configmanager.h"
     #include "editormanager.h"
     #include "logmanager.h"
+    #include "macrosmanager.h"
     #include "projectmanager.h"
 #endif
 
@@ -1424,4 +1425,101 @@ void DebuggerManager::OnPluginLoadingComplete(cb_unused CodeBlocksEvent& event)
         m_useTargetsDefault = true;
         FindTargetsDebugger();
     }
+}
+
+void DebuggerManager::SaveDebuggerConfigOptions(CompilerDebuggerOptions & cdoConfiguation)
+{
+    Manager::Get()->GetLogManager()->Log(_("cdoConfiguation:"));
+    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoDebuggerConfigurationName %s"), cdoConfiguation.cdoDebuggerConfigurationName));
+    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoCompilerIDName %s"), cdoConfiguation.cdoCompilerIDName));
+    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoExecutablePath %s"), cdoConfiguation.cdoExecutablePath));
+    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoUserArguments %s"), cdoConfiguation.cdoUserArguments));
+    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoType %s"), cdoConfiguation.cdoType));
+    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoInitCommands %s"), cdoConfiguation.cdoInitCommands));
+    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoDisableInit %s"), cdoConfiguation.cdoDisableInit?"true":"false"));
+    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoWatchArgs %s"), cdoConfiguation.cdoWatchArgs?"true":"false"));
+    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoWatchLocals %s"), cdoConfiguation.cdoWatchLocals?"true":"false"));
+    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoCatchExceptions %s"), cdoConfiguation.cdoCatchExceptions?"true":"false"));
+    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoEvalExpressionAsTooltip %s"), cdoConfiguation.cdoEvalExpressionAsTooltip?"true":"false"));
+    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoAddOtherSearchDirs %s"), cdoConfiguation.cdoAddOtherSearchDirs?"true":"false"));
+    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoDoNoRunDebuggee %s"), cdoConfiguation.cdoDoNoRunDebuggee?"true":"false"));
+    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoDisassemblyFlavor %s"), cdoConfiguation.cdoDisassemblyFlavor));
+    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoInstructionSet %s"), cdoConfiguation.cdoInstructionSet));
+    printf("break here");
+
+    ConfigManager *config = Manager::Get()->GetConfigManager(wxT("debugger_common"));
+    int iOffset = cdoConfiguation.cdoDebuggerConfigurationName.Find(':');
+
+    wxString wxPluginName = wxT("NoPlugin");
+    wxString wxDebugConfigName = wxT("");
+    if (iOffset == wxNOT_FOUND)
+    {
+        if (!cdoConfiguation.cdoDebuggerConfigurationName.IsEmpty())
+        {
+            wxPluginName = cdoConfiguation.cdoDebuggerConfigurationName;
+        }
+        wxDebugConfigName = cdoConfiguation.cdoCompilerIDName;
+    }
+    else
+    {
+        wxPluginName = cdoConfiguation.cdoDebuggerConfigurationName.Left(iOffset);
+        wxDebugConfigName = cdoConfiguation.cdoDebuggerConfigurationName.Mid(iOffset+1);
+    }
+
+    wxString setPath = wxString::Format(wxT("/sets/%s"),wxPluginName);
+    wxArrayString configs = config->EnumerateSubPaths(setPath);
+    configs.Sort();
+
+    bool bFoundConfigName = false;
+    for (size_t jj = 0; jj < configs.Count(); ++jj)
+    {
+        wxString name = config->Read(wxString::Format(wxT("%s/%s/name"), setPath, configs[jj]));;
+        if (name.IsSameAs(cdoConfiguation.cdoCompilerIDName) || name.IsSameAs(wxDebugConfigName))
+            bFoundConfigName = true;
+    }
+    if (bFoundConfigName == false)
+    {
+        wxString pathDebuggerEntry = wxString::Format(wxT("/sets/%s/conf%llu"), wxPluginName.wx_str() , configs.Count()+1);
+
+        config->Write(pathDebuggerEntry + wxT("/name"),                         cdoConfiguation.cdoCompilerIDName);
+        wxString wsTryTmpPath = wxString::Format(wxT("%s"),  cdoConfiguation.cdoExecutablePath);
+        wsTryTmpPath = UnixFilename(wsTryTmpPath, wxPATH_NATIVE);
+        if (cdoConfiguation.cdoCompilerMasterPath.IsEmpty() || wxFileExists(wsTryTmpPath))
+        {
+            config->Write(wxString::Format(wxT("%s/values/executable_path"), pathDebuggerEntry), wsTryTmpPath);
+        }
+        else
+        {
+            wsTryTmpPath = wxString::Format(wxT("%s\\bin\\%s"),  cdoConfiguation.cdoCompilerMasterPath, cdoConfiguation.cdoExecutablePath);
+            wsTryTmpPath = UnixFilename(wsTryTmpPath, wxPATH_NATIVE);
+            MacrosManager *macros = Manager::Get()->GetMacrosManager();
+            macros->ReplaceMacros(wsTryTmpPath);
+            if (wxFileExists(wsTryTmpPath))
+                config->Write(wxString::Format(wxT("%s/values/executable_path"), pathDebuggerEntry), wsTryTmpPath);
+            else
+            {
+                wsTryTmpPath = wxString::Format(wxT("%s/%s"),  cdoConfiguation.cdoCompilerMasterPath, cdoConfiguation.cdoExecutablePath);
+                wsTryTmpPath = UnixFilename(wsTryTmpPath, wxPATH_NATIVE);
+                macros->ReplaceMacros(wsTryTmpPath);
+                if (wxFileExists(wsTryTmpPath))
+                    config->Write(wxString::Format(wxT("%s/values/executable_path"), pathDebuggerEntry), wsTryTmpPath);
+                else
+                    config->Write(wxString::Format(wxT("%s/values/executable_path"), pathDebuggerEntry), cdoConfiguation.cdoExecutablePath);
+            }
+        }
+        config->Write(pathDebuggerEntry + wxT("/values/user_arguments"),         cdoConfiguation.cdoUserArguments);;
+        config->Write(pathDebuggerEntry + wxT("/values/type"),                   cdoConfiguation.cdoType);
+        config->Write(pathDebuggerEntry + wxT("/values/init_commands"),          cdoConfiguation.cdoInitCommands);
+        config->Write(pathDebuggerEntry + wxT("/values/disable_init"),           cdoConfiguation.cdoDisableInit?"true":"false");
+        config->Write(pathDebuggerEntry + wxT("/values/watch_args"),             cdoConfiguation.cdoWatchArgs?"true":"false");
+        config->Write(pathDebuggerEntry + wxT("/values/watch_locals"),           cdoConfiguation.cdoWatchLocals?"true":"false");
+        config->Write(pathDebuggerEntry + wxT("/values/catch_exceptions"),       cdoConfiguation.cdoCatchExceptions?"true":"false");
+        config->Write(pathDebuggerEntry + wxT("/values/eval_tooltip"),           cdoConfiguation.cdoEvalExpressionAsTooltip?"true":"false");
+        config->Write(pathDebuggerEntry + wxT("/values/add_other_search_dirs"),  cdoConfiguation.cdoAddOtherSearchDirs?"true":"false");
+        config->Write(pathDebuggerEntry + wxT("/values/do_not_run"),             cdoConfiguation.cdoDoNoRunDebuggee?"true":"false");
+        config->Write(pathDebuggerEntry + wxT("/values/disassembly_flavor"),     cdoConfiguation.cdoDisassemblyFlavor);
+        config->Write(pathDebuggerEntry + wxT("/values/instruction_set"),        cdoConfiguation.cdoInstructionSet);
+    }
+
+    m_cdoConfiguation = cdoConfiguation;
 }

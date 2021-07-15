@@ -15,6 +15,7 @@
 #include <wx/regex.h>
 #include "compileoptionsbase.h"
 #include "compileroptions.h"
+#include "debuggermanager.h"
 
 class CompilerCommandGenerator;
 class cbProject;
@@ -415,6 +416,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         CompilerPrograms    m_Programs;
         CompilerSwitches    m_Switches;
         CompilerOptions     m_Options;
+        DebuggerManager::CompilerDebuggerOptions m_cdoConfiguation;
         RegExArray          m_RegExes;
         wxString            m_ErrorFilename;
         wxString            m_ErrorLine;
