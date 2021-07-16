@@ -279,9 +279,10 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         Compiler(const wxString& name, const wxString& ID, const wxString& parentID = wxEmptyString, int weight = 50);
         ~Compiler() override;
 
+        /** @brief Complete any compiler set-up that requires access to virtual functions. */
+        virtual void PostRegisterCompilerSetup() ;
         /** @brief Check if the compiler is actually valid (installed). */
         virtual bool IsValid();
-
         /** @brief Check if the supplied string is a compiler warning/error */
         virtual CompilerLineType CheckForWarningsAndErrors(const wxString& line);
         /** @brief Returns warning/error filename. Use it after a call to CheckForWarningsAndErrors() */

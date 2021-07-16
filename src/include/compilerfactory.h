@@ -48,6 +48,8 @@ class DLLIMPORT CompilerFactory
         static void RegisterCompiler(Compiler* compiler);
         /// Register all user-defined compiler copies.
         static void RegisterUserCompilers();
+        /// Called after all of the compilers have been registered
+        static void PostRegisterCompilerSetup();
         /// Create a copy of a compiler.
         static Compiler* CreateCompilerCopy(Compiler* compiler, const wxString& newName);
         /// Remove a compiler.

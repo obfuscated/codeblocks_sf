@@ -108,6 +108,7 @@ Compiler::Compiler(const wxString& name, const wxString& ID, const wxString& par
     m_RegExes.reserve(100);
 
     m_cdoConfiguation.cdoValidData                  = false;
+    m_cdoConfiguation.cdoCompilerMasterPath         = _T("");
     m_cdoConfiguation.cdoCompilerIDName             = m_ID;
     m_cdoConfiguation.cdoExecutablePath             = _T("gdb.exe");
     m_cdoConfiguation.cdoUserArguments              = _T("");
@@ -166,7 +167,8 @@ Compiler::Compiler(const Compiler& other) :
     m_Valid = other.m_Valid;
     m_NeedValidityCheck = other.m_NeedValidityCheck;
 
-    m_cdoConfiguation.cdoValidData                  = false;
+    m_cdoConfiguation.cdoValidData                  = false;\
+    m_cdoConfiguation.cdoCompilerMasterPath         = _T("");
     m_cdoConfiguation.cdoCompilerIDName             = m_ID;
     m_cdoConfiguation.cdoExecutablePath             = _T("gdb.exe");
     m_cdoConfiguation.cdoUserArguments              = _T("");
@@ -188,6 +190,19 @@ Compiler::Compiler(const Compiler& other) :
 Compiler::~Compiler()
 {
     //dtor
+}
+
+void Compiler::PostRegisterCompilerSetup()
+{
+    if (m_cdoConfiguation.cdoValidData == true)
+    {
+        if (m_MasterPath.IsEmpty())
+        {
+            AutoDetectInstallationDir();
+        }
+        m_cdoConfiguation.cdoCompilerMasterPath = m_MasterPath;
+        Manager::Get()->GetDebuggerManager()->SaveDebuggerConfigOptions(m_cdoConfiguation);
+    }
 }
 
 void Compiler::Reset()
@@ -928,7 +943,7 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
                 m_Programs.LD = cfg->Read(cmpKey + wxT("/linker"), value);
                 m_Mirror.Programs.LD = value;
             }
-            else if (prog == wxT("DBGconfig"))
+            else if ((prog == wxT("DBGconfig")) && (recursion == 0))
             {
                 // Check if the DBGconfig is of the format <plugin name>:<debugger config name>
                 if (value.Find(':') == wxNOT_FOUND)
@@ -1125,7 +1140,7 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
         {
             LoadDefaultOptions(wxT("common_") + node->GetAttribute(wxT("name"), wxString()), recursion + 1);
         }
-        else if (node->GetName() == wxT("debugger"))
+        else if (node->GetName() == wxT("Debugger"))
         {
             wxString debugName = node->GetAttribute(wxT("name"), wxString());
             if (debugName == wxT("executable_path"))
@@ -1178,13 +1193,6 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
         m_Programs.LIB     = m_Mirror.Programs.LIB;
         m_Programs.WINDRES = m_Mirror.Programs.WINDRES;
         m_Programs.MAKE    = m_Mirror.Programs.MAKE;
-
-        if (m_cdoConfiguation.cdoValidData == true)
-        {
-            AutoDetectInstallationDir();
-            m_cdoConfiguation.cdoCompilerMasterPath = m_MasterPath;
-            Manager::Get()->GetDebuggerManager()->SaveDebuggerConfigOptions(m_cdoConfiguation);
-        }
     }
 }
 

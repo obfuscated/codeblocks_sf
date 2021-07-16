@@ -159,6 +159,14 @@ void CompilerFactory::RegisterUserCompilers()
     }
 }
 
+void CompilerFactory::PostRegisterCompilerSetup()
+{
+    for (size_t i = 0; i < Compilers.GetCount(); ++i)
+    {
+        Compilers[i]->PostRegisterCompilerSetup();
+    }
+}
+
 Compiler* CompilerFactory::CreateCompilerCopy(Compiler* compiler, const wxString& newName)
 {
     if (!compiler)
