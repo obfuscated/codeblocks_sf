@@ -14,5 +14,4 @@
     <Program name="MAKE"      value="make.exe"/>
 
     <Switch name="forceFwdSlashes" value="true"/>
-    
 </CodeBlocks_compiler_options>
