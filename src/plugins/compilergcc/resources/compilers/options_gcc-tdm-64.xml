@@ -1,0 +1,29 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options extends="gcc">
+    <Program name="C"         value="gcc.exe"/>
+    <Program name="CPP"       value="g++.exe"/>
+    <Program name="LD"        value="g++.exe"/>
+    <Program name="DBGconfig" value="gdb_debugger"/>
+    <Program name="LIB"       value="ar.exe"/>
+    <Program name="WINDRES"   value="windres.exe"/>
+    <Program name="MAKE"      value="mingw32-make.exe"/>
+
+    <!-- Debugger Options -->
+    <Debugger name="executable_path"    value="gdb.exe"/>       <!-- Options: -->
+                                                                <!--  a) FileName of the debugger program, which uses the master path bin directory to find the file -->
+                                                                <!--  b) Fully qualified FileName including directory. If it is not in this directory then the master path is used to try and find the file -->
+    <Debugger name="user_arguments"  value=""/>                 <!-- Executable arguments -->
+    <Debugger name="type"  value="GDB"/>                        <!-- GDB or CDB -->
+    <Debugger name="init_commands"  value=""/>                  <!-- Debugger initalization commands -->
+    <Debugger name="disable_init"  value="false"/>              <!-- Disables autoloading of startup scripts (.gdbinit) -->
+    <Debugger name="watch_args"  value="true"/>                 <!-- Automatic watches are added for the current function's arguments -->
+    <Debugger name="watch_locals"  value="true"/>               <!-- Automatic watches are added for all the local variables of the current function -->
+    <Debugger name="catch_exceptions"  value="true"/>           <!-- Catch C++ exceptions  -->
+    <Debugger name="eval_expression_as_tooltip"  value="true"/> <!-- While debugging, leaving the mouse over a variable (or the selection) evaluates it in a tooltip -->
+    <Debugger name="add_other_search_dirs"  value="false"/>     <!-- If enabled, the other open projects' paths will be added in the debugger's search list -->
+    <Debugger name="do_not_run_debuggee"  value="false"/>       <!-- If enabled, the debugger will not a send a run/continue command -->
+    <Debugger name="disassembly_flavor"  value="0"/>            <!-- Options:  "System default" or "ATandT" or "Intel" or "Custom" where "System default" is "ATandT" for Windows otherwise it is "Intel"-->
+    <Debugger name="instruction_set"  value=""/>                <!-- Disassembly custom instructionset -->
+    
+</CodeBlocks_compiler_options>

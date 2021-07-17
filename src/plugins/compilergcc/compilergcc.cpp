@@ -999,6 +999,9 @@ void CompilerGCC::DoRegisterCompilers()
 
     // register (if any) user-copies of built-in compilers
     CompilerFactory::RegisterUserCompilers();
+
+    // Complete any compiler set-up that requires access to virtual functions
+    CompilerFactory::PostRegisterCompilerSetup();
 }
 
 const wxString& CompilerGCC::GetCurrentCompilerID()
