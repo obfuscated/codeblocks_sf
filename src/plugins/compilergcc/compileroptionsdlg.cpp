@@ -280,11 +280,12 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         nb->DeletePage(7); // remove "Build options" page
         nb->DeletePage(4); // remove "Toolchain executables" page
 
-        // remove "Compiler" buttons
-        wxWindow* win = XRCCTRL(*this, "btnAddCompiler", wxButton);
-        wxSizer* sizer2 = win->GetContainingSizer();
-        sizer2->Clear(true);
-        sizer2->Layout();
+        // remove "Compiler" buttons, but leave the cbShowDetectedOnly checkBox displayed
+        XRCCTRL(*this, "btnSetDefaultCompiler", wxButton)->Hide();
+        XRCCTRL(*this, "btnAddCompiler", wxButton)->Hide();
+        XRCCTRL(*this, "btnRenameCompiler", wxButton)->Hide();
+        XRCCTRL(*this, "btnDelCompiler", wxButton)->Hide();
+        XRCCTRL(*this, "btnResetCompiler", wxButton)->Hide();
 
         // disable "Make" elements, if project is not using custom makefile
         bool en = project->IsMakefileCustom();
