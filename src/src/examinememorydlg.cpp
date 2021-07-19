@@ -64,7 +64,7 @@ void ExamineMemoryDlg::End()
 
 void ExamineMemoryDlg::Clear()
 {
-    m_pText->Clear();
+    m_pText->Replace(0, m_pText->GetLastPosition(), "");
     m_LastRowStartingAddress = 0;
     m_ByteCounter = 0;
     for (int i = 0; i < 67; ++i)
@@ -118,13 +118,14 @@ void ExamineMemoryDlg::AddHexByte(const wxString& addr, const wxString& hexbyte)
 
     // flush every 16 bytes
     if (m_ByteCounter != 0 && m_ByteCounter % 16 == 0)
-    {
+    {  
+        wxString resultStr;
         // filled 16 bytes window; append text and reset accumulator array
         if (m_ByteCounter != 16) // after the first line,
-            m_pText->AppendText(_T('\n')); // prepend a newline
+            resultStr.Append(_T('\n')); // prepend a newline
         m_LineText[23] = _T('|'); // put a "separator" in the middle (just to ease reading a bit)
-
-        m_pText->AppendText(wxString::Format(_T("0x%" PRIx64 ": %.67s"), m_LastRowStartingAddress, m_LineText));
+        resultStr.Append(wxString::Format(_T("0x%" PRIx64 ": %.67s"), m_LastRowStartingAddress, m_LineText));
+        m_pText->WriteText(resultStr);
         for (int i = 0; i < 67; ++i)
             m_LineText[i] = _T(' ');
         // update starting address for next row every 16 bytes
