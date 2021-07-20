@@ -5,7 +5,9 @@
                      weight="60"
                      platform="windows">
     <Path type="master">
-        <Search path="C:\msys64\mingw64*"
+        <Search path="C:\msys64\mingw64"
+            for="C"/>
+        <Search path="C:\msys64"
             for="C"/>
         <Fallback path="C:\msys64\mingw64"/>
     </Path>

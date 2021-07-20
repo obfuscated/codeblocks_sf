@@ -5,7 +5,7 @@
                      weight="60"
                      platform="windows">
     <Path type="master">
-        <Search path="C:\TDM-GCC-64*"
+        <Search path="C:\TDM-GCC-64"
             for="C"/>
         <Fallback path="C:\TDM-GCC-64"/>
     </Path>
