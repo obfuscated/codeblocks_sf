@@ -266,6 +266,8 @@ void CompilerFactory::SaveSettings()
 void CompilerFactory::LoadSettings()
 {
     bool needAutoDetection = false;
+    wxString defaultCompilerID = CompilerFactory::GetDefaultCompilerID();
+
     for (size_t i = 0; i < Compilers.GetCount(); ++i)
     {
         wxString baseKey = Compilers[i]->GetParentID().IsEmpty() ? _T("/sets") : _T("/user_sets");
@@ -277,7 +279,9 @@ void CompilerFactory::LoadSettings()
         event.SetClientData(static_cast<void*>(Compilers[i]));
         Manager::Get()->ProcessEvent(event);
 
-        if (Compilers[i]->GetMasterPath().IsEmpty())
+        if (    Compilers[i]->GetMasterPath().IsEmpty() &&
+                Compilers[i]->GetID().IsSameAs(defaultCompilerID)
+           )
         {
             Manager::Get()->GetLogManager()->DebugLog(F(_T("Master path of compiler ID \"%s\" is empty -> triggers auto-detection."), Compilers[i]->GetID().wx_str()));
             needAutoDetection = true;

@@ -45,6 +45,7 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAutoDetectCompilers"),_T("wxScrollingDialog"));
     XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
 
+    wxString defaultCompilerID = CompilerFactory::GetDefaultCompilerID();
     wxListCtrl* list = XRCCTRL(*this, "lcCompilers", wxListCtrl);
     if (list)
     {
@@ -62,11 +63,15 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
             cItem.wxsCompilerPath = _("");      // Default to empty string
             cItem.bDetected = false;            // Default to false
 
+            wxString currentCompilerID = compiler->GetID();
             wxString path = compiler->GetMasterPath();
             wxString path_no_macros = compiler->GetMasterPath();
             Manager::Get()->GetMacrosManager()->ReplaceMacros(path_no_macros);
 
-            if (path.IsEmpty() && Manager::Get()->GetConfigManager(wxT("compiler"))->Exists(wxT("/sets/") + compiler->GetID() + wxT("/name")))
+            if (    path.IsEmpty() &&
+                    Manager::Get()->GetConfigManager(wxT("compiler"))->Exists(wxT("/sets/") + compiler->GetID() + wxT("/name")) &&
+                    defaultCompilerID.IsSameAs(currentCompilerID)
+                )
             {
                 Manager::Get()->GetLogManager()->LogError(wxString::Format(_("CompilerName : '%s'   , path : '%s' , path_no_macros : '%s'"), cItem.wxsCompilerName, path, path_no_macros ));
                 Manager::Get()->GetLogManager()->LogError(wxString::Format(_("Manager::Get()->GetConfigManager(wxT(\"compiler\"))->Exists('%s') : %s"), wxT("/sets/") + compiler->GetID() + wxT("/name") ,
