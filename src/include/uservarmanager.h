@@ -14,12 +14,33 @@
     #include "globals.h"
 #endif
 
+/** \brief Virtual class representing UI for UserVariableManager
+ */
 class UserVarManagerUI
 {
 public:
     virtual ~UserVarManagerUI() {};
+    /** \brief Show an information window to the user
+     *
+     * This window
+     * \param title const wxString& Title of the information window
+     * \param msg const wxString& Content of the info window
+     */
     virtual void DisplayInfoWindow(const wxString &title,const wxString &msg) = 0;
+
+    /** \brief Open the variable editor window and if the not exist create the variables from the set
+     *
+     * \param var Variables to create
+     */
     virtual void OpenEditWindow(const wxArrayString &var = wxArrayString()) = 0;
+
+    /** \brief Open Dialog that asks the user for a variable
+     *
+     * \param parent wxWindow* Parent window
+     * \param old const wxString& Old variable to display as selected
+     * \return virtual wxString Global variable the user has selected
+     *
+     */
     virtual wxString GetVariable(wxWindow* parent, const wxString &old) = 0;
 };
 
