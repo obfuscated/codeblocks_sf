@@ -79,11 +79,9 @@ public:
     wxString GetVariable(wxWindow* parent, const wxString &old) override { return ""; };
 };
 
-void UserVariableManager::SetUI(UserVarManagerUI* ui)
+void UserVariableManager::SetUI(std::unique_ptr<UserVarManagerUI> ui)
 {
-    if (m_ui != nullptr)
-        delete m_ui;
-    m_ui = ui;
+    m_ui = std::move(ui);
 }
 
 
@@ -209,14 +207,12 @@ void UserVariableManager::Arrogate()
 UserVariableManager::UserVariableManager()
 {
     m_CfgMan = Manager::Get()->GetConfigManager(_T("gcv"));
-    m_ui =  new UserVarManagerDefaultUI(); //new UserVarManagerGUI(); //new UserVarManagerDefaultUI();
+    m_ui = std::unique_ptr<UserVarManagerUI>(new UserVarManagerNoGuiUI());
     Migrate();
 }
 
 UserVariableManager::~UserVariableManager()
 {
-    if(m_ui != nullptr)
-        delete m_ui;
 }
 
 void UserVariableManager::Migrate()

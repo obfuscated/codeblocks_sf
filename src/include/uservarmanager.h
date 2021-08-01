@@ -53,15 +53,15 @@ class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
         ConfigManager * m_CfgMan;
         wxString        m_ActiveSet;
         wxArrayString   m_Preempted;
+        std::unique_ptr<UserVarManagerUI> m_ui;
 
-        UserVarManagerUI* m_ui;
 
 
     public:
         UserVariableManager();
         ~UserVariableManager();
 
-        void SetUI(UserVarManagerUI* ui);
+        void SetUI(std::unique_ptr<UserVarManagerUI> ui);
 
         wxString Replace(const wxString& variable);
 

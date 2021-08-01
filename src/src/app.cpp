@@ -732,7 +732,7 @@ bool CodeBlocksApp::OnInit()
         }
 
         if (!m_Batch)
-            Manager::Get()->GetUserVariableManager()->SetUI(new UserVarManagerGUI());
+            Manager::Get()->GetUserVariableManager()->SetUI(std::unique_ptr<UserVarManagerUI>(new UserVarManagerGUI()));
 
         // Splash screen moved to this place, otherwise it would be short visible, even if we only pass filenames via DDE/IPC
         // we also don't need it, if only a single instance is allowed
