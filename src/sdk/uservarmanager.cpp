@@ -65,9 +65,11 @@ const wxChar *bim[] =
 };
 const wxArrayString UserVariableManager::builtinMembers((size_t) 7, bim);
 
-class UserVarManagerDefaultUI : public UserVarManagerUI
+class UserVarManagerNoGuiUI : public UserVarManagerUI
 {
 public:
+    ~UserVarManagerNoGuiUI()    {};
+
     void DisplayInfoWindow(const wxString &title,const wxString &msg) override
     {
         Manager::Get()->GetLogManager()->LogWarning(msg);
