@@ -1430,22 +1430,21 @@ void DebuggerManager::OnPluginLoadingComplete(cb_unused CodeBlocksEvent& event)
 void DebuggerManager::SaveDebuggerConfigOptions(CompilerDebuggerOptions & cdoConfiguation)
 {
     Manager::Get()->GetLogManager()->Log(_("cdoConfiguation:"));
-    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoDebuggerConfigurationName %s"), cdoConfiguation.cdoDebuggerConfigurationName));
-    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoCompilerIDName %s"), cdoConfiguation.cdoCompilerIDName));
-    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoExecutablePath %s"), cdoConfiguation.cdoExecutablePath));
-    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoUserArguments %s"), cdoConfiguation.cdoUserArguments));
-    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoType %s"), cdoConfiguation.cdoType));
-    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoInitCommands %s"), cdoConfiguation.cdoInitCommands));
-    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoDisableInit %s"), cdoConfiguation.cdoDisableInit?"true":"false"));
-    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoWatchArgs %s"), cdoConfiguation.cdoWatchArgs?"true":"false"));
-    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoWatchLocals %s"), cdoConfiguation.cdoWatchLocals?"true":"false"));
-    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoCatchExceptions %s"), cdoConfiguation.cdoCatchExceptions?"true":"false"));
-    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoEvalExpressionAsTooltip %s"), cdoConfiguation.cdoEvalExpressionAsTooltip?"true":"false"));
-    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoAddOtherSearchDirs %s"), cdoConfiguation.cdoAddOtherSearchDirs?"true":"false"));
-    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoDoNoRunDebuggee %s"), cdoConfiguation.cdoDoNoRunDebuggee?"true":"false"));
-    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoDisassemblyFlavor %s"), cdoConfiguation.cdoDisassemblyFlavor));
-    Manager::Get()->GetLogManager()->Log(F(wxT("                 cdoInstructionSet %s"), cdoConfiguation.cdoInstructionSet));
-    printf("break here");
+    Manager::Get()->GetLogManager()->Log(wxString::Format(wxT("                 cdoDebuggerConfigurationName %s"), cdoConfiguation.cdoDebuggerConfigurationName));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(wxT("                 cdoCompilerIDName %s"), cdoConfiguation.cdoCompilerIDName));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(wxT("                 cdoExecutablePath %s"), cdoConfiguation.cdoExecutablePath));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(wxT("                 cdoUserArguments %s"), cdoConfiguation.cdoUserArguments));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(wxT("                 cdoType %s"), cdoConfiguation.cdoType));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(wxT("                 cdoInitCommands %s"), cdoConfiguation.cdoInitCommands));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(wxT("                 cdoDisableInit %s"), cdoConfiguation.cdoDisableInit?"true":"false"));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(wxT("                 cdoWatchArgs %s"), cdoConfiguation.cdoWatchArgs?"true":"false"));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(wxT("                 cdoWatchLocals %s"), cdoConfiguation.cdoWatchLocals?"true":"false"));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(wxT("                 cdoCatchExceptions %s"), cdoConfiguation.cdoCatchExceptions?"true":"false"));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(wxT("                 cdoEvalExpressionAsTooltip %s"), cdoConfiguation.cdoEvalExpressionAsTooltip?"true":"false"));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(wxT("                 cdoAddOtherSearchDirs %s"), cdoConfiguation.cdoAddOtherSearchDirs?"true":"false"));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(wxT("                 cdoDoNoRunDebuggee %s"), cdoConfiguation.cdoDoNoRunDebuggee?"true":"false"));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(wxT("                 cdoDisassemblyFlavor %s"), cdoConfiguation.cdoDisassemblyFlavor));
+    Manager::Get()->GetLogManager()->Log(wxString::Format(wxT("                 cdoInstructionSet %s"), cdoConfiguation.cdoInstructionSet));
 
     ConfigManager *config = Manager::Get()->GetConfigManager(wxT("debugger_common"));
     int iOffset = cdoConfiguation.cdoDebuggerConfigurationName.Find(':');
@@ -1479,7 +1478,7 @@ void DebuggerManager::SaveDebuggerConfigOptions(CompilerDebuggerOptions & cdoCon
     }
     if (bFoundConfigName == false)
     {
-        wxString pathDebuggerEntry = wxString::Format(wxT("/sets/%s/conf%llu"), wxPluginName.wx_str() , configs.Count()+1);
+        wxString pathDebuggerEntry = wxString::Format(wxT("/sets/%s/conf%lu"), wxPluginName.wx_str() , (long)configs.Count()+1);
 
         config->Write(pathDebuggerEntry + wxT("/name"),                         cdoConfiguation.cdoCompilerIDName);
         wxString wsTryTmpPath = wxString::Format(wxT("%s"),  cdoConfiguation.cdoExecutablePath);
