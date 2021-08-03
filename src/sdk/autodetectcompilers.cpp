@@ -71,11 +71,6 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                 wxString path = compiler->GetMasterPath();
                 wxString path_no_macros = compiler->GetMasterPath();
                 Manager::Get()->GetMacrosManager()->ReplaceMacros(path_no_macros);
-if (defaultCompilerID.IsSameAs(currentCompilerID))
-{
-    __asm__ __volatile__ ("int $03");
-}
-
 
                 if (    (path.IsEmpty() || !wxFileName::DirExists(path)) &&
                         Manager::Get()->GetConfigManager(wxT("compiler"))->Exists(wxT("/sets/") + compiler->GetID() + wxT("/name")) &&
