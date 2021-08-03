@@ -279,11 +279,15 @@ void CompilerFactory::LoadSettings()
         event.SetClientData(static_cast<void*>(Compilers[i]));
         Manager::Get()->ProcessEvent(event);
 
-        if (    Compilers[i]->GetMasterPath().IsEmpty() &&
+        if (    (Compilers[i]->GetMasterPath().IsEmpty() || !wxFileName::DirExists(Compilers[i]->GetMasterPath()))
+                &&
                 Compilers[i]->GetID().IsSameAs(defaultCompilerID)
            )
         {
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("Master path of compiler ID \"%s\" is empty -> triggers auto-detection."), Compilers[i]->GetID().wx_str()));
+            if (Compilers[i]->GetMasterPath().IsEmpty())
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("The master path of compiler ID \"%s\" is empty -> triggers auto-detection."), Compilers[i]->GetID().wx_str()));
+            if (!wxFileName::DirExists(Compilers[i]->GetMasterPath()))
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("The master path (%s) of compiler ID \"%s\" does not exist -> triggers auto-detection."), Compilers[i]->GetMasterPath(), Compilers[i]->GetID().wx_str()));
             needAutoDetection = true;
         }
     }

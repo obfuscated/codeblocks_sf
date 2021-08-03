@@ -14,6 +14,15 @@ class wxUpdateUIEvent;
 class AutoDetectCompilers : public wxScrollingDialog
 {
     private:
+        enum CompilerHighlightColor
+        {
+            eHighlightNone = 0,
+            eHighlightGrey,
+            eHighlightGreen,
+            eHighlightRed,
+            eHighlightYellow
+        };
+
         enum CompilerColumnsNumber
         {
             ccnNameColumn = 0,
@@ -26,7 +35,7 @@ class AutoDetectCompilers : public wxScrollingDialog
             wxString wxsCompilerName;
             wxString wxsStatus;
             wxString wxsCompilerPath;
-            int iHighlight;
+            CompilerHighlightColor eHighlight;
             bool bDetected;
         };
         std::vector<CompilerItem> vCompilerList;
