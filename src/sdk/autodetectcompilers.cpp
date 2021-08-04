@@ -176,12 +176,27 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                 cItem.eHighlight = CompilerHighlightColor::eHighlightGreen;
             }
 
+            if (defaultCompilerID.IsSameAs(currentCompilerID))
+            {
+                wxStaticText* controlLblDefCompiler = XRCCTRL(*this, "lblDefCompiler", wxStaticText);
+                if (cItem.bDetected)
+                {
+                    wxColour  colorDefault =  XRCCTRL(*this, "ID_STATICTEXT1", wxStaticText)->GetBackgroundColour();
+
+                    controlLblDefCompiler->SetLabel(cItem.wxsCompilerName);
+                    controlLblDefCompiler->SetBackgroundColour(colorDefault);
+                }
+                else
+                {
+                    controlLblDefCompiler->SetLabel(wxString::Format(_("INVALID: %s"),cItem.wxsCompilerName));
+                    controlLblDefCompiler->SetBackgroundColour(*wxRED);
+                }
+            }
+
             vCompilerList.push_back(cItem);
         }
         UpdateCompilerDisplayList();
     }
-
-    XRCCTRL(*this, "lblDefCompiler", wxStaticText)->SetLabel(CompilerFactory::GetDefaultCompiler()->GetName());
 }
 
 AutoDetectCompilers::~AutoDetectCompilers()
@@ -200,7 +215,11 @@ void AutoDetectCompilers::OnDefaultCompilerClick(cb_unused wxCommandEvent& event
         int idxComiler = CompilerFactory::GetCompilerIndex(compiler);
 
         CompilerFactory::SetDefaultCompiler(idxComiler);
-        XRCCTRL(*this, "lblDefCompiler", wxStaticText)->SetLabel(CompilerFactory::GetDefaultCompiler()->GetName());
+
+        wxColour  colorDefault =  XRCCTRL(*this, "ID_STATICTEXT1", wxStaticText)->GetBackgroundColour();
+        wxStaticText* controlLblDefCompiler = XRCCTRL(*this, "lblDefCompiler", wxStaticText);
+        controlLblDefCompiler->SetLabel(CompilerFactory::GetDefaultCompiler()->GetName());
+        controlLblDefCompiler->SetBackgroundColour(colorDefault);
     }
 }
 
