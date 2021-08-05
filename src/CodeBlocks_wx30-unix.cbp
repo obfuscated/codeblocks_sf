@@ -3785,6 +3785,12 @@
 		<Unit filename="src/dlgaboutplugin.h">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/dlghelpsysteminformation.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/dlghelpsysteminformation.h">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/editkeywordsdlg.cpp">
 			<Option target="src" />
 		</Unit>
@@ -3888,6 +3894,9 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/dlg_about_plugin.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/resources/dlg_about_system_information.xrc">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/edit_keywords.xrc">
