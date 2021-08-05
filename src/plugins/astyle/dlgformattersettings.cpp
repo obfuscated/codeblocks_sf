@@ -13,6 +13,7 @@
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/spinctrl.h>
+#include <wx/textctrl.h>
 #include <wx/xrc/xmlres.h>
 
 DlgFormatterSettings::DlgFormatterSettings(wxWindow *dlg) :
