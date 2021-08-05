@@ -722,18 +722,23 @@
     </object>
     <object class="wxMenu" name="menu_help">
       <label>&amp;Help</label>
-      <object class="wxMenuItem" name="wxID_ABOUT">
-        <label>&amp;About...</label>
-        <bitmap stock_id="core/help_info"/>
-        <help>About Code::Blocks</help>
-      </object>
       <object class="wxMenuItem" name="idHelpTips">
         <label>&amp;Tips</label>
         <bitmap stock_id="core/help_idea"/>
         <help>Tips on using Code::Blocks</help>
       </object>
+      <object class="wxMenuItem" name="idHelpSystemInformation">
+        <label>&amp;System Information</label>
+        <bitmap stock_id="core/help_info"/>
+        <help>Code::Blocks and System Information</help>
+      </object>
       <object class="wxMenu" name="idHelpPlugins">
         <label>&amp;Plugins</label>
+      </object>
+      <object class="wxMenuItem" name="wxID_ABOUT">
+        <label>&amp;About...</label>
+        <bitmap stock_id="core/help_info"/>
+        <help>About Code::Blocks</help>
       </object>
     </object>
   </object>

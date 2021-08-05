@@ -224,6 +224,7 @@ class MainFrame : public wxFrame
 
         void OnHelpAbout(wxCommandEvent& event);
         void OnHelpTips(wxCommandEvent& event);
+        void OnHelpSystemInformation(wxCommandEvent& event);
         void OnHelpPluginMenu(wxCommandEvent& event);
 
         void OnViewToolbarsFit(wxCommandEvent& event);

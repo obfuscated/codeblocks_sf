@@ -20,6 +20,7 @@
 #include "dlgabout.h"
 #include "dlgaboutplugin.h"
 #include "environmentsettingsdlg.h"
+#include "dlghelpsysteminformation.h"
 #include "infopane.h"
 #include "infowindow.h"
 #include "main.h"
@@ -294,8 +295,9 @@ int idSettingsDebugger       = XRCID("idSettingsDebugger");
 int idPluginsManagePlugins   = XRCID("idPluginsManagePlugins");
 int idSettingsScripting      = XRCID("idSettingsScripting");
 
-int idHelpTips    = XRCID("idHelpTips");
-int idHelpPlugins = XRCID("idHelpPlugins");
+int idHelpTips                  = XRCID("idHelpTips");
+int idHelpSystemInformation     = XRCID("idHelpSystemInformation");
+int idHelpPlugins               = XRCID("idHelpPlugins");
 
 int idLeftSash              = XRCID("idLeftSash");
 int idBottomSash            = XRCID("idBottomSash");
@@ -541,10 +543,11 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idPluginsManagePlugins,   MainFrame::OnSettingsPlugins)
     EVT_MENU(idSettingsScripting,      MainFrame::OnSettingsScripting)
 
-    EVT_MENU(wxID_ABOUT, MainFrame::OnHelpAbout)
-    EVT_MENU(idHelpTips, MainFrame::OnHelpTips)
+    EVT_MENU(idHelpTips,                MainFrame::OnHelpTips)
+    EVT_MENU(idHelpSystemInformation,   MainFrame::OnHelpSystemInformation)
+    EVT_MENU(wxID_ABOUT,                MainFrame::OnHelpAbout)
 
-    EVT_MENU(idStartHerePageLink,     MainFrame::OnStartHereLink)
+    EVT_MENU(idStartHerePageLink,       MainFrame::OnStartHereLink)
 
     EVT_CBAUIBOOK_LEFT_DCLICK(ID_NBEditorManager, MainFrame::OnNotebookDoubleClick)
     EVT_NOTEBOOK_PAGE_CHANGED(ID_NBEditorManager, MainFrame::OnPageChanged)
@@ -4426,6 +4429,13 @@ void MainFrame::OnHelpAbout(wxCommandEvent& WXUNUSED(event))
 void MainFrame::OnHelpTips(cb_unused wxCommandEvent& event)
 {
     ShowTips(true);
+}
+
+void MainFrame::OnHelpSystemInformation(cb_unused wxCommandEvent& event)
+{
+    dlgHelpSystemInformation dlg(this);
+    PlaceWindow(&dlg, pdlHead);
+    dlg.ShowModal();
 }
 
 void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
