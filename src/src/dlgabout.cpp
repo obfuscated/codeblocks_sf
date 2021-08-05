@@ -633,7 +633,8 @@ dlgAbout::dlgAbout(wxWindow* parent)
             }
             if (item.value != wxEmptyString)
             {
-                information += wxString(wxT(' '), maxNameLength - int(item.name.length()));
+                if (maxNameLength > int(item.name.length()))
+                    information += wxString(wxT(' '), maxNameLength - int(item.name.length()));
                 information += wxT(": ") + item.value;
             }
 
@@ -642,7 +643,8 @@ dlgAbout::dlgAbout(wxWindow* parent)
         else
         {
             information += item.name;
-            information += wxString(wxT(' '), maxNameLength - int(item.name.length()));
+            if (maxNameLength > int(item.name.length()))
+                information += wxString(wxT(' '), maxNameLength - int(item.name.length()));
             information += wxT(": ") + item.value + wxT("\n");
         }
     }
