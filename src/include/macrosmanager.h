@@ -33,6 +33,8 @@ public:
     void RecalcVars(const cbProject* project, EditorBase* editor, const ProjectBuildTarget* target);
     void ClearProjectKeys();
     void Reset();
+    const MacrosMap &GetMacros() { return m_Macros; }  /* intended for creation of detailed build environment reports attachable to build logs */
+
 protected:
     const ProjectBuildTarget* m_LastTarget;
     const cbProject*    m_LastProject;
