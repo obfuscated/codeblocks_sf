@@ -408,9 +408,6 @@ class DLLIMPORT DebuggerManager : public Mgr<DebuggerManager>
         };
 
         void SaveDebuggerConfigOptions(CompilerDebuggerOptions & cdoConfiguation);
-
-    private:
-        CompilerDebuggerOptions m_cdoConfiguation;
 };
 
 #endif // X_DEBUGGER_MANAGER_H

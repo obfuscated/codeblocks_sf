@@ -1519,6 +1519,4 @@ void DebuggerManager::SaveDebuggerConfigOptions(CompilerDebuggerOptions & cdoCon
         config->Write(pathDebuggerEntry + wxT("/values/disassembly_flavor"),     cdoConfiguation.cdoDisassemblyFlavor);
         config->Write(pathDebuggerEntry + wxT("/values/instruction_set"),        cdoConfiguation.cdoInstructionSet);
     }
-
-    m_cdoConfiguation = cdoConfiguation;
 }
