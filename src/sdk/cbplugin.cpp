@@ -178,13 +178,13 @@ wxString cbDebuggerPlugin::GetEditorWordAtCaret(const wxPoint* mousePosition)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!ed)
-        return wxEmptyString;
+        return wxString();
     cbStyledTextCtrl* stc = ed->GetControl();
     if (!stc)
-        return wxEmptyString;
+        return wxString();
 
     wxString selected_text = stc->GetSelectedText();
-    if (selected_text != wxEmptyString)
+    if (!selected_text.empty())
     {
         selected_text.Trim(true);
         selected_text.Trim(false);
@@ -203,11 +203,11 @@ wxString cbDebuggerPlugin::GetEditorWordAtCaret(const wxPoint* mousePosition)
             int endPos = stc->GetSelectionEnd();
             int mousePos = stc->PositionFromPointClose(mousePosition->x, mousePosition->y);
             if (mousePos == wxSCI_INVALID_POSITION)
-                return wxEmptyString;
+                return wxString();
             else if (startPos <= mousePos && mousePos <= endPos)
                 return selected_text;
             else
-                return wxEmptyString;
+                return wxString();
         }
         else
             return selected_text;
