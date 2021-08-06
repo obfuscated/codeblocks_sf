@@ -585,6 +585,7 @@ void dlgHelpSystemInformation::CopyInfoToClipbaord(cb_unused wxCommandEvent& eve
    {
         if (wxTheClipboard->IsSupported( wxDF_TEXT ))
         {
+            wxBusyCursor wait;
             wxTextCtrl *txtInformation = XRCCTRL(*this, "txtInformation", wxTextCtrl);
             wxString sTxtInformation = txtInformation->GetValue();
 
