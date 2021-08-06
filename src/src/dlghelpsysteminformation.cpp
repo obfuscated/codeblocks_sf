@@ -587,6 +587,12 @@ void dlgHelpSystemInformation::CopyInfoToClipbaord(cb_unused wxCommandEvent& eve
         {
             wxTextCtrl *txtInformation = XRCCTRL(*this, "txtInformation", wxTextCtrl);
             wxString sTxtInformation = txtInformation->GetValue();
+
+            // Sanatise the data
+            sTxtInformation.Replace(wxGetHostName(),wxT("<ComputerName>"));
+            sTxtInformation.Replace(wxGetFullHostName(),wxT("<ComputerName>"));
+            sTxtInformation.Replace(wxGetUserName(),wxT("<UserName>"));
+
             wxTheClipboard->SetData( new wxTextDataObject(sTxtInformation) );
         }
         wxTheClipboard->Close();
