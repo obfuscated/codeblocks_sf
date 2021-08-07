@@ -51,6 +51,10 @@ class WatchesDlg : public wxPanel, public cbWatchesDlg
         void OnMenuExamineMemory(cb_unused wxCommandEvent &event);
         void OnMenuAutoUpdate(wxCommandEvent &event);
         void OnMenuUpdate(wxCommandEvent &event);
+        void WatchToString(wxString &sResult, const cbWatch &watch, const wxString &sIndent = wxEmptyString);
+        void MenuCopyToClipboardData(cb_unused wxCommandEvent &event);
+        void MenuCopyToClipboardRow(cb_unused wxCommandEvent &event);
+        void MenuCopyToClipboardTree(cb_unused wxCommandEvent &event);
 
         void OnDebuggerUpdated(CodeBlocksEvent &event);
 
