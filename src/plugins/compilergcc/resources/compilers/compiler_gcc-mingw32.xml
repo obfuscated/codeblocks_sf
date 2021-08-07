@@ -13,6 +13,8 @@
             for="C"/>
         <Search path="C:\mingw-w32"
             for="C"/>
+        <Search path="C:\mingw32"
+            for="C"/>
         <Fallback path="C:\MinGW"/>
     </Path>
     <Path type="include">
