@@ -127,7 +127,7 @@ std::string MakeStringFromSquirrelValue(HSQUIRRELVM vm, const int stackIdx)
     return line;
 }
 
-DLLIMPORT void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop)
+void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop)
 {
     SQInteger top = sq_gettop(vm);
     printf("debug: stack [%s] top=%lld oldTop=%lld\n", title, (long long)top, (long long)oldTop);
@@ -148,7 +148,7 @@ DLLIMPORT void PrintStack(HSQUIRRELVM vm, const char *title, SQInteger oldTop)
     puts("");
 }
 
-DLLIMPORT wxString ExtractLastSquirrelError(HSQUIRRELVM vm, bool canBeEmpty)
+wxString ExtractLastSquirrelError(HSQUIRRELVM vm, bool canBeEmpty)
 {
     const SQChar *s;
     sq_getlasterror(vm);
@@ -162,7 +162,7 @@ DLLIMPORT wxString ExtractLastSquirrelError(HSQUIRRELVM vm, bool canBeEmpty)
     return errorMsg;
 }
 
-DLLIMPORT void PrintSquirrelToWxString(wxString& msg, const SQChar* s, va_list& vl)
+void PrintSquirrelToWxString(wxString& msg, const SQChar* s, va_list& vl)
 {
     SQChar localBuffer[2048];
 
@@ -195,7 +195,7 @@ DLLIMPORT void PrintSquirrelToWxString(wxString& msg, const SQChar* s, va_list& 
     }
 }
 
-DLLIMPORT int ExtractParamsBase::ErrorMessage()
+int ExtractParamsBase::ErrorMessage()
 {
     wxString fullMessage(m_errorMessage);
     fullMessage += "\n\nCALLSTACK:\n";
