@@ -60,25 +60,26 @@ bool cbIsDetectedCygwinCompiler(void)
         ActiveBuildTarget = pProject->GetBuildTarget(sActiveBuildTarget);
 
         wxString compilerID;
-        pMsg->DebugLog(wxString::Format(wxT("sActiveBuildTarget : %s"), sActiveBuildTarget));
+        pMsg->DebugLog(wxString::Format("sActiveBuildTarget : %s", sActiveBuildTarget));
         if (ActiveBuildTarget)
         {
-            pMsg->DebugLog(wxString::Format(wxT("ActiveBuildTarget->GetTitle() : %s"), ActiveBuildTarget->GetTitle()));
+            pMsg->DebugLog(wxString::Format("ActiveBuildTarget->GetTitle() : %s",
+                                            ActiveBuildTarget->GetTitle()));
             compilerID = ActiveBuildTarget->GetCompilerID();
-            if (!compilerID.IsSameAs(_T("cygwin")))
+            if (!compilerID.IsSameAs("cygwin"))
             {
-                pMsg->DebugLog(wxString::Format(wxT("ActiveBuildTarget->GetCompilerID().IsSameAs(_T(cygwin) is FALSE!")));
+                pMsg->DebugLog("ActiveBuildTarget->GetCompilerID().IsSameAs(cygwin) is FALSE!");
                 g_CygwinCompilerPathRoot = wxString();
                 return false;
             }
         }
         else
         {
-            pMsg->DebugLog(wxString::Format(wxT("pProject->GetTitle() : %s"), pProject->GetTitle()));
+            pMsg->DebugLog(wxString::Format("pProject->GetTitle() : %s", pProject->GetTitle()));
             compilerID = pProject->GetCompilerID();
-            if (!compilerID.IsSameAs(_T("cygwin")))
+            if (!compilerID.IsSameAs("cygwin"))
             {
-                pMsg->DebugLog(wxString::Format(wxT("pProject->GetCompilerID().IsSameAs(_T(cygwin) is FALSE!")));
+                pMsg->DebugLog("pProject->GetCompilerID().IsSameAs(cygwin) is FALSE!");
                 g_CygwinCompilerPathRoot = wxString();
                 return false;
             }
@@ -88,7 +89,7 @@ bool cbIsDetectedCygwinCompiler(void)
         Compiler *actualCompiler = CompilerFactory::GetCompiler(compilerID);
         if (!actualCompiler)
         {
-            pMsg->DebugLog(wxString::Format(wxT("Could not find actual CygWin compiler!!!")));
+            pMsg->DebugLog("Could not find actual CygWin compiler!!!");
             g_CygwinCompilerPathRoot = wxString();
             return false;
         }
@@ -108,22 +109,22 @@ bool cbIsDetectedCygwinCompiler(void)
     bool present = false; // Assume not found as starting point
 #if defined(__WXMSW__)
     wxRegKey key; // defaults to HKCR
-    key.SetName(_T("HKEY_LOCAL_MACHINE\\Software\\Cygwin\\setup"));
+    key.SetName("HKEY_LOCAL_MACHINE\\Software\\Cygwin\\setup");
     if (key.Exists() && key.Open(wxRegKey::Read))
     {
         // found CygWin version 1.7 or newer; read it
-        key.QueryValue(_T("rootdir"), masterPath);
-        if (wxDirExists(masterPath + wxFILE_SEP_PATH + _T("bin")))
+        key.QueryValue("rootdir", masterPath);
+        if (wxDirExists(masterPath + wxFILE_SEP_PATH + "bin"))
             present = true;
     }
     if (!present)
     {
-        key.SetName(_T("HKEY_LOCAL_MACHINE\\Software\\Cygnus Solutions\\Cygwin\\mounts v2\\/"));
+        key.SetName("HKEY_LOCAL_MACHINE\\Software\\Cygnus Solutions\\Cygwin\\mounts v2\\/");
         if (key.Exists() && key.Open(wxRegKey::Read))
         {
             // found CygWin version 1.5 or older; read it
-            key.QueryValue(_T("native"), masterPath);
-            if (wxDirExists(masterPath + wxFILE_SEP_PATH + _T("bin")))
+            key.QueryValue("native", masterPath);
+            if (wxDirExists(masterPath + wxFILE_SEP_PATH + "bin"))
                 present = true;
         }
     }
@@ -135,7 +136,7 @@ bool cbIsDetectedCygwinCompiler(void)
     return present;
 }
 
-static wxString GetCygwinPath(const wxString& path, bool bWindowsPath)
+static wxString GetCygwinPath(const wxString& path, bool windowsPath)
 {
     std::map<wxString, wxString> &fileCache = (windowsPath ? g_WindowsFileCache : g_CygwinFileCache);
 
@@ -166,21 +167,21 @@ static wxString GetCygwinPath(const wxString& path, bool bWindowsPath)
     // But if the path does not then check if the path/file exists and if it does then use it,
     // otherwise we check if it is a cygwin path starting with '/' and if it is then we call cygpath.exe
     // if we have not already seen the path and if we have not then later we add the path to the cache
-    if ((resultPath.StartsWith(wxT("/cygdrive/"))) || (resultPath.StartsWith(wxT("\\cygdrive\\"))))
+    if ((resultPath.StartsWith("/cygdrive/")) || (resultPath.StartsWith("\\cygdrive\\")))
     {
         // Needed if debugging a Cygwin build app in codeblocks. Convert GDB cygwin filename to mingw filename!!!!
         // /cygdrive/x/... to c:/...
-        resultPath = wxString::Format(_T("%c:%s"), path[10], path.Mid(11));
+        resultPath = wxString::Format("%c:%s", path[10], path.Mid(11));
     }
     else
     {
         // Check if path or file exists on the disk
-        if (((!wxDirExists(resultPath)) && (!wxFileName::FileExists(resultPath))) || !bWindowsPath)
+        if (((!wxDirExists(resultPath)) && (!wxFileName::FileExists(resultPath))) || !windowsPath)
         {
             // Double check that starts with a forward slash "/" and if it is
             // then assume it is a special Cygwin path that cygpath.exe can resolve
             // to a valid Windows path.
-            if (resultPath.StartsWith(wxT("/")) || !bWindowsPath)
+            if (resultPath.StartsWith("/") || !windowsPath)
             {
                 // file attribute also contains cygwin path
                 wxString cygwinConvertCMD = g_CygwinCompilerPathRoot + "\\bin\\cygpath.exe";
@@ -188,14 +189,15 @@ static wxString GetCygwinPath(const wxString& path, bool bWindowsPath)
                 {
                     cygwinConvertCMD.Trim().Trim(false);
                     // we got a conversion command from the user, use it
-                    if (bWindowsPath)
-                        cygwinConvertCMD.Append(wxT(" -w "));
+                    if (windowsPath)
+                        cygwinConvertCMD.Append(" -w ");
                     else
-                        cygwinConvertCMD.Append(wxT(" -u "));
-                    cygwinConvertCMD.Append(wxString::Format(wxT("%s"), resultPath.c_str()));
+                        cygwinConvertCMD.Append(" -u ");
+                    cygwinConvertCMD.Append(resultPath);
 
                     wxArrayString cmdOutput;
-                    const long resExecute = wxExecute(_T("cmd /c ") + cygwinConvertCMD, cmdOutput, wxEXEC_SYNC, NULL );
+                    const long resExecute = wxExecute("cmd /c " + cygwinConvertCMD, cmdOutput,
+                                                      wxEXEC_SYNC, nullptr);
                     if ((resExecute== 0) && (!cmdOutput.IsEmpty()))
                     {
                         cmdOutput.Item(0).Trim().Trim(false);
@@ -204,20 +206,24 @@ static wxString GetCygwinPath(const wxString& path, bool bWindowsPath)
                         // Check if path or file exists on the disk
                         if ((wxDirExists(outputPath)) || (wxFileName::FileExists(outputPath)))
                             resultPath = outputPath;
-                        else if (!bWindowsPath)
+                        else if (!windowsPath)
                             resultPath = outputPath;
                     }
                     else
-                        Manager::Get()->GetLogManager()->DebugLog(wxString::Format(wxT("cygwinConvertCMD error: %d"), resExecute));
+                    {
+                        const wxString msg = wxString::Format("cygwinConvertCMD error: %d",
+                                                              resExecute);
+                        Manager::Get()->GetLogManager()->DebugLog(msg);
+                    }
                 }
             }
         }
     }
 
-    if (bWindowsPath)
+    if (windowsPath)
     {
         // Convert Unix filenames to Windows
-        resultPath.Replace(wxT("/"), wxT("\\"));
+        resultPath.Replace("/", "\\");
     }
 
     fileCache.insert(std::map<wxString, wxString>::value_type(path, resultPath));
