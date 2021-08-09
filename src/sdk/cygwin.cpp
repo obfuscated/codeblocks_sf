@@ -26,8 +26,9 @@
 #include "cygwin.h"
 
 // Keep a cache of all file paths converted from
-// Cygwin path into native path . Only applicable if under Windows and using Cygwin!
-static std::map<wxString, wxString> g_FileCache;
+// Cygwin path into native path. Only applicable if under Windows and using Cygwin!
+static std::map<wxString, wxString> g_WindowsFileCache;
+static std::map<wxString, wxString> g_CygwinFileCache;
 
 static bool g_CygwinPresent = false; // Assume not found until Cygwin has been found
 static wxString g_CygwinCompilerPathRoot; // Assume no directory until Cygwin has been found
@@ -134,18 +135,14 @@ bool cbIsDetectedCygwinCompiler(void)
     return present;
 }
 
-static void GetCygwinPath(wxString& path, bool bWindowsPath)
+static wxString GetCygwinPath(const wxString& path, bool bWindowsPath)
 {
-    // Append search type to the path for use in the g_FileCache cache
-    wxString cacheSearchPath = wxString::Format(_T("%s:%s"), path, bWindowsPath?"Windows":"Cygwin");
+    std::map<wxString, wxString> &fileCache = (windowsPath ? g_WindowsFileCache : g_CygwinFileCache);
 
     // Check if we already have the file cached before
-    std::map<wxString, wxString>::const_iterator it = g_FileCache.find(cacheSearchPath);
-    if (it != g_FileCache.end())
-    {
-        path = it->second;
-        return;
-    }
+    std::map<wxString, wxString>::const_iterator it = fileCache.find(path);
+    if (it != fileCache.end())
+        return it->second;
 
     wxString resultPath = path;
 
@@ -223,15 +220,15 @@ static void GetCygwinPath(wxString& path, bool bWindowsPath)
         resultPath.Replace(wxT("/"), wxT("\\"));
     }
 
-    path = resultPath;
-    g_FileCache[cacheSearchPath] = resultPath;
+    fileCache.insert(std::map<wxString, wxString>::value_type(path, resultPath));
+    return resultPath;
 }
 
 void cbGetWindowsPathFromCygwinPath(wxString& path)
 {
-    GetCygwinPath(path, true);
+    path = GetCygwinPath(path, true);
 }
 void cbGetCygwinPathFromWindowsPath(wxString& path)
 {
-    GetCygwinPath(path, false);
+    path = GetCygwinPath(path, false);
 }
