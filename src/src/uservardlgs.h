@@ -104,14 +104,12 @@ public:
     friend class UserVarManagerGUI;
 };
 
-
 class UserVarManagerGUI : public UserVarManagerUI
 {
     public:
-    void DisplayInfoWindow(const wxString &title, const wxString &msg);
-    void OpenEditWindow(const wxArrayString &var);
-    wxString GetVariable(wxWindow* parent, const wxString &old);
+    void DisplayInfoWindow(const wxString &title, const wxString &msg) override;
+    void OpenEditWindow(const std::set<wxString> &var) override;
+    wxString GetVariable(wxWindow* parent, const wxString &old) override;
 };
-
 
 #endif // USERVARDLGS_H
