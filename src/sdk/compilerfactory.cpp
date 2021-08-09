@@ -300,22 +300,37 @@ Compiler* CompilerFactory::SelectCompilerUI(const wxString& message, const wxStr
     const wxString lid = preselectedID.Lower();
 
     // first build a list of available compilers
-    std::unique_ptr<wxString[]> comps(new wxString[Compilers.GetCount()]);
+    wxArrayString waCompilerChoices;
 
     for (size_t i = 0; i < Compilers.GetCount(); ++i)
     {
-        comps[i] = Compilers[i]->GetName();
-        if (selected == -1)
+        Compiler* compiler = CompilerFactory::GetCompiler(i);
+        if (!compiler)
+            continue;
+        wxString currentCompilerID = compiler->GetID();
+
+        // Only check if an actual compiler, ignore "NO compiler"
+        if (!currentCompilerID.IsSameAs("null"))
         {
-            if (lid.IsEmpty())
+            wxString path = compiler->GetMasterPath();
+
+            if ( !path.IsEmpty() && wxFileName::DirExists(path))
             {
-                if (Compilers[i] == s_DefaultCompiler)
-                    selected = i;
+                waCompilerChoices.Add(Compilers[i]->GetName());
             }
-            else
+
+            if (selected == -1)
             {
-                if (Compilers[i]->GetID().IsSameAs(lid))
-                    selected = i;
+                if (lid.IsEmpty())
+                {
+                    if (Compilers[i] == s_DefaultCompiler)
+                        selected = i;
+                }
+                else
+                {
+                    if (Compilers[i]->GetID().IsSameAs(lid))
+                        selected = i;
+                }
             }
         }
     }
@@ -323,12 +338,30 @@ Compiler* CompilerFactory::SelectCompilerUI(const wxString& message, const wxStr
     wxSingleChoiceDialog dlg(nullptr,
                              message,
                              _("Compiler selection"),
-                             CompilerFactory::Compilers.GetCount(),
-                             comps.get());
+                             waCompilerChoices);
     dlg.SetSelection(selected);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
-        return Compilers[dlg.GetSelection()];
+    {
+        // Now lookup the
+        wxString sSelectedCompiler = waCompilerChoices.Item(dlg.GetSelection());
+        for (size_t i = 0; i < Compilers.GetCount(); ++i)
+        {
+            Compiler* compiler = CompilerFactory::GetCompiler(i);
+            if (!compiler)
+                continue;
+            wxString currentCompilerID = compiler->GetID();
+
+            // Only check if an actual compiler, ignore "NO compiler"
+            if (!currentCompilerID.IsSameAs("null"))
+            {
+                if (sSelectedCompiler.IsSameAs(Compilers[i]->GetName()))
+                {
+                    return Compilers[i];
+                }
+            }
+        }
+    }
     return nullptr;
 }
 

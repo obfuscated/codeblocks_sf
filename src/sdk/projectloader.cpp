@@ -258,6 +258,77 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
 //        wxString minor = version->Attribute("minor");
     }
 
+    int compilerIdx = CompilerFactory::GetCompilerIndex(CompilerFactory::GetDefaultCompilerID());
+    if (m_pProject)
+        compilerIdx = CompilerFactory::GetCompilerIndex(m_pProject->GetCompilerID());
+
+    bool detected = (compilerIdx != -1);
+    if (compilerIdx != -1)
+    {
+        detected = CompilerFactory::GetCompiler(compilerIdx)->AutoDetectInstallationDir() == adrDetected;
+    }
+    if ((m_pProject && compilerIdx == -1) || (!detected))
+    {   // unknown user compiler
+        // similar code can be found @ OnTreeSelectionChange()
+        // see there for more info : duplicate code now, since here we still need
+        // to fill in the compiler list for the choice control, where in
+        // OnTreeSelectionChange we just need to set an entry
+        // TODO : make 1 help method out of this, with some argument indicating
+        // to fill the choice list, or break it in 2 methods with the list filling in between them
+        // or maybe time will bring even brighter ideas
+        wxString sCompilerId = _("Unknown");
+        if (m_pProject)
+        {
+            sCompilerId = m_pProject->GetCompilerID();
+        }
+        else
+        {
+            int compilerDefId = CompilerFactory::GetCompilerIndex(CompilerFactory::GetDefaultCompiler());
+            Compiler* compilerDefault = CompilerFactory::GetCompiler(compilerDefId);
+            if (compilerDefault)
+            {
+                sCompilerId =  compilerDefault->GetName();
+            }
+        }
+
+        wxString msg;
+        msg.Printf(_("The defined compiler cannot be located (ID: %s).\n"
+                    "Please choose the compiler you want to use instead and click \"OK\".\n"
+                    "If you click \"Cancel\", the project/target will remain configured for\n"
+                    "that compiler and consequently can not be configured and will not be built."),
+                    sCompilerId);
+
+        Compiler* comp = CompilerFactory::SelectCompilerUI(msg);
+
+        if (comp)
+        {
+            wxString sNewCompilerId = comp->GetID();
+
+            if (!sNewCompilerId.IsEmpty() && !sNewCompilerId.IsSameAs(sCompilerId))
+            {
+                // a new compiler was chosen
+                pMsg->DebugLog(wxString::Format(_T("Set project compiler to %s"), sNewCompilerId));
+                m_pProject->SetCompilerID(sNewCompilerId);
+                wxString msg;
+                msg.Printf(_("You have changed the compiler used for the project to %s.\n"
+                            "Do you want to use the same compiler for all the project's build targets too?"),sNewCompilerId);
+                int ret = cbMessageBox( msg,
+                                        _("Question"),
+                                        wxICON_QUESTION | wxYES_NO);
+                if (ret == wxID_YES)
+                {
+                    pMsg->DebugLog(wxString::Format(_T("Set project target(s) compiler to %s"), sNewCompilerId));
+                    for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
+                    {
+                        ProjectBuildTarget* target = m_pProject->GetBuildTarget(i);
+                        if (target)
+                            target->SetCompilerID(sNewCompilerId);
+                    }
+                }
+            }
+        }
+    }
+
     pMsg->DebugLog(wxString(_T("Done loading project in ")) << wxString::Format(_T("%d"), (int) sw.Time()) << _T("ms"));
     return true;
 }
