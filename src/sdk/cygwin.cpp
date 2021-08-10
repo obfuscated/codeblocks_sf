@@ -72,7 +72,7 @@ bool cbIsDetectedCygwinCompiler(void)
             if (!compilerID.IsSameAs("cygwin"))
             {
                 pMsg->DebugLog("ActiveBuildTarget->GetCompilerID().IsSameAs(cygwin) is FALSE!");
-                g_CygwinCompilerPathRoot = wxEmptyString;
+                g_CygwinCompilerPathRoot = wxString();
                 return false;
             }
         }
@@ -83,7 +83,7 @@ bool cbIsDetectedCygwinCompiler(void)
             if (!compilerID.IsSameAs("cygwin"))
             {
                 pMsg->DebugLog("pProject->GetCompilerID().IsSameAs(cygwin) is FALSE!");
-                g_CygwinCompilerPathRoot = wxEmptyString;
+                g_CygwinCompilerPathRoot = wxString();
                 return false;
             }
         }
@@ -93,7 +93,7 @@ bool cbIsDetectedCygwinCompiler(void)
         if (!actualCompiler)
         {
             pMsg->DebugLog("Could not find actual CygWin compiler!!!");
-            g_CygwinCompilerPathRoot = wxEmptyString;
+            g_CygwinCompilerPathRoot = wxString();
             return false;
         }
     }
@@ -141,10 +141,10 @@ bool cbIsDetectedCygwinCompiler(void)
     }
     else
     {
-        g_CygwinCompilerPathRoot = wxEmptyString;
+        g_CygwinCompilerPathRoot = wxString();
     }
 #else
-    g_CygwinCompilerPathRoot = wxEmptyString;
+    g_CygwinCompilerPathRoot = wxString();
 #endif // defined(__WXMSW__)
 
     return present;
