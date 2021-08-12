@@ -123,22 +123,24 @@ PipedProcess::PipedProcess(PipedProcess** pvThis, wxEvtHandler* parent, int id, 
         wxSetWorkingDirectory(unixDir);
     if (pipe)
         Redirect();
+
+    m_timerPollProcess.SetOwner(this, idTimerPollProcess);
 }
 
 // class destructor
 PipedProcess::~PipedProcess()
 {
-    // insert your code here
+    if (m_timerPollProcess.IsRunning())
+        m_timerPollProcess.Stop();
 }
 
-int PipedProcess::Launch(const wxString& cmd, cb_unused unsigned int pollingInterval)
+int PipedProcess::Launch(const wxString& cmd,int flags ,cb_unused unsigned int pollingInterval)
 {
     m_Stopped = false;
     m_Pid = wxExecute(cmd, wxEXEC_ASYNC | wxEXEC_MAKE_GROUP_LEADER, this);
     if (m_Pid)
     {
-//        m_timerPollProcess.SetOwner(this, idTimerPollProcess);
-//        m_timerPollProcess.Start(pollingInterval);
+        m_timerPollProcess.Start(pollingInterval);
     }
     return m_Pid;
 }
