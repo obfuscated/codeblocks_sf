@@ -1172,6 +1172,14 @@ ValueTooltip::ValueTooltip(const cb::shared_ptr<cbWatch> &watch, wxWindow *paren
     m_watch->GetValue(value);
     wxPGProperty *root = m_grid->Append(new WatchesProperty(symbol, value, m_watch, true));
     m_watch->MarkAsChangedRecursive(false);
+
+    // If we leave the watch expanded and the user decides to collapse the root, the window refuses
+    // to shrink.
+    // This makes the min size to be as large as a single non-expanded property.
+    // Later we'll expand.
+    const bool oldExpanded = m_watch->IsExpanded();
+    if (oldExpanded)
+        m_watch->Expand(false);
     ::UpdateWatch(m_grid, root, m_watch, true);
 
     m_sizer = new wxBoxSizer( wxVERTICAL );
@@ -1180,6 +1188,15 @@ ValueTooltip::ValueTooltip(const cb::shared_ptr<cbWatch> &watch, wxWindow *paren
     // Apply the calculated min size.
     ::SetMinSize(m_grid);
     SetSizerAndFit(m_sizer);
+
+    // Expand here after the min size calculation is done.
+    if (oldExpanded)
+    {
+        m_watch->Expand(true);
+        root->SetExpanded(true);
+        //m_grid->Refresh();
+        UpdateSizeAndFit();
+    }
 
     m_timer.Start(100);
 }
