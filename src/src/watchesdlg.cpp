@@ -1122,6 +1122,14 @@ inline void SetMinSize(wxPropertyGrid *grid)
 
     int width[3];
     GetColumnWidths(grid, grid->GetRoot(), width);
+    // Add a bit of breathing room to prevent the appearance of a horizontal scroll for short
+    // expressions - example "int a=5;".
+    // This more of a workaround, a proper fix would require a thorough investigation of the
+    // wxPropGrid code, but I don't have the time at the moment.
+    width[0] += 10;
+    width[1] += 10;
+    width[2] += 10;
+
     rect.width = std::accumulate(width, width+3, 0);
 
     const int minWidth = (wxSystemSettings::GetMetric(wxSYS_SCREEN_X, grid->GetParent())*3)/2;
