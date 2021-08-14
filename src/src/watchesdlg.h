@@ -93,7 +93,7 @@ class ValueTooltip :
     protected:
         virtual void OnDismiss();
     private:
-        void Fit() override;
+        void UpdateSizeAndFit();
         void ClearWatch();
     private:
 
@@ -103,7 +103,6 @@ class ValueTooltip :
     private:
         wxPropertyGrid *m_grid;
         wxBoxSizer *m_sizer;
-        wxPanel *m_panel;
 
         wxTimer m_timer;
         int m_outsideCount;

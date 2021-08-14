@@ -1150,8 +1150,8 @@ ValueTooltip::ValueTooltip(const cb::shared_ptr<cbWatch> &watch, wxWindow *paren
     m_outsideCount(0),
     m_watch(watch)
 {
-    m_panel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxSize(200, 200));
-    m_grid = new wxPropertyGrid(m_panel, idTooltipGrid, wxDefaultPosition, wxSize(400,400), wxPG_SPLITTER_AUTO_CENTER);
+    m_grid = new wxPropertyGrid(this, idTooltipGrid, wxDefaultPosition, wxSize(200, 200),
+                                wxPG_SPLITTER_AUTO_CENTER);
 
     long extraStyles = 0;
 #if wxCHECK_VERSION(3, 0, 3)
@@ -1174,15 +1174,12 @@ ValueTooltip::ValueTooltip(const cb::shared_ptr<cbWatch> &watch, wxWindow *paren
     m_watch->MarkAsChangedRecursive(false);
     ::UpdateWatch(m_grid, root, m_watch, true);
 
-    ::SetMinSize(m_grid);
-
     m_sizer = new wxBoxSizer( wxVERTICAL );
     m_sizer->Add(m_grid, 0, wxALL | wxEXPAND, 0);
 
-    m_panel->SetAutoLayout(true);
-    m_panel->SetSizer(m_sizer);
-    m_sizer->Fit(m_panel);
-    m_sizer->Fit(this);
+    // Apply the calculated min size.
+    ::SetMinSize(m_grid);
+    SetSizerAndFit(m_sizer);
 
     m_timer.Start(100);
 }
@@ -1197,7 +1194,7 @@ void ValueTooltip::UpdateWatch()
     m_watch->MarkAsChangedRecursive(false);
     ::UpdateWatch(m_grid, GetRealRoot(m_grid), m_watch, true);
     m_grid->Refresh();
-    Fit();
+    UpdateSizeAndFit();
 }
 
 void ValueTooltip::ClearWatch()
@@ -1223,13 +1220,10 @@ void ValueTooltip::OnDismiss()
     ClearWatch();
 }
 
-void ValueTooltip::Fit()
+void ValueTooltip::UpdateSizeAndFit()
 {
     ::SetMinSize(m_grid);
-    m_sizer->Fit(m_panel);
-    wxPoint pos = GetScreenPosition();
-    wxSize size = m_panel->GetScreenRect().GetSize();
-    SetSize(pos.x, pos.y, size.x, size.y);
+    Fit();
 }
 
 void ValueTooltip::OnCollapse(wxPropertyGridEvent &event)
@@ -1240,7 +1234,7 @@ void ValueTooltip::OnCollapse(wxPropertyGridEvent &event)
     cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
     if (plugin)
         plugin->CollapseWatch(prop->GetWatch());
-    Fit();
+    UpdateSizeAndFit();
 }
 
 void ValueTooltip::OnExpand(wxPropertyGridEvent &event)
@@ -1251,7 +1245,7 @@ void ValueTooltip::OnExpand(wxPropertyGridEvent &event)
     cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
     if (plugin)
         plugin->ExpandWatch(prop->GetWatch());
-    Fit();
+    UpdateSizeAndFit();
 }
 
 void ValueTooltip::OnTimer(cb_unused wxTimerEvent &event)
