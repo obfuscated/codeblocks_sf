@@ -294,7 +294,8 @@ class WatchRawDialog : public wxScrollingDialog
             }
         }
 
-        static void WatchToString(wxString &result, const cbWatch &watch, const wxString &indent = wxEmptyString)
+        static void WatchToString(wxString &result, const cbWatch &watch,
+                                  const wxString &indent = wxEmptyString)
         {
             wxString sym, value;
             watch.GetSymbol(sym);
@@ -416,7 +417,7 @@ WatchesDlg::WatchesDlg() :
                                new Functor(this, &WatchesDlg::OnDebuggerUpdated));
 }
 
-inline void AppendChildren(wxPropertyGrid &grid, wxPGProperty &property, cbWatch &watch,
+static void AppendChildren(wxPropertyGrid &grid, wxPGProperty &property, cbWatch &watch,
                            bool readonly, const wxColour &changedColour)
 {
     for(int ii = 0; ii < watch.GetChildCount(); ++ii)
@@ -450,7 +451,8 @@ inline void AppendChildren(wxPropertyGrid &grid, wxPGProperty &property, cbWatch
     }
 }
 
-inline void UpdateWatch(wxPropertyGrid *grid, wxPGProperty *property, cb::shared_ptr<cbWatch> watch, bool readonly)
+static void UpdateWatch(wxPropertyGrid *grid, wxPGProperty *property, cb::shared_ptr<cbWatch> watch,
+                        bool readonly)
 {
     if (!property)
         return;
@@ -493,7 +495,7 @@ inline void UpdateWatch(wxPropertyGrid *grid, wxPGProperty *property, cb::shared
     WatchRawDialog::UpdateValue(static_cast<const WatchesProperty*>(property));
 }
 
-inline void SetValue(WatchesProperty *prop)
+static void SetValue(WatchesProperty *prop)
 {
     if (prop)
     {
@@ -1059,13 +1061,13 @@ BEGIN_EVENT_TABLE(ValueTooltip, wxWindow)
     EVT_TIMER(idTooltipTimer, ValueTooltip::OnTimer)
 END_EVENT_TABLE()
 
-inline wxPGProperty* GetRealRoot(wxPropertyGrid *grid)
+static wxPGProperty* GetRealRoot(wxPropertyGrid *grid)
 {
     wxPGProperty *property = grid->GetRoot();
     return property ? grid->GetFirstChild(property) : nullptr;
 }
 
-inline void GetColumnWidths(wxClientDC &dc, wxPropertyGrid *grid, wxPGProperty *root, int width[3])
+static void GetColumnWidths(wxClientDC &dc, wxPropertyGrid *grid, wxPGProperty *root, int width[3])
 {
     wxPropertyGridPageState *state = grid->GetState();
 
@@ -1100,14 +1102,14 @@ inline void GetColumnWidths(wxClientDC &dc, wxPropertyGrid *grid, wxPGProperty *
     width[2] = std::max(width[2], minWidths[2]);
 }
 
-inline void GetColumnWidths(wxPropertyGrid *grid, wxPGProperty *root, int width[3])
+static void GetColumnWidths(wxPropertyGrid *grid, wxPGProperty *root, int width[3])
 {
     wxClientDC dc(grid);
     dc.SetFont(grid->GetFont());
     GetColumnWidths(dc, grid, root, width);
 }
 
-inline void SetMinSize(wxPropertyGrid *grid)
+static void SetMinSize(wxPropertyGrid *grid)
 {
     wxPGProperty *p = GetRealRoot(grid);
     wxPGProperty *first = grid->wxPropertyGridInterface::GetFirst(wxPG_ITERATE_ALL);
