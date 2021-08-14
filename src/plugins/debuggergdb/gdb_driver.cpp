@@ -12,17 +12,14 @@
 #include "gdb_commands.h"
 #include "debuggeroptionsdlg.h"
 #include "debuggerstate.h"
+
 #include <cbdebugger_interfaces.h>
-#include <manager.h>
-#include <macrosmanager.h>
 #include <configmanager.h>
+#include <cygwin.h>
 #include <globals.h>
 #include <infowindow.h>
-
-#ifdef __WXMSW__
-// for Registry detection of Cygwin
-#include "wx/msw/wrapwin.h"     // Wraps windows.h
-#endif
+#include <manager.h>
+#include <macrosmanager.h>
 
 // the ">>>>>>" is a hack: sometimes, especially when watching uninitialized char*
 // some random control codes in the stream (like 'delete') will mess-up our prompt and the debugger
@@ -79,7 +76,6 @@ static wxRegEx reInferiorExitedWithCode(wxT("^\\[[Ii]nferior[ \\t].+[ \\t]exited
 
 GDB_driver::GDB_driver(DebuggerGDB* plugin) :
     DebuggerDriver(plugin),
-    m_CygwinPresent(false),
     m_BreakOnEntry(false),
     m_ManualBreakOnEntry(false),
     m_IsStarted(false),
@@ -91,6 +87,9 @@ GDB_driver::GDB_driver(DebuggerGDB* plugin) :
     //ctor
     m_needsUpdate = false;
     m_forceUpdate = false;
+
+    if (platform::windows)
+        m_CygwinPresent = cbIsDetectedCygwinCompiler();
 }
 
 GDB_driver::~GDB_driver()
@@ -107,7 +106,17 @@ wxString GDB_driver::GetCommandLine(const wxString& debugger, const wxString& de
     cmd << _T(" -fullname");    // report full-path filenames when breaking
     cmd << _T(" -quiet");       // don't display version on startup
     cmd << wxT(" ") << userArguments;
-    cmd << _T(" -args ") << debuggee;
+
+    wxString actualDebuggee;
+    if (platform::windows && m_CygwinPresent)
+    {
+        actualDebuggee = debuggee;
+        cbGetCygwinPathFromWindowsPath(actualDebuggee);
+    }
+    else
+        actualDebuggee = debuggee;
+
+    cmd << _T(" -args ") << actualDebuggee;
     return cmd;
 }
 
@@ -132,10 +141,6 @@ void GDB_driver::SetTarget(ProjectBuildTarget* target)
 void GDB_driver::Prepare(bool isConsole, int printElements, const RemoteDebugging &remoteDebugging)
 {
     // default initialization
-
-    // for the possibility that the program to be debugged is compiled under Cygwin
-    if (platform::windows)
-        DetectCygwinMount();
 
     // make sure we 're using the prompt that we know and trust ;)
     QueueCommand(new DebuggerCmd(this, wxString("set prompt ") + FULL_GDB_PROMPT));
@@ -242,121 +247,12 @@ void GDB_driver::Prepare(bool isConsole, int printElements, const RemoteDebuggin
     }
 }
 
-// Cygwin check code
-#ifdef __WXMSW__
-
-enum{ BUFSIZE = 64 };
-
-// routines to handle cygwin compiled programs on a Windows compiled C::B IDE
-void GDB_driver::DetectCygwinMount(void)
-{
-    LONG lRegistryAPIresult;
-    HKEY hKey_CU;
-    HKEY hKey_LM;
-    TCHAR szCygwinRoot[BUFSIZE];
-    DWORD dwBufLen=BUFSIZE*sizeof(TCHAR);
-
-    // checking if cygwin mounts are present under HKCU
-    lRegistryAPIresult = RegOpenKeyEx( HKEY_CURRENT_USER,
-                         TEXT("Software\\Cygnus Solutions\\Cygwin\\mounts v2"),
-                         0, KEY_QUERY_VALUE, &hKey_CU );
-    if ( lRegistryAPIresult == ERROR_SUCCESS )
-    {
-        // try to readback cygwin root (might not exist!)
-        lRegistryAPIresult = RegQueryValueEx( hKey_CU, TEXT("cygdrive prefix"), NULL, NULL,
-                             (LPBYTE) szCygwinRoot, &dwBufLen);
-    }
-
-    // lRegistryAPIresult can be erroneous for two reasons:
-    // 1.) Cygwin entry is not present (could not be opened) in HKCU
-    // 2.) "cygdrive prefix" is not present (could not be read) in HKCU
-    if ( lRegistryAPIresult != ERROR_SUCCESS )
-    {
-        // Now check if probably present under HKLM
-        lRegistryAPIresult = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
-                             TEXT("SOFTWARE\\Cygnus Solutions\\Cygwin\\mounts v2"),
-                             0, KEY_QUERY_VALUE, &hKey_LM );
-        if ( lRegistryAPIresult != ERROR_SUCCESS )
-        {
-            // cygwin definitely not installed
-            m_CygwinPresent = false;
-            return;
-        }
-
-        // try to readback cygwin root (now it really should exist here)
-        lRegistryAPIresult = RegQueryValueEx( hKey_LM, TEXT("cygdrive prefix"), NULL, NULL,
-                             (LPBYTE) szCygwinRoot, &dwBufLen);
-    }
-
-    // handle a possible query error
-    if ( (lRegistryAPIresult != ERROR_SUCCESS) || (dwBufLen > BUFSIZE*sizeof(TCHAR)) )
-    {
-        // bit of an assumption, but we won't be able to find the root without it
-        m_CygwinPresent = false;
-        return;
-    }
-
-    // close opened keys
-    RegCloseKey( hKey_CU ); // ignore key close errors
-    RegCloseKey( hKey_LM ); // ignore key close errors
-
-    m_CygwinPresent  = true;           // if we end up here all was OK
-    m_CygdrivePrefix = (szCygwinRoot); // convert to wxString type for later use
-}
-
-void GDB_driver::CorrectCygwinPath(wxString& path)
-{
-    unsigned int i=0, EscCount=0;
-
-    // preserve any escape characters at start of path - this is true for
-    // breakpoints - value is 2, but made dynamic for safety as we
-    // are only checking for the CDprefix not any furthur correctness
-    if (path.GetChar(0)==g_EscapeChar)
-    {
-        while ( (i<path.Len()) && (path.GetChar(i)==g_EscapeChar) )
-        {
-            // get character
-            EscCount++;
-            i++;
-        }
-    }
-
-    // prepare to convert to a valid path if Cygwin is being used
-
-    // step over the escape characters
-    wxString PathWithoutEsc(path); PathWithoutEsc.Remove(0, EscCount);
-
-    if (PathWithoutEsc.StartsWith(m_CygdrivePrefix))
-    {
-        // remove cygwin prefix
-        if (m_CygdrivePrefix.EndsWith(_T("/"))) // for the case   "/c/path"
-          PathWithoutEsc.Remove(0, m_CygdrivePrefix.Len()  );
-        else                                    // for cases e.g. "/cygdrive/c/path"
-          PathWithoutEsc.Remove(0, m_CygdrivePrefix.Len()+1);
-
-        // insert ':' after drive label by reading and removing drive the label
-        // and adding ':' and the drive label back
-        wxString DriveLetter = PathWithoutEsc.GetChar(0);
-        PathWithoutEsc.Replace(DriveLetter, DriveLetter + _T(":"), false);
-    }
-
-    // Compile corrected path
-    path = wxEmptyString;
-    for (i=0; i<EscCount; i++)
-        path += g_EscapeChar;
-    path += PathWithoutEsc;
-}
-#else
-    void GDB_driver::DetectCygwinMount(void){/* dummy */}
-    void GDB_driver::CorrectCygwinPath(cb_unused wxString& path){/* dummy */}
-#endif
-
 #ifdef __WXMSW__
 bool GDB_driver::UseDebugBreakProcess()
 {
     return !m_isRemoteDebugging;
 }
-#endif
+#endif // __WXMSW__
 
 wxString GDB_driver::GetDisassemblyFlavour(void)
 {
@@ -512,6 +408,7 @@ void GDB_driver::SetMemoryRangeValue(uint64_t addr, const wxString& value)
     dataStr << wxT("}");
 
     wxString commandStr;
+// Check if build is for WX MS Windows
 #ifdef __WXMSW__
     commandStr.Printf(wxT("set {char [%ul]} 0x%" PRIx64 "="), size, addr);
 #else
@@ -796,16 +693,9 @@ void GDB_driver::ParseOutput(const wxString& output)
     // non-command messages (e.g. breakpoint hits)
     // break them up in lines
 
-    wxArrayString lines = GetArrayFromString(buffer, _T('\n'));
+    const wxArrayString lines = GetArrayFromString(buffer, _T('\n'));
     for (unsigned int i = 0; i < lines.GetCount(); ++i)
     {
-//            Log(_T("DEBUG: ") + lines[i]); // write it in the full debugger log
-
-        // Check for possibility of a cygwin compiled program
-        // convert to valid path
-        if (platform::windows && m_CygwinPresent)
-            CorrectCygwinPath(lines.Item(i));
-
         // log GDB's version
         if (lines[i].StartsWith(_T("GNU gdb")))
         {
@@ -945,7 +835,11 @@ void GDB_driver::ParseOutput(const wxString& output)
                         lineStr = rePendingFound.GetMatch(bpstr, 2);
                     }
 
-                    file = UnixFilename(file);
+                    if (platform::windows && m_CygwinPresent)
+                        cbGetWindowsPathFromCygwinPath(file);
+                    else
+                        file = UnixFilename(file);
+
     //                m_pDBG->Log(wxString::Format(_T("file: %s, line: %s"), file.c_str(), lineStr.c_str()));
                     long line;
                     lineStr.ToLong(&line);
@@ -996,7 +890,7 @@ void GDB_driver::ParseOutput(const wxString& output)
         }
 
         // cursor change
-        else if (lines[i].StartsWith(g_EscapeChar)) // ->->
+        else if (!lines[i].empty() && lines[i][0] == wxUniChar(26)) // ->->
         {
             // breakpoint, e.g.
             // C:/Devel/tmp/test_console_dbg/tmp/main.cpp:14:171:beg:0x401428
@@ -1018,6 +912,7 @@ void GDB_driver::ParseOutput(const wxString& output)
         }
         else
         {
+            bool isFileUpdated = false;
             // other break info, e.g.
             // 0x7c9507a8 in ntdll!KiIntSystemCall () from C:\WINDOWS\system32\ntdll.dll
             wxRegEx* re = 0;
@@ -1035,6 +930,7 @@ void GDB_driver::ParseOutput(const wxString& output)
                 m_Cursor.line = -1;
                 m_Cursor.changed = true;
                 m_needsUpdate = true;
+                isFileUpdated = true;
             }
             else if ( reThreadSwitch2.Matches(lines[i]) )
             {
@@ -1045,6 +941,7 @@ void GDB_driver::ParseOutput(const wxString& output)
                 m_Cursor.line = -1;
                 m_Cursor.changed = true;
                 m_needsUpdate = true;
+                isFileUpdated = true;
             }
             else if (reBreak3.Matches(lines[i]) )
             {
@@ -1073,6 +970,9 @@ void GDB_driver::ParseOutput(const wxString& output)
                 m_Cursor.changed = true;
                 m_needsUpdate = true;
             }
+
+            if (isFileUpdated && platform::windows && m_CygwinPresent)
+                cbGetWindowsPathFromCygwinPath(m_Cursor.file);
         }
     }
     buffer.Clear();
@@ -1123,11 +1023,13 @@ void GDB_driver::HandleMainBreakPoint(const wxRegEx& reBreak_in, wxString line)
             if (platform::windows)
             {
                 m_Cursor.file = reBreak_in.GetMatch(line, 1) + reBreak_in.GetMatch(line, 2);
+                if (m_CygwinPresent)
+                    cbGetWindowsPathFromCygwinPath(m_Cursor.file);
             }
             else
             {
-                // For debuging of usual linux application 'GetMatch(line, 1)' is empty.
-                // While for debuging of application under wine the name of the disk is useless.
+                // For debugging of usual linux application 'GetMatch(line, 1)' is empty.
+                // While for debugging of application under wine the name of the disk is useless.
                 m_Cursor.file = reBreak_in.GetMatch( line, 2);
             }
 

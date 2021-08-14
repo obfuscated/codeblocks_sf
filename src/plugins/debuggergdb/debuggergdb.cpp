@@ -95,8 +95,6 @@ enum DebugCommandConst
     CMD_RUNNINGTHREADS
 };
 
-const wxString g_EscapeChar = wxChar(26);
-
 namespace
 {
 long idMenuInfoFrame = wxNewId();
