@@ -54,7 +54,6 @@ class RegExDlg: public wxScrollingDialog
 
 
         wxArrayString GetBuiltinMatches(const wxString& text);
-        wxArrayString GetPregMatches(const wxString& text);
 
         //(*Declarations(RegExDlg)
         wxCheckBox* m_nocase;
