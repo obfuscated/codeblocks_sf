@@ -72,10 +72,6 @@ BEGIN_EVENT_TABLE(WatchesDlg, wxPanel)
     EVT_MENU(idMenuUpdate, WatchesDlg::OnMenuUpdate)
 END_EVENT_TABLE()
 
-#if wxCHECK_VERSION(3, 0, 0)
-typedef wxString wxPG_CONST_WXCHAR_PTR;
-#endif
-
 struct WatchesDlg::WatchItemPredicate
 {
     WatchItemPredicate(cb::shared_ptr<cbWatch> watch) : m_watch(watch) {}
@@ -93,7 +89,7 @@ class cbDummyEditor : public wxPGEditor
     DECLARE_DYNAMIC_CLASS(cbDummyEditor)
 public:
     cbDummyEditor() {}
-    wxPG_CONST_WXCHAR_PTR GetName() const override
+    wxString GetName() const override
     {
         return wxT("cbDummyEditor");
     }
@@ -129,7 +125,7 @@ class cbTextCtrlAndButtonTooltipEditor : public wxPGTextCtrlAndButtonEditor
 {
     DECLARE_DYNAMIC_CLASS(cbTextCtrlAndButtonTooltipEditor)
 public:
-    wxPG_CONST_WXCHAR_PTR GetName() const override
+    wxString GetName() const override
     {
         return wxT("cbTextCtrlAndButtonTooltipEditor");
     }
@@ -395,24 +391,10 @@ WatchesDlg::WatchesDlg() :
     SetSizer(bs);
 
     if (!watchesPropertyEditor)
-    {
-#if wxCHECK_VERSION(3, 0, 0)
         watchesPropertyEditor = wxPropertyGrid::RegisterEditorClass(new cbTextCtrlAndButtonTooltipEditor, true);
-#else
-        watchesPropertyEditor = wxPropertyGrid::RegisterEditorClass(new cbTextCtrlAndButtonTooltipEditor,
-                                                                    wxT("cbTextCtrlAndButtonTooltipEditor"),
-                                                                    true);
-#endif
-    }
 
     if (!watchesDummyEditor)
-    {
-#if wxCHECK_VERSION(3, 0, 0)
         watchesDummyEditor = wxPropertyGrid::RegisterEditorClass(new cbDummyEditor, true);
-#else
-        watchesDummyEditor = wxPropertyGrid::RegisterEditorClass(new cbDummyEditor, wxT("cbDummyEditor"), true);
-#endif
-    }
 
     m_grid->SetColumnProportion(0, 40);
     m_grid->SetColumnProportion(1, 40);
@@ -462,13 +444,7 @@ inline void AppendChildren(wxPropertyGrid &grid, wxPGProperty &property, cbWatch
             WatchRawDialog::UpdateValue(static_cast<const WatchesProperty*>(prop));
         }
         else
-        {
-#if wxCHECK_VERSION(3, 0, 0)
             grid.SetPropertyColoursToDefault(prop);
-#else
-            grid.SetPropertyColourToDefault(prop);
-#endif
-        }
 
         AppendChildren(grid, *prop, *child.get(), readonly, changedColour);
     }
@@ -490,13 +466,7 @@ inline void UpdateWatch(wxPropertyGrid *grid, wxPGProperty *property, cb::shared
     if (watch->IsChanged())
         grid->SetPropertyTextColour(property, changedColour);
     else
-    {
-#if wxCHECK_VERSION(3, 0, 0)
         grid->SetPropertyColoursToDefault(property);
-#else
-        grid->SetPropertyColourToDefault(property);
-#endif
-    }
     grid->SetPropertyAttribute(property, wxT("Units"), type);
     if (value.empty())
         grid->SetPropertyHelpString(property, wxEmptyString);
@@ -1097,11 +1067,7 @@ inline wxPGProperty* GetRealRoot(wxPropertyGrid *grid)
 
 inline void GetColumnWidths(wxClientDC &dc, wxPropertyGrid *grid, wxPGProperty *root, int width[3])
 {
-#if wxCHECK_VERSION(3, 0, 0)
     wxPropertyGridPageState *state = grid->GetState();
-#else
-    wxPropertyGridState *state = grid->GetState();
-#endif
 
     width[0] = width[1] = width[2] = 0;
     int minWidths[3] = { state->GetColumnMinWidth(0),
@@ -1161,11 +1127,7 @@ inline void SetMinSize(wxPropertyGrid *grid)
     int minWidth = (wxSystemSettings::GetMetric(wxSYS_SCREEN_X, grid->GetParent())*3)/2;
     int minHeight = (wxSystemSettings::GetMetric(wxSYS_SCREEN_Y, grid->GetParent())*3)/2;
 
-#if wxCHECK_VERSION(3, 0, 0)
     wxSize size(std::min(minWidth, rect.width), std::min(minHeight, height));
-#else
-    wxSize size(std::min(minWidth, rect.width + grid->GetMarginWidth()), std::min(minHeight, height));
-#endif
     grid->SetMinSize(size);
 
     int proportions[3];
