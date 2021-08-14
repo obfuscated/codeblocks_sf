@@ -29,7 +29,7 @@ void RndGen::OnSave(CodeBlocksEvent& event)
         return;
 
     const int Pos = ctrl->GetCurrentPos();
-    ctrl->SetUndoCollection(false);
+    ctrl->BeginUndoAction();
 
     wxRegEx int_re("([0-9]+) *;? *\\/\\* *RANDGEN:INT\\((.+)\\) *\\*\\/");
     wxCHECK_RET(int_re.IsValid(), "Invalid regex (int_re) in rndgen plugin");
@@ -54,7 +54,7 @@ void RndGen::OnSave(CodeBlocksEvent& event)
             long Arg;
             int_re.GetMatch(s, 2).ToLong(&Arg);
             wxString Replace;
-            Replace.Printf("%u", RandGen() % (Arg+1));
+            Replace.Printf("%lu", static_cast<unsigned long>(RandGen() % (Arg+1)));
             s.Replace(Search, Replace, false);
 
             ctrl->SetTargetStart(a);
@@ -102,7 +102,7 @@ void RndGen::OnSave(CodeBlocksEvent& event)
         }
     }
 
-    ctrl->SetUndoCollection(true);
+    ctrl->EndUndoAction();
     ctrl->SetCurrentPos(Pos);
     ctrl->SelectNone();
 }
