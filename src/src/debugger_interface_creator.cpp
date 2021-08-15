@@ -206,10 +206,7 @@ bool DebugInterfaceFactory::ShowValueTooltip(const cb::shared_ptr<cbWatch> &watc
         return false;
     else
     {
-        m_tooltip = new ValueTooltip(watch, Manager::Get()->GetAppWindow());
-#ifndef __WXMAC__
-        m_tooltip->Position(pt, wxSize(0, 0));
-#endif
+        m_tooltip = new ValueTooltip(watch, Manager::Get()->GetAppWindow(), pt);
         // hide any other tooltips
         EditorBase *base = Manager::Get()->GetEditorManager()->GetActiveEditor();
         cbEditor *ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : nullptr;

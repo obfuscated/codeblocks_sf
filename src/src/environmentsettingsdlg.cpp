@@ -154,9 +154,9 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     {
         if (!platform::macosx && !platform::darwin)
         {
-            combo->Append(wxT("gnome-terminal -t $TITLE -x "));
+            combo->Append(wxT("gnome-terminal --wait -t $TITLE -x "));
             combo->Append(wxT("konsole -e "));
-            combo->Append(wxT("xfce4-terminal -T $TITLE -x "));
+            combo->Append(wxT("xfce4-terminal --disable-server -T $TITLE -x "));
             combo->Append(wxT("terminology -M -T $TITLE -e "));
         }
         wxString terminal = cfg->Read(wxT("/console_terminal"), DEFAULT_CONSOLE_TERM);

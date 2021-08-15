@@ -65,7 +65,7 @@ int RegExTestbed::Execute()
 {
     try
     {
-        RegExDlg *dlg = new RegExDlg(0, -1);
+        RegExDlg *dlg = new RegExDlg(Manager::Get()->GetAppWindow(), -1);
         PlaceWindow(dlg);
         dlg->Show();
     }

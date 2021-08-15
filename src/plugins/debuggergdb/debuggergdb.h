@@ -19,8 +19,6 @@
 #include "debuggerstate.h"
 #include "debugger_defs.h"
 
-extern const wxString g_EscapeChar;
-
 class cbProject;
 class TiXmlElement;
 class DebuggerDriver;

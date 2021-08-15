@@ -778,6 +778,9 @@
 		<Unit filename="include/crc32.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/cygwin.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/debuggermanager.h">
 			<Option target="sdk" />
 		</Unit>
@@ -2330,6 +2333,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/crc32.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/cygwin.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/debuggermanager.cpp">

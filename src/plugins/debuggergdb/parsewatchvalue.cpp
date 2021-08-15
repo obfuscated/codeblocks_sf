@@ -333,7 +333,7 @@ inline cb::shared_ptr<GDBWatch> AddChild(cb::shared_ptr<GDBWatch> parent, wxStri
 }
 
 wxRegEx regexRepeatedChar(wxT(".+[ \\t](<repeats[ \\t][0-9]+[ \\t]times>)$"));
-wxRegEx regexFortranArray(wxT("^\\([0-9,]+)$"));
+wxRegEx regexFortranArray(wxT("^\\([0-9,]+\\)$"));
 
 inline bool ParseGDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &value, int &start, int length)
 {
