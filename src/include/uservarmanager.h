@@ -9,6 +9,7 @@
 #include "settings.h"
 #include "manager.h"
 #include "cbexception.h"
+#include <set>
 
 #ifndef CB_PRECOMP
     #include "globals.h"
@@ -32,7 +33,7 @@ public:
      *
      * \param var Variables to create
      */
-    virtual void OpenEditWindow(const wxArrayString &var = wxArrayString()) = 0;
+    virtual void OpenEditWindow(const std::set<wxString> &var = std::set<wxString>() ) = 0;
 
     /** \brief Open Dialog that asks the user for a variable
      *
@@ -52,7 +53,7 @@ class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
 
         ConfigManager * m_CfgMan;
         wxString        m_ActiveSet;
-        wxArrayString   m_Preempted;
+        std::set<wxString> m_Preempted;
         std::unique_ptr<UserVarManagerUI> m_ui;
 
 

@@ -75,7 +75,7 @@ public:
         Manager::Get()->GetLogManager()->LogWarning(msg);
     }
 
-    void OpenEditWindow(const wxArrayString &var) override { };
+    void OpenEditWindow(const std::set<wxString> &var) override { };
     wxString GetVariable(wxWindow* parent, const wxString &old) override { return ""; };
 };
 
@@ -119,8 +119,7 @@ wxString UserVariableManager::Replace(const wxString& variable)
                          "Please define it."), package.wx_str());
 
             m_ui->DisplayInfoWindow(_("Global Compiler Variables"), msg);
-            wxArrayString ar;
-            ar.Add(package);
+            std::set<wxString> ar = {package};
             m_ui->OpenEditWindow(ar);
 
             base = m_CfgMan->Read(path + cBase);
@@ -160,10 +159,9 @@ void UserVariableManager::Preempt(const wxString& variable)
 
     wxString member(variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).BeforeFirst(wxT(')')).MakeLower());
 
-    if (!m_CfgMan->Exists(cSets + m_ActiveSet + _T('/') + member + _T("/base")) &&
-            m_Preempted.Index(member) == wxNOT_FOUND)
+    if (!m_CfgMan->Exists(cSets + m_ActiveSet + _T('/') + member + _T("/base")) )
     {
-        m_Preempted.Add(member);
+        m_Preempted.insert(member);
     }
 }
 
@@ -178,18 +176,18 @@ bool UserVariableManager::Exists(const wxString& variable) const
 
 void UserVariableManager::Arrogate()
 {
-    if (m_Preempted.GetCount() == 0)
+    if (m_Preempted.size() == 0)
         return;
 
     wxString peList;
-    for (unsigned int i = 0; i < m_Preempted.GetCount(); ++i)
+    for (const wxString& var : m_Preempted)
     {
-        peList << m_Preempted[i] << _T('\n');
+        peList << var << _T('\n');
     }
     peList = peList.BeforeLast('\n'); // remove trailing newline
 
     wxString msg;
-    if (m_Preempted.GetCount() == 1)
+    if (m_Preempted.size() == 1)
         msg.Printf(_("In the currently active set, Code::Blocks does not know\n"
                      "the global compiler variable \"%s\".\n\n"
                      "Please define it."), peList.wx_str());
@@ -201,7 +199,7 @@ void UserVariableManager::Arrogate()
 
     m_ui->DisplayInfoWindow(_("Global Compiler Variables"), msg);
     m_ui->OpenEditWindow(m_Preempted);
-    m_Preempted.Clear();
+    m_Preempted.clear();
 }
 
 UserVariableManager::UserVariableManager()

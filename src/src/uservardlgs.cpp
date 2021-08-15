@@ -6,12 +6,12 @@ void UserVarManagerGUI::DisplayInfoWindow(const wxString &title, const wxString 
     InfoWindow::Display(title, msg , 8000, 1000);
 }
 
-void UserVarManagerGUI::OpenEditWindow(const wxArrayString &var)
+void UserVarManagerGUI::OpenEditWindow(const std::set<wxString> &var)
 {
     UsrGlblMgrEditDialog d;
-    for (unsigned int i = 0; i < var.GetCount(); ++i)
+    for (const wxString& item : var)
     {
-        d.AddVar(var[i]);
+        d.AddVar(item);
     }
     PlaceWindow(&d);
     d.ShowModal();
