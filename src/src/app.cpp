@@ -595,7 +595,7 @@ bool CodeBlocksApp::OnInit()
 
     wxLog::EnableLogging(true);
 
-    SetAppName(_T("codeblocks"));
+    SetAppName("codeblocks");
 
     s_Loading              = true;
     m_pBatchBuildDialog    = nullptr;
@@ -631,9 +631,9 @@ bool CodeBlocksApp::OnInit()
 
     Manager::SetToolbarHandler(toolbarAddonHandler);
 
-    Manager::Get()->GetLogManager()->Log(F(wxT("Starting ") + appglobals::AppName + wxT(" ") +
-                                           appglobals::AppActualVersionVerb + wxT(" ") +
-                                           appglobals::AppBuildTimestamp));
+    LogManager *log = Manager::Get()->GetLogManager();
+    log->Log(wxString::Format(_("Starting %s %s %s"), appglobals::AppName,
+                              appglobals::AppActualVersionVerb, appglobals::AppBuildTimestamp));
 
     try
     {
@@ -667,38 +667,40 @@ bool CodeBlocksApp::OnInit()
 
         InitLocale();
 
-        if (m_DDE && !m_Batch && Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/use_ipc"), true))
+        ConfigManager *appCfg = Manager::Get()->GetConfigManager("app");
+        if (m_DDE && !m_Batch && appCfg->ReadBool("/environment/use_ipc", true))
         {
             // Create a new client
             DDEClient *client = new DDEClient;
             DDEConnection* connection = nullptr;
             wxLogNull ln; // own error checking implemented -> avoid debug warnings
-            connection = (DDEConnection *)client->MakeConnection(_T("localhost"), F(DDE_SERVICE, wxGetUserId().wx_str()), DDE_TOPIC);
-
+            connection = (DDEConnection *)client->MakeConnection("localhost",
+                                                                 wxString::Format(DDE_SERVICE,
+                                                                                  wxGetUserId()),
+                                                                 DDE_TOPIC);
             if (connection)
             {
                 // don't eval here just forward the whole command line to the other instance
                 wxString cmdLine;
                 for (int i = 1 ; i < argc; ++i)
-                    cmdLine += wxString(argv[i]) + _T(' ');
+                    cmdLine += wxString(argv[i]) + ' ';
 
                 if (!cmdLine.IsEmpty())
                 {
                     // escape openings and closings so it is easily possible to find the end on the rx side
-                    cmdLine.Replace(_T("("), _T("\\("));
-                    cmdLine.Replace(_T(")"), _T("\\)"));
+                    cmdLine.Replace("(", "\\(");
+                    cmdLine.Replace(")", "\\)");
                     connection->Execute("[CmdLine({" + cmdLine + "})CWD({" + wxGetCwd() + "})]");
                 }
 
                 // On Linux, C::B has to be raised explicitly if it's wanted
-                if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/raise_via_ipc"), true))
-                    connection->Execute(_T("[Raise]"));
+                if (appCfg->ReadBool("/environment/raise_via_ipc", true))
+                    connection->Execute("[Raise]");
                 connection->Disconnect();
                 delete connection;
                 delete client;
 
-                LogManager *log = Manager::Get()->GetLogManager();
-                log->Log(wxT("Ending application because another instance has been detected!"));
+                log->Log("Ending application because another instance has been detected!");
 
                 // return false to end the application
                 return false;
@@ -714,10 +716,10 @@ bool CodeBlocksApp::OnInit()
         }
 
         m_pSingleInstance = nullptr;
-        if (   Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/single_instance"), true)
-            && !parser.Found(_T("multiple-instance")) )
+        if (appCfg->ReadBool("/environment/single_instance", true)
+            && !parser.Found("multiple-instance"))
         {
-            const wxString name = wxString::Format(_T("Code::Blocks-%s"), wxGetUserId().wx_str());
+            const wxString name = wxString::Format("Code::Blocks-%s", wxGetUserId());
 
             m_pSingleInstance = new wxSingleInstanceChecker(name, ConfigManager::GetTempFolder());
             if (m_pSingleInstance->IsAnotherRunning())
@@ -725,7 +727,7 @@ bool CodeBlocksApp::OnInit()
                 /* NOTE: Due to a recent change in logging code, this visual warning got disabled.
                    So the wxLogError() has been changed to a cbMessageBox(). */
                 cbMessageBox(_("Another program instance is already running.\nCode::Blocks is currently configured to only allow one running instance.\n\nYou can access this Setting under the menu item 'Environment'."),
-                            _T("Code::Blocks"), wxOK | wxICON_ERROR);
+                             "Code::Blocks", wxOK | wxICON_ERROR);
                 return false;
             }
         }
@@ -733,7 +735,7 @@ bool CodeBlocksApp::OnInit()
         // Splash screen moved to this place, otherwise it would be short visible, even if we only pass filenames via DDE/IPC
         // we also don't need it, if only a single instance is allowed
         Splash splash(!m_Batch && m_Script.IsEmpty() && m_Splash &&
-                      Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/show_splash"), true));
+                      appCfg->ReadBool("/environment/show_splash", true));
         InitDebugConsole();
 
         Manager::SetBatchBuild(m_Batch || !m_Script.IsEmpty());
@@ -742,25 +744,23 @@ bool CodeBlocksApp::OnInit()
         frame = InitFrame();
         m_Frame = frame;
 
-#if wxCHECK_VERSION(3, 0, 0)
         {
             const double scalingFactor = frame->GetContentScaleFactor();
             const double actualScalingFactor = cbGetActualContentScaleFactor(*frame);
-            LogManager *log = Manager::Get()->GetLogManager();
-            log->Log(wxString::Format(wxT("Initial scaling factor is %.3f (actual: %.3f)"),
+            log->Log(wxString::Format("Initial scaling factor is %.3f (actual: %.3f)",
                                       scalingFactor, actualScalingFactor));
         }
-#endif // wxCHECK_VERSION(3, 0, 0)
 
         // plugins loaded -> check command line arguments again
         delete wxMessageOutput::Set(new wxMessageOutputBest); // warn about unknown options
-        if ( ParseCmdLine(m_Frame) == 0 )
+        if (ParseCmdLine(m_Frame) == 0)
         {
-            if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true) == false)
+            if (appCfg->ReadBool("/environment/blank_workspace", true) == false)
                 Manager::Get()->GetProjectManager()->LoadWorkspace();
         }
 
-        if (m_SafeMode) wxLog::EnableLogging(true); // re-enable logging in safe-mode
+        if (m_SafeMode)
+            wxLog::EnableLogging(true); // re-enable logging in safe-mode
 
         if (m_Batch)
         {
@@ -799,7 +799,8 @@ bool CodeBlocksApp::OnInit()
         CheckVersion();
 
         // run startup script
-        const wxString startup = ConfigManager::LocateDataFile(_T("startup.script"), sdScriptsUser | sdScriptsGlobal);
+        const wxString startup = ConfigManager::LocateDataFile("startup.script",
+                                                               sdScriptsUser | sdScriptsGlobal);
         if (!startup.empty())
         {
             ScriptingManager *scriptMgr = Manager::Get()->GetScriptingManager();
@@ -841,11 +842,11 @@ bool CodeBlocksApp::OnInit()
     }
     catch (const char* message)
     {
-        wxSafeShowMessage(_T("Exception"), cbC2U(message));
+        wxSafeShowMessage("Exception", cbC2U(message));
     }
     catch (...)
     {
-        wxSafeShowMessage(_T("Exception"), _T("Unknown exception was raised. The application will terminate immediately..."));
+        wxSafeShowMessage("Exception", "Unknown exception was raised. The application will terminate immediately...");
     }
     // if we reached here, return error
     return false;
