@@ -134,12 +134,12 @@ PipedProcess::~PipedProcess()
         m_timerPollProcess.Stop();
 }
 
-int PipedProcess::Launch(const wxString& cmd, cb_unused int flags, unsigned int pollingInterval)
+int PipedProcess::Launch(const wxString& cmd, int flags)
 {
     m_Stopped = false;
-    m_Pid = wxExecute(cmd, wxEXEC_ASYNC | wxEXEC_MAKE_GROUP_LEADER, this);
+    m_Pid = wxExecute(cmd, flags, this);
     if (m_Pid)
-        m_timerPollProcess.Start(pollingInterval);
+        m_timerPollProcess.Start(1000);
 
     return m_Pid;
 }

@@ -1359,7 +1359,7 @@ int CompilerGCC::DoRunQueue()
     if (cmd->isRun)
     {
         pipe = false; // no need to pipe output channels...
-        flags |= wxEXEC_NOHIDE;
+        flags |= wxEXEC_SHOW_CONSOLE;
         dir = m_CdRun;
 
         // setup dynamic linker path
