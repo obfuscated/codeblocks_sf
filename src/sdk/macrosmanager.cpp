@@ -80,7 +80,7 @@ void MacrosManager::Reset()
     m_Plugins  = UnixFilename(ConfigManager::GetPluginsFolder());
     m_DataPath = UnixFilename(ConfigManager::GetDataFolder());
     ClearProjectKeys();
-    m_RE_Unix.Compile(_T("([^$]|^)(\\$[({]?(#?[A-Za-z_0-9.]+)[)} /\\]?)"),               wxRE_EXTENDED | wxRE_NEWLINE);
+    m_RE_Unix.Compile(_T("([^$]|^)(\\$[({]?(#?[A-Za-z_0-9.]+)[\\)} /\\\\]?)"),           wxRE_EXTENDED | wxRE_NEWLINE);
     m_RE_DOS.Compile(_T("([^%]|^)(%(#?[A-Za-z_0-9.]+)%)"),                               wxRE_EXTENDED | wxRE_NEWLINE);
     m_RE_IfSp.Compile(_T("(([^=!<>]+)[ ]*(=|==|!=|>|<|>=|<=)[ ]*([^=!<>]+))"),           wxRE_EXTENDED | wxRE_NEWLINE);
     m_RE_Script.Compile(_T("(\\[\\[(.*)\\]\\])"),                                        wxRE_EXTENDED | wxRE_NEWLINE);
