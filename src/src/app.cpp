@@ -68,6 +68,7 @@
 #ifdef __WXMSW__
     #include "exchndl.h"         // Crash handler DLL -> includes windows.h, therefore
     #include <wx/msw/winundef.h> // ...include this header file on the NEXT LINE (wxWidgets docs say so)
+    #include <commctrl.h>
 #endif
 
 #ifndef __WXMAC__
