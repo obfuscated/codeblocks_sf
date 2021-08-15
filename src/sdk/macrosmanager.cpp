@@ -46,6 +46,8 @@ static const wxString toWindowsPath(_T("$TO_WINDOWS_PATH{"));
 
 MacrosManager::MacrosManager()
 {
+    m_Valid = CompileRegexes();
+    assert(m_Valid);
     Reset();
 }
 
@@ -80,16 +82,25 @@ void MacrosManager::Reset()
     m_Plugins  = UnixFilename(ConfigManager::GetPluginsFolder());
     m_DataPath = UnixFilename(ConfigManager::GetDataFolder());
     ClearProjectKeys();
+    m_UserVarMan = Manager::Get()->GetUserVariableManager();
+    srand(time(nullptr));
+}
+
+bool MacrosManager::CompileRegexes()
+{
     m_RE_Unix.Compile(_T("([^$]|^)(\\$[({]?(#?[A-Za-z_0-9.]+)[\\)} /\\\\]?)"),
                       wxRE_EXTENDED | wxRE_NEWLINE);
-    assert(m_RE_Unix.IsValid());
+    wxCHECK_MSG(m_RE_Unix.IsValid(), false, "Invalid regex (m_RE_Unix) in macros manager");
+
     m_RE_DOS.Compile(_T("([^%]|^)(%(#?[A-Za-z_0-9.]+)%)"), wxRE_EXTENDED | wxRE_NEWLINE);
-    assert(m_RE_DOS.IsValid());
+    wxCHECK_MSG(m_RE_DOS.IsValid(), false, "Invalid regex (m_RE_DOS) in macros manager");
+
     m_RE_IfSp.Compile(_T("(([^=!<>]+)[ ]*(=|==|!=|>|<|>=|<=)[ ]*([^=!<>]+))"),
                       wxRE_EXTENDED | wxRE_NEWLINE);
-    assert(m_RE_IfSp.IsValid());
+    wxCHECK_MSG(m_RE_IfSp.IsValid(), false, "Invalid regex (m_RE_IfSp) in macros manager");
+
     m_RE_Script.Compile(_T("(\\[\\[(.*)\\]\\])"), wxRE_EXTENDED | wxRE_NEWLINE);
-    assert(m_RE_Script.IsValid());
+    wxCHECK_MSG(m_RE_Script.IsValid(), false, "Invalid regex (m_RE_Script) in macros manager");
 
 #ifndef __WXMAC__
     const int flagsForMac = wxRE_ADVANCED;
@@ -98,13 +109,16 @@ void MacrosManager::Reset()
 #endif
 
     m_RE_ToAbsolutePath.Compile(_T("\\$TO_ABSOLUTE_PATH{([^}]*)}"), flagsForMac);
-    assert(m_RE_ToAbsolutePath.IsValid());
+    wxCHECK_MSG(m_RE_ToAbsolutePath.IsValid(), false,
+                "Invalid regex (m_RE_ToAbsolutePath) in macros manager");
+
     m_RE_To83Path.Compile(_T("\\$TO_83_PATH{([^}]*)}"), flagsForMac);
-    assert(m_RE_To83Path.IsValid());
+    wxCHECK_MSG(m_RE_To83Path.IsValid(), false, "Invalid regex (m_RE_To83Path) in macros manager");
+
     m_RE_RemoveQuotes.Compile(_T("\\$REMOVE_QUOTES{([^}]*)}"), flagsForMac);
-    assert(m_RE_RemoveQuotes.IsValid());
-    m_UserVarMan = Manager::Get()->GetUserVariableManager();
-    srand(time(nullptr));
+    wxCHECK_MSG(m_RE_RemoveQuotes.IsValid(), false,
+                "Invalid regex (m_RE_RemoveQuotes) in macros manager");
+    return true;
 }
 
 void MacrosManager::ClearProjectKeys()
@@ -535,6 +549,11 @@ void MacrosManager::ReplaceMacros(wxString& buffer, const ProjectBuildTarget* ta
 {
     if (buffer.IsEmpty())
         return;
+    if (!m_Valid)
+    {
+        buffer = "<invalid-macro-manager>";
+        return;
+    }
 
     static const wxString delim(_T("$%["));
     if ( buffer.find_first_of(delim) == wxString::npos )
