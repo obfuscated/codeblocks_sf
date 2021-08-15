@@ -80,32 +80,31 @@ void MacrosManager::Reset()
     m_Plugins  = UnixFilename(ConfigManager::GetPluginsFolder());
     m_DataPath = UnixFilename(ConfigManager::GetDataFolder());
     ClearProjectKeys();
-    m_RE_Unix.Compile(_T("([^$]|^)(\\$[({]?(#?[A-Za-z_0-9.]+)[\\)} /\\\\]?)"),           wxRE_EXTENDED | wxRE_NEWLINE);
-    m_RE_DOS.Compile(_T("([^%]|^)(%(#?[A-Za-z_0-9.]+)%)"),                               wxRE_EXTENDED | wxRE_NEWLINE);
-    m_RE_IfSp.Compile(_T("(([^=!<>]+)[ ]*(=|==|!=|>|<|>=|<=)[ ]*([^=!<>]+))"),           wxRE_EXTENDED | wxRE_NEWLINE);
-    m_RE_Script.Compile(_T("(\\[\\[(.*)\\]\\])"),                                        wxRE_EXTENDED | wxRE_NEWLINE);
-    m_RE_ToAbsolutePath.Compile(_T("\\$TO_ABSOLUTE_PATH{([^}]*)}"),
+    m_RE_Unix.Compile(_T("([^$]|^)(\\$[({]?(#?[A-Za-z_0-9.]+)[\\)} /\\\\]?)"),
+                      wxRE_EXTENDED | wxRE_NEWLINE);
+    assert(m_RE_Unix.IsValid());
+    m_RE_DOS.Compile(_T("([^%]|^)(%(#?[A-Za-z_0-9.]+)%)"), wxRE_EXTENDED | wxRE_NEWLINE);
+    assert(m_RE_DOS.IsValid());
+    m_RE_IfSp.Compile(_T("(([^=!<>]+)[ ]*(=|==|!=|>|<|>=|<=)[ ]*([^=!<>]+))"),
+                      wxRE_EXTENDED | wxRE_NEWLINE);
+    assert(m_RE_IfSp.IsValid());
+    m_RE_Script.Compile(_T("(\\[\\[(.*)\\]\\])"), wxRE_EXTENDED | wxRE_NEWLINE);
+    assert(m_RE_Script.IsValid());
+
 #ifndef __WXMAC__
-                                wxRE_ADVANCED);
+    const int flagsForMac = wxRE_ADVANCED;
 #else
-                                wxRE_EXTENDED);
+    const int flagsForMac = wxRE_EXTENDED;
 #endif
-    m_RE_To83Path.Compile(_T("\\$TO_83_PATH{([^}]*)}"),
-#ifndef __WXMAC__
-                                wxRE_ADVANCED);
-#else
-                                wxRE_EXTENDED);
-#endif
-    m_RE_RemoveQuotes.Compile(_T("\\$REMOVE_QUOTES{([^}]*)}"),
-#ifndef __WXMAC__
-                                wxRE_ADVANCED);
-#else
-                                wxRE_EXTENDED);
-#endif
+
+    m_RE_ToAbsolutePath.Compile(_T("\\$TO_ABSOLUTE_PATH{([^}]*)}"), flagsForMac);
+    assert(m_RE_ToAbsolutePath.IsValid());
+    m_RE_To83Path.Compile(_T("\\$TO_83_PATH{([^}]*)}"), flagsForMac);
+    assert(m_RE_To83Path.IsValid());
+    m_RE_RemoveQuotes.Compile(_T("\\$REMOVE_QUOTES{([^}]*)}"), flagsForMac);
+    assert(m_RE_RemoveQuotes.IsValid());
     m_UserVarMan = Manager::Get()->GetUserVariableManager();
     srand(time(nullptr));
-    assert(m_RE_Unix.IsValid());
-    assert(m_RE_DOS.IsValid());
 }
 
 void MacrosManager::ClearProjectKeys()
