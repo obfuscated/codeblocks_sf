@@ -26,8 +26,6 @@
 //*)
 
 BEGIN_EVENT_TABLE(RegExDlg,wxScrollingDialog)
-	EVT_INIT_DIALOG(RegExDlg::OnInit)
-	EVT_UPDATE_UI(-1, RegExDlg::OnUpdateUI)
 END_EVENT_TABLE()
 
 RegExDlg::VisibleDialogs RegExDlg::m_visible_dialogs;
@@ -43,6 +41,12 @@ RegExDlg::RegExDlg(wxWindow* parent,wxWindowID /*id*/)
     m_newlines = (wxCheckBox*)FindWindow(XRCID("ID_NEWLINES"));
     m_text = (wxTextCtrl*)FindWindow(XRCID("ID_TEXT"));
     m_output = (wxHtmlWindow*)FindWindow(XRCID("ID_OUT"));
+
+    Connect(XRCID("ID_REGEX"),wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&RegExDlg::OnValueChanged);
+    Connect(XRCID("ID_LIBRARY"),wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&RegExDlg::OnValueChanged);
+    Connect(XRCID("ID_NOCASE"),wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&RegExDlg::OnValueChanged);
+    Connect(XRCID("ID_NEWLINES"),wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&RegExDlg::OnValueChanged);
+    Connect(XRCID("ID_TEXT"),wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&RegExDlg::OnValueChanged);
     //*)
 
     assert(m_regex);
@@ -103,7 +107,7 @@ void cbEscapeHtml(wxString &s)
 }
 }
 
-void RegExDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
+void RegExDlg::OnValueChanged(cb_unused wxCommandEvent& event)
 {
     static wxString regex;
     static wxString text;
@@ -162,26 +166,10 @@ void RegExDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     m_output->SetPage(s);
 }
 
-
-void RegExDlg::RunBenchmark(wxCommandEvent& /*event*/)
-{
-}
-
-
 void RegExDlg::EndModal(int retCode)
 {
     wxScrollingDialog::EndModal(retCode);
 }
-
-void RegExDlg::OnInit(wxInitDialogEvent& /*event*/)
-{
-}
-
-void RegExDlg::OnRegExItemActivated(wxListEvent& /*event*/)
-{
-    //
-}
-
 
 wxArrayString RegExDlg::GetBuiltinMatches(const wxString& text)
 {

@@ -10,11 +10,11 @@
 #include <set>
 
 //(*Headers(RegExDlg)
-#include <wx/checkbox.h>
 #include "scrollingdialog.h"
-#include <wx/textctrl.h>
+#include <wx/checkbox.h>
 #include <wx/choice.h>
 #include <wx/html/htmlwin.h>
+#include <wx/textctrl.h>
 //*)
 
 #include <wx/html/htmlwin.h>
@@ -43,11 +43,8 @@ class RegExDlg: public wxScrollingDialog
 	protected:
 
 		//(*Handlers(RegExDlg)
-		void RunBenchmark(wxCommandEvent& event);
-		void OnInit(wxInitDialogEvent& event);
-		void OnRegExItemActivated(wxListEvent& event);
-        void OnUpdateUI(wxUpdateUIEvent& event);
 		void OnClose(wxCloseEvent& event);
+		void OnValueChanged(wxCommandEvent& event);
 		//*)
 
 	private:
@@ -56,13 +53,13 @@ class RegExDlg: public wxScrollingDialog
         wxArrayString GetBuiltinMatches(const wxString& text);
 
         //(*Declarations(RegExDlg)
+        wxCheckBox* m_newlines;
         wxCheckBox* m_nocase;
+        wxChoice* m_library;
         wxHtmlWindow* m_output;
-        wxTextCtrl* m_text;
         wxTextCtrl* m_quoted;
         wxTextCtrl* m_regex;
-        wxCheckBox* m_newlines;
-        wxChoice* m_library;
+        wxTextCtrl* m_text;
         //*)
 
         wxRegEx m_wxre;
