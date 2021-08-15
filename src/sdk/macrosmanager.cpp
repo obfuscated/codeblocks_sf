@@ -190,7 +190,7 @@ void MacrosManager::ClearProjectKeys()
     m_Macros[_T("WORKSPACEDIRECTORY")]  = m_WorkspaceDir;
 }
 
-wxString GetSelectedText()
+static wxString GetSelectedText()
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
@@ -470,9 +470,9 @@ void MacrosManager::RecalcVars(const cbProject* project, EditorBase* editor, con
  * \return wxString The string between parentheses or wxEmptyString if an error occurred
  *
  */
-wxString ExtractStringBetweenParentheses(const wxString& input, size_t& pos, const wxChar& openSymbol, const wxChar& closeSymbol)
+static wxString ExtractStringBetweenParentheses(const wxString& input, size_t& pos,
+                                                const wxChar& openSymbol, const wxChar& closeSymbol)
 {
-
     if (pos == wxString::npos || pos >= input.size())
         return wxEmptyString;
 
@@ -534,7 +534,8 @@ wxString ExtractStringBetweenParentheses(const wxString& input, size_t& pos, con
  * This function will parse the input string starting at position _pos_ and extracting CONDITION, TRUE_CLAUSE and FALSE_CLAUSE
  * The variable _pos_ will point to after the last closing parentheses of the if expression
  */
-wxString ParseIfCondition(const wxString& input, size_t& pos, wxString& condition, wxString& trueCode, wxString& falseCode)
+static wxString ParseIfCondition(const wxString& input, size_t& pos, wxString& condition,
+                                 wxString& trueCode, wxString& falseCode)
 {
     const size_t start = pos;
     condition = ExtractStringBetweenParentheses(input, pos, '(', ')');
@@ -545,7 +546,8 @@ wxString ParseIfCondition(const wxString& input, size_t& pos, wxString& conditio
     return ret;
 }
 
-void MacrosManager::ReplaceMacros(wxString& buffer, const ProjectBuildTarget* target, bool subrequest)
+void MacrosManager::ReplaceMacros(wxString& buffer, const ProjectBuildTarget* target,
+                                  bool subrequest)
 {
     if (buffer.IsEmpty())
         return;
