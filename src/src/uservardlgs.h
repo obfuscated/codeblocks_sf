@@ -106,7 +106,7 @@ public:
 
 class UserVarManagerGUI : public UserVarManagerUI
 {
-    public:
+public:
     void DisplayInfoWindow(const wxString &title, const wxString &msg) override;
     void OpenEditWindow(const std::set<wxString> &var) override;
     wxString GetVariable(wxWindow* parent, const wxString &old) override;
