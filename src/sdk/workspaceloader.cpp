@@ -96,7 +96,8 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
         return false;
     }
 
-    int failedProjects = 0;
+    int failedProjectCount = 0;
+    wxString failedProjectNames =  wxString();
     // first loop to load projects
     while (proj)
     {
@@ -118,7 +119,13 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
                 GetpMsg()->LogError(wxString::Format(_("Unable to open \"%s\" during opening workspace \"%s\" "),
                                                        projectFilename.c_str(),
                                                        filename.c_str()));
-                failedProjects++;
+                // Only display a max of 10 failed projects!!!
+                if (failedProjectCount < 10)
+                {
+                    failedProjectNames.Append("\n");
+                    failedProjectNames.Append(projectFilename);
+                }
+                failedProjectCount++;
             }
         }
         proj = proj->NextSiblingElement("Project");
@@ -160,10 +167,10 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
         proj = proj->NextSiblingElement("Project");
     }
 
-    if (failedProjects > 0)
+    if (failedProjectCount > 0)
     {
-        cbMessageBox(wxString::Format(_("%d projects could not be loaded.\nPlease see the Log window for details"), failedProjects),
-                     _("Opening WorkSpace"), wxICON_WARNING);
+        wxString sMessage = wxString::Format(_("%d projects could not be loaded.\nPlease see the Log window for details.\nThe failed projects are: %s"), failedProjectCount, failedProjectNames);
+        cbMessageBox(sMessage, "Opening WorkSpace", wxICON_WARNING);
     }
 
     return true;
