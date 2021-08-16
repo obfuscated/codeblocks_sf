@@ -57,5 +57,4 @@ class AutoDetectCompilers : public wxScrollingDialog
         std::vector<CompilerItem> m_CompilerList;
 };
 
-
 #endif // AUTODETECTCOMPILERS_H
