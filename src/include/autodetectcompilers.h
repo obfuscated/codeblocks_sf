@@ -7,20 +7,35 @@
 #define AUTODETECTCOMPILERS_H
 
 #include "scrollingdialog.h"
+#include <vector>
 
 class wxCommandEvent;
 class wxUpdateUIEvent;
 
 class AutoDetectCompilers : public wxScrollingDialog
 {
+	public:
+		AutoDetectCompilers(wxWindow* parent);
+		~AutoDetectCompilers() override;
+
+        bool closeCheckOkay();
+        void OnClose(wxCloseEvent& event);
+        void OnCloseClicked(wxCommandEvent& event);
+		void OnDefaultCompilerClick(wxCommandEvent& event);
+		void OnUdateCompilerListUI(wxCommandEvent& event);
+		void OnMouseMotion(wxMouseEvent& event);
+		void OnUpdateUI(wxUpdateUIEvent& event);
+	private:
+        DECLARE_EVENT_TABLE()
+		void UpdateCompilerDisplayList();
     private:
         enum CompilerHighlightColor
         {
-            eHighlightNone = 0,
-            eHighlightGrey,
-            eHighlightGreen,
-            eHighlightRed,
-            eHighlightYellow
+            colorHighlightNone = 0,
+            colorHighlightGrey,
+            colorHighlightGreen,
+            colorHighlightRed,
+            colorHighlightYellow
         };
 
         enum CompilerColumnsNumber
@@ -32,26 +47,14 @@ class AutoDetectCompilers : public wxScrollingDialog
 
         struct CompilerItem
         {
-            wxString wxsCompilerName;
-            wxString wxsStatus;
-            wxString wxsCompilerPath;
-            CompilerHighlightColor eHighlight;
-            bool bDetected;
+            wxString compilerName;
+            wxString status;
+            wxString compilerPath;
+            CompilerHighlightColor colorHighlight;
+            bool detected;
         };
-        std::vector<CompilerItem> vCompilerList;
 
-		void UpdateCompilerDisplayList();
-
-	public:
-		AutoDetectCompilers(wxWindow* parent);
-		~AutoDetectCompilers() override;
-
-		void OnDefaultCompilerClick(wxCommandEvent& event);
-		void OnUdateCompilerListUI(wxCommandEvent& event);
-		void OnMouseMotion(wxMouseEvent& event);
-		void OnUpdateUI(wxUpdateUIEvent& event);
-	private:
-        DECLARE_EVENT_TABLE()
+        std::vector<CompilerItem> m_CompilerList;
 };
 
 #endif // AUTODETECTCOMPILERS_H

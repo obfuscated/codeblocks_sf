@@ -3,12 +3,12 @@
 	<object class="wxScrollingDialog" name="dlgAutoDetectCompilers">
 		<title>Compilers auto-detection</title>
 		<centered>1</centered>
-		<style>wxCAPTION|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
+		<style>wxCAPTION|wxRESIZE_BORDER|wxCLOSE_BOX|wxMAXIMIZE_BOX</style>
 		<object class="wxBoxSizer">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
 				<object class="wxStaticText" name="ID_STATICTEXT2">
-					<label>Note: After auto-detection, either the default compiler was not detected or at least none compiler&apos;s master&#x0A;path is still empty and therefore invalid. Inspect the list below and select another default compiler if it &#x0A;was not found or and change the compiler&apos;s master path later in the compiler options if the compiler is invalid.&#x0A;Select you favourite default compiler here:</label>
+					<label>Note: After auto-detection either the default compiler was not detected or the path to it was empty.&#x0A;In the compiler list below select another compiler if it was found or select an invalid compiler.&#x0A;If you select an invalid compiler you will need to change it&apos;s path later in the compiler options,&#x0A;which is done via the Settings-&gt;Compiler... menu selection.&#x0A;If you have not setup a compiler please select the &quot;*No Compiler*&quot; option.&#x0A;&#x0A;Select your default compiler from the list below:</label>
 				</object>
 				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
@@ -51,13 +51,6 @@
 								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
-							<object class="sizeritem">
-								<object class="wxCheckBox" name="cbShowCompilerPath">
-									<label>Show Path</label>
-								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-								<border>5</border>
-							</object>
 						</object>
 						<flag>wxEXPAND</flag>
 						<border>5</border>
@@ -97,10 +90,10 @@
 			<object class="sizeritem">
 				<object class="wxBoxSizer">
 					<object class="sizeritem">
-						<object class="wxButton" name="wxID_OK" />
+						<object class="wxButton" name="wxID_CLOSE" />
 					</object>
 				</object>
-				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
+				<flag>wxALIGN_CENTER_HORIZONTAL</flag>
 				<border>8</border>
 			</object>
 		</object>

@@ -96,8 +96,7 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
         return false;
     }
 
-    int iFailedProjects = 0;
-    wxString sFailedProjects =  wxEmptyString;
+    int failedProjects = 0;
     // first loop to load projects
     while (proj)
     {
@@ -119,13 +118,7 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
                 GetpMsg()->LogError(wxString::Format(_("Unable to open \"%s\" during opening workspace \"%s\" "),
                                                        projectFilename.c_str(),
                                                        filename.c_str()));
-                // Only display a max of 10 failed projects!!!
-                if (iFailedProjects < 10)
-                {
-                    sFailedProjects.Append("\n");
-                    sFailedProjects.Append(projectFilename);
-                }
-                iFailedProjects++;
+                failedProjects++;
             }
         }
         proj = proj->NextSiblingElement("Project");
@@ -167,23 +160,10 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
         proj = proj->NextSiblingElement("Project");
     }
 
-    if (iFailedProjects > 0)
+    if (failedProjects > 0)
     {
-        wxString sMessage = wxString::Format(_("%d projects could not be loaded.\nPlease see the Log window for details.\nThe failed projects are: %s"), iFailedProjects, sFailedProjects);
-        if (    (iFailedProjects == 1) &&
-                sFailedProjects.Contains("FortranProject") &&
-                (
-                    filename.Contains("CodeBlocks_wx31_64.workspace") ||
-                    filename.Contains("CodeBlocks_wx31.workspace")
-                )
-           )
-        {
-            GetpMsg()->LogError(sMessage);
-        }
-        else
-        {
-            cbMessageBox(sMessage, _("Opening WorkSpace"), wxICON_WARNING);
-        }
+        cbMessageBox(wxString::Format(_("%d projects could not be loaded.\nPlease see the Log window for details"), failedProjects),
+                     _("Opening WorkSpace"), wxICON_WARNING);
     }
 
     return true;
