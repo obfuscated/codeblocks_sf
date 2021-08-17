@@ -520,10 +520,7 @@ struct ExtractParamsBase
         return true;
     }
 
-    int ErrorMessage()
-    {
-        return sq_throwerror(m_vm, m_errorMessage);
-    }
+    DLLIMPORT int ErrorMessage();
 
     HSQUIRRELVM GetVM() { return m_vm; }
 

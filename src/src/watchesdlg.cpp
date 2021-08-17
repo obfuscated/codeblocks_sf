@@ -27,8 +27,9 @@
 #include <map>
 #include <algorithm>
 
-#include <wx/propgrid/propgrid.h>
+#include <wx/display.h>
 #include <wx/propgrid/editors.h>
+#include <wx/propgrid/propgrid.h>
 
 #include "watchesdlg.h"
 
@@ -72,10 +73,6 @@ BEGIN_EVENT_TABLE(WatchesDlg, wxPanel)
     EVT_MENU(idMenuUpdate, WatchesDlg::OnMenuUpdate)
 END_EVENT_TABLE()
 
-#if wxCHECK_VERSION(3, 0, 0)
-typedef wxString wxPG_CONST_WXCHAR_PTR;
-#endif
-
 struct WatchesDlg::WatchItemPredicate
 {
     WatchItemPredicate(cb::shared_ptr<cbWatch> watch) : m_watch(watch) {}
@@ -93,7 +90,7 @@ class cbDummyEditor : public wxPGEditor
     DECLARE_DYNAMIC_CLASS(cbDummyEditor)
 public:
     cbDummyEditor() {}
-    wxPG_CONST_WXCHAR_PTR GetName() const override
+    wxString GetName() const override
     {
         return wxT("cbDummyEditor");
     }
@@ -129,7 +126,7 @@ class cbTextCtrlAndButtonTooltipEditor : public wxPGTextCtrlAndButtonEditor
 {
     DECLARE_DYNAMIC_CLASS(cbTextCtrlAndButtonTooltipEditor)
 public:
-    wxPG_CONST_WXCHAR_PTR GetName() const override
+    wxString GetName() const override
     {
         return wxT("cbTextCtrlAndButtonTooltipEditor");
     }
@@ -298,7 +295,8 @@ class WatchRawDialog : public wxScrollingDialog
             }
         }
 
-        static void WatchToString(wxString &result, const cbWatch &watch, const wxString &indent = wxEmptyString)
+        static void WatchToString(wxString &result, const cbWatch &watch,
+                                  const wxString &indent = wxEmptyString)
         {
             wxString sym, value;
             watch.GetSymbol(sym);
@@ -395,24 +393,10 @@ WatchesDlg::WatchesDlg() :
     SetSizer(bs);
 
     if (!watchesPropertyEditor)
-    {
-#if wxCHECK_VERSION(3, 0, 0)
         watchesPropertyEditor = wxPropertyGrid::RegisterEditorClass(new cbTextCtrlAndButtonTooltipEditor, true);
-#else
-        watchesPropertyEditor = wxPropertyGrid::RegisterEditorClass(new cbTextCtrlAndButtonTooltipEditor,
-                                                                    wxT("cbTextCtrlAndButtonTooltipEditor"),
-                                                                    true);
-#endif
-    }
 
     if (!watchesDummyEditor)
-    {
-#if wxCHECK_VERSION(3, 0, 0)
         watchesDummyEditor = wxPropertyGrid::RegisterEditorClass(new cbDummyEditor, true);
-#else
-        watchesDummyEditor = wxPropertyGrid::RegisterEditorClass(new cbDummyEditor, wxT("cbDummyEditor"), true);
-#endif
-    }
 
     m_grid->SetColumnProportion(0, 40);
     m_grid->SetColumnProportion(1, 40);
@@ -434,7 +418,7 @@ WatchesDlg::WatchesDlg() :
                                new Functor(this, &WatchesDlg::OnDebuggerUpdated));
 }
 
-inline void AppendChildren(wxPropertyGrid &grid, wxPGProperty &property, cbWatch &watch,
+static void AppendChildren(wxPropertyGrid &grid, wxPGProperty &property, cbWatch &watch,
                            bool readonly, const wxColour &changedColour)
 {
     for(int ii = 0; ii < watch.GetChildCount(); ++ii)
@@ -462,19 +446,14 @@ inline void AppendChildren(wxPropertyGrid &grid, wxPGProperty &property, cbWatch
             WatchRawDialog::UpdateValue(static_cast<const WatchesProperty*>(prop));
         }
         else
-        {
-#if wxCHECK_VERSION(3, 0, 0)
             grid.SetPropertyColoursToDefault(prop);
-#else
-            grid.SetPropertyColourToDefault(prop);
-#endif
-        }
 
         AppendChildren(grid, *prop, *child.get(), readonly, changedColour);
     }
 }
 
-inline void UpdateWatch(wxPropertyGrid *grid, wxPGProperty *property, cb::shared_ptr<cbWatch> watch, bool readonly)
+static void UpdateWatch(wxPropertyGrid *grid, wxPGProperty *property, cb::shared_ptr<cbWatch> watch,
+                        bool readonly)
 {
     if (!property)
         return;
@@ -490,13 +469,7 @@ inline void UpdateWatch(wxPropertyGrid *grid, wxPGProperty *property, cb::shared
     if (watch->IsChanged())
         grid->SetPropertyTextColour(property, changedColour);
     else
-    {
-#if wxCHECK_VERSION(3, 0, 0)
         grid->SetPropertyColoursToDefault(property);
-#else
-        grid->SetPropertyColourToDefault(property);
-#endif
-    }
     grid->SetPropertyAttribute(property, wxT("Units"), type);
     if (value.empty())
         grid->SetPropertyHelpString(property, wxEmptyString);
@@ -523,7 +496,7 @@ inline void UpdateWatch(wxPropertyGrid *grid, wxPGProperty *property, cb::shared
     WatchRawDialog::UpdateValue(static_cast<const WatchesProperty*>(property));
 }
 
-inline void SetValue(WatchesProperty *prop)
+static void SetValue(WatchesProperty *prop)
 {
     if (prop)
     {
@@ -1089,19 +1062,15 @@ BEGIN_EVENT_TABLE(ValueTooltip, wxWindow)
     EVT_TIMER(idTooltipTimer, ValueTooltip::OnTimer)
 END_EVENT_TABLE()
 
-inline wxPGProperty* GetRealRoot(wxPropertyGrid *grid)
+static wxPGProperty* GetRealRoot(wxPropertyGrid *grid)
 {
     wxPGProperty *property = grid->GetRoot();
     return property ? grid->GetFirstChild(property) : nullptr;
 }
 
-inline void GetColumnWidths(wxClientDC &dc, wxPropertyGrid *grid, wxPGProperty *root, int width[3])
+static void GetColumnWidths(wxClientDC &dc, wxPropertyGrid *grid, wxPGProperty *root, int width[3])
 {
-#if wxCHECK_VERSION(3, 0, 0)
     wxPropertyGridPageState *state = grid->GetState();
-#else
-    wxPropertyGridState *state = grid->GetState();
-#endif
 
     width[0] = width[1] = width[2] = 0;
     int minWidths[3] = { state->GetColumnMinWidth(0),
@@ -1134,14 +1103,15 @@ inline void GetColumnWidths(wxClientDC &dc, wxPropertyGrid *grid, wxPGProperty *
     width[2] = std::max(width[2], minWidths[2]);
 }
 
-inline void GetColumnWidths(wxPropertyGrid *grid, wxPGProperty *root, int width[3])
+static void GetColumnWidths(wxPropertyGrid *grid, wxPGProperty *root, int width[3])
 {
     wxClientDC dc(grid);
     dc.SetFont(grid->GetFont());
     GetColumnWidths(dc, grid, root, width);
 }
 
-inline void SetMinSize(wxPropertyGrid *grid)
+static void GridSetMinSize(wxPropertyGrid *grid, const wxPoint &position,
+                           const wxRect &displayClientRect)
 {
     wxPGProperty *p = GetRealRoot(grid);
     wxPGProperty *first = grid->wxPropertyGridInterface::GetFirst(wxPG_ITERATE_ALL);
@@ -1156,29 +1126,54 @@ inline void SetMinSize(wxPropertyGrid *grid)
 
     int width[3];
     GetColumnWidths(grid, grid->GetRoot(), width);
+    // Add a bit of breathing room to prevent the appearance of a horizontal scroll for short
+    // expressions - example "int a=5;".
+    // This more of a workaround, a proper fix would require a thorough investigation of the
+    // wxPropGrid code, but I don't have the time at the moment.
+    width[0] += 10;
+    width[1] += 10;
+    width[2] += 10;
+
     rect.width = std::accumulate(width, width+3, 0);
 
-    int minWidth = (wxSystemSettings::GetMetric(wxSYS_SCREEN_X, grid->GetParent())*3)/2;
-    int minHeight = (wxSystemSettings::GetMetric(wxSYS_SCREEN_Y, grid->GetParent())*3)/2;
+    const int minWidth = (wxSystemSettings::GetMetric(wxSYS_SCREEN_X, grid->GetParent())*3)/2;
+    const int minHeight = (wxSystemSettings::GetMetric(wxSYS_SCREEN_Y, grid->GetParent())*3)/2;
 
-#if wxCHECK_VERSION(3, 0, 0)
-    wxSize size(std::min(minWidth, rect.width), std::min(minHeight, height));
-#else
-    wxSize size(std::min(minWidth, rect.width + grid->GetMarginWidth()), std::min(minHeight, height));
-#endif
+    const wxSize fullSize(std::min(minWidth, rect.width), std::min(minHeight, height));
+    wxSize size = fullSize;
+    int virtualWidth = -1;
+
+    // We have a display rect, so we can use it to make sure the window fits inside it.
+    if (displayClientRect.GetSize().x > 0)
+    {
+        const wxSize sizeClipped = wxRect(position, size).Intersect(displayClientRect).GetSize();
+        if (size != sizeClipped)
+        {
+            virtualWidth = size.x;
+            size = sizeClipped;
+        }
+    }
+
     grid->SetMinSize(size);
 
     int proportions[3];
-    proportions[0] = static_cast<int>(floor((double)width[0]/size.x*100.0+0.5));
-    proportions[1] = static_cast<int>(floor((double)width[1]/size.x*100.0+0.5));
+    proportions[0] = static_cast<int>(floor(((double)width[0]/fullSize.x)*100.0+0.5));
+    proportions[1] = static_cast<int>(floor(((double)width[1]/fullSize.x)*100.0+0.5));
     proportions[2]= std::max(100 - proportions[0] - proportions[1], 0);
     grid->SetColumnProportion(0, proportions[0]);
     grid->SetColumnProportion(1, proportions[1]);
     grid->SetColumnProportion(2, proportions[2]);
     grid->ResetColumnSizes(true);
+
+    // This enables the horizontal scroll. Unfortunately the last column is still placed on the left
+    // so manual resizing of the value column is required if the sum of the max-widths of the
+    // columns makes the window to be too big and so it doesn't fit on the screen, so we've shrunk
+    // it.
+    grid->SetVirtualWidth(virtualWidth);
 }
 
-ValueTooltip::ValueTooltip(const cb::shared_ptr<cbWatch> &watch, wxWindow *parent) :
+ValueTooltip::ValueTooltip(const cb::shared_ptr<cbWatch> &watch, wxWindow *parent,
+                           const wxPoint &screenPosition) :
 #ifndef __WXMAC__
     wxPopupWindow(parent, wxBORDER_NONE|wxWANTS_CHARS),
 #else
@@ -1188,8 +1183,8 @@ ValueTooltip::ValueTooltip(const cb::shared_ptr<cbWatch> &watch, wxWindow *paren
     m_outsideCount(0),
     m_watch(watch)
 {
-    m_panel = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxSize(200, 200));
-    m_grid = new wxPropertyGrid(m_panel, idTooltipGrid, wxDefaultPosition, wxSize(400,400), wxPG_SPLITTER_AUTO_CENTER);
+    m_grid = new wxPropertyGrid(this, idTooltipGrid, wxDefaultPosition, wxSize(200, 200),
+                                wxPG_SPLITTER_AUTO_CENTER);
 
     long extraStyles = 0;
 #if wxCHECK_VERSION(3, 0, 3)
@@ -1210,19 +1205,41 @@ ValueTooltip::ValueTooltip(const cb::shared_ptr<cbWatch> &watch, wxWindow *paren
     m_watch->GetValue(value);
     wxPGProperty *root = m_grid->Append(new WatchesProperty(symbol, value, m_watch, true));
     m_watch->MarkAsChangedRecursive(false);
-    ::UpdateWatch(m_grid, root, m_watch, true);
 
-    ::SetMinSize(m_grid);
+    // If we leave the watch expanded and the user decides to collapse the root, the window refuses
+    // to shrink.
+    // This makes the min size to be as large as a single non-expanded property.
+    // Later we'll expand.
+    const bool oldExpanded = m_watch->IsExpanded();
+    if (oldExpanded)
+        m_watch->Expand(false);
+    ::UpdateWatch(m_grid, root, m_watch, true);
 
     m_sizer = new wxBoxSizer( wxVERTICAL );
     m_sizer->Add(m_grid, 0, wxALL | wxEXPAND, 0);
 
-    m_panel->SetAutoLayout(true);
-    m_panel->SetSizer(m_sizer);
-    m_sizer->Fit(m_panel);
-    m_sizer->Fit(this);
+    // Apply the calculated min size.
+    const int idx = wxDisplay::GetFromWindow(parent);
+    wxDisplay display(idx != wxNOT_FOUND ? idx : 0);
+    GridSetMinSize(m_grid, screenPosition, display.GetClientArea());
+    SetSizer(m_sizer);
+
+    // Expand here after the min size calculation is done.
+    if (oldExpanded)
+    {
+        m_watch->Expand(true);
+        //m_grid->Refresh();
+        m_grid->Expand(root);
+        UpdateSizeAndFit(parent, screenPosition);
+    }
+    else
+        Fit();
 
     m_timer.Start(100);
+
+#ifndef __WXMAC__
+    Position(screenPosition, wxSize(0, 0));
+#endif
 }
 
 ValueTooltip::~ValueTooltip()
@@ -1235,7 +1252,7 @@ void ValueTooltip::UpdateWatch()
     m_watch->MarkAsChangedRecursive(false);
     ::UpdateWatch(m_grid, GetRealRoot(m_grid), m_watch, true);
     m_grid->Refresh();
-    Fit();
+    UpdateSizeAndFit(this, GetScreenPosition());
 }
 
 void ValueTooltip::ClearWatch()
@@ -1261,13 +1278,12 @@ void ValueTooltip::OnDismiss()
     ClearWatch();
 }
 
-void ValueTooltip::Fit()
+void ValueTooltip::UpdateSizeAndFit(wxWindow *usedToGetDisplay, const wxPoint &screenPosition)
 {
-    ::SetMinSize(m_grid);
-    m_sizer->Fit(m_panel);
-    wxPoint pos = GetScreenPosition();
-    wxSize size = m_panel->GetScreenRect().GetSize();
-    SetSize(pos.x, pos.y, size.x, size.y);
+    const int idx = wxDisplay::GetFromWindow(usedToGetDisplay);
+    wxDisplay display(idx != wxNOT_FOUND ? idx : 0);
+    GridSetMinSize(m_grid, screenPosition, display.GetClientArea());
+    Fit();
 }
 
 void ValueTooltip::OnCollapse(wxPropertyGridEvent &event)
@@ -1278,7 +1294,7 @@ void ValueTooltip::OnCollapse(wxPropertyGridEvent &event)
     cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
     if (plugin)
         plugin->CollapseWatch(prop->GetWatch());
-    Fit();
+    UpdateSizeAndFit(this, GetScreenPosition());
 }
 
 void ValueTooltip::OnExpand(wxPropertyGridEvent &event)
@@ -1289,7 +1305,7 @@ void ValueTooltip::OnExpand(wxPropertyGridEvent &event)
     cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
     if (plugin)
         plugin->ExpandWatch(prop->GetWatch());
-    Fit();
+    UpdateSizeAndFit(this, GetScreenPosition());
 }
 
 void ValueTooltip::OnTimer(cb_unused wxTimerEvent &event)

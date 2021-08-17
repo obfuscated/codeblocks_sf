@@ -751,6 +751,15 @@ SQInteger wxArrayString_Index(HSQUIRRELVM v)
     return 1;
 }
 
+SQInteger wxArrayString_GetCount(HSQUIRRELVM v)
+{
+    ExtractParams1<const wxArrayString*> extractor(v);
+    if (!extractor.Process("wxArrayString_GetCount"))
+        return extractor.ErrorMessage();
+    sq_pushinteger(v, extractor.p0->GetCount());
+    return 1;
+}
+
 SQInteger wxArrayString_Item(HSQUIRRELVM v)
 {
     ExtractParams2<wxArrayString*, SQInteger> extractor(v);
@@ -1116,9 +1125,7 @@ void Register_wxTypes(HSQUIRRELVM v)
         BindMethod(v, _SC("Add"), wxArrayString_Add, _SC("wxArrayString::Add"));
         BindMethod(v, _SC("Clear"), wxArrayString_Clear, _SC("wxArrayString::Clear"));
         BindMethod(v, _SC("Index"), wxArrayString_Index, _SC("wxArrayString::Index"));
-        BindMethod(v, _SC("GetCount"),
-                   NoParamGetterInt<size_t, wxArrayString, &wxArrayString::GetCount>,
-                   _SC("wxArrayString::GetCount"));
+        BindMethod(v, _SC("GetCount"), wxArrayString_GetCount, _SC("wxArrayString::GetCount"));
         BindMethod(v, _SC("Item"), wxArrayString_Item, _SC("wxArrayString::Item"));
         BindMethod(v, _SC("SetItem"), wxArrayString_SetItem, _SC("wxArrayString::SetItem"));
 
