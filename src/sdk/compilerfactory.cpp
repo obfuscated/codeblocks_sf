@@ -300,7 +300,7 @@ Compiler* CompilerFactory::SelectCompilerUI(const wxString& message, const wxStr
     const wxString lid = preselectedID.Lower();
 
     // first build a list of available compilers
-    wxArrayString waCompilerChoices;
+    wxArrayString compilerChoices;
 
     for (size_t i = 0; i < Compilers.GetCount(); ++i)
     {
@@ -316,7 +316,7 @@ Compiler* CompilerFactory::SelectCompilerUI(const wxString& message, const wxStr
 
             if ( !path.IsEmpty() && wxFileName::DirExists(path))
             {
-                waCompilerChoices.Add(Compilers[i]->GetName());
+                compilerChoices.Add(Compilers[i]->GetName());
             }
 
             if (selected == -1)
@@ -338,13 +338,12 @@ Compiler* CompilerFactory::SelectCompilerUI(const wxString& message, const wxStr
     wxSingleChoiceDialog dlg(nullptr,
                              message,
                              _("Compiler selection"),
-                             waCompilerChoices);
+                             compilerChoices);
     dlg.SetSelection(selected);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
-        // Now lookup the
-        wxString sSelectedCompiler = waCompilerChoices.Item(dlg.GetSelection());
+        wxString selectedCompiler = compilerChoices.Item(dlg.GetSelection());
         for (size_t i = 0; i < Compilers.GetCount(); ++i)
         {
             Compiler* compiler = CompilerFactory::GetCompiler(i);
@@ -355,7 +354,7 @@ Compiler* CompilerFactory::SelectCompilerUI(const wxString& message, const wxStr
             // Only check if an actual compiler, ignore "NO compiler"
             if (!currentCompilerID.IsSameAs("null"))
             {
-                if (sSelectedCompiler.IsSameAs(Compilers[i]->GetName()))
+                if (selectedCompiler.IsSameAs(Compilers[i]->GetName()))
                 {
                     return Compilers[i];
                 }

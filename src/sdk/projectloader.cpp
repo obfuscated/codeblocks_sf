@@ -276,10 +276,10 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
         // TODO : make 1 help method out of this, with some argument indicating
         // to fill the choice list, or break it in 2 methods with the list filling in between them
         // or maybe time will bring even brighter ideas
-        wxString sCompilerId = _("Unknown");
+        wxString compilerId = _("Unknown");
         if (m_pProject)
         {
-            sCompilerId = m_pProject->GetCompilerID();
+            compilerId = m_pProject->GetCompilerID();
         }
         else
         {
@@ -287,7 +287,7 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
             Compiler* compilerDefault = CompilerFactory::GetCompiler(compilerDefId);
             if (compilerDefault)
             {
-                sCompilerId =  compilerDefault->GetName();
+                compilerId =  compilerDefault->GetName();
             }
         }
 
@@ -296,40 +296,40 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
                     "Please choose the compiler you want to use instead and click \"OK\".\n"
                     "If you click \"Cancel\", the project/target will remain configured for\n"
                     "that compiler and consequently can not be configured and will not be built."),
-                    sCompilerId);
+                    compilerId);
 
         Compiler* comp = CompilerFactory::SelectCompilerUI(msg);
 
         if (comp)
         {
-            wxString sNewCompilerId = comp->GetID();
+            wxString newCompilerId = comp->GetID();
 
-            if (!sNewCompilerId.IsEmpty() && !sNewCompilerId.IsSameAs(sCompilerId))
+            if (!newCompilerId.IsEmpty() && !newCompilerId.IsSameAs(compilerId))
             {
                 // a new compiler was chosen
-                pMsg->DebugLog(wxString::Format(_T("Set project compiler to %s"), sNewCompilerId));
-                m_pProject->SetCompilerID(sNewCompilerId);
+                pMsg->DebugLog(wxString::Format(_T("Set project compiler to %s"), newCompilerId));
+                m_pProject->SetCompilerID(newCompilerId);
                 wxString msg;
                 msg.Printf(_("You have changed the compiler used for the project to %s.\n"
-                            "Do you want to use the same compiler for all the project's build targets too?"),sNewCompilerId);
+                            "Do you want to use the same compiler for all the project's build targets too?"),newCompilerId);
                 int ret = cbMessageBox( msg,
-                                        _("Question"),
+                                        "Question",
                                         wxICON_QUESTION | wxYES_NO);
                 if (ret == wxID_YES)
                 {
-                    pMsg->DebugLog(wxString::Format(_T("Set project target(s) compiler to %s"), sNewCompilerId));
+                    pMsg->DebugLog(wxString::Format(_("Set project target(s) compiler to %s"), newCompilerId));
                     for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
                     {
                         ProjectBuildTarget* target = m_pProject->GetBuildTarget(i);
                         if (target)
-                            target->SetCompilerID(sNewCompilerId);
+                            target->SetCompilerID(newCompilerId);
                     }
                 }
             }
         }
     }
 
-    pMsg->DebugLog(wxString(_T("Done loading project in ")) << wxString::Format(_T("%d"), (int) sw.Time()) << _T("ms"));
+    pMsg->DebugLog("Done loading project in " + wxString::Format(_("%d"), (int) sw.Time()) + "ms");
     return true;
 }
 
