@@ -46,10 +46,10 @@ END_EVENT_TABLE()
 
 dlgHelpSystemInformation::dlgHelpSystemInformation(wxWindow* parent)
 {
-    if (!wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAboutSystemInformation"), _T("wxDialog")))
+    if (!wxXmlResource::Get()->LoadObject(this, parent, "dlgAboutSystemInformation", "wxDialog"))
     {
-        cbMessageBox(_("There was an error loading the \"dlgAboutSystemInformation\" from the \"dlg_about_systerm_information.xrc\" file."),
-                     _("Information"), wxICON_EXCLAMATION);
+        cbMessageBox("There was an error loading the \"dlgAboutSystemInformation\" from the \"dlg_about_systerm_information.xrc\" file.",
+                     "Information", wxICON_EXCLAMATION);
         return;
     }
 
@@ -65,87 +65,87 @@ dlgHelpSystemInformation::dlgHelpSystemInformation(wxWindow* parent)
 
     // ===========================================================================
     // Code::Blocks version and build info details
-    items.push_back({_("Name"), appglobals::AppName});
-    items.push_back({_("Version"), appglobals::AppActualVersion});
-    items.push_back({_("App Version"), appglobals::AppVersion});
-    items.push_back({_("Platform"), appglobals::AppPlatform});
-    items.push_back({_("AppWXAnsiUnicode"), appglobals::AppWXAnsiUnicode});
-    items.push_back({_("AppActualVersionVerb"), appglobals::AppActualVersionVerb});
-    items.push_back({_("Build"), appglobals::AppBuildTimestamp});
-    items.push_back({_("Code::Blocks Executable"), wxStandardPaths::Get().GetExecutablePath()});;
-    items.push_back({wxEmptyString, wxEmptyString});
+    items.push_back({"Name", appglobals::AppName});
+    items.push_back({"Version", appglobals::AppActualVersion});
+    items.push_back({"App Version", appglobals::AppVersion});
+    items.push_back({"Platform", appglobals::AppPlatform});
+    items.push_back({"AppWXAnsiUnicode", appglobals::AppWXAnsiUnicode});
+    items.push_back({"AppActualVersionVerb", appglobals::AppActualVersionVerb});
+    items.push_back({"Build", appglobals::AppBuildTimestamp});
+    items.push_back({"Code::Blocks Executable", wxStandardPaths::Get().GetExecutablePath()});;
+    items.push_back({wxString(), wxString()});
 
-    items.push_back({_("SDK Version"), appglobals::AppSDKVersion});
+    items.push_back({"SDK Version", appglobals::AppSDKVersion});
 
     const wxVersionInfo scintillaVersion = wxScintilla::GetLibraryVersionInfo();
-    const wxString scintillaStr = wxString::Format(wxT("%d.%d.%d"),
+    const wxString scintillaStr = wxString::Format(_("%d.%d.%d"),
                                                    scintillaVersion.GetMajor(),
                                                    scintillaVersion.GetMinor(),
                                                    scintillaVersion.GetMicro());
-    items.push_back({_("Scintilla Version"), scintillaStr});
+    items.push_back({"Scintilla Version", scintillaStr});
     // ===========================================================================
     // wxwidget info
     wxVersionInfo wxVer = wxGetLibraryVersionInfo();
-    items.push_back({_("wxWidget version"), wxVer.GetVersionString()});
+    items.push_back({"wxWidget version", wxVer.GetVersionString()});
     if (wxVer.HasDescription())
     {
-        items.push_back({"wxWidget description", _("- - - - - - -")});
+        items.push_back({"wxWidget description", "- - - - - - -"});
         wxArrayString aswxDescription = wxSplit(wxVer.GetDescription(),'\n');
         for (wxString &sInfo : aswxDescription)
         {
             sInfo.Replace("\n", "");
             if (!sInfo.IsEmpty())
-                items.push_back({wxEmptyString, sInfo});
+                items.push_back({wxString(), sInfo});
         }
-        items.push_back({wxEmptyString, _("- - - - - - -")});
+        items.push_back({wxString(), "- - - - - - -"});
     }
-    items.push_back({wxEmptyString, wxEmptyString});
+    items.push_back({wxString(), wxString()});
 
     // ===========================================================================
-    items.push_back({_("Author"), _("The Code::Blocks Team")});
-    items.push_back({_("E-mail"), appglobals::AppContactEmail});
-    items.push_back({_("Website"), appglobals::AppUrl});
-    items.push_back({wxEmptyString, wxEmptyString});
+    items.push_back({"Author", "The Code::Blocks Team"});
+    items.push_back({"E-mail", appglobals::AppContactEmail});
+    items.push_back({"Website", appglobals::AppUrl});
+    items.push_back({wxString(), wxString()});
 
     // ===========================================================================
     // Operating system info
     const wxPlatformInfo &platform = wxPlatformInfo::Get();
     const wxString desktopEnv = platform.GetDesktopEnvironment();
 
-    items.push_back({_("Operating System"), platform.GetOperatingSystemDescription()});
+    items.push_back({"Operating System", platform.GetOperatingSystemDescription()});
     if (!desktopEnv.empty())
-        items.push_back({_("Desktop environment"), desktopEnv });
-    items.push_back({_("wxLocale Language"), wxLocale::GetLanguageName(wxLocale::GetSystemLanguage())});
-    items.push_back({_("Code::Blocks config Folder"), ConfigManager::GetConfigFolder()});
-    items.push_back({wxEmptyString, wxEmptyString});
+        items.push_back({"Desktop environment", desktopEnv });
+    items.push_back({"wxLocale Language", wxLocale::GetLanguageName(wxLocale::GetSystemLanguage())});
+    items.push_back({"Code::Blocks config Folder", ConfigManager::GetConfigFolder()});
+    items.push_back({wxString(), wxString()});
 
     // ===========================================================================
     // Display info
-    items.push_back({_("Display Info"), wxEmptyString});
-    items.push_back({_("     Scaling factor"), wxString::Format("%f", GetContentScaleFactor())});
-    items.push_back({_("     Detected scaling factor"), wxString::Format("%f", cbGetActualContentScaleFactor(*this))});
+    items.push_back({"Display Info", wxString()});
+    items.push_back({"     Scaling factor", wxString::Format(_("%f"), GetContentScaleFactor())});
+    items.push_back({"     Detected scaling factor", wxString::Format(_("%f"), cbGetActualContentScaleFactor(*this))});
     const wxSize displayPPI = wxGetDisplayPPI();
-    items.push_back({_("     Display PPI"), wxString::Format("%d x %d", displayPPI.x, displayPPI.y)});
+    items.push_back({"     Display PPI", wxString::Format(_("%d x %d"), displayPPI.x, displayPPI.y)});
 
     unsigned displays = wxDisplay::GetCount();
-    items.push_back({_("     Display count"), wxString::Format("%u", displays)});
+    items.push_back({"     Display count", wxString::Format(_("%u"), displays)});
 
     for (unsigned ii = 0; ii < displays; ++ii)
     {
         wxDisplay display(ii);
 
-        items.push_back({_("     Display"),wxString::Format(_("%u"), ii)});
-        items.push_back({_("        Name"),display.GetName()});
+        items.push_back({"     Display", wxString::Format(_("%u"), ii)});
+        items.push_back({"        Name", display.GetName()});
         const wxRect geometry = display.GetGeometry();
-        items.push_back({_("        XY"),wxString::Format(_("[%d , %d]"), geometry.GetLeft(), geometry.GetTop())});
-        items.push_back({_("        Size"),wxString::Format(_("[%d , %d]"), geometry.GetWidth(), geometry.GetHeight())});
-        items.push_back({_("        IsPrimary"),display.IsPrimary() ? _("True") : _("False")});
+        items.push_back({"        XY", wxString::Format(_("[%d , %d]"), geometry.GetLeft(), geometry.GetTop())});
+        items.push_back({"        Size", wxString::Format(_("[%d , %d]"), geometry.GetWidth(), geometry.GetHeight())});
+        items.push_back({"        IsPrimary", display.IsPrimary() ? "True":"False"});
     }
-    items.push_back({wxEmptyString, wxEmptyString});
+    items.push_back({wxString(), wxString()});
 
     // ===========================================================================
     // Compiler Info
-    items.push_back({_("Compiler Information"), wxEmptyString});
+    items.push_back({"Compiler Information", wxString()});
 
     ProjectManager *prjMan = Manager::Get()->GetProjectManager();
     cbProject *pProject = prjMan->GetActiveProject();
@@ -154,47 +154,47 @@ dlgHelpSystemInformation::dlgHelpSystemInformation(wxWindow* parent)
     if (pProject && prjMan->IsProjectStillOpen(pProject))
     {
         selectedCompiler = CompilerFactory::GetCompiler(pProject->GetCompilerID());
-        items.push_back({_("       Project"), _("loaded")});
+        items.push_back({"       Project", "loaded"});
     }
     else
     {
         selectedCompiler = CompilerFactory::GetDefaultCompiler();
-        items.push_back({_("       Project"), _("not loaded")});
+        items.push_back({"       Project", "not loaded"});
     }
-    items.push_back({_("       Default compiler"), CompilerFactory::GetDefaultCompilerID()});
+    items.push_back({"       Default compiler", CompilerFactory::GetDefaultCompilerID()});
 
     if (selectedCompiler)
     {
-        items.push_back({_("       Name"), selectedCompiler->GetName()});
-        items.push_back({_("       Version"), selectedCompiler->GetVersionString()});
-        items.push_back({_("       Master Path"), selectedCompiler->GetMasterPath()});
-        items.push_back({_("       IsValid"), selectedCompiler->IsValid()?_("True"):_("False")});
+        items.push_back({"       Name", selectedCompiler->GetName()});
+        items.push_back({"       Version", selectedCompiler->GetVersionString()});
+        items.push_back({"       Master Path", selectedCompiler->GetMasterPath()});
+        items.push_back({"       IsValid", selectedCompiler->IsValid() ? "True":"False"});
         const CompilerPrograms &cp = selectedCompiler->GetPrograms();
-        items.push_back({_("       C Compiler"), cp.C});
-        items.push_back({_("       C++ Compiler"), cp.CPP});
-        items.push_back({_("       Dynamic Linker (LD)"), cp.LD});
-        items.push_back({_("       Static Linker (LIB)"), cp.LIB});
-        items.push_back({_("       Windows Resource Compiler"), cp.WINDRES});
-        items.push_back({_("       Make"), cp.MAKE});
-        items.push_back({_("       DBGconfig"), cp.DBGconfig});
+        items.push_back({"       C Compiler", cp.C});
+        items.push_back({"       C++ Compiler", cp.CPP});
+        items.push_back({"       Dynamic Linker (LD)", cp.LD});
+        items.push_back({"       Static Linker (LIB)", cp.LIB});
+        items.push_back({"       Windows Resource Compiler", cp.WINDRES});
+        items.push_back({"       Make", cp.MAKE});
+        items.push_back({"       DBGconfig", cp.DBGconfig});
         if (selectedCompiler->GetExtraPaths().GetCount() == 0)
-            items.push_back({_("       Extra Paths"), _("None specified")});
+            items.push_back({"       Extra Paths", "None specified"});
         else
-            items.push_back({_("       Extra Paths"), wxJoin(selectedCompiler->GetExtraPaths(), ',')});
+            items.push_back({"       Extra Paths", wxJoin(selectedCompiler->GetExtraPaths(), ',')});
 
         // ===========================================================================
         // GCC Compiler Info
         if (cp.C.IsSameAs("gcc") || cp.C.IsSameAs("gcc.exe"))
         {
-            const wxString gcc(selectedCompiler->GetMasterPath()+wxFileName::GetPathSeparator()+wxT("bin")+wxFileName::GetPathSeparator()+cp.C);
+            const wxString gcc(selectedCompiler->GetMasterPath() + wxFileName::GetPathSeparator() + "bin" + wxFileName::GetPathSeparator() + cp.C);
             if (wxFileExists(gcc))
             {
-                items.push_back({_("       GNU GCC"), _("details below")});
+                items.push_back({"       GNU GCC", "details below"});
 
                 wxString Command(gcc+" -v");
                 if (platform::windows && platform::WindowsVersion() >= platform::winver_WindowsNT2000)
                 {
-                    Command = wxT("cmd /c ")+Command;
+                    Command = "cmd /c " + Command;
                 }
 
                 wxArrayString asOutput, asErrors;
@@ -202,33 +202,33 @@ dlgHelpSystemInformation::dlgHelpSystemInformation(wxWindow* parent)
                 for (wxString &sInfo : asOutput)
                 {
                     sInfo.Replace("\n", "");
-                    items.push_back({wxEmptyString, sInfo});
+                    items.push_back({wxString(), sInfo});
                 }
                 for (wxString &sInfo : asErrors)
                 {
                     sInfo.Replace("\n", "");
-                    items.push_back({wxEmptyString, sInfo});
+                    items.push_back({wxString(), sInfo});
                 }
-                items.push_back({wxEmptyString, _("- - - - - - -")});
+                items.push_back({wxString(), "- - - - - - -"});
             }
             else
             {
-                items.push_back({_("       GNU GCC"), _("could not find gcc")});
+                items.push_back({"       GNU GCC", "could not find gcc"});
             }
 
             // ===========================================================================
             // GDB Debugger Info
-            wxString sGDBExecutableFileName = wxEmptyString;
+            wxString sGDBExecutableFileName = wxString();
             wxArrayString asDBGDetails = wxSplit(cp.DBGconfig,':');
-            items.push_back({_("       GNU GDB"), _("details below")});
+            items.push_back({"       GNU GDB", "details below"});
             cbDebuggerPlugin * pDBGPlugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
             if (!pDBGPlugin)
-                items.push_back({_("         Default Plugin"), _("not found")});
+                items.push_back({"         Default Plugin", "not found"});
             if (pDBGPlugin)
             {
-                items.push_back({_("         Default Plugin"),wxEmptyString});
-                items.push_back({_("             GUI Name"), pDBGPlugin->GetGUIName()});
-                items.push_back({_("             Settings Name"), pDBGPlugin->GetSettingsName()});
+                items.push_back({"         Default Plugin",wxString()});
+                items.push_back({"             GUI Name", pDBGPlugin->GetGUIName()});
+                items.push_back({"             Settings Name", pDBGPlugin->GetSettingsName()});
             }
 
             const DebuggerManager::RegisteredPlugins & prDbgPlugins = Manager::Get()->GetDebuggerManager()->GetAllDebuggers();
@@ -249,25 +249,25 @@ dlgHelpSystemInformation::dlgHelpSystemInformation(wxWindow* parent)
                             (asDBGDetails[1] == (*itConf)->GetName())
                         )
                     {
-                        items.push_back({_("         Configured Plugin"),wxEmptyString});
+                        items.push_back({"         Configured Plugin",wxString()});
 
-                        items.push_back({_("             GetGUIName()"), pdebugger->GetGUIName()});
-                        items.push_back({_("             GetSettingsName()"), pdebugger->GetSettingsName()});
-                        items.push_back({_("             GetName()"), (*itConf)->GetName()});
+                        items.push_back({"             GetGUIName()", pdebugger->GetGUIName()});
+                        items.push_back({"             GetSettingsName()", pdebugger->GetSettingsName()});
+                        items.push_back({"             GetName()", (*itConf)->GetName()});
 
 
-                        ConfigManager *config = Manager::Get()->GetConfigManager(wxT("debugger_common"));
-                        wxString setPath = wxString::Format(wxT("/sets/%s"),pdebugger->GetSettingsName());
+                        ConfigManager *config = Manager::Get()->GetConfigManager("debugger_common");
+                        wxString setPath = wxString::Format(_("/sets/%s"),pdebugger->GetSettingsName());
                         wxArrayString configs = config->EnumerateSubPaths(setPath);
                         configs.Sort();
 
                         for (wxString &sConfig : configs)
                         {
-                            wxString sName = config->Read(wxString::Format(wxT("%s/%s/name"), setPath, sConfig));;
+                            wxString sName = config->Read(wxString::Format(_("%s/%s/name"), setPath, sConfig));;
                             if (sName.IsSameAs((*itConf)->GetName()))
                             {
-                                sGDBExecutableFileName = config->Read(wxString::Format(wxT("%s/%s/values/executable_path"), setPath, sConfig));;
-                                items.push_back({_("             GDB executable"),sGDBExecutableFileName});
+                                sGDBExecutableFileName = config->Read(wxString::Format(_("%s/%s/values/executable_path"), setPath, sConfig));;
+                                items.push_back({"             GDB executable",sGDBExecutableFileName});
                                 bFoundGDB = true;
                                 break;
                             }
@@ -280,35 +280,35 @@ dlgHelpSystemInformation::dlgHelpSystemInformation(wxWindow* parent)
 
             if (!sGDBExecutableFileName.IsEmpty() && wxFileExists(sGDBExecutableFileName))
             {
-                items.push_back({_("             GNU GDB"), _("gdb -v info below")});
+                items.push_back({"             GNU GDB", "gdb -v info below"});
 
-                wxString Command = wxString::Format(wxT("%s -v"), sGDBExecutableFileName);
+                wxString Command = wxString::Format(_("%s -v"), sGDBExecutableFileName);
                 if (platform::windows && platform::WindowsVersion() >= platform::winver_WindowsNT2000)
                 {
-                    Command = wxString::Format(wxT("cmd /c %s"), Command);;
+                    Command = wxString::Format(_("cmd /c %s"), Command);;
                 }
 
                 wxArrayString asOutput, asErrors;
                 wxExecute(Command, asOutput, asErrors, wxEXEC_NODISABLE);
                 for (wxString &sInfo : asOutput)
                 {
-                    sInfo.Replace(_("\n"), _(""));
-                    items.push_back({wxEmptyString, sInfo});
+                    sInfo.Replace("\n", "");
+                    items.push_back({wxString(), sInfo});
                 }
                 for (wxString &sInfo : asErrors)
                 {
-                    sInfo.Replace(_("\n"), _(""));
-                    items.push_back({wxEmptyString, sInfo});
+                    sInfo.Replace("\n", "");
+                    items.push_back({wxString(), sInfo});
                 }
-                items.push_back({wxEmptyString, _("- - - - - - -")});
+                items.push_back({wxString(), "- - - - - - -"});
             }
             else
             {
-                items.push_back({_("             GNU GDB"), _("Could not find gdb!!!")});
+                items.push_back({"             GNU GDB", "Could not find gdb!!!"});
             }
         }
     }
-    items.push_back({wxEmptyString, wxEmptyString});
+    items.push_back({wxString(), wxString()});
 
     // ===========================================================================
     // Global variables
@@ -319,11 +319,11 @@ dlgHelpSystemInformation::dlgHelpSystemInformation(wxWindow* parent)
         wxArrayString sets = pCfgMan->EnumerateSubPaths(cSets);
         sets.Sort();
 
-        items.push_back({_("GlobalVariables"), wxEmptyString});
+        items.push_back({"GlobalVariables", wxString()});
 
         for (const wxString &sCurrentSet : sets)
         {
-            items.push_back({_("       Set"), sCurrentSet});
+            items.push_back({"       Set", sCurrentSet});
 
             wxArrayString vars = pCfgMan->EnumerateSubPaths(cSets + sCurrentSet + _T("/"));
             vars.Sort();
@@ -342,14 +342,14 @@ dlgHelpSystemInformation::dlgHelpSystemInformation(wxWindow* parent)
                     items.push_back(item);
                 }
 
-                items.push_back({_("         - - - - - -"), _("- - - - - - - - - - - - - -")});
+                items.push_back({"         - - - - - -", "- - - - - - - - - - - - - -"});
             }
         }
-        items.push_back({wxEmptyString, wxEmptyString});
+        items.push_back({wxString(), wxString()});
     }
     else
     {
-        items.push_back({_("GlobalVariables"), _("no sets found")});
+        items.push_back({"GlobalVariables", "no sets found"});
     }
 
     // ===========================================================================
@@ -360,11 +360,11 @@ dlgHelpSystemInformation::dlgHelpSystemInformation(wxWindow* parent)
         const MacrosMap &Macros = macroMan->GetMacros();
         if (Macros.empty())
         {
-            items.push_back({_("Macros"), _("None")});
+            items.push_back({"Macros", "None"});
         }
         else
         {
-            items.push_back({_("Macros:"), wxEmptyString});
+            items.push_back({"Macros:", wxString()});
             // MacrosMap uses a hash as key, to get sorted macros we need to copy them to a non-hashed map
             std::map <wxString, wxString> NewMap;
             for (MacrosMap::const_iterator it = Macros.begin(); it != Macros.end(); ++it)
@@ -377,7 +377,7 @@ dlgHelpSystemInformation::dlgHelpSystemInformation(wxWindow* parent)
                 items.push_back({wxString::Format(_("       %s"), Item.first), Item.second});
             }
         }
-        items.push_back({wxEmptyString, wxEmptyString});
+        items.push_back({wxString(), wxString()});
     }
 
     // ===========================================================================
@@ -385,36 +385,34 @@ dlgHelpSystemInformation::dlgHelpSystemInformation(wxWindow* parent)
     wxEnvVariableHashMap env;
     if ( wxGetEnvMap(&env) )
     {
-        items.push_back({_("OS environment variables"), wxEmptyString});
-        for ( wxEnvVariableHashMap::iterator it = env.begin();
-              it != env.end();
-              ++it )
+        items.push_back({"OS environment variables", wxString()});
+        for ( wxEnvVariableHashMap::iterator it = env.begin(); it != env.end(); ++it )
         {
             items.push_back({wxString::Format(_("       %s"), it->first), it->second});
         }
-        items.push_back({wxEmptyString, wxEmptyString});
+        items.push_back({wxString(), wxString()});
     }
 
     // ===========================================================================
     // OS paths
     wxStandardPathsBase& stdp = wxStandardPaths::Get();
 
-    items.push_back({_("OS standard paths"), wxEmptyString});
-    items.push_back({wxString::Format(_("       GetAppDocumentsDir")),  stdp.GetAppDocumentsDir()});    // Return the directory for the document files used by this application. More...
-    items.push_back({wxString::Format(_("       GetConfigDir")),        stdp.GetConfigDir()});          // Return the directory containing the system config files. More...
-    items.push_back({wxString::Format(_("       GetDataDir")),          stdp.GetDataDir()});            // Return the location of the applications global, i.e. not user-specific, data files. More...
-    items.push_back({wxString::Format(_("       GetDocumentsDir")),     stdp.GetDocumentsDir()});       // Return the directory containing the current user's documents. More...
-    items.push_back({wxString::Format(_("       GetExecutablePath")),   stdp.GetExecutablePath()});     // Return the location for application data files which are host-specific and can't, or shouldn't, be shared with the other machines. More...
-    // Only available in wxOS2, wxGTK ports : items.push_back({wxString::Format(_("       GetInstallPrefix")),    stdp.GetInstallPrefix()});      // Return the program installation prefix, e.g. /usr, /opt or /home/zeitlin. More...
-    items.push_back({wxString::Format(_("       GetLocalDataDir")),     stdp.GetLocalDataDir()});       // Return the location for application data files which are host-specific and can't, or shouldn't, be shared with the other machines. More...
-    // future work with languages : items.push_back({wxString::Format(_("       GetLocalizedResourcesDir")), stdp.GetLocalizedResourcesDir(....)}); //Return the localized resources directory containing the resource files of the specified category for the given language. More...
-    items.push_back({wxString::Format(_("       GetPluginsDir")),       stdp.GetPluginsDir()});         // Return the directory where the loadable modules (plugins) live. More...
-    items.push_back({wxString::Format(_("       GetResourcesDir")),     stdp.GetResourcesDir()});       // Return the directory where the application resource files are located. More...
-    items.push_back({wxString::Format(_("       GetTempDir")),          stdp.GetTempDir()});            // Return the directory for storing temporary files. More...
-    items.push_back({wxString::Format(_("       GetUserConfigDir")),    stdp.GetUserConfigDir()});      // Return the directory for the user config files: More...
-    items.push_back({wxString::Format(_("       GetUserDataDir")),      stdp.GetUserDataDir()});        // Return the directory for the user-dependent application data files: More...
-    items.push_back({wxString::Format(_("       GetUserLocalDataDir")), stdp.GetUserLocalDataDir()});   // Return the directory for user data files which shouldn't be shared with the other machines. More...
-    items.push_back({wxEmptyString, wxEmptyString});
+    items.push_back({"OS standard paths", wxString()});
+    items.push_back({"       GetAppDocumentsDir",  stdp.GetAppDocumentsDir()});    // Return the directory for the document files used by this application. More...
+    items.push_back({"       GetConfigDir",        stdp.GetConfigDir()});          // Return the directory containing the system config files. More...
+    items.push_back({"       GetDataDir",          stdp.GetDataDir()});            // Return the location of the applications global, i.e. not user-specific, data files. More...
+    items.push_back({"       GetDocumentsDir",     stdp.GetDocumentsDir()});       // Return the directory containing the current user's documents. More...
+    items.push_back({"       GetExecutablePath",   stdp.GetExecutablePath()});     // Return the location for application data files which are host-specific and can't, or shouldn't, be shared with the other machines. More...
+    // Only available in wxOS2, wxGTK ports : items.push_back({"       GetInstallPrefix",    stdp.GetInstallPrefix()});      // Return the program installation prefix, e.g. /usr, /opt or /home/zeitlin. More...
+    items.push_back({"       GetLocalDataDir",     stdp.GetLocalDataDir()});       // Return the location for application data files which are host-specific and can't, or shouldn't, be shared with the other machines. More...
+    // future work with languages : items.push_back({"       GetLocalizedResourcesDir", stdp.GetLocalizedResourcesDir(....)}); //Return the localized resources directory containing the resource files of the specified category for the given language. More...
+    items.push_back({"       GetPluginsDir",       stdp.GetPluginsDir()});         // Return the directory where the loadable modules (plugins) live. More...
+    items.push_back({"       GetResourcesDir",     stdp.GetResourcesDir()});       // Return the directory where the application resource files are located. More...
+    items.push_back({"       GetTempDir",          stdp.GetTempDir()});            // Return the directory for storing temporary files. More...
+    items.push_back({"       GetUserConfigDir",    stdp.GetUserConfigDir()});      // Return the directory for the user config files: More...
+    items.push_back({"       GetUserDataDir",      stdp.GetUserDataDir()});        // Return the directory for the user-dependent application data files: More...
+    items.push_back({"       GetUserLocalDataDir", stdp.GetUserLocalDataDir()});   // Return the directory for user data files which shouldn't be shared with the other machines. More...
+    items.push_back({wxString(), wxString()});
 
     // ===========================================================================
     // Plugins
@@ -429,11 +427,11 @@ dlgHelpSystemInformation::dlgHelpSystemInformation(wxWindow* parent)
         for (size_t i = 0; i < numPlugins; ++i)
         {
             const wxString pluginName(plugins[i]->info.name);
-            const bool bActive = Manager::Get()->GetConfigManager(wxT("plugins"))->ReadBool(wxT("/")+pluginName, true);
+            const bool bActive = Manager::Get()->GetConfigManager("plugins")->ReadBool("/" + pluginName, true);
             if (bActive)
             {
                 if (!bAnyActive)
-                    items.push_back({_("Active plugins:"), wxEmptyString});
+                    items.push_back({"Active plugins:", wxString()});
                 Item item;
                 item.name = wxString::Format(_("       %s"), plugins[i]->info.title);
                 item.value = plugins[i]->info.version;
@@ -445,20 +443,20 @@ dlgHelpSystemInformation::dlgHelpSystemInformation(wxWindow* parent)
 
         if (!bAnyActive)
         {
-            items.push_back({_("Active plugins"), _("None found")});
+            items.push_back({"Active plugins", "None found"});
         }
-        items.push_back({wxEmptyString, wxEmptyString});
+        items.push_back({wxString(), wxString()});
 
         bAnyActive = false;
 
         for (size_t i = 0; i < numPlugins; ++i)
         {
             const wxString pluginName(plugins[i]->info.name);
-            const bool bActive = Manager::Get()->GetConfigManager(wxT("plugins"))->ReadBool(wxT("/")+pluginName, true);
+            const bool bActive = Manager::Get()->GetConfigManager("plugins")->ReadBool("/" + pluginName, true);
             if (!bActive)
             {
                 if (!bAnyActive)
-                    items.push_back({_("InActive plugins:"), wxEmptyString});
+                    items.push_back({"InActive plugins:", wxString()});
 
                 Item item;
                 item.name = wxString::Format(_("       %s"), plugins[i]->info.title);
@@ -471,9 +469,9 @@ dlgHelpSystemInformation::dlgHelpSystemInformation(wxWindow* parent)
 
         if (!bAnyActive)
         {
-            items.push_back({_("InActive plugins"), _("None found")});
+            items.push_back({"InActive plugins", "None found"});
         }
-        items.push_back({wxEmptyString, wxEmptyString});
+        items.push_back({wxString(), wxString()});
     }
 
     // ===========================================================================
@@ -482,17 +480,17 @@ dlgHelpSystemInformation::dlgHelpSystemInformation(wxWindow* parent)
     const cbBackticksMap &Backticks = cbGetBackticksCache();
     if (Backticks.empty())
     {
-        items.push_back({_("Backticks"), _("None")});
+        items.push_back({"Backticks", "None"});
     }
     else
     {
-        items.push_back({_("Backticks:"), wxEmptyString});
+        items.push_back({"Backticks:", wxString()});
         for (cbBackticksMap::const_iterator it = Backticks.begin(); it != Backticks.end(); ++it)
         {
             items.push_back({wxString::Format(_("       %s"), it->first), it->second});
         }
     }
-    items.push_back({wxEmptyString, wxEmptyString});
+    items.push_back({wxString(), wxString()});
 
 
     // ===========================================================================
@@ -502,16 +500,16 @@ dlgHelpSystemInformation::dlgHelpSystemInformation(wxWindow* parent)
         wxArrayString sOutput;
         const wxString sConfigFolder(ConfigManager::GetConfigFolder());
 
-        items.push_back({_("Linux config folder permissions:"), wxEmptyString});
-        items.push_back({_("    config folder"), _(sConfigFolder)});
-        wxExecute(wxT("ls -l -d ")+sConfigFolder+wxT(" && ls -l ")+sConfigFolder, sOutput, wxEXEC_NODISABLE);
+        items.push_back({"Linux config folder permissions:", wxString()});
+        items.push_back({"    config folder", sConfigFolder});
+        wxExecute("ls -l -d " + sConfigFolder + " && ls -l " + sConfigFolder, sOutput, wxEXEC_NODISABLE);
         if (!sOutput.IsEmpty())
         {
-            items.push_back({wxJoin(sOutput, '\n'), wxEmptyString});
+            items.push_back({wxJoin(sOutput, '\n'), wxString()});
         }
     }
-    items.push_back({wxEmptyString, wxEmptyString});
-    items.push_back({wxEmptyString, wxEmptyString});
+    items.push_back({wxString(), wxString()});
+    items.push_back({wxString(), wxString()});
 
     // ===========================================================================
     // Process items now!
@@ -525,27 +523,27 @@ dlgHelpSystemInformation::dlgHelpSystemInformation(wxWindow* parent)
     wxString information;
     for (const Item &item : items)
     {
-        if ((item.name == wxEmptyString) || (item.value  == wxEmptyString))
+        if ((item.name == wxString()) || (item.value  == wxString()))
         {
-            if (item.name != wxEmptyString)
+            if (item.name != wxString())
             {
                 information += item.name;
             }
-            if (item.value != wxEmptyString)
+            if (item.value != wxString())
             {
                 if (maxNameLength > int(item.name.length()))
-                    information += wxString(wxT(' '), maxNameLength - int(item.name.length()));
-                information += wxT(": ") + item.value;
+                    information += wxString(' ', maxNameLength - int(item.name.length()));
+                information += ": " + item.value;
             }
 
-            information += wxT("\n");
+            information += "\n";
         }
         else
         {
             information += item.name;
             if (maxNameLength > int(item.name.length()))
-                information += wxString(wxT(' '), maxNameLength - int(item.name.length()));
-            information += wxT(": ") + item.value + wxT("\n");
+                information += wxString(' ', maxNameLength - int(item.name.length()));
+            information += ": " + item.value + "\n";
         }
     }
 
@@ -590,9 +588,9 @@ void dlgHelpSystemInformation::CopyInfoToClipbaord(cb_unused wxCommandEvent& eve
             wxString sTxtInformation = txtInformation->GetValue();
 
             // Sanatise the data
-            sTxtInformation.Replace(wxGetHostName(),wxT("<ComputerName>"));
-            sTxtInformation.Replace(wxGetFullHostName(),wxT("<ComputerName>"));
-            sTxtInformation.Replace(wxGetUserName(),wxT("<UserName>"));
+            sTxtInformation.Replace(wxGetHostName(), "<ComputerName>");
+            sTxtInformation.Replace(wxGetFullHostName(),"<ComputerName>");
+            sTxtInformation.Replace(wxGetUserName(), "<UserName>");
 
             wxTheClipboard->SetData( new wxTextDataObject(sTxtInformation) );
         }
