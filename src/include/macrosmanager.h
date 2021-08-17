@@ -71,12 +71,13 @@ protected:
     wxRegEx             m_RE_To83Path;
     wxRegEx             m_RE_RemoveQuotes;
     UserVariableManager *m_UserVarMan;
-
+    bool m_Valid;
 private:
     MacrosManager();
     ~MacrosManager() override;
     wxString EvalCondition(const wxString& cond, const wxString& true_clause, const wxString& false_clause, const ProjectBuildTarget* target);
     int MatchBrace(const wxString& buffer, int index);
+    bool CompileRegexes();
 };
 
 #endif // MACROSMANAGER_H

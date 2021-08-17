@@ -1362,7 +1362,7 @@ int CompilerGCC::DoRunQueue()
     if (cmd->isRun)
     {
         pipe = false; // no need to pipe output channels...
-        flags |= wxEXEC_NOHIDE;
+        flags |= wxEXEC_SHOW_CONSOLE;
         dir = m_CdRun;
 
         // setup dynamic linker path
@@ -1396,7 +1396,7 @@ int CompilerGCC::DoRunQueue()
     process.OutputFile = (cmd->isLink && cmd->target) ? cmd->target->GetOutputFilename() : wxString(wxEmptyString);
     process.pProcess = new PipedProcess(&(process.pProcess), this, idGCCProcess, pipe, dir, procIndex);
 
-    process.PID = wxExecute(cmd->command, flags, process.pProcess);
+    process.PID = process.pProcess->Launch(cmd->command, flags);
     if (!process.PID)
     {
         wxString err = wxString::Format(_("Execution of '%s' in '%s' failed."),

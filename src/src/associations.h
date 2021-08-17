@@ -7,25 +7,18 @@
 #define ASSOCIATIONS_H
 
 #include "scrollingdialog.h"
-#include <wx/intl.h>
-#include <wx/string.h>
+
 #ifdef __WXMSW__
-    #include <wx/msw/registry.h>
-    #include <shlobj.h> // for SHChangeNotify()
-    #ifdef __CBDEBUG__
-        #include <windows.h>
-        #include <wincon.h>
-    #endif
-    #define DDE_SERVICE    _T("CODEBLOCKS")
+    #define DDE_SERVICE "CODEBLOCKS"
 #else
-    #define DDE_SERVICE    _T("/tmp/CODEBLOCKS%s.socket")
+    #define DDE_SERVICE "/tmp/CODEBLOCKS%s.socket"
 #endif
-#define DDE_TOPIC    _T("CodeBlocksDDEServer")
-#include <wx/ipc.h>
+#define DDE_TOPIC "CodeBlocksDDEServer"
 
 class wxCheckListBox;
-class wxWindow;
 class wxCommandEvent;
+class wxString;
+class wxWindow;
 
 namespace Associations
 {
