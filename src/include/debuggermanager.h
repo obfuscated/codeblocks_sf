@@ -383,31 +383,31 @@ class DLLIMPORT DebuggerManager : public Mgr<DebuggerManager>
         bool m_useTargetsDefault;
 
     public:
-        /// Struct to keep Compiler debugger
+        /// Struct to keep Compiler debugger configuration in
         struct CompilerDebuggerOptions
         {
-            bool cdoValidData;              // This structure contains data
-            wxString cdoCompilerMasterPath;
-            wxString cdoCompilerIDName;     // Compiler ID from compiler*.XML file
-            wxString cdoDebuggerConfigurationName;   // Name of the debugger configuration
-            wxString cdoExecutablePath;     // Options:
+            bool validData;              // This structure contains data
+            wxString compilerMasterPath;
+            wxString compilerIDName;     // Compiler ID from compiler*.XML file
+            wxString debuggerConfigurationName;   // Name of the debugger configuration
+            wxString executablePath;     // Options:
                                             //   a) FileName of the debugger program, which uses the master path bin directory to find the file
                                             //   b) Fully qualified FileName including directory. If it is not in this directory then the master path is used to try and find the file
-            wxString cdoUserArguments;      // Executable arguments
-            wxString cdoType;               // GDB or CDB
-            wxString cdoInitCommands;       // Debugger initialization commands
-            bool cdoDisableInit;            // Disables auto loading of start-up scripts (.gdbinit)
-            bool cdoWatchArgs;              // Automatic watches are added for the current function's arguments
-            bool cdoWatchLocals;            // Automatic watches are added for all the local variables of the current function
-            bool cdoCatchExceptions;        // Catch C++ exceptions
-            bool cdoEvalExpressionAsTooltip;// While debugging, leaving the mouse over a variable (or the selection) evaluates it in a tooltip
-            bool cdoAddOtherSearchDirs;     // If enabled, the other open projects' paths will be added in the debugger's search list
-            bool cdoDoNoRunDebuggee;        // If enabled, the debugger will not a send a run or continue command
-            wxString cdoDisassemblyFlavor;  // Options:  "System default" or "ATandT" or "Intel" or "Custom" where "System default" is "ATandT" for Windows otherwise it is "Intel"
-            wxString cdoInstructionSet;     // Disassembly custom instruction set
+            wxString userArguments;      // Executable arguments
+            wxString type;               // GDB or CDB
+            wxString initCommands;       // Debugger initialization commands
+            bool disableInit;            // Disables auto loading of start-up scripts (.gdbinit)
+            bool watchArgs;              // Automatic watches are added for the current function's arguments
+            bool watchLocals;            // Automatic watches are added for all the local variables of the current function
+            bool catchExceptions;        // Catch C++ exceptions
+            bool evalExpressionAsTooltip;// While debugging, leaving the mouse over a variable (or the selection) evaluates it in a tooltip
+            bool addOtherSearchDirs;     // If enabled, the other open projects' paths will be added in the debugger's search list
+            bool doNoRunDebuggee;        // If enabled, the debugger will not a send a run or continue command
+            wxString disassemblyFlavor;  // Options:  "System default" or "ATandT" or "Intel" or "Custom" where "System default" is "ATandT" for Windows otherwise it is "Intel"
+            wxString instructionSet;     // Disassembly custom instruction set
         };
 
-        void SaveDebuggerConfigOptions(CompilerDebuggerOptions & cdoConfiguation);
+        void SaveDebuggerConfigOptions(CompilerDebuggerOptions& configuation);
 };
 
 #endif // X_DEBUGGER_MANAGER_H
