@@ -89,7 +89,8 @@ class ValueTooltip :
 #endif
 {
     public:
-        ValueTooltip(const cb::shared_ptr<cbWatch> &watch, wxWindow *parent);
+        ValueTooltip(const cb::shared_ptr<cbWatch> &watch, wxWindow *parent,
+                     const wxPoint &screenPosition);
         ~ValueTooltip();
 
         void Dismiss();
@@ -97,7 +98,7 @@ class ValueTooltip :
     protected:
         virtual void OnDismiss();
     private:
-        void Fit() override;
+        void UpdateSizeAndFit(wxWindow *usedToGetDisplay, const wxPoint &screenPosition);
         void ClearWatch();
     private:
 
@@ -107,7 +108,6 @@ class ValueTooltip :
     private:
         wxPropertyGrid *m_grid;
         wxBoxSizer *m_sizer;
-        wxPanel *m_panel;
 
         wxTimer m_timer;
         int m_outsideCount;
