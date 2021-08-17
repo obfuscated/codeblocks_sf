@@ -765,19 +765,19 @@ void WatchesDlg::OnPropertyRightClick(wxPropertyGridEvent &event)
     if (prop && prop->GetLabel()!=wxEmptyString)
     {
         wxMenu m;
-        m.Append(idMenuRename,              _("Rename"),                _("Rename the watch"));
-        m.Append(idMenuAddDataBreak,        _("Add Data breakpoint"),   _("Add Data breakpoing"));
+        m.Append(idMenuRename,              "Rename",                "Rename the watch");
+        m.Append(idMenuAddDataBreak,        "Add Data breakpoint",   "Add Data breakpoing");
         m.AppendSeparator();
-        m.AppendCheckItem(idMenuAutoUpdate, _("Auto update"),           _("Flag which controls if this watch should be auto updated."));
-        m.Append(idMenuUpdate,              _("Update"),                _("Manually update the selected watch."));
+        m.AppendCheckItem(idMenuAutoUpdate, "Auto update",           "Flag which controls if this watch should be auto updated.");
+        m.Append(idMenuUpdate,              "Update",                "Manually update the selected watch.");
         m.AppendSeparator();
-        m.Append(idMenuProperties,          _("Properties"),            _("Show the properties for the watch"));
-        m.Append(idMenuDelete,              _("Delete"),                _("Delete the currently selected watch"));
-        m.Append(idMenuDeleteAll,           _("Delete All"),            _("Delete all watches"));
+        m.Append(idMenuProperties,          "Properties",            "Show the properties for the watch");
+        m.Append(idMenuDelete,              "Delete",                "Delete the currently selected watch");
+        m.Append(idMenuDeleteAll,           "Delete All",            "Delete all watches");
         m.AppendSeparator();
-        m.Append(idMenuCopyToClipboardData, _("Copy data to clipboard"),_("Copy data to the clipboard"));
-        m.Append(idMenuCopyToClipboardRow,  _("Copy row to clipboard"), _("Copy row data to the clipboard"));
-        m.Append(idMenuCopyToClipboardTree, _("Copy tree to clipboard"),_("Copy tree data to the clipboard"));
+        m.Append(idMenuCopyToClipboardData, "Copy data to clipboard","Copy data to the clipboard");
+        m.Append(idMenuCopyToClipboardRow,  "Copy row to clipboard", "Copy row data to the clipboard");
+        m.Append(idMenuCopyToClipboardTree, "Copy tree to clipboard","Copy tree data to the clipboard");
 
         if (prop->GetLabel()==wxEmptyString)
             return;
@@ -988,25 +988,25 @@ void WatchesDlg::OnMenuUpdate(cb_unused wxCommandEvent &event)
         plugin->UpdateWatch(watch);
 }
 
-void WatchesDlg::WatchToString(wxString &sResult, const cbWatch &watch, const wxString &sIndent)
+void WatchesDlg::WatchToString(wxString &result, const cbWatch &watch, const wxString &indent)
 {
-    wxString sSymbol, sValue;
-    watch.GetSymbol(sSymbol);
-    watch.GetValue(sValue);
+    wxString symbol, value;
+    watch.GetSymbol(symbol);
+    watch.GetValue(value);
 
-    sResult += wxString::Format(wxT("%s[symbol =%s]\n"), sIndent , sSymbol);
-    sResult += wxString::Format(wxT("%s[value =%s]\n"), sIndent , sValue);
+    result += wxString::Format(_("%s[symbol =%s]\n"), indent , symbol);
+    result += wxString::Format(_("%s[value =%s]\n"), indent , value);
 
     if (watch.GetChildCount()> 0)
     {
-        sResult += wxString::Format(wxT("%s[children = %d]\n"), sIndent, watch.GetChildCount());
+        result += wxString::Format(_("%s[children = %d]\n"), indent, watch.GetChildCount());
 
         for(int child_index = 0; child_index < watch.GetChildCount(); ++child_index)
         {
             cb::shared_ptr<const cbWatch> child = watch.GetChild(child_index);
 
-            sResult += wxString::Format(wxT("%s[child %d]\n"), sIndent, child_index);
-            WatchToString(sResult, *child, sIndent + wxT("    "));
+            result += wxString::Format(_("%s[child %d]\n"), indent, child_index);
+            WatchToString(result, *child, indent + "    ");
         }
     }
 }
@@ -1026,9 +1026,9 @@ void WatchesDlg::MenuCopyToClipboardData(cb_unused wxCommandEvent &event)
             if (!watch)
                 return;
 
-            wxString sResult;
-            watch->GetValue(sResult);
-            wxTheClipboard->SetData( new wxTextDataObject(sResult) );
+            wxString result;
+            watch->GetValue(result);
+            wxTheClipboard->SetData( new wxTextDataObject(result) );
         }
         wxTheClipboard->Close();
    }
@@ -1049,13 +1049,13 @@ void WatchesDlg::MenuCopyToClipboardRow(cb_unused wxCommandEvent &event)
             if (!watch)
                 return;
 
-            wxString sResult, sSymbol, sValue;
-            watch->GetSymbol(sSymbol);
-            watch->GetValue(sValue);
+            wxString result, symbol, value;
+            watch->GetSymbol(symbol);
+            watch->GetValue(value);
 
-            sResult = wxString::Format(wxT("[symbol =%s] , [value =%s]\n"), sSymbol , sValue );
+            result = wxString::Format(_("[symbol =%s] , [value =%s]\n"), symbol , value );
 
-            wxTheClipboard->SetData( new wxTextDataObject(sResult) );
+            wxTheClipboard->SetData( new wxTextDataObject(result) );
         }
         wxTheClipboard->Close();
    }
@@ -1076,28 +1076,28 @@ void WatchesDlg::MenuCopyToClipboardTree(cb_unused wxCommandEvent &event)
             if (!watch)
                 return;
 
-            wxString sWatchRootSymbol, sResult, sResultWatch;
+            wxString watchRootSymbol, result, resultWatch;
 
             // Get parent until one less than root.
             cb::shared_ptr<cbWatch> watchRoot = cbGetRootWatch(watch);
-            watchRoot->GetSymbol(sWatchRootSymbol);
+            watchRoot->GetSymbol(watchRootSymbol);
 
             while ((watchRoot != watch) && (watchRoot != watch->GetParent()))
             {
                 watch = watch->GetParent();
             }
             // If not Local variable go up again to the variable root
-            if (!sWatchRootSymbol.IsSameAs(wxT("Locals")) && (watchRoot != watch))
+            if (!watchRootSymbol.IsSameAs("Locals") && (watchRoot != watch))
             {
                 watch = watch->GetParent();
             }
 
-            sResult += wxString(wxT('-'), 20) + wxT('\n');
-            WatchToString(sResultWatch, *watch);
-            sResult += sResultWatch;
-            sResult += wxString(wxT('-'), 20) + wxT('\n');
+            result += wxString('-', 20) + '\n';
+            WatchToString(resultWatch, *watch);
+            result += resultWatch;
+            result += wxString('-', 20) + '\n';
 
-            wxTheClipboard->SetData( new wxTextDataObject(sResult) );
+            wxTheClipboard->SetData( new wxTextDataObject(result) );
         }
         wxTheClipboard->Close();
    }
