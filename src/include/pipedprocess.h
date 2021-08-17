@@ -23,7 +23,7 @@ class DLLIMPORT PipedProcess : public wxProcess
                      bool pipe = true, const wxString& dir = wxEmptyString, int index = -1);
         // class destructor
         ~PipedProcess() override;
-        virtual int Launch(const wxString& cmd, unsigned int pollingInterval = 100);
+        virtual int Launch(const wxString& cmd, int flags);
         virtual void SendString(const wxString& text);
         virtual bool HasInput();
         virtual int GetPid(){ return m_Pid; }
