@@ -319,16 +319,16 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         // TODO : make 1 help method out of this, with some argument indicating
         // to fill the choice list, or break it in 2 methods with the list filling in between them
         // or maybe time will bring even brighter ideas
-        wxString CompilerId = _("Unknown");
+        wxString compilerId = "Unknown";
         if (m_pTarget)
         {
-            CompilerId = m_pTarget->GetCompilerID();
+            compilerId = m_pTarget->GetCompilerID();
         }
         else
         {
             if (m_pProject)
             {
-                CompilerId = m_pProject->GetCompilerID();
+                compilerId = m_pProject->GetCompilerID();
             }
             else
             {
@@ -336,7 +336,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
                 Compiler* compilerDefault = CompilerFactory::GetCompiler(compilerDefId);
                 if (compilerDefault)
                 {
-                    CompilerId =  compilerDefault->GetName();
+                    compilerId =  compilerDefault->GetName();
                 }
             }
         }
@@ -346,7 +346,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
                     "Please choose the compiler you want to use instead and click \"OK\".\n"
                     "If you click \"Cancel\", the project/target will remain configured for\n"
                     "that compiler and consequently can not be configured and will not be built."),
-                    CompilerId.wx_str());
+                    compilerId);
 
         Compiler* comp = 0;
         if ((m_pTarget && m_pTarget->SupportsCurrentPlatform()) || (!m_pTarget && m_pProject) || (!detected))
@@ -356,13 +356,13 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         {   // a new compiler was chosen, proceed as if the user manually selected another compiler
             // that means set the compiler selection list accordingly
             // and go directly to (On)CompilerChanged
-            int NewCompilerIdx = CompilerFactory::GetCompilerIndex(comp);
-            if (CompilerFactory::GetCompiler(NewCompilerIdx)->AutoDetectInstallationDir() != adrDetected)
+            int newCompilerIdx = CompilerFactory::GetCompilerIndex(comp);
+            if (CompilerFactory::GetCompiler(newCompilerIdx)->AutoDetectInstallationDir() != adrDetected)
             {
                 // User picked a disabled compiler, so show all compilers!!!!
                 XRCCTRL(*this,"cbShowDetectedOnly", wxCheckBox)->SetValue(false);
             }
-            DoFillCompilerSets(NewCompilerIdx);
+            DoFillCompilerSets(newCompilerIdx);
             CompilerChanged();
         }
         else
@@ -440,7 +440,7 @@ int CompilerOptionsDlg::GetSelectedCompilerListCompilerID()
 
 void CompilerOptionsDlg::DoFillCompilerList()
 {
-    m_vCompilerList.clear();
+    m_CompilerList.clear();
     for (size_t i = 0; i < CompilerFactory::GetCompilersCount(); ++i)
     {
         Compiler* compiler = CompilerFactory::GetCompiler(i);
@@ -449,9 +449,9 @@ void CompilerOptionsDlg::DoFillCompilerList()
             continue;
         }
 
-        CompilerItem cItem;
-        cItem.wxsCompilerName = compiler->GetName();
-        cItem.bDetected = false;            // Default to false
+        CompilerItem item;
+        item.compilerName = compiler->GetName();
+        item.detected = false;            // Default to false
 
         wxString path = compiler->GetMasterPath();
         wxString path_no_macros = compiler->GetMasterPath();
@@ -464,18 +464,17 @@ void CompilerOptionsDlg::DoFillCompilerList()
             bool detected = compiler->AutoDetectInstallationDir() == adrDetected;
             wxString pathDetected( compiler->GetMasterPath() );
 
-
             // In case auto-detection was successful:
             if (detected)
             {
                 // No path setup before OR path detected as it was setup before
                 if (path.IsEmpty() || path == pathDetected || path_no_macros == pathDetected)
                 {
-                    cItem.bDetected = true;
+                    item.detected = true;
                 }
                 else
                 {
-                    cItem.bDetected = false;
+                    item.detected = false;
                 }
             }
             // In case auto-detection failed but a path was setup before:
@@ -484,7 +483,7 @@ void CompilerOptionsDlg::DoFillCompilerList()
                 // Check, if the master path is valid:
                 if ( wxFileName::DirExists(path_no_macros) && !(path == pathDetected || path_no_macros == pathDetected) )
                 {
-                    cItem.bDetected = false;
+                    item.detected = false;
                 }
             }
         }
@@ -493,11 +492,11 @@ void CompilerOptionsDlg::DoFillCompilerList()
             // Check, if the master path is valid:
             if ( !path.IsEmpty() && wxFileName::DirExists(path_no_macros) )
             {
-                cItem.bDetected = true;
+                item.detected = true;
             }
         }
 
-        m_vCompilerList.push_back(cItem);
+        m_CompilerList.push_back(item);
     }
 }
 
@@ -512,16 +511,16 @@ void CompilerOptionsDlg::OnShowCompilerDetectedOnlyClick(cb_unused wxCommandEven
 
 void CompilerOptionsDlg::DoFillCompilerSets(int compilerIdx)
 {
-    bool bShowDetectedCompilersOnly = XRCCTRL(*this,"cbShowDetectedOnly", wxCheckBox)->GetValue();
+    bool showDetectedCompilersOnly = XRCCTRL(*this,"cbShowDetectedOnly", wxCheckBox)->GetValue();
     wxChoice* cmb = XRCCTRL(*this, "cmbCompiler", wxChoice);
 
     DoFillCompilerList();
 
     cmb->Clear();
-    for (unsigned int i = 0; i < m_vCompilerList.size(); i++)
+    for (unsigned int i = 0; i < m_CompilerList.size(); i++)
     {
-        if (!bShowDetectedCompilersOnly || (bShowDetectedCompilersOnly && m_vCompilerList[i].bDetected))
-            cmb->Append(m_vCompilerList[i].wxsCompilerName);
+        if (!showDetectedCompilersOnly || (showDetectedCompilersOnly && m_CompilerList[i].detected))
+            cmb->Append(m_CompilerList[i].compilerName);
     }
 
 //    int compilerIdx = CompilerFactory::GetCompilerIndex(CompilerFactory::GetDefaultCompilerID());
@@ -2288,10 +2287,10 @@ void CompilerOptionsDlg::OnAddCompilerClick(cb_unused wxCommandEvent& event)
                 break;
         } // end switch
     }
-    wxString wxsCompilerNameOriginal = CompilerFactory::GetCompiler(m_CurrentCompilerIdx)->GetName();
+    wxString compilerNameOriginal = CompilerFactory::GetCompiler(m_CurrentCompilerIdx)->GetName();
     wxString value = cbGetTextFromUser(_("Please enter the new compiler's name:"),
                                        _("Add new compiler"),
-                                       _("Copy of ") + wxsCompilerNameOriginal,
+                                       _("Copy of ") + compilerNameOriginal,
                                        this);
     if (!value.IsEmpty())
     {
@@ -2317,19 +2316,19 @@ void CompilerOptionsDlg::OnAddCompilerClick(cb_unused wxCommandEvent& event)
         else
         {
             // Add the new compiler to the compiler list.
-            CompilerItem cItem;
-            cItem.wxsCompilerName = value;
-            cItem.bDetected = false; // default
-            for (unsigned int i = 0; i < m_vCompilerList.size(); i++)
+            CompilerItem item;
+            item.compilerName = value;
+            item.detected = false; // default
+            for (unsigned int i = 0; i < m_CompilerList.size(); i++)
             {
                 // Find default compiler in the list.
-                if (m_vCompilerList[i].wxsCompilerName.IsSameAs(wxsCompilerNameOriginal))
+                if (m_CompilerList[i].compilerName.IsSameAs(compilerNameOriginal))
                 {
-                    cItem.bDetected = m_vCompilerList[i].bDetected;
+                    item.detected = m_CompilerList[i].detected;
                     break;
                 }
             }
-            m_vCompilerList.push_back(cItem);
+            m_CompilerList.push_back(item);
 
             // Add first and then get the compiler ID
             wxChoice* cmb = XRCCTRL(*this, "cmbCompiler", wxChoice);
@@ -2342,10 +2341,10 @@ void CompilerOptionsDlg::OnAddCompilerClick(cb_unused wxCommandEvent& event)
             DoFillCompilerDependentSettings();
             DoFillCompilerSets(m_CurrentCompilerIdx);
 
-            if(cItem.bDetected && !newC->GetMasterPath().IsEmpty())
-                cbMessageBox(_("The new compiler has been added! Please update the \"Toolchain executables\" page if required...."));
+            if(item.detected && !newC->GetMasterPath().IsEmpty())
+                cbMessageBox("The new compiler has been added! Please update the \"Toolchain executables\" page if required....");
             else
-                cbMessageBox(_("The new compiler has been added! It has not been detected, so please update the \"Toolchain executables\" page..."));
+                cbMessageBox("The new compiler has been added! It has not been detected, so please update the \"Toolchain executables\" page...");
         }
     }
     if (m_bDirty)
@@ -2365,41 +2364,41 @@ void CompilerOptionsDlg::OnEditCompilerClick(cb_unused wxCommandEvent& event)
         Compiler* compiler = CompilerFactory::GetCompiler(m_CurrentCompilerIdx);
         if (!compiler)
         {
-            cbMessageBox(_("The compiler could not be renamed.\n(Could not find the compiler to rename is for some unknown reason)"),
-                        _("Error"), wxICON_ERROR);
+            cbMessageBox("The compiler could not be renamed.\n(Could not find the compiler to rename is for some unknown reason)",
+                        "Error", wxICON_ERROR);
             return;
         }
         else
         {
             // Check if compiler name all ready exists and if it does show a pop up message and return
-            for (unsigned int i = 0; i < m_vCompilerList.size(); i++)
+            for (unsigned int i = 0; i < m_CompilerList.size(); i++)
             {
                 // Find default compiler in the list.
-                if (m_vCompilerList[i].wxsCompilerName.IsSameAs(value))
+                if (m_CompilerList[i].compilerName.IsSameAs(value))
                 {
-                    cbMessageBox(_("The compiler could not be renamed as there is all ready a compiler with the same name found!"),
-                                _("Error"), wxICON_ERROR);
+                    cbMessageBox("The compiler could not be renamed as there is all ready a compiler with the same name found!",
+                                "Error", wxICON_ERROR);
                     return;
                 }
             }
 
-            wxString wxsCompilerNameOld = compiler->GetName();
+            wxString compilerNameOld = compiler->GetName();
 
-            for (unsigned int i = 0; i < m_vCompilerList.size(); i++)
+            for (unsigned int i = 0; i < m_CompilerList.size(); i++)
             {
                 // Find default compiler in the list.
-                if (m_vCompilerList[i].wxsCompilerName.IsSameAs(wxsCompilerNameOld))
+                if (m_CompilerList[i].compilerName.IsSameAs(compilerNameOld))
                 {
-                    m_vCompilerList[i].wxsCompilerName = value;
+                    m_CompilerList[i].compilerName = value;
                     break;
                 }
             }
 
             CompilerFactory::RenameCompiler(compiler, value);
 
-            int icmbIdx = cmb->FindString(wxsCompilerNameOld);
-            cmb->SetString(icmbIdx, value);
-            cmb->SetSelection(icmbIdx);
+            int cmbIdx = cmb->FindString(compilerNameOld);
+            cmb->SetString(cmbIdx, value);
+            cmb->SetSelection(cmbIdx);
 
             // Just in case update the index for renamed compiler
             m_CurrentCompilerIdx = GetSelectedCompilerListCompilerID();
@@ -2421,33 +2420,33 @@ void CompilerOptionsDlg::OnRemoveCompilerClick(cb_unused wxCommandEvent& event)
         wxChoice* cmb = XRCCTRL(*this, "cmbCompiler", wxChoice);
         int compilerIdx = GetSelectedCompilerListCompilerID();
         Compiler* compiler = CompilerFactory::GetCompiler(compilerIdx);
-        wxString sCompilerName = compiler->GetName();
+        wxString compilerName = compiler->GetName();
 
-        for (unsigned int i = 0; i < m_vCompilerList.size(); i++)
+        for (unsigned int i = 0; i < m_CompilerList.size(); i++)
         {
             // Find default compiler in the list.
-            if (m_vCompilerList[i].wxsCompilerName.IsSameAs(sCompilerName))
+            if (m_CompilerList[i].compilerName.IsSameAs(compilerName))
             {
-                m_vCompilerList.erase(m_vCompilerList.begin() + i);
+                m_CompilerList.erase(m_CompilerList.begin() + i);
                 break;
             }
         }
 
         CompilerFactory::RemoveCompiler(compiler);
-        int icmbIdx = cmb->FindString(sCompilerName);
-        cmb->Delete(icmbIdx);
+        int cmbIdx = cmb->FindString(compilerName);
+        cmb->Delete(cmbIdx);
 
         // Try to find default compiler and if found select it.
-        int icmbDefaultIdx = cmb->FindString(CompilerFactory::GetDefaultCompiler()->GetName());
-        if (icmbDefaultIdx == -1)
+        int cmbDefaultIdx = cmb->FindString(CompilerFactory::GetDefaultCompiler()->GetName());
+        if (cmbDefaultIdx == -1)
         {
-            while (icmbIdx >= (int)(cmb->GetCount()))
-                --icmbIdx;
-            cmb->SetSelection(icmbIdx);
+            while (cmbIdx >= (int)(cmb->GetCount()))
+                --cmbIdx;
+            cmb->SetSelection(cmbIdx);
         }
         else
         {
-            cmb->SetSelection(icmbDefaultIdx);
+            cmb->SetSelection(cmbDefaultIdx);
         }
         m_CurrentCompilerIdx = GetSelectedCompilerListCompilerID();
         DoFillCompilerDependentSettings();
