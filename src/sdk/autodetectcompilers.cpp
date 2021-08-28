@@ -52,6 +52,7 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
     {
         list->Connect(wxEVT_MOTION, wxMouseEventHandler(AutoDetectCompilers::OnMouseMotion));
 
+        Manager::Get()->GetLogManager()->Log("AutoDetectCompilers info follows:");
         for (size_t i = 0; i < CompilerFactory::GetCompilersCount(); ++i)
         {
             Compiler* compiler = CompilerFactory::GetCompiler(i);
@@ -69,103 +70,89 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
             // Only check if an actual compiler, ignore "NO compiler"
             if (!currentCompilerID.IsSameAs("null"))
             {
-                wxString path = compiler->GetMasterPath();
-                wxString path_no_macros = compiler->GetMasterPath();
-                Manager::Get()->GetMacrosManager()->ReplaceMacros(path_no_macros);
+                wxString masterPath = compiler->GetMasterPath();
+                wxString masterPathNoMacros = masterPath;
+                Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPathNoMacros);
 
-                if (    (path.IsEmpty() || !wxFileName::DirExists(path)) &&
-                        Manager::Get()->GetConfigManager(wxT("compiler"))->Exists(wxT("/sets/") + compiler->GetID() + wxT("/name")) &&
-                        defaultCompilerID.IsSameAs(currentCompilerID)
-                    )
+                bool detectedDirectory = wxFileName::DirExists(masterPathNoMacros);
+                bool compilerIsDefault = defaultCompilerID.IsSameAs(currentCompilerID);
+                // bool compilerSetConfigured = Manager::Get()->GetConfigManager("compiler")->Exists("/sets/" + compiler->GetID() + "/name");
+
+                Manager::Get()->GetLogManager()->Log(wxString::Format("CompilerName : '%s'   , masterPathNoMacros : '%s'", compilerListItem.compilerName, masterPathNoMacros));
+                Manager::Get()->GetLogManager()->Log(wxString::Format("Manager::Get()->GetConfigManager(\"compiler\")->Exists('%s') : %s", "/sets/" + compiler->GetID() + "/name" ,
+                Manager::Get()->GetConfigManager("compiler")->Exists("/sets/" + compiler->GetID() + "/name")?"True":"False"));
+
+
+                if (detectedDirectory)
                 {
-                    Manager::Get()->GetLogManager()->LogError(wxString::Format(_("CompilerName : '%s'   , path : '%s' , path_no_macros : '%s'"), compilerListItem.compilerName, path, path_no_macros ));
-                    Manager::Get()->GetLogManager()->LogError(wxString::Format(_("Manager::Get()->GetConfigManager(wxT(\"compiler\"))->Exists('%s') : %s"), wxT("/sets/") + compiler->GetID() + wxT("/name") ,
-                                              Manager::Get()->GetConfigManager(wxT("compiler"))->Exists(wxT("/sets/") + compiler->GetID() + wxT("/name"))?"True":"False"));
-
-                    // Here, some user-interaction is required not to show this
-                    // dialog again on each new start-up of C::B.
-                    compilerListItem.status = "Invalid";
-                    compilerListItem.detected = false;
-                    // So we better clearly HIGHLIGHT this entry:
-                    compilerListItem.colorHighlight = CompilerHighlightColor::colorHighlightRed;
+                    compilerListItem.status = "Detected";
+                    compilerListItem.detected = true;
+                    compilerListItem.compilerPath = masterPathNoMacros;
+                    compilerListItem.colorHighlight = CompilerHighlightColor::colorHighlightGreen;
                 }
-                else // The compiler is *probably* invalid, but at least a master-path is set
+                else
                 {
-                    compilerListItem.status = "Not found";
-                    compilerListItem.detected = false;
-                    compilerListItem.colorHighlight = CompilerHighlightColor::colorHighlightGrey;
-                }
+                    // Path is invalid. Try auto-detection
+                    bool detectedAutoDetect = compiler->AutoDetectInstallationDir() == adrDetected;
+                    wxString pathDetected = compiler->GetMasterPath();
+                    wxString pathDetectedNoMacros = pathDetected;
+                    Manager::Get()->GetMacrosManager()->ReplaceMacros(pathDetectedNoMacros);
 
-                // Inspect deeper and probably try to auto-detect invalid compilers:
-                if (compiler->GetParentID().IsEmpty()) // built-in compiler
-                {
-                    // Try auto-detection (which is for built-in compilers only)
-                    bool detected = compiler->AutoDetectInstallationDir() == adrDetected;
-                    wxString pathDetected( compiler->GetMasterPath() );
+                    Manager::Get()->GetLogManager()->Log(wxString::Format("AutoDetectInstallationDir: pathDetected : '%s' , pathDetectedNoMacros : '%s'", pathDetected, pathDetectedNoMacros ));
 
                     //Revert the detected path back to the original path!!!!
-                    if (!path.IsEmpty())
-                        compiler->SetMasterPath(path);
+                    if (!masterPath.IsEmpty())
+                        compiler->SetMasterPath(masterPath);
 
                     // In case auto-detection was successful:
-                    if (detected)
+                    if (detectedAutoDetect)
                     {
-                        // Path is invalid
-                        if (!path.IsEmpty() && !wxFileName::DirExists(path))
+                        if (wxFileName::DirExists(pathDetectedNoMacros))
                         {
-                            compilerListItem.status = "Old path invalid, but new path detected";
+                            if (masterPathNoMacros.IsEmpty())
+                            {
+                                compilerListItem.status = "New compiler detected.";
+                            }
+                            else
+                            {
+                                compilerListItem.status = "Compiler path changed.";
+                            }
                             compilerListItem.detected = true;
-                            compilerListItem.compilerPath = pathDetected;
+                            compilerListItem.compilerPath = pathDetectedNoMacros;
                             compilerListItem.colorHighlight = CompilerHighlightColor::colorHighlightYellow;
                         }
                         else
                         {
-                            if (path.IsEmpty() || path == pathDetected || path_no_macros == pathDetected)
-                            {
+                            if (compiler->GetParentID().IsEmpty()) // built-in compiler
                                 compilerListItem.status = "Detected";
-                                compilerListItem.detected = true;
-                            }
                             else
-                            {
-                                compilerListItem.status = "User-defined detected";
-                                compilerListItem.detected = false;
-                            }
+                                compilerListItem.status = "User defined detected";
+
+                            compilerListItem.detected = true;
                             compilerListItem.compilerPath = pathDetected;
                             compilerListItem.colorHighlight = CompilerHighlightColor::colorHighlightGreen;
                         }
                     }
                     else
                     {
-                        // In case auto-detection failed but a path was setup before:
-                        if (!path.IsEmpty() )
-                        {
-                            // Check, if the master path is valid:
-                            if ( wxFileName::DirExists(path_no_macros) && !(path == pathDetected || path_no_macros == pathDetected) )
-                            {
-                                compilerListItem.status = "User-defined not detected";
-                                compilerListItem.detected = false;
-                                compilerListItem.colorHighlight = CompilerHighlightColor::colorHighlightRed;
-                            }
-
-                            // Assume the user did the setup on purpose, so reset the old settings anyways:
-                            compiler->SetMasterPath(path);
-                        }
-                    }
-                }
-                else // no built-in, but user-defined (i.e. copied) compiler
-                {
-                    // Check, if the master path is valid:
-                    if ( !path.IsEmpty() && wxFileName::DirExists(path_no_macros) )
-                    {
-                        compilerListItem.status = "User-defined";
-                        compilerListItem.detected = true;
-                        compilerListItem.colorHighlight = CompilerHighlightColor::colorHighlightGreen;
-                    }
-                    else
-                    {
-                        compilerListItem.status = "User-defined masterpath issue";
                         compilerListItem.detected = false;
-                        compilerListItem.colorHighlight = CompilerHighlightColor::colorHighlightRed;
+                        if (compilerIsDefault)
+                        {
+                            if (compiler->GetParentID().IsEmpty()) // built-in compiler
+                                compilerListItem.status = "Default compiler not detected";
+                            else
+                                compilerListItem.status = "Default compiler user defined not detected";
+                            compilerListItem.colorHighlight = CompilerHighlightColor::colorHighlightRed;
+
+                        }
+                        else
+                        {
+                            if (compiler->GetParentID().IsEmpty()) // built-in compiler
+                                compilerListItem.status = "Not detected";
+                            else
+                                compilerListItem.status = "User defined not detected";
+                            compilerListItem.colorHighlight = CompilerHighlightColor::colorHighlightGrey;
+                        }
                     }
                 }
             }
@@ -182,12 +169,9 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                 wxStaticText* controlLblDefCompiler = XRCCTRL(*this, "lblDefCompiler", wxStaticText);
                 if (compilerListItem.detected)
                 {
-                    wxColour  colorTextDefault =  XRCCTRL(*this, "ID_STATICTEXT1", wxStaticText)->GetForegroundColour();
-                    wxColour  colorBackgroundDefault =  XRCCTRL(*this, "ID_STATICTEXT1", wxStaticText)->GetBackgroundColour();
-
                     controlLblDefCompiler->SetLabel(compilerListItem.compilerName);
-                    controlLblDefCompiler->SetForegroundColour(colorTextDefault);
-                    controlLblDefCompiler->SetBackgroundColour(colorBackgroundDefault);
+                    controlLblDefCompiler->SetForegroundColour(XRCCTRL(*this, "ID_STATICTEXT1", wxStaticText)->GetForegroundColour());
+                    controlLblDefCompiler->SetBackgroundColour(XRCCTRL(*this, "ID_STATICTEXT1", wxStaticText)->GetBackgroundColour());
                 }
                 else
                 {
@@ -197,6 +181,12 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                 }
             }
 
+            Manager::Get()->GetLogManager()->Log(wxString::Format("Compiler '%s' , status: '%s' , compilerPath: '%s' , detected: %s",
+                                                                  compilerListItem.compilerName,
+                                                                  compilerListItem.status,
+                                                                  compilerListItem.compilerPath,
+                                                                  compilerListItem.detected?"True":"False"
+                                                                 ));
             m_CompilerList.push_back(compilerListItem);
         }
         UpdateCompilerDisplayList();
@@ -263,10 +253,10 @@ void AutoDetectCompilers::OnDefaultCompilerClick(cb_unused wxCommandEvent& event
 
         CompilerFactory::SetDefaultCompiler(idxComiler);
 
-        wxColour  colorDefault =  XRCCTRL(*this, "ID_STATICTEXT1", wxStaticText)->GetBackgroundColour();
         wxStaticText* controlLblDefCompiler = XRCCTRL(*this, "lblDefCompiler", wxStaticText);
         controlLblDefCompiler->SetLabel(CompilerFactory::GetDefaultCompiler()->GetName());
-        controlLblDefCompiler->SetBackgroundColour(colorDefault);
+        controlLblDefCompiler->SetForegroundColour(XRCCTRL(*this, "ID_STATICTEXT1", wxStaticText)->GetForegroundColour());
+        controlLblDefCompiler->SetBackgroundColour(XRCCTRL(*this, "ID_STATICTEXT1", wxStaticText)->GetBackgroundColour());
     }
 }
 
