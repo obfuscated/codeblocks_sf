@@ -88,6 +88,150 @@ private:
     MainFrame* m_frame;
 };
 
+const int idHighlightButton = wxNewId();
+
+struct MainStatusBar : cbStatusBar
+{
+    static const int numFields = 9;
+
+    MainStatusBar(wxWindow* parent,  wxWindowID id, long style, const wxString& name) : cbStatusBar(parent, id, style, name)
+    {
+        Bind(wxEVT_SIZE, &MainStatusBar::OnSize, this);
+    }
+
+    void CreateAndFill()
+    {
+        int h;
+        size_t num = 0;
+
+        wxCoord widths[16]; // 16 max
+        widths[num++] = -1; // main field
+
+        wxClientDC dc(this);
+        dc.GetTextExtent(_(" Highlight Button "),                &widths[num++], &h);
+        dc.GetTextExtent(_(" Windows (CR+LF) "),                 &widths[num++], &h);
+        dc.GetTextExtent(_(" WINDOWS-1252 "),                    &widths[num++], &h);
+        dc.GetTextExtent(_(" Line 12345, Col 123, Pos 123456 "), &widths[num++], &h);
+        dc.GetTextExtent(_(" Overwrite "),                       &widths[num++], &h);
+        dc.GetTextExtent(_(" Modified "),                        &widths[num++], &h);
+        dc.GetTextExtent(_(" Read/Write "),                      &widths[num++], &h);
+        dc.GetTextExtent(_(" name_of_profile "),                 &widths[num++], &h);
+
+        SetStatusWidths(num, widths);
+
+        // Highlight button
+        wxRect rect;
+        if (GetFieldRect(1, rect))
+        {
+            m_pHighlightButton = new wxButton(this, idHighlightButton, wxT("bla"), wxDefaultPosition, wxDefaultSize,
+                                              wxBORDER_NONE|wxBU_LEFT|wxBU_EXACTFIT);
+            m_pHighlightButton->Disable();
+            // Adjust status bar height to fit the button.
+            // This affects wx3.x build more than wx2.8 builds. At least on wxGTK.
+            const int height = std::max(GetMinHeight(), m_pHighlightButton->GetClientSize().GetHeight());
+            SetMinHeight(height);
+        }
+
+        SetStatusText(wxString::Format(_("Welcome to %s!"), appglobals::AppName));
+        SetStatusText(wxString(), 1);
+    }
+
+    void UpdateFields()
+    {
+        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+        wxString personality(Manager::Get()->GetPersonalityManager()->GetPersonality());
+        if (ed)
+        {
+            cbStyledTextCtrl * const control = ed->GetControl();
+
+            int panel = 0;
+            int pos = control->GetCurrentPos();
+            wxString msg;
+            SetStatusText(ed->GetFilename(), panel++);
+
+            if (m_pHighlightButton)
+            {
+                EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+                if (colour_set)
+                    ChangeButtonLabel(*m_pHighlightButton, colour_set->GetLanguageName(ed->GetLanguage()));
+                else
+                    ChangeButtonLabel(*m_pHighlightButton, wxString());
+            }
+            // EOL mode
+            panel++;
+            switch (control->GetEOLMode())
+            {
+                case wxSCI_EOL_CRLF: msg = _T("Windows (CR+LF)"); break;
+                case wxSCI_EOL_CR:   msg = _T("Mac (CR)");        break;
+                case wxSCI_EOL_LF:   msg = _T("Unix (LF)");       break;
+                default:                                          break;
+            }
+            SetStatusText(msg, panel++);
+            SetStatusText(ed->GetEncodingName(), panel++);
+            msg.Printf(_("Line %d, Col %d, Pos %d"), control->GetCurrentLine() + 1, control->GetColumn(pos) + 1, pos);
+            SetStatusText(msg, panel++);
+            SetStatusText(control->GetOvertype() ? _("Overwrite") : _("Insert"), panel++);
+            SetStatusText(ed->GetModified() ? _("Modified") : wxString(), panel++);
+            SetStatusText(control->GetReadOnly() ? _("Read only") : _("Read/Write"), panel++);
+            SetStatusText(personality, panel++);
+        }
+        else
+        {
+            int panel = 0;
+            EditorBase *eb = Manager::Get()->GetEditorManager()->GetActiveEditor();
+            if ( eb )
+                SetStatusText(eb->GetFilename(), panel++);
+            else
+                SetStatusText(_("Welcome to ") + appglobals::AppName + _T("!"), panel++);
+
+            if (m_pHighlightButton)
+                ChangeButtonLabel(*m_pHighlightButton, wxString());
+            panel++;
+
+            SetStatusText(wxString(), panel++);
+            SetStatusText(wxString(), panel++);
+            SetStatusText(wxString(), panel++);
+            SetStatusText(wxString(), panel++);
+            SetStatusText(wxString(), panel++);
+            SetStatusText(wxString(), panel++);
+            SetStatusText(personality, panel++);
+        }
+    }
+private:
+
+    /// Change the label of a button only if it has really changed. This is used for status bar button,
+    /// because if we always set the label there is flickering while scrolling in the editor.
+    /// I've observed the flickering on wxGTK and I don't know if it is present on the other ports.
+    static void ChangeButtonLabel(wxButton &button, const wxString &text)
+    {
+        if (text != button.GetLabel())
+            button.SetLabel(text);
+        if (!button.IsEnabled() && !text.empty())
+            button.Enable();
+        if (button.IsEnabled() && text.empty())
+            button.Disable();
+    }
+
+    void OnSize(wxSizeEvent &event)
+    {
+        AdjustFieldsSize();
+        if (m_pHighlightButton)
+        {
+            wxRect rect;
+            if (GetFieldRect(1, rect))
+            {
+                m_pHighlightButton->SetPosition(rect.GetPosition());
+                m_pHighlightButton->SetSize(rect.GetSize());
+            }
+        }
+
+        // for flicker-free display
+        event.Skip();
+    }
+private:
+    wxButton *m_pHighlightButton = nullptr;
+};
+
 const static wxString gDefaultLayout = _T("Code::Blocks default");
 static wxString gDefaultLayoutData; // this will keep the "hardcoded" default layout
 static wxString gDefaultMessagePaneLayoutData; // this will keep default layout
@@ -308,11 +452,9 @@ int idFilePrev              = wxNewId();
 int idShiftTab              = wxNewId();
 int idCtrlAltTab            = wxNewId();
 int idStartHerePageLink     = wxNewId();
-int idHighlightButton       = wxNewId();
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_ERASE_BACKGROUND(MainFrame::OnEraseBackground)
-    EVT_SIZE(MainFrame::OnSize)
     EVT_CLOSE(MainFrame::OnApplicationClose)
 
     EVT_UPDATE_UI(idFileOpen,                          MainFrame::OnFileMenuUpdateUI)
@@ -549,7 +691,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_CBAUIBOOK_LEFT_DCLICK(ID_NBEditorManager, MainFrame::OnNotebookDoubleClick)
     EVT_NOTEBOOK_PAGE_CHANGED(ID_NBEditorManager, MainFrame::OnPageChanged)
 
-    // Highlightbutton
+    // Highlight status bar button
     EVT_BUTTON(idHighlightButton, MainFrame::OnHighlightMenu)
     /// CloseFullScreen event handling
     EVT_BUTTON(idCloseFullScreen, MainFrame::OnToggleFullScreen)
@@ -588,9 +730,7 @@ MainFrame::MainFrame(wxWindow* parent)
        m_LastCtrlAltTabWindow(0),
        m_LastLayoutIsTemp(false),
        m_pScriptConsole(nullptr),
-       m_pBatchBuildDialog(nullptr),
-       // Highlightbutton
-       m_pHighlightButton(nullptr)
+       m_pBatchBuildDialog(nullptr)
 {
     Manager::Get(this); // provide manager with handle to MainFrame (this)
 
@@ -634,11 +774,9 @@ MainFrame::MainFrame(wxWindow* parent)
     SetIcon(wxIcon(app_xpm));
 #endif // __WXMSW__
 
-    // even it is possible that the statusbar is not visible at the moment, create the statusbar so the plugins can create their own fields on the it:
-    DoCreateStatusBar();
-    SetStatusText(_("Welcome to ")+ appglobals::AppName + _T("!"));
-
-    wxStatusBar *sb = GetStatusBar();
+    // Even it is possible that the statusbar is not visible at the moment,
+    // create the statusbar so the plugins can create their own fields on the it
+    wxStatusBar *sb = CreateStatusBar(MainStatusBar::numFields);
     if (sb)
         sb->Show(cfg->ReadBool(_T("/main_frame/statusbar"), true));
 
@@ -2218,122 +2356,14 @@ bool MainFrame::DoCloseCurrentWorkspace()
     return Manager::Get()->GetProjectManager()->CloseWorkspace();
 }
 
-void MainFrame::DoCreateStatusBar()
-{
-    int h;
-    size_t num = 0;
-
-    wxCoord widths[16]; // 16 max
-    widths[num++] = -1; // main field
-
-    wxClientDC dc(this);
-    dc.GetTextExtent(_(" Highlight Button "),                &widths[num++], &h);
-    dc.GetTextExtent(_(" Windows (CR+LF) "),                 &widths[num++], &h);
-    dc.GetTextExtent(_(" WINDOWS-1252 "),                    &widths[num++], &h);
-    dc.GetTextExtent(_(" Line 12345, Col 123, Pos 123456 "), &widths[num++], &h);
-    dc.GetTextExtent(_(" Overwrite "),                       &widths[num++], &h);
-    dc.GetTextExtent(_(" Modified "),                        &widths[num++], &h);
-    dc.GetTextExtent(_(" Read/Write "),                      &widths[num++], &h);
-    dc.GetTextExtent(_(" name_of_profile "),                 &widths[num++], &h);
-
-    wxStatusBar* sb = CreateStatusBar(num);
-    if (!sb)
-        return;
-
-    SetStatusWidths(num, widths);
-
-    // Highlightbutton
-    wxRect rect;
-    if (sb->GetFieldRect(1, rect))
-    {
-        m_pHighlightButton = new wxButton(sb, idHighlightButton, wxT("bla"), wxDefaultPosition, wxDefaultSize,
-                                          wxBORDER_NONE|wxBU_LEFT|wxBU_EXACTFIT);
-        // Adjust status bar height to fit the button.
-        // This affects wx3.x build more than wx2.8 builds. At least on wxGTK.
-        const int height = std::max(sb->GetMinHeight(), m_pHighlightButton->GetClientSize().GetHeight());
-        sb->SetMinHeight(height);
-    }
-}
-
-/// Change the label of a button only if it has really changed. This is used for status bar button,
-/// because if we always set the label there is flickering while scrolling in the editor.
-/// I've observed the flickering on wxGTK and I don't know if it is present on the other ports.
-static void changeButtonLabel(wxButton &button, const wxString &text)
-{
-    if (text != button.GetLabel())
-        button.SetLabel(text);
-}
-
 void MainFrame::DoUpdateStatusBar()
 {
-    if (!GetStatusBar())
+    MainStatusBar *sb = dynamic_cast<MainStatusBar*>(GetStatusBar());
+    if (sb == nullptr)
         return;
     if (Manager::IsAppShuttingDown())
         return;
-
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    wxString personality(Manager::Get()->GetPersonalityManager()->GetPersonality());
-    if (ed)
-    {
-        cbStyledTextCtrl * const control = ed->GetControl();
-
-        int panel = 0;
-        int pos = control->GetCurrentPos();
-        wxString msg;
-        SetStatusText(ed->GetFilename(), panel++);
-
-        // Highlightbutton
-        if (m_pHighlightButton)
-        {
-            EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
-            if (colour_set)
-                changeButtonLabel(*m_pHighlightButton, colour_set->GetLanguageName(ed->GetLanguage()));
-            else
-                changeButtonLabel(*m_pHighlightButton, wxString());
-        }
-        // EOL mode
-        panel++;
-        switch (control->GetEOLMode())
-        {
-            case wxSCI_EOL_CRLF: msg = _T("Windows (CR+LF)"); break;
-            case wxSCI_EOL_CR:   msg = _T("Mac (CR)");        break;
-            case wxSCI_EOL_LF:   msg = _T("Unix (LF)");       break;
-            default:                                          break;
-        }
-        SetStatusText(msg, panel++);
-        SetStatusText(ed->GetEncodingName(), panel++);
-        msg.Printf(_("Line %d, Col %d, Pos %d"), control->GetCurrentLine() + 1, control->GetColumn(pos) + 1, pos);
-        SetStatusText(msg, panel++);
-        SetStatusText(control->GetOvertype() ? _("Overwrite") : _("Insert"), panel++);
-#if wxCHECK_VERSION(3, 0, 0)
-        SetStatusText(ed->GetModified() ? _("Modified") : _T(""), panel++);
-#else
-        SetStatusText(ed->GetModified() ? _("Modified") : wxString(), panel++);
-#endif
-        SetStatusText(control->GetReadOnly() ? _("Read only") : _("Read/Write"), panel++);
-        SetStatusText(personality, panel++);
-    }
-    else
-    {
-        int panel = 0;
-        EditorBase *eb = Manager::Get()->GetEditorManager()->GetActiveEditor();
-        if ( eb )
-            SetStatusText(eb->GetFilename(), panel++);
-        else
-            SetStatusText(_("Welcome to ") + appglobals::AppName + _T("!"), panel++);
-
-        if (m_pHighlightButton)
-            changeButtonLabel(*m_pHighlightButton, wxString());
-        panel++;
-
-        SetStatusText(wxString(), panel++);
-        SetStatusText(wxString(), panel++);
-        SetStatusText(wxString(), panel++);
-        SetStatusText(wxString(), panel++);
-        SetStatusText(wxString(), panel++);
-        SetStatusText(wxString(), panel++);
-        SetStatusText(personality, panel++);
-    }
+    sb->UpdateFields();
 }
 
 void MainFrame::DoUpdateEditorStyle(cbAuiNotebook* target, const wxString& prefix, long defaultStyle)
@@ -3028,23 +3058,6 @@ void MainFrame::OnFileQuit(cb_unused wxCommandEvent& event)
 
 void MainFrame::OnEraseBackground(wxEraseEvent& event)
 {
-    // for flicker-free display
-    event.Skip();
-}
-
-void MainFrame::OnSize(wxSizeEvent& event)
-{
-    cbStatusBar *statusBar = (cbStatusBar*)GetStatusBar();
-    if (m_pHighlightButton && statusBar)
-    {
-        wxRect rect;
-        if (statusBar->GetFieldRect(1, rect))
-        {
-            m_pHighlightButton->SetPosition(rect.GetPosition());
-            m_pHighlightButton->SetSize(rect.GetSize());
-        }
-    }
-
     // for flicker-free display
     event.Skip();
 }
@@ -4074,9 +4087,10 @@ void MainFrame::OnEditHighlightMode(wxCommandEvent& event)
                 lang = colour_set->GetHighlightLanguage(item->GetItemLabelText());
         }
     }
-    // Highlightbutton
-    if (m_pHighlightButton)
-        changeButtonLabel(*m_pHighlightButton, colour_set->GetLanguageName(lang));
+
+    // Just to update the text on the highlight button
+    DoUpdateStatusBar();
+
     ed->SetLanguage(lang, true);
     Manager::Get()->GetCCManager()->NotifyPluginStatus();
 }
@@ -5515,9 +5529,9 @@ void MainFrame::StartupDone()
 
 wxStatusBar* MainFrame::OnCreateStatusBar(int number, long style, wxWindowID id, const wxString& name)
 {
-    cbStatusBar* sb = new cbStatusBar(this, id, style, name);
-    sb->SetFieldsCount(number);
-
+    MainStatusBar* sb = new MainStatusBar(this, id, style, name);
+    cbAssert(number == MainStatusBar::numFields);
+    sb->CreateAndFill();
     return sb;
 }
 

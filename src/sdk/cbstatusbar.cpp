@@ -21,11 +21,6 @@
 
 #include "cbstatusbar.h"
 
-BEGIN_EVENT_TABLE(cbStatusBar, wxStatusBar)
-    EVT_SIZE(cbStatusBar::OnSize)
-END_EVENT_TABLE()
-
-
 cbStatusBar::cbStatusBar(wxWindow* parent, cb_unused  wxWindowID id, long style, const wxString& name) // TODO: Check if window id should be removed?
     : wxStatusBar(parent, wxID_ANY, style, name)
 {
@@ -100,12 +95,6 @@ void cbStatusBar::RemoveField(cbPlugin* plugin)
         }
     }
     UpdateWidths();
-}
-
-void cbStatusBar::OnSize(wxSizeEvent& event)
-{
-    AdjustFieldsSize();
-    event.Skip();
 }
 
 void cbStatusBar::UpdateWidths()
