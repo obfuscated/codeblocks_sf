@@ -111,7 +111,7 @@ void SpellCheckerPlugin::OnAttach()
         Manager::Get()->RegisterEventSink(cbEVT_APP_STARTUP_DONE, new cbEventFunctor<SpellCheckerPlugin, CodeBlocksEvent>(this, &SpellCheckerPlugin::AppStartupDone));
 }
 
-void SpellCheckerPlugin::AppStartupDone(CodeBlocksEvent& event)
+void SpellCheckerPlugin::AppStartupDone(cb_unused CodeBlocksEvent& event)
 {
     Init();
 }
