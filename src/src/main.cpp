@@ -126,6 +126,7 @@ struct MainStatusBar : cbStatusBar
             m_pHighlightButton = new wxButton(this, idHighlightButton, wxT("bla"), wxDefaultPosition, wxDefaultSize,
                                               wxBORDER_NONE|wxBU_LEFT|wxBU_EXACTFIT);
             m_pHighlightButton->Disable();
+            m_pHighlightButton->Hide();
             // Adjust status bar height to fit the button.
             // This affects wx3.x build more than wx2.8 builds. At least on wxGTK.
             const int height = std::max(GetMinHeight(), m_pHighlightButton->GetClientSize().GetHeight());
@@ -207,9 +208,15 @@ private:
         if (text != button.GetLabel())
             button.SetLabel(text);
         if (!button.IsEnabled() && !text.empty())
+        {
             button.Enable();
+            button.Show();
+        }
         if (button.IsEnabled() && text.empty())
+        {
+            button.Hide();
             button.Disable();
+        }
     }
 
     void OnSize(wxSizeEvent &event)
