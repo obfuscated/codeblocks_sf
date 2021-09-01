@@ -177,12 +177,12 @@ wxBitmap            bmp;
 //------------------------------------------------------------------------------
 
 void wxsBitmapComboBox::OnEnumWidgetProperties(cb_unused long Flags) {
-static wxString         sImageNames[128];
-static const wxChar    *pImageNames[128];
+    static wxString         sImageNames[128];
+    static const wxChar    *pImageNames[128];
 
-int                     i,n;
-wxString                ss, tt;
-wxArrayString           aa;
+    int                     i,n;
+    wxString                ss, tt;
+    wxArrayString           aa;
 
 // find available image lists and store them in our local static arrays
 
