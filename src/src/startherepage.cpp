@@ -139,7 +139,7 @@ void ReplaceRecentProjectFiles(wxString &buf, const wxFileHistory &projects, con
 
 StartHerePage::StartHerePage(wxEvtHandler* owner, const RecentItemsList &projects,
                              const RecentItemsList &files, wxWindow* parent)
-    : EditorBase(parent, g_StartHereTitle),
+    : EditorBase(parent, g_StartHereTitle, true),
     m_pOwner(owner),
     m_projects(projects),
     m_files(files)

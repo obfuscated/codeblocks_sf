@@ -31,7 +31,15 @@ class DLLIMPORT EditorBase : public wxPanel
 {
     DECLARE_EVENT_TABLE()
     public:
-        EditorBase(wxWindow* parent, const wxString& filename);
+        /** Constructor for the EditorBase class. Not really useful on its own.
+          * @param[in] parent The parent of the editor. It should be the same as the notebook object
+          *    in the EditorManager class.
+          * @param[in] filename The file name for this editor. Used to set the title and for other
+          *    file related features.
+          * @param[in] addCustomEditor Controls whether the editor is registered with the
+          *    EditorManager. @see EditorManager::AddCustomEditor.
+         */
+        EditorBase(wxWindow* parent, const wxString& filename, bool addCustomEditor = true);
         ~EditorBase() override;
 
         EditorBase(const EditorBase&) = delete;
