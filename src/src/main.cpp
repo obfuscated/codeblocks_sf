@@ -222,6 +222,14 @@ private:
     void OnSize(wxSizeEvent &event)
     {
         AdjustFieldsSize();
+
+        // for flicker-free display
+        event.Skip();
+    }
+
+    void AdjustFieldsSize() override
+    {
+        cbStatusBar::AdjustFieldsSize();
         if (m_pHighlightButton)
         {
             wxRect rect;
@@ -231,9 +239,6 @@ private:
                 m_pHighlightButton->SetSize(rect.GetSize());
             }
         }
-
-        // for flicker-free display
-        event.Skip();
     }
 private:
     wxButton *m_pHighlightButton = nullptr;
@@ -5028,8 +5033,11 @@ void MainFrame::OnPluginUnloaded(CodeBlocksEvent& event)
     cbPlugin* plugin = event.GetPlugin();
 
     cbStatusBar *sb = (cbStatusBar*)GetStatusBar();
-    if ( sb )
+    if (sb)
+    {
         sb->RemoveField(plugin);
+        sb->AdjustFieldsSize();
+    }
 
     // remove toolbar, if any
     if (m_PluginsTools[plugin])

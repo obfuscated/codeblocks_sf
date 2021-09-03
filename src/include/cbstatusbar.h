@@ -66,7 +66,7 @@ public:
     void RemoveField(cbPlugin* plugin);
 
     /// Calls SetSize on any controls added to the toolbar.
-    void AdjustFieldsSize();
+    virtual void AdjustFieldsSize();
 
 private:
     void UpdateWidths();
