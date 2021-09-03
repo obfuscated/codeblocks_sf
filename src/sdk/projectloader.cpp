@@ -310,8 +310,9 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
                 pMsg->DebugLog(wxString::Format(_T("Set project compiler to %s"), newCompilerId));
                 m_pProject->SetCompilerID(newCompilerId);
                 wxString msg;
-                msg.Printf(_("You have changed the compiler used for the project to %s.\n"
-                            "Do you want to use the same compiler for all the project's build targets too?"),newCompilerId);
+                msg.Printf( "You have changed the compiler used for the project to %s.\n"
+                            "Do you want to use the same compiler for all the project's build targets too?",
+                            newCompilerId);
                 int ret = cbMessageBox( msg,
                                         "Question",
                                         wxICON_QUESTION | wxYES_NO);
@@ -325,6 +326,8 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
                             target->SetCompilerID(newCompilerId);
                     }
                 }
+                m_pProject->SetModified(true);
+                m_OpenDirty = true;
             }
         }
     }

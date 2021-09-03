@@ -341,8 +341,13 @@ void wxSmith::OnProjectOpened(CodeBlocksEvent& event)
 {
     cbProject* Proj = event.GetProject();
     wxsProject* wxsProj = GetSmithProject(Proj);
+    bool projModifiedDuringLoad = wxsProj->GetWasModifiedDuringLoad();
     wxsProj->UpdateName();
-    Proj->SetModified(wxsProj->GetWasModifiedDuringLoad());
+    if (projModifiedDuringLoad)
+    {
+        // Do NOT clear any previous modifications on a project load!!!
+        Proj->SetModified(projModifiedDuringLoad);
+    }
     event.Skip();
 }
 
