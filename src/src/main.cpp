@@ -117,11 +117,10 @@ struct MainStatusBar : cbStatusBar
         dc.GetTextExtent(_(" Read/Write "),                      &widths[num++], &h);
         dc.GetTextExtent(_(" name_of_profile "),                 &widths[num++], &h);
 
+        SetFieldsCount(num);
         SetStatusWidths(num, widths);
 
         // Highlight button
-        wxRect rect;
-        if (GetFieldRect(1, rect))
         {
             m_pHighlightButton = new wxButton(this, idHighlightButton, wxT("bla"), wxDefaultPosition, wxDefaultSize,
                                               wxBORDER_NONE|wxBU_LEFT|wxBU_EXACTFIT);
