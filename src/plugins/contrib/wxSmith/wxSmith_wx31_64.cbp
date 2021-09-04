@@ -420,10 +420,10 @@
 		<Unit filename="wxwidgets/defitems/wxsdataviewctrl.h">
 			<Option target="wxSmithLib" />
 		</Unit>
-		<Unit filename="wxwidgets/defitems/wxsdataviewlistctrl.cpp" >
+		<Unit filename="wxwidgets/defitems/wxsdataviewlistctrl.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
-		<Unit filename="wxwidgets/defitems/wxsdataviewlistctrl.h" >
+		<Unit filename="wxwidgets/defitems/wxsdataviewlistctrl.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsdataviewtreectrl.cpp">
