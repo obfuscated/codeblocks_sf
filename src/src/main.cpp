@@ -2220,14 +2220,13 @@ bool MainFrame::DoCloseCurrentWorkspace()
 
 void MainFrame::DoCreateStatusBar()
 {
-    wxClientDC dc(this);
-    wxFont font = dc.GetFont();
     int h;
     size_t num = 0;
 
     wxCoord widths[16]; // 16 max
     widths[num++] = -1; // main field
 
+    wxClientDC dc(this);
     dc.GetTextExtent(_(" Highlight Button "),                &widths[num++], &h);
     dc.GetTextExtent(_(" Windows (CR+LF) "),                 &widths[num++], &h);
     dc.GetTextExtent(_(" WINDOWS-1252 "),                    &widths[num++], &h);
@@ -3035,11 +3034,11 @@ void MainFrame::OnEraseBackground(wxEraseEvent& event)
 
 void MainFrame::OnSize(wxSizeEvent& event)
 {
-    // Highlightbutton
-    if (m_pHighlightButton)
+    cbStatusBar *statusBar = (cbStatusBar*)GetStatusBar();
+    if (m_pHighlightButton && statusBar)
     {
         wxRect rect;
-        if ( GetStatusBar()->GetFieldRect(1, rect) )
+        if (statusBar->GetFieldRect(1, rect))
         {
             m_pHighlightButton->SetPosition(rect.GetPosition());
             m_pHighlightButton->SetSize(rect.GetSize());
