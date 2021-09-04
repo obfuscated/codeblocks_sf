@@ -112,16 +112,15 @@ wxString EditorBase::CreateUniqueFilename()
     }
 }
 
-EditorBase::EditorBase(wxWindow* parent, const wxString& filename)
+EditorBase::EditorBase(wxWindow* parent, const wxString& filename, bool addCustomEditor)
         : wxPanel(parent, -1),
         m_IsBuiltinEditor(false),
-        m_Shortname(_T("")),
-        m_Filename(_T("")),
         m_WinTitle(filename)
 {
     m_pData = new EditorBaseInternalData(this);
 
-    Manager::Get()->GetEditorManager()->AddCustomEditor(this);
+    if (addCustomEditor)
+        Manager::Get()->GetEditorManager()->AddCustomEditor(this);
     InitFilename(filename);
     SetTitle(m_Shortname);
 }

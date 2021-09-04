@@ -27,7 +27,7 @@
 #include <wx/wx.h>
 
 wxsEditor::wxsEditor(wxWindow* parent, const wxString& title,wxsResource* Resource):
-    EditorBase(parent,title),
+    EditorBase(parent, title, true),
     m_Resource(Resource)
 {
     //active the "Resources" Tab in the "Management" Panel

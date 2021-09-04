@@ -768,7 +768,7 @@ static int DetectLineEnds(cbStyledTextCtrl* control)
 
 // class constructor
 cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* theme)
-    : EditorBase(parent, filename),
+    : EditorBase(parent, filename, false),
     m_pSplitter(nullptr),
     m_pSizer(nullptr),
     m_pControl(nullptr),
@@ -786,7 +786,7 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* 
 
 // class constructor
 cbEditor::cbEditor(wxWindow* parent, LoaderBase* fileLdr, const wxString& filename, EditorColourSet* theme)
-    : EditorBase(parent, filename),
+    : EditorBase(parent, filename, false),
     m_pSplitter(nullptr),
     m_pSizer(nullptr),
     m_pControl(nullptr),

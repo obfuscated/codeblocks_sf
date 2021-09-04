@@ -149,7 +149,7 @@ END_EVENT_TABLE()
 HexEditPanel::EditorsSet HexEditPanel::m_AllEditors;
 
 HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
-    : EditorBase( (wxWindow*)Manager::Get()->GetEditorManager()->GetNotebook(), fileName )
+    : EditorBase( (wxWindow*)Manager::Get()->GetEditorManager()->GetNotebook(), fileName, true)
     , m_FileName( fileName )
     , m_Content( 0 )
     , m_DrawFont( 0 )

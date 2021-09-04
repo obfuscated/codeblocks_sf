@@ -30,7 +30,7 @@ BEGIN_EVENT_TABLE(byoEditorBase,EditorBase)
 END_EVENT_TABLE()
 
 byoEditorBase::byoEditorBase(const wxString& GameName):
-    EditorBase((wxWindow*)Manager::Get()->GetEditorManager()->GetNotebook(),GameName)
+    EditorBase((wxWindow*)Manager::Get()->GetEditorManager()->GetNotebook(),GameName, true)
 {
 }
 

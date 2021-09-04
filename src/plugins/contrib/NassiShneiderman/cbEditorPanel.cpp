@@ -26,7 +26,7 @@
 
 
 cbEditorPanel::cbEditorPanel( const wxString& fileName, const wxString& /*title*/, FileContent *fc ):
-    EditorBase( (wxWindow*)Manager::Get()->GetEditorManager()->GetNotebook(), fileName ),
+    EditorBase( (wxWindow*)Manager::Get()->GetEditorManager()->GetNotebook(), fileName, true),
     m_IsOK(false),
     m_filecontent(fc)
     //m_cmdprocessor(0)
