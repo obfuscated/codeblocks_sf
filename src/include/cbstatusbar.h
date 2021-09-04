@@ -17,9 +17,7 @@ class cbPlugin;
   */
 class DLLIMPORT cbStatusBar : public wxStatusBar
 {
-private:
-    friend class MainFrame; // gets initialized from mainframe
-
+protected:
     // this will be used from friend mainframe
     cbStatusBar(wxWindow* parent,  wxWindowID id, long style, const wxString& name);
     cbStatusBar() { ; };
@@ -67,12 +65,11 @@ public:
       **/
     void RemoveField(cbPlugin* plugin);
 
-private:
-    // event handlers
-    void OnSize(wxSizeEvent& event);
-    void UpdateWidths();
-
+    /// Calls SetSize on any controls added to the toolbar.
     void AdjustFieldsSize();
+
+private:
+    void UpdateWidths();
     int  GetFieldNumberOfPlugin(cbPlugin* plugin) const;
 
     void PushStatusText(cb_unused const wxString& text, cb_unused cbPlugin *plugin) { ; };
@@ -87,8 +84,6 @@ private:
     typedef std::vector<cbStatusBarElement> ElementVector;
     ElementVector                           m_Elements;
     std::vector<int>                        m_MainWidths;
-
-    DECLARE_EVENT_TABLE()
 };
 
 #endif //CBSTATUSBAR_H
