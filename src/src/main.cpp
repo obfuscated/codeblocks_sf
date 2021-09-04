@@ -619,6 +619,13 @@ MainFrame::MainFrame(wxWindow* parent)
     FileFilters::AddDefaultFileFilters();
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
+
+    // We want to restore the size of the windows as early as possible, so things like
+    // GetClientSize() would return proper values. F.e. if we call this after the creation of the
+    // status bar it is possible that the first field in it would be calculated with zero or
+    // negative width and the second field would be in incorrect place.
+    LoadWindowSize();
+
     CreateIDE();
 
 #ifdef __WXMSW__
@@ -637,7 +644,6 @@ MainFrame::MainFrame(wxWindow* parent)
 
     SetTitle(appglobals::AppName + _T(" v") + appglobals::AppVersion);
 
-    LoadWindowSize();
     ScanForPlugins();
     if (!Manager::IsBatchBuild())
         CreateToolbars();
