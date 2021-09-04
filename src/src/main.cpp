@@ -2290,7 +2290,7 @@ void MainFrame::DoUpdateStatusBar()
             if (colour_set)
                 changeButtonLabel(*m_pHighlightButton, colour_set->GetLanguageName(ed->GetLanguage()));
             else
-                changeButtonLabel(*m_pHighlightButton, wxEmptyString);
+                changeButtonLabel(*m_pHighlightButton, wxString());
         }
         // EOL mode
         panel++;
@@ -2309,7 +2309,7 @@ void MainFrame::DoUpdateStatusBar()
 #if wxCHECK_VERSION(3, 0, 0)
         SetStatusText(ed->GetModified() ? _("Modified") : _T(""), panel++);
 #else
-        SetStatusText(ed->GetModified() ? _("Modified") : wxEmptyString, panel++);
+        SetStatusText(ed->GetModified() ? _("Modified") : wxString(), panel++);
 #endif
         SetStatusText(control->GetReadOnly() ? _("Read only") : _("Read/Write"), panel++);
         SetStatusText(personality, panel++);
@@ -2323,17 +2323,16 @@ void MainFrame::DoUpdateStatusBar()
         else
             SetStatusText(_("Welcome to ") + appglobals::AppName + _T("!"), panel++);
 
-        // Highlightbutton
         if (m_pHighlightButton)
-            changeButtonLabel(*m_pHighlightButton, wxEmptyString);
+            changeButtonLabel(*m_pHighlightButton, wxString());
         panel++;
 
-        SetStatusText(wxEmptyString, panel++);
-        SetStatusText(wxEmptyString, panel++);
-        SetStatusText(wxEmptyString, panel++);
-        SetStatusText(wxEmptyString, panel++);
-        SetStatusText(wxEmptyString, panel++);
-        SetStatusText(wxEmptyString, panel++);
+        SetStatusText(wxString(), panel++);
+        SetStatusText(wxString(), panel++);
+        SetStatusText(wxString(), panel++);
+        SetStatusText(wxString(), panel++);
+        SetStatusText(wxString(), panel++);
+        SetStatusText(wxString(), panel++);
         SetStatusText(personality, panel++);
     }
 }
