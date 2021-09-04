@@ -198,10 +198,10 @@ struct MainStatusBar : cbStatusBar
         }
     }
 private:
-
-    /// Change the label of a button only if it has really changed. This is used for status bar button,
-    /// because if we always set the label there is flickering while scrolling in the editor.
-    /// I've observed the flickering on wxGTK and I don't know if it is present on the other ports.
+    /// Change the label of a button only if it has really changed. This is used for status bar
+    /// button, because if we always set the label there is flickering while scrolling in the
+    /// editor.I've observed the flickering on wxGTK and I don't know if it is present on the other
+    /// ports.
     static void ChangeButtonLabel(wxButton &button, const wxString &text)
     {
         if (text != button.GetLabel())
