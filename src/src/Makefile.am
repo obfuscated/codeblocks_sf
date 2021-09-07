@@ -43,6 +43,7 @@ codeblocks_SOURCES = app.cpp \
 			disassemblydlg.cpp \
 			dlgabout.cpp \
 			dlgaboutplugin.cpp \
+			dlghelpsysteminformation.cpp \
 			editkeywordsdlg.cpp \
 			editorconfigurationdlg.cpp \
 			environmentsettingsdlg.cpp \
@@ -82,6 +83,7 @@ noinst_HEADERS = app.h \
 			disassemblydlg.h \
 			dlgabout.h \
 			dlgaboutplugin.h \
+			dlghelpsysteminformation.h \
 			editkeywordsdlg.h \
 			editorconfigurationdlg.h \
 			environmentsettingsdlg.h \
