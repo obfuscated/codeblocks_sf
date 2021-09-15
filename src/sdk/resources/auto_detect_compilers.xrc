@@ -88,12 +88,14 @@
 				<border>8</border>
 			</object>
 			<object class="sizeritem">
-				<object class="wxBoxSizer">
-					<object class="sizeritem">
-						<object class="wxButton" name="wxID_CLOSE" />
+				<object class="wxStdDialogButtonSizer">
+					<object class="button">
+						<object class="wxButton" name="wxID_OK">
+							<label></label>
+						</object>
 					</object>
 				</object>
-				<flag>wxALIGN_CENTER_HORIZONTAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 		</object>
