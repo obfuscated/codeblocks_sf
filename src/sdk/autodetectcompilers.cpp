@@ -43,8 +43,8 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAutoDetectCompilers"),_T("wxScrollingDialog"));
-    XRCCTRL(*this, "wxID_CLOSE", wxButton)->SetDefault();
-    Bind(wxEVT_BUTTON, &AutoDetectCompilers::OnCloseClicked, this, wxID_CLOSE);
+    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
+    Bind(wxEVT_BUTTON, &AutoDetectCompilers::OnCloseClicked, this, wxID_OK);
 
     wxString defaultCompilerID = CompilerFactory::GetDefaultCompilerID();
     wxListCtrl* list = XRCCTRL(*this, "lcCompilers", wxListCtrl);
