@@ -1,3 +1,10 @@
+#include "sdk.h"
+#ifndef CB_PRECOMP
+    #include <wx/filedlg.h>
+
+    #include <configmanager.h>
+#endif
+
 #include "valgrind_config.h"
 
 //(*InternalHeaders(ValgrindConfigurationPanel)
@@ -9,9 +16,7 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 //*)
-#include <wx/filedlg.h>
 
-#include <configmanager.h>
 
 //(*IdInit(ValgrindConfigurationPanel)
 const long ValgrindConfigurationPanel::IdExecutablePath = wxNewId();
